@@ -328,14 +328,27 @@ enum
 	ID_DumpState,
 	ID_DumpBinaryState,
 
-	ID_Toolbar, // must be last in the list
+	ID_Toolbar,
 	ID_ToolbarNew,
 	ID_ToolbarOpen,
+	
+	ID_ToolbarOptionsBegin = 1000, //Space for 998 options
 	ID_ToolbarOptionMap,
 	ID_ToolbarOptionPlayer,
 	ID_ToolbarOptionTerrain,
 	ID_ToolbarOptionObject,
-	ID_ToolbarOptionEnvironment
+	ID_ToolbarOptionEnvironment,
+	ID_ToolbarOptionsEnd,
+	
+	ID_ToolbarToolsBegin = 2000, //space for 998 tools
+	ID_ToolbarToolsSelect,
+	ID_ToolbarToolsMove,
+	ID_ToolbarToolsAlterTerrain,
+	ID_ToolbarToolsSmooth,
+	ID_ToolbarToolsFlatten,
+	ID_ToolbarToolsPainTerrain,
+	ID_ToolbarToolsEnd
+	
 };
 
 BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
@@ -370,6 +383,7 @@ BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
 
 	EVT_TOOL(ID_ToolbarNew, ScenarioEditor::OnNew)
 	EVT_TOOL(ID_ToolbarOpen, ScenarioEditor::OnOpen)
+	EVT_TOOL(wxID_ANY, ScenarioEditor::OnToolbarButtons)
 
 	EVT_IDLE(ScenarioEditor::OnIdle)
 END_EVENT_TABLE()
@@ -453,17 +467,25 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 
 	m_FileHistory.LoadFromSubDir(*wxConfigBase::Get());
 
-
-	//m_SectionLayout.SetWindow(this);
-
-	// Toolbar:
-	// wxOSX/Cocoa 2.9 doesn't seem to like SetToolBar, so we use CreateToolBar which implicitly associates
-	//	the toolbar with the frame, and use OnCreateToolBar to construct our custom toolbar
-	//	(this should be equivalent behavior on all platforms)
-	//CreateToolBar(wxNO_BORDER|wxTB_FLAT|wxTB_HORIZONTAL, ID_Toolbar)->Realize();
+	//////////////////////////////////////////////////////////////////////////
+	// Toolbar
+	
+	/* "msw.remap: If 1 (the default), wxToolBar bitmap colours will be remapped
+	 to the current theme's values. Set this to 0 to disable this functionality,
+	 for example if you're using more than 16 colours in your tool bitmaps." */
+	wxSystemOptions::SetOption(wxT("msw.remap"), 0); // (has global effect)
 	wxToolBar* commonToolbar = wxXmlResource::Get()->LoadToolBar(this, "AppToolbar");
 	commonToolbar->Realize();
-
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Tools Stuff
+	m_ToolsMap[ID_ToolbarToolsSelect] = "";
+	m_ToolsMap[ID_ToolbarToolsMove] = "TransformObject";
+	m_ToolsMap[ID_ToolbarToolsAlterTerrain] = "AlterElevation";
+	m_ToolsMap[ID_ToolbarToolsSmooth] = "SmoothElevation";
+	m_ToolsMap[ID_ToolbarToolsFlatten] = "FlattenElevation";
+	m_ToolsMap[ID_ToolbarToolsPainTerrain] = "PaintTerrain";
+	
 	// Set the default tool to be selected
 	m_ToolManager.SetCurrentTool(_T(""));
 
@@ -536,20 +558,26 @@ ScenarioEditor::~ScenarioEditor()
 	m_Mgr.UnInit();
 }
 
-wxToolBar* ScenarioEditor::OnCreateToolBar(long style, wxWindowID id, const wxString& WXUNUSED(name))
+void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 {
-	ToolButtonBar* toolbar = new ToolButtonBar(m_ToolManager, this, &m_SectionLayout, id, style);
-	// TODO: configurable small vs large icon images
+	if (event.GetId() > ID_ToolbarToolsBegin && event.GetId() < ID_ToolbarToolsEnd)
+	{
+		if (!event.IsChecked())
+		{
+			this->m_ToolManager.SetCurrentTool(_T(""));
+			return;
+		}
 
-	// (button label; tooltip text; image; internal tool name; section to switch to)
-	toolbar->AddToolButton(_("Default"),       _("Default"),                   _T("default.png"),          _T(""),                 _T(""));
-	toolbar->AddToolButton(_("Move"),          _("Move/rotate object"),        _T("moveobject.png"),       _T("TransformObject"),  _T("")/*_T("ObjectSidebar")*/);
-	toolbar->AddToolButton(_("Elevation"),     _("Alter terrain elevation"),   _T("alterelevation.png"),   _T("AlterElevation"),   _T("")/*_T("TerrainSidebar")*/);
-	toolbar->AddToolButton(_("Smooth"),        _("Smooth terrain elevation"),  _T("smoothelevation.png"),  _T("SmoothElevation"),  _T("")/*_T("TerrainSidebar")*/);
-	toolbar->AddToolButton(_("Flatten"),       _("Flatten terrain elevation"), _T("flattenelevation.png"), _T("FlattenElevation"), _T("")/*_T("TerrainSidebar")*/);
-	toolbar->AddToolButton(_("Paint Terrain"), _("Paint terrain texture"),     _T("paintterrain.png"),     _T("PaintTerrain"),     _T("")/*_T("TerrainSidebar")*/);
-
-	return toolbar;
+		wxToolBar* toolbar = this->GetToolBar();
+		for (int i = ID_ToolbarToolsBegin + 1; i < ID_ToolbarToolsEnd; ++i)
+		{
+			if (i != event.GetId())
+				toolbar->ToggleTool(i, false);
+		}
+		
+		wxString toolName = m_ToolsMap[event.GetId()];
+		this->m_ToolManager.SetCurrentTool(toolName);
+	}
 }
 
 float ScenarioEditor::GetSpeedModifier()

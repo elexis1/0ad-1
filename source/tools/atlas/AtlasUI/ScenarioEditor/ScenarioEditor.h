@@ -36,7 +36,6 @@ public:
 	void OnClose(wxCloseEvent& event);
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxIdleEvent& event);
-	wxToolBar* OnCreateToolBar(long style, wxWindowID id, const wxString &name);
 	
  	void OnNew(wxCommandEvent& event);
 	void OnOpen(wxCommandEvent& event);
@@ -60,6 +59,8 @@ public:
 	void OnRenderPath(wxCommandEvent& event);
 	void OnDumpState(wxCommandEvent& event);
     void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
+	
+	void OnToolbarButtons(wxCommandEvent& event);
 
     void OnMenuOpen(wxMenuEvent& event);
 
@@ -76,8 +77,6 @@ public:
 
 	ToolManager& GetToolManager() { return m_ToolManager; }
 
-	void SelectPage(const wxString& classname) { m_SectionLayout.SelectPage(classname); }
-
 	bool DiscardChangesDialog();
 
 private:
@@ -85,8 +84,6 @@ private:
 	ToolManager m_ToolManager;
 
 	wxTimer m_Timer;
-
-	SectionLayout m_SectionLayout;
 
 	Observable<ObjectSettings> m_ObjectSettings;
 	Observable<AtObj> m_MapSettings;
@@ -97,6 +94,7 @@ private:
 
 	wxIcon m_Icon;
 	wxAuiManager  m_Mgr;
+	std::map<int, wxString> m_ToolsMap;
 
 	DECLARE_EVENT_TABLE();
 };
