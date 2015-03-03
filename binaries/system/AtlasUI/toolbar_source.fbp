@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<wxFormBuilder_Project>
+    <FileVersion major="1" minor="13" />
+    <object class="Project" expanded="1">
+        <property name="class_decoration"></property>
+        <property name="code_generation">XRC</property>
+        <property name="disconnect_events">1</property>
+        <property name="disconnect_mode">source_name</property>
+        <property name="disconnect_php_events">0</property>
+        <property name="disconnect_python_events">0</property>
+        <property name="embedded_files_path">res</property>
+        <property name="encoding">UTF-8</property>
+        <property name="event_generation">connect</property>
+        <property name="file">toolbar</property>
+        <property name="first_id">1000</property>
+        <property name="help_provider">none</property>
+        <property name="internationalize">1</property>
+        <property name="name">Toolbars</property>
+        <property name="namespace"></property>
+        <property name="path">.</property>
+        <property name="precompiled_header"></property>
+        <property name="relative_path">1</property>
+        <property name="skip_lua_events">1</property>
+        <property name="skip_php_events">1</property>
+        <property name="skip_python_events">1</property>
+        <property name="ui_table">UI</property>
+        <property name="use_enum">0</property>
+        <property name="use_microsoft_bom">0</property>
+        <object class="ToolBar" expanded="1">
+            <property name="bg"></property>
+            <property name="bitmapsize"></property>
+            <property name="context_help"></property>
+            <property name="context_menu">1</property>
+            <property name="enabled">1</property>
+            <property name="fg"></property>
+            <property name="font"></property>
+            <property name="hidden">0</property>
+            <property name="id">wxID_ANY</property>
+            <property name="margins"></property>
+            <property name="maximum_size"></property>
+            <property name="minimum_size"></property>
+            <property name="name">AppToolbar</property>
+            <property name="packing">1</property>
+            <property name="pos"></property>
+            <property name="separation">2</property>
+            <property name="size"></property>
+            <property name="style">wxTB_FLAT|wxTB_HORIZONTAL</property>
+            <property name="subclass"></property>
+            <property name="tooltip"></property>
+            <property name="window_extra_style"></property>
+            <property name="window_name"></property>
+            <property name="window_style">wxNO_BORDER</property>
+            <event name="OnChar"></event>
+            <event name="OnEnterWindow"></event>
+            <event name="OnEraseBackground"></event>
+            <event name="OnKeyDown"></event>
+            <event name="OnKeyUp"></event>
+            <event name="OnKillFocus"></event>
+            <event name="OnLeaveWindow"></event>
+            <event name="OnLeftDClick"></event>
+            <event name="OnLeftDown"></event>
+            <event name="OnLeftUp"></event>
+            <event name="OnMiddleDClick"></event>
+            <event name="OnMiddleDown"></event>
+            <event name="OnMiddleUp"></event>
+            <event name="OnMotion"></event>
+            <event name="OnMouseEvents"></event>
+            <event name="OnMouseWheel"></event>
+            <event name="OnPaint"></event>
+            <event name="OnRightDClick"></event>
+            <event name="OnRightDown"></event>
+            <event name="OnRightUp"></event>
+            <event name="OnSetFocus"></event>
+            <event name="OnSize"></event>
+            <event name="OnUpdateUI"></event>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From Art Provider; wxART_NEW; wxART_TOOLBAR</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_NORMAL</property>
+                <property name="label">New</property>
+                <property name="name">20</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From Art Provider; wxART_FILE_OPEN; wxART_TOOLBAR</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_NORMAL</property>
+                <property name="label">Open</property>
+                <property name="name">21</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="toolSeparator" expanded="1">
+                <property name="permission">protected</property>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/map.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">map</property>
+                <property name="name">22</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/player.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">player</property>
+                <property name="name">23</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/terrain.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">terrain</property>
+                <property name="name">24</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/object.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">object</property>
+                <property name="name">25</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/environment.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">environment</property>
+                <property name="name">26</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="toolSeparator" expanded="1">
+                <property name="permission">protected</property>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/default.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">tool</property>
+                <property name="name">m_tool11</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/moveobject.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">tool</property>
+                <property name="name">m_tool12</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/alterelevation.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">tool</property>
+                <property name="name">m_tool13</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/smoothelevation.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">tool</property>
+                <property name="name">m_tool14</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/flattenelevation.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">tool</property>
+                <property name="name">m_tool15</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+            <object class="tool" expanded="1">
+                <property name="bitmap">Load From File; ../../data/tools/atlas/toolbar/paintterrain.png</property>
+                <property name="context_menu">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="kind">wxITEM_CHECK</property>
+                <property name="label">tool</property>
+                <property name="name">m_tool16</property>
+                <property name="permission">protected</property>
+                <property name="statusbar"></property>
+                <property name="tooltip"></property>
+                <event name="OnAuiToolBarBeginDrag"></event>
+                <event name="OnAuiToolBarMiddleClick"></event>
+                <event name="OnAuiToolBarOverflowClick"></event>
+                <event name="OnAuiToolBarRightClick"></event>
+                <event name="OnAuiToolBarToolDropDown"></event>
+                <event name="OnMenuSelection"></event>
+                <event name="OnToolClicked"></event>
+                <event name="OnToolEnter"></event>
+                <event name="OnToolRClicked"></event>
+                <event name="OnUpdateUI"></event>
+            </object>
+        </object>
+    </object>
+</wxFormBuilder_Project>

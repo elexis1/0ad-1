@@ -18,6 +18,7 @@
 #ifndef INCLUDED_SCENARIOEDITOR
 #define INCLUDED_SCENARIOEDITOR
 
+#include <wx/aui/aui.h>
 #include "wx/toolbar.h"
 
 #include "General/AtlasWindowCommandProc.h"
@@ -31,6 +32,7 @@ class ScenarioEditor : public wxFrame
 {
 public:
 	ScenarioEditor(wxWindow* parent);
+	~ScenarioEditor();
 	void OnClose(wxCloseEvent& event);
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxIdleEvent& event);
@@ -94,6 +96,7 @@ private:
 	FileHistory m_FileHistory;
 
 	wxIcon m_Icon;
+	wxAuiManager  m_Mgr;
 
 	DECLARE_EVENT_TABLE();
 };

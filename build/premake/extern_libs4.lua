@@ -698,7 +698,7 @@ extern_lib_defs = {
 				if not wx_config_path then
 					wx_config_path = "wx-config"
 				end
-				pkgconfig_libs(nil, wx_config_path.." --unicode=yes --libs std,gl")
+				pkgconfig_libs(nil, wx_config_path.." --unicode=yes --libs std,gl,aui")
 			end
 		end,
 	},

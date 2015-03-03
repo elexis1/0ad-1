@@ -63,7 +63,7 @@ ARCH=${ARCH:="x86_64"}
 # gcc symlinks may still exist, but they are simply clang with
 # slightly different config, which confuses build scripts.
 # llvm-gcc and gcc 4.2 are no longer supported by SpiderMonkey.
-export CC=${CC:="clang"} CXX=${CXX:="clang++"}
+export CC=${CC:="clang -v"} CXX=${CXX:="clang++ -v"}
 export MIN_OSX_VERSION=${MIN_OSX_VERSION:="10.9"}
 
 # The various libs offer inconsistent configure options, some allow
@@ -88,7 +88,7 @@ fi
 # Force using libc++ since it has better C++11 support required by the game
 # but pre-Mavericks still use libstdc++ by default
 # Also enable c++0x for consistency with the game build
-C_FLAGS="$C_FLAGS -arch $ARCH -fvisibility=hidden"
+C_FLAGS="$C_FLAGS -arch $ARCH" # -fvisibility=hidden"
 LDFLAGS="$LDFLAGS -arch $ARCH -stdlib=libc++"
 
 CFLAGS="$CFLAGS $C_FLAGS"
@@ -343,17 +343,36 @@ if [[ "$force_rebuild" = "true" ]] || [[ ! -e .already-built ]] || [[ .already-b
 then
   INSTALL_DIR="$(pwd)"
 
-  rm -f .already-built
-  download_lib $LIB_URL $LIB_ARCHIVE
+  mkdir -p static-release
+  INSTALL_DIR_STATIC="$(pwd)/static-release"
 
-  rm -rf $LIB_DIRECTORY bin include lib share
-  tar -xf $LIB_ARCHIVE
+  #rm -f .already-built
+  #download_lib $LIB_URL $LIB_ARCHIVE
+
+  #rm -rf $LIB_DIRECTORY bin include lib share
+  #tar -xf $LIB_ARCHIVE
   pushd $LIB_DIRECTORY
 
-  mkdir -p build-release
-  pushd build-release
+  #mkdir -p build-release
+  #pushd build-release
 
-  CONF_OPTS="--prefix=$INSTALL_DIR --disable-shared --enable-macosx_arch=$ARCH --enable-unicode --with-cocoa --with-opengl --with-libiconv-prefix=${ICONV_DIR} --with-expat=builtin --with-png=builtin --without-libtiff --without-sdl --without-x --disable-webview --disable-webkit --disable-webviewwebkit --disable-webviewie"
+  #CONF_OPTS="--prefix=$INSTALL_DIR --disable-shared --enable-macosx_arch=$ARCH --enable-unicode --with-cocoa --with-opengl --with-libiconv-prefix=${ICONV_DIR} --with-expat=builtin --with-libjpeg=builtin --with-png=builtin --without-libtiff --without-sdl --without-x"
+  # wxWidgets configure now defaults to targeting 10.5, if not specified,
+  # but that conflicts with our flags
+  #if [[ $MIN_OSX_VERSION && ${MIN_OSX_VERSION-_} ]]; then
+  #  CONF_OPTS="$CONF_OPTS --with-macosx-version-min=$MIN_OSX_VERSION"
+  #fi
+  # patch to fix wxWidgets build on Yosemite (fixed upstream, see http://trac.wxwidgets.org/ticket/16329 )
+  # Force libc++ in CPPFLAGS as well, since CXXFLAGS isn't enough here
+  #(patch -p0 -d.. -i../../patches/wxwidgets-webkit-fix.diff && ../configure CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" CPPFLAGS="-stdlib=libc++" LDFLAGS="$LDFLAGS" $CONF_OPTS && make ${JOBS} && make install) || die "wxWidgets build failed"
+  #popd
+
+  #make static library for wxFormBuilder
+  mkdir -p build-static-release
+  pushd build-static-release
+
+  CONF_OPTS="--prefix=$INSTALL_DIR_STATIC --disable-debug --enable-shared --enable-macosx_arch=$ARCH --enable-unicode --with-cocoa --with-opengl --with-libiconv-prefix=${ICONV_DIR} --with-expat=builtin --with-png=builtin --without-libtiff --without-sdl --without-x --disable-webview --disable-webkit --disable-webviewwebkit --disable-webviewie"
+
   # wxWidgets configure now defaults to targeting 10.5, if not specified,
   # but that conflicts with our flags
   if [[ $MIN_OSX_VERSION && ${MIN_OSX_VERSION-_} ]]; then
@@ -361,7 +380,7 @@ then
   fi
   # patch to fix wxWidgets build on Yosemite (fixed upstream, see http://trac.wxwidgets.org/ticket/16329 )
   # Force libc++ in CPPFLAGS as well, since CXXFLAGS isn't enough here
-  (patch -p0 -d.. -i../../patches/wxwidgets-webkit-fix.diff && ../configure CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" CPPFLAGS="-stdlib=libc++" LDFLAGS="$LDFLAGS" $CONF_OPTS && make ${JOBS} && make install) || die "wxWidgets build failed"
+  (../configure CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" CPPFLAGS="-stdlib=libc++" LDFLAGS="$LDFLAGS" $CONF_OPTS && make ${JOBS} && make install) || die "wxWidgets build failed"
   popd
   popd
   touch .already-built

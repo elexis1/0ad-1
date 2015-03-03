@@ -31,6 +31,7 @@
 #include "wx/sysopt.h"
 #include "wx/tooltip.h"
 #include "wx/xml/xml.h"
+#include "wx/xrc/xmlres.h"
 
 #include "General/AtlasEventLoop.h"
 #include "General/Datafile.h"
@@ -327,7 +328,14 @@ enum
 	ID_DumpState,
 	ID_DumpBinaryState,
 
-	ID_Toolbar // must be last in the list
+	ID_Toolbar, // must be last in the list
+	ID_ToolbarNew,
+	ID_ToolbarOpen,
+	ID_ToolbarOptionMap,
+	ID_ToolbarOptionPlayer,
+	ID_ToolbarOptionTerrain,
+	ID_ToolbarOptionObject,
+	ID_ToolbarOptionEnvironment
 };
 
 BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
@@ -360,6 +368,9 @@ BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
 
     EVT_MENU_OPEN(ScenarioEditor::OnMenuOpen)
 
+	EVT_TOOL(ID_ToolbarNew, ScenarioEditor::OnNew)
+	EVT_TOOL(ID_ToolbarOpen, ScenarioEditor::OnOpen)
+
 	EVT_IDLE(ScenarioEditor::OnIdle)
 END_EVENT_TABLE()
 
@@ -372,6 +383,12 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 , m_ObjectSettings(g_SelectedObjects, AtlasMessage::eRenderView::GAME)
 , m_ToolManager(this)
 {
+	m_Mgr.SetManagedWindow(this);
+	
+	//Load XRC
+	wxXmlResource::Get()->InitAllHandlers();
+	wxXmlResource::Get()->LoadAllFiles("AtlasUI");
+	
 	// Global application initialisation:
 
 	wxImage::AddHandler(new wxICOHandler);
@@ -419,76 +436,33 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	//////////////////////////////////////////////////////////////////////////
 	// Menu
 
-	wxMenuBar* menuBar = new wxMenuBar;
+	wxMenuBar* menuBar = wxXmlResource::Get()->LoadMenuBar(this, "AppMenu");
 	SetMenuBar(menuBar);
-
-	wxMenu *menuFile = new wxMenu;
-	menuBar->Append(menuFile, _("&File"));
-	{
- 		menuFile->Append(ID_New, _("&New..."));
-		menuFile->Append(ID_Open, _("&Open..."));
-		menuFile->Append(ID_Save, _("&Save"));
-		menuFile->Append(ID_SaveAs, _("Save &As..."));
-		menuFile->AppendSeparator();//-----------
-		menuFile->Append(ID_ImportHeightmap, _("&Import Heightmap..."));
-		menuFile->AppendSeparator();//-----------
-		menuFile->Append(ID_Quit,   _("E&xit"));
-		m_FileHistory.UseMenu(menuFile);//-------
-		m_FileHistory.AddFilesToMenu();
-	}
-
-// 	m_menuItem_Save = menuFile->FindItem(ID_Save); // remember this item, to let it be greyed out
-// 	wxASSERT(m_menuItem_Save);
-
-	wxMenu *menuEdit = new wxMenu;
-	menuBar->Append(menuEdit, _("&Edit"));
-	{
-		menuEdit->Append(wxID_UNDO, _("&Undo"));
-		menuEdit->Append(wxID_REDO, _("&Redo"));
-        menuEdit->AppendSeparator();
-        menuEdit->Append(ID_Copy, _("&Copy"));
-        menuEdit->Enable(ID_Copy, false);
-        menuEdit->Append(ID_Paste, _("&Paste"));
-        menuEdit->Enable(ID_Paste, false);
-	}
-
-    g_SelectedObjects.RegisterObserver(0, &ScenarioEditor::OnSelectedObjectsChange, this);
-
+	
+	int index = menuBar->FindMenu(wxT("&File"));
+	wxMenu *menuFile = menuBar->GetMenu(index);
+	m_FileHistory.UseMenu(menuFile);
+	m_FileHistory.AddFilesToMenu();
+	
+	index = menuBar->FindMenu(wxT("&Edit"));
+	wxMenu *menuEdit =  menuBar->GetMenu(index);
 	GetCommandProc().SetEditMenu(menuEdit);
 	GetCommandProc().Initialize();
 
-
-	wxMenu *menuMisc = new wxMenu;
-	menuBar->Append(menuMisc, _("&Misc hacks"));
-	{
-		menuMisc->AppendCheckItem(ID_Wireframe, _("&Wireframe"));
-		menuMisc->AppendCheckItem(ID_MessageTrace, _("Message debug trace"));
-		menuMisc->Append(ID_Screenshot, _("&Screenshot"));
-		menuMisc->Append(ID_BigScreenshot, _("Big screenshot"));
-		menuMisc->Append(ID_JavaScript, _("&JS console"));
-		menuMisc->Append(ID_CameraReset, _("&Reset camera"));
-
-		wxMenu *menuSS = new wxMenu;
-		menuMisc->AppendSubMenu(menuSS, _("Si&mulation state"));
-		menuSS->Append(ID_DumpState, _("&Dump to disk"));
-		menuSS->Append(ID_DumpBinaryState, _("Dump &binary to disk"));
-
-		wxMenu *menuRP = new wxMenu;
-		menuMisc->AppendSubMenu(menuRP, _("Render &path"));
-		menuRP->Append(ID_RenderPathFixed, _("&Fixed function"));
-		menuRP->Append(ID_RenderPathShader, _("&Shader (default)"));
-	}
+    g_SelectedObjects.RegisterObserver(0, &ScenarioEditor::OnSelectedObjectsChange, this);
 
 	m_FileHistory.LoadFromSubDir(*wxConfigBase::Get());
 
 
-	m_SectionLayout.SetWindow(this);
+	//m_SectionLayout.SetWindow(this);
 
 	// Toolbar:
 	// wxOSX/Cocoa 2.9 doesn't seem to like SetToolBar, so we use CreateToolBar which implicitly associates
 	//	the toolbar with the frame, and use OnCreateToolBar to construct our custom toolbar
 	//	(this should be equivalent behavior on all platforms)
-	CreateToolBar(wxNO_BORDER|wxTB_FLAT|wxTB_HORIZONTAL, ID_Toolbar)->Realize();
+	//CreateToolBar(wxNO_BORDER|wxTB_FLAT|wxTB_HORIZONTAL, ID_Toolbar)->Realize();
+	wxToolBar* commonToolbar = wxXmlResource::Get()->LoadToolBar(this, "AppToolbar");
+	commonToolbar->Realize();
 
 	// Set the default tool to be selected
 	m_ToolManager.SetCurrentTool(_T(""));
@@ -505,13 +479,9 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 		WX_GL_MIN_ALPHA, 8, // alpha bits
 		0
 	};
-	Canvas* canvas = new GameCanvas(*this, m_SectionLayout.GetCanvasParent(), glAttribList);
-	m_SectionLayout.SetCanvas(canvas);
-
-	// Set up sidebars:
-
-	m_SectionLayout.Build(*this);
-
+	Canvas* canvas = new GameCanvas(*this, this, glAttribList);
+	m_Mgr.AddPane(canvas, wxCENTER);
+	
 #if defined(__WXMSW__)
 	// The canvas' context gets made current on creation; but it can only be
 	// current for one thread at a time, and it needs to be current for the
@@ -527,7 +497,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	// TODO: wxSafeYield causes issues on wxOSX 2.9, is it necessary?
 	wxSafeYield();
 #endif
-
+	this->Maximize();
 	// Send setup messages to game engine:
 
 	POST_MESSAGE(InitSDL, ());
@@ -545,7 +515,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	POST_MESSAGE(SimPlay, (0.f, false));
 
 	// Select the initial sidebar (after the map has loaded)
-	m_SectionLayout.SelectPage(_T("MapSidebar"));
+	//m_SectionLayout.SelectPage(_T("MapSidebar"));
 
 	// Wait for blank map
 	qry.Post();
@@ -557,6 +527,13 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	// else to do))
 	m_Timer.SetOwner(this);
 	m_Timer.Start(20);
+	
+	m_Mgr.Update();
+}
+
+ScenarioEditor::~ScenarioEditor()
+{
+	m_Mgr.UnInit();
 }
 
 wxToolBar* ScenarioEditor::OnCreateToolBar(long style, wxWindowID id, const wxString& WXUNUSED(name))
@@ -831,7 +808,7 @@ void ScenarioEditor::SetOpenFilename(const wxString& filename)
 
 void ScenarioEditor::NotifyOnMapReload()
 {
-	m_SectionLayout.OnMapReload();
+	//m_SectionLayout.OnMapReload();
 
 	// Notify observers, here so it's independent of individual panels
 	m_MapSettings.NotifyObservers();
