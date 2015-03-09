@@ -49,6 +49,7 @@
 #include "Tools/Common/Tools.h"
 #include "Tools/Common/Brushes.h"
 #include "Tools/Common/MiscState.h"
+#include "Sections/Map/Map.h"
 
 static HighResTimer g_Timer;
 
@@ -385,6 +386,8 @@ BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
 	EVT_TOOL(ID_ToolbarOpen, ScenarioEditor::OnOpen)
 	EVT_TOOL(wxID_ANY, ScenarioEditor::OnToolbarButtons)
 
+	EVT_AUI_PANE_CLOSE(ScenarioEditor::OnAuiPanelClosed)
+
 	EVT_IDLE(ScenarioEditor::OnIdle)
 END_EVENT_TABLE()
 
@@ -476,7 +479,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	wxSystemOptions::SetOption(wxT("msw.remap"), 0); // (has global effect)
 	wxToolBar* commonToolbar = wxXmlResource::Get()->LoadToolBar(this, "AppToolbar");
 	commonToolbar->Realize();
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	// Tools Stuff
 	m_ToolsMap[ID_ToolbarToolsSelect] = "";
@@ -578,6 +581,47 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 		wxString toolName = m_ToolsMap[event.GetId()];
 		this->m_ToolManager.SetCurrentTool(toolName);
 	}
+	else if (event.GetId() == ID_ToolbarOptionMap)
+	{
+		UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
+	}
+}
+
+void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
+{
+	if (event.GetPane()->name == "mapsettings")
+		this->GetToolBar()->ToggleTool(ID_ToolbarOptionMap, false);
+}
+
+template<typename T>
+void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrcName)
+{
+	static_assert(std::is_base_of<wxPanel, T>::value, "T must extend wxPanel");
+	wxAuiPaneInfo& paneInfo = m_Mgr.GetPane(panelName);
+	if (!show)
+	{
+		if (paneInfo.IsOk())
+		{
+			paneInfo.Hide();
+			m_Mgr.Update();
+		}
+		return;
+	}
+	
+	if (!paneInfo.IsOk())
+	{
+		T* mapSettings = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
+		mapSettings->Init(*this);
+		mapSettings->SetMinSize(mapSettings->GetSize());
+		
+		wxAuiPaneInfo paneInfo = wxAuiPaneInfo().Name(panelName).Float().Show().MinSize(mapSettings->GetSize()).BestSize(mapSettings->GetSize());
+		
+		m_Mgr.AddPane(mapSettings, paneInfo);
+	}
+	else
+		paneInfo.Show();
+	
+	m_Mgr.Update();
 }
 
 float ScenarioEditor::GetSpeedModifier()
@@ -839,7 +883,7 @@ void ScenarioEditor::NotifyOnMapReload()
 	//m_SectionLayout.OnMapReload();
 
 	// Notify observers, here so it's independent of individual panels
-	m_MapSettings.NotifyObservers();
+	//m_MapSettings.NotifyObservers();
 }
 
 bool ScenarioEditor::DiscardChangesDialog()

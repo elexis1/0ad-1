@@ -15,11 +15,8 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "precompiled.h"
-
 #include "Map.h"
 
-#include "AtlasObject/AtlasObject.h"
 #include "GameInterface/Messages.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/Tools.h"
@@ -29,7 +26,7 @@
 
 enum
 {
-	ID_MapName,
+	ID_MapName = 1,
 	ID_MapDescription,
 	ID_MapReveal,
 	ID_MapType,
@@ -82,28 +79,7 @@ private:
 	AtObj obj;
 };
 
-class MapSettingsControl : public wxPanel
-{
-public:
-	MapSettingsControl(wxWindow* parent, ScenarioEditor& scenarioEditor);
-	void CreateWidgets();
-	void ReadFromEngine();
-	void SetMapSettings(const AtObj& obj);
-	AtObj UpdateSettingsObject();
-private:
-	void SendToEngine();
-
-	void OnEdit(wxCommandEvent& WXUNUSED(evt))
-	{
-		SendToEngine();
-	}
-
-	std::set<std::wstring> m_MapSettingsKeywords;
-	std::vector<wxChoice*> m_PlayerCivChoices;
-	Observable<AtObj>& m_MapSettings;
-
-	DECLARE_EVENT_TABLE();
-};
+IMPLEMENT_DYNAMIC_CLASS(MapSettingsControl, wxPanel);
 
 BEGIN_EVENT_TABLE(MapSettingsControl, wxPanel)
 	EVT_TEXT(ID_MapName, MapSettingsControl::OnEdit)
@@ -113,71 +89,21 @@ BEGIN_EVENT_TABLE(MapSettingsControl, wxPanel)
 	EVT_CHOICE(wxID_ANY, MapSettingsControl::OnEdit)
 END_EVENT_TABLE();
 
-MapSettingsControl::MapSettingsControl(wxWindow* parent, ScenarioEditor& scenarioEditor)
-	: wxPanel(parent, wxID_ANY), m_MapSettings(scenarioEditor.GetMapSettings())
+MapSettingsControl::MapSettingsControl() : m_MapSettings(new Observable<AtObj>())
 {
-	wxStaticBoxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Map settings"));
-	SetSizer(sizer);
 }
 
-void MapSettingsControl::CreateWidgets()
+void MapSettingsControl::Init(ScenarioEditor& scenarioEditor)
 {
-	wxSizer* sizer = GetSizer();
-
-	/////////////////////////////////////////////////////////////////////////
-	// Map settings
-	wxBoxSizer* nameSizer = new wxBoxSizer(wxHORIZONTAL);
-	nameSizer->Add(new wxStaticText(this, wxID_ANY, _("Name")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL));
-	nameSizer->Add(8, 0);
-	nameSizer->Add(Tooltipped(new wxTextCtrl(this, ID_MapName),
-			_("Displayed name of the map")), wxSizerFlags().Proportion(1));
-	sizer->Add(nameSizer, wxSizerFlags().Expand());
-
-	sizer->Add(0, 2);
-
-	sizer->Add(new wxStaticText(this, wxID_ANY, _("Description")));
-	sizer->Add(Tooltipped(new wxTextCtrl(this, ID_MapDescription, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE),
-			_("Short description used on the map selection screen")), wxSizerFlags().Expand());
-
-	sizer->AddSpacer(5);
-
-	// TODO: replace by filenames in binaries/data/mods/public/simulation/data/settings/victory_conditions/
 	wxArrayString gameTypes;
 	gameTypes.Add(_T("conquest"));
 	gameTypes.Add(_T("conquest_structures"));
 	gameTypes.Add(_T("conquest_units"));
 	gameTypes.Add(_T("wonder"));
 	gameTypes.Add(_T("endless"));
-
-	wxFlexGridSizer* gridSizer = new wxFlexGridSizer(2, 5, 5);
-	gridSizer->AddGrowableCol(1);
-	// TODO: have preview selector tool?
-	gridSizer->Add(new wxStaticText(this, wxID_ANY, _("Preview")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-	gridSizer->Add(Tooltipped(new wxTextCtrl(this, ID_MapPreview, wxEmptyString),
-		_("Texture used for map preview")), wxSizerFlags().Expand());
-	gridSizer->Add(new wxStaticText(this, wxID_ANY, _("Reveal map")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-	gridSizer->Add(Tooltipped(new wxCheckBox(this, ID_MapReveal, wxEmptyString),
-		_("If checked, players won't need to explore")));
-	gridSizer->Add(new wxStaticText(this, wxID_ANY, _("Game type")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-	gridSizer->Add(Tooltipped(new wxChoice(this, ID_MapType, wxDefaultPosition, wxDefaultSize, gameTypes),
-		_("Select the game type (or victory condition)")), wxSizerFlags().Expand());
-	gridSizer->Add(new wxStaticText(this, wxID_ANY, _("Lock teams")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-	gridSizer->Add(Tooltipped(new wxCheckBox(this, ID_MapTeams, wxEmptyString),
-		_("If checked, teams will be locked")));
-	sizer->Add(gridSizer, wxSizerFlags().Expand());
-
-	sizer->AddSpacer(5);
-
-	wxStaticBoxSizer* keywordsSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Keywords"));
-	wxFlexGridSizer* kwGridSizer = new wxFlexGridSizer(4, 5, 5);
-	kwGridSizer->Add(new wxStaticText(this, wxID_ANY, _("Demo")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-	kwGridSizer->Add(Tooltipped(new wxCheckBox(this, ID_MapKW_Demo, wxEmptyString),
-		_("If checked, map will only be visible using filters in game setup")));
-	kwGridSizer->Add(new wxStaticText(this, wxID_ANY, _("Naval")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-	kwGridSizer->Add(Tooltipped(new wxCheckBox(this, ID_MapKW_Naval, wxEmptyString),
-		_("If checked, map will only be visible using filters in game setup")));
-	keywordsSizer->Add(kwGridSizer);
-	sizer->Add(keywordsSizer, wxSizerFlags().Expand());
+	
+	wxDynamicCast(FindWindow(ID_MapType), wxChoice)->Append(gameTypes);
+	ReadFromEngine();
 }
 
 void MapSettingsControl::ReadFromEngine()
@@ -187,34 +113,34 @@ void MapSettingsControl::ReadFromEngine()
 	if (!(*qry.settings).empty())
 	{
 		// Prevent error if there's no map settings to parse
-		m_MapSettings = AtlasObject::LoadFromJSON(*qry.settings);
+		*m_MapSettings = AtlasObject::LoadFromJSON(*qry.settings);
 	}
 
 	// map name
-	wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->ChangeValue(wxString(m_MapSettings["Name"]));
+	wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->ChangeValue(wxString((*m_MapSettings)["Name"]));
 
 	// map description
-	wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->ChangeValue(wxString(m_MapSettings["Description"]));
+	wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->ChangeValue(wxString((*m_MapSettings)["Description"]));
 
 	// map preview
-	wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->ChangeValue(wxString(m_MapSettings["Preview"]));
+	wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->ChangeValue(wxString((*m_MapSettings)["Preview"]));
 
 	// reveal map
-	wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->SetValue(wxString(m_MapSettings["RevealMap"]) == L"true");
+	wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->SetValue(wxString((*m_MapSettings)["RevealMap"]) == L"true");
 
 	// game type / victory conditions
-	if (m_MapSettings["GameType"].defined())
-		wxDynamicCast(FindWindow(ID_MapType), wxChoice)->SetStringSelection(wxString(m_MapSettings["GameType"]));
+	if ((*m_MapSettings)["GameType"].defined())
+		wxDynamicCast(FindWindow(ID_MapType), wxChoice)->SetStringSelection(wxString((*m_MapSettings)["GameType"]));
 	else
 		wxDynamicCast(FindWindow(ID_MapType), wxChoice)->SetSelection(0);
 
 	// lock teams
-	wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->SetValue(wxString(m_MapSettings["LockTeams"]) == L"true");
+	wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->SetValue(wxString((*m_MapSettings)["LockTeams"]) == L"true");
 
 	// keywords
 	{
 		m_MapSettingsKeywords.clear();
-		for (AtIter keyword = m_MapSettings["Keywords"]["item"]; keyword.defined(); ++keyword)
+		for (AtIter keyword = (*m_MapSettings)["Keywords"]["item"]; keyword.defined(); ++keyword)
 			m_MapSettingsKeywords.insert(std::wstring(keyword));
 
 		wxDynamicCast(FindWindow(ID_MapKW_Demo), wxCheckBox)->SetValue(m_MapSettingsKeywords.count(L"demo") != 0);
@@ -224,8 +150,8 @@ void MapSettingsControl::ReadFromEngine()
 
 void MapSettingsControl::SetMapSettings(const AtObj& obj)
 {
-	m_MapSettings = obj;
-	m_MapSettings.NotifyObservers();
+	*m_MapSettings = obj;
+	m_MapSettings->NotifyObservers();
 
 	SendToEngine();
 }
@@ -233,19 +159,19 @@ void MapSettingsControl::SetMapSettings(const AtObj& obj)
 AtObj MapSettingsControl::UpdateSettingsObject()
 {
 	// map name
-	m_MapSettings.set("Name", wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->GetValue());
+	m_MapSettings->set("Name", wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->GetValue());
 
 	// map description
-	m_MapSettings.set("Description", wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->GetValue());
+	m_MapSettings->set("Description", wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->GetValue());
 
 	// map preview
-	m_MapSettings.set("Preview", wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->GetValue());
+	m_MapSettings->set("Preview", wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->GetValue());
 
 	// reveal map
-	m_MapSettings.setBool("RevealMap", wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->GetValue());
+	m_MapSettings->setBool("RevealMap", wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->GetValue());
 
 	// game type / victory conditions
-	m_MapSettings.set("GameType", wxDynamicCast(FindWindow(ID_MapType), wxChoice)->GetStringSelection());
+	m_MapSettings->set("GameType", wxDynamicCast(FindWindow(ID_MapType), wxChoice)->GetStringSelection());
 
 	// keywords
 	{
@@ -263,20 +189,20 @@ AtObj MapSettingsControl::UpdateSettingsObject()
 		keywords.set("@array", L"");
 		for (std::set<std::wstring>::iterator it = m_MapSettingsKeywords.begin(); it != m_MapSettingsKeywords.end(); ++it)
 			keywords.add("item", it->c_str());
-		m_MapSettings.set("Keywords", keywords);
+		m_MapSettings->set("Keywords", keywords);
 	}
 
 	// teams locked
-	m_MapSettings.setBool("LockTeams", wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->GetValue());
+	m_MapSettings->setBool("LockTeams", wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->GetValue());
 
-	return m_MapSettings;
+	return *m_MapSettings;
 }
 
 void MapSettingsControl::SendToEngine()
 {
 	UpdateSettingsObject();
 
-	std::string json = AtlasObject::SaveToJSON(m_MapSettings);
+	std::string json = AtlasObject::SaveToJSON(*m_MapSettings);
 
 	// TODO: would be nice if we supported undo for settings changes
 
@@ -287,7 +213,7 @@ void MapSettingsControl::SendToEngine()
 MapSidebar::MapSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer)
 	: Sidebar(scenarioEditor, sidebarContainer, bottomBarContainer), m_SimState(SimInactive)
 {
-	m_MapSettingsCtrl = new MapSettingsControl(this, m_ScenarioEditor);
+	//m_MapSettingsCtrl = new MapSettingsControl();
 	m_MainSizer->Add(m_MapSettingsCtrl, wxSizerFlags().Expand());
 
 	{
@@ -365,7 +291,7 @@ void MapSidebar::OnCollapse(wxCollapsiblePaneEvent& WXUNUSED(evt))
 void MapSidebar::OnFirstDisplay()
 {
 	// We do this here becase messages are used which requires simulation to be init'd
-	m_MapSettingsCtrl->CreateWidgets();
+	//m_MapSettingsCtrl->CreateWidgets();
 	m_MapSettingsCtrl->ReadFromEngine();
 
 	// Load the map sizes list
@@ -560,7 +486,7 @@ void MapSidebar::OnRandomGenerate(wxCommandEvent& WXUNUSED(evt))
 
 void MapSidebar::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
 {
-	m_ScenarioEditor.SelectPage(_T("PlayerSidebar"));
+	//m_ScenarioEditor.SelectPage(_T("PlayerSidebar"));
 }
 
 BEGIN_EVENT_TABLE(MapSidebar, Sidebar)

@@ -14,12 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include "precompiled.h"
 #include "../Common/Sidebar.h"
 
+#include "AtlasObject/AtlasObject.h"
+#include "../../../General/Observable.h"
 #include "wx/collpane.h"
 
-class MapSettingsControl;
+class MapSettingsControl : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(MapSettingsControl);
+public:
+	MapSettingsControl();
+	//MapSettingsControl(wxWindow* parent, ScenarioEditor& scenarioEditor);
+	//void CreateWidgets();
+	void ReadFromEngine();
+	void SetMapSettings(const AtObj& obj);
+	AtObj UpdateSettingsObject();
+	void Init(ScenarioEditor& scenarioEditor);
+private:
+	void SendToEngine();
+	
+	void OnEdit(wxCommandEvent& WXUNUSED(evt))
+	{
+		SendToEngine();
+	}
+	
+	std::set<std::wstring> m_MapSettingsKeywords;
+	Observable<AtObj>* m_MapSettings;
+	
+	DECLARE_EVENT_TABLE();
+};
 
 class MapSidebar : public Sidebar
 {

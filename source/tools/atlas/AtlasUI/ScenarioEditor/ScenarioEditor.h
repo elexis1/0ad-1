@@ -59,6 +59,9 @@ public:
 	void OnRenderPath(wxCommandEvent& event);
 	void OnDumpState(wxCommandEvent& event);
     void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
+	void OnAuiPanelClosed(wxAuiManagerEvent& event);
+	template<typename T>
+	void UpdatePanelTool(bool show, wxString panelName, wxString xrcName);
 	
 	void OnToolbarButtons(wxCommandEvent& event);
 
@@ -73,7 +76,6 @@ public:
 	static float GetSpeedModifier();
 
 	Observable<ObjectSettings>& GetObjectSettings() { return m_ObjectSettings; }
-	Observable<AtObj>& GetMapSettings() { return m_MapSettings; }
 
 	ToolManager& GetToolManager() { return m_ToolManager; }
 
@@ -86,7 +88,6 @@ private:
 	wxTimer m_Timer;
 
 	Observable<ObjectSettings> m_ObjectSettings;
-	Observable<AtObj> m_MapSettings;
 
 	void SetOpenFilename(const wxString& filename);
 	wxString m_OpenFilename;
