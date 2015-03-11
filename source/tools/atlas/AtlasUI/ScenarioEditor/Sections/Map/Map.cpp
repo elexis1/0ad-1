@@ -253,26 +253,6 @@ MapSidebar::MapSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContaine
 
 		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
 	}
-
-	{
-		/////////////////////////////////////////////////////////////////////////
-		// Simulation buttons
-		wxStaticBoxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Simulation test"));
-		wxGridSizer* gridSizer = new wxGridSizer(5);
-		gridSizer->Add(Tooltipped(new wxButton(this, ID_SimPlay, _("Play")),
-			_("Run the simulation at normal speed")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new wxButton(this, ID_SimFast, _("Fast")),
-			_("Run the simulation at 8x speed")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new wxButton(this, ID_SimSlow, _("Slow")),
-			_("Run the simulation at 1/8x speed")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new wxButton(this, ID_SimPause, _("Pause")),
-			_("Pause the simulation")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new wxButton(this, ID_SimReset, _("Reset")),
-			_("Reset the editor to initial state")), wxSizerFlags().Expand());
-		sizer->Add(gridSizer, wxSizerFlags().Expand());
-		UpdateSimButtons();
-		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
-	}
 }
 
 void MapSidebar::OnCollapse(wxCollapsiblePaneEvent& WXUNUSED(evt))
@@ -327,104 +307,6 @@ void MapSidebar::OnFirstDisplay()
 void MapSidebar::OnMapReload()
 {
 	m_MapSettingsCtrl->ReadFromEngine();
-
-	// Reset sim test buttons
-	POST_MESSAGE(SimPlay, (0.f, false));
-	POST_MESSAGE(SimStopMusic, ());
-	POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
-	m_SimState = SimInactive;
-	UpdateSimButtons();
-}
-
-void MapSidebar::UpdateSimButtons()
-{
-	wxButton* button;
-
-	button = wxDynamicCast(FindWindow(ID_SimPlay), wxButton);
-	wxCHECK(button, );
-	button->Enable(m_SimState != SimPlaying);
-
-	button = wxDynamicCast(FindWindow(ID_SimFast), wxButton);
-	wxCHECK(button, );
-	button->Enable(m_SimState != SimPlayingFast);
-
-	button = wxDynamicCast(FindWindow(ID_SimSlow), wxButton);
-	wxCHECK(button, );
-	button->Enable(m_SimState != SimPlayingSlow);
-
-	button = wxDynamicCast(FindWindow(ID_SimPause), wxButton);
-	wxCHECK(button, );
-	button->Enable(IsPlaying(m_SimState));
-
-	button = wxDynamicCast(FindWindow(ID_SimReset), wxButton);
-	wxCHECK(button, );
-	button->Enable(m_SimState != SimInactive);
-}
-
-void MapSidebar::OnSimPlay(wxCommandEvent& event)
-{
-	float speed = 1.f;
-	int newState = SimPlaying;
-	if (event.GetId() == ID_SimFast)
-	{
-		speed = 8.f;
-		newState = SimPlayingFast;
-	}
-	else if (event.GetId() == ID_SimSlow)
-	{
-		speed = 0.125f;
-		newState = SimPlayingSlow;
-	}
-
-	if (m_SimState == SimInactive)
-	{
-		// Force update of player settings
-		POST_MESSAGE(LoadPlayerSettings, (false));
-
-		POST_MESSAGE(SimStateSave, (L"default"));
-		POST_MESSAGE(GuiSwitchPage, (L"page_session.xml"));
-		POST_MESSAGE(SimPlay, (speed, true));
-		m_SimState = newState;
-	}
-	else // paused or already playing at a different speed
-	{
-		POST_MESSAGE(SimPlay, (speed, true));
-		m_SimState = newState;
-	}
-	UpdateSimButtons();
-}
-
-void MapSidebar::OnSimPause(wxCommandEvent& WXUNUSED(event))
-{
-	if (IsPlaying(m_SimState))
-	{
-		POST_MESSAGE(SimPlay, (0.f, true));
-		m_SimState = SimPaused;
-	}
-	UpdateSimButtons();
-}
-
-void MapSidebar::OnSimReset(wxCommandEvent& WXUNUSED(event))
-{
-	if (IsPlaying(m_SimState))
-	{
-		POST_MESSAGE(SimPlay, (0.f, true));
-		POST_MESSAGE(SimStateRestore, (L"default"));
-		POST_MESSAGE(SimStopMusic, ());
-		POST_MESSAGE(SimPlay, (0.f, false));
-		POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
-		m_SimState = SimInactive;
-	}
-	else if (m_SimState == SimPaused)
-	{
-		POST_MESSAGE(SimPlay, (0.f, true));
-		POST_MESSAGE(SimStateRestore, (L"default"));
-		POST_MESSAGE(SimStopMusic, ());
-		POST_MESSAGE(SimPlay, (0.f, false));
-		POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
-		m_SimState = SimInactive;
-	}
-	UpdateSimButtons();
 }
 
 void MapSidebar::OnRandomReseed(wxCommandEvent& WXUNUSED(evt))
@@ -491,11 +373,6 @@ void MapSidebar::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
 
 BEGIN_EVENT_TABLE(MapSidebar, Sidebar)
 	EVT_COLLAPSIBLEPANE_CHANGED(wxID_ANY, MapSidebar::OnCollapse)
-	EVT_BUTTON(ID_SimPlay, MapSidebar::OnSimPlay)
-	EVT_BUTTON(ID_SimFast, MapSidebar::OnSimPlay)
-	EVT_BUTTON(ID_SimSlow, MapSidebar::OnSimPlay)
-	EVT_BUTTON(ID_SimPause, MapSidebar::OnSimPause)
-	EVT_BUTTON(ID_SimReset, MapSidebar::OnSimReset)
 	EVT_BUTTON(ID_RandomReseed, MapSidebar::OnRandomReseed)
 	EVT_BUTTON(ID_RandomGenerate, MapSidebar::OnRandomGenerate)
 	EVT_BUTTON(ID_OpenPlayerPanel, MapSidebar::OnOpenPlayerPanel)

@@ -59,6 +59,7 @@ public:
 	void OnRenderPath(wxCommandEvent& event);
 	void OnDumpState(wxCommandEvent& event);
     void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
+	void OnSimulateControls(wxCommandEvent& event);
 	void OnAuiPanelClosed(wxAuiManagerEvent& event);
 	template<typename T>
 	void UpdatePanelTool(bool show, wxString panelName, wxString xrcName);
@@ -96,7 +97,8 @@ private:
 	wxIcon m_Icon;
 	wxAuiManager  m_Mgr;
 	std::map<int, wxString> m_ToolsMap;
-
+	int m_SimState;
+	
 	DECLARE_EVENT_TABLE();
 };
 

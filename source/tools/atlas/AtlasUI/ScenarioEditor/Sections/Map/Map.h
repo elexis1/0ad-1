@@ -60,15 +60,10 @@ private:
 	MapSettingsControl* m_MapSettingsCtrl;
 
 	void OnCollapse(wxCollapsiblePaneEvent& evt);
-	void OnSimPlay(wxCommandEvent& evt);
-	void OnSimPause(wxCommandEvent& evt);
-	void OnSimReset(wxCommandEvent& evt);
 	void OnRandomReseed(wxCommandEvent& evt);
 	void OnRandomGenerate(wxCommandEvent& evt);
 	void OnOpenPlayerPanel(wxCommandEvent& evt);
-	void UpdateSimButtons();
 
-	int m_SimState;
 
 	DECLARE_EVENT_TABLE();
 };

@@ -348,8 +348,24 @@ enum
 	ID_ToolbarToolsSmooth,
 	ID_ToolbarToolsFlatten,
 	ID_ToolbarToolsPainTerrain,
-	ID_ToolbarToolsEnd
+	ID_ToolbarToolsEnd,
 	
+	ID_ToolbarSimulationBegin = 3000,
+	ID_ToolbarSimulationPlay,
+	ID_ToolbarSimulationPause,
+	ID_ToolbarSimulationStop,
+	ID_ToolbarSimulationSpeed,
+	ID_ToolbarSimulationEnd
+	
+};
+
+enum
+{
+	SimInactive,
+	SimPlaying,
+	SimPlayingFast,
+	SimPlayingSlow,
+	SimPaused
 };
 
 BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
@@ -399,6 +415,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 , m_FileHistory(_T("Scenario Editor"))
 , m_ObjectSettings(g_SelectedObjects, AtlasMessage::eRenderView::GAME)
 , m_ToolManager(this)
+, m_SimState(SimInactive)
 {
 	m_Mgr.SetManagedWindow(this);
 	
@@ -478,7 +495,10 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	 for example if you're using more than 16 colours in your tool bitmaps." */
 	wxSystemOptions::SetOption(wxT("msw.remap"), 0); // (has global effect)
 	wxToolBar* commonToolbar = wxXmlResource::Get()->LoadToolBar(this, "AppToolbar");
-	commonToolbar->Realize();
+
+	//Hide Simulation Buttons
+	commonToolbar->EnableTool(ID_ToolbarSimulationStop, false);
+	commonToolbar->EnableTool(ID_ToolbarSimulationPause, false);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Tools Stuff
@@ -585,6 +605,10 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 	{
 		UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
 	}
+	else if(event.GetId() > ID_ToolbarSimulationBegin && event.GetId() < ID_ToolbarSimulationEnd)
+	{
+		OnSimulateControls(event);
+	}
 }
 
 void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
@@ -622,6 +646,72 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 		paneInfo.Show();
 	
 	m_Mgr.Update();
+}
+
+void ScenarioEditor::OnSimulateControls(wxCommandEvent &event)
+{
+	wxToolBar* toolbar = this->GetToolBar();
+	float speed = 1.f;
+	int newSimState = SimInactive;
+	
+	if (event.GetId() == ID_ToolbarSimulationPlay)
+	{
+		//Get wxChoiceValue
+		wxChoice* speedControl = dynamic_cast<wxChoice*>(toolbar->FindControl(ID_ToolbarSimulationSpeed));
+		wxString speedSelected = speedControl->GetString(speedControl->GetSelection());
+
+		if (speedSelected == _("Normal"))
+			newSimState = SimPlaying;
+		else if (speedSelected == _("Fast"))
+		{
+			speed = 8.f;
+			newSimState = SimPlayingFast;
+		}
+		else
+		{
+			speed = 0.125f;
+			newSimState = SimPlayingSlow;
+		}
+
+		toolbar->EnableTool(ID_ToolbarSimulationStop, true);
+		toolbar->EnableTool(ID_ToolbarSimulationPause, true);
+		toolbar->EnableTool(ID_ToolbarSimulationPlay, false);
+	}
+	else if (event.GetId() == ID_ToolbarSimulationPause)
+	{
+		toolbar->EnableTool(ID_ToolbarSimulationPause, false);
+		toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
+		newSimState = SimPaused;
+		speed = 0.f;
+	}
+	else
+	{
+		toolbar->EnableTool(ID_ToolbarSimulationStop, false);
+		toolbar->EnableTool(ID_ToolbarSimulationPause, false);
+		toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
+		newSimState = SimInactive;
+	}
+	
+	if (m_SimState == SimInactive)
+	{
+		// Force update of player settings
+		POST_MESSAGE(LoadPlayerSettings, (false));
+		POST_MESSAGE(SimStateSave, (L"default"));
+		POST_MESSAGE(GuiSwitchPage, (L"page_session.xml"));
+		POST_MESSAGE(SimPlay, (speed, true));
+	}
+	else if (newSimState == SimInactive)
+	{
+		POST_MESSAGE(SimPlay, (0.f, true));
+		POST_MESSAGE(SimStateRestore, (L"default"));
+		POST_MESSAGE(SimStopMusic, ());
+		POST_MESSAGE(SimPlay, (0.f, false));
+		POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
+	}
+	else // paused or already playing at a different speed
+		POST_MESSAGE(SimPlay, (speed, true));
+	
+	m_SimState = newSimState;
 }
 
 float ScenarioEditor::GetSpeedModifier()
@@ -880,6 +970,16 @@ void ScenarioEditor::SetOpenFilename(const wxString& filename)
 
 void ScenarioEditor::NotifyOnMapReload()
 {
+	//Reset simulation
+	POST_MESSAGE(SimPlay, (0.f, false));
+	POST_MESSAGE(SimStopMusic, ());
+	POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
+	m_SimState = SimInactive;
+	
+	toolbar->EnableTool(ID_ToolbarSimulationStop, false);
+	toolbar->EnableTool(ID_ToolbarSimulationPause, false);
+	toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
+	
 	//m_SectionLayout.OnMapReload();
 
 	// Notify observers, here so it's independent of individual panels
