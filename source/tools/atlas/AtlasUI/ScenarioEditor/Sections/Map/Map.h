@@ -31,7 +31,7 @@ public:
 	void ReadFromEngine();
 	void SetMapSettings(const AtObj& obj);
 	AtObj UpdateSettingsObject();
-	void Init(ScenarioEditor& scenarioEditor);
+	void Init(ScenarioEditor* scenarioEditor);
 private:
 	void SendToEngine();
 	
@@ -46,24 +46,19 @@ private:
 	DECLARE_EVENT_TABLE();
 };
 
-class MapSidebar : public Sidebar
+class NewMapConfiguration : public wxPanel
 {
+	DECLARE_DYNAMIC_CLASS(NewMapConfiguration);
 public:
-	MapSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer);
-
-	virtual void OnMapReload();
-
-protected:
-	virtual void OnFirstDisplay();
-
+	NewMapConfiguration();
+	void Init(ScenarioEditor* scenarioEditor);
 private:
-	MapSettingsControl* m_MapSettingsCtrl;
-
-	void OnCollapse(wxCollapsiblePaneEvent& evt);
+	ScenarioEditor* m_ScenarioEditor;
+	
 	void OnRandomReseed(wxCommandEvent& evt);
-	void OnRandomGenerate(wxCommandEvent& evt);
+	void OnGenerate(wxCommandEvent& evt);
 	void OnOpenPlayerPanel(wxCommandEvent& evt);
-
-
+	void OnTypeMap(wxCommandEvent& evt);
+	
 	DECLARE_EVENT_TABLE();
 };

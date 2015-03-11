@@ -38,25 +38,9 @@ enum
 	ID_RandomSize,
 	ID_RandomSeed,
 	ID_RandomReseed,
-	ID_RandomGenerate,
-	ID_SimPlay,
-	ID_SimFast,
-	ID_SimSlow,
-	ID_SimPause,
-	ID_SimReset,
-	ID_OpenPlayerPanel
+	ID_OpenPlayerPanel,
+	ID_TypeMap
 };
-
-enum
-{
-	SimInactive,
-	SimPlaying,
-	SimPlayingFast,
-	SimPlayingSlow,
-	SimPaused
-};
-
-bool IsPlaying(int s) { return (s == SimPlaying || s == SimPlayingFast || s == SimPlayingSlow); }
 
 // TODO: Some of these helper things should be moved out of this file
 // and into shared locations
@@ -93,7 +77,7 @@ MapSettingsControl::MapSettingsControl() : m_MapSettings(new Observable<AtObj>()
 {
 }
 
-void MapSettingsControl::Init(ScenarioEditor& scenarioEditor)
+void MapSettingsControl::Init(ScenarioEditor* scenarioEditor)
 {
 	wxArrayString gameTypes;
 	gameTypes.Add(_T("conquest"));
@@ -209,71 +193,25 @@ void MapSettingsControl::SendToEngine()
 	POST_COMMAND(SetMapSettings, (json));
 }
 
+IMPLEMENT_DYNAMIC_CLASS(NewMapConfiguration, wxPanel);
 
-MapSidebar::MapSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer)
-	: Sidebar(scenarioEditor, sidebarContainer, bottomBarContainer), m_SimState(SimInactive)
+BEGIN_EVENT_TABLE(NewMapConfiguration, wxPanel)
+EVT_BUTTON(ID_RandomReseed, NewMapConfiguration::OnRandomReseed)
+EVT_BUTTON(wxID_APPLY, NewMapConfiguration::OnGenerate)
+EVT_BUTTON(ID_OpenPlayerPanel, NewMapConfiguration::OnOpenPlayerPanel)
+EVT_RADIOBOX(ID_TypeMap, NewMapConfiguration::OnTypeMap)
+END_EVENT_TABLE();
+
+
+NewMapConfiguration::NewMapConfiguration()
+	: m_ScenarioEditor(NULL)
 {
-	//m_MapSettingsCtrl = new MapSettingsControl();
-	m_MainSizer->Add(m_MapSettingsCtrl, wxSizerFlags().Expand());
-
-	{
-		/////////////////////////////////////////////////////////////////////////
-		// Random map settings
-		wxStaticBoxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Random map"));
-
-		sizer->Add(new wxChoice(this, ID_RandomScript), wxSizerFlags().Expand());
-
-		sizer->AddSpacer(5);
-
-		sizer->Add(new wxButton(this, ID_OpenPlayerPanel, _T("Change players")), wxSizerFlags().Expand());
-
-		sizer->AddSpacer(5);
-
-		wxFlexGridSizer* gridSizer = new wxFlexGridSizer(2, 5, 5);
-		gridSizer->AddGrowableCol(1);
-
-		wxChoice* sizeChoice = new wxChoice(this, ID_RandomSize);
-		gridSizer->Add(new wxStaticText(this, wxID_ANY, _("Map size")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-		gridSizer->Add(sizeChoice, wxSizerFlags().Expand());
-
-		gridSizer->Add(new wxStaticText(this, wxID_ANY, _("Random seed")), wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-		wxBoxSizer* seedSizer = new wxBoxSizer(wxHORIZONTAL);
-		seedSizer->Add(Tooltipped(new wxTextCtrl(this, ID_RandomSeed, _T("0"), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC)),
-			_("Seed value for random map")), wxSizerFlags(1).Expand());
-		seedSizer->Add(Tooltipped(new wxButton(this, ID_RandomReseed, _("R"), wxDefaultPosition, wxSize(24, -1)),
-			_("New random seed")));
-		gridSizer->Add(seedSizer, wxSizerFlags().Expand());
-
-		sizer->Add(gridSizer, wxSizerFlags().Expand());
-
-		sizer->AddSpacer(5);
-
-		sizer->Add(Tooltipped(new wxButton(this, ID_RandomGenerate, _("Generate map")),
-			_("Run selected random map script")), wxSizerFlags().Expand());
-
-		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
-	}
 }
 
-void MapSidebar::OnCollapse(wxCollapsiblePaneEvent& WXUNUSED(evt))
+void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
 {
-	Freeze();
-
-	// Toggling the collapsing doesn't seem to update the sidebar layout
-	// automatically, so do it explicitly here
-	Layout();
-
-	Refresh(); // fixes repaint glitch on Windows
-
-	Thaw();
-}
-
-void MapSidebar::OnFirstDisplay()
-{
-	// We do this here becase messages are used which requires simulation to be init'd
-	//m_MapSettingsCtrl->CreateWidgets();
-	m_MapSettingsCtrl->ReadFromEngine();
-
+	m_ScenarioEditor = scenarioEditor;
+	
 	// Load the map sizes list
 	AtlasMessage::qGetMapSizes qrySizes;
 	qrySizes.Post();
@@ -286,7 +224,7 @@ void MapSidebar::OnFirstDisplay()
 		sizeChoice->Append(wxString(s["Name"]), (void*)(intptr_t)tiles);
 	}
 	sizeChoice->SetSelection(0);
-
+	
 	// Load the RMS script list
 	AtlasMessage::qGetRMSData qry;
 	qry.Post();
@@ -300,16 +238,11 @@ void MapSidebar::OnFirstDisplay()
 		scriptChoice->Append(name, new AtObjClientData(*data["settings"]));
 	}
 	scriptChoice->SetSelection(0);
-
-	Layout();
+	
+	FindWindow(ID_RandomScript)->GetParent()->Enable(false);
 }
 
-void MapSidebar::OnMapReload()
-{
-	m_MapSettingsCtrl->ReadFromEngine();
-}
-
-void MapSidebar::OnRandomReseed(wxCommandEvent& WXUNUSED(evt))
+void NewMapConfiguration::OnRandomReseed(wxCommandEvent& WXUNUSED(evt))
 {
 	// Pick a shortish randomish value
 	wxString seed;
@@ -317,63 +250,74 @@ void MapSidebar::OnRandomReseed(wxCommandEvent& WXUNUSED(evt))
 	wxDynamicCast(FindWindow(ID_RandomSeed), wxTextCtrl)->SetValue(seed);
 }
 
-void MapSidebar::OnRandomGenerate(wxCommandEvent& WXUNUSED(evt))
+void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 {
-	if (m_ScenarioEditor.DiscardChangesDialog())
+	wxRadioBox* typeMap = dynamic_cast<wxRadioBox*>(FindWindow(ID_TypeMap));
+	int selection = typeMap->GetSelection();
+	
+	if (selection == 0)
+	{
+		if (wxMessageBox(_("Discard current map and start blank new map?"), _("New map"), wxOK|wxCANCEL|wxICON_QUESTION, this) == wxOK)
+			m_ScenarioEditor->OpenFile(_T(""), _T("maps/scenarios/_default.xml"));
+
 		return;
-
+	}
+	
+	if (m_ScenarioEditor->DiscardChangesDialog())
+		return;
+	
 	wxChoice* scriptChoice = wxDynamicCast(FindWindow(ID_RandomScript), wxChoice);
-
+	
 	if (scriptChoice->GetSelection() < 0)
 		return;
-
+	
 	// TODO: this settings thing seems a bit of a mess,
 	// since it's mixing data from three different sources
-
-	AtObj settings = m_MapSettingsCtrl->UpdateSettingsObject();
-
+	
+	AtObj settings;// = m_MapSettingsCtrl->UpdateSettingsObject();
+	
 	AtObj scriptSettings = dynamic_cast<AtObjClientData*>(scriptChoice->GetClientObject(scriptChoice->GetSelection()))->GetValue();
-
+	
 	settings.addOverlay(scriptSettings);
-
+	
 	wxChoice* sizeChoice = wxDynamicCast(FindWindow(ID_RandomSize), wxChoice);
 	wxString size;
 	size << (intptr_t)sizeChoice->GetClientData(sizeChoice->GetSelection());
 	settings.setInt("Size", wxAtoi(size));
-
+	
 	settings.setInt("Seed", wxAtoi(wxDynamicCast(FindWindow(ID_RandomSeed), wxTextCtrl)->GetValue()));
-
+	
 	std::string json = AtlasObject::SaveToJSON(settings);
-
+	
+	m_ScenarioEditor->UpdatePanelTool<NewMapConfiguration>(false, "newmap", "NewMapPanel");
 	wxBusyInfo busy(_("Generating map"));
 	wxBusyCursor busyc;
-
+	
 	wxString scriptName(settings["Script"]);
-
+	
 	// Copy the old map settings, so we don't lose them if the map generation fails
 	AtObj oldSettings = settings;
-
+	
 	AtlasMessage::qGenerateMap qry((std::wstring)scriptName.wc_str(), json);
 	qry.Post();
-
+	
 	if (qry.status < 0)
 	{
 		// Display error message and revert to old map settings
 		wxLogError(_("Random map script '%ls' failed"), scriptName.wc_str());
-		m_MapSettingsCtrl->SetMapSettings(oldSettings);
+		//m_MapSettingsCtrl->SetMapSettings(oldSettings);
 	}
-
-	m_ScenarioEditor.NotifyOnMapReload();
+	
+	m_ScenarioEditor->NotifyOnMapReload();
+	
 }
 
-void MapSidebar::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
+void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
+{
+	FindWindow(ID_RandomScript)->GetParent()->Enable(evt.GetSelection() == 1);
+}
+
+void NewMapConfiguration::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
 {
 	//m_ScenarioEditor.SelectPage(_T("PlayerSidebar"));
 }
-
-BEGIN_EVENT_TABLE(MapSidebar, Sidebar)
-	EVT_COLLAPSIBLEPANE_CHANGED(wxID_ANY, MapSidebar::OnCollapse)
-	EVT_BUTTON(ID_RandomReseed, MapSidebar::OnRandomReseed)
-	EVT_BUTTON(ID_RandomGenerate, MapSidebar::OnRandomGenerate)
-	EVT_BUTTON(ID_OpenPlayerPanel, MapSidebar::OnOpenPlayerPanel)
-END_EVENT_TABLE();

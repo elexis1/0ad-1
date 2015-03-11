@@ -559,9 +559,6 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	POST_MESSAGE(LoadMap, (_T("maps/scenarios/_default.xml")));
 	POST_MESSAGE(SimPlay, (0.f, false));
 
-	// Select the initial sidebar (after the map has loaded)
-	//m_SectionLayout.SelectPage(_T("MapSidebar"));
-
 	// Wait for blank map
 	qry.Post();
 
@@ -634,13 +631,18 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 	
 	if (!paneInfo.IsOk())
 	{
-		T* mapSettings = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
-		mapSettings->Init(*this);
-		mapSettings->SetMinSize(mapSettings->GetSize());
+		T* panel = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
+		if (!panel)
+		{
+			wxLogError(_("No XRC resourna found it"), xrcName);
+			return;
+		}
+		panel->Init(this);
+		panel->SetMinSize(panel->GetSize());
 		
-		wxAuiPaneInfo paneInfo = wxAuiPaneInfo().Name(panelName).Float().Show().MinSize(mapSettings->GetSize()).BestSize(mapSettings->GetSize());
+		wxAuiPaneInfo paneInfo = wxAuiPaneInfo().Name(panelName).Float().Show().MinSize(panel->GetSize()).BestSize(panel->GetSize());
 		
-		m_Mgr.AddPane(mapSettings, paneInfo);
+		m_Mgr.AddPane(panel, paneInfo);
 	}
 	else
 		paneInfo.Show();
@@ -806,12 +808,12 @@ void ScenarioEditor::OnPaste(wxCommandEvent& WXUNUSED(event))
 
 void ScenarioEditor::OnNew(wxCommandEvent& WXUNUSED(event))
 {
-	if (wxMessageBox(_("Discard current map and start blank new map?"), _("New map"), wxOK|wxCANCEL|wxICON_QUESTION, this) == wxOK)
-		OpenFile(_T(""), _T("maps/scenarios/_default.xml"));
+	UpdatePanelTool<NewMapConfiguration>(true, "newmap", "NewMapPanel");
 }
 
 bool ScenarioEditor::OpenFile(const wxString& name, const wxString& filename)
 {
+	UpdatePanelTool<NewMapConfiguration>(false, "newmap", "NewMapPanel");
 	wxBusyInfo busy(_("Loading ") + name);
 	wxBusyCursor busyc;
 
@@ -976,6 +978,7 @@ void ScenarioEditor::NotifyOnMapReload()
 	POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
 	m_SimState = SimInactive;
 	
+	wxToolBar* toolbar = this->GetToolBar();
 	toolbar->EnableTool(ID_ToolbarSimulationStop, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPause, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
