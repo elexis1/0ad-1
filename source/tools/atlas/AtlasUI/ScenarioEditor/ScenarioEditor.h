@@ -64,6 +64,8 @@ public:
 	template<typename T>
 	void UpdatePanelTool(bool show, wxString panelName, wxString xrcName);
 	
+	void UpdateNewMapPanel(bool show);
+	
 	void OnToolbarButtons(wxCommandEvent& event);
 
     void OnMenuOpen(wxMenuEvent& event);

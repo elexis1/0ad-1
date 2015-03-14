@@ -650,6 +650,11 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 	m_Mgr.Update();
 }
 
+void ScenarioEditor::UpdateNewMapPanel(bool show)
+{
+	UpdatePanelTool<NewMapConfiguration>(show, "newmap", "NewMapPanel");
+}
+
 void ScenarioEditor::OnSimulateControls(wxCommandEvent &event)
 {
 	wxToolBar* toolbar = this->GetToolBar();
@@ -808,12 +813,12 @@ void ScenarioEditor::OnPaste(wxCommandEvent& WXUNUSED(event))
 
 void ScenarioEditor::OnNew(wxCommandEvent& WXUNUSED(event))
 {
-	UpdatePanelTool<NewMapConfiguration>(true, "newmap", "NewMapPanel");
+	UpdateNewMapPanel(true);
 }
 
 bool ScenarioEditor::OpenFile(const wxString& name, const wxString& filename)
 {
-	UpdatePanelTool<NewMapConfiguration>(false, "newmap", "NewMapPanel");
+	UpdateNewMapPanel(false);
 	wxBusyInfo busy(_("Loading ") + name);
 	wxBusyCursor busyc;
 

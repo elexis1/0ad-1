@@ -289,7 +289,7 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 	
 	std::string json = AtlasObject::SaveToJSON(settings);
 	
-	m_ScenarioEditor->UpdatePanelTool<NewMapConfiguration>(false, "newmap", "NewMapPanel");
+	m_ScenarioEditor->UpdateNewMapPanel(false);
 	wxBusyInfo busy(_("Generating map"));
 	wxBusyCursor busyc;
 	
