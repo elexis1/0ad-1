@@ -85,7 +85,7 @@ void MapSettingsControl::Init(ScenarioEditor* scenarioEditor)
 	gameTypes.Add(_T("conquest_units"));
 	gameTypes.Add(_T("wonder"));
 	gameTypes.Add(_T("endless"));
-	
+
 	wxDynamicCast(FindWindow(ID_MapType), wxChoice)->Append(gameTypes);
 	ReadFromEngine();
 }
@@ -211,7 +211,7 @@ NewMapConfiguration::NewMapConfiguration()
 void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
 {
 	m_ScenarioEditor = scenarioEditor;
-	
+
 	// Load the map sizes list
 	AtlasMessage::qGetMapSizes qrySizes;
 	qrySizes.Post();
@@ -224,7 +224,7 @@ void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
 		sizeChoice->Append(wxString(s["Name"]), (void*)(intptr_t)tiles);
 	}
 	sizeChoice->SetSelection(0);
-	
+
 	// Load the RMS script list
 	AtlasMessage::qGetRMSData qry;
 	qry.Post();
@@ -238,8 +238,11 @@ void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
 		scriptChoice->Append(name, new AtObjClientData(*data["settings"]));
 	}
 	scriptChoice->SetSelection(0);
-	
+
 	FindWindow(ID_RandomScript)->GetParent()->Enable(false);
+
+	//Load Player Configuration
+	m_ScenarioEditor->GetPlayerSettingsCtrl();
 }
 
 void NewMapConfiguration::OnRandomReseed(wxCommandEvent& WXUNUSED(evt))
@@ -254,62 +257,72 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 {
 	wxRadioBox* typeMap = dynamic_cast<wxRadioBox*>(FindWindow(ID_TypeMap));
 	int selection = typeMap->GetSelection();
-	
-	if (selection == 0)
-	{
-		if (wxMessageBox(_("Discard current map and start blank new map?"), _("New map"), wxOK|wxCANCEL|wxICON_QUESTION, this) == wxOK)
-			m_ScenarioEditor->OpenFile(_T(""), _T("maps/scenarios/_default.xml"));
 
+
+	if ((selection == 0 && !(!m_ScenarioEditor->GetCommandProc().IsDirty() || wxMessageBox(_("Discard current map and start blank new map?"), _("New map"), wxOK|wxCANCEL|wxICON_QUESTION, this) == wxOK))
+		|| (selection > 0 && m_ScenarioEditor->DiscardChangesDialog()))
+	{
+		m_ScenarioEditor->UpdateNewMapPanel(false);
 		return;
 	}
-	
-	if (m_ScenarioEditor->DiscardChangesDialog())
-		return;
-	
+
 	wxChoice* scriptChoice = wxDynamicCast(FindWindow(ID_RandomScript), wxChoice);
-	
+
+	if (selection == 0)
+	{
+		for (size_t j = 0; j < scriptChoice->GetCount(); ++j)
+		{
+			wxString name = scriptChoice->GetString(j);
+			if (name == "Blank")
+			{
+				scriptChoice->SetSelection(j);
+				break;
+			}
+		}
+	}
+
 	if (scriptChoice->GetSelection() < 0)
 		return;
-	
+
 	// TODO: this settings thing seems a bit of a mess,
 	// since it's mixing data from three different sources
-	
-	AtObj settings;// = m_MapSettingsCtrl->UpdateSettingsObject();
-	
+
+	AtObj settings = m_ScenarioEditor->GetPlayerSettingsCtrl()->UpdateSettingsObject();
+
 	AtObj scriptSettings = dynamic_cast<AtObjClientData*>(scriptChoice->GetClientObject(scriptChoice->GetSelection()))->GetValue();
-	
+
 	settings.addOverlay(scriptSettings);
-	
+
 	wxChoice* sizeChoice = wxDynamicCast(FindWindow(ID_RandomSize), wxChoice);
 	wxString size;
 	size << (intptr_t)sizeChoice->GetClientData(sizeChoice->GetSelection());
 	settings.setInt("Size", wxAtoi(size));
-	
+
 	settings.setInt("Seed", wxAtoi(wxDynamicCast(FindWindow(ID_RandomSeed), wxTextCtrl)->GetValue()));
-	
+
 	std::string json = AtlasObject::SaveToJSON(settings);
-	
+
 	m_ScenarioEditor->UpdateNewMapPanel(false);
 	wxBusyInfo busy(_("Generating map"));
 	wxBusyCursor busyc;
-	
+
 	wxString scriptName(settings["Script"]);
-	
+
 	// Copy the old map settings, so we don't lose them if the map generation fails
 	AtObj oldSettings = settings;
-	
+
 	AtlasMessage::qGenerateMap qry((std::wstring)scriptName.wc_str(), json);
 	qry.Post();
-	
+
 	if (qry.status < 0)
 	{
 		// Display error message and revert to old map settings
 		wxLogError(_("Random map script '%ls' failed"), scriptName.wc_str());
 		//m_MapSettingsCtrl->SetMapSettings(oldSettings);
 	}
-	
+
 	m_ScenarioEditor->NotifyOnMapReload();
-	
+	scriptChoice->SetSelection(0);
 }
 
 void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
@@ -319,5 +332,5 @@ void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
 
 void NewMapConfiguration::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
 {
-	//m_ScenarioEditor.SelectPage(_T("PlayerSidebar"));
+	m_ScenarioEditor->UpdatePlayerPanel(true);
 }

@@ -1,0 +1,9 @@
+{
+	"settings" : {
+		"Name" : "Blank",
+		"Script" : "blank.js",
+		"BaseTerrain" : "grass1_spring",
+		"BaseHeight" : 1,
+		"CircularMap" : true
+	}
+}

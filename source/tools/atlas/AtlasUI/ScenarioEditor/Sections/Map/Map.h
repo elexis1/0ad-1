@@ -14,11 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#ifndef INCLUDED_MAP
+#define INCLUDED_MAP
+
 #include "precompiled.h"
 
 #include "AtlasObject/AtlasObject.h"
 #include "../../../General/Observable.h"
 #include "wx/collpane.h"
+#include "ScenarioEditor/ScenarioEditor.h"
 
 class MapSettingsControl : public wxPanel
 {
@@ -33,15 +38,15 @@ public:
 	void Init(ScenarioEditor* scenarioEditor);
 private:
 	void SendToEngine();
-	
+
 	void OnEdit(wxCommandEvent& WXUNUSED(evt))
 	{
 		SendToEngine();
 	}
-	
+
 	std::set<std::wstring> m_MapSettingsKeywords;
 	Observable<AtObj>* m_MapSettings;
-	
+
 	DECLARE_EVENT_TABLE();
 };
 
@@ -53,11 +58,13 @@ public:
 	void Init(ScenarioEditor* scenarioEditor);
 private:
 	ScenarioEditor* m_ScenarioEditor;
-	
+
 	void OnRandomReseed(wxCommandEvent& evt);
 	void OnGenerate(wxCommandEvent& evt);
 	void OnOpenPlayerPanel(wxCommandEvent& evt);
 	void OnTypeMap(wxCommandEvent& evt);
-	
+
 	DECLARE_EVENT_TABLE();
 };
+
+#endif

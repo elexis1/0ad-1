@@ -15,6 +15,9 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef INCLUDED_PLAYER
+#define INCLUDED_PLAYER
+
 #include "../../../General/Observable.h"
 
 #include "AtlasObject/AtlasObject.h"
@@ -36,54 +39,49 @@ class PlayerSettingsControl : public wxPanel
 public:
 	PlayerSettingsControl();
 	void Init(ScenarioEditor* scenarioEditor);
-	
+
 	void CreateWidgets();
 	void LoadDefaults();
 	void ReadFromEngine();
 	AtObj UpdateSettingsObject();
-	
+
 private:
 	void SendToEngine();
-	
+
 	void OnEdit(wxCommandEvent& WXUNUSED(evt))
 	{
 		if (!m_InGUIUpdate)
-		{
 			SendToEngine();
-		}
 	}
-	
+
 	void OnEditSpin(wxSpinEvent& WXUNUSED(evt))
 	{
 		if (!m_InGUIUpdate)
-		{
 			SendToEngine();
-		}
 	}
-	
+
 	void OnPlayerColour(wxColourPickerEvent& WXUNUSED(evt))
 	{
-		if (!m_InGUIUpdate)
-		{
-			SendToEngine();
-			
-			// Update player settings, to show new colour
-			POST_MESSAGE(LoadPlayerSettings, (false));
-		}
+		if (m_InGUIUpdate) return;
+
+		SendToEngine();
+
+		// Update player settings, to show new colour
+		POST_MESSAGE(LoadPlayerSettings, (false));
 	}
-	
+
 	void OnNumPlayersText(wxCommandEvent& WXUNUSED(evt))
 	{	// Ignore because it will also trigger EVT_SPINCTRL
 		//	and we don't want to handle the same event twice
 	}
-	
+
 	void OnNumPlayersSpin(wxSpinEvent& evt);
-	
+
 	// TODO: we shouldn't hardcode this, but instead dynamically create
 	//	new player notebook pages on demand; of course the default data
 	//	will be limited by the entries in player_defaults.json
 	static const size_t MAX_NUM_PLAYERS = 8;
-	
+
 	bool m_InGUIUpdate;
 	AtObj m_PlayerDefaults;
 	PlayerNotebook* m_Players;
@@ -91,7 +89,7 @@ private:
 	Observable<AtObj>* m_MapSettings;
 	size_t m_NumPlayers;
 	ScenarioEditor* m_ScenarioEditor;
-	
+
 	DECLARE_EVENT_TABLE();
 };
 
@@ -103,7 +101,7 @@ public:
 		: m_ID(id), m_Name(name)
 	{
 	}
-	
+
 	wxString& GetID()
 	{
 		return m_ID;
@@ -124,3 +122,5 @@ private:
 	wxString m_Name;
 };
 WX_DEFINE_SORTED_ARRAY(AIData*, ArrayOfAIData);
+
+#endif

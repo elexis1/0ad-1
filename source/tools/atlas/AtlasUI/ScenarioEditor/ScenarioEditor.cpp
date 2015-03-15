@@ -333,7 +333,7 @@ enum
 	ID_Toolbar,
 	ID_ToolbarNew,
 	ID_ToolbarOpen,
-	
+
 	ID_ToolbarOptionsBegin = 1000, //Space for 998 options
 	ID_ToolbarOptionMap,
 	ID_ToolbarOptionPlayer,
@@ -341,7 +341,7 @@ enum
 	ID_ToolbarOptionObject,
 	ID_ToolbarOptionEnvironment,
 	ID_ToolbarOptionsEnd,
-	
+
 	ID_ToolbarToolsBegin = 2000, //space for 998 tools
 	ID_ToolbarToolsSelect,
 	ID_ToolbarToolsMove,
@@ -350,14 +350,14 @@ enum
 	ID_ToolbarToolsFlatten,
 	ID_ToolbarToolsPainTerrain,
 	ID_ToolbarToolsEnd,
-	
+
 	ID_ToolbarSimulationBegin = 3000,
 	ID_ToolbarSimulationPlay,
 	ID_ToolbarSimulationPause,
 	ID_ToolbarSimulationStop,
 	ID_ToolbarSimulationSpeed,
 	ID_ToolbarSimulationEnd
-	
+
 };
 
 enum
@@ -419,11 +419,11 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 , m_SimState(SimInactive)
 {
 	m_Mgr.SetManagedWindow(this);
-	
+
 	//Load XRC
 	wxXmlResource::Get()->InitAllHandlers();
 	wxXmlResource::Get()->LoadAllFiles("AtlasUI");
-	
+
 	// Global application initialisation:
 
 	wxImage::AddHandler(new wxICOHandler);
@@ -473,12 +473,12 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 
 	wxMenuBar* menuBar = wxXmlResource::Get()->LoadMenuBar(this, "AppMenu");
 	SetMenuBar(menuBar);
-	
+
 	int index = menuBar->FindMenu(wxT("&File"));
 	wxMenu *menuFile = menuBar->GetMenu(index);
 	m_FileHistory.UseMenu(menuFile);
 	m_FileHistory.AddFilesToMenu();
-	
+
 	index = menuBar->FindMenu(wxT("&Edit"));
 	wxMenu *menuEdit =  menuBar->GetMenu(index);
 	GetCommandProc().SetEditMenu(menuEdit);
@@ -490,7 +490,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Toolbar
-	
+
 	/* "msw.remap: If 1 (the default), wxToolBar bitmap colours will be remapped
 	 to the current theme's values. Set this to 0 to disable this functionality,
 	 for example if you're using more than 16 colours in your tool bitmaps." */
@@ -509,7 +509,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	m_ToolsMap[ID_ToolbarToolsSmooth] = "SmoothElevation";
 	m_ToolsMap[ID_ToolbarToolsFlatten] = "FlattenElevation";
 	m_ToolsMap[ID_ToolbarToolsPainTerrain] = "PaintTerrain";
-	
+
 	// Set the default tool to be selected
 	m_ToolManager.SetCurrentTool(_T(""));
 
@@ -527,7 +527,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	};
 	Canvas* canvas = new GameCanvas(*this, this, glAttribList);
 	m_Mgr.AddPane(canvas, wxCENTER);
-	
+
 #if defined(__WXMSW__)
 	// The canvas' context gets made current on creation; but it can only be
 	// current for one thread at a time, and it needs to be current for the
@@ -570,7 +570,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	// else to do))
 	m_Timer.SetOwner(this);
 	m_Timer.Start(20);
-	
+
 	m_Mgr.Update();
 }
 
@@ -595,7 +595,7 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 			if (i != event.GetId())
 				toolbar->ToggleTool(i, false);
 		}
-		
+
 		wxString toolName = m_ToolsMap[event.GetId()];
 		this->m_ToolManager.SetCurrentTool(toolName);
 	}
@@ -642,7 +642,7 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 	}
 	else
 		paneInfo.Show();
-	
+
 	m_Mgr.Update();
 }
 
@@ -659,19 +659,17 @@ T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bo
 	T* panel = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
 	if (!panel)
 	{
-		wxLogError(_("No XRC resourna found it"), xrcName);
+		wxLogError(_("No XRC resource found it"), xrcName);
 		return NULL;
 	}
-	
+
 	panel->Init(this);
 	panel->SetMinSize(panel->GetSize());
-		
-	wxAuiPaneInfo newPaneInfo = wxAuiPaneInfo().Name(panelName).Dockable(false).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize());
-	if (show)
-		paneInfo.Show();
-		
+
+	wxAuiPaneInfo newPaneInfo = wxAuiPaneInfo().Name(panelName).Dockable(false).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
+
 	m_Mgr.AddPane(panel, newPaneInfo);
-	
+	m_Mgr.Update();
 	return panel;
 }
 
@@ -685,7 +683,7 @@ void ScenarioEditor::OnSimulateControls(wxCommandEvent &event)
 	wxToolBar* toolbar = this->GetToolBar();
 	float speed = 1.f;
 	int newSimState = SimInactive;
-	
+
 	if (event.GetId() == ID_ToolbarSimulationPlay)
 	{
 		//Get wxChoiceValue
@@ -723,7 +721,7 @@ void ScenarioEditor::OnSimulateControls(wxCommandEvent &event)
 		toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
 		newSimState = SimInactive;
 	}
-	
+
 	if (m_SimState == SimInactive)
 	{
 		// Force update of player settings
@@ -742,8 +740,18 @@ void ScenarioEditor::OnSimulateControls(wxCommandEvent &event)
 	}
 	else // paused or already playing at a different speed
 		POST_MESSAGE(SimPlay, (speed, true));
-	
+
 	m_SimState = newSimState;
+}
+
+PlayerSettingsControl* ScenarioEditor::GetPlayerSettingsCtrl()
+{
+	return CreateOrGetPanelTool<PlayerSettingsControl>("playersettings", "PlayerSettings");
+}
+
+void ScenarioEditor::UpdatePlayerPanel(bool show)
+{
+	UpdatePanelTool<NewMapConfiguration>(show, "playersettings", "PlayerSettings");
 }
 
 float ScenarioEditor::GetSpeedModifier()
@@ -851,7 +859,7 @@ bool ScenarioEditor::OpenFile(const wxString& name, const wxString& filename)
 	qry.Post();
 	if (!qry.exists)
 		return false;
-	
+
 	// Deactivate tools, so they don't carry forwards into the new CWorld
 	// and crash.
 	m_ToolManager.SetCurrentTool(_T(""));
@@ -907,9 +915,9 @@ void ScenarioEditor::OnImportHeightmap(wxCommandEvent& WXUNUSED(event))
 
 	if (dlg.ShowModal() != wxID_OK)
 		return;
-	
+
 	OpenFile(_T(""), _T("maps/scenarios/_default.xml"));
-	
+
 	std::wstring image(dlg.GetPath().wc_str());
 	POST_MESSAGE(ImportHeightmap, (image));
 
@@ -1007,12 +1015,12 @@ void ScenarioEditor::NotifyOnMapReload()
 	POST_MESSAGE(SimStopMusic, ());
 	POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
 	m_SimState = SimInactive;
-	
+
 	wxToolBar* toolbar = this->GetToolBar();
 	toolbar->EnableTool(ID_ToolbarSimulationStop, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPause, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
-	
+
 	CreateOrGetPanelTool<PlayerSettingsControl>("playersettings", "PlayerSettings")->ReadFromEngine();
 	//m_SectionLayout.OnMapReload();
 

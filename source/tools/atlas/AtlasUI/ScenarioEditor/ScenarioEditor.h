@@ -21,12 +21,15 @@
 #include <wx/aui/aui.h>
 #include "wx/toolbar.h"
 
+#include "CustomControls/FileHistory/FileHistory.h"
 #include "General/AtlasWindowCommandProc.h"
 #include "General/Observable.h"
+#include "SectionLayout.h"
+#include "Sections/Player/Player.h"
 #include "Tools/Common/ObjectSettings.h"
 #include "Tools/Common/Tools.h"
-#include "CustomControls/FileHistory/FileHistory.h"
-#include "SectionLayout.h"
+
+class PlayerSettingsControl;
 
 class ScenarioEditor : public wxFrame
 {
@@ -36,7 +39,7 @@ public:
 	void OnClose(wxCloseEvent& event);
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxIdleEvent& event);
-	
+
  	void OnNew(wxCommandEvent& event);
 	void OnOpen(wxCommandEvent& event);
 	void OnSave(wxCommandEvent& event);
@@ -65,9 +68,11 @@ public:
 	void UpdatePanelTool(bool show, wxString panelName, wxString xrcName);
 	template<typename T>
 	T* CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show = false);
-	
+
 	void UpdateNewMapPanel(bool show);
-	
+	void UpdatePlayerPanel(bool show);
+	PlayerSettingsControl* GetPlayerSettingsCtrl();
+
 	void OnToolbarButtons(wxCommandEvent& event);
 
     void OnMenuOpen(wxMenuEvent& event);
@@ -104,7 +109,7 @@ private:
 	wxAuiManager  m_Mgr;
 	std::map<int, wxString> m_ToolsMap;
 	int m_SimState;
-	
+
 	DECLARE_EVENT_TABLE();
 };
 

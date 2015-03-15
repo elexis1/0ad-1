@@ -47,7 +47,7 @@ enum
 	ID_CameraSet,
 	ID_CameraView,
 	ID_CameraClear,
-	
+
 	ID_PlayerName = 100,
 	ID_Civilization,
 	ID_AI,
@@ -61,48 +61,48 @@ public:
 	PlayerNotebookPage()
 	{
 	}
-	
+
 	void Init(const wxString& name, size_t playerID)
 	{
 		m_PlayerID = playerID;
 		m_Name = name;
 	}
-	
+
 	wxTextCtrl* GetNameCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_PlayerName), wxTextCtrl);
 	}
-	
+
 	wxChoice* GetCivilizationCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_Civilization), wxChoice);
 	}
-	
+
 	wxColourPickerCtrl* GetColorPickerCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_PlayerColor), wxColourPickerCtrl);
 	}
-	
+
 	wxChoice* GetAICtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_AI), wxChoice);
 	}
-	
+
 	wxSpinCtrl* GetFoodCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_PlayerFood), wxSpinCtrl);
 	}
-	
+
 	wxSpinCtrl* GetWoodCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_PlayerWood), wxSpinCtrl);
 	}
-	
+
 	wxSpinCtrl* GetMetalCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_PlayerMetal), wxSpinCtrl);
 	}
-	
+
 	wxSpinCtrl* GetStoneCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_PlayerStone), wxSpinCtrl);
@@ -112,7 +112,7 @@ public:
 	{
 		return wxDynamicCast(FindWindow(ID_PlayerFood), wxSpinCtrl);
 	}
-	
+
 	wxChoice* GetTeamCtrl()
 	{
 		return wxDynamicCast(FindWindow(ID_Team), wxChoice);
@@ -172,6 +172,32 @@ private:
 		evt.Skip();
 	}
 
+	void OnCheckChanged(wxCommandEvent& evt)
+	{
+		if (evt.GetId() == ID_DefaultName)
+			this->GetNameCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultCiv)
+			this->GetCivilizationCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultColor)
+			this->GetColorPickerCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultAI)
+			this->GetAICtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultFood)
+			this->GetFoodCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultWood)
+			this->GetWoodCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultMetal)
+			this->GetMetalCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultStone)
+			this->GetStoneCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultPop)
+			this->GetPopulationCtrl()->Enable(evt.IsChecked());
+		else if (evt.GetId() == ID_DefaultTeam)
+			this->GetTeamCtrl()->Enable(evt.IsChecked());
+
+		evt.Skip();
+	}
+
 	sCameraInfo m_Camera;
 	bool m_CameraDefined;
 	wxString m_Name;
@@ -185,6 +211,7 @@ BEGIN_EVENT_TABLE(PlayerNotebookPage, wxPanel)
 	EVT_BUTTON(ID_CameraSet, PlayerNotebookPage::OnCameraSet)
 	EVT_BUTTON(ID_CameraView, PlayerNotebookPage::OnCameraView)
 	EVT_BUTTON(ID_CameraClear, PlayerNotebookPage::OnCameraClear)
+	EVT_CHECKBOX(wxID_ANY, PlayerNotebookPage::OnCheckChanged)
 END_EVENT_TABLE();
 
 //////////////////////////////////////////////////////////////////////////
@@ -272,7 +299,7 @@ void PlayerSettingsControl::OnNumPlayersSpin(wxSpinEvent& evt)
 	if (!m_InGUIUpdate)
 	{
 		wxASSERT(evt.GetInt() > 0);
-		
+
 		// When wxMessageBox pops up, wxSpinCtrl loses focus, which
 		//	forces another EVT_SPINCTRL event, which we don't want
 		//	to handle, so we check here for a change
@@ -280,10 +307,10 @@ void PlayerSettingsControl::OnNumPlayersSpin(wxSpinEvent& evt)
 		{
 			return;	// No change
 		}
-		
+
 		size_t oldNumPlayers = m_NumPlayers;
 		m_NumPlayers = evt.GetInt();
-		
+
 		if (m_NumPlayers < oldNumPlayers)
 		{
 			// Remove players, but check if they own any entities
@@ -292,9 +319,9 @@ void PlayerSettingsControl::OnNumPlayersSpin(wxSpinEvent& evt)
 			{
 				qGetPlayerObjects objectsQry(i);
 				objectsQry.Post();
-				
+
 				std::vector<AtlasMessage::ObjectID> ids = *objectsQry.ids;
-				
+
 				if (ids.size() > 0)
 				{
 					if (!notified)
@@ -307,20 +334,20 @@ void PlayerSettingsControl::OnNumPlayersSpin(wxSpinEvent& evt)
 							wxDynamicCast(FindWindow(ID_NumPlayers), wxSpinCtrl)->SetValue(m_NumPlayers);
 							return;
 						}
-						
+
 						notified = true;
 					}
-					
+
 					// Delete objects
 					// TODO: Merge multiple commands?
 					POST_COMMAND(DeleteObjects, (ids));
 				}
 			}
 		}
-		
+
 		m_Players->ResizePlayers(m_NumPlayers);
 		SendToEngine();
-		
+
 		// Reload players, notify observers
 		POST_MESSAGE(LoadPlayerSettings, (true));
 		m_MapSettings->NotifyObservers();
@@ -330,6 +357,7 @@ void PlayerSettingsControl::OnNumPlayersSpin(wxSpinEvent& evt)
 void PlayerSettingsControl::Init(ScenarioEditor* scenarioEditor)
 {
 	m_ScenarioEditor = scenarioEditor;
+	m_MapSettings = &scenarioEditor->GetMapSettings();
 	wxSizer* sizer = this->GetSizer();
 
 	m_Players = new PlayerNotebook(this);
@@ -373,14 +401,14 @@ void PlayerSettingsControl::CreateWidgets()
 	AtIter playerDefs = m_PlayerDefaults["item"];
 	if (playerDefs.defined())
 		++playerDefs;	// Skip gaia
-	
+
 	for (size_t i = 0; i < MAX_NUM_PLAYERS; ++i)
 	{
 		// Create new player tab and get controls
 		wxString name(_("Unknown"));
 		if (playerDefs["Name"].defined())
 			name = playerDefs["Name"];
-		
+
 		PlayerNotebookPage* controls = m_Players->AddPlayer(name, i);
 		m_PlayerControls.push_back(controls);
 
@@ -456,6 +484,14 @@ void PlayerSettingsControl::ReadFromEngine()
 	if (playerDefs.defined())
 		++playerDefs;	// skip gaia
 
+	#define EmitDefineCheckbox(id) \
+		wxCommandEvent ev##id(wxEVT_CHECKBOX, id); \
+		wxCheckBox* option##id = wxDynamicCast(FindWindowById(id, controls), wxCheckBox); \
+		ev##id.SetInt(defined); \
+		option##id->SetValue(defined); \
+		option##id->GetEventHandler()->ProcessEvent(ev##id);
+
+
 	for (size_t i = 0; i < MAX_NUM_PLAYERS; ++i)
 	{
 		PlayerNotebookPage* controls = m_PlayerControls[i];
@@ -469,7 +505,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			name = wxString(playerDefs["Name"]);
 
 		controls->GetNameCtrl()->SetValue(name);
-		wxDynamicCast(FindWindowById(ID_DefaultName, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultName)
 
 		// civ
 		wxChoice* choice = controls->GetCivilizationCtrl();
@@ -483,23 +519,22 @@ void PlayerSettingsControl::ReadFromEngine()
 		for (size_t j = 0; j < choice->GetCount(); ++j)
 		{
 			wxStringClientData* str = dynamic_cast<wxStringClientData*>(choice->GetClientObject(j));
-			if (str->GetData() == civCode)
-			{
-				choice->SetSelection(j);
-				break;
-			}
+			if (str->GetData() != civCode) continue;
+
+			choice->SetSelection(j);
+			break;
 		}
-		wxDynamicCast(FindWindowById(ID_DefaultCiv, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultCiv)
 
 		// color
 		wxColor color;
 		AtObj clrObj = *player["Color"];
 		defined = clrObj.defined();
 		if (!defined)
-			clrObj = *playerDefs["Color"];
-		color = wxColor((*clrObj["r"]).getInt(), (*clrObj["g"]).getInt(), (*clrObj["b"]).getInt());
-		controls->GetColorPickerCtrl()->SetColour(color);
-		wxDynamicCast(FindWindowById(ID_DefaultColor, controls), wxCheckBox)->SetValue(defined);
+			clrObj = *playerDefs["Colur"];
+		colour = wxColor((*clrObj["r"]).getInt(), (*clrObj["g"]).getInt(), (*clrObj["b"]).getInt());
+		controls->GetColourPickerCtrl()->SetColour(color);
+		EmitDefineCheckbox(ID_DefaultColor)
 
 		// player type
 		wxString aiID;
@@ -516,16 +551,15 @@ void PlayerSettingsControl::ReadFromEngine()
 			for (size_t j = 0; j < choice->GetCount(); ++j)
 			{
 				wxStringClientData* str = dynamic_cast<wxStringClientData*>(choice->GetClientObject(j));
-				if (str->GetData() == aiID)
-				{
-					choice->SetSelection(j);
-					break;
-				}
+				if (str->GetData() != aiID) continue;
+
+				choice->SetSelection(j);
+				break;
 			}
 		}
 		else // Human
 			choice->SetSelection(0);
-		wxDynamicCast(FindWindowById(ID_DefaultAI, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultAI)
 
 		// resources
 		AtObj resObj = *player["Resources"];
@@ -534,28 +568,28 @@ void PlayerSettingsControl::ReadFromEngine()
 			controls->GetFoodCtrl()->SetValue(wxString(resObj["food"]));
 		else
 			controls->GetFoodCtrl()->SetValue(0);
-		wxDynamicCast(FindWindowById(ID_DefaultFood, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultFood)
 
 		defined = resObj.defined() && resObj["wood"].defined();
 		if (defined)
 			controls->GetWoodCtrl()->SetValue(wxString(resObj["wood"]));
 		else
 			controls->GetWoodCtrl()->SetValue(0);
-		wxDynamicCast(FindWindowById(ID_DefaultWood, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultWood)
 
 		defined = resObj.defined() && resObj["metal"].defined();
 		if (defined)
 			controls->GetMetalCtrl()->SetValue(wxString(resObj["metal"]));
 		else
 			controls->GetMetalCtrl()->SetValue(0);
-		wxDynamicCast(FindWindowById(ID_DefaultMetal, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultMetal)
 
 		defined = resObj.defined() && resObj["stone"].defined();
 		if (defined)
 			controls->GetStoneCtrl()->SetValue(wxString(resObj["stone"]));
 		else
 			controls->GetStoneCtrl()->SetValue(0);
-		wxDynamicCast(FindWindowById(ID_DefaultStone, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultStone)
 
 		// population limit
 		defined = player["PopulationLimit"].defined();
@@ -563,7 +597,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			controls->GetPopulationCtrl()->SetValue(wxString(player["PopulationLimit"]));
 		else
 			controls->GetPopulationCtrl()->SetValue(0);
-		wxDynamicCast(FindWindowById(ID_DefaultPop, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultPop)
 
 		// team
 		defined = player["Team"].defined();
@@ -571,7 +605,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			controls->GetTeamCtrl()->SetSelection((*player["Team"]).getInt() + 1);
 		else
 			controls->GetTeamCtrl()->SetSelection(0);
-		wxDynamicCast(FindWindowById(ID_DefaultTeam, controls), wxCheckBox)->SetValue(defined);
+		EmitDefineCheckbox(ID_DefaultTeam)
 
 		// camera
 		if (player["StartingCamera"].defined())
@@ -588,7 +622,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			info.rX = (float)(*camRot["x"]).getDouble();
 			info.rY = (float)(*camRot["y"]).getDouble();
 			info.rZ = (float)(*camRot["z"]).getDouble();
-			
+
 			controls->SetCamera(info, true);
 		}
 		else
@@ -601,9 +635,10 @@ void PlayerSettingsControl::ReadFromEngine()
 			++playerDefs;
 	}
 
+	#undef EmitDefineCheckbox
 	SendToEngine();
 	m_ScenarioEditor->GetCommandProc().ClearCommands();
-	
+
 	m_InGUIUpdate = false;
 }
 
@@ -702,7 +737,7 @@ AtObj PlayerSettingsControl::UpdateSettingsObject()
 
 		players.add("item", player);
 	}
-	
+
 	m_MapSettings->set("PlayerData", players);
 
 	return *m_MapSettings;
