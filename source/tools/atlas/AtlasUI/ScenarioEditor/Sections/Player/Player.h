@@ -15,53 +15,84 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../Common/Sidebar.h"
+#include "../../../General/Observable.h"
 
+#include "AtlasObject/AtlasObject.h"
 #include "GameInterface/Messages.h"
+#include "ScenarioEditor/ScenarioEditor.h"
 
+#include "wx/clrpicker.h"
 #include "wx/collpane.h"
 #include "wx/spinctrl.h"
 
 using namespace AtlasMessage;
 
+class PlayerNotebook;
 class PlayerNotebookPage;
-class PlayerSettingsControl;
 
-class PlayerSidebar : public Sidebar
+class PlayerSettingsControl : public wxPanel
 {
+	DECLARE_DYNAMIC_CLASS(PlayerSettingsControl);
 public:
-	PlayerSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer);
-
-	virtual void OnMapReload();
-
-protected:
-	virtual void OnFirstDisplay();
-
+	PlayerSettingsControl();
+	void Init(ScenarioEditor* scenarioEditor);
+	
+	void CreateWidgets();
+	void LoadDefaults();
+	void ReadFromEngine();
+	AtObj UpdateSettingsObject();
+	
 private:
-	PlayerSettingsControl* m_PlayerSettingsCtrl;
-
-	void OnCollapse(wxCollapsiblePaneEvent& evt);
-
-	bool m_Loaded;
-
+	void SendToEngine();
+	
+	void OnEdit(wxCommandEvent& WXUNUSED(evt))
+	{
+		if (!m_InGUIUpdate)
+		{
+			SendToEngine();
+		}
+	}
+	
+	void OnEditSpin(wxSpinEvent& WXUNUSED(evt))
+	{
+		if (!m_InGUIUpdate)
+		{
+			SendToEngine();
+		}
+	}
+	
+	void OnPlayerColour(wxColourPickerEvent& WXUNUSED(evt))
+	{
+		if (!m_InGUIUpdate)
+		{
+			SendToEngine();
+			
+			// Update player settings, to show new colour
+			POST_MESSAGE(LoadPlayerSettings, (false));
+		}
+	}
+	
+	void OnNumPlayersText(wxCommandEvent& WXUNUSED(evt))
+	{	// Ignore because it will also trigger EVT_SPINCTRL
+		//	and we don't want to handle the same event twice
+	}
+	
+	void OnNumPlayersSpin(wxSpinEvent& evt);
+	
+	// TODO: we shouldn't hardcode this, but instead dynamically create
+	//	new player notebook pages on demand; of course the default data
+	//	will be limited by the entries in player_defaults.json
+	static const size_t MAX_NUM_PLAYERS = 8;
+	
+	bool m_InGUIUpdate;
+	AtObj m_PlayerDefaults;
+	PlayerNotebook* m_Players;
+	std::vector<PlayerNotebookPage*> m_PlayerControls;
+	Observable<AtObj>* m_MapSettings;
+	size_t m_NumPlayers;
+	ScenarioEditor* m_ScenarioEditor;
+	
 	DECLARE_EVENT_TABLE();
-};
-
-// Controls present on each player page
-struct PlayerPageControls
-{
-	PlayerNotebookPage* page;
-
-	wxTextCtrl* name;
-	wxChoice* civ;
-	wxButton* color;
-	wxSpinCtrl* food;
-	wxSpinCtrl* wood;
-	wxSpinCtrl* stone;
-	wxSpinCtrl* metal;
-	wxSpinCtrl* pop;
-	wxChoice* team;
-	wxChoice* ai;
 };
 
 // Definitions for keeping AI data sorted

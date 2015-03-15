@@ -15,7 +15,6 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "precompiled.h"
-#include "../Common/Sidebar.h"
 
 #include "AtlasObject/AtlasObject.h"
 #include "../../../General/Observable.h"

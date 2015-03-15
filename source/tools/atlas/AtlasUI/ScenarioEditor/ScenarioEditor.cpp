@@ -50,6 +50,7 @@
 #include "Tools/Common/Brushes.h"
 #include "Tools/Common/MiscState.h"
 #include "Sections/Map/Map.h"
+#include "Sections/Player/Player.h"
 
 static HighResTimer g_Timer;
 
@@ -602,6 +603,10 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 	{
 		UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
 	}
+	else if (event.GetId() == ID_ToolbarOptionPlayer)
+	{
+		UpdatePanelTool<PlayerSettingsControl>(event.IsChecked(), "playersettings", "PlayerSettings");
+	}
 	else if(event.GetId() > ID_ToolbarSimulationBegin && event.GetId() < ID_ToolbarSimulationEnd)
 	{
 		OnSimulateControls(event);
@@ -612,6 +617,8 @@ void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
 {
 	if (event.GetPane()->name == "mapsettings")
 		this->GetToolBar()->ToggleTool(ID_ToolbarOptionMap, false);
+	else if (event.GetPane()->name == "playersettings")
+		this->GetToolBar()->ToggleTool(ID_ToolbarOptionPlayer, false);
 }
 
 template<typename T>
@@ -628,26 +635,44 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 		}
 		return;
 	}
-	
+
 	if (!paneInfo.IsOk())
 	{
-		T* panel = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
-		if (!panel)
-		{
-			wxLogError(_("No XRC resourna found it"), xrcName);
-			return;
-		}
-		panel->Init(this);
-		panel->SetMinSize(panel->GetSize());
-		
-		wxAuiPaneInfo paneInfo = wxAuiPaneInfo().Name(panelName).Float().Show().MinSize(panel->GetSize()).BestSize(panel->GetSize());
-		
-		m_Mgr.AddPane(panel, paneInfo);
+		CreateOrGetPanelTool<T>(panelName, xrcName, true);
 	}
 	else
 		paneInfo.Show();
 	
 	m_Mgr.Update();
+}
+
+template<typename T>
+T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show)
+{
+	static_assert(std::is_base_of<wxPanel, T>::value, "T must extend wxPanel");
+	wxAuiPaneInfo& paneInfo = m_Mgr.GetPane(panelName);
+	if (paneInfo.IsOk())
+	{
+		return static_cast<T*>(paneInfo.window);
+	}
+
+	T* panel = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
+	if (!panel)
+	{
+		wxLogError(_("No XRC resourna found it"), xrcName);
+		return NULL;
+	}
+	
+	panel->Init(this);
+	panel->SetMinSize(panel->GetSize());
+		
+	wxAuiPaneInfo newPaneInfo = wxAuiPaneInfo().Name(panelName).Dockable(false).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize());
+	if (show)
+		paneInfo.Show();
+		
+	m_Mgr.AddPane(panel, newPaneInfo);
+	
+	return panel;
 }
 
 void ScenarioEditor::UpdateNewMapPanel(bool show)
@@ -988,6 +1013,7 @@ void ScenarioEditor::NotifyOnMapReload()
 	toolbar->EnableTool(ID_ToolbarSimulationPause, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
 	
+	CreateOrGetPanelTool<PlayerSettingsControl>("playersettings", "PlayerSettings")->ReadFromEngine();
 	//m_SectionLayout.OnMapReload();
 
 	// Notify observers, here so it's independent of individual panels
