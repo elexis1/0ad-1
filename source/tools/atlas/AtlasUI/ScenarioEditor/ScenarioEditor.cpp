@@ -27,6 +27,7 @@
 #include "wx/ffile.h"
 #include "wx/filename.h"
 #include "wx/image.h"
+#include "wx/stdpaths.h""
 #include "wx/sstream.h"
 #include "wx/sysopt.h"
 #include "wx/tooltip.h"
@@ -421,6 +422,10 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	m_Mgr.SetManagedWindow(this);
 
 	//Load XRC
+#if defined(__WXMSW__)
+	wxString path = wxStandardPaths::Get().GetExecutablePath().BeforeLast('\\');
+	wxSetWorkingDirectory(path);
+#endif
 	wxXmlResource::Get()->InitAllHandlers();
 	wxXmlResource::Get()->LoadAllFiles("AtlasUI");
 
@@ -665,8 +670,9 @@ T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bo
 
 	panel->Init(this);
 	panel->SetMinSize(panel->GetSize());
+	panel->Layout();
 
-	wxAuiPaneInfo newPaneInfo = wxAuiPaneInfo().Name(panelName).Dockable(false).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
+	wxAuiPaneInfo newPaneInfo = wxAuiPaneInfo().Name(panelName).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
 
 	m_Mgr.AddPane(panel, newPaneInfo);
 	m_Mgr.Update();

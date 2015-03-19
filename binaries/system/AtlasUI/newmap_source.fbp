@@ -42,7 +42,7 @@
             <property name="minimum_size">394,302</property>
             <property name="name">NewMapPanel</property>
             <property name="pos"></property>
-            <property name="size">394,353</property>
+            <property name="size">414,320</property>
             <property name="subclass">NewMapConfiguration; </property>
             <property name="tooltip"></property>
             <property name="window_extra_style"></property>
@@ -104,7 +104,7 @@
                         <property name="caption"></property>
                         <property name="caption_visible">1</property>
                         <property name="center_pane">0</property>
-                        <property name="choices">&quot;Empty&quot; &quot;Random&quot; &quot;Import heightmap&quot;</property>
+                        <property name="choices">&quot;Empty&quot; &quot;Random&quot; &quot;Heightmap&quot;</property>
                         <property name="close_button">1</property>
                         <property name="context_help"></property>
                         <property name="context_menu">1</property>
@@ -120,7 +120,7 @@
                         <property name="hidden">0</property>
                         <property name="id">wxID_ANY</property>
                         <property name="label">What kind of map?</property>
-                        <property name="majorDimension">2</property>
+                        <property name="majorDimension">1</property>
                         <property name="max_size"></property>
                         <property name="maximize_button">0</property>
                         <property name="maximum_size"></property>
@@ -370,7 +370,7 @@
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">0</property>
-                    <object class="wxStaticBoxSizer" expanded="0">
+                    <object class="wxStaticBoxSizer" expanded="1">
                         <property name="id">wxID_ANY</property>
                         <property name="label">Random map configurations</property>
                         <property name="minimum_size"></property>
@@ -761,8 +761,8 @@
                 </object>
                 <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
-                    <property name="flag">wxEXPAND</property>
-                    <property name="proportion">1</property>
+                    <property name="flag">wxBOTTOM|wxEXPAND</property>
+                    <property name="proportion">0</property>
                     <object class="wxStdDialogButtonSizer" expanded="0">
                         <property name="Apply">1</property>
                         <property name="Cancel">1</property>

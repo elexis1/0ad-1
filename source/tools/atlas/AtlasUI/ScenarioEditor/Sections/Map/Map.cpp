@@ -15,6 +15,7 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "precompiled.h"
 #include "Map.h"
 
 #include "GameInterface/Messages.h"
@@ -239,7 +240,8 @@ void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
 	}
 	scriptChoice->SetSelection(0);
 
-	FindWindow(ID_RandomScript)->GetParent()->Enable(false);
+	FindWindow(ID_RandomScript)->GetParent()->Show(false);
+	FindWindow(ID_RandomScript)->GetParent()->Layout();
 
 	//Load Player Configuration
 	m_ScenarioEditor->GetPlayerSettingsCtrl();
@@ -327,7 +329,8 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 
 void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
 {
-	FindWindow(ID_RandomScript)->GetParent()->Enable(evt.GetSelection() == 1);
+	FindWindow(ID_RandomScript)->GetParent()->Show(evt.GetSelection() == 1);
+	this->Layout();
 }
 
 void NewMapConfiguration::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
