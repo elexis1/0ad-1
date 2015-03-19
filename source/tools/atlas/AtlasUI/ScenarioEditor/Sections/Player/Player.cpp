@@ -484,13 +484,14 @@ void PlayerSettingsControl::ReadFromEngine()
 	if (playerDefs.defined())
 		++playerDefs;	// skip gaia
 
-	#define EmitDefineCheckbox(id) \
-		wxCommandEvent ev##id(wxEVT_CHECKBOX, id); \
-		wxCheckBox* option##id = wxDynamicCast(FindWindowById(id, controls), wxCheckBox); \
-		ev##id.SetInt(defined); \
-		option##id->SetValue(defined); \
-		option##id->GetEventHandler()->ProcessEvent(ev##id);
-
+	#define EmitDefineCheckbox(id)\
+	do {\
+		wxCommandEvent evid(wxEVT_CHECKBOX, id); \
+		wxCheckBox* optionid = wxDynamicCast(FindWindowById(id, controls), wxCheckBox); \
+		evid.SetInt(defined); \
+		optionid->SetValue(defined); \
+		optionid->GetEventHandler()->ProcessEvent(evid);\
+	} while(false)
 
 	for (size_t i = 0; i < MAX_NUM_PLAYERS; ++i)
 	{
@@ -505,7 +506,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			name = wxString(playerDefs["Name"]);
 
 		controls->GetNameCtrl()->SetValue(name);
-		EmitDefineCheckbox(ID_DefaultName)
+		EmitDefineCheckbox(ID_DefaultName);
 
 		// civ
 		wxChoice* choice = controls->GetCivilizationCtrl();
@@ -524,7 +525,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			choice->SetSelection(j);
 			break;
 		}
-		EmitDefineCheckbox(ID_DefaultCiv)
+		EmitDefineCheckbox(ID_DefaultCiv);
 
 		// color
 		wxColor color;
@@ -532,9 +533,9 @@ void PlayerSettingsControl::ReadFromEngine()
 		defined = clrObj.defined();
 		if (!defined)
 			clrObj = *playerDefs["Colur"];
-		colour = wxColor((*clrObj["r"]).getInt(), (*clrObj["g"]).getInt(), (*clrObj["b"]).getInt());
-		controls->GetColourPickerCtrl()->SetColour(color);
-		EmitDefineCheckbox(ID_DefaultColor)
+		color = wxColor((*clrObj["r"]).getInt(), (*clrObj["g"]).getInt(), (*clrObj["b"]).getInt());
+		controls->GetColorPickerCtrl()->SetColour(color);
+		EmitDefineCheckbox(ID_DefaultColor);
 
 		// player type
 		wxString aiID;
@@ -559,7 +560,7 @@ void PlayerSettingsControl::ReadFromEngine()
 		}
 		else // Human
 			choice->SetSelection(0);
-		EmitDefineCheckbox(ID_DefaultAI)
+		EmitDefineCheckbox(ID_DefaultAI);
 
 		// resources
 		AtObj resObj = *player["Resources"];
@@ -568,28 +569,28 @@ void PlayerSettingsControl::ReadFromEngine()
 			controls->GetFoodCtrl()->SetValue(wxString(resObj["food"]));
 		else
 			controls->GetFoodCtrl()->SetValue(0);
-		EmitDefineCheckbox(ID_DefaultFood)
+		EmitDefineCheckbox(ID_DefaultFood);
 
 		defined = resObj.defined() && resObj["wood"].defined();
 		if (defined)
 			controls->GetWoodCtrl()->SetValue(wxString(resObj["wood"]));
 		else
 			controls->GetWoodCtrl()->SetValue(0);
-		EmitDefineCheckbox(ID_DefaultWood)
+		EmitDefineCheckbox(ID_DefaultWood);
 
 		defined = resObj.defined() && resObj["metal"].defined();
 		if (defined)
 			controls->GetMetalCtrl()->SetValue(wxString(resObj["metal"]));
 		else
 			controls->GetMetalCtrl()->SetValue(0);
-		EmitDefineCheckbox(ID_DefaultMetal)
+		EmitDefineCheckbox(ID_DefaultMetal);
 
 		defined = resObj.defined() && resObj["stone"].defined();
 		if (defined)
 			controls->GetStoneCtrl()->SetValue(wxString(resObj["stone"]));
 		else
 			controls->GetStoneCtrl()->SetValue(0);
-		EmitDefineCheckbox(ID_DefaultStone)
+		EmitDefineCheckbox(ID_DefaultStone);
 
 		// population limit
 		defined = player["PopulationLimit"].defined();
@@ -597,7 +598,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			controls->GetPopulationCtrl()->SetValue(wxString(player["PopulationLimit"]));
 		else
 			controls->GetPopulationCtrl()->SetValue(0);
-		EmitDefineCheckbox(ID_DefaultPop)
+		EmitDefineCheckbox(ID_DefaultPop);
 
 		// team
 		defined = player["Team"].defined();
@@ -605,7 +606,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			controls->GetTeamCtrl()->SetSelection((*player["Team"]).getInt() + 1);
 		else
 			controls->GetTeamCtrl()->SetSelection(0);
-		EmitDefineCheckbox(ID_DefaultTeam)
+		EmitDefineCheckbox(ID_DefaultTeam);
 
 		// camera
 		if (player["StartingCamera"].defined())
