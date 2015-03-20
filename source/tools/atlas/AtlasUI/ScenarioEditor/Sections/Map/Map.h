@@ -58,6 +58,7 @@ public:
 	void Init(ScenarioEditor* scenarioEditor);
 private:
 	ScenarioEditor* m_ScenarioEditor;
+	bool m_openPlayerPanel;
 
 	void OnRandomReseed(wxCommandEvent& evt);
 	void OnGenerate(wxCommandEvent& evt);

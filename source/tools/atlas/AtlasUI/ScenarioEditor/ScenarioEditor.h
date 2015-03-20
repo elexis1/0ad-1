@@ -91,6 +91,8 @@ public:
 	ToolManager& GetToolManager() { return m_ToolManager; }
 
 	bool DiscardChangesDialog();
+	
+	void SetOpenFilename(const wxString& filename);
 
 private:
 
@@ -101,7 +103,6 @@ private:
 	Observable<ObjectSettings> m_ObjectSettings;
 	Observable<AtObj> m_MapSettings;
 
-	void SetOpenFilename(const wxString& filename);
 	wxString m_OpenFilename;
 	FileHistory m_FileHistory;
 

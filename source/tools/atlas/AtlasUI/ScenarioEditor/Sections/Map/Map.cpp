@@ -258,19 +258,22 @@ void NewMapConfiguration::OnRandomReseed(wxCommandEvent& WXUNUSED(evt))
 void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 {
 	wxRadioBox* typeMap = dynamic_cast<wxRadioBox*>(FindWindow(ID_TypeMap));
+	std::wstring* image = NULL;
 	int selection = typeMap->GetSelection();
 
 
 	if ((selection == 0 && !(!m_ScenarioEditor->GetCommandProc().IsDirty() || wxMessageBox(_("Discard current map and start blank new map?"), _("New map"), wxOK|wxCANCEL|wxICON_QUESTION, this) == wxOK))
 		|| (selection > 0 && m_ScenarioEditor->DiscardChangesDialog()))
 	{
+		if (m_openPlayerPanel)
+			m_ScenarioEditor->UpdatePlayerPanel(false);
 		m_ScenarioEditor->UpdateNewMapPanel(false);
 		return;
 	}
 
 	wxChoice* scriptChoice = wxDynamicCast(FindWindow(ID_RandomScript), wxChoice);
 
-	if (selection == 0)
+	if (selection != 1)
 	{
 		for (size_t j = 0; j < scriptChoice->GetCount(); ++j)
 		{
@@ -281,6 +284,26 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 				break;
 			}
 		}
+	}
+
+	if (selection == 2)
+	{
+		wxFileDialog dlg (NULL, wxFileSelectorPromptStr,
+						  _T(""), _T(""),
+						  _T("Valid Image files|*.png;*.jpg;*.bmp|All files (*.*)|*.*"),
+						  wxFD_OPEN);
+		// Set default filter
+		dlg.SetFilterIndex(0);
+
+		if (dlg.ShowModal() != wxID_OK)
+		{
+			if (m_openPlayerPanel)
+				m_ScenarioEditor->UpdatePlayerPanel(false);
+			m_ScenarioEditor->UpdateNewMapPanel(false);
+			return;
+		}
+		
+		image = new std::wstring(dlg.GetPath().wc_str());
 	}
 
 	if (scriptChoice->GetSelection() < 0)
@@ -304,6 +327,8 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 
 	std::string json = AtlasObject::SaveToJSON(settings);
 
+	if (m_openPlayerPanel)
+		m_ScenarioEditor->UpdatePlayerPanel(false);
 	m_ScenarioEditor->UpdateNewMapPanel(false);
 	wxBusyInfo busy(_("Generating map"));
 	wxBusyCursor busyc;
@@ -323,8 +348,16 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 		//m_MapSettingsCtrl->SetMapSettings(oldSettings);
 	}
 
+	if (selection == 2)
+	{
+		//Import HeighMap
+		POST_MESSAGE(ImportHeightmap, (*image));
+	}
+
+	m_ScenarioEditor->SetOpenFilename(_T(""));
 	m_ScenarioEditor->NotifyOnMapReload();
 	scriptChoice->SetSelection(0);
+	sizeChoice->SetSelection(0);
 }
 
 void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
@@ -336,4 +369,5 @@ void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
 void NewMapConfiguration::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
 {
 	m_ScenarioEditor->UpdatePlayerPanel(true);
+	m_openPlayerPanel = true;
 }
