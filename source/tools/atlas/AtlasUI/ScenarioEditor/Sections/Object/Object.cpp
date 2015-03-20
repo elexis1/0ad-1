@@ -186,6 +186,10 @@ void ObjectSidebar::OnToolChange(ITool* tool)
 		p->ActorViewerPostToGame();
 		wxDynamicCast(FindWindow(ID_ToggleViewer), wxButton)->SetLabel(_("Return to game view"));
 	}
+	else if (tool->GetClassInfo()->GetClassName() != _T("PlaceObject"))
+	{
+		p->m_ObjectListBox->SetSelection(wxNOT_FOUND);
+	}
 	else
 	{
 		p->m_ActorViewerActive = false;

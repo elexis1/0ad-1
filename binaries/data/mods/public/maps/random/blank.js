@@ -2,6 +2,7 @@
 
 RMS.LoadLibrary("rmgen");
 
+setWaterHeight(5);
 InitMap();
 
 // Export map data
