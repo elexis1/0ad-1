@@ -40,7 +40,9 @@ enum
 	ID_RandomSeed,
 	ID_RandomReseed,
 	ID_OpenPlayerPanel,
-	ID_TypeMap
+	ID_TypeMap,
+	ID_ChooseImage,
+	ID_Image
 };
 
 // TODO: Some of these helper things should be moved out of this file
@@ -200,12 +202,13 @@ BEGIN_EVENT_TABLE(NewMapConfiguration, wxPanel)
 EVT_BUTTON(ID_RandomReseed, NewMapConfiguration::OnRandomReseed)
 EVT_BUTTON(wxID_APPLY, NewMapConfiguration::OnGenerate)
 EVT_BUTTON(ID_OpenPlayerPanel, NewMapConfiguration::OnOpenPlayerPanel)
+EVT_BUTTON(ID_ChooseImage, NewMapConfiguration::OnChooseImage)
 EVT_RADIOBOX(ID_TypeMap, NewMapConfiguration::OnTypeMap)
 END_EVENT_TABLE();
 
 
 NewMapConfiguration::NewMapConfiguration()
-	: m_ScenarioEditor(NULL)
+	: m_ScenarioEditor(NULL), m_Image(NULL)
 {
 }
 
@@ -240,6 +243,8 @@ void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
 	}
 	scriptChoice->SetSelection(0);
 
+	FindWindow(ID_OpenPlayerPanel)->Show(false);
+	FindWindow(ID_ChooseImage)->GetParent()->Show(false);
 	FindWindow(ID_RandomScript)->GetParent()->Show(false);
 	FindWindow(ID_RandomScript)->GetParent()->Layout();
 
@@ -258,14 +263,18 @@ void NewMapConfiguration::OnRandomReseed(wxCommandEvent& WXUNUSED(evt))
 void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 {
 	wxRadioBox* typeMap = dynamic_cast<wxRadioBox*>(FindWindow(ID_TypeMap));
-	std::wstring* image = NULL;
 	int selection = typeMap->GetSelection();
 
+	if (selection == 2 && (m_Image == NULL || *m_Image == ""))
+	{
+		wxMessageBox(_("Please select an image to apply"));
+		return;
+	}
 
 	if ((selection == 0 && !(!m_ScenarioEditor->GetCommandProc().IsDirty() || wxMessageBox(_("Discard current map and start blank new map?"), _("New map"), wxOK|wxCANCEL|wxICON_QUESTION, this) == wxOK))
 		|| (selection > 0 && m_ScenarioEditor->DiscardChangesDialog()))
 	{
-		if (m_openPlayerPanel)
+		if (m_OpenPlayerPanel)
 			m_ScenarioEditor->UpdatePlayerPanel(false);
 		m_ScenarioEditor->UpdateNewMapPanel(false);
 		return;
@@ -284,26 +293,6 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 				break;
 			}
 		}
-	}
-
-	if (selection == 2)
-	{
-		wxFileDialog dlg (NULL, wxFileSelectorPromptStr,
-						  _T(""), _T(""),
-						  _T("Valid Image files|*.png;*.jpg;*.bmp|All files (*.*)|*.*"),
-						  wxFD_OPEN);
-		// Set default filter
-		dlg.SetFilterIndex(0);
-
-		if (dlg.ShowModal() != wxID_OK)
-		{
-			if (m_openPlayerPanel)
-				m_ScenarioEditor->UpdatePlayerPanel(false);
-			m_ScenarioEditor->UpdateNewMapPanel(false);
-			return;
-		}
-		
-		image = new std::wstring(dlg.GetPath().wc_str());
 	}
 
 	if (scriptChoice->GetSelection() < 0)
@@ -327,7 +316,7 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 
 	std::string json = AtlasObject::SaveToJSON(settings);
 
-	if (m_openPlayerPanel)
+	if (m_OpenPlayerPanel)
 		m_ScenarioEditor->UpdatePlayerPanel(false);
 	m_ScenarioEditor->UpdateNewMapPanel(false);
 	wxBusyInfo busy(_("Generating map"));
@@ -351,17 +340,21 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 	if (selection == 2)
 	{
 		//Import HeighMap
-		POST_MESSAGE(ImportHeightmap, (*image));
+		POST_MESSAGE(ImportHeightmap, (*m_Image));
 	}
 
 	m_ScenarioEditor->SetOpenFilename(_T(""));
 	m_ScenarioEditor->NotifyOnMapReload();
+	m_Image = NULL;
+	wxDynamicCast(FindWindow(ID_Image), wxStaticText)->SetLabel("");
 	scriptChoice->SetSelection(0);
 	sizeChoice->SetSelection(0);
 }
 
 void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
 {
+	FindWindow(ID_ChooseImage)->GetParent()->Show(evt.GetSelection() == 2);
+	FindWindow(ID_OpenPlayerPanel)->Show(evt.GetSelection() == 1);
 	FindWindow(ID_RandomScript)->GetParent()->Show(evt.GetSelection() == 1);
 	this->Layout();
 }
@@ -369,5 +362,25 @@ void NewMapConfiguration::OnTypeMap(wxCommandEvent& evt)
 void NewMapConfiguration::OnOpenPlayerPanel(wxCommandEvent& WXUNUSED(evt))
 {
 	m_ScenarioEditor->UpdatePlayerPanel(true);
-	m_openPlayerPanel = true;
+	m_OpenPlayerPanel = true;
+}
+
+void NewMapConfiguration::OnChooseImage(wxCommandEvent& WXUNUSED(evt))
+{
+	wxFileDialog dlg (NULL, wxFileSelectorPromptStr,
+					  _T(""), _T(""),
+					  _T("Valid Image files|*.png;*.jpg;*.bmp|All files (*.*)|*.*"),
+					  wxFD_OPEN);
+	// Set default filter
+	dlg.SetFilterIndex(0);
+	
+	if (dlg.ShowModal() != wxID_OK)
+	{
+		wxDynamicCast(FindWindow(ID_Image), wxStaticText)->SetLabel("");
+		m_Image = NULL;
+		return;
+	}
+	
+	m_Image = new std::wstring(dlg.GetPath().wc_str());
+	wxDynamicCast(FindWindow(ID_Image), wxStaticText)->SetLabel(dlg.GetPath());
 }

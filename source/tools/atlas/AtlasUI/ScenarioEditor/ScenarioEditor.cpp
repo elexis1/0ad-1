@@ -672,7 +672,7 @@ T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bo
 	panel->SetMinSize(panel->GetSize());
 	panel->Layout();
 
-	wxAuiPaneInfo newPaneInfo = wxAuiPaneInfo().Name(panelName).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
+	wxAuiPaneInfo& newPaneInfo = wxAuiPaneInfo().Name(panelName).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
 
 	m_Mgr.AddPane(panel, newPaneInfo);
 	m_Mgr.Update();

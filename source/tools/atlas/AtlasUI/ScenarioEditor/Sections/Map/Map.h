@@ -58,12 +58,15 @@ public:
 	void Init(ScenarioEditor* scenarioEditor);
 private:
 	ScenarioEditor* m_ScenarioEditor;
-	bool m_openPlayerPanel;
+	bool m_OpenPlayerPanel;
 
 	void OnRandomReseed(wxCommandEvent& evt);
 	void OnGenerate(wxCommandEvent& evt);
 	void OnOpenPlayerPanel(wxCommandEvent& evt);
 	void OnTypeMap(wxCommandEvent& evt);
+	void OnChooseImage(wxCommandEvent& evt);
+	
+	std::wstring* m_Image;
 
 	DECLARE_EVENT_TABLE();
 };
