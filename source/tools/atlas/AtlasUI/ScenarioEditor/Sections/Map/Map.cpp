@@ -265,7 +265,7 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 	wxRadioBox* typeMap = dynamic_cast<wxRadioBox*>(FindWindow(ID_TypeMap));
 	int selection = typeMap->GetSelection();
 
-	if (selection == 2 && (m_Image == NULL || *m_Image == ""))
+	if (selection == 2 && (m_Image == NULL || m_Image->empty()))
 	{
 		wxMessageBox(_("Please select an image to apply"));
 		return;
