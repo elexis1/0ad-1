@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<objects>
+	<object
+		name="minimapPanel"
+		size="0 100%-212 212 100%"
+		type="image"
+		sprite="mapPanel"
+	>
+		<!-- Minimap -->
+		<object name="minimap"
+			type="minimap" z="20"
+			size="8 8 100%-8 100%-8"
+		>
+		</object> 
+		<!-- Overlays -->
+		<object name="minimapOverlay" size="4 4 100%-4 100%-4" type="image" sprite="stretched:session/minimap_circle_modern.png" ghost="true"/>
+	</object>
+</objects>

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <page>
+	<include>common/styles.xml</include> 
+	<include>atlas/sprites.xml</include>
     <include>common/emptyinit.xml</include>
+    <include>atlas/atlas.xml</include>
 </page>
