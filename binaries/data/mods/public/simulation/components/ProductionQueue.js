@@ -342,8 +342,10 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 			let time =  techCostMultiplier.time * template.researchTime * cmpPlayer.GetCheatTimeMultiplier();
 
 			var cost = {};
-			for (let res in template.cost)
-				cost[res] = Math.floor(techCostMultiplier[res] * template.cost[res]);
+
+			for (let r of Resources.GetCodes())
+				if (template.cost[r])
+					cost[r] = Math.floor((techCostMultipler[res] ? techCostMultipler[res] : 1) * template.cost[r]);
 
 			// TrySubtractResources should report error to player (they ran out of resources)
 			if (!cmpPlayer.TrySubtractResources(cost))
@@ -433,8 +435,10 @@ ProductionQueue.prototype.RemoveBatch = function(id)
 		// Refund the resource cost for this batch
 		var totalCosts = {};
 		var cmpStatisticsTracker = QueryPlayerIDInterface(item.player, IID_StatisticsTracker);
-		for each (var r in ["food", "wood", "stone", "metal"])
+		for (let r of Resources.GetCodes())
 		{
+			if (!item.resources[r])
+				continue;
 			totalCosts[r] = Math.floor(item.count * item.resources[r]);
 			if (cmpStatisticsTracker)
 				cmpStatisticsTracker.IncreaseResourceUsedCounter(r, -totalCosts[r]);

@@ -3,28 +3,12 @@ function ResourceTrickle() {}
 ResourceTrickle.prototype.Schema = 
 	"<a:help>Controls the resource trickle ability of the unit.</a:help>" +
 	"<element name='Rates' a:help='Trickle Rates'>" +
-		"<interleave>" +
-			"<optional>" +
-				"<element name='food' a:help='Food given to the player every interval'>" +
-					"<ref name='nonNegativeDecimal'/>" +
-				"</element>" +
-			"</optional>" +
-			"<optional>" +
-				"<element name='wood' a:help='Wood given to the player every interval'>" +
-					"<ref name='nonNegativeDecimal'/>" +
-				"</element>" +
-			"</optional>" +
-			"<optional>" +
-				"<element name='stone' a:help='Stone given to the player every interval'>" +
-					"<ref name='nonNegativeDecimal'/>" +
-				"</element>" +
-			"</optional>" +
-			"<optional>" +
-				"<element name='metal' a:help='Metal given to the player every interval'>" +
-					"<ref name='nonNegativeDecimal'/>" +
-				"</element>" +
-			"</optional>" +
-		"</interleave>" +
+		"<oneOrMore>" +
+			"<element a:help='Quantity of a Resource given to the player every interval'>" +
+			    "<anyName/>" +
+				"<ref name='nonNegativeDecimal'/>" +
+			"</element>" +
+		"</oneOrMore>" +
 	"</element>" +
 	"<element name='Interval' a:help='Number of miliseconds must pass for the player to gain the next trickle.'>" +
 		"<ref name='nonNegativeDecimal'/>" +
@@ -46,8 +30,13 @@ ResourceTrickle.prototype.GetTimer = function()
 ResourceTrickle.prototype.GetRates = function()
 {
 	var rates = {};
+	var resCodes = Resources.GetCodes();
 	for (var resource in this.template.Rates)
+	{
+		if (resCodes.indexOf(resource) < 0)
+			continue;
 		rates[resource] = ApplyValueModificationsToEntity("ResourceTrickle/Rates/"+resource, +this.template.Rates[resource], this.entity);
+	}
 
 	return rates;
 };
@@ -55,13 +44,9 @@ ResourceTrickle.prototype.GetRates = function()
 // Do the actual work here
 ResourceTrickle.prototype.Trickle = function(data, lateness)
 {
-	var cmpPlayer = QueryOwnerInterface(this.entity);
-	if (!cmpPlayer)
-		return;
-
-	var rates = this.GetRates();
-	for (var resource in rates)
-		cmpPlayer.AddResource(resource, rates[resource]);
+	var cmpPlayer = QueryOwnerInterface(this.entity, IID_Player);
+	if (cmpPlayer)
+		cmpPlayer.AddResources(this.GetRates());
 };
 
 Engine.RegisterComponentType(IID_ResourceTrickle, "ResourceTrickle", ResourceTrickle);
