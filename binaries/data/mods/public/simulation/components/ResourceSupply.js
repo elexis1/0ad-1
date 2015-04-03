@@ -12,23 +12,8 @@ ResourceSupply.prototype.Schema =
 	"<element name='Amount' a:help='Amount of resources available from this entity'>" +
 		"<choice><data type='nonNegativeInteger'/><value>Infinity</value></choice>" +
 	"</element>" +
-	"<element name='Type' a:help='Type of resources'>" +
-		"<choice>" +
-			"<value>wood.tree</value>" +
-			"<value>wood.ruins</value>" +
-			"<value>stone.rock</value>" +
-			"<value>stone.ruins</value>" +
-			"<value>metal.ore</value>" +
-			"<value>food.fish</value>" +
-			"<value>food.fruit</value>" +
-			"<value>food.grain</value>" +
-			"<value>food.meat</value>" +
-			"<value>food.milk</value>" +
-			"<value>treasure.wood</value>" +
-			"<value>treasure.stone</value>" +
-			"<value>treasure.metal</value>" +
-			"<value>treasure.food</value>" +
-		"</choice>" +
+	"<element name='Type' a:help='Type and Subtype of resource available from this entity, in the form of {type}.{subtype}'>" +
+		"<text/>" +
 	"</element>" +
 	"<element name='MaxGatherers' a:help='Amount of gatherers who can gather resources from this entity at the same time'>" +
 		"<data type='nonNegativeInteger'/>" +
@@ -52,9 +37,12 @@ ResourceSupply.prototype.Init = function()
 
 	this.infinite = !isFinite(+this.template.Amount);
 
-	[this.type,this.subType] = this.template.Type.split('.');
-	this.cachedType = { "generic" : this.type, "specific" : this.subType };
+	[this.type,this.subtype] = this.template.Type.split('.');
+	var resData = Resources.GetResource(this.type);
 
+	if (!resData || resData.subtypes.indexOf(this.subtype) === -1)
+		error("Invalid resource type or subtype ("+this.type+"/"+this.subtype+")");
+	this.cachedType = { "generic" : this.type, "specific" : this.subtype };
 };
 
 ResourceSupply.prototype.IsInfinite = function()

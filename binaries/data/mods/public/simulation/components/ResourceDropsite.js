@@ -2,16 +2,7 @@ function ResourceDropsite() {}
 
 ResourceDropsite.prototype.Schema =
 	"<element name='Types'>" +
-		"<list>" +
-			"<zeroOrMore>" +
-				"<choice>" +
-					"<value>food</value>" +
-					"<value>wood</value>" +
-					"<value>stone</value>" +
-					"<value>metal</value>" +
-				"</choice>" +
-			"</zeroOrMore>" +
-		"</list>" +
+		"<text/>" +
 	"</element>" +
 	"<element name='Sharable' a:help='Allows allies to use this entity.'>" +
 		"<data type='boolean'/>" +
@@ -28,8 +19,15 @@ ResourceDropsite.prototype.Init = function()
  */
 ResourceDropsite.prototype.GetTypes = function()
 {
-	let types = ApplyValueModificationsToEntity("ResourceDropsite/Types", this.template.Types, this.entity);
-	return types ? types.split(/\s+/) : [];
+	let typesTok = ApplyValueModificationsToEntity("ResourceDropsite/Types", this.template.Types, this.entity);
+	let typesArr = [];
+	let resources = Resources.GetCodes();
+
+	for (let type of typesTok.split(/\s+/))
+		if (resources.indexOf(type.toLowerCase()) > -1)
+			typesArr.push(type);
+
+	return typesArr;
 };
 
 /**

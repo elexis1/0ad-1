@@ -19,15 +19,17 @@ Cost.prototype.Schema =
 	"<element name='PopulationBonus' a:help='Population cap increase while this entity exists'>" +
 		"<data type='nonNegativeInteger'/>" +
 	"</element>" +
-	"<element name='BuildTime' a:help='Time taken to construct/train this unit (in seconds)'>" +
+	"<element name='BuildTime' a:help='Time taken to construct/train this entity (in seconds)'>" +
 		"<ref name='nonNegativeDecimal'/>" +
 	"</element>" +
-	"<element name='Resources' a:help='Resource costs to construct/train this unit'>" +
+	"<element name='Resources' a:help='Resource costs to construct/train this entity'>" +
 		"<interleave>" +
-			"<element name='food'><ref name='nonNegativeDecimal'/></element>" +
-			"<element name='wood'><ref name='nonNegativeDecimal'/></element>" +
-			"<element name='stone'><ref name='nonNegativeDecimal'/></element>" +
-			"<element name='metal'><ref name='nonNegativeDecimal'/></element>" +
+			"<oneOrMore>" +
+				"<element a:help='A particular resource cost'>" +
+					"<anyName/>" +
+					"<data type='nonNegativeDecimal'/>" +
+				"</element>" +
+			"</oneOrMore>" +
 		"</interleave>" +
 	"</element>";
 
@@ -70,8 +72,15 @@ Cost.prototype.GetResourceCosts = function(owner)
 	let entityTemplate = cmpTemplateManager.GetTemplate(entityTemplateName);
 
 	let costs = {};
+	let resCodes = Resources.GetCodes();
+
 	for (let r in this.template.Resources)
+	{
+		if (resCodes.indexOf(r.toLowerCase()) < 0)
+			continue;
 		costs[r] = ApplyValueModificationsToTemplate("Cost/Resources/"+r, +this.template.Resources[r], owner, entityTemplate);
+	}
+
 	return costs;
 };
 
