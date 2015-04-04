@@ -29,7 +29,6 @@ static const wchar_t ACTOR_ROOT[] = L"art/actors/";
 
 static CParamNode NULL_NODE(false);
 
-
 bool CTemplateLoader::LoadTemplateFile(const std::string& templateName, int depth)
 {
 	// If this file was already loaded, we don't need to do anything
@@ -277,6 +276,7 @@ std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::stri
 							continue;
 
 						std::string templateName = pathstem.string8().substr(ARRAY_SIZE(TEMPLATE_ROOT) - 1);
+						TIMER(name.c_str());
 						if (LoadTemplateFile(templateName, 0))
 						{
 							CParamNode node = m_TemplateFileData[templateName];
@@ -293,12 +293,33 @@ std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::stri
 
 	if (templatesType == ACTOR_TEMPLATES || templatesType == ALL_TEMPLATES)
 	{
+		std::vector<std::string> tmpTemplates;
+		
 		templatePath = VfsPath(ACTOR_ROOT) / path;
 		if (includeSubdirectories)
-			ok = vfs::ForEachFile(g_VFS, templatePath, AddActorToTemplates, (uintptr_t)&templates, L"*.xml", vfs::DIR_RECURSIVE);
+			ok = vfs::ForEachFile(g_VFS, templatePath, AddActorToTemplates, (uintptr_t)&tmpTemplates, L"*.xml", vfs::DIR_RECURSIVE);
 		else
-			ok = vfs::ForEachFile(g_VFS, templatePath, AddActorToTemplates, (uintptr_t)&templates, L"*.xml");
+			ok = vfs::ForEachFile(g_VFS, templatePath, AddActorToTemplates, (uintptr_t)&tmpTemplates, L"*.xml");
 		WARN_IF_ERR(ok);
+		
+		std::string fName = CStrW(filterName).ToUTF8();
+		std::for_each(tmpTemplates.begin(), tmpTemplates.end(), [&](const std::string& tmpTemplate){
+			if (tmpTemplate.find(fName) == std::string::npos)
+			{
+				if (!findInContent)
+					return;
+				
+				if (LoadTemplateFile(tmpTemplate, 0))
+				{
+					CParamNode node = m_TemplateFileData[tmpTemplate];
+					if (!node.Any(filterName))
+						return;
+				}
+			}
+			
+			templates.push_back(tmpTemplate);
+		});
+		
 	}
 
 	if (templatesType != SIMULATION_TEMPLATES && templatesType != ACTOR_TEMPLATES && templatesType != ALL_TEMPLATES)

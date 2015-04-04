@@ -245,7 +245,7 @@ void ObjectSidebar::OnSelectObject(wxDataViewEvent& evt)
 	//}
 }
 
-void ObjectSidebar::OnSelectFilter(wxCommandEvent& WXUNUSED(evt))
+void ObjectSidebar::OnSelectFilter(wxCommandEvent& evt)
 {
 	FilterObjects();
 }
