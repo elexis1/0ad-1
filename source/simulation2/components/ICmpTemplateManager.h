@@ -103,7 +103,7 @@ public:
 	 */
 	virtual std::vector<std::string> FindAllTemplates(bool includeActors) = 0;
 
-	virtual std::vector<std::string> FindAllPlaceableTemplates(bool includeActors) = 0;
+	virtual std::vector<std::string> FindAllPlaceableTemplates(int filterType, std::wstring filterName, bool findInContent) = 0;
 
 	/**
 	 * Permanently disable XML validation (intended solely for test cases).

@@ -233,8 +233,9 @@ public:
 	 */
 	static std::wstring EscapeXMLString(const std::wstring& str);
 
+	bool Any(const std::wstring& str) const;
 private:
-	
+
 	/**
 	 * Overlays the specified data onto this node. See class documentation for the concept and examples.
 	 * 

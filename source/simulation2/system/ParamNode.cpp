@@ -420,3 +420,16 @@ void CParamNode::ResetScriptVal()
 {
 	m_ScriptVal = NULL;
 }
+
+bool CParamNode::Any(const std::wstring& strW) const
+{
+	std::string str = CStrW(strW).ToUTF8();
+	if (m_Value.find(strW) != std::wstring::npos)
+		return true;
+
+	ChildrenMap::const_iterator found = std::find_if(m_Childs.begin(), m_Childs.end(), [&](const std::pair<std::string, CParamNode> child){
+		return (child.first.find(str) != std::string::npos) || child.second.Any(strW);
+	});
+
+	return found != m_Childs.end();
+}

@@ -29,6 +29,7 @@
 #include "GameInterface/Messages.h"
 
 #include "wx/busyinfo.h"
+#include "wx/xrc/xmlres.h"
 
 enum
 {
@@ -49,16 +50,20 @@ enum
 	ID_ViewerPropPoints,
 	ID_ViewerPlay,
 	ID_ViewerPause,
-	ID_ViewerSlow
+	ID_ViewerSlow,
+	ID_IncludeContent = 100,
+	ID_TotalCountLabel
 };
 
-// Helper function for adding tooltips
-static wxWindow* Tooltipped(wxWindow* window, const wxString& tip)
-{
-	window->SetToolTip(tip);
-	return window;
-}
 
+IMPLEMENT_DYNAMIC_CLASS(ObjectSidebar, wxPanel)
+BEGIN_EVENT_TABLE(ObjectSidebar, wxPanel)
+	EVT_CHOICE(ID_ObjectType, ObjectSidebar::OnSelectType)
+	EVT_TEXT(ID_ObjectFilter, ObjectSidebar::OnSelectFilter)
+	EVT_DATAVIEW_SELECTION_CHANGED(ID_SelectObject, ObjectSidebar::OnSelectObject)
+END_EVENT_TABLE();
+
+/*
 class ObjectBottomBar : public wxPanel
 {
 public:
@@ -120,65 +125,27 @@ struct ObjectSidebarImpl
 		POST_MESSAGE(SetActorViewer, ((std::wstring)m_ActorViewerEntity.wc_str(), (std::wstring)m_ActorViewerAnimation.wc_str(), m_ObjectSettings.GetPlayerID(), m_ActorViewerSpeed, false));
 	}
 };
+*/
 
-ObjectSidebar::ObjectSidebar(
-	ScenarioEditor& scenarioEditor,
-	wxWindow* sidebarContainer,
-	wxWindow* bottomBarContainer
-)
-	: Sidebar(scenarioEditor, sidebarContainer, bottomBarContainer),
-	  p(new ObjectSidebarImpl(scenarioEditor))
+ObjectSidebar::ObjectSidebar()
+	:m_ScenarioEditor(NULL), m_ObjectList(NULL)
 {
-	wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-	sizer->Add(new wxStaticText(this, wxID_ANY, _("Filter")), wxSizerFlags().Align(wxALIGN_CENTER));
-	sizer->Add(
-		Tooltipped(
-			new wxTextCtrl(this, ID_ObjectFilter),
-			_("Enter text to filter object list")
-		),
-		wxSizerFlags().Expand().Proportion(1)
-	);
-	m_MainSizer->Add(sizer, wxSizerFlags().Expand());
-	m_MainSizer->AddSpacer(3);
-
-	// ------------------------------------------------------------------------------------------
-
-	wxArrayString strings;
-	strings.Add(_("Entities"));
-	strings.Add(_("Actors (all)"));
-	wxChoice* objectType = new wxChoice(this, ID_ObjectType, wxDefaultPosition, wxDefaultSize, strings);
-	objectType->SetSelection(0);
-	m_MainSizer->Add(objectType, wxSizerFlags().Expand());
-	m_MainSizer->AddSpacer(3);
-	
-	// ------------------------------------------------------------------------------------------
-
-	p->m_ObjectListBox = new wxListBox(this, ID_SelectObject, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SINGLE|wxLB_HSCROLL);
-	m_MainSizer->Add(p->m_ObjectListBox, wxSizerFlags().Proportion(1).Expand());
-	m_MainSizer->AddSpacer(3);
-
-	// ------------------------------------------------------------------------------------------
-
-	m_MainSizer->Add(new wxButton(this, ID_ToggleViewer, _("Switch to Actor Viewer")), wxSizerFlags().Expand());
-
-	// ------------------------------------------------------------------------------------------
-
-	m_BottomBar = new ObjectBottomBar(
-		bottomBarContainer,
-		scenarioEditor.GetObjectSettings(),
-		scenarioEditor.GetMapSettings(),
-		p
-	);
-
-	p->m_ToolConn = scenarioEditor.GetToolManager().GetCurrentTool().RegisterObserver(0, &ObjectSidebar::OnToolChange, this);
 }
 
-ObjectSidebar::~ObjectSidebar()
+void ObjectSidebar::Init(ScenarioEditor *scenarioEditor)
 {
-	delete p;
+	m_ScenarioEditor = scenarioEditor;
+	//wxBusyInfo busy (_("Loading list of objects"));
+
+	//Load TreeView Here
+	m_ObjectList = new wxDataViewTreeCtrl(this, ID_SelectObject);
+	wxXmlResource::Get()->AttachUnknownControl(wxString::Format(wxT("%i"),ID_SelectObject), m_ObjectList);
+
+	// Display first group of objects
+	FilterObjects();
 }
 
-void ObjectSidebar::OnToolChange(ITool* tool)
+/*void ObjectSidebar::OnToolChange(ITool* tool)
 {
 	if (wxString(tool->GetClassInfo()->GetClassName()) == _T("ActorViewerTool"))
 	{
@@ -197,46 +164,44 @@ void ObjectSidebar::OnToolChange(ITool* tool)
 	}
 
 	static_cast<ObjectBottomBar*>(m_BottomBar)->ShowActorViewer(p->m_ActorViewerActive);
-}
-
-void ObjectSidebar::OnFirstDisplay()
-{
-	static_cast<ObjectBottomBar*>(m_BottomBar)->OnFirstDisplay();
-
-	wxBusyInfo busy (_("Loading list of objects"));
-
-	// Get the list of objects from the game
-	AtlasMessage::qGetObjectsList qry;
-	qry.Post();
-	p->m_Objects = *qry.objects;
-	// Display first group of objects
-	FilterObjects();
-}
+}*/
 
 void ObjectSidebar::FilterObjects()
 {
 	int filterType = wxDynamicCast(FindWindow(ID_ObjectType), wxChoice)->GetSelection();
 	wxString filterName = wxDynamicCast(FindWindow(ID_ObjectFilter), wxTextCtrl)->GetValue();
+	bool includeContent = wxDynamicCast(FindWindow(ID_IncludeContent), wxCheckBox)->GetValue();
 
-	p->m_ObjectListBox->Freeze();
-	p->m_ObjectListBox->Clear();
-	for (std::vector<AtlasMessage::sObjectsListItem>::iterator it = p->m_Objects.begin(); it != p->m_Objects.end(); ++it)
-	{
-		if (it->type == filterType)
-		{
-			wxString id = it->id.c_str();
-			wxString name = it->name.c_str();
+	// Get the list of objects from the game
+	AtlasMessage::qGetObjectsList qry(filterType, (std::wstring)filterName.wx_str(), includeContent);
+	qry.Post();
+	std::vector<sObjectsListItem> objects = *qry.objects;
 
-			if (name.Lower().Find(filterName.Lower()) != wxNOT_FOUND)
-			{
-				p->m_ObjectListBox->Append(name, new wxStringClientData(id));
-			}
-		}
-	}
-	p->m_ObjectListBox->Thaw();
+	m_ObjectList->Freeze();
+	m_ObjectList->DeleteAllItems();
+
+	wxDataViewItem root = m_ObjectList->AppendContainer(wxDataViewItem(0), "0AD");
+
+	std::for_each(objects.begin(), objects.end(), [&] (const sObjectsListItem it){
+		//if (it.type != filterType) return;
+
+		wxString id = it.id.c_str();
+		wxString name = it.name.c_str();
+
+		//if (name.Find(filterName.Lower()) == wxNOT_FOUND) return;
+
+		m_ObjectList->AppendItem(root, name, -1, new wxStringClientData(id));
+	});
+
+	m_ObjectList->Expand(root);
+	m_ObjectList->Thaw();
+
+	wxDynamicCast(FindWindow(ID_TotalCountLabel), wxStaticText)->SetLabel(wxString::Format(wxT("%i"), (int)objects.size()));
+
+	objects.clear();
 }
 
-void ObjectSidebar::OnToggleViewer(wxCommandEvent& WXUNUSED(evt))
+/*void ObjectSidebar::OnToggleViewer(wxCommandEvent& WXUNUSED(evt))
 {
 	if (p->m_ActorViewerActive)
 	{
@@ -246,33 +211,38 @@ void ObjectSidebar::OnToggleViewer(wxCommandEvent& WXUNUSED(evt))
 	{
 		m_ScenarioEditor.GetToolManager().SetCurrentTool(_T("ActorViewerTool"), NULL);
 	}
-}
+}*/
 
 void ObjectSidebar::OnSelectType(wxCommandEvent& WXUNUSED(evt))
 {
 	FilterObjects();
 }
 
-void ObjectSidebar::OnSelectObject(wxCommandEvent& evt)
+void ObjectSidebar::OnSelectObject(wxDataViewEvent& evt)
 {
 	if (evt.GetInt() < 0)
 		return;
 
-	wxString id = static_cast<wxStringClientData*>(evt.GetClientObject())->GetData();
+	wxDataViewTreeStoreNode* data = static_cast<wxDataViewTreeStoreNode*>(evt.GetItem().GetID());
+	if (data == NULL || dynamic_cast<wxDataViewTreeStoreContainerNode*>(data))
+		return;
+
+	wxString id = static_cast<wxStringClientData*>(data->GetData())->GetData();
+	m_ScenarioEditor->GetToolManager().SetCurrentTool(_T("PlaceObject"), &id);
 
 	// Always update the actor viewer's state even if it's inactive,
 	// so it will be correct when first enabled
-	p->m_ActorViewerEntity = id;
+	/*p->m_ActorViewerEntity = id;
 
 	if (p->m_ActorViewerActive)
 	{
 		p->ActorViewerPostToGame();
 	}
 	else
-	{
+	{*/
 		// On selecting an object, enable the PlaceObject tool with this object
-		m_ScenarioEditor.GetToolManager().SetCurrentTool(_T("PlaceObject"), &id);
-	}
+		//m_ScenarioEditor->GetToolManager().SetCurrentTool(_T("PlaceObject"), &id);
+	//}
 }
 
 void ObjectSidebar::OnSelectFilter(wxCommandEvent& WXUNUSED(evt))
@@ -280,15 +250,8 @@ void ObjectSidebar::OnSelectFilter(wxCommandEvent& WXUNUSED(evt))
 	FilterObjects();
 }
 
-BEGIN_EVENT_TABLE(ObjectSidebar, Sidebar)
-	EVT_CHOICE(ID_ObjectType, ObjectSidebar::OnSelectType)
-	EVT_TEXT(ID_ObjectFilter, ObjectSidebar::OnSelectFilter)
-	EVT_LISTBOX(ID_SelectObject, ObjectSidebar::OnSelectObject)
-	EVT_BUTTON(ID_ToggleViewer, ObjectSidebar::OnToggleViewer)
-END_EVENT_TABLE();
-
 //////////////////////////////////////////////////////////////////////////
-
+/*
 class PlayerComboBox : public wxComboBox
 {
 public:
@@ -639,4 +602,4 @@ BEGIN_EVENT_TABLE(ObjectBottomBar, wxPanel)
 	EVT_BUTTON(ID_ViewerBoundingBox, ObjectBottomBar::OnViewerSetting)
 	EVT_BUTTON(ID_ViewerAxesMarker, ObjectBottomBar::OnViewerSetting)
 	EVT_BUTTON(ID_ViewerPropPoints, ObjectBottomBar::OnViewerSetting)
-END_EVENT_TABLE();
+END_EVENT_TABLE();*/

@@ -1,4 +1,4 @@
-/* Copyright (C) 2011 Wildfire Games.
+/* Copyright (C) 2015 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -15,29 +15,30 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../Common/Sidebar.h"
+#ifndef INCLUDED_OBJECT
+#define INCLUDED_OBJECT
 
-class ITool;
+#include "precompiled.h"
+#include "ScenarioEditor/ScenarioEditor.h"
+#include "wx/dataview.h"
 
-struct ObjectSidebarImpl;
-class ObjectSidebar : public Sidebar
+class ObjectSidebar : public wxPanel
 {
+	DECLARE_DYNAMIC_CLASS(ObjectSidebar);
 public:
-	ObjectSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer);
-	~ObjectSidebar();
+	ObjectSidebar();
+	void Init(ScenarioEditor* scenarioEditor);
 	void FilterObjects();
 
-protected:
-	virtual void OnFirstDisplay();
-
 private:
-	void OnToolChange(ITool* tool);
-	void OnToggleViewer(wxCommandEvent& evt);
+	ScenarioEditor* m_ScenarioEditor;
+	wxDataViewTreeCtrl* m_ObjectList;
+	/*void OnToolChange(ITool* tool);
+	void OnToggleViewer(wxCommandEvent& evt);*/
 	void OnSelectType(wxCommandEvent& evt);
 	void OnSelectFilter(wxCommandEvent& evt);
-	void OnSelectObject(wxCommandEvent& evt);
-
-	ObjectSidebarImpl* p;
+	void OnSelectObject(wxDataViewEvent& evt);
 
 	DECLARE_EVENT_TABLE();
 };
+#endif

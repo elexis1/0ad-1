@@ -27,7 +27,7 @@
 #include "wx/ffile.h"
 #include "wx/filename.h"
 #include "wx/image.h"
-#include "wx/stdpaths.h""
+#include "wx/stdpaths.h"
 #include "wx/sstream.h"
 #include "wx/sysopt.h"
 #include "wx/tooltip.h"
@@ -52,6 +52,7 @@
 #include "Tools/Common/MiscState.h"
 #include "Sections/Map/Map.h"
 #include "Sections/Player/Player.h"
+#include "Sections/Object/Object.h"
 
 static HighResTimer g_Timer;
 
@@ -611,6 +612,10 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 	else if (event.GetId() == ID_ToolbarOptionPlayer)
 	{
 		UpdatePanelTool<PlayerSettingsControl>(event.IsChecked(), "playersettings", "PlayerSettings");
+	}
+	else if (event.GetId() == ID_ToolbarOptionObject)
+	{
+		UpdatePanelTool<ObjectSidebar>(event.IsChecked(), "objectlist", "ObjectList");
 	}
 	else if(event.GetId() > ID_ToolbarSimulationBegin && event.GetId() < ID_ToolbarSimulationEnd)
 	{

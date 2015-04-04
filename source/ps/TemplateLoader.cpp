@@ -213,11 +213,11 @@ bool CTemplateLoader::TemplateExists(const std::string& templateName) const
 	return VfsFileExists(VfsPath(TEMPLATE_ROOT) / wstring_from_utf8(baseName + ".xml"));
 }
 
-std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::string& path, bool includeSubdirectories, ETemplatesType templatesType, ScriptInterface& scriptInterface)
+std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::string& path, bool includeSubdirectories, ETemplatesType templatesType, ScriptInterface& scriptInterface, const std::wstring& filterName, bool findInContent)
 {
 	JSContext* cx = scriptInterface.GetContext();
 	JSAutoRequest rq(cx);
-	
+
 	std::vector<std::string> templates;
 	Status ok;
 	VfsPath templatePath;
@@ -259,11 +259,11 @@ std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::stri
 				std::wstring fileFilter;
 				scriptInterface.GetProperty(val, "directory", directoryPath);
 				scriptInterface.GetProperty(val, "file", fileFilter);
-				
+
 				VfsPaths filenames;
 				if (vfs::GetPathnames(g_VFS, templatePath / (directoryPath + "/"), fileFilter.c_str(), filenames) != INFO::OK)
 					continue;
-				
+
 				for (const VfsPath& filename : filenames)
 				{
 					// Strip the .xml extension
@@ -271,11 +271,23 @@ std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::stri
 					// Strip the root from the path
 					std::wstring name = pathstem.string().substr(ARRAY_SIZE(TEMPLATE_ROOT) - 1);
 
+					if (name.find(filterName) == std::wstring::npos)
+					{
+						if (!findInContent)
+							continue;
+
+						std::string templateName = pathstem.string8().substr(ARRAY_SIZE(TEMPLATE_ROOT) - 1);
+						if (LoadTemplateFile(templateName, 0))
+						{
+							CParamNode node = m_TemplateFileData[templateName];
+							if (!node.Any(filterName))
+								continue;
+						}
+					}
+
 					templates.emplace_back(name.begin(), name.end());
 				}
-				
 			}
-			
 		}
 	}
 

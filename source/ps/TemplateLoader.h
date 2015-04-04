@@ -48,7 +48,7 @@ public:
 	CTemplateLoader()
 	{
 	}
-	
+
 	/**
 	 * Provides the file data for requested template.
 	 */
@@ -65,7 +65,7 @@ public:
 	 */
 	std::vector<std::string> FindTemplates(const std::string& path, bool includeSubdirectories, ETemplatesType templatesType);
 
-	std::vector<std::string> FindPlaceableTemplates(const std::string& path, bool includeSubdirectories, ETemplatesType templatesType, ScriptInterface& scriptInterface);
+	std::vector<std::string> FindPlaceableTemplates(const std::string& path, bool includeSubdirectories, ETemplatesType templatesType, ScriptInterface& scriptInterface, const std::wstring& filterName, bool findInContent);
 
 private:
 	/**
