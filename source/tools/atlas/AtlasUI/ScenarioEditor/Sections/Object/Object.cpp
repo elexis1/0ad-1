@@ -52,7 +52,8 @@ enum
 	ID_ViewerPause,
 	ID_ViewerSlow,
 	ID_IncludeContent = 100,
-	ID_TotalCountLabel
+	ID_TotalCountLabel,
+	ID_DisplayTemplateCtrl
 };
 
 
@@ -76,7 +77,6 @@ public:
 
 	void OnFirstDisplay();
 	void ShowActorViewer(bool show);
-	void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
 
 private:
 	void OnViewerSetting(wxCommandEvent& evt);
@@ -94,7 +94,6 @@ private:
 	int m_ViewerPropPointsMode; // 0 disabled, 1 for point markers, 2 for point markers + axes
 
 	wxPanel* m_ViewerPanel;
-	wxScrolledWindow* m_TemplateNames;
 
 	ObjectSidebarImpl* p;
 	DECLARE_EVENT_TABLE();
@@ -183,13 +182,8 @@ void ObjectSidebar::FilterObjects()
 	wxDataViewItem root = m_ObjectList->AppendContainer(wxDataViewItem(0), "0AD");
 
 	std::for_each(objects.begin(), objects.end(), [&] (const sObjectsListItem it){
-		//if (it.type != filterType) return;
-
 		wxString id = it.id.c_str();
 		wxString name = it.name.c_str();
-
-		//if (name.Find(filterName.Lower()) == wxNOT_FOUND) return;
-
 		m_ObjectList->AppendItem(root, name, -1, new wxStringClientData(id));
 	});
 
@@ -245,9 +239,68 @@ void ObjectSidebar::OnSelectObject(wxDataViewEvent& evt)
 	//}
 }
 
-void ObjectSidebar::OnSelectFilter(wxCommandEvent& evt)
+void ObjectSidebar::OnSelectFilter(wxCommandEvent& WXUNUSED(evt))
 {
 	FilterObjects();
+}
+
+//////////////////////////////////////////////////////////////////////////
+IMPLEMENT_DYNAMIC_CLASS(DisplayTemplate, wxPanel)
+
+DisplayTemplate::DisplayTemplate()
+	:m_TemplateNames(NULL)
+{
+}
+
+void DisplayTemplate::Init(ScenarioEditor *scenarioEditor)
+{
+	m_TemplateNames = wxDynamicCast(FindWindow(ID_DisplayTemplateCtrl), wxScrolledWindow);
+	g_SelectedObjects.RegisterObserver(0, &DisplayTemplate::OnSelectedObjectsChange, this);
+}
+
+static wxControl* CreateTemplateNameObject(wxWindow* parent, const std::string templateName, int counterTemplate)
+{
+	wxString idTemplate(wxString::FromUTF8(templateName.c_str()));
+	if (counterTemplate > 1)
+		idTemplate.Append(wxString::Format(wxT(" (%i)"), counterTemplate));
+	
+	wxStaticText* templateNameObject = new wxStaticText(parent, wxID_ANY, idTemplate);
+	return templateNameObject;
+}
+
+void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects)
+{
+	Freeze();
+	wxSizer* sizer = m_TemplateNames->GetSizer();
+	sizer->Clear(true);
+	
+	AtlasMessage::qGetSelectedObjectsTemplateNames objectTemplatesName(selectedObjects);
+	objectTemplatesName.Post();
+	std::vector<std::string> names = *objectTemplatesName.names;
+	
+	int counterTemplate = 0;
+	std::string lastTemplateName = "";
+	std::for_each(names.begin(), names.end(), [&](const std::string& it){
+		if (lastTemplateName == "")
+			lastTemplateName = (it);
+		
+		if (lastTemplateName == (it))
+		{
+			++counterTemplate;
+			return;
+		}
+		
+		sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
+		
+		lastTemplateName = it;
+		counterTemplate = 1;
+	});
+
+	// Add the remaining template
+	sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
+	
+	Thaw();
+	sizer->FitInside(m_TemplateNames);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -432,67 +485,7 @@ ObjectBottomBar::ObjectBottomBar(
 	mainSizer->AddSpacer(3);
 	mainSizer->Add(playerVariationSizer, wxSizerFlags().Expand());
 
-	// ----------------------------------------------------------------------------------
-	// --- display template name
-	wxSizer* displaySizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Selected entities"));
-	m_TemplateNames = new wxScrolledWindow(this);
-	m_TemplateNames->SetMinSize(wxSize(250, -1));
-	m_TemplateNames->SetScrollRate(0, 5);
-	wxSizer* scrollwindowSizer = new wxBoxSizer(wxVERTICAL);
-	m_TemplateNames->SetSizer(scrollwindowSizer);
-	displaySizer->Add(m_TemplateNames, wxSizerFlags().Proportion(1).Expand());
-	m_TemplateNames->Layout();
-	mainSizer->AddSpacer(3);
-	mainSizer->Add(displaySizer, wxSizerFlags().Proportion(1).Expand());
-
-	g_SelectedObjects.RegisterObserver(0, &ObjectBottomBar::OnSelectedObjectsChange, this);
-
 	SetSizer(mainSizer);
-}
-
-static wxControl* CreateTemplateNameObject(wxWindow* parent, const std::string templateName, int counterTemplate)
-{
-	wxString idTemplate(wxString::FromUTF8(templateName.c_str()));
-	if (counterTemplate > 1)
-		idTemplate.Append(wxString::Format(wxT(" (%i)"), counterTemplate));
-
-	wxStaticText* templateNameObject = new wxStaticText(parent, wxID_ANY, idTemplate);
-	return templateNameObject;
-}
-
-void ObjectBottomBar::OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects)
-{
-	Freeze();
-	wxSizer* sizer = m_TemplateNames->GetSizer();
-	sizer->Clear(true);
-
-	AtlasMessage::qGetSelectedObjectsTemplateNames objectTemplatesName(selectedObjects);
-	objectTemplatesName.Post();
-	std::vector<std::string> names = *objectTemplatesName.names;
-
-	int counterTemplate = 0;
-	std::string lastTemplateName = "";
-	for (std::vector<std::string>::const_iterator it = names.begin(); it != names.end(); ++it)
-	{
-		if (lastTemplateName == "")
-			lastTemplateName = (*it);
-
-		if (lastTemplateName == (*it))
-		{
-			++counterTemplate;
-			continue;
-		}
-
-		sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
-
-		lastTemplateName = (*it);
-		counterTemplate = 1;
-	}
-	// Add the remaining template
-	sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
-
-	Thaw();
-	sizer->FitInside(m_TemplateNames);
 }
 
 void ObjectBottomBar::OnFirstDisplay()

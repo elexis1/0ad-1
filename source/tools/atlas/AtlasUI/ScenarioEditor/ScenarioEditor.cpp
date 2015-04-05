@@ -358,8 +358,11 @@ enum
 	ID_ToolbarSimulationPause,
 	ID_ToolbarSimulationStop,
 	ID_ToolbarSimulationSpeed,
-	ID_ToolbarSimulationEnd
-
+	ID_ToolbarSimulationEnd,
+	
+	ID_ViewsBegin = 4000, //space for 998 views
+	ID_DisplayTemplateView,
+	ID_ViewsEnd
 };
 
 enum
@@ -606,21 +609,15 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 		this->m_ToolManager.SetCurrentTool(toolName);
 	}
 	else if (event.GetId() == ID_ToolbarOptionMap)
-	{
 		UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
-	}
 	else if (event.GetId() == ID_ToolbarOptionPlayer)
-	{
 		UpdatePanelTool<PlayerSettingsControl>(event.IsChecked(), "playersettings", "PlayerSettings");
-	}
 	else if (event.GetId() == ID_ToolbarOptionObject)
-	{
 		UpdatePanelTool<ObjectSidebar>(event.IsChecked(), "objectlist", "ObjectList");
-	}
-	else if(event.GetId() > ID_ToolbarSimulationBegin && event.GetId() < ID_ToolbarSimulationEnd)
-	{
+	else if (event.GetId() > ID_ToolbarSimulationBegin && event.GetId() < ID_ToolbarSimulationEnd)
 		OnSimulateControls(event);
-	}
+	else if (event.GetId() == ID_DisplayTemplateView)
+		UpdatePanelTool<DisplayTemplate>(event.IsChecked(), "displayTemplate", "DisplayTemplate");
 }
 
 void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
@@ -629,6 +626,11 @@ void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
 		this->GetToolBar()->ToggleTool(ID_ToolbarOptionMap, false);
 	else if (event.GetPane()->name == "playersettings")
 		this->GetToolBar()->ToggleTool(ID_ToolbarOptionPlayer, false);
+	else if (event.GetPane()->name == "objectlist")
+		this->GetToolBar()->ToggleTool(ID_ToolbarOptionObject, false);
+	else if (event.GetPane()->name == "displayTemplate")
+		this->GetMenuBar()->Check(ID_DisplayTemplateView, false);
+
 }
 
 template<typename T>
@@ -801,6 +803,10 @@ void ScenarioEditor::OnClose(wxCloseEvent& event)
 	Destroy();
 }
 
+void  ScenarioEditor::OnMenuClicked(wxCommandEvent &event)
+{
+	
+}
 
 static void UpdateTool(ToolManager& toolManager)
 {

@@ -41,4 +41,16 @@ private:
 
 	DECLARE_EVENT_TABLE();
 };
+
+class DisplayTemplate : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(DisplayTemplate)
+public:
+	DisplayTemplate();
+	void Init(ScenarioEditor* scenarioEditor);
+	void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
+
+private:
+	wxScrolledWindow* m_TemplateNames;
+};
 #endif

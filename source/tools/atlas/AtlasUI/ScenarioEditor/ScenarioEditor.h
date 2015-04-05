@@ -76,6 +76,7 @@ public:
 	void OnToolbarButtons(wxCommandEvent& event);
 
     void OnMenuOpen(wxMenuEvent& event);
+	void OnMenuClicked(wxCommandEvent& event);
 
 	bool OpenFile(const wxString& name, const wxString& filename);
 
