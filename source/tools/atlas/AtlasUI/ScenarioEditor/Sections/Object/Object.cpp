@@ -53,7 +53,9 @@ enum
 	ID_ViewerSlow,
 	ID_IncludeContent = 100,
 	ID_TotalCountLabel,
-	ID_DisplayTemplateCtrl
+	ID_DisplayTemplateCtrl,
+	ID_PlayerOwner,
+	ID_VariationsContainer
 };
 
 
@@ -256,6 +258,9 @@ void DisplayTemplate::Init(ScenarioEditor *scenarioEditor)
 {
 	m_TemplateNames = wxDynamicCast(FindWindow(ID_DisplayTemplateCtrl), wxScrolledWindow);
 	g_SelectedObjects.RegisterObserver(0, &DisplayTemplate::OnSelectedObjectsChange, this);
+
+	if (g_SelectedObjects.size() > 0)
+		OnSelectedObjectsChange(g_SelectedObjects);
 }
 
 static wxControl* CreateTemplateNameObject(wxWindow* parent, const std::string templateName, int counterTemplate)
@@ -263,7 +268,7 @@ static wxControl* CreateTemplateNameObject(wxWindow* parent, const std::string t
 	wxString idTemplate(wxString::FromUTF8(templateName.c_str()));
 	if (counterTemplate > 1)
 		idTemplate.Append(wxString::Format(wxT(" (%i)"), counterTemplate));
-	
+
 	wxStaticText* templateNameObject = new wxStaticText(parent, wxID_ANY, idTemplate);
 	return templateNameObject;
 }
@@ -273,111 +278,184 @@ void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::Ob
 	Freeze();
 	wxSizer* sizer = m_TemplateNames->GetSizer();
 	sizer->Clear(true);
-	
+
 	AtlasMessage::qGetSelectedObjectsTemplateNames objectTemplatesName(selectedObjects);
 	objectTemplatesName.Post();
 	std::vector<std::string> names = *objectTemplatesName.names;
-	
+
 	int counterTemplate = 0;
 	std::string lastTemplateName = "";
 	std::for_each(names.begin(), names.end(), [&](const std::string& it){
 		if (lastTemplateName == "")
 			lastTemplateName = (it);
-		
+
 		if (lastTemplateName == (it))
 		{
 			++counterTemplate;
 			return;
 		}
-		
+
 		sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
-		
+
 		lastTemplateName = it;
 		counterTemplate = 1;
 	});
 
 	// Add the remaining template
 	sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
-	
+
 	Thaw();
 	sizer->FitInside(m_TemplateNames);
 }
 
 //////////////////////////////////////////////////////////////////////////
-/*
-class PlayerComboBox : public wxComboBox
-{
-public:
-	PlayerComboBox(wxWindow* parent, Observable<ObjectSettings>& objectSettings, Observable<AtObj>& mapSettings)
-		: wxComboBox(parent, ID_PlayerSelect, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY)
-		, m_ObjectSettings(objectSettings), m_MapSettings(mapSettings)
-	{
-		m_ObjectConn = m_ObjectSettings.RegisterObserver(1, &PlayerComboBox::OnObjectSettingsChange, this);
-		m_MapConn = m_MapSettings.RegisterObserver(1, &PlayerComboBox::OnMapSettingsChange, this);
-	}
-
-	void SetPlayers(wxArrayString& names)
-	{
-		m_Players = names;
-		OnMapSettingsChange(m_MapSettings);
-	}
-
-private:
-
-	ObservableScopedConnection m_ObjectConn;
-	Observable<ObjectSettings>& m_ObjectSettings;
-	ObservableScopedConnection m_MapConn;
-	Observable<AtObj>& m_MapSettings;
-	wxArrayString m_Players;
-
-	void SetSelection(int playerID)
-	{
-		// This control may not be loaded yet (before first display)
-		//	or may have less items than we expect, which could cause
-		//	an assertion failure, so handle that here
-		if ((unsigned int)playerID < GetCount())
-		{
-			wxComboBox::SetSelection(playerID);
-		}
-		else
-		{
-			// Invalid selection
-			wxComboBox::SetSelection(wxNOT_FOUND);
-		}
-	}
-
-	void OnObjectSettingsChange(const ObjectSettings& settings)
-	{
-		SetSelection(settings.GetPlayerID());
-	}
-
-	void OnMapSettingsChange(const AtObj& settings)
-	{
-		// Reload displayed player names
-		Clear();
-		size_t numPlayers = settings["PlayerData"]["item"].count();
-		for (size_t i = 0; i <= numPlayers && i < m_Players.Count(); ++i)
-		{
-			Append(m_Players[i]);
-		}
-
-		SetSelection(m_ObjectSettings.GetPlayerID());
-	}
-
-	void OnSelect(wxCommandEvent& evt)
-	{
-		m_ObjectSettings.SetPlayerID(evt.GetInt());
-		m_ObjectSettings.NotifyObserversExcept(m_ObjectConn);
-	}
-
-	DECLARE_EVENT_TABLE();
-};
-BEGIN_EVENT_TABLE(PlayerComboBox, wxComboBox)
-	EVT_COMBOBOX(wxID_ANY, PlayerComboBox::OnSelect)
+IMPLEMENT_DYNAMIC_CLASS(EntitySettings, wxPanel)
+BEGIN_EVENT_TABLE(EntitySettings, wxPanel)
+	EVT_CHOICE(ID_PlayerOwner, EntitySettings::OnSelectOwner)
+	EVT_CHOICE(wxID_ANY, EntitySettings::OnVariationSelect)
 END_EVENT_TABLE();
 
-//////////////////////////////////////////////////////////////////////////
+EntitySettings::EntitySettings()
+	:m_ScenarioEditor(NULL), m_PlayerOwner(NULL), m_VariationsContainer(NULL), m_Players(NULL)
+{
+}
 
+void EntitySettings::Init(ScenarioEditor *scenarioEditor)
+{
+	m_ScenarioEditor = scenarioEditor;
+	m_PlayerOwner = wxDynamicCast(FindWindow(ID_PlayerOwner), wxChoice);
+	m_VariationsContainer = wxDynamicCast(FindWindow(ID_VariationsContainer), wxScrolledWindow);
+
+	// Get player names
+	m_Players = new wxArrayString();
+	AtlasMessage::qGetPlayerDefaults qryPlayers;
+	qryPlayers.Post();
+	AtObj playerData = AtlasObject::LoadFromJSON(*qryPlayers.defaults);
+	AtObj playerDefs = *playerData["PlayerData"];
+	for (AtIter p = playerDefs["item"]; p.defined(); ++p)
+	{
+		m_Players->Add(wxString(p["Name"]));
+	}
+
+	m_PlayerOwner->Append(*m_Players);
+	m_ObjectConn = m_ScenarioEditor->GetObjectSettings().RegisterObserver(0, &EntitySettings::OnObjectSettingsChange, this);
+
+	m_ScenarioEditor->GetMapSettings().RegisterObserver(0, &EntitySettings::OnMapSettingsChange, this);
+	OnMapSettingsChange(m_ScenarioEditor->GetMapSettings());
+
+	g_SelectedObjects.RegisterObserver(0, &EntitySettings::OnSelectedObjectsChange, this);
+}
+
+void EntitySettings::OnMapSettingsChange(const AtObj& settings)
+{
+	m_PlayerOwner->Freeze();
+	m_PlayerOwner->Clear();
+
+	size_t numPlayers = settings["PlayerData"]["item"].count();
+	for (size_t i = 0; i <= numPlayers && i < m_Players->Count(); ++i)
+	{
+		m_PlayerOwner->Append((*m_Players)[i]);
+	}
+
+	OnObjectSettingsChange(m_ScenarioEditor->GetObjectSettings());
+	m_PlayerOwner->Thaw();
+}
+
+void EntitySettings::OnObjectSettingsChange(const ObjectSettings& settings)
+{
+	m_PlayerOwner->SetSelection(((unsigned int)settings.GetPlayerID() < m_PlayerOwner->GetCount()) ? settings.GetPlayerID() : wxNOT_FOUND );
+
+	//Load Variations
+	m_VariationsContainer->Freeze();
+	wxSizer* sizer = m_VariationsContainer->GetSizer();
+	const std::vector<ObjectSettings::Group>& variation = settings.GetActorVariation();
+
+	// Creating combo boxes seems to be pretty expensive - so we create as
+	// few as possible, by never deleting any.
+	size_t oldCount = m_Choices.size();
+	size_t newCount = variation.size();
+
+	// If we have too many combo boxes, hide the excess ones
+	for (size_t i = newCount; i < oldCount; ++i)
+	{
+		m_Choices[i]->Show(false);
+	}
+
+	for (size_t i = 0; i < variation.size(); ++i)
+	{
+		const ObjectSettings::Group& group = variation[i];
+		if (i >= oldCount)
+		{
+			// Create an initially empty combobox, because we can fill it
+			// quicker than the default constructor can
+			wxChoice* newChoice = new wxChoice(m_VariationsContainer, wxID_ANY);
+
+			// Add box to sizer and list
+			sizer->Add(newChoice, wxSizerFlags().Expand().Border(wxALL, 5));
+			m_Choices.push_back(newChoice);
+		}
+
+		wxChoice* choice = m_Choices[i];
+		choice->Freeze();
+		choice->Clear();
+		choice->Append(group.variants);
+		choice->SetSelection(choice->FindString(group.chosen));
+		choice->Show(true);
+		choice->Thaw();
+	}
+
+	m_VariationsContainer->Layout();
+	m_VariationsContainer->Thaw();
+	m_VariationsContainer->FitInside();
+	Layout();
+}
+
+void EntitySettings::OnSelectOwner(wxCommandEvent &evt)
+{
+	m_ScenarioEditor->GetObjectSettings().SetPlayerID(evt.GetSelection());
+	m_ScenarioEditor->GetObjectSettings().NotifyObserversExcept(m_ObjectConn);
+}
+
+void EntitySettings::OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects)
+{
+	if (!selectedObjects.empty())
+		return;
+
+	std::for_each(m_Choices.begin(), m_Choices.end(), [](wxChoice* choice){
+		choice->Show(false);
+	});
+}
+
+void EntitySettings::OnVariationSelect(wxCommandEvent& evt)
+{
+	std::set<wxString> selections;
+
+	// It's possible for a variant name to appear in multiple groups.
+	// If so, assume that all the names in each group are the same, so
+	// we don't have to worry about some impossible combinations (e.g.
+	// one group "a,b", a second "b,c", and a third "c,a", where's there's
+	// no set of selections that matches one (and only one) of each group).
+	//
+	// So... When a combo box is changed from 'a' to 'b', add 'b' to the new
+	// selections and make sure any other combo boxes containing both 'a' and
+	// 'b' no longer contain 'a'.
+
+	wxString newValue = evt.GetString();
+
+	selections.insert(newValue);
+	std::for_each(m_Choices.begin(), m_Choices.end(), [&](wxChoice* choice){
+		// If our newly selected value is used in another combobox, we want
+		// that combobox to use the new value, so don't add its old value
+		// to the list of selections
+		if (choice->IsShown() && choice->FindString(newValue) == wxNOT_FOUND)
+			selections.insert(choice->GetString(choice->GetSelection()));
+	});
+
+	m_ScenarioEditor->GetObjectSettings().SetActorSelections(selections);
+	m_ScenarioEditor->GetObjectSettings().NotifyObserversExcept(m_ObjectConn);
+}
+//////////////////////////////////////////////////////////////////////////
+/*
 ObjectBottomBar::ObjectBottomBar(
 	wxWindow* parent,
 	Observable<ObjectSettings>& objectSettings,
@@ -460,49 +538,11 @@ ObjectBottomBar::ObjectBottomBar(
 
 	m_ViewerPanel->Layout(); // prevents strange visibility glitch of the animation buttons on my machine (Vista 32-bit SP1) -- vtsj
 	m_ViewerPanel->Show(false);
-
-	// --- add player/variation selection -------------------------------------------------------------------------------
-
-	wxSizer* playerSelectionSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer* playerVariationSizer = new wxBoxSizer(wxVERTICAL);
-
-	// TODO: make this a wxChoice instead
-	wxComboBox* playerSelect = new PlayerComboBox(this, objectSettings, mapSettings);
-	playerSelectionSizer->Add(new wxStaticText(this, wxID_ANY, _("Player:")), wxSizerFlags().Align(wxALIGN_CENTER));
-	playerSelectionSizer->AddSpacer(3);
-	playerSelectionSizer->Add(playerSelect);
-
-	playerVariationSizer->Add(playerSelectionSizer);
-	playerVariationSizer->AddSpacer(3);
-
-
-	wxWindow* variationSelect = new VariationControl(this, objectSettings);
-	variationSelect->SetMinSize(wxSize(160, -1));
-	wxSizer* variationSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Variation"));
-	variationSizer->Add(variationSelect, wxSizerFlags().Proportion(1).Expand());
-	playerVariationSizer->Add(variationSizer, wxSizerFlags().Proportion(1));
-
-	mainSizer->AddSpacer(3);
-	mainSizer->Add(playerVariationSizer, wxSizerFlags().Expand());
-
-	SetSizer(mainSizer);
 }
 
 void ObjectBottomBar::OnFirstDisplay()
 {
 	// We use messages here because the simulation is not init'd otherwise (causing a crash)
-
-	// Get player names
-	wxArrayString players;
-	AtlasMessage::qGetPlayerDefaults qryPlayers;
-	qryPlayers.Post();
-	AtObj playerData = AtlasObject::LoadFromJSON(*qryPlayers.defaults);
-	AtObj playerDefs = *playerData["PlayerData"];
-	for (AtIter p = playerDefs["item"]; p.defined(); ++p)
-	{
-		players.Add(wxString(p["Name"]));
-	}
-	wxDynamicCast(FindWindow(ID_PlayerSelect), PlayerComboBox)->SetPlayers(players);
 
 	// Initialise the game with the default settings
 	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"wireframe", m_ViewerWireframe));

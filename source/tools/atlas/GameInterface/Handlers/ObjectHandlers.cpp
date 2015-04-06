@@ -199,47 +199,49 @@ QUERYHANDLER(GetObjectSettings)
 			settings.player = player;
 	}
 
-	// TODO: selections
-
-/*
-	// Get the unit's possible variants and selected variants
-	std::vector<std::vector<CStr> > groups = unit->GetObject().m_Base->GetVariantGroups();
-	const std::set<CStr>& selections = unit->GetActorSelections();
-
-	// Iterate over variant groups
-	std::vector<std::vector<std::wstring> > variantgroups;
+	std::vector<std::vector<std::wstring>> variantgroups;
 	std::set<std::wstring> selections_set;
-	variantgroups.reserve(groups.size());
-	for (size_t i = 0; i < groups.size(); ++i)
+
+	CmpPtr<ICmpVisual> cmpVisualActor(*simulation, view->GetEntityId(msg->id));
+	if (cmpVisualActor)
 	{
-		// Copy variants into output structure
-
-		std::vector<std::wstring> group;
-		group.reserve(groups[i].size());
-		int choice = -1;
-
-		for (size_t j = 0; j < groups[i].size(); ++j)
+		CUnit* unit = cmpVisualActor->GetUnit();
+		if (unit)
 		{
-			group.push_back(CStrW(groups[i][j]));
+			// Get the unit's possible variants and selected variants
+			std::vector<std::vector<CStr>> groups = unit->GetObject().m_Base->GetVariantGroups();
+			const std::set<CStr>& selections = unit->GetActorSelections();
 
-			// Find the first string in 'selections' that matches one of this
-			// group's variants
-			if (choice == -1)
-				if (selections.find(groups[i][j]) != selections.end())
-					choice = (int)j;
+			variantgroups.reserve(groups.size());
+			Status err;
+			std::for_each(groups.begin(), groups.end(), [&](const std::vector<CStr>& group){
+				std::vector<std::wstring> subgroup;
+				subgroup.reserve(group.size());
+				int choice = -1;
+
+				for (size_t j = 0; j < group.size(); ++j)
+				{
+					subgroup.push_back(wstring_from_utf8(group[j], &err));
+
+					// Find the first string in 'selections' that matches one of this
+					// group's variants
+					if (choice == -1)
+						if (selections.find(group[j]) != selections.end())
+							choice = (int)j;
+				}
+
+				// Assuming one of the variants was selected (which it really ought
+				// to be), remember that one's name
+				if (choice != -1)
+					selections_set.insert(wstring_from_utf8(group[choice]));
+
+				variantgroups.push_back(subgroup);
+			});
 		}
-
-		// Assuming one of the variants was selected (which it really ought
-		// to be), remember that one's name
-		if (choice != -1)
-			selections_set.insert(CStrW(groups[i][choice]));
-
-		variantgroups.push_back(group);
 	}
 
-	settings.variantgroups = variantgroups;
+	settings.variantGroups = variantgroups;
 	settings.selections = std::vector<std::wstring> (selections_set.begin(), selections_set.end()); // convert set->vector
-*/
 
 	msg->settings = settings;
 }
@@ -323,8 +325,13 @@ BEGIN_COMMAND(SetObjectSettings)
 				m_PlayerOld = player;
 		}
 
-		// TODO: selections
-//		m_SelectionsOld = unit->GetActorSelections();
+		CmpPtr<ICmpVisual> cmpVisualActor(*simulation, view->GetEntityId(msg->id));
+		if (cmpVisualActor)
+		{
+			CUnit* unit = cmpVisualActor->GetUnit();
+			if (unit)
+				m_SelectionsOld = unit->GetActorSelections();
+		}
 
 		m_PlayerNew = (player_id_t)settings.player;
 
@@ -348,7 +355,7 @@ BEGIN_COMMAND(SetObjectSettings)
 	}
 
 private:
-	void Set(player_id_t player, const std::set<CStr>& UNUSED(selections))
+	void Set(player_id_t player, const std::set<CStr>& selections)
 	{
 		AtlasView* view = AtlasView::GetView(msg->view);
 		CSimulation2* simulation = view->GetSimulation2();
@@ -357,8 +364,13 @@ private:
 		if (cmpOwnership)
 			cmpOwnership->SetOwner(player);
 
-		// TODO: selections
-//		unit->SetActorSelections(selections);
+		CmpPtr<ICmpVisual> cmpVisualActor(*simulation, view->GetEntityId(msg->id));
+		if (cmpVisualActor)
+		{
+			CUnit* unit = cmpVisualActor->GetUnit();
+			if (unit)
+				unit->SetActorSelections(selections);
+		}
 	}
 };
 END_COMMAND(SetObjectSettings);

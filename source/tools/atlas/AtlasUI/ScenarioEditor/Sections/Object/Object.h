@@ -44,7 +44,7 @@ private:
 
 class DisplayTemplate : public wxPanel
 {
-	DECLARE_DYNAMIC_CLASS(DisplayTemplate)
+	DECLARE_DYNAMIC_CLASS(DisplayTemplate);
 public:
 	DisplayTemplate();
 	void Init(ScenarioEditor* scenarioEditor);
@@ -52,5 +52,28 @@ public:
 
 private:
 	wxScrolledWindow* m_TemplateNames;
+};
+
+class EntitySettings : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(EntitySettings);
+public:
+	EntitySettings();
+	void Init(ScenarioEditor* scenarioEditor);
+private:
+	ScenarioEditor* m_ScenarioEditor;
+	wxChoice* m_PlayerOwner;
+	wxScrolledWindow* m_VariationsContainer;
+	wxArrayString* m_Players;
+	std::vector<wxChoice*> m_Choices;
+	ObservableScopedConnection m_ObjectConn;
+
+	void OnMapSettingsChange(const AtObj& settings);
+	void OnObjectSettingsChange(const ObjectSettings& settings);
+	void OnSelectOwner(wxCommandEvent& evt);
+	void OnVariationSelect(wxCommandEvent& evt);
+	void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
+
+	DECLARE_EVENT_TABLE();
 };
 #endif

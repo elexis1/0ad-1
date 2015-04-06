@@ -359,9 +359,10 @@ enum
 	ID_ToolbarSimulationStop,
 	ID_ToolbarSimulationSpeed,
 	ID_ToolbarSimulationEnd,
-	
+
 	ID_ViewsBegin = 4000, //space for 998 views
 	ID_DisplayTemplateView,
+	ID_EntitySettingsView,
 	ID_ViewsEnd
 };
 
@@ -419,7 +420,7 @@ AtlasWindowCommandProc& ScenarioEditor::GetCommandProc() { return g_CommandProc;
 ScenarioEditor::ScenarioEditor(wxWindow* parent)
 : wxFrame(parent, wxID_ANY, _T(""), wxDefaultPosition, wxSize(1024, 768))
 , m_FileHistory(_T("Scenario Editor"))
-, m_ObjectSettings(g_SelectedObjects, AtlasMessage::eRenderView::GAME)
+, m_ObjectSettings(AtlasMessage::eRenderView::GAME)
 , m_ToolManager(this)
 , m_SimState(SimInactive)
 {
@@ -580,6 +581,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	m_Timer.SetOwner(this);
 	m_Timer.Start(20);
 
+	RefreshMapSettings();
 	m_Mgr.Update();
 }
 
@@ -618,6 +620,9 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 		OnSimulateControls(event);
 	else if (event.GetId() == ID_DisplayTemplateView)
 		UpdatePanelTool<DisplayTemplate>(event.IsChecked(), "displayTemplate", "DisplayTemplate");
+	else if (event.GetId() == ID_EntitySettingsView)
+		UpdatePanelTool<EntitySettings>(event.IsChecked(), "entitySettings", "EntitySettings");
+
 }
 
 void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
@@ -630,7 +635,8 @@ void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
 		this->GetToolBar()->ToggleTool(ID_ToolbarOptionObject, false);
 	else if (event.GetPane()->name == "displayTemplate")
 		this->GetMenuBar()->Check(ID_DisplayTemplateView, false);
-
+	else if (event.GetPane()->name == "entitySettings")
+		this->GetMenuBar()->Check(ID_EntitySettingsView, false);
 }
 
 template<typename T>
@@ -803,9 +809,21 @@ void ScenarioEditor::OnClose(wxCloseEvent& event)
 	Destroy();
 }
 
-void  ScenarioEditor::OnMenuClicked(wxCommandEvent &event)
+void ScenarioEditor::RefreshMapSettings()
 {
-	
+	AtlasMessage::qGetMapSettings qry;
+	qry.Post();
+
+	if (!(*qry.settings).empty())
+	{
+		// Prevent error if there's no map settings to parse
+		m_MapSettings = AtlasObject::LoadFromJSON(*qry.settings);
+	}
+	else
+	{
+		// Use blank object, it will be created next
+		m_MapSettings = AtObj();
+	}
 }
 
 static void UpdateTool(ToolManager& toolManager)
@@ -1041,8 +1059,8 @@ void ScenarioEditor::NotifyOnMapReload()
 	CreateOrGetPanelTool<PlayerSettingsControl>("playersettings", "PlayerSettings")->ReadFromEngine();
 	//m_SectionLayout.OnMapReload();
 
-	// Notify observers, here so it's independent of individual panels
-	//m_MapSettings.NotifyObservers();
+	RefreshMapSettings();
+	m_MapSettings.NotifyObservers();
 }
 
 bool ScenarioEditor::DiscardChangesDialog()

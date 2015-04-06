@@ -76,7 +76,6 @@ public:
 	void OnToolbarButtons(wxCommandEvent& event);
 
     void OnMenuOpen(wxMenuEvent& event);
-	void OnMenuClicked(wxCommandEvent& event);
 
 	bool OpenFile(const wxString& name, const wxString& filename);
 
@@ -88,11 +87,12 @@ public:
 
 	Observable<ObjectSettings>& GetObjectSettings() { return m_ObjectSettings; }
 	Observable<AtObj>& GetMapSettings() { return m_MapSettings; }
+	void RefreshMapSettings();
 
 	ToolManager& GetToolManager() { return m_ToolManager; }
 
 	bool DiscardChangesDialog();
-	
+
 	void SetOpenFilename(const wxString& filename);
 
 private:

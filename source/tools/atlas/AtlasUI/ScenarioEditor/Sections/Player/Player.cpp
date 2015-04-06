@@ -290,7 +290,7 @@ BEGIN_EVENT_TABLE(PlayerSettingsControl, wxPanel)
 END_EVENT_TABLE();
 
 PlayerSettingsControl::PlayerSettingsControl()
- : m_InGUIUpdate(false), m_MapSettings(new Observable<AtObj>()), m_NumPlayers(0)
+ : m_InGUIUpdate(false), m_NumPlayers(0)
 {
 }
 
@@ -350,14 +350,12 @@ void PlayerSettingsControl::OnNumPlayersSpin(wxSpinEvent& evt)
 
 		// Reload players, notify observers
 		POST_MESSAGE(LoadPlayerSettings, (true));
-		m_MapSettings->NotifyObservers();
 	}
 }
 
 void PlayerSettingsControl::Init(ScenarioEditor* scenarioEditor)
 {
 	m_ScenarioEditor = scenarioEditor;
-	m_MapSettings = &scenarioEditor->GetMapSettings();
 	wxSizer* sizer = this->GetSizer();
 
 	m_Players = new PlayerNotebook(this);
@@ -443,22 +441,10 @@ void PlayerSettingsControl::LoadDefaults()
 
 void PlayerSettingsControl::ReadFromEngine()
 {
-	AtlasMessage::qGetMapSettings qry;
-	qry.Post();
+	m_ScenarioEditor->RefreshMapSettings();
 
-	if (!(*qry.settings).empty())
-	{
-		// Prevent error if there's no map settings to parse
-		*m_MapSettings = AtlasObject::LoadFromJSON(*qry.settings);
-	}
-	else
-	{
-		// Use blank object, it will be created next
-		m_MapSettings = new Observable<AtObj>();
-	}
-
-	AtIter player = (*m_MapSettings)["PlayerData"]["item"];
-	if (!m_MapSettings->defined() || !player.defined() || player.count() == 0)
+	AtIter player = (m_ScenarioEditor->GetMapSettings())["PlayerData"]["item"];
+	if (!m_ScenarioEditor->GetMapSettings().defined() || !player.defined() || player.count() == 0)
 	{
 		// Player data missing - set number of players to max
 		m_NumPlayers = MAX_NUM_PLAYERS;
@@ -669,7 +655,7 @@ AtObj PlayerSettingsControl::UpdateSettingsObject()
 			wxStringClientData* str = dynamic_cast<wxStringClientData*>(choice->GetClientObject(choice->GetSelection()));
 			player.set("Civ", str->GetData());
 		}
-		
+
 		// color
 		if (controls->GetColorPickerCtrl()->IsEnabled())
 		{
@@ -739,18 +725,19 @@ AtObj PlayerSettingsControl::UpdateSettingsObject()
 		players.add("item", player);
 	}
 
-	m_MapSettings->set("PlayerData", players);
+	m_ScenarioEditor->GetMapSettings().set("PlayerData", players);
 
-	return *m_MapSettings;
+	return m_ScenarioEditor->GetMapSettings();
 }
 
 void PlayerSettingsControl::SendToEngine()
 {
 	UpdateSettingsObject();
 
-	std::string json = AtlasObject::SaveToJSON(*m_MapSettings);
+	std::string json = AtlasObject::SaveToJSON(m_ScenarioEditor->GetMapSettings());
 
 	// TODO: would be nice if we supported undo for settings changes
 
 	POST_COMMAND(SetMapSettings, (json));
+	m_ScenarioEditor->GetMapSettings().NotifyObservers();
 }

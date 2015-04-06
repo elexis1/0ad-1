@@ -1,4 +1,4 @@
-/* Copyright (C) 2012 Wildfire Games.
+/* Copyright (C) 2015 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 #include "GameInterface/Messages.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 
-ObjectSettings::ObjectSettings(Observable<std::vector<AtlasMessage::ObjectID> >& selectedObjects, int view)
-: m_PlayerID(0), m_SelectedObjects(selectedObjects), m_View(view)
+ObjectSettings::ObjectSettings(int view)
+: m_PlayerID(0), m_View(view)
 {
- 	m_Conn = m_SelectedObjects.RegisterObserver(0, &ObjectSettings::OnSelectionChange, this);
+ 	m_Conn = g_SelectedObjects.RegisterObserver(0, &ObjectSettings::OnSelectionChange, this);
 }
 
 int ObjectSettings::GetPlayerID() const
@@ -122,40 +122,28 @@ void ObjectSettings::OnSelectionChange(const std::vector<AtlasMessage::ObjectID>
 	m_VariantGroups.clear();
 
 	std::vector<std::vector<std::wstring> > variation = *qry.settings->variantGroups;
-	for (std::vector<std::vector<std::wstring> >::iterator grp = variation.begin();
-		grp != variation.end();
-		++grp)
-	{
+	std::for_each(variation.begin(), variation.end(), [&](const std::vector<std::wstring>& grp){
 		wxArrayString variants;
-
-		for (std::vector<std::wstring>::iterator it = grp->begin();
-			it != grp->end();
-			++it)
-		{
-			variants.Add(it->c_str());
-		}
-
+		std::for_each(grp.begin(), grp.end(), [&](const std::wstring& it){
+			variants.Add(it.c_str());
+		});
 		m_VariantGroups.push_back(variants);
-	}
+	});
 
 	std::vector<std::wstring> selections = *qry.settings->selections;
-	for (std::vector<std::wstring>::iterator sel = selections.begin();
-		sel != selections.end();
-		++sel)
-	{
-		m_ActorSelections.insert(sel->c_str());
-	}
+	std::for_each(selections.begin(), selections.end(), [&](const std::wstring& sel){
+		m_ActorSelections.insert(sel.c_str());
+	});
 
 	static_cast<Observable<ObjectSettings>*>(this)->NotifyObservers();
 }
 
 void ObjectSettings::PostToGame()
 {
-	if (m_SelectedObjects.empty())
+	if (g_SelectedObjects.empty())
 		return;
-	
-	for (std::vector<AtlasMessage::ObjectID>::iterator it = m_SelectedObjects.begin(); it != m_SelectedObjects.end(); it++)
-	{
-		POST_COMMAND(SetObjectSettings, (m_View, *it, GetSettings()));
-	}
+
+	std::for_each(g_SelectedObjects.begin(), g_SelectedObjects.end(), [&](const AtlasMessage::ObjectID& it){
+		POST_COMMAND(SetObjectSettings, (m_View, it, GetSettings()));
+	});
 }

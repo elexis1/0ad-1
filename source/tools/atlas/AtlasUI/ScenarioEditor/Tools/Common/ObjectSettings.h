@@ -1,4 +1,4 @@
-/* Copyright (C) 2012 Wildfire Games.
+/* Copyright (C) 2015 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ namespace AtlasMessage
 class ObjectSettings
 {
 public:
-	ObjectSettings(Observable<std::vector<AtlasMessage::ObjectID> >& selectedObjects, int view);
+	ObjectSettings(int view);
 
 	int GetPlayerID() const;
 	void SetPlayerID(int playerID);
@@ -56,8 +56,6 @@ public:
 	AtlasMessage::sObjectSettings GetSettings() const;
 
 private:
-	Observable<std::vector<AtlasMessage::ObjectID> >& m_SelectedObjects;
-
 	int m_View;
 
 	// 0 = gaia, 1..inf = normal players
