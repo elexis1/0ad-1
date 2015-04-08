@@ -19,6 +19,8 @@
 
 #include "MapReader.h"
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include "graphics/Camera.h"
 #include "graphics/CinemaManager.h"
 #include "graphics/Entity.h"
@@ -28,6 +30,7 @@
 #include "graphics/Terrain.h"
 #include "graphics/TerrainTextureEntry.h"
 #include "graphics/TerrainTextureManager.h"
+#include "graphics/Unit.h"
 #include "lib/timer.h"
 #include "lib/external_libraries/libsdl.h"
 #include "maths/MathUtil.h"
@@ -438,6 +441,7 @@ private:
 	int at_angle;
 	int at_uid;
 	int at_seed;
+	int at_variation;
 
 	XMBElementList nodes; // children of root
 
@@ -489,6 +493,7 @@ void CXMLReader::Init(const VfsPath& xml_filename)
 	AT(angle);
 	AT(uid);
 	AT(seed);
+	AT(variation);
 #undef AT
 #undef EL
 
@@ -980,6 +985,7 @@ int CXMLReader::ReadEntities(XMBElement parent, double end_time)
 		CFixedVector3D Position;
 		CFixedVector3D Orientation;
 		long Seed = -1;
+		std::set<CStr> actorSelections;
 
 		// Obstruction control groups.
 		entity_id_t ControlGroup = INVALID_ENTITY;
@@ -1029,11 +1035,20 @@ int CXMLReader::ReadEntities(XMBElement parent, double end_time)
 			else if (element_name == el_actor)
 			{
 				XMBAttributeList attrs = setting.GetAttributes();
-				CStr seedStr = attrs.GetNamedItem(at_seed);
-				if (!seedStr.empty())
+				CStr variationStr = attrs.GetNamedItem(at_variation);
+
+				if (!variationStr.empty())
 				{
-					Seed = seedStr.ToLong();
-					ENSURE(Seed >= 0);
+					boost::algorithm::split(actorSelections, variationStr, boost::is_any_of("|"));
+				}
+				else
+				{
+					CStr seedStr = attrs.GetNamedItem(at_seed);
+					if (!seedStr.empty())
+					{
+						Seed = seedStr.ToLong();
+						ENSURE(Seed >= 0);
+					}
 				}
 			}
 			else
@@ -1074,9 +1089,14 @@ int CXMLReader::ReadEntities(XMBElement parent, double end_time)
 			CmpPtr<ICmpVisual> cmpVisual(sim, ent);
 			if (cmpVisual)
 			{
-				if (Seed != -1)
+				if (!actorSelections.empty())
+				{
+					CUnit* unit = cmpVisual->GetUnit();
+					if (unit)
+						unit->SetActorSelections(actorSelections);
+				}
+				else if (Seed != -1)
 					cmpVisual->SetActorSeed((u32)Seed);
-				// TODO: variation/selection strings
 			}
 
 			if (PlayerID == m_MapReader.m_PlayerID && (boost::algorithm::ends_with(TemplateName, L"civil_centre") || m_MapReader.m_StartingCameraTarget == INVALID_ENTITY))

@@ -27,7 +27,10 @@
 #include "Terrain.h"
 #include "TerrainTextureEntry.h"
 #include "TerrainTextureManager.h"
+#include "Unit.h"
 
+
+#include <boost/algorithm/string/join.hpp>
 #include "maths/MathUtil.h"
 #include "maths/NUSpline.h"
 #include "ps/CLogger.h"
@@ -389,13 +392,23 @@ void CMapWriter::WriteXML(const VfsPath& filename,
 				CmpPtr<ICmpVisual> cmpVisual(sim, ent);
 				if (cmpVisual)
 				{
+					CUnit* unit = cmpVisual->GetUnit();
 					u32 seed = cmpVisual->GetActorSeed();
-					if (seed != (u32)ent)
+					bool variationsAdded = false;
+					XML_Element("Actor");
+					if (unit)
 					{
-						XML_Element("Actor");
-						XML_Attribute("seed", seed);
+						const std::set<CStr>& actorSelections = unit->GetActorSelections();
+
+						if (!actorSelections.empty())
+						{
+							CStr actorSelectionsStr = boost::algorithm::join(unit->GetActorSelections(), "|");
+							XML_Attribute("variation", actorSelectionsStr.c_str());
+							variationsAdded = true;
+						}
 					}
-					// TODO: variation/selection strings
+					if (!variationsAdded && seed != (u32)ent)
+						XML_Attribute("seed", seed);
 				}
 			}
 		}
@@ -426,9 +439,7 @@ void CMapWriter::WriteXML(const VfsPath& filename,
 					XML_Element("Node");
 					fixed distance = i > 0 ? nodes[i - 1].Distance : fixed::Zero();
 					last_target += distance;
-
 					XML_Attribute("deltatime", distance);
-
 					{
 						XML_Element("Position");
 						XML_Attribute("x", nodes[i].Position.X);
