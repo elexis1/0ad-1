@@ -24,7 +24,6 @@
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/ObjectSettings.h"
 #include "ScenarioEditor/Tools/Common/MiscState.h"
-#include "VariationControl.h"
 
 #include "GameInterface/Messages.h"
 
@@ -259,7 +258,7 @@ void DisplayTemplate::Init(ScenarioEditor *scenarioEditor)
 	m_TemplateNames = wxDynamicCast(FindWindow(ID_DisplayTemplateCtrl), wxScrolledWindow);
 	g_SelectedObjects.RegisterObserver(0, &DisplayTemplate::OnSelectedObjectsChange, this);
 
-	if (g_SelectedObjects.size() > 0)
+	if (!g_SelectedObjects.empty())
 		OnSelectedObjectsChange(g_SelectedObjects);
 }
 
