@@ -19,7 +19,6 @@
 
 #include "Terrain.h"
 
-#include "Buttons/ToolButton.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/Brushes.h"
 #include "ScenarioEditor/Tools/Common/MiscState.h"
@@ -178,7 +177,7 @@ TerrainSidebar::TerrainSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebar
 		// Terrain elevation
 		wxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Elevation tools"));
 		wxSizer* gridSizer = new wxGridSizer(4);
-		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Modify"), _T("AlterElevation")),
+		/*gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Modify"), _T("AlterElevation")),
 			_("Brush with left mouse buttons to raise terrain,\nright mouse button to lower it")), wxSizerFlags().Expand());
 		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Ridge"), _T("PikeElevation")),
 			_("Brush with left mouse buttons to raise terrain,\nright mouse button to lower it")), wxSizerFlags().Expand());
@@ -186,7 +185,7 @@ TerrainSidebar::TerrainSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebar
 			_("Brush with left mouse button to smooth terrain,\nright mouse button to roughen it")), wxSizerFlags().Expand());
 		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Flatten"), _T("FlattenElevation")),
 			_("Brush with left mouse button to flatten terrain")), wxSizerFlags().Expand());
-		sizer->Add(gridSizer, wxSizerFlags().Expand());
+		*/sizer->Add(gridSizer, wxSizerFlags().Expand());
 		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
 	}
 
@@ -195,13 +194,13 @@ TerrainSidebar::TerrainSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebar
 		// Terrain texture
 		wxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Texture tools"));
 		wxSizer* gridSizer = new wxGridSizer(3);
-		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Paint"), _T("PaintTerrain")),
+		/*gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Paint"), _T("PaintTerrain")),
 			_("Brush with left mouse button to paint texture dominantly,\nright mouse button to paint submissively.\nShift-left-click for eyedropper tool")), wxSizerFlags().Expand());
 		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Replace"), _T("ReplaceTerrain")),
 			_("Replace all of a terrain texture with a new one")), wxSizerFlags().Expand());
 		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Fill"), _T("FillTerrain")),
 			_T("Bucket fill a patch of terrain texture with a new one")), wxSizerFlags().Expand());
-		sizer->Add(gridSizer, wxSizerFlags().Expand());
+		*/sizer->Add(gridSizer, wxSizerFlags().Expand());
 		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
 	}
 

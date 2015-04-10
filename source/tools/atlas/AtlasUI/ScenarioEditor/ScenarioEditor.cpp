@@ -37,7 +37,6 @@
 #include "General/AtlasEventLoop.h"
 #include "General/Datafile.h"
 
-#include "CustomControls/Buttons/ToolButton.h"
 #include "CustomControls/Canvas/Canvas.h"
 #include "CustomControls/HighResTimer/HighResTimer.h"
 #include "CustomControls/MapDialog/MapDialog.h"

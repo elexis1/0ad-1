@@ -19,7 +19,6 @@
 
 #include "Object.h"
 
-#include "Buttons/ToolButton.h"
 #include "General/Datafile.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/ObjectSettings.h"

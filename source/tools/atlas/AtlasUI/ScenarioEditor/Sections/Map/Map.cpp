@@ -21,6 +21,7 @@
 #include "GameInterface/Messages.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/Tools.h"
+#include "ScenarioEditor/Sections/Player/Player.h"
 
 #include "wx/busyinfo.h"
 #include "wx/filename.h"

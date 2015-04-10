@@ -19,7 +19,6 @@
 
 #include "Tools.h"
 #include "GameInterface/Messages.h"
-#include "CustomControls/Buttons/ToolButton.h"
 
 class DummyTool : public ITool
 {
@@ -59,8 +58,6 @@ wxString ToolManager::GetCurrentToolName()
 	return m->CurrentTool->GetClassInfo()->GetClassName();
 }
 
-void SetActive(bool active, const wxString& name);
-
 void ToolManager::SetCurrentTool(const wxString& name, void* initData)
 {
 	if (*m->CurrentTool != &dummy)
@@ -69,8 +66,6 @@ void ToolManager::SetCurrentTool(const wxString& name, void* initData)
 		delete *m->CurrentTool;
 		m->CurrentTool = &dummy;
 	}
-
-	SetActive(false, m->CurrentToolName);
 
 	ITool* tool = NULL;
 	if (name.Len())
@@ -86,7 +81,6 @@ void ToolManager::SetCurrentTool(const wxString& name, void* initData)
 	}
 
 	m->CurrentToolName = name;
-	SetActive(true, m->CurrentToolName);
 
 	m->CurrentTool.NotifyObservers();
 }
@@ -110,17 +104,6 @@ typedef std::vector<toolButton> toolButtons_t;
 
 static toolbarButtons_t toolbarButtons;
 static toolButtons_t toolButtons;
-
-void SetActive(bool active, const wxString& name)
-{
-	for (toolbarButtons_t::iterator it = toolbarButtons.begin(); it != toolbarButtons.end(); ++it)
-		if (it->name == name)
-			it->toolbar->ToggleTool(it->id, active);
-
-	for (toolButtons_t::iterator it = toolButtons.begin(); it != toolButtons.end(); ++it)
-		if (it->name == name)
-			it->button->SetSelectedAppearance(active);
-}
 
 void RegisterToolButton(ToolButton* button, const wxString& toolName)
 {

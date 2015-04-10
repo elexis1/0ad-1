@@ -19,8 +19,6 @@
 
 #include "DLLInterface.h"
 
-#include "General/AtlasEventLoop.h"
-
 #include "General/Datafile.h"
 
 #include "ActorEditor/ActorEditor.h"

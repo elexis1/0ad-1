@@ -24,8 +24,6 @@
 #include "CustomControls/FileHistory/FileHistory.h"
 #include "General/AtlasWindowCommandProc.h"
 #include "General/Observable.h"
-#include "SectionLayout.h"
-#include "Sections/Player/Player.h"
 #include "Tools/Common/ObjectSettings.h"
 #include "Tools/Common/Tools.h"
 
