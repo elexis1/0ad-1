@@ -52,7 +52,7 @@ function InitMap()
 		// Should never get this far, failed settings would abort prior to loading scripts
 		throw("InitMapGen: settings missing");
 	}
-	warn(JSON.stringify(g_MapSettings));
+	
 	// Get civ data as array of JSON strings
 	var data = RMS.GetCivData();
 	if (!data || !data.length)

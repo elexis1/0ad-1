@@ -182,7 +182,7 @@ void ObjectSidebar::FilterObjects()
 
 	wxDataViewItem root = m_ObjectList->AppendContainer(wxDataViewItem(0), "0AD");
 
-	std::for_each(objects.begin(), objects.end(), [&] (const sObjectsListItem it){
+	std::for_each(objects.begin(), objects.end(), [&] (const sObjectsListItem& it){
 		wxString id = it.id.c_str();
 		wxString name = it.name.c_str();
 		m_ObjectList->AppendItem(root, name, -1, new wxStringClientData(id));
@@ -332,9 +332,7 @@ void EntitySettings::Init(ScenarioEditor *scenarioEditor)
 	AtObj playerData = AtlasObject::LoadFromJSON(*qryPlayers.defaults);
 	AtObj playerDefs = *playerData["PlayerData"];
 	for (AtIter p = playerDefs["item"]; p.defined(); ++p)
-	{
 		m_Players->Add(wxString(p["Name"]));
-	}
 
 	m_PlayerOwner->Append(*m_Players);
 	m_ObjectConn = m_ScenarioEditor->GetObjectSettings().RegisterObserver(0, &EntitySettings::OnObjectSettingsChange, this);
@@ -352,9 +350,7 @@ void EntitySettings::OnMapSettingsChange(const AtObj& settings)
 
 	size_t numPlayers = settings["PlayerData"]["item"].count();
 	for (size_t i = 0; i <= numPlayers && i < m_Players->Count(); ++i)
-	{
 		m_PlayerOwner->Append((*m_Players)[i]);
-	}
 
 	OnObjectSettingsChange(m_ScenarioEditor->GetObjectSettings());
 	m_PlayerOwner->Thaw();
@@ -376,9 +372,7 @@ void EntitySettings::OnObjectSettingsChange(const ObjectSettings& settings)
 
 	// If we have too many combo boxes, hide the excess ones
 	for (size_t i = newCount; i < oldCount; ++i)
-	{
 		m_Choices[i]->Show(false);
-	}
 
 	for (size_t i = 0; i < variation.size(); ++i)
 	{

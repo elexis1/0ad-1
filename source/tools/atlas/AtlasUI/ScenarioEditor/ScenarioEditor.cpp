@@ -655,9 +655,7 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 	}
 
 	if (!paneInfo.IsOk())
-	{
 		CreateOrGetPanelTool<T>(panelName, xrcName, true);
-	}
 	else
 		paneInfo.Show();
 
@@ -670,9 +668,7 @@ T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bo
 	static_assert(std::is_base_of<wxPanel, T>::value, "T must extend wxPanel");
 	wxAuiPaneInfo& paneInfo = m_Mgr.GetPane(panelName);
 	if (paneInfo.IsOk())
-	{
 		return static_cast<T*>(paneInfo.window);
-	}
 
 	T* panel = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
 	if (!panel)
@@ -814,16 +810,7 @@ void ScenarioEditor::RefreshMapSettings()
 	AtlasMessage::qGetMapSettings qry;
 	qry.Post();
 
-	if (!(*qry.settings).empty())
-	{
-		// Prevent error if there's no map settings to parse
-		m_MapSettings = AtlasObject::LoadFromJSON(*qry.settings);
-	}
-	else
-	{
-		// Use blank object, it will be created next
-		m_MapSettings = AtObj();
-	}
+	m_MapSettings = !(*qry.settings).empty() ? AtlasObject::LoadFromJSON(*qry.settings) : AtObj();
 }
 
 static void UpdateTool(ToolManager& toolManager)
@@ -1057,7 +1044,6 @@ void ScenarioEditor::NotifyOnMapReload()
 	toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
 
 	CreateOrGetPanelTool<PlayerSettingsControl>("playersettings", "PlayerSettings")->ReadFromEngine();
-	//m_SectionLayout.OnMapReload();
 
 	RefreshMapSettings();
 	m_MapSettings.NotifyObservers();

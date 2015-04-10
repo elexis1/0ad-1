@@ -304,9 +304,7 @@ void PlayerSettingsControl::OnNumPlayersSpin(wxSpinEvent& evt)
 		//	forces another EVT_SPINCTRL event, which we don't want
 		//	to handle, so we check here for a change
 		if (evt.GetInt() == (int)m_NumPlayers)
-		{
 			return;	// No change
-		}
 
 		size_t oldNumPlayers = m_NumPlayers;
 		m_NumPlayers = evt.GetInt();

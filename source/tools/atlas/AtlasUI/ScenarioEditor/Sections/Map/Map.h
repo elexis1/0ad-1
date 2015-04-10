@@ -45,7 +45,7 @@ private:
 	}
 
 	std::set<std::wstring> m_MapSettingsKeywords;
-	Observable<AtObj>* m_MapSettings;
+	ScenarioEditor* m_ScenarioEditor;
 
 	DECLARE_EVENT_TABLE();
 };

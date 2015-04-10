@@ -76,12 +76,14 @@ BEGIN_EVENT_TABLE(MapSettingsControl, wxPanel)
 	EVT_CHOICE(wxID_ANY, MapSettingsControl::OnEdit)
 END_EVENT_TABLE();
 
-MapSettingsControl::MapSettingsControl() : m_MapSettings(new Observable<AtObj>())
+MapSettingsControl::MapSettingsControl()
 {
 }
 
 void MapSettingsControl::Init(ScenarioEditor* scenarioEditor)
 {
+	m_ScenarioEditor = scenarioEditor;
+
 	wxArrayString gameTypes;
 	gameTypes.Add(_T("conquest"));
 	gameTypes.Add(_T("conquest_structures"));
@@ -95,39 +97,33 @@ void MapSettingsControl::Init(ScenarioEditor* scenarioEditor)
 
 void MapSettingsControl::ReadFromEngine()
 {
-	AtlasMessage::qGetMapSettings qry;
-	qry.Post();
-	if (!(*qry.settings).empty())
-	{
-		// Prevent error if there's no map settings to parse
-		*m_MapSettings = AtlasObject::LoadFromJSON(*qry.settings);
-	}
-
+	m_ScenarioEditor->RefreshMapSettings();
+	Observable<AtObj>& mapSettings = m_ScenarioEditor->GetMapSettings();
 	// map name
-	wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->ChangeValue(wxString((*m_MapSettings)["Name"]));
+	wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->ChangeValue(wxString(mapSettings["Name"]));
 
 	// map description
-	wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->ChangeValue(wxString((*m_MapSettings)["Description"]));
+	wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->ChangeValue(wxString(mapSettings["Description"]));
 
 	// map preview
-	wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->ChangeValue(wxString((*m_MapSettings)["Preview"]));
+	wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->ChangeValue(wxString(mapSettings["Preview"]));
 
 	// reveal map
-	wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->SetValue(wxString((*m_MapSettings)["RevealMap"]) == L"true");
+	wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->SetValue(wxString(mapSettings["RevealMap"]) == L"true");
 
 	// game type / victory conditions
-	if ((*m_MapSettings)["GameType"].defined())
-		wxDynamicCast(FindWindow(ID_MapType), wxChoice)->SetStringSelection(wxString((*m_MapSettings)["GameType"]));
+	if (mapSettings["GameType"].defined())
+		wxDynamicCast(FindWindow(ID_MapType), wxChoice)->SetStringSelection(wxString(mapSettings["GameType"]));
 	else
 		wxDynamicCast(FindWindow(ID_MapType), wxChoice)->SetSelection(0);
 
 	// lock teams
-	wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->SetValue(wxString((*m_MapSettings)["LockTeams"]) == L"true");
+	wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->SetValue(wxString(mapSettings["LockTeams"]) == L"true");
 
 	// keywords
 	{
 		m_MapSettingsKeywords.clear();
-		for (AtIter keyword = (*m_MapSettings)["Keywords"]["item"]; keyword.defined(); ++keyword)
+		for (AtIter keyword = mapSettings["Keywords"]["item"]; keyword.defined(); ++keyword)
 			m_MapSettingsKeywords.insert(std::wstring(keyword));
 
 		wxDynamicCast(FindWindow(ID_MapKW_Demo), wxCheckBox)->SetValue(m_MapSettingsKeywords.count(L"demo") != 0);
@@ -137,8 +133,8 @@ void MapSettingsControl::ReadFromEngine()
 
 void MapSettingsControl::SetMapSettings(const AtObj& obj)
 {
-	*m_MapSettings = obj;
-	m_MapSettings->NotifyObservers();
+	m_ScenarioEditor->GetMapSettings() = obj;
+	m_ScenarioEditor->GetMapSettings().NotifyObservers();
 
 	SendToEngine();
 }
@@ -146,19 +142,19 @@ void MapSettingsControl::SetMapSettings(const AtObj& obj)
 AtObj MapSettingsControl::UpdateSettingsObject()
 {
 	// map name
-	m_MapSettings->set("Name", wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->GetValue());
+	m_ScenarioEditor->GetMapSettings().set("Name", wxDynamicCast(FindWindow(ID_MapName), wxTextCtrl)->GetValue());
 
 	// map description
-	m_MapSettings->set("Description", wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->GetValue());
+	m_ScenarioEditor->GetMapSettings().set("Description", wxDynamicCast(FindWindow(ID_MapDescription), wxTextCtrl)->GetValue());
 
 	// map preview
-	m_MapSettings->set("Preview", wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->GetValue());
+	m_ScenarioEditor->GetMapSettings().set("Preview", wxDynamicCast(FindWindow(ID_MapPreview), wxTextCtrl)->GetValue());
 
 	// reveal map
-	m_MapSettings->setBool("RevealMap", wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->GetValue());
+	m_ScenarioEditor->GetMapSettings().setBool("RevealMap", wxDynamicCast(FindWindow(ID_MapReveal), wxCheckBox)->GetValue());
 
 	// game type / victory conditions
-	m_MapSettings->set("GameType", wxDynamicCast(FindWindow(ID_MapType), wxChoice)->GetStringSelection());
+	m_ScenarioEditor->GetMapSettings().set("GameType", wxDynamicCast(FindWindow(ID_MapType), wxChoice)->GetStringSelection());
 
 	// keywords
 	{
@@ -176,20 +172,20 @@ AtObj MapSettingsControl::UpdateSettingsObject()
 		keywords.set("@array", L"");
 		for (std::set<std::wstring>::iterator it = m_MapSettingsKeywords.begin(); it != m_MapSettingsKeywords.end(); ++it)
 			keywords.add("item", it->c_str());
-		m_MapSettings->set("Keywords", keywords);
+		m_ScenarioEditor->GetMapSettings().set("Keywords", keywords);
 	}
 
 	// teams locked
-	m_MapSettings->setBool("LockTeams", wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->GetValue());
+	m_ScenarioEditor->GetMapSettings().setBool("LockTeams", wxDynamicCast(FindWindow(ID_MapTeams), wxCheckBox)->GetValue());
 
-	return *m_MapSettings;
+	return m_ScenarioEditor->GetMapSettings();
 }
 
 void MapSettingsControl::SendToEngine()
 {
 	UpdateSettingsObject();
 
-	std::string json = AtlasObject::SaveToJSON(*m_MapSettings);
+	std::string json = AtlasObject::SaveToJSON(m_ScenarioEditor->GetMapSettings());
 
 	// TODO: would be nice if we supported undo for settings changes
 
@@ -199,11 +195,11 @@ void MapSettingsControl::SendToEngine()
 IMPLEMENT_DYNAMIC_CLASS(NewMapConfiguration, wxPanel);
 
 BEGIN_EVENT_TABLE(NewMapConfiguration, wxPanel)
-EVT_BUTTON(ID_RandomReseed, NewMapConfiguration::OnRandomReseed)
-EVT_BUTTON(wxID_APPLY, NewMapConfiguration::OnGenerate)
-EVT_BUTTON(ID_OpenPlayerPanel, NewMapConfiguration::OnOpenPlayerPanel)
-EVT_BUTTON(ID_ChooseImage, NewMapConfiguration::OnChooseImage)
-EVT_RADIOBOX(ID_TypeMap, NewMapConfiguration::OnTypeMap)
+	EVT_BUTTON(ID_RandomReseed, NewMapConfiguration::OnRandomReseed)
+	EVT_BUTTON(wxID_APPLY, NewMapConfiguration::OnGenerate)
+	EVT_BUTTON(ID_OpenPlayerPanel, NewMapConfiguration::OnOpenPlayerPanel)
+	EVT_BUTTON(ID_ChooseImage, NewMapConfiguration::OnChooseImage)
+	EVT_RADIOBOX(ID_TypeMap, NewMapConfiguration::OnTypeMap)
 END_EVENT_TABLE();
 
 
@@ -337,11 +333,8 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 		//m_MapSettingsCtrl->SetMapSettings(oldSettings);
 	}
 
-	if (selection == 2)
-	{
-		//Import HeighMap
+	if (selection == 2) //Import HeighMap
 		POST_MESSAGE(ImportHeightmap, (*m_Image));
-	}
 
 	m_ScenarioEditor->SetOpenFilename(_T(""));
 	m_ScenarioEditor->NotifyOnMapReload();

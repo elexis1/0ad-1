@@ -427,7 +427,7 @@ bool CParamNode::Any(const std::wstring& strW) const
 	if (m_Value.find(strW) != std::wstring::npos)
 		return true;
 
-	ChildrenMap::const_iterator found = std::find_if(m_Childs.begin(), m_Childs.end(), [&](const std::pair<std::string, CParamNode> child){
+	ChildrenMap::const_iterator found = std::find_if(m_Childs.begin(), m_Childs.end(), [&](const std::pair<std::string, CParamNode>& child){
 		return (child.first.find(str) != std::string::npos) || child.second.Any(strW);
 	});
 
