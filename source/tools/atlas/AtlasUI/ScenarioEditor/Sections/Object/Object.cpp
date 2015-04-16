@@ -174,14 +174,14 @@ void ObjectSidebar::FilterObjects()
 	// Get the list of objects from the game
 	AtlasMessage::qGetObjectsList qry(filterType, (std::wstring)filterName.wx_str(), includeContent);
 	qry.Post();
-	std::vector<sObjectsListItem> objects = *qry.objects;
+	std::vector<AtlasMessage::sObjectsListItem> objects = *qry.objects;
 
 	m_ObjectList->Freeze();
 	m_ObjectList->DeleteAllItems();
 
 	wxDataViewItem root = m_ObjectList->AppendContainer(wxDataViewItem(0), "0AD");
 
-	std::for_each(objects.begin(), objects.end(), [&] (const sObjectsListItem& it){
+	std::for_each(objects.begin(), objects.end(), [&] (const AtlasMessage::sObjectsListItem& it){
 		wxString id = it.id.c_str();
 		wxString name = it.name.c_str();
 		m_ObjectList->AppendItem(root, name, -1, new wxStringClientData(id));

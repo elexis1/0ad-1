@@ -34,7 +34,6 @@
 #include "wx/xml/xml.h"
 #include "wx/xrc/xmlres.h"
 
-#include "General/AtlasEventLoop.h"
 #include "General/Datafile.h"
 
 #include "CustomControls/Canvas/Canvas.h"
