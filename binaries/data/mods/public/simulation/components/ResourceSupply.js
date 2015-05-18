@@ -39,6 +39,8 @@ ResourceSupply.prototype.Init = function()
 
 	[this.type,this.subtype] = this.template.Type.split('.');
 	var resData = Resources.GetResource(this.type);
+	if (this.type === "treasure")
+		resData = { "subtypes": Resources.GetCodes() };
 
 	if (!resData || resData.subtypes.indexOf(this.subtype) === -1)
 		error("Invalid resource type or subtype ("+this.type+"/"+this.subtype+")");
