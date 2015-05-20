@@ -152,6 +152,9 @@ GuiInterface.prototype.GetSimulationState = function()
 	let cmpBarter = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter);
 	ret.barterPrices = cmpBarter.GetPrices();
 
+	// Add Resource Codes
+	ret.resources = Resources.GetCodes();
+
 	// Add basic statistics to each player
 	for (let i = 0; i < numPlayers; ++i)
 	{
