@@ -87,15 +87,14 @@ g_SelectionPanels.Alert = {
 g_SelectionPanels.Barter = {
 	"getMaxNumberOfItems": function()
 	{
-		return 4;
+		return 8;
 	},
 	"rowLength": 4,
 	"getItems": function(unitEntState, selection)
 	{
 		if (!unitEntState.barterMarket)
 			return [];
-		// ["food", "wood", "stone", "metal"]
-		return BARTER_RESOURCES;
+		return GetSimState().resources;
 	},
 	"setupButton": function(data)
 	{
@@ -114,6 +113,9 @@ g_SelectionPanels.Barter = {
 		let amountToSell = BARTER_RESOURCE_AMOUNT_TO_SELL;
 		if (Engine.HotkeyIsPressed("session.massbarter"))
 			amountToSell *= BARTER_BUNCH_MULTIPLIER;
+
+		if (!g_BarterSell)
+			g_BarterSell = GetSimState().resources[0];
 
 		amount.Sell.caption = "-" + amountToSell;
 		let prices = data.unitEntState.barterMarket.prices;

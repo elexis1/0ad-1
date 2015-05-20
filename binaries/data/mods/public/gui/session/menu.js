@@ -22,9 +22,6 @@ const INITIAL_MENU_POSITION = "100%-164 " + MENU_TOP + " 100% " + MENU_BOTTOM;
 // Number of pixels per millisecond to move
 const MENU_SPEED = 1.2;
 
-// Available resources in trade and tribute menu
-const RESOURCES = ["food", "wood", "stone", "metal"];
-
 // Trade menu: step for probability changes
 const STEP = 5;
 
@@ -237,6 +234,7 @@ function openDiplomacy()
 	g_IsDiplomacyOpen = true;
 
 	let isCeasefireActive = GetSimState().ceasefireActive;
+	let resCodes = GetSimState().resources;
 
 	// Get offset for one line
 	let onesize = Engine.GetGUIObjectByName("diplomacyPlayer[0]").size;
@@ -305,8 +303,10 @@ function diplomacyFormatStanceButtons(i, hidden)
 
 function diplomacyFormatTributeButtons(i, hidden)
 {
-	for (let resource of RESOURCES)
+	horizSpaceRepeatedObjects ("diplomacyPlayer["+(i-1)+"]_tribute[r]", "r", 0);
+	for (let r in resCodes)
 	{
+		let resource = resCodes[r];
 		let button = Engine.GetGUIObjectByName("diplomacyPlayerTribute"+resource[0].toUpperCase()+resource.substring(1)+"["+(i-1)+"]");
 		button.hidden = hidden;
 		if (hidden)
@@ -327,9 +327,9 @@ function diplomacyFormatTributeButtons(i, hidden)
 				}
 
 				let amounts = {};
-				for (let type of RESOURCES)
-					amounts[type] = 0;
-				amounts[resource] = 100 * multiplier;
+				for (let res of resCodes)
+					amounts[res] = 0;
+				amounts[resource] = 100 * multiplier,
 
 				button.tooltip = formatTributeTooltip(i, resource, amounts[resource]);
 
@@ -400,19 +400,15 @@ function openTrade()
 
 	var proba = Engine.GuiInterfaceCall("GetTradingGoods", g_ViewedPlayer);
 	var button = {};
-	var selec = RESOURCES[0];
-	for (var i = 0; i < RESOURCES.length; ++i)
+	let resCodes = GetSimState().resources;
+	let selec = resCodes[0];
+	horizSpaceRepeatedObjects ("tradeResource[n]", "n", 0);
+	hideRemaining("tradeResource[", resCodes.length, "]");
+	
+	for (let i = 0; i < resCodes.length; ++i)
 	{
 		var buttonResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
-		if (i > 0)
-		{
-			var size = Engine.GetGUIObjectByName("tradeResource["+(i-1)+"]").size;
-			var width = size.right - size.left;
-			size.left += width;
-			size.right += width;
-			Engine.GetGUIObjectByName("tradeResource["+i+"]").size = size;
-		}
-		var resource = RESOURCES[i];
+		var resource = resCodes[i];
 		proba[resource] = (proba[resource] ? proba[resource] : 0);
 		var buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
 		var icon = Engine.GetGUIObjectByName("tradeResourceIcon["+i+"]");
@@ -428,7 +424,7 @@ function openTrade()
 			return function() {
 				if (Engine.HotkeyIsPressed("session.fulltradeswap"))
 				{
-					for (var ress of RESOURCES)
+					for (let ress of resCodes)
 						proba[ress] = 0;
 					proba[resource] = 100;
 					Engine.PostNetworkCommand({"type": "set-trading-goods", "tradingGoods": proba});
@@ -772,7 +768,7 @@ function formatTributeTooltip(playerID, resource, amount)
 {
 	return sprintf(translate("Tribute %(resourceAmount)s %(resourceType)s to %(playerName)s. Shift-click to tribute %(greaterAmount)s."), {
 		"resourceAmount": amount,
-		"resourceType": getLocalizedResourceName(resource, "withinSentence"),
+		"resourceType": translateWithContext("withinSentence", resource),
 		"playerName": colorizePlayernameByID(playerID),
 		"greaterAmount": amount < 500 ? 500 : amount + 500
 	});
