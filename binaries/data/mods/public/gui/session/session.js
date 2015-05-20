@@ -474,10 +474,16 @@ function updateTopPanel()
 	let viewPlayer = Engine.GetGUIObjectByName("viewPlayer");
 	viewPlayer.hidden = !g_IsObserver && !g_DevSettings.changePerspective;
 
-	Engine.GetGUIObjectByName("food").hidden = !isPlayer;
-	Engine.GetGUIObjectByName("wood").hidden = !isPlayer;
-	Engine.GetGUIObjectByName("stone").hidden = !isPlayer;
-	Engine.GetGUIObjectByName("metal").hidden = !isPlayer;
+	horizSpaceRepeatedObjects ("resource[n]", "n", 0);
+	let resCodes = GetSimState().resources;
+	for (let r = 0; r < resCodes.length; ++r)
+	{
+		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = translate(resCodes[r]);
+		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + resCodes[r] + ".png";
+		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
+	}
+	hideRemaining("resource[", resCodes.length-1, "]");
+
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("diplomacyButton1").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("tradeButton1").hidden = !isPlayer;
@@ -965,14 +971,17 @@ function getAllyStatTooltip(resource)
 
 function updatePlayerDisplay()
 {
-	let playerState = GetSimState().players[g_ViewedPlayer];
+	let simState = GetSimState();
+	let playerState = simState.players[g_ViewedPlayer];
 	if (!playerState)
 		return;
 
-	for (let res of RESOURCES)
+	let resCodes = simState.resources;
+	for (let r = 0; r < resCodes.length; ++r)
 	{
-		Engine.GetGUIObjectByName("resource_" + res).caption = Math.floor(playerState.resourceCounts[res]);
-		Engine.GetGUIObjectByName(res).tooltip = getLocalizedResourceName(res, "firstWord") + getAllyStatTooltip(res);
+		let res = resCodes[r];
+		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(res, "firstWord") + getAllyStatTooltip(res);
+		Engine.GetGUIObjectByName("resource["+r+"]_count").caption = Math.floor(playerState.resourceCounts[res]);
 	}
 
 	Engine.GetGUIObjectByName("resourcePop").caption = sprintf(translate("%(popCount)s/%(popLimit)s"), playerState);

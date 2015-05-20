@@ -14,9 +14,9 @@ function getResourceTypeDisplayName(resourceType)
 {
 	let resourceCode = resourceType.generic;
 	if (resourceCode == "treasure")
-		return getLocalizedResourceName(resourceType.specific, "firstWord");
+		return translateWithContext("firstWord", resourceType["specific"]);
 	else
-		return getLocalizedResourceName(resourceCode, "firstWord");
+		return translateWithContext("firstWord", resourceCode);
 }
 
 // Updates the health bar of garrisoned units
