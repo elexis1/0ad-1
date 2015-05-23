@@ -1,4 +1,4 @@
-const g_MaxHeadingTitle= 8;
+const g_MaxHeadingTitle= 12;
 
 // const for filtering long collective headings
 const g_LongHeadingWidth = 250;
@@ -17,7 +17,6 @@ const g_CapturedColor = '[color="255 255 157"]';
 
 const g_BuildingsTypes = [ "total", "House", "Economic", "Outpost", "Military", "Fortress", "CivCentre", "Wonder" ];
 const g_UnitsTypes = [ "total", "Infantry", "Worker", "Cavalry", "Champion", "Hero", "Ship", "Trader" ];
-const g_ResourcesTypes = [ "food", "wood", "stone", "metal" ];
 
 // Colors used for gathered and traded resources
 const g_IncomeColor = '[color="201 255 200"]';
@@ -241,6 +240,29 @@ function init(data)
 	}
 	else
 		g_Teams = false;
+
+	// Resource names and counters
+	var resHeads = [];
+	var tradeHeads = [];
+	var resPanel = g_ScorePanelsData["resources"];
+	var tradePanel = g_ScorePanelsData["market"];
+	for (let code of g_GameData.resources)
+	{
+		resHeads.push({
+				"caption": translate(capitalizeWord(code)),
+				"yStart": 34, "width": 100
+			});
+		resPanel.counters.unshift({"width": 100, "fn": calculateResources});
+		
+		tradeHeads.push({
+				"caption": translate(capitalizeWord(code)+" exchanged"),
+				"yStart": 16, "width": 100,
+			});
+		tradePanel.counters.unshift({"width": 100, "fn": calculateResourceExchanged});
+	}
+	resPanel.headings.splice.apply(resPanel.headings, [1, 0].concat(resHeads));
+	resPanel.titleHeadings[0].width = (100 * g_GameData.resources.length) + 110;
+	tradePanel.headings.splice.apply(tradePanel.headings, [1, 0].concat(tradeHeads));
 
 	// Erase teams data if teams are not displayed
 	if (!g_Teams)
