@@ -254,7 +254,13 @@ function openDiplomacy()
 		diplomacyFormatAttackRequestButton(i, myself || playerInactive || isCeasefireActive || !hasAllies || !g_Players[i].isEnemy[g_ViewedPlayer]);
 	}
 
-	Engine.GetGUIObjectByName("diplomacyDialogPanel").hidden = false;
+	let dialog = Engine.GetGUIObjectByName("diplomacyDialogPanel");
+	let size = dialog.size;
+	let wid = resCodes.length * 10;
+	size.left = -(260 + wid);
+	size.right = (260 + wid);
+	dialog.size = size;
+	dialog.hidden = false;
 }
 
 function diplomacySetupTexts(i, rowsize)
@@ -305,10 +311,12 @@ function diplomacyFormatStanceButtons(i, hidden)
 function diplomacyFormatTributeButtons(i, hidden)
 {
 	horizSpaceRepeatedObjects ("diplomacyPlayer["+(i-1)+"]_tribute[r]", "r", 0);
+	let resCodes = GetSimState().resources;
 	for (let r in resCodes)
 	{
 		let resource = resCodes[r];
-		let button = Engine.GetGUIObjectByName("diplomacyPlayerTribute"+resource[0].toUpperCase()+resource.substring(1)+"["+(i-1)+"]");
+		let button = Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]");
+			Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resource+".png";
 		button.hidden = hidden;
 		if (hidden)
 			continue;
@@ -461,7 +469,13 @@ function openTrade()
 	Engine.GetGUIObjectByName("landTraders").caption = getIdleLandTradersText(traderNumber);
 	Engine.GetGUIObjectByName("shipTraders").caption = getIdleShipTradersText(traderNumber);
 
-	Engine.GetGUIObjectByName("tradeDialogPanel").hidden = false;
+	let dialog = Engine.GetGUIObjectByName("tradeDialogPanel");
+	let size = dialog.size;
+	let wid = resCodes.length * (58/2);
+	size.left = -(134 + wid);
+	size.right = (134 + wid);
+	dialog.size = size;
+	dialog.hidden = false;
 }
 
 function getIdleLandTradersText(traderNumber)
