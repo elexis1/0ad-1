@@ -121,7 +121,7 @@ g_SelectionPanels.Barter = {
 		let prices = data.unitEntState.barterMarket.prices;
 		amount.Buy.caption = "+" + Math.round(prices.sell[g_BarterSell] / prices.buy[data.item] * amountToSell);
 
-		let resource = getLocalizedResourceName(data.item, "withinSentence");
+		let resource = translateWithContext("withinSentence", data.item);
 		button.Buy.tooltip = sprintf(translate("Buy %(resource)s"), { "resource": resource });
 		button.Sell.tooltip = sprintf(translate("Sell %(resource)s"), { "resource": resource });
 
@@ -166,8 +166,10 @@ g_SelectionPanels.Barter = {
 		button.Sell.hidden = false;
 		selectionIcon.hidden = !isSelected;
 
-		setPanelObjectPosition(button.Sell, data.i, data.rowLength);
-		setPanelObjectPosition(button.Buy, data.i + data.rowLength, data.rowLength);
+		let sellPos = data.i + (data.i >= data.rowLength ? data.rowLength : 0);
+		let buyPos = data.i + data.rowLength * (data.i >= data.rowLength ? 2 : 1);
+		setPanelObjectPosition(button.Sell, sellPos, data.rowLength);
+		setPanelObjectPosition(button.Buy, buyPos, data.rowLength);
 		return true;
 	}
 };
