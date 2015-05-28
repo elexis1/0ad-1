@@ -9,5 +9,6 @@
 		"tree",
 		"ruins"
 	],
-	"truePrice": 100
+	"truePrice": 100,
+	"aiAnalysisInfluenceGroup": 1
 }
