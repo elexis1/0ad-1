@@ -154,6 +154,9 @@ GuiInterface.prototype.GetSimulationState = function()
 
 	// Add Resource Codes
 	ret.resources = Resources.GetCodes();
+	ret.aiResourceAnalysis = {};
+	for (let res of ret.resources)
+		ret.aiResourceAnalysis[res] = Resources.GetResource(res).aiAnalysisInfluenceGroup || null;
 
 	// Add basic statistics to each player
 	for (let i = 0; i < numPlayers; ++i)

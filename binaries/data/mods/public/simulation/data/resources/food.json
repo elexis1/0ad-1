@@ -12,5 +12,6 @@
 		"meat",
 		"milk"
 	],
-	"truePrice": 100
+	"truePrice": 100,
+	"aiAnalysisInfluenceGroup": 0
 }

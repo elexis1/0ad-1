@@ -179,14 +179,13 @@ m.SharedScript.prototype.init = function(state, deserialization)
 	this.accessibility = new m.Accessibility();
 	this.accessibility.init(state, this.terrainAnalyzer);
 
+	this.resourceInfo = state.resources;
+	this.resourceAnalysisGroups = state.aiResourceAnalysis;
+	m.Resources.prototype.types = state.resources.codes;
+
 	// Setup resources
-	this.resourceTypes = { "food": 0, "wood": 1, "stone": 2, "metal": 2 };
-	this.resourceList = [];
-	for (let res in this.resourceTypes)
-		this.resourceList.push(res);
-	m.Resources.prototype.types = this.resourceList;
 	// Resource types: 0 = not used for resource maps
-	//                 1 = abondant resource with small amount each
+	//                 1 = abundant resource with small amount each
 	//                 2 = spare resource, but huge amount each
 	// The following maps are defined in TerrainAnalysis.js and are used for some building placement (cc, dropsites)
 	// They are updated by checking for create and destroy events for all resources
