@@ -478,7 +478,7 @@ function updateTopPanel()
 	let resCodes = GetSimState().resources;
 	for (let r = 0; r < resCodes.length; ++r)
 	{
-		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = translate(resCodes[r]);
+		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = translateWithContext("firstWord", resCodes[r]);
 		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + resCodes[r] + ".png";
 		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
 	}
