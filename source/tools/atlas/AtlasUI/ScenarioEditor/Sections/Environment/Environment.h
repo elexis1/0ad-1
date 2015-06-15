@@ -1,4 +1,4 @@
-/* Copyright (C) 2009 Wildfire Games.
+/* Copyright (C) 2015 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -15,28 +15,51 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../Common/Sidebar.h"
+#ifndef INCLUDED_ENVIRONMENT
+#define INCLUDED_ENVIRONMENT
 
+#include "AtlasObject/AtlasObject.h"
 #include "General/Observable.h"
+#include "ScenarioEditor/ScenarioEditor.h"
 
 class VariableListBox;
+class VariableSliderBox;
+class VariableColorBox;
 
-class EnvironmentSidebar : public Sidebar
+class SunSettings : public wxPanel
 {
+	DECLARE_DYNAMIC_CLASS(SunSettings);
 public:
-	EnvironmentSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer);
-
-	virtual void OnMapReload();
-	virtual void RecomputeWaterData(wxCommandEvent& evt);
-
-protected:
-	virtual void OnFirstDisplay();
+	SunSettings();
+	void Init(ScenarioEditor* scenarioEditor);
 
 private:
-	VariableListBox* m_PostEffectList;
-	VariableListBox* m_SkyList;
-	VariableListBox* m_WaterTypeList;
-	ObservableScopedConnection m_Conn;
+	std::vector<wxEvtHandler*> handlers;
+};
+
+class WaterSettings : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(WaterSettings);
+public:
+	WaterSettings();
+	void Init(ScenarioEditor* scenaroEditor);
+	void RecomputeWaterData(wxCommandEvent& evt);
+
+private:
+	std::vector<wxEvtHandler*> handlers;
 	
 	DECLARE_EVENT_TABLE();
 };
+
+class PostProcessingSettings : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(PostProcessingSettings);
+public:
+	PostProcessingSettings();
+	void Init(ScenarioEditor* scenarioEditor);
+	
+private:
+	std::vector<wxEvtHandler*> handlers;
+
+};
+#endif

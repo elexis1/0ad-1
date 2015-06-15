@@ -363,6 +363,8 @@ void PlayerSettingsControl::Init(ScenarioEditor* scenarioEditor)
 	LoadDefaults();
 	CreateWidgets();
 	ReadFromEngine();
+	
+	scenarioEditor->GetMapReloaded().RegisterObserver(0, &PlayerSettingsControl::OnMapReloaded, this);
 }
 
 void PlayerSettingsControl::CreateWidgets()
@@ -738,4 +740,9 @@ void PlayerSettingsControl::SendToEngine()
 
 	POST_COMMAND(SetMapSettings, (json));
 	m_ScenarioEditor->GetMapSettings().NotifyObservers();
+}
+
+void PlayerSettingsControl::OnMapReloaded(const AtObj& evt)
+{
+	ReadFromEngine();
 }

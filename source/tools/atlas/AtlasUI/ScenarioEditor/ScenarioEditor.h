@@ -85,6 +85,7 @@ public:
 
 	Observable<ObjectSettings>& GetObjectSettings() { return m_ObjectSettings; }
 	Observable<AtObj>& GetMapSettings() { return m_MapSettings; }
+	Observable<AtObj>& GetMapReloaded() { return m_MapReloaded; }
 	void RefreshMapSettings();
 
 	ToolManager& GetToolManager() { return m_ToolManager; }
@@ -92,7 +93,7 @@ public:
 	bool DiscardChangesDialog();
 
 	void SetOpenFilename(const wxString& filename);
-
+	void SendToGame(const AtlasMessage::sEnvironmentSettings& settings);
 private:
 
 	ToolManager m_ToolManager;
@@ -101,6 +102,7 @@ private:
 
 	Observable<ObjectSettings> m_ObjectSettings;
 	Observable<AtObj> m_MapSettings;
+	Observable<AtObj> m_MapReloaded;
 
 	wxString m_OpenFilename;
 	FileHistory m_FileHistory;

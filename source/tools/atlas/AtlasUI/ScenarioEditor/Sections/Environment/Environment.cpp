@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 Wildfire Games.
+/* Copyright (C) 2015 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -25,29 +25,37 @@
 #include "General/Observable.h"
 #include "CustomControls/ColorDialog/ColorDialog.h"
 
+#include <wx/clrpicker.h>
+
 using AtlasMessage::Shareable;
 
-static Observable<AtlasMessage::sEnvironmentSettings> g_EnvironmentSettings;
-
 const float M_PIf = 3.14159265f;
-
 //////////////////////////////////////////////////////////////////////////
 
-class VariableSliderBox : public wxPanel
+class VariableSliderBox : public wxEvtHandler
 {
 	static const int range = 1024;
 public:
-	VariableSliderBox(wxWindow* parent, const wxString& label, Shareable<float>& var, float min, float max)
-		: wxPanel(parent),
-		m_Var(var), m_Min(min), m_Max(max)
+	VariableSliderBox(wxSlider* slider,Shareable<float>& var, float min, float max)
+	: wxEvtHandler(), m_Var(var), m_Min(min), m_Max(max)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableSliderBox::OnSettingsChange, this);
 
-		m_Sizer = new wxStaticBoxSizer(wxVERTICAL, this, label);
-		SetSizer(m_Sizer);
-
-		m_Slider = new wxSlider(this, -1, 0, 0, range);
-		m_Sizer->Add(m_Slider, wxSizerFlags().Expand());
+		m_Slider = slider;
+		m_Slider->SetMin(0);
+		m_Slider->SetMax(range);
+		m_Slider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+		m_Slider->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
+	}
+	~VariableSliderBox()
+	{		
 	}
 	
 	void OnSettingsChange(const AtlasMessage::sEnvironmentSettings& WXUNUSED(env))
@@ -64,46 +72,31 @@ public:
 
 private:
 	ObservableScopedConnection m_Conn;
-	wxStaticBoxSizer* m_Sizer;
 	wxSlider* m_Slider;
 	Shareable<float>& m_Var;
 	float m_Min, m_Max;
-
-	DECLARE_EVENT_TABLE();
 };
-
-BEGIN_EVENT_TABLE(VariableSliderBox, wxPanel)
-	EVT_SCROLL(VariableSliderBox::OnScroll)
-END_EVENT_TABLE()
-
 //////////////////////////////////////////////////////////////////////////
 
-class VariableListBox : public wxPanel
+class VariableListBox : public wxEvtHandler
 {
 public:
-	VariableListBox(wxWindow* parent, const wxString& label, Shareable<std::wstring>& var)
-		: wxPanel(parent),
+	VariableListBox(wxComboBox* combo, Shareable<std::wstring>& var, const std::vector<std::wstring>& choices, bool clearCombo = true)
+		: wxEvtHandler(),
 		m_Var(var)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableListBox::OnSettingsChange, this);
-
-		m_Sizer = new wxStaticBoxSizer(wxVERTICAL, this, label);
-		SetSizer(m_Sizer);
-
-		m_Combo = new wxComboBox(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxArrayString(), wxCB_READONLY),
-		m_Sizer->Add(m_Combo, wxSizerFlags().Expand());
-	}
-
-	void SetChoices(const std::vector<std::wstring>& choices)
-	{
+		m_Combo = combo;
+		
 		wxArrayString choices_arraystr;
-		for (size_t i = 0; i < choices.size(); ++i)
-			choices_arraystr.Add(choices[i].c_str());
-
-		m_Combo->Clear();
+		for (std::wstring sky : choices)
+			choices_arraystr.Add(sky.c_str());
+		
+		if (clearCombo)
+			m_Combo->Clear();
 		m_Combo->Append(choices_arraystr);
-
 		m_Combo->SetValue(m_Var.c_str());
+		m_Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler(VariableListBox::OnSelect), NULL, this);
 	}
 
 	void OnSettingsChange(const AtlasMessage::sEnvironmentSettings& WXUNUSED(env))
@@ -120,177 +113,156 @@ public:
 
 private:
 	ObservableScopedConnection m_Conn;
-	wxStaticBoxSizer* m_Sizer;
 	wxComboBox* m_Combo;
 	Shareable<std::wstring>& m_Var;
 
-	DECLARE_EVENT_TABLE();
 };
-
-BEGIN_EVENT_TABLE(VariableListBox, wxPanel)
-	EVT_COMBOBOX(wxID_ANY, VariableListBox::OnSelect)
-END_EVENT_TABLE()
 
 //////////////////////////////////////////////////////////////////////////
 
-class VariableColorBox : public wxPanel
+class VariableColorBox : public wxEvtHandler
 {
 public:
-	VariableColorBox(wxWindow* parent, const wxString& label, Shareable<AtlasMessage::Color>& color)
-		: wxPanel(parent),
+	VariableColorBox(wxColourPickerCtrl* colourCtrl, Shareable<AtlasMessage::Color>& color)
+		: wxEvtHandler(),
 		m_Color(color)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableColorBox::OnSettingsChange, this);
-
-		m_Sizer = new wxStaticBoxSizer(wxVERTICAL, this, label);
-		SetSizer(m_Sizer);
-
-		m_Button = new wxButton(this, -1);
-		m_Sizer->Add(m_Button, wxSizerFlags().Expand());
+		m_ColorCtr = colourCtrl;
+		wxColor currentValue = wxColor(m_Color->r, m_Color->g, m_Color->b);
+		m_ColorCtr->SetColour(currentValue);
+		m_ColorCtr->Connect(wxEVT_COLOURPICKER_CHANGED, wxColourPickerEventHandler(VariableColorBox::OnColourChanged), NULL, this);
 	}
 
 	void OnSettingsChange(const AtlasMessage::sEnvironmentSettings& WXUNUSED(env))
 	{
-		UpdateButton();
+		wxColor currentValue = wxColor(m_Color->r, m_Color->g, m_Color->b);
+		m_ColorCtr->SetColour(currentValue);
 	}
 
-	void OnClick(wxCommandEvent& WXUNUSED(evt))
+	void OnColourChanged(wxColourPickerEvent& evt)
 	{
-		ColorDialog dlg (this, _T("Scenario Editor/LightingColor"),
-			wxColor(m_Color->r, m_Color->g, m_Color->b));
-
-		if (dlg.ShowModal() == wxID_OK)
-		{
-			wxColor& c = dlg.GetColourData().GetColour();
-			m_Color = AtlasMessage::Color(c.Red(), c.Green(), c.Blue());
-			UpdateButton();
-
-			g_EnvironmentSettings.NotifyObserversExcept(m_Conn);
-		}
+		wxColor currentSelection = evt.GetColour();
+		m_Color = AtlasMessage::Color(currentSelection.Red(), currentSelection.Green(), currentSelection.Blue());
+		g_EnvironmentSettings.NotifyObserversExcept(m_Conn);
 	}
-
-	void UpdateButton()
-	{
-		m_Button->SetBackgroundColour(wxColor(m_Color->r, m_Color->g, m_Color->b));
-		m_Button->SetLabel(wxString::Format(_T("%02X %02X %02X"), m_Color->r, m_Color->g, m_Color->b));
-
-		int y = 3*m_Color->r + 6*m_Color->g + 1*m_Color->b;
-		if (y > 1280)
-			m_Button->SetForegroundColour(wxColor(0, 0, 0));
-		else
-			m_Button->SetForegroundColour(wxColor(255, 255, 255));
-	}
-
 
 private:
 	ObservableScopedConnection m_Conn;
-	wxStaticBoxSizer* m_Sizer;
-	wxButton* m_Button;
+	wxColourPickerCtrl* m_ColorCtr;
 	Shareable<AtlasMessage::Color>& m_Color;
 
-	DECLARE_EVENT_TABLE();
 };
-
-BEGIN_EVENT_TABLE(VariableColorBox, wxPanel)
-	EVT_BUTTON(wxID_ANY, VariableColorBox::OnClick)
-END_EVENT_TABLE()
 
 //////////////////////////////////////////////////////////////////////////
 
 enum {
-	ID_RecomputeWaterData
+	ID_SunSettingsBegin = 0,
+	ID_SunRotation,
+	ID_SunElevation,
+	ID_SunOverbrightness,
+	ID_SunSphere,
+	ID_SunColor,
+	ID_SkySet,
+	ID_FogFactor,
+	ID_FogThickness,
+	ID_FogColor,
+	ID_TerrainAmbientColor,
+	ID_ObjectAmbientColor,
+	ID_SunSettingsEnd,
+	ID_WaterSettingsBegin = 100,
+	ID_RecomputeWaterData,
+	ID_WaterType,
+	ID_WaterHeight,
+	ID_WaterWaviness,
+	ID_WaterMurkiness,
+	ID_WingAngle,
+	ID_WaterColor,
+	ID_WaterTint,
+	ID_WaterSettingsEnd,
+	ID_PostProcessingSettingsBegin = 200,
+	ID_PostEffect,
+	ID_Brightness,
+	ID_Contrast,
+	ID_Saturation,
+	ID_Bloom,
+	ID_PostProcessingSettingsEnd
 };
-static void SendToGame(const AtlasMessage::sEnvironmentSettings& settings)
+
+IMPLEMENT_DYNAMIC_CLASS(SunSettings, wxPanel);
+
+SunSettings::SunSettings()
 {
-	POST_COMMAND(SetEnvironmentSettings, (settings));
 }
 
-EnvironmentSidebar::EnvironmentSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer)
-: Sidebar(scenarioEditor, sidebarContainer, bottomBarContainer)
+void SunSettings::Init(ScenarioEditor* WXUNUSED(scenarioEditor))
 {
-	wxSizer* scrollSizer = new wxBoxSizer(wxVERTICAL);
-	wxScrolledWindow* scrolledWindow = new wxScrolledWindow(this);
-	scrolledWindow->SetScrollRate(10, 10);
-	scrolledWindow->SetSizer(scrollSizer);
-	m_MainSizer->Add(scrolledWindow,  wxSizerFlags().Expand().Proportion(1));
-
-	wxSizer* waterSizer = new wxStaticBoxSizer(wxVERTICAL, scrolledWindow, _T("Water settings"));
-	scrollSizer->Add(waterSizer, wxSizerFlags().Expand());
-	waterSizer->Add(new wxButton(scrolledWindow, ID_RecomputeWaterData, _("Reset Water Data")), wxSizerFlags().Expand());
-	waterSizer->Add(m_WaterTypeList = new VariableListBox(scrolledWindow, _("Water Type"), g_EnvironmentSettings.watertype), wxSizerFlags().Expand());
-	waterSizer->Add(new VariableSliderBox(scrolledWindow, _("Water height"), g_EnvironmentSettings.waterheight, 0.f, 1.2f), wxSizerFlags().Expand());
-	waterSizer->Add(new VariableSliderBox(scrolledWindow, _("Water waviness"), g_EnvironmentSettings.waterwaviness, 0.f, 10.f), wxSizerFlags().Expand());
-	waterSizer->Add(new VariableSliderBox(scrolledWindow, _("Water murkiness"), g_EnvironmentSettings.watermurkiness, 0.f, 1.f), wxSizerFlags().Expand());
-	waterSizer->Add(new VariableSliderBox(scrolledWindow, _("Wind angle"), g_EnvironmentSettings.windangle, -M_PIf, M_PIf), wxSizerFlags().Expand());
-	waterSizer->Add(new VariableColorBox(scrolledWindow, _("Water color"), g_EnvironmentSettings.watercolor), wxSizerFlags().Expand());
-	waterSizer->Add(new VariableColorBox(scrolledWindow, _("Water tint"), g_EnvironmentSettings.watertint), wxSizerFlags().Expand());
-
-	std::vector<std::wstring> list;
-	list.push_back(L"ocean"); list.push_back(L"lake"); list.push_back(L"clap");
-	m_WaterTypeList->SetChoices(list);
-
+	//Start Sliders
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_SunRotation), wxSlider), g_EnvironmentSettings.sunrotation, -M_PIf, M_PIf));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_SunElevation), wxSlider), g_EnvironmentSettings.sunelevation, -M_PIf/2, M_PIf/2));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_SunOverbrightness), wxSlider), g_EnvironmentSettings.sunoverbrightness, 1.0f, 3.0f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_FogFactor), wxSlider), g_EnvironmentSettings.fogfactor, 0.0f, 0.01f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_FogThickness), wxSlider), g_EnvironmentSettings.fogmax, 0.5f, 0.0f));
 	
-	wxSizer* sunSizer = new wxStaticBoxSizer(wxVERTICAL, scrolledWindow, _T("Sun / lighting settings"));
-	scrollSizer->Add(sunSizer, wxSizerFlags().Expand().Border(wxTOP, 8));
+	//Start Color Pickers
+	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_SunColor), wxColourPickerCtrl), g_EnvironmentSettings.suncolor));
+	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_FogColor), wxColourPickerCtrl), g_EnvironmentSettings.fogcolor));
+	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_TerrainAmbientColor), wxColourPickerCtrl), g_EnvironmentSettings.terraincolor));
+	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_ObjectAmbientColor), wxColourPickerCtrl), g_EnvironmentSettings.unitcolor));
 
-	sunSizer->Add(new VariableSliderBox(scrolledWindow, _("Sun rotation"), g_EnvironmentSettings.sunrotation, -M_PIf, M_PIf), wxSizerFlags().Expand());
-	sunSizer->Add(new VariableSliderBox(scrolledWindow, _("Sun elevation"), g_EnvironmentSettings.sunelevation, -M_PIf/2, M_PIf/2), wxSizerFlags().Expand());
-	sunSizer->Add(new VariableSliderBox(scrolledWindow, _("Sun overbrightness"), g_EnvironmentSettings.sunoverbrightness, 1.0f, 3.0f), wxSizerFlags().Expand());
-	sunSizer->Add(new LightControl(scrolledWindow, wxSize(150, 150), g_EnvironmentSettings));
-	sunSizer->Add(new VariableColorBox(scrolledWindow, _("Sun color"), g_EnvironmentSettings.suncolor), wxSizerFlags().Expand());
-	sunSizer->Add(m_SkyList = new VariableListBox(scrolledWindow, _("Sky set"), g_EnvironmentSettings.skyset), wxSizerFlags().Expand());
-	sunSizer->Add(new VariableSliderBox(scrolledWindow, _("Fog Factor"), g_EnvironmentSettings.fogfactor, 0.0f, 0.01f), wxSizerFlags().Expand());
-	sunSizer->Add(new VariableSliderBox(scrolledWindow, _("Fog Thickness"), g_EnvironmentSettings.fogmax, 0.5f, 0.0f), wxSizerFlags().Expand());
-	sunSizer->Add(new VariableColorBox(scrolledWindow, _("Fog color"), g_EnvironmentSettings.fogcolor), wxSizerFlags().Expand());
-	sunSizer->Add(new VariableColorBox(scrolledWindow, _("Terrain ambient color"), g_EnvironmentSettings.terraincolor), wxSizerFlags().Expand());
-	sunSizer->Add(new VariableColorBox(scrolledWindow, _("Object ambient color"), g_EnvironmentSettings.unitcolor), wxSizerFlags().Expand());
+	wxPanel* panelLightControl = wxDynamicCast(FindWindow(ID_SunSphere), wxPanel);
+	panelLightControl->GetSizer()->Add(new LightControl(panelLightControl, wxSize(150, 150), g_EnvironmentSettings), wxSizerFlags().Expand());
 	
-	wxSizer* postProcSizer = new wxStaticBoxSizer(wxVERTICAL, scrolledWindow, _T("Post-processing settings"));
-	scrollSizer->Add(postProcSizer, wxSizerFlags().Expand().Border(wxTOP, 8));
-
-	postProcSizer->Add(m_PostEffectList = new VariableListBox(scrolledWindow, _("Post Effect"), g_EnvironmentSettings.posteffect), wxSizerFlags().Expand());
-	postProcSizer->Add(new VariableSliderBox(scrolledWindow, _("Brightness"), g_EnvironmentSettings.brightness, -0.5f, 0.5f), wxSizerFlags().Expand());
-	postProcSizer->Add(new VariableSliderBox(scrolledWindow, _("Contrast (HDR)"), g_EnvironmentSettings.contrast, 0.5f, 1.5f), wxSizerFlags().Expand());
-	postProcSizer->Add(new VariableSliderBox(scrolledWindow, _("Saturation"), g_EnvironmentSettings.saturation, 0.0f, 2.0f), wxSizerFlags().Expand());
-	postProcSizer->Add(new VariableSliderBox(scrolledWindow, _("Bloom"), g_EnvironmentSettings.bloom, 0.2f, 0.0f), wxSizerFlags().Expand());
-
-	m_Conn = g_EnvironmentSettings.RegisterObserver(0, &SendToGame);
-}
-
-void EnvironmentSidebar::OnFirstDisplay()
-{
-	// Load the list of skies. (Can only be done now rather than in the constructor,
-	// after the game has been initialised.)
 	AtlasMessage::qGetSkySets qry_skysets;
 	qry_skysets.Post();
-	m_SkyList->SetChoices(*qry_skysets.skysets);
-	
-	AtlasMessage::qGetPostEffects qry_effects;
-	qry_effects.Post();
-	m_PostEffectList->SetChoices(*qry_effects.posteffects);
-
-	AtlasMessage::qGetEnvironmentSettings qry_env;
-	qry_env.Post();
-	g_EnvironmentSettings = qry_env.settings;
-
-	g_EnvironmentSettings.NotifyObservers();
+	handlers.push_back(new VariableListBox(wxDynamicCast(FindWindow(ID_SkySet), wxComboBox), g_EnvironmentSettings.skyset, *qry_skysets.skysets));
 }
 
-void EnvironmentSidebar::OnMapReload()
+//////////////////////////////////////////////////////////////////////////
+
+IMPLEMENT_DYNAMIC_CLASS(WaterSettings, wxPanel);
+WaterSettings::WaterSettings()
 {
-	AtlasMessage::qGetEnvironmentSettings qry_env;
-	qry_env.Post();
-	g_EnvironmentSettings = qry_env.settings;
-
-	g_EnvironmentSettings.NotifyObservers();
 }
 
-void EnvironmentSidebar::RecomputeWaterData(wxCommandEvent& WXUNUSED(evt))
+void WaterSettings::Init(ScenarioEditor* WXUNUSED(scenaroEditor))
+{
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_WaterHeight), wxSlider), g_EnvironmentSettings.waterheight, 0.f, 1.2f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_WaterWaviness), wxSlider), g_EnvironmentSettings.waterwaviness, 0.f, 10.f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_WaterMurkiness), wxSlider), g_EnvironmentSettings.watermurkiness, 0.f, 1.f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_WingAngle), wxSlider), g_EnvironmentSettings.windangle, -M_PIf, M_PIf));
+	
+	std::vector<std::wstring> emptyList;
+	handlers.push_back(new VariableListBox(wxDynamicCast(FindWindow(ID_WaterType), wxComboBox), g_EnvironmentSettings.watertype, emptyList, false));
+
+	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_WaterColor), wxColourPickerCtrl), g_EnvironmentSettings.watercolor));
+	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_WaterTint), wxColourPickerCtrl), g_EnvironmentSettings.watertint));
+}
+
+void WaterSettings::RecomputeWaterData(wxCommandEvent& WXUNUSED(evt))
 {
 	POST_COMMAND(RecalculateWaterData, (0.0f));
 }
 
-BEGIN_EVENT_TABLE(EnvironmentSidebar, Sidebar)
-	EVT_BUTTON(ID_RecomputeWaterData, EnvironmentSidebar::RecomputeWaterData)
+BEGIN_EVENT_TABLE(WaterSettings, wxPanel)
+	EVT_BUTTON(ID_RecomputeWaterData, WaterSettings::RecomputeWaterData)
 END_EVENT_TABLE();
 
+//////////////////////////////////////////////////////////////////////////
+
+IMPLEMENT_DYNAMIC_CLASS(PostProcessingSettings, wxPanel);
+PostProcessingSettings::PostProcessingSettings()
+{
+}
+
+void PostProcessingSettings::Init(ScenarioEditor* WXUNUSED(scenarioEditor))
+{
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_Brightness), wxSlider), g_EnvironmentSettings.brightness, -0.5f, 0.5f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_Contrast), wxSlider), g_EnvironmentSettings.contrast, 0.5f, 1.5f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_Saturation), wxSlider), g_EnvironmentSettings.saturation, 0.0f, 2.0f));
+	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_Bloom), wxSlider), g_EnvironmentSettings.bloom, 0.2f, 0.0f));
+
+	AtlasMessage::qGetPostEffects qry_effects;
+	qry_effects.Post();
+	handlers.push_back(new VariableListBox(wxDynamicCast(FindWindow(ID_PostEffect), wxComboBox), g_EnvironmentSettings.posteffect, *qry_effects.posteffects));
+}

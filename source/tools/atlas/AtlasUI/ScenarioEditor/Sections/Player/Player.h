@@ -44,6 +44,7 @@ public:
 	void LoadDefaults();
 	void ReadFromEngine();
 	AtObj UpdateSettingsObject();
+	void OnMapReloaded(const AtObj& evt);
 
 private:
 	void SendToEngine();

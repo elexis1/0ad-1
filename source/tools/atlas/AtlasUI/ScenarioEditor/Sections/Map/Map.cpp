@@ -46,16 +46,6 @@ enum
 	ID_Image
 };
 
-// TODO: Some of these helper things should be moved out of this file
-// and into shared locations
-
-// Helper function for adding tooltips
-static wxWindow* Tooltipped(wxWindow* window, const wxString& tip)
-{
-	window->SetToolTip(tip);
-	return window;
-}
-
 // Helper class for storing AtObjs
 class AtObjClientData : public wxClientData
 {

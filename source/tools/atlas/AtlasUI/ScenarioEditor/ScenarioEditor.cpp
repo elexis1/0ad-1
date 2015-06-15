@@ -51,6 +51,7 @@
 #include "Sections/Map/Map.h"
 #include "Sections/Player/Player.h"
 #include "Sections/Object/Object.h"
+#include "Sections/Environment/Environment.h"
 
 static HighResTimer g_Timer;
 
@@ -361,6 +362,8 @@ enum
 	ID_ViewsBegin = 4000, //space for 998 views
 	ID_DisplayTemplateView,
 	ID_EntitySettingsView,
+	ID_WaterSettings,
+	ID_PostProcessingSettings,
 	ID_ViewsEnd
 };
 
@@ -579,7 +582,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	m_Timer.SetOwner(this);
 	m_Timer.Start(20);
 
-	RefreshMapSettings();
+	NotifyOnMapReload();
 	m_Mgr.Update();
 }
 
@@ -620,6 +623,12 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 		UpdatePanelTool<DisplayTemplate>(event.IsChecked(), "displayTemplate", "DisplayTemplate");
 	else if (event.GetId() == ID_EntitySettingsView)
 		UpdatePanelTool<EntitySettings>(event.IsChecked(), "entitySettings", "EntitySettings");
+	else if (event.GetId() == ID_ToolbarOptionEnvironment)
+		UpdatePanelTool<SunSettings>(event.IsChecked(), "sunSettings", "SunSettings");
+	else if (event.GetId() == ID_WaterSettings)
+		UpdatePanelTool<WaterSettings>(event.IsChecked(), "waterSettings", "WaterSettings");
+	else if (event.GetId() == ID_PostProcessingSettings)
+		UpdatePanelTool<PostProcessingSettings>(event.IsChecked(), "postProcessingSetting", "PostProcessingSetting");
 
 }
 
@@ -635,6 +644,13 @@ void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
 		this->GetMenuBar()->Check(ID_DisplayTemplateView, false);
 	else if (event.GetPane()->name == "entitySettings")
 		this->GetMenuBar()->Check(ID_EntitySettingsView, false);
+	else if (event.GetPane()->name == "sunSettings")
+		this->GetToolBar()->ToggleTool(ID_ToolbarOptionEnvironment, false);
+	else if (event.GetPane()->name == "waterSettings")
+		this->GetMenuBar()->Check(ID_WaterSettings, false);
+	else if (event.GetPane()->name == "postProcessingSetting")
+		this->GetMenuBar()->Check(ID_PostProcessingSettings, false);
+
 }
 
 template<typename T>
@@ -764,7 +780,7 @@ PlayerSettingsControl* ScenarioEditor::GetPlayerSettingsCtrl()
 
 void ScenarioEditor::UpdatePlayerPanel(bool show)
 {
-	UpdatePanelTool<NewMapConfiguration>(show, "playersettings", "PlayerSettings");
+	UpdatePanelTool<PlayerSettingsControl>(show, "playersettings", "PlayerSettings");
 }
 
 float ScenarioEditor::GetSpeedModifier()
@@ -1040,11 +1056,18 @@ void ScenarioEditor::NotifyOnMapReload()
 	toolbar->EnableTool(ID_ToolbarSimulationStop, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPause, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
-
-	CreateOrGetPanelTool<PlayerSettingsControl>("playersettings", "PlayerSettings")->ReadFromEngine();
-
+	
+	AtlasMessage::qGetEnvironmentSettings qry_env;
+	qry_env.Post();
+	g_EnvironmentSettings = qry_env.settings;
+	g_EnvironmentSettings.NotifyObservers();
+	g_EnvironmentSettings.RegisterObserver(0, &ScenarioEditor::SendToGame, this);
+	
+	m_MapReloaded.NotifyObservers();
 	RefreshMapSettings();
 	m_MapSettings.NotifyObservers();
+	
+
 }
 
 bool ScenarioEditor::DiscardChangesDialog()
@@ -1185,6 +1208,11 @@ void ScenarioEditor::OnMenuOpen(wxMenuEvent& event)
         return;
 
     GetMenuBar()->Enable(ID_Paste, true);
+}
+
+void ScenarioEditor::SendToGame(const AtlasMessage::sEnvironmentSettings& settings)
+{
+	POST_COMMAND(SetEnvironmentSettings, (settings));
 }
 
 

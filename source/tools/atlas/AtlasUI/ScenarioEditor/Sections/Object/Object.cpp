@@ -252,7 +252,7 @@ DisplayTemplate::DisplayTemplate()
 {
 }
 
-void DisplayTemplate::Init(ScenarioEditor *scenarioEditor)
+void DisplayTemplate::Init(ScenarioEditor* WXUNUSED(scenarioEditor))
 {
 	m_TemplateNames = wxDynamicCast(FindWindow(ID_DisplayTemplateCtrl), wxScrolledWindow);
 	g_SelectedObjects.RegisterObserver(0, &DisplayTemplate::OnSelectedObjectsChange, this);
