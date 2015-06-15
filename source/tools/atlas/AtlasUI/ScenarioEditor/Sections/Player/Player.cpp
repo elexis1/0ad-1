@@ -742,7 +742,7 @@ void PlayerSettingsControl::SendToEngine()
 	m_ScenarioEditor->GetMapSettings().NotifyObservers();
 }
 
-void PlayerSettingsControl::OnMapReloaded(const AtObj& evt)
+void PlayerSettingsControl::OnMapReloaded(const AtObj& WXUNUSED(evt))
 {
 	ReadFromEngine();
 }

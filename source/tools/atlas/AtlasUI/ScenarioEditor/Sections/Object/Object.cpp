@@ -152,10 +152,6 @@ void ObjectSidebar::Init(ScenarioEditor *scenarioEditor)
 		p->ActorViewerPostToGame();
 		wxDynamicCast(FindWindow(ID_ToggleViewer), wxButton)->SetLabel(_("Return to game view"));
 	}
-	else if (tool->GetClassInfo()->GetClassName() != _T("PlaceObject"))
-	{
-		p->m_ObjectListBox->SetSelection(wxNOT_FOUND);
-	}
 	else
 	{
 		p->m_ActorViewerActive = false;
@@ -181,11 +177,12 @@ void ObjectSidebar::FilterObjects()
 
 	wxDataViewItem root = m_ObjectList->AppendContainer(wxDataViewItem(0), "0AD");
 
-	std::for_each(objects.begin(), objects.end(), [&] (const AtlasMessage::sObjectsListItem& it){
+	for (const AtlasMessage::sObjectsListItem& it : objects)
+	{
 		wxString id = it.id.c_str();
 		wxString name = it.name.c_str();
 		m_ObjectList->AppendItem(root, name, -1, new wxStringClientData(id));
-	});
+	}
 
 	m_ObjectList->Expand(root);
 	m_ObjectList->Thaw();
@@ -283,21 +280,22 @@ void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::Ob
 
 	int counterTemplate = 0;
 	std::string lastTemplateName = "";
-	std::for_each(names.begin(), names.end(), [&](const std::string& it){
+	for (const std::string& it : names)
+	{
 		if (lastTemplateName == "")
 			lastTemplateName = (it);
-
+		
 		if (lastTemplateName == (it))
 		{
 			++counterTemplate;
 			return;
 		}
-
+		
 		sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
-
+		
 		lastTemplateName = it;
 		counterTemplate = 1;
-	});
+	}
 
 	// Add the remaining template
 	sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -413,9 +411,8 @@ void EntitySettings::OnSelectedObjectsChange(const std::vector<AtlasMessage::Obj
 	if (!selectedObjects.empty())
 		return;
 
-	std::for_each(m_Choices.begin(), m_Choices.end(), [](wxChoice* choice){
+	for (wxChoice* choice : m_Choices)
 		choice->Show(false);
-	});
 }
 
 void EntitySettings::OnVariationSelect(wxCommandEvent& evt)
@@ -435,13 +432,14 @@ void EntitySettings::OnVariationSelect(wxCommandEvent& evt)
 	wxString newValue = evt.GetString();
 
 	selections.insert(newValue);
-	std::for_each(m_Choices.begin(), m_Choices.end(), [&](wxChoice* choice){
+	for (wxChoice* choice : m_Choices)
+	{
 		// If our newly selected value is used in another combobox, we want
 		// that combobox to use the new value, so don't add its old value
 		// to the list of selections
 		if (choice->IsShown() && choice->FindString(newValue) == wxNOT_FOUND)
 			selections.insert(choice->GetString(choice->GetSelection()));
-	});
+	}
 
 	m_ScenarioEditor->GetObjectSettings().SetActorSelections(selections);
 	m_ScenarioEditor->GetObjectSettings().NotifyObserversExcept(m_ObjectConn);

@@ -30,8 +30,6 @@ class MapSettingsControl : public wxPanel
 	DECLARE_DYNAMIC_CLASS(MapSettingsControl);
 public:
 	MapSettingsControl();
-	//MapSettingsControl(wxWindow* parent, ScenarioEditor& scenarioEditor);
-	//void CreateWidgets();
 	void ReadFromEngine();
 	void SetMapSettings(const AtObj& obj);
 	AtObj UpdateSettingsObject();

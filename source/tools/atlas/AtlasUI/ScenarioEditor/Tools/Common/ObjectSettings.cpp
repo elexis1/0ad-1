@@ -122,18 +122,18 @@ void ObjectSettings::OnSelectionChange(const std::vector<AtlasMessage::ObjectID>
 	m_VariantGroups.clear();
 
 	std::vector<std::vector<std::wstring> > variation = *qry.settings->variantGroups;
-	std::for_each(variation.begin(), variation.end(), [&](const std::vector<std::wstring>& grp){
+	for (const std::vector<std::wstring>& grp : variation)
+	{
 		wxArrayString variants;
 		std::for_each(grp.begin(), grp.end(), [&](const std::wstring& it){
 			variants.Add(it.c_str());
 		});
 		m_VariantGroups.push_back(variants);
-	});
+	}
 
 	std::vector<std::wstring> selections = *qry.settings->selections;
-	std::for_each(selections.begin(), selections.end(), [&](const std::wstring& sel){
+	for (const std::wstring& sel : selections)
 		m_ActorSelections.insert(sel.c_str());
-	});
 
 	static_cast<Observable<ObjectSettings>*>(this)->NotifyObservers();
 }
@@ -143,7 +143,6 @@ void ObjectSettings::PostToGame()
 	if (g_SelectedObjects.empty())
 		return;
 
-	std::for_each(g_SelectedObjects.begin(), g_SelectedObjects.end(), [&](const AtlasMessage::ObjectID& it){
+	for (const AtlasMessage::ObjectID& it : g_SelectedObjects)
 		POST_COMMAND(SetObjectSettings, (m_View, it, GetSettings()));
-	});
 }

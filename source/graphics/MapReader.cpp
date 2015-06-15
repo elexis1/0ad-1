@@ -1038,9 +1038,7 @@ int CXMLReader::ReadEntities(XMBElement parent, double end_time)
 				CStr variationStr = attrs.GetNamedItem(at_variation);
 
 				if (!variationStr.empty())
-				{
 					boost::algorithm::split(actorSelections, variationStr, boost::is_any_of("|"));
-				}
 				else
 				{
 					CStr seedStr = attrs.GetNamedItem(at_seed);

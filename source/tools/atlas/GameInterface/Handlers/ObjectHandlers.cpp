@@ -214,29 +214,29 @@ QUERYHANDLER(GetObjectSettings)
 
 			variantgroups.reserve(groups.size());
 			Status err;
-			std::for_each(groups.begin(), groups.end(), [&](const std::vector<CStr>& group){
+			for (const std::vector<CStr>& group : groups)
+			{
 				std::vector<std::wstring> subgroup;
 				subgroup.reserve(group.size());
 				int choice = -1;
-
+				
 				for (size_t j = 0; j < group.size(); ++j)
 				{
 					subgroup.push_back(wstring_from_utf8(group[j], &err));
-
+					
 					// Find the first string in 'selections' that matches one of this
 					// group's variants
-					if (choice == -1)
-						if (selections.find(group[j]) != selections.end())
-							choice = (int)j;
+					if (choice == -1 && selections.find(group[j]) != selections.end())
+						choice = (int)j;
 				}
-
+				
 				// Assuming one of the variants was selected (which it really ought
 				// to be), remember that one's name
 				if (choice != -1)
 					selections_set.insert(wstring_from_utf8(group[choice]));
-
+				
 				variantgroups.push_back(subgroup);
-			});
+			}
 		}
 	}
 
