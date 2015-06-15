@@ -219,22 +219,22 @@ QUERYHANDLER(GetObjectSettings)
 				std::vector<std::wstring> subgroup;
 				subgroup.reserve(group.size());
 				int choice = -1;
-				
+
 				for (size_t j = 0; j < group.size(); ++j)
 				{
 					subgroup.push_back(wstring_from_utf8(group[j], &err));
-					
+
 					// Find the first string in 'selections' that matches one of this
 					// group's variants
 					if (choice == -1 && selections.find(group[j]) != selections.end())
 						choice = (int)j;
 				}
-				
+
 				// Assuming one of the variants was selected (which it really ought
 				// to be), remember that one's name
 				if (choice != -1)
 					selections_set.insert(wstring_from_utf8(group[choice]));
-				
+
 				variantgroups.push_back(subgroup);
 			}
 		}

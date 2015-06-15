@@ -284,15 +284,15 @@ void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::Ob
 	{
 		if (lastTemplateName == "")
 			lastTemplateName = (it);
-		
+
 		if (lastTemplateName == (it))
 		{
 			++counterTemplate;
 			return;
 		}
-		
+
 		sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
-		
+
 		lastTemplateName = it;
 		counterTemplate = 1;
 	}
