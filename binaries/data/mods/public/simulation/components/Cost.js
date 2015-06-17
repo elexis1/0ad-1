@@ -76,9 +76,14 @@ Cost.prototype.GetResourceCosts = function(owner)
 
 	for (let r in this.template.Resources)
 	{
+		let cost = +this.template.Resources[r];
 		if (resCodes.indexOf(r.toLowerCase()) < 0)
+		{
+			if (cost > 0)
+				warn("'"+r+"' has been specified as a required resource, but is not a valid resource.");
 			continue;
-		costs[r] = ApplyValueModificationsToTemplate("Cost/Resources/"+r, +this.template.Resources[r], owner, entityTemplate);
+		}
+		costs[r] = ApplyValueModificationsToTemplate("Cost/Resources/"+r, cost, owner, entityTemplate);
 	}
 
 	return costs;
