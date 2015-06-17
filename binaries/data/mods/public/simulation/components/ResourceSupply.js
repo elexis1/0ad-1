@@ -37,13 +37,17 @@ ResourceSupply.prototype.Init = function()
 
 	this.infinite = !isFinite(+this.template.Amount);
 
-	[this.type,this.subtype] = this.template.Type.split('.');
+	[this.type, this.subtype] = this.template.Type.split('.');
 	var resData = Resources.GetResource(this.type);
 	if (this.type === "treasure")
 		resData = { "subtypes": Resources.GetCodes() };
 
 	if (!resData || resData.subtypes.indexOf(this.subtype) === -1)
+	{
+		// Display Error and Remove entity if the resource supplied is not valid.
 		error("Invalid resource type or subtype ("+this.type+"/"+this.subtype+")");
+		Engine.DestroyEntity(this.entity);
+	}
 	this.cachedType = { "generic" : this.type, "specific" : this.subtype };
 };
 
