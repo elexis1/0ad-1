@@ -63,10 +63,10 @@ private:
 	void OnOpenPlayerPanel(wxCommandEvent& evt);
 	void OnTypeMap(wxCommandEvent& evt);
 	void OnChooseImage(wxCommandEvent& evt);
-	
+
 	std::wstring* m_Image;
 
 	DECLARE_EVENT_TABLE();
 };
 
-#endif
+#endif //INCLUDED_MAP

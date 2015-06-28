@@ -61,9 +61,10 @@ private:
 			SendToEngine();
 	}
 
-	void OnPlayerColour(wxColourPickerEvent& WXUNUSED(evt))
+	void OnPlayerColor(wxColourPickerEvent& WXUNUSED(evt))
 	{
-		if (m_InGUIUpdate) return;
+		if (m_InGUIUpdate)
+			return;
 
 		SendToEngine();
 

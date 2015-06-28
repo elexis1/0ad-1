@@ -89,9 +89,9 @@ std::vector<float> Brush::GetData() const
 {
 	int width = GetWidth();
 	int height = GetHeight();
-	
+
 	std::vector<float> data (width*height);
-	
+
 	switch (m_Shape)
 	{
 	case CIRCLE:
@@ -152,101 +152,22 @@ void Brush::SetSquare(int size)
 	m_Size = size;
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-class BrushShapeCtrl : public wxRadioBox
+BrushShape Brush::GetShape()
 {
-public:
-	BrushShapeCtrl(wxWindow* parent, wxArrayString& shapes, Brush& brush)
-		: wxRadioBox(parent, wxID_ANY, _("Shape"), wxDefaultPosition, wxDefaultSize, shapes, 0, wxRA_SPECIFY_ROWS),
-		m_Brush(brush)
-	{
-		SetSelection(m_Brush.m_Shape);
-	}
+	return m_Shape;
+}
 
-private:
-	Brush& m_Brush;
-
-	void OnChange(wxCommandEvent& WXUNUSED(evt))
-	{
-		m_Brush.m_Shape = (Brush::BrushShape)GetSelection();
-		m_Brush.Send();
-	}
-
-	DECLARE_EVENT_TABLE();
-};
-BEGIN_EVENT_TABLE(BrushShapeCtrl, wxRadioBox)
-	EVT_RADIOBOX(wxID_ANY, BrushShapeCtrl::OnChange)
-END_EVENT_TABLE()
-
-
-class BrushSizeCtrl: public wxSpinCtrl
+void Brush::SetShape(BrushShape shape)
 {
-public:
-	BrushSizeCtrl(wxWindow* parent, Brush& brush)
-		: wxSpinCtrl(parent, wxID_ANY, wxString::Format(_T("%d"), brush.m_Size), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, brush.m_Size),
-		m_Brush(brush)
-	{
-	}
+	m_Shape = shape;
+}
 
-private:
-	Brush& m_Brush;
-
-	void OnChange(wxSpinEvent& WXUNUSED(evt))
-	{
-		m_Brush.m_Size = GetValue();
-		m_Brush.Send();
-	}
-
-	DECLARE_EVENT_TABLE();
-};
-BEGIN_EVENT_TABLE(BrushSizeCtrl, wxSpinCtrl)
-	EVT_SPINCTRL(wxID_ANY, BrushSizeCtrl::OnChange)
-END_EVENT_TABLE()
-
-
-class BrushStrengthCtrl : public wxSpinCtrl
+int Brush::GetSize()
 {
-public:
-	BrushStrengthCtrl(wxWindow* parent, Brush& brush)
-		: wxSpinCtrl(parent, wxID_ANY, wxString::Format(_T("%d"), (int)(10.f*brush.m_Strength)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, (int)(10.f*brush.m_Strength)),
-		m_Brush(brush)
-	{
-	}
+	return m_Size;
+}
 
-private:
-	Brush& m_Brush;
-
-	void OnChange(wxSpinEvent& WXUNUSED(evt))
-	{
-		m_Brush.m_Strength = GetValue()/10.f;
-		m_Brush.Send();
-	}
-
-	DECLARE_EVENT_TABLE();
-};
-BEGIN_EVENT_TABLE(BrushStrengthCtrl, wxSpinCtrl)
-	EVT_SPINCTRL(wxID_ANY, BrushStrengthCtrl::OnChange)
-END_EVENT_TABLE()
-
-
-
-void Brush::CreateUI(wxWindow* parent, wxSizer* sizer)
+void Brush::SetSize(int size)
 {
-	wxArrayString shapes; // Must match order of BrushShape enum
-	shapes.Add(_("Circle"));
-	shapes.Add(_("Square"));
-	// TODO (maybe): get rid of the extra static box, by not using wxRadioBox
-	sizer->Add(new BrushShapeCtrl(parent, shapes, *this), wxSizerFlags().Expand());
-
-	sizer->AddSpacer(5);
-
-	// TODO: These are yucky
-	wxFlexGridSizer* spinnerSizer = new wxFlexGridSizer(2, 5, 5);
-	spinnerSizer->AddGrowableCol(1);
-	spinnerSizer->Add(new wxStaticText(parent, wxID_ANY, _("Size")), wxSizerFlags().Align(wxALIGN_CENTER|wxALIGN_RIGHT));
-	spinnerSizer->Add(new BrushSizeCtrl(parent, *this), wxSizerFlags().Expand());
-	spinnerSizer->Add(new wxStaticText(parent, wxID_ANY, _("Strength")), wxSizerFlags().Align(wxALIGN_CENTER|wxALIGN_RIGHT));
-	spinnerSizer->Add(new BrushStrengthCtrl(parent, *this), wxSizerFlags().Expand());
-	sizer->Add(spinnerSizer, wxSizerFlags().Expand());
+	m_Size = size;
 }

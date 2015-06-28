@@ -47,7 +47,7 @@ public:
 
 private:
 	std::vector<wxEvtHandler*> handlers;
-	
+
 	DECLARE_EVENT_TABLE();
 };
 
@@ -57,9 +57,9 @@ class PostProcessingSettings : public wxPanel
 public:
 	PostProcessingSettings();
 	void Init(ScenarioEditor* scenarioEditor);
-	
+
 private:
 	std::vector<wxEvtHandler*> handlers;
 
 };
-#endif
+#endif //INCLUDED_ENVIRONMENT

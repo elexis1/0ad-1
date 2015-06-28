@@ -1,4 +1,4 @@
-/* Copyright (C) 2012 Wildfire Games.
+/* Copyright (C) 2015 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -14,27 +14,56 @@
  * You should have received a copy of the GNU General Public License
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef INCLUDED_TERRAIN
+#define INCLUDED_TERRAIN
 
 #include "../Common/Sidebar.h"
+#include "ScenarioEditor/Tools/Common/Tools.h"
 
-class TexturePreviewPanel;
-
-class TerrainSidebar : public Sidebar
+class TerrainSettings : public wxPanel
 {
+	DECLARE_DYNAMIC_CLASS(TerrainSettings);
 public:
-	TerrainSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer);
+	TerrainSettings();
+	void Init(ScenarioEditor* scenarioEditor);
 
-protected:
-	virtual void OnFirstDisplay();
+	void OnButton(wxCommandEvent& evt);
+	void OnToolChanged(ITool* tool);
+	void OnTextureChanged(const wxString& texture);
+	void LoadPreviewTexture();
+	void OnShapeChange(wxCommandEvent& evt);
+	void OnSizeChange(wxSpinEvent& evt);
+	void OnStrengthChange(wxSpinEvent& evt);
 
 private:
-	void OnPassabilityChoice(wxCommandEvent& evt);
-	void OnShowPriorities(wxCommandEvent& evt);
-	void OnResizeMap(wxCommandEvent& evt);
-
-	wxChoice* m_PassabilityChoice;
-	TexturePreviewPanel* m_TexturePreview;
+	static const int imageWidth = 120;
+	static const int imageHeight = 40;
+	ScenarioEditor* m_ScenarioEditor;
+	std::map<int, wxString> m_ToolsMap;
+	wxString m_PreviewTexture;
 
 	DECLARE_EVENT_TABLE();
 };
 
+class VisualizeSettings : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(VisualizeSettings);
+public:
+	VisualizeSettings();
+	void Init(ScenarioEditor* scenarioEditor);
+private:
+	void OnShowPriorities(wxCommandEvent& evt);
+	void OnPassabilityChoice(wxCommandEvent& evt);
+
+	DECLARE_EVENT_TABLE();
+};
+
+class TexturePreviewPanel : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(TexturePreviewPanel);
+public:
+	TexturePreviewPanel();
+	void Init(ScenarioEditor* scenarioEditor);
+private:
+};
+#endif //INCLUDED_TERRAIN

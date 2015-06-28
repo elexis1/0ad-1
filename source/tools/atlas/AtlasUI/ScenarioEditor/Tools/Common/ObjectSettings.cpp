@@ -59,26 +59,24 @@ const std::vector<ObjectSettings::Group> ObjectSettings::GetActorVariation() con
 {
 	std::vector<Group> variation;
 
-	for (std::vector<wxArrayString>::const_iterator grp = m_VariantGroups.begin();
-		grp != m_VariantGroups.end();
-		++grp)
+	for (const wxArrayString& grp : m_VariantGroups)
 	{
 		Group group;
-		group.variants = *grp;
+		group.variants = grp;
 
 		// Variant choice method, as used by the game: Choose the first variant
 		// which matches any of the selections
 
 		size_t chosen = 0; // default to first
-		for (size_t i = 0; i < grp->GetCount(); ++i)
+		for (size_t i = 0; i < grp.GetCount(); ++i)
 		{
-			if (m_ActorSelections.find(grp->Item(i)) != m_ActorSelections.end())
+			if (m_ActorSelections.find(grp.Item(i)) != m_ActorSelections.end())
 			{
 				chosen = i;
 				break;
 			}
 		}
-		group.chosen = grp->Item(chosen);
+		group.chosen = grp.Item(chosen);
 
 		variation.push_back(group);
 	}
@@ -94,12 +92,9 @@ AtlasMessage::sObjectSettings ObjectSettings::GetSettings() const
 
 	// Copy selections from set into vector
 	std::vector<std::wstring> selections;
-	for (std::set<wxString>::const_iterator it = m_ActorSelections.begin();
-		it != m_ActorSelections.end();
-		++it)
-	{
-		selections.push_back((std::wstring)it->wc_str());
-	}
+	for (const wxString& it : m_ActorSelections)
+		selections.push_back((std::wstring)it.wc_str());
+
 	settings.selections = selections;
 
 	return settings;
@@ -125,14 +120,13 @@ void ObjectSettings::OnSelectionChange(const std::vector<AtlasMessage::ObjectID>
 	for (const std::vector<std::wstring>& grp : variation)
 	{
 		wxArrayString variants;
-		std::for_each(grp.begin(), grp.end(), [&](const std::wstring& it){
+		for (const std::wstring& it : grp)
 			variants.Add(it.c_str());
-		});
+
 		m_VariantGroups.push_back(variants);
 	}
 
-	std::vector<std::wstring> selections = *qry.settings->selections;
-	for (const std::wstring& sel : selections)
+	for (const std::wstring& sel : *qry.settings->selections)
 		m_ActorSelections.insert(sel.c_str());
 
 	static_cast<Observable<ObjectSettings>*>(this)->NotifyObservers();
@@ -140,9 +134,6 @@ void ObjectSettings::OnSelectionChange(const std::vector<AtlasMessage::ObjectID>
 
 void ObjectSettings::PostToGame()
 {
-	if (g_SelectedObjects.empty())
-		return;
-
 	for (const AtlasMessage::ObjectID& it : g_SelectedObjects)
 		POST_COMMAND(SetObjectSettings, (m_View, it, GetSettings()));
 }

@@ -63,9 +63,9 @@ public:
 	void OnSimulateControls(wxCommandEvent& event);
 	void OnAuiPanelClosed(wxAuiManagerEvent& event);
 	template<typename T>
-	void UpdatePanelTool(bool show, wxString panelName, wxString xrcName);
+	void UpdatePanelTool(bool show, wxString panelName, wxString xrcName, bool closeButton = true);
 	template<typename T>
-	T* CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show = false);
+	T* CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show = false, bool closeButton = true);
 
 	void UpdateNewMapPanel(bool show);
 	void UpdatePlayerPanel(bool show);
@@ -94,6 +94,9 @@ public:
 
 	void SetOpenFilename(const wxString& filename);
 	void SendToGame(const AtlasMessage::sEnvironmentSettings& settings);
+
+	void OnToolChange(ITool* tool);
+	void OnResizeMap(wxCommandEvent& event);
 private:
 
 	ToolManager m_ToolManager;

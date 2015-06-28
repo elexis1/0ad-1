@@ -19,6 +19,7 @@
 #define INCLUDED_OBJECT
 
 #include "precompiled.h"
+
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "wx/dataview.h"
 
@@ -76,4 +77,4 @@ private:
 
 	DECLARE_EVENT_TABLE();
 };
-#endif
+#endif //INCLUDED_OBJECT

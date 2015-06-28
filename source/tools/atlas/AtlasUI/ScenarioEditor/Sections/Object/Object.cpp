@@ -283,9 +283,9 @@ void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::Ob
 	for (const std::string& it : names)
 	{
 		if (lastTemplateName == "")
-			lastTemplateName = (it);
+			lastTemplateName = it;
 
-		if (lastTemplateName == (it))
+		if (lastTemplateName == it)
 		{
 			++counterTemplate;
 			return;
@@ -346,7 +346,8 @@ void EntitySettings::OnMapSettingsChange(const AtObj& settings)
 	m_PlayerOwner->Clear();
 
 	size_t numPlayers = settings["PlayerData"]["item"].count();
-	for (size_t i = 0; i <= numPlayers && i < m_Players->Count(); ++i)
+	int maxPlayer = std::min(numPlayers+1, m_Players->Count());
+	for (size_t i = 0; i < maxPlayer; ++i)
 		m_PlayerOwner->Append((*m_Players)[i]);
 
 	OnObjectSettingsChange(m_ScenarioEditor->GetObjectSettings());

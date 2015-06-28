@@ -16,9 +16,23 @@
  */
 
 #include "precompiled.h"
-
 #include "ScenarioEditor.h"
 
+#include "CustomControls/Canvas/Canvas.h"
+#include "CustomControls/HighResTimer/HighResTimer.h"
+#include "CustomControls/MapDialog/MapDialog.h"
+#include "GameInterface/MessagePasser.h"
+#include "GameInterface/Messages.h"
+#include "General/Datafile.h"
+#include "Misc/KeyMap.h"
+#include "Sections/Environment/Environment.h"
+#include "Sections/Map/Map.h"
+#include "Sections/Object/Object.h"
+#include "Sections/Player/Player.h"
+#include "Sections/Terrain/Terrain.h"
+#include "Tools/Common/Brushes.h"
+#include "Tools/Common/MiscState.h"
+#include "Tools/Common/Tools.h"
 #include "wx/busyinfo.h"
 #include "wx/clipbrd.h"
 #include "wx/config.h"
@@ -34,24 +48,6 @@
 #include "wx/xml/xml.h"
 #include "wx/xrc/xmlres.h"
 
-#include "General/Datafile.h"
-
-#include "CustomControls/Canvas/Canvas.h"
-#include "CustomControls/HighResTimer/HighResTimer.h"
-#include "CustomControls/MapDialog/MapDialog.h"
-
-#include "GameInterface/MessagePasser.h"
-#include "GameInterface/Messages.h"
-
-#include "Misc/KeyMap.h"
-
-#include "Tools/Common/Tools.h"
-#include "Tools/Common/Brushes.h"
-#include "Tools/Common/MiscState.h"
-#include "Sections/Map/Map.h"
-#include "Sections/Player/Player.h"
-#include "Sections/Object/Object.h"
-#include "Sections/Environment/Environment.h"
 
 static HighResTimer g_Timer;
 
@@ -334,6 +330,7 @@ enum
 	ID_Toolbar,
 	ID_ToolbarNew,
 	ID_ToolbarOpen,
+	ID_ResizeMap,
 
 	ID_ToolbarOptionsBegin = 1000, //Space for 998 options
 	ID_ToolbarOptionMap,
@@ -364,6 +361,7 @@ enum
 	ID_EntitySettingsView,
 	ID_WaterSettings,
 	ID_PostProcessingSettings,
+	ID_VisualizeSettings,
 	ID_ViewsEnd
 };
 
@@ -392,6 +390,7 @@ BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
 	EVT_MENU(wxID_REDO, ScenarioEditor::OnRedo)
     EVT_MENU(ID_Copy, ScenarioEditor::OnCopy)
     EVT_MENU(ID_Paste, ScenarioEditor::OnPaste)
+	EVT_MENU(ID_ResizeMap, ScenarioEditor::OnResizeMap)
 
 	EVT_MENU(ID_Wireframe, ScenarioEditor::OnWireframe)
 	EVT_MENU(ID_MessageTrace, ScenarioEditor::OnMessageTrace)
@@ -584,6 +583,8 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 
 	NotifyOnMapReload();
 	m_Mgr.Update();
+
+	m_ToolManager.GetCurrentTool().RegisterObserver(0, &ScenarioEditor::OnToolChange, this);
 }
 
 ScenarioEditor::~ScenarioEditor()
@@ -591,25 +592,19 @@ ScenarioEditor::~ScenarioEditor()
 	m_Mgr.UnInit();
 }
 
+void ScenarioEditor::OnToolChange(ITool* WXUNUSED(tool))
+{
+	wxToolBar* toolbar = this->GetToolBar();
+	for (const std::pair<int, wxString>& tool : m_ToolsMap)
+		toolbar->ToggleTool(tool.first, m_ToolManager.GetCurrentToolName() == tool.second);
+}
+
 void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 {
 	if (event.GetId() > ID_ToolbarToolsBegin && event.GetId() < ID_ToolbarToolsEnd)
 	{
-		if (!event.IsChecked())
-		{
-			this->m_ToolManager.SetCurrentTool(_T(""));
-			return;
-		}
-
-		wxToolBar* toolbar = this->GetToolBar();
-		for (int i = ID_ToolbarToolsBegin + 1; i < ID_ToolbarToolsEnd; ++i)
-		{
-			if (i != event.GetId())
-				toolbar->ToggleTool(i, false);
-		}
-
 		wxString toolName = m_ToolsMap[event.GetId()];
-		this->m_ToolManager.SetCurrentTool(toolName);
+		this->m_ToolManager.SetCurrentTool(event.IsChecked() ? toolName : "");
 	}
 	else if (event.GetId() == ID_ToolbarOptionMap)
 		UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
@@ -629,7 +624,13 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 		UpdatePanelTool<WaterSettings>(event.IsChecked(), "waterSettings", "WaterSettings");
 	else if (event.GetId() == ID_PostProcessingSettings)
 		UpdatePanelTool<PostProcessingSettings>(event.IsChecked(), "postProcessingSetting", "PostProcessingSetting");
-
+	else if (event.GetId() == ID_ToolbarOptionTerrain)
+	{
+		UpdatePanelTool<TerrainSettings>(event.IsChecked(), "terrainSettings", "TerrainSettings");
+		UpdatePanelTool<TexturePreviewPanel>(event.IsChecked(), "texturePreviewPanel", "TexturePreviewPanel", false);
+	}
+	else if (event.GetId() == ID_VisualizeSettings)
+		UpdatePanelTool<VisualizeSettings>(event.IsChecked(), "visualizeSettings", "VisualizeSettings");
 }
 
 void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
@@ -650,11 +651,17 @@ void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
 		this->GetMenuBar()->Check(ID_WaterSettings, false);
 	else if (event.GetPane()->name == "postProcessingSetting")
 		this->GetMenuBar()->Check(ID_PostProcessingSettings, false);
-
+	else if (event.GetPane()->name == "terrainSettings")
+	{
+		this->GetToolBar()->ToggleTool(ID_ToolbarOptionTerrain, false);
+		UpdatePanelTool<TexturePreviewPanel>(false, "texturePreviewPanel", "TexturePreviewPanel");
+	}
+	else if (event.GetPane()->name == "visualizeSettings")
+		this->GetMenuBar()->Check(ID_VisualizeSettings, false);
 }
 
 template<typename T>
-void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrcName)
+void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrcName, bool closeButton)
 {
 	static_assert(std::is_base_of<wxPanel, T>::value, "T must extend wxPanel");
 	wxAuiPaneInfo& paneInfo = m_Mgr.GetPane(panelName);
@@ -669,7 +676,7 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 	}
 
 	if (!paneInfo.IsOk())
-		CreateOrGetPanelTool<T>(panelName, xrcName, true);
+		CreateOrGetPanelTool<T>(panelName, xrcName, true, closeButton);
 	else
 		paneInfo.Show();
 
@@ -677,7 +684,7 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 }
 
 template<typename T>
-T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show)
+T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show, bool closeButton)
 {
 	static_assert(std::is_base_of<wxPanel, T>::value, "T must extend wxPanel");
 	wxAuiPaneInfo& paneInfo = m_Mgr.GetPane(panelName);
@@ -695,11 +702,40 @@ T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bo
 	panel->SetMinSize(panel->GetSize());
 	panel->Layout();
 
-	wxAuiPaneInfo& newPaneInfo = wxAuiPaneInfo().Name(panelName).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
+	wxAuiPaneInfo& newPaneInfo = wxAuiPaneInfo().CloseButton(closeButton).Name(panelName).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
 
 	m_Mgr.AddPane(panel, newPaneInfo);
 	m_Mgr.Update();
 	return panel;
+}
+
+void ScenarioEditor::OnResizeMap(wxCommandEvent& WXUNUSED(event))
+{
+	wxArrayString sizeNames;
+	std::vector<size_t> sizeTiles;
+
+	// Load the map sizes list
+	AtlasMessage::qGetMapSizes qrySizes;
+	qrySizes.Post();
+	AtObj sizes = AtlasObject::LoadFromJSON(*qrySizes.sizes);
+	for (AtIter s = sizes["Sizes"]["item"]; s.defined(); ++s)
+	{
+		long tiles = 0;
+		wxString(s["Tiles"]).ToLong(&tiles);
+		sizeNames.Add(wxString(s["Name"]));
+		sizeTiles.push_back((size_t)tiles);
+	}
+
+	// TODO: set default based on current map size
+
+	wxSingleChoiceDialog dlg(this, _("Select new map size. WARNING: This probably only works reliably on blank maps."),
+							 _("Resize map"), sizeNames);
+
+	if (dlg.ShowModal() != wxID_OK)
+		return;
+
+	size_t tiles = sizeTiles.at(dlg.GetSelection());
+	POST_COMMAND(ResizeMap, (tiles));
 }
 
 void ScenarioEditor::UpdateNewMapPanel(bool show)
@@ -1056,18 +1092,16 @@ void ScenarioEditor::NotifyOnMapReload()
 	toolbar->EnableTool(ID_ToolbarSimulationStop, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPause, false);
 	toolbar->EnableTool(ID_ToolbarSimulationPlay, true);
-	
+
 	AtlasMessage::qGetEnvironmentSettings qry_env;
 	qry_env.Post();
 	g_EnvironmentSettings = qry_env.settings;
 	g_EnvironmentSettings.NotifyObservers();
 	g_EnvironmentSettings.RegisterObserver(0, &ScenarioEditor::SendToGame, this);
-	
+
 	m_MapReloaded.NotifyObservers();
 	RefreshMapSettings();
 	m_MapSettings.NotifyObservers();
-	
-
 }
 
 bool ScenarioEditor::DiscardChangesDialog()

@@ -19,18 +19,17 @@
 
 #include "Terrain.h"
 
+#include "GameInterface/Messages.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/Brushes.h"
 #include "ScenarioEditor/Tools/Common/MiscState.h"
-
-#include "GameInterface/Messages.h"
-
-#include "wx/spinctrl.h"
-#include "wx/listctrl.h"
-#include "wx/image.h"
-#include "wx/imaglist.h"
-#include "wx/busyinfo.h"
-#include "wx/notebook.h"
+#include <wx/spinctrl.h>
+#include <wx/listctrl.h>
+#include <wx/image.h>
+#include <wx/imaglist.h>
+#include <wx/busyinfo.h>
+#include <wx/choicebk.h>
+#include <wx/tglbtn.h>
 
 class TextureNotebook;
 
@@ -46,16 +45,8 @@ private:
 enum
 {
 	ID_Passability = 1,
-	ID_ShowPriorities,
-	ID_ResizeMap
+	ID_ShowPriorities
 };
-
-// Helper function for adding tooltips
-static wxWindow* Tooltipped(wxWindow* window, const wxString& tip)
-{
-	window->SetToolTip(tip);
-	return window;
-}
 
 // Add spaces into the displayed name so there are more wrapping opportunities
 static wxString FormatTextureName(wxString name)
@@ -69,250 +60,6 @@ static wxString FormatTextureName(wxString name)
 
 //////////////////////////////////////////////////////////////////////////
 
-class TexturePreviewPanel : public wxPanel
-{
-private:
-	static const int imageWidth = 120;
-	static const int imageHeight = 40;
-
-public:
-	TexturePreviewPanel(wxWindow* parent)
-		: wxPanel(parent, wxID_ANY), m_Timer(this)
-	{
-		m_Conn = g_SelectedTexture.RegisterObserver(0, &TexturePreviewPanel::OnTerrainChange, this);
-		m_Sizer = new wxStaticBoxSizer(wxVERTICAL, this, _T("Texture"));
-		SetSizer(m_Sizer);
-
-		// Use placeholder bitmap for now
-		m_Sizer->Add(new wxStaticBitmap(this, wxID_ANY, wxNullBitmap), wxSizerFlags(1).Expand());
-	}
-
-	void LoadPreview()
-	{
-		if (m_TextureName.IsEmpty())
-		{
-			// If we haven't got a texture yet, copy the global
-			m_TextureName = g_SelectedTexture;
-		}
-
-		Freeze();
-
-		m_Sizer->Clear(true);
-
-		AtlasMessage::qGetTerrainTexturePreview qry((std::wstring)m_TextureName.wc_str(), imageWidth, imageHeight);
-		qry.Post();
-
-		AtlasMessage::sTerrainTexturePreview preview = qry.preview;
-
-		// Check for invalid/missing texture - shouldn't happen
-		if (!wxString(qry.preview->name.c_str()).IsEmpty())
-		{
-			// Construct the wrapped-text label
-			wxStaticText* label = new wxStaticText(this, wxID_ANY, FormatTextureName(*qry.preview->name), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
-			label->Wrap(m_Sizer->GetSize().GetX());
-
-			unsigned char* buf = (unsigned char*)(malloc(preview.imageData.GetSize()));
-			// imagedata.GetBuffer() gives a Shareable<unsigned char>*, which
-			// is stored the same as a unsigned char*, so we can just copy it.
-			memcpy(buf, preview.imageData.GetBuffer(), preview.imageData.GetSize());
-			wxImage img(qry.preview->imageWidth, qry.preview->imageHeight, buf);
-
-			wxStaticBitmap* bitmap = new wxStaticBitmap(this, wxID_ANY, wxBitmap(img), wxDefaultPosition, wxSize(qry.preview->imageWidth, qry.preview->imageHeight), wxBORDER_SIMPLE);
-			m_Sizer->Add(bitmap, wxSizerFlags(1).Align(wxALIGN_CENTRE));
-			m_Sizer->Add(label, wxSizerFlags().Expand());
-		
-			// We have to force the sidebar to layout manually
-			GetParent()->Layout();
-
-			if (preview.loaded && m_Timer.IsRunning())
-			{
-				m_Timer.Stop();
-			}
-			else if (!preview.loaded && !m_Timer.IsRunning())
-			{
-				m_Timer.Start(2000);
-			}
-		}
-
-		Layout();
-		Thaw();
-	}
-
-	void OnTerrainChange(const wxString& texture)
-	{
-		// Check if texture really changed, to avoid doing this too often
-		if (texture != m_TextureName)
-		{
-			// Load new texture preview
-			m_TextureName = texture;
-			LoadPreview();
-		}
-	}
-
-	void OnTimer(wxTimerEvent& WXUNUSED(evt))
-	{
-		LoadPreview();
-	}
-
-private:
-	ObservableScopedConnection m_Conn;
-	wxSizer* m_Sizer;
-	wxTimer m_Timer;
-	wxString m_TextureName;
-
-	DECLARE_EVENT_TABLE();
-};
-
-BEGIN_EVENT_TABLE(TexturePreviewPanel, wxPanel)
-	EVT_TIMER(wxID_ANY, TexturePreviewPanel::OnTimer)
-END_EVENT_TABLE();
-
-//////////////////////////////////////////////////////////////////////////
-
-TerrainSidebar::TerrainSidebar(ScenarioEditor& scenarioEditor, wxWindow* sidebarContainer, wxWindow* bottomBarContainer) :
-	Sidebar(scenarioEditor, sidebarContainer, bottomBarContainer)
-{
-	{
-		/////////////////////////////////////////////////////////////////////////
-		// Terrain elevation
-		wxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Elevation tools"));
-		wxSizer* gridSizer = new wxGridSizer(4);
-		/*gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Modify"), _T("AlterElevation")),
-			_("Brush with left mouse buttons to raise terrain,\nright mouse button to lower it")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Ridge"), _T("PikeElevation")),
-			_("Brush with left mouse buttons to raise terrain,\nright mouse button to lower it")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Smooth"), _T("SmoothElevation")),
-			_("Brush with left mouse button to smooth terrain,\nright mouse button to roughen it")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Flatten"), _T("FlattenElevation")),
-			_("Brush with left mouse button to flatten terrain")), wxSizerFlags().Expand());
-		*/sizer->Add(gridSizer, wxSizerFlags().Expand());
-		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
-	}
-
-	{
-		/////////////////////////////////////////////////////////////////////////
-		// Terrain texture
-		wxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Texture tools"));
-		wxSizer* gridSizer = new wxGridSizer(3);
-		/*gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Paint"), _T("PaintTerrain")),
-			_("Brush with left mouse button to paint texture dominantly,\nright mouse button to paint submissively.\nShift-left-click for eyedropper tool")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Replace"), _T("ReplaceTerrain")),
-			_("Replace all of a terrain texture with a new one")), wxSizerFlags().Expand());
-		gridSizer->Add(Tooltipped(new ToolButton(scenarioEditor.GetToolManager(), this, _("Fill"), _T("FillTerrain")),
-			_T("Bucket fill a patch of terrain texture with a new one")), wxSizerFlags().Expand());
-		*/sizer->Add(gridSizer, wxSizerFlags().Expand());
-		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
-	}
-
-	{
-		/////////////////////////////////////////////////////////////////////////
-		// Brush settings
-		wxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Brush"));
-
-		m_TexturePreview = new TexturePreviewPanel(this);
-		sizer->Add(m_TexturePreview, wxSizerFlags(1).Expand());
-
-		g_Brush_Elevation.CreateUI(this, sizer);
-		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
-	}
-
-	{
-		/////////////////////////////////////////////////////////////////////////
-		// Visualise
-		wxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Visualise"));
-		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
-
-		wxFlexGridSizer* visSizer = new wxFlexGridSizer(2, 5, 5);
-		visSizer->AddGrowableCol(1);
-		sizer->Add(visSizer, wxSizerFlags().Expand());
-
-		wxArrayString defaultChoices;
-		defaultChoices.Add(_("(none)"));
-		m_PassabilityChoice = new wxChoice(this, ID_Passability, wxDefaultPosition, wxDefaultSize, defaultChoices);
-		m_PassabilityChoice->SetSelection(0);
-
-		visSizer->Add(new wxStaticText(this, wxID_ANY, _("Passability")), wxSizerFlags().Align(wxALIGN_CENTER|wxALIGN_RIGHT));
-		visSizer->Add(Tooltipped(m_PassabilityChoice,
-			_("View passability classes")), wxSizerFlags().Expand());
-
-		visSizer->Add(new wxStaticText(this, wxID_ANY, _("Priorities")), wxSizerFlags().Align(wxALIGN_CENTER|wxALIGN_RIGHT));
-		visSizer->Add(Tooltipped(new wxCheckBox(this, ID_ShowPriorities, _("")),
-			_("Show terrain texture priorities")));
-	}
-
-	{
-		/////////////////////////////////////////////////////////////////////////
-		// Misc tools
-		wxSizer* sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Misc tools"));
-		sizer->Add(new wxButton(this, ID_ResizeMap, _("Resize map")), wxSizerFlags().Expand());
-		m_MainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxTOP, 10));
-	}
-
-	m_BottomBar = new TerrainBottomBar(scenarioEditor, bottomBarContainer);
-}
-
-void TerrainSidebar::OnFirstDisplay()
-{
-	AtlasMessage::qGetTerrainPassabilityClasses qry;
-	qry.Post();
-	std::vector<std::wstring> passClasses = *qry.classNames;
-	for (size_t i = 0; i < passClasses.size(); ++i)
-		m_PassabilityChoice->Append(passClasses[i].c_str());
-
-	static_cast<TerrainBottomBar*>(m_BottomBar)->LoadTerrain();
-	m_TexturePreview->LoadPreview();
-}
-
-void TerrainSidebar::OnPassabilityChoice(wxCommandEvent& evt)
-{
-	if (evt.GetSelection() == 0)
-		POST_MESSAGE(SetViewParamS, (AtlasMessage::eRenderView::GAME, L"passability", L""));
-	else
-		POST_MESSAGE(SetViewParamS, (AtlasMessage::eRenderView::GAME, L"passability", (std::wstring)evt.GetString().wc_str()));
-}
-
-void TerrainSidebar::OnShowPriorities(wxCommandEvent& evt)
-{
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::GAME, L"priorities", evt.IsChecked()));
-}
-
-void TerrainSidebar::OnResizeMap(wxCommandEvent& WXUNUSED(evt))
-{
-	wxArrayString sizeNames;
-	std::vector<size_t> sizeTiles;
-
-	// Load the map sizes list
-	AtlasMessage::qGetMapSizes qrySizes;
-	qrySizes.Post();
-	AtObj sizes = AtlasObject::LoadFromJSON(*qrySizes.sizes);
-	for (AtIter s = sizes["Data"]["item"]; s.defined(); ++s)
-	{
-		long tiles = 0;
-		wxString(s["Tiles"]).ToLong(&tiles);
-		sizeNames.Add(wxString(s["Name"]));
-		sizeTiles.push_back((size_t)tiles);
-	}
-
-	// TODO: set default based on current map size
-
-	wxSingleChoiceDialog dlg(this, _("Select new map size. WARNING: This probably only works reliably on blank maps."),
-			_("Resize map"), sizeNames);
-
-	if (dlg.ShowModal() != wxID_OK)
-		return;
-
-	size_t tiles = sizeTiles.at(dlg.GetSelection());
-	POST_COMMAND(ResizeMap, (tiles));
-}
-
-BEGIN_EVENT_TABLE(TerrainSidebar, Sidebar)
-	EVT_CHOICE(ID_Passability, TerrainSidebar::OnPassabilityChoice)
-	EVT_CHECKBOX(ID_ShowPriorities, TerrainSidebar::OnShowPriorities)
-	EVT_BUTTON(ID_ResizeMap, TerrainSidebar::OnResizeMap)
-END_EVENT_TABLE();
-
-//////////////////////////////////////////////////////////////////////////
-
 class TextureNotebookPage : public wxPanel
 {
 private:
@@ -320,7 +67,7 @@ private:
 	static const int imageHeight = 40;
 
 public:
-	TextureNotebookPage(ScenarioEditor& scenarioEditor, wxWindow* parent, const wxString& name)
+	TextureNotebookPage(ScenarioEditor* scenarioEditor, wxWindow* parent, const wxString& name)
 		: wxPanel(parent, wxID_ANY), m_ScenarioEditor(scenarioEditor), m_Timer(this), m_Name(name), m_Loaded(false)
 	{
 		m_ScrolledPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
@@ -365,21 +112,19 @@ public:
 
 		bool allLoaded = true;
 
-		for (size_t i = 0; i < previews.size(); ++i)
+		for (const AtlasMessage::sTerrainTexturePreview& preview : *qry.previews)
 		{
-			if (!previews[i].loaded)
+			if (!preview.loaded)
 				allLoaded = false;
 
-			wxString name = previews[i].name.c_str();
+			wxString name = preview.name.c_str();
 
 			// Construct the wrapped-text label
 			wxStaticText* label = new wxStaticText(m_ScrolledPanel, wxID_ANY, FormatTextureName(name), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
 			label->Wrap(imageWidth);
 
-			unsigned char* buf = (unsigned char*)(malloc(previews[i].imageData.GetSize()));
-			// imagedata.GetBuffer() gives a Shareable<unsigned char>*, which
-			// is stored the same as a unsigned char*, so we can just copy it.
-			memcpy(buf, previews[i].imageData.GetBuffer(), previews[i].imageData.GetSize());
+			unsigned char* buf = (unsigned char*)(malloc(preview.imageData.GetSize()));
+			memcpy(buf, preview.imageData.GetBuffer(), preview.imageData.GetSize());
 			wxImage img (imageWidth, imageHeight, buf);
 
 			wxButton* button = new wxBitmapButton(m_ScrolledPanel, wxID_ANY, wxBitmap(img));
@@ -400,13 +145,9 @@ public:
 		// If not all textures were loaded yet, run a timer to reload the previews
 		// every so often until they've all finished
 		if (allLoaded && m_Timer.IsRunning())
-		{
 			m_Timer.Stop();
-		}
 		else if (!allLoaded && !m_Timer.IsRunning())
-		{
 			m_Timer.Start(2000);
-		}
 	}
 
 	void OnButton(wxCommandEvent& evt)
@@ -417,7 +158,10 @@ public:
 		g_SelectedTexture.NotifyObservers();
 
 		if (m_LastTerrainSelection)
+		{
 			m_LastTerrainSelection->SetBackgroundColour(wxNullColour);
+			m_LastTerrainSelection->Refresh();
+		}
 
 		button->SetBackgroundColour(wxColor(255, 255, 0));
 		m_LastTerrainSelection = button;
@@ -425,8 +169,8 @@ public:
 		// Slight hack: Default to Paint mode because that's probably what the user wanted
 		// when they selected a terrain; unless already explicitly in Replace mode, because
 		// then the user probably wanted that instead
-		if (m_ScenarioEditor.GetToolManager().GetCurrentToolName() != _T("ReplaceTerrain") && m_ScenarioEditor.GetToolManager().GetCurrentToolName() != _T("FillTerrain"))
-			m_ScenarioEditor.GetToolManager().SetCurrentTool(_T("PaintTerrain"));
+		if (m_ScenarioEditor->GetToolManager().GetCurrentToolName() != _T("ReplaceTerrain") && m_ScenarioEditor->GetToolManager().GetCurrentToolName() != _T("FillTerrain"))
+			m_ScenarioEditor->GetToolManager().SetCurrentTool(_T("PaintTerrain"));
 	}
 
 	void OnSize(wxSizeEvent& evt)
@@ -442,7 +186,7 @@ public:
 	}
 
 private:
-	ScenarioEditor& m_ScenarioEditor;
+	ScenarioEditor* m_ScenarioEditor;
 	bool m_Loaded;
 	wxTimer m_Timer;
 	wxString m_Name;
@@ -460,13 +204,17 @@ BEGIN_EVENT_TABLE(TextureNotebookPage, wxPanel)
 END_EVENT_TABLE();
 
 
-class TextureNotebook : public wxNotebook
+class TextureNotebook : public wxChoicebook
 {
+	DECLARE_DYNAMIC_CLASS(TextureNotebook);
 public:
-	TextureNotebook(ScenarioEditor& scenarioEditor, wxWindow *parent)
-		: wxNotebook(parent, wxID_ANY/*, wxDefaultPosition, wxDefaultSize, wxNB_FIXEDWIDTH*/),
-		  m_ScenarioEditor(scenarioEditor)
+	TextureNotebook()
 	{
+	}
+
+	void SetScenarioEditor(ScenarioEditor* scenarioEditor)
+	{
+		m_ScenarioEditor = scenarioEditor;
 	}
 
 	void LoadTerrain()
@@ -474,32 +222,23 @@ public:
 		wxBusyInfo busy (_("Loading terrain groups"));
 
 		DeleteAllPages();
-		m_TerrainGroups.Clear();
+		wxArrayString m_TerrainGroups;
 
 		// Get the list of terrain groups from the engine
 		AtlasMessage::qGetTerrainGroups qry;
 		qry.Post();
-		std::vector<std::wstring> groupnames = *qry.groupNames;
-		for (std::vector<std::wstring>::iterator it = groupnames.begin(); it != groupnames.end(); ++it)
-			m_TerrainGroups.Add(it->c_str());
+		for (const std::wstring& groupName : *qry.groupNames)
+			m_TerrainGroups.Add(groupName.c_str());
 
-		for (size_t i = 0; i < m_TerrainGroups.GetCount(); ++i)
-		{
-			wxString visibleName = FormatTextureName(m_TerrainGroups[i]);
-			AddPage(new TextureNotebookPage(m_ScenarioEditor, this, m_TerrainGroups[i]), visibleName);
-		}
+		for (const wxString& terrainGroup : m_TerrainGroups)
+			AddPage(new TextureNotebookPage(m_ScenarioEditor, this, terrainGroup), FormatTextureName(terrainGroup));
 
-		// On some platforms (wxOSX) there is no initial OnPageChanged event, so it loads with a blank page
-		//	and setting selection to 0 won't trigger it either, so just force first page to display
-		// (this is safe because the sidebar has already been displayed)
 		if (GetPageCount() > 0)
-		{
 			static_cast<TextureNotebookPage*>(GetPage(0))->OnDisplay();
-		}
 	}
 
 protected:
-	void OnPageChanged(wxNotebookEvent& event)
+	void OnPageChanged(wxBookCtrlEvent& event)
 	{
 		if (event.GetSelection() >= 0 && event.GetSelection() < (int)GetPageCount())
 		{
@@ -509,28 +248,167 @@ protected:
 	}
 
 private:
-	ScenarioEditor& m_ScenarioEditor;
-	wxArrayString m_TerrainGroups;
+	ScenarioEditor* m_ScenarioEditor;
 
 	DECLARE_EVENT_TABLE();
 };
 
-BEGIN_EVENT_TABLE(TextureNotebook, wxNotebook)
-	EVT_NOTEBOOK_PAGE_CHANGED(wxID_ANY, TextureNotebook::OnPageChanged)
+IMPLEMENT_DYNAMIC_CLASS(TextureNotebook, wxChoicebook);
+BEGIN_EVENT_TABLE(TextureNotebook, wxChoicebook)
+	EVT_CHOICEBOOK_PAGE_CHANGED(wxID_ANY, TextureNotebook::OnPageChanged)
 END_EVENT_TABLE();
 
 //////////////////////////////////////////////////////////////////////////
-
-TerrainBottomBar::TerrainBottomBar(ScenarioEditor& scenarioEditor, wxWindow* parent) :
-	wxPanel(parent, wxID_ANY)
+enum
 {
-	wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-	m_Textures = new TextureNotebook(scenarioEditor, this);
-	sizer->Add(m_Textures, wxSizerFlags().Expand().Proportion(1));
-	SetSizer(sizer);
+	ID_Paint,
+	ID_Replace,
+	ID_Fill,
+	ID_TextureImage,
+	ID_TextureName,
+	ID_Shape,
+	ID_Size,
+	ID_Strength
+};
+
+IMPLEMENT_DYNAMIC_CLASS(TerrainSettings, wxPanel);
+TerrainSettings::TerrainSettings()
+	:m_ScenarioEditor(NULL)
+{
 }
 
-void TerrainBottomBar::LoadTerrain()
+void TerrainSettings::Init(ScenarioEditor *scenarioEditor)
 {
-	m_Textures->LoadTerrain();
+	m_ScenarioEditor = scenarioEditor;
+	m_ToolsMap[ID_Paint]="PaintTerrain";
+	m_ToolsMap[ID_Replace]="ReplaceTerrain";
+	m_ToolsMap[ID_Fill]="FillTerrain";
+
+	m_ScenarioEditor->GetToolManager().GetCurrentTool().RegisterObserver(0, &TerrainSettings::OnToolChanged, this);
+	OnToolChanged(NULL);
+
+ 	m_PreviewTexture = g_SelectedTexture;
+	LoadPreviewTexture();
+	g_SelectedTexture.RegisterObserver(0, &TerrainSettings::OnTextureChanged, this);
+
+	wxDynamicCast(FindWindow(ID_Shape), wxRadioBox)->SetSelection(g_Brush_Elevation.GetShape());
+
+	wxDynamicCast(FindWindow(ID_Size), wxSpinCtrl)->SetValue(wxString::Format("%d", g_Brush_Elevation.GetSize()));
+
+	wxDynamicCast(FindWindow(ID_Strength), wxSpinCtrl)->SetValue(wxString::Format("%d", (int)(10.f*g_Brush_Elevation.GetStrength())));
+}
+
+void TerrainSettings::OnToolChanged(ITool* WXUNUSED(tool))
+{
+	for (const std::pair<int, wxString>& tool : m_ToolsMap)
+		wxDynamicCast(FindWindow(tool.first), wxToggleButton)->SetValue(m_ScenarioEditor->GetToolManager().GetCurrentToolName() == tool.second);
+}
+
+void TerrainSettings::OnButton(wxCommandEvent &evt)
+{
+	std::map<int, wxString>::iterator tool = m_ToolsMap.find(evt.GetId());
+	if (tool == m_ToolsMap.end())
+		return;
+
+	m_ScenarioEditor->GetToolManager().SetCurrentTool(evt.IsChecked() ? tool->second : "");
+}
+
+void TerrainSettings::OnTextureChanged(const wxString& texture)
+{
+	if (texture == m_PreviewTexture)
+		return;
+
+	m_PreviewTexture = texture;
+	LoadPreviewTexture();
+}
+
+void TerrainSettings::LoadPreviewTexture()
+{
+	AtlasMessage::qGetTerrainTexturePreview qry((std::wstring)m_PreviewTexture.wx_str(), imageWidth, imageHeight);
+
+	qry.Post();
+
+	wxDynamicCast(FindWindow(ID_TextureName), wxStaticText)->SetLabel(FormatTextureName(*qry.preview->name));
+
+	unsigned char* buf = (unsigned char*)(malloc(qry.preview->imageData.GetSize()));
+	memcpy(buf, qry.preview->imageData.GetBuffer(), qry.preview->imageData.GetSize());
+	wxImage img(qry.preview->imageWidth, qry.imageHeight, buf);
+	wxDynamicCast(FindWindow(ID_TextureImage), wxStaticBitmap)->SetBitmap(wxBitmap(img));
+}
+
+void TerrainSettings::OnShapeChange(wxCommandEvent& evt)
+{
+	g_Brush_Elevation.SetShape((BrushShape)evt.GetSelection());
+	g_Brush_Elevation.Send();
+}
+
+void TerrainSettings::OnSizeChange(wxSpinEvent &evt)
+{
+	g_Brush_Elevation.SetSize(evt.GetValue());
+	g_Brush_Elevation.Send();
+}
+
+void TerrainSettings::OnStrengthChange(wxSpinEvent &evt)
+{
+	g_Brush_Elevation.SetStrength(evt.GetValue()/10.f);
+	g_Brush_Elevation.Send();
+}
+
+BEGIN_EVENT_TABLE(TerrainSettings, wxPanel)
+	EVT_TOGGLEBUTTON(wxID_ANY, TerrainSettings::OnButton)
+	EVT_RADIOBOX(wxID_ANY, TerrainSettings::OnShapeChange)
+	EVT_SPINCTRL(ID_Size, TerrainSettings::OnSizeChange)
+	EVT_SPINCTRL(ID_Strength, TerrainSettings::OnStrengthChange)
+END_EVENT_TABLE();
+
+//////////////////////////////////////////////////////////////////////////
+IMPLEMENT_DYNAMIC_CLASS(VisualizeSettings, wxPanel);
+
+VisualizeSettings::VisualizeSettings()
+{
+}
+
+void VisualizeSettings::Init(ScenarioEditor* WXUNUSED(scenarioEditor))
+{
+	AtlasMessage::qGetTerrainPassabilityClasses qry;
+	qry.Post();
+
+	wxChoice* passabilityChoice = wxDynamicCast(FindWindow(ID_Passability), wxChoice);
+
+	for (const std::wstring& className : *qry.classNames)
+		passabilityChoice->Append(className.c_str());
+
+}
+
+void VisualizeSettings::OnShowPriorities(wxCommandEvent& evt)
+{
+	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::GAME, L"priorities", evt.IsChecked()));
+}
+
+void VisualizeSettings::OnPassabilityChoice(wxCommandEvent& evt)
+{
+	POST_MESSAGE(SetViewParamS, (AtlasMessage::eRenderView::GAME, L"passability", evt.GetSelection() == 0 ? L"" : (std::wstring)evt.GetString().wc_str()));
+}
+
+BEGIN_EVENT_TABLE(VisualizeSettings, wxPanel)
+	EVT_CHOICE(ID_Passability, VisualizeSettings::OnPassabilityChoice)
+	EVT_CHECKBOX(ID_ShowPriorities, VisualizeSettings::OnShowPriorities)
+END_EVENT_TABLE()
+
+//////////////////////////////////////////////////////////////////////////
+IMPLEMENT_DYNAMIC_CLASS(TexturePreviewPanel, wxPanel);
+enum
+{
+	ID_TextureNoteBook
+};
+
+TexturePreviewPanel::TexturePreviewPanel()
+{
+}
+
+void TexturePreviewPanel::Init(ScenarioEditor* scenarioEditor)
+{
+	TextureNotebook* texturePreviewPanel = wxDynamicCast(FindWindow(ID_TextureNoteBook), TextureNotebook);
+	texturePreviewPanel->SetScenarioEditor(scenarioEditor);
+	texturePreviewPanel->LoadTerrain();
 }

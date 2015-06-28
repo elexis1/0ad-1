@@ -24,11 +24,10 @@ class BrushStrengthCtrl;
 
 #include <vector>
 
+enum BrushShape { CIRCLE = 0, SQUARE};
+
 class Brush
 {
-	friend class BrushShapeCtrl;
-	friend class BrushSizeCtrl;
-	friend class BrushStrengthCtrl;
 public:
 	Brush();
 	~Brush();
@@ -45,17 +44,19 @@ public:
 	float GetStrength() const;
 	void SetStrength(float strength);
 
-	void CreateUI(wxWindow* parent, wxSizer* sizer);
+	BrushShape GetShape();
+	void SetShape(BrushShape shape);
+
+	int GetSize();
+	void SetSize(int size);
+	// If active, send SetBrush message to the game
+	void Send();
 
 	// Set this brush to be active - sends SetBrush message now, and also
 	// whenever the brush is altered (until a different one is activated).
 	void MakeActive();
 
 private:
-	// If active, send SetBrush message to the game
-	void Send();
-
-	enum BrushShape { CIRCLE = 0, SQUARE};
 	BrushShape m_Shape;
 	int m_Size;
 	float m_Strength;
