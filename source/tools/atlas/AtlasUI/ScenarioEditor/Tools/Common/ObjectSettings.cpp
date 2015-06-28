@@ -92,8 +92,8 @@ AtlasMessage::sObjectSettings ObjectSettings::GetSettings() const
 
 	// Copy selections from set into vector
 	std::vector<std::wstring> selections;
-	for (const wxString& it : m_ActorSelections)
-		selections.push_back((std::wstring)it.wc_str());
+	for (const wxString& actorSelection : m_ActorSelections)
+		selections.push_back((std::wstring)actorSelection.wc_str());
 
 	settings.selections = selections;
 
@@ -120,8 +120,8 @@ void ObjectSettings::OnSelectionChange(const std::vector<AtlasMessage::ObjectID>
 	for (const std::vector<std::wstring>& grp : variation)
 	{
 		wxArrayString variants;
-		for (const std::wstring& it : grp)
-			variants.Add(it.c_str());
+		for (const std::wstring& variant : grp)
+			variants.Add(variant.c_str());
 
 		m_VariantGroups.push_back(variants);
 	}
@@ -134,6 +134,6 @@ void ObjectSettings::OnSelectionChange(const std::vector<AtlasMessage::ObjectID>
 
 void ObjectSettings::PostToGame()
 {
-	for (const AtlasMessage::ObjectID& it : g_SelectedObjects)
-		POST_COMMAND(SetObjectSettings, (m_View, it, GetSettings()));
+	for (const AtlasMessage::ObjectID& selectedObject : g_SelectedObjects)
+		POST_COMMAND(SetObjectSettings, (m_View, selectedObject, GetSettings()));
 }

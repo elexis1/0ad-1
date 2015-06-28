@@ -64,6 +64,5 @@ class TexturePreviewPanel : public wxPanel
 public:
 	TexturePreviewPanel();
 	void Init(ScenarioEditor* scenarioEditor);
-private:
 };
 #endif //INCLUDED_TERRAIN

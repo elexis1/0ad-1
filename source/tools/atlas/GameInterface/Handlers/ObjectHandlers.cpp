@@ -426,10 +426,9 @@ MESSAGEHANDLER(ObjectPreviewToEntity)
 	PlayerColorMap playerColor;
 
 	//I need to re create the objects finally delete preview objects
-	for (entity_id_t i : g_PreviewEntitiesID)
+	for (const entity_id_t& ent : g_PreviewEntitiesID)
 	{
 		//Get template
-		entity_id_t ent = i;
 		std::string templateName = cmpTemplateManager->GetCurrentTemplateName(ent);
 		std::wstring wTemplateName(templateName.begin() + 8, templateName.end());
 		//Create new entity

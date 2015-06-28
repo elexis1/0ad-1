@@ -280,12 +280,12 @@ void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::Ob
 
 	int counterTemplate = 0;
 	std::string lastTemplateName = "";
-	for (const std::string& it : names)
+	for (const std::string& name : names)
 	{
 		if (lastTemplateName == "")
-			lastTemplateName = it;
+			lastTemplateName = name;
 
-		if (lastTemplateName == it)
+		if (lastTemplateName == name)
 		{
 			++counterTemplate;
 			return;
@@ -293,7 +293,7 @@ void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::Ob
 
 		sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
 
-		lastTemplateName = it;
+		lastTemplateName = name;
 		counterTemplate = 1;
 	}
 

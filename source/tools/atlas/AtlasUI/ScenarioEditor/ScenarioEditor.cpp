@@ -388,8 +388,8 @@ BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
 	EVT_MENU(ID_Quit, ScenarioEditor::OnQuit)
 	EVT_MENU(wxID_UNDO, ScenarioEditor::OnUndo)
 	EVT_MENU(wxID_REDO, ScenarioEditor::OnRedo)
-    EVT_MENU(ID_Copy, ScenarioEditor::OnCopy)
-    EVT_MENU(ID_Paste, ScenarioEditor::OnPaste)
+	EVT_MENU(ID_Copy, ScenarioEditor::OnCopy)
+	EVT_MENU(ID_Paste, ScenarioEditor::OnPaste)
 	EVT_MENU(ID_ResizeMap, ScenarioEditor::OnResizeMap)
 
 	EVT_MENU(ID_Wireframe, ScenarioEditor::OnWireframe)
@@ -595,8 +595,8 @@ ScenarioEditor::~ScenarioEditor()
 void ScenarioEditor::OnToolChange(ITool* WXUNUSED(tool))
 {
 	wxToolBar* toolbar = this->GetToolBar();
-	for (const std::pair<int, wxString>& tool : m_ToolsMap)
-		toolbar->ToggleTool(tool.first, m_ToolManager.GetCurrentToolName() == tool.second);
+	for (const std::pair<int, wxString>& toolItem : m_ToolsMap)
+		toolbar->ToggleTool(toolItem.first, m_ToolManager.GetCurrentToolName() == toolItem.second);
 }
 
 void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
@@ -661,7 +661,7 @@ void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
 }
 
 template<typename T>
-void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrcName, bool closeButton)
+void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrcName, bool closeButton /* = true */)
 {
 	static_assert(std::is_base_of<wxPanel, T>::value, "T must extend wxPanel");
 	wxAuiPaneInfo& paneInfo = m_Mgr.GetPane(panelName);
@@ -684,7 +684,7 @@ void ScenarioEditor::UpdatePanelTool(bool show, wxString panelName, wxString xrc
 }
 
 template<typename T>
-T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show, bool closeButton)
+T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bool show /* = true */, bool closeButton /* = true */)
 {
 	static_assert(std::is_base_of<wxPanel, T>::value, "T must extend wxPanel");
 	wxAuiPaneInfo& paneInfo = m_Mgr.GetPane(panelName);

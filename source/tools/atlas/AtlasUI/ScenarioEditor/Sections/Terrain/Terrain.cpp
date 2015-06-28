@@ -124,6 +124,8 @@ public:
 			label->Wrap(imageWidth);
 
 			unsigned char* buf = (unsigned char*)(malloc(preview.imageData.GetSize()));
+			// imagedata.GetBuffer() gives a Shareable<unsigned char>*, which
+			// is stored the same as a unsigned char*, so we can just copy it.
 			memcpy(buf, preview.imageData.GetBuffer(), preview.imageData.GetSize());
 			wxImage img (imageWidth, imageHeight, buf);
 
@@ -233,6 +235,9 @@ public:
 		for (const wxString& terrainGroup : m_TerrainGroups)
 			AddPage(new TextureNotebookPage(m_ScenarioEditor, this, terrainGroup), FormatTextureName(terrainGroup));
 
+		// On some platforms (wxOSX) there is no initial OnPageChanged event, so it loads with a blank page
+		//	and setting selection to 0 won't trigger it either, so just force first page to display
+		// (this is safe because the sidebar has already been displayed)
 		if (GetPageCount() > 0)
 			static_cast<TextureNotebookPage*>(GetPage(0))->OnDisplay();
 	}
@@ -273,7 +278,7 @@ enum
 
 IMPLEMENT_DYNAMIC_CLASS(TerrainSettings, wxPanel);
 TerrainSettings::TerrainSettings()
-	:m_ScenarioEditor(NULL)
+	: m_ScenarioEditor(NULL)
 {
 }
 
@@ -300,8 +305,8 @@ void TerrainSettings::Init(ScenarioEditor *scenarioEditor)
 
 void TerrainSettings::OnToolChanged(ITool* WXUNUSED(tool))
 {
-	for (const std::pair<int, wxString>& tool : m_ToolsMap)
-		wxDynamicCast(FindWindow(tool.first), wxToggleButton)->SetValue(m_ScenarioEditor->GetToolManager().GetCurrentToolName() == tool.second);
+	for (const std::pair<int, wxString>& toolItem : m_ToolsMap)
+		wxDynamicCast(FindWindow(toolItem.first), wxToggleButton)->SetValue(m_ScenarioEditor->GetToolManager().GetCurrentToolName() == toolItem.second);
 }
 
 void TerrainSettings::OnButton(wxCommandEvent &evt)
@@ -377,7 +382,6 @@ void VisualizeSettings::Init(ScenarioEditor* WXUNUSED(scenarioEditor))
 
 	for (const std::wstring& className : *qry.classNames)
 		passabilityChoice->Append(className.c_str());
-
 }
 
 void VisualizeSettings::OnShowPriorities(wxCommandEvent& evt)
