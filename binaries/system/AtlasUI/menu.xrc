@@ -88,6 +88,12 @@
 			<object class="wxMenuItem" name="4005">
 				<label>Visualize Settings</label>
 				<help></help>
+				<checkable>1</checkable>
+			</object>
+			<object class="wxMenuItem" name="4006">
+				<label>Actor Viewer</label>
+				<help></help>
+				<checkable>1</checkable>
 			</object>
 		</object>
 		<object class="wxMenu" name="m_Misc">

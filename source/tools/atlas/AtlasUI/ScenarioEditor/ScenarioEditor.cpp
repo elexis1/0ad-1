@@ -362,6 +362,7 @@ enum
 	ID_WaterSettings,
 	ID_PostProcessingSettings,
 	ID_VisualizeSettings,
+	ID_ActorViewerPanel,
 	ID_ViewsEnd
 };
 
@@ -631,6 +632,8 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 	}
 	else if (event.GetId() == ID_VisualizeSettings)
 		UpdatePanelTool<VisualizeSettings>(event.IsChecked(), "visualizeSettings", "VisualizeSettings");
+	else if (event.GetId() == ID_ActorViewerPanel)
+		UpdatePanelTool<ActorViewerPanel>(event.IsChecked(), "actorViewerPanel", "ActorViewerPanel");
 }
 
 void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
@@ -658,6 +661,8 @@ void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
 	}
 	else if (event.GetPane()->name == "visualizeSettings")
 		this->GetMenuBar()->Check(ID_VisualizeSettings, false);
+	else if (event.GetPane()->name == "actorViewerPanel")
+		this->GetMenuBar()->Check(ID_ActorViewerPanel, false);
 }
 
 template<typename T>

@@ -24,3 +24,5 @@ Observable<wxString> g_SelectedTexture;
 Observable<std::vector<AtlasMessage::ObjectID> > g_SelectedObjects;
 
 Observable<AtlasMessage::sEnvironmentSettings> g_EnvironmentSettings;
+
+Observable<wxString> g_SelectedObject;

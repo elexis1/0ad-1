@@ -32,4 +32,6 @@ extern Observable<std::vector<AtlasMessage::ObjectID> > g_SelectedObjects;
 
 extern Observable<AtlasMessage::sEnvironmentSettings> g_EnvironmentSettings;
 
+extern Observable<wxString> g_SelectedObject;
+
 #endif // INCLUDED_MISCSTATE

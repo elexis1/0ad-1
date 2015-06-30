@@ -26,8 +26,9 @@
 
 #include "GameInterface/Messages.h"
 
-#include "wx/busyinfo.h"
-#include "wx/xrc/xmlres.h"
+#include <wx/busyinfo.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/tglbtn.h>
 
 enum
 {
@@ -42,10 +43,10 @@ enum
 	ID_ViewerWater,
 	ID_ViewerShadows,
 	ID_ViewerPolyCount,
-	ID_ViewerAnimation,
 	ID_ViewerBoundingBox,
 	ID_ViewerAxesMarker,
 	ID_ViewerPropPoints,
+	ID_ViewerAnimation,
 	ID_ViewerPlay,
 	ID_ViewerPause,
 	ID_ViewerSlow,
@@ -64,68 +65,6 @@ BEGIN_EVENT_TABLE(ObjectSidebar, wxPanel)
 	EVT_DATAVIEW_SELECTION_CHANGED(ID_SelectObject, ObjectSidebar::OnSelectObject)
 END_EVENT_TABLE();
 
-/*
-class ObjectBottomBar : public wxPanel
-{
-public:
-	ObjectBottomBar(
-		wxWindow* parent,
-		Observable<ObjectSettings>& objectSettings,
-		Observable<AtObj>& mapSettings,
-		ObjectSidebarImpl* p
-	);
-
-	void OnFirstDisplay();
-	void ShowActorViewer(bool show);
-
-private:
-	void OnViewerSetting(wxCommandEvent& evt);
-	void OnSelectAnim(wxCommandEvent& evt);
-	void OnSpeed(wxCommandEvent& evt);
-
-	bool m_ViewerWireframe;
-	bool m_ViewerMove;
-	bool m_ViewerGround;
-	bool m_ViewerWater;
-	bool m_ViewerShadows;
-	bool m_ViewerPolyCount;
-	bool m_ViewerBoundingBox;
-	bool m_ViewerAxesMarker;
-	int m_ViewerPropPointsMode; // 0 disabled, 1 for point markers, 2 for point markers + axes
-
-	wxPanel* m_ViewerPanel;
-
-	ObjectSidebarImpl* p;
-	DECLARE_EVENT_TABLE();
-};
-
-struct ObjectSidebarImpl
-{
-	ObjectSidebarImpl(ScenarioEditor& scenarioEditor) :
-		m_ObjectListBox(NULL), m_ActorViewerActive(false),
-		m_ActorViewerEntity(_T("actor|structures/fndn_1x1.xml")),
-		m_ActorViewerAnimation(_T("idle")), m_ActorViewerSpeed(0.f),
-		m_ObjectSettings(scenarioEditor.GetObjectSettings())
-	{
-	}
-
-	wxListBox* m_ObjectListBox;
-	std::vector<AtlasMessage::sObjectsListItem> m_Objects;
-	ObservableScopedConnection m_ToolConn;
-
-	bool m_ActorViewerActive;
-	wxString m_ActorViewerEntity;
-	wxString m_ActorViewerAnimation;
-	float m_ActorViewerSpeed;
-	Observable<ObjectSettings>& m_ObjectSettings;
-
-	void ActorViewerPostToGame()
-	{
-		POST_MESSAGE(SetActorViewer, ((std::wstring)m_ActorViewerEntity.wc_str(), (std::wstring)m_ActorViewerAnimation.wc_str(), m_ObjectSettings.GetPlayerID(), m_ActorViewerSpeed, false));
-	}
-};
-*/
-
 ObjectSidebar::ObjectSidebar()
 	:m_ScenarioEditor(NULL), m_ObjectList(NULL)
 {
@@ -134,7 +73,6 @@ ObjectSidebar::ObjectSidebar()
 void ObjectSidebar::Init(ScenarioEditor *scenarioEditor)
 {
 	m_ScenarioEditor = scenarioEditor;
-	//wxBusyInfo busy (_("Loading list of objects"));
 
 	//Load TreeView Here
 	m_ObjectList = new wxDataViewTreeCtrl(this, ID_SelectObject);
@@ -143,23 +81,6 @@ void ObjectSidebar::Init(ScenarioEditor *scenarioEditor)
 	// Display first group of objects
 	FilterObjects();
 }
-
-/*void ObjectSidebar::OnToolChange(ITool* tool)
-{
-	if (wxString(tool->GetClassInfo()->GetClassName()) == _T("ActorViewerTool"))
-	{
-		p->m_ActorViewerActive = true;
-		p->ActorViewerPostToGame();
-		wxDynamicCast(FindWindow(ID_ToggleViewer), wxButton)->SetLabel(_("Return to game view"));
-	}
-	else
-	{
-		p->m_ActorViewerActive = false;
-		wxDynamicCast(FindWindow(ID_ToggleViewer), wxButton)->SetLabel(_("Switch to Actor Viewer"));
-	}
-
-	static_cast<ObjectBottomBar*>(m_BottomBar)->ShowActorViewer(p->m_ActorViewerActive);
-}*/
 
 void ObjectSidebar::FilterObjects()
 {
@@ -192,18 +113,6 @@ void ObjectSidebar::FilterObjects()
 	objects.clear();
 }
 
-/*void ObjectSidebar::OnToggleViewer(wxCommandEvent& WXUNUSED(evt))
-{
-	if (p->m_ActorViewerActive)
-	{
-		m_ScenarioEditor.GetToolManager().SetCurrentTool(_T(""), NULL);
-	}
-	else
-	{
-		m_ScenarioEditor.GetToolManager().SetCurrentTool(_T("ActorViewerTool"), NULL);
-	}
-}*/
-
 void ObjectSidebar::OnSelectType(wxCommandEvent& WXUNUSED(evt))
 {
 	FilterObjects();
@@ -218,22 +127,11 @@ void ObjectSidebar::OnSelectObject(wxDataViewEvent& evt)
 	if (data == NULL || dynamic_cast<wxDataViewTreeStoreContainerNode*>(data))
 		return;
 
-	wxString id = static_cast<wxStringClientData*>(data->GetData())->GetData();
-	m_ScenarioEditor->GetToolManager().SetCurrentTool(_T("PlaceObject"), &id);
+	g_SelectedObject = static_cast<wxStringClientData*>(data->GetData())->GetData();
+	g_SelectedObject.NotifyObservers();
 
-	// Always update the actor viewer's state even if it's inactive,
-	// so it will be correct when first enabled
-	/*p->m_ActorViewerEntity = id;
-
-	if (p->m_ActorViewerActive)
-	{
-		p->ActorViewerPostToGame();
-	}
-	else
-	{*/
-		// On selecting an object, enable the PlaceObject tool with this object
-		//m_ScenarioEditor->GetToolManager().SetCurrentTool(_T("PlaceObject"), &id);
-	//}
+	if (m_ScenarioEditor->GetToolManager().GetCurrentToolName() != "ActorViewerTool")
+		m_ScenarioEditor->GetToolManager().SetCurrentTool(_T("PlaceObject"), &g_SelectedObject);
 }
 
 void ObjectSidebar::OnSelectFilter(wxCommandEvent& WXUNUSED(evt))
@@ -445,63 +343,46 @@ void EntitySettings::OnVariationSelect(wxCommandEvent& evt)
 	m_ScenarioEditor->GetObjectSettings().SetActorSelections(selections);
 	m_ScenarioEditor->GetObjectSettings().NotifyObserversExcept(m_ObjectConn);
 }
+
 //////////////////////////////////////////////////////////////////////////
-/*
-ObjectBottomBar::ObjectBottomBar(
-	wxWindow* parent,
-	Observable<ObjectSettings>& objectSettings,
-	Observable<AtObj>& mapSettings,
-	ObjectSidebarImpl* p
-)
-	: wxPanel(parent, wxID_ANY), p(p)
+IMPLEMENT_DYNAMIC_CLASS(ActorViewerPanel, wxPanel);
+BEGIN_EVENT_TABLE(ActorViewerPanel, wxPanel)
+	EVT_CHOICE(ID_ViewerPropPoints, ActorViewerPanel::OnPropPointChange)
+	EVT_CHOICE(ID_ViewerAnimation, ActorViewerPanel::OnAnimationChange)
+	EVT_TOGGLEBUTTON(wxID_ANY, ActorViewerPanel::OnToggleButton)
+	EVT_BUTTON(wxID_ANY, ActorViewerPanel::OnSpeed)
+END_EVENT_TABLE()
+
+ActorViewerPanel::ActorViewerPanel()
 {
-	m_ViewerWireframe = false;
-	m_ViewerMove = false;
-	m_ViewerGround = true;
-	m_ViewerWater = false;
-	m_ViewerShadows = true;
-	m_ViewerPolyCount = false;
-	m_ViewerBoundingBox = false;
-	m_ViewerAxesMarker = false;
-	m_ViewerPropPointsMode = 0;
+}
 
-	wxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
+void ActorViewerPanel::Init(ScenarioEditor* scenarioEditor)
+{
+	m_ScenarioEditor = scenarioEditor;
+	m_ViewOptions[ID_ViewerWireframe] = L"wireframe";
+	m_ViewOptions[ID_ViewerMove] = L"walk";
+	m_ViewOptions[ID_ViewerGround] = L"ground";
+	m_ViewOptions[ID_ViewerWater] = L"water";
+	m_ViewOptions[ID_ViewerShadows] = L"shadows";
+	m_ViewOptions[ID_ViewerPolyCount] = L"stats";
+	m_ViewOptions[ID_ViewerBoundingBox] = L"bounding_box";
+	m_ViewOptions[ID_ViewerAxesMarker] = L"axes_marker";
 
-	// --- viewer options panel -------------------------------------------------------------------------------
-
-	m_ViewerPanel = new wxPanel(this, wxID_ANY);
-	wxSizer* viewerSizer = new wxBoxSizer(wxHORIZONTAL);
-
-	wxSizer* viewerButtonsSizer = new wxStaticBoxSizer(wxHORIZONTAL, m_ViewerPanel, _("Display settings"));
+	// Initialise the game with the default settings
+	for (const std::pair<int, std::wstring>& option : m_ViewOptions)
 	{
-		wxSizer* viewerButtonsLeft = new wxBoxSizer(wxVERTICAL);
-		viewerButtonsLeft->SetMinSize(110, -1);
-		viewerButtonsLeft->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerWireframe,   _("Wireframe")),      _("Toggle wireframe / solid rendering")), wxSizerFlags().Expand());
-		viewerButtonsLeft->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerMove,        _("Move")),           _("Toggle movement along ground when playing walk/run animations")), wxSizerFlags().Expand());
-		viewerButtonsLeft->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerGround,      _("Ground")),         _("Toggle the ground plane")), wxSizerFlags().Expand());
-		// TODO: disabled until http://trac.wildfiregames.com/ticket/2692 is fixed
-		wxButton* waterButton = new wxButton(m_ViewerPanel, ID_ViewerWater, _("Water"));
-		waterButton->Enable(false);
-		viewerButtonsLeft->Add(Tooltipped(waterButton, _("Toggle the water plane")), wxSizerFlags().Expand());
-		viewerButtonsLeft->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerShadows,     _("Shadows")),        _("Toggle shadow rendering")), wxSizerFlags().Expand());
-		viewerButtonsLeft->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerPolyCount,   _("Poly count")),     _("Toggle polygon-count statistics - turn off ground and shadows for more useful data")), wxSizerFlags().Expand());
-
-		wxSizer* viewerButtonsRight = new wxBoxSizer(wxVERTICAL);
-		viewerButtonsRight->SetMinSize(110,-1);
-		viewerButtonsRight->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerBoundingBox, _("Bounding Boxes")), _("Toggle bounding boxes")), wxSizerFlags().Expand());
-		viewerButtonsRight->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerAxesMarker,  _("Axes Marker")), _("Toggle the axes marker (R=X, G=Y, B=Z)")), wxSizerFlags().Expand());
-		viewerButtonsRight->Add(Tooltipped(new wxButton(m_ViewerPanel, ID_ViewerPropPoints,  _("Prop Points")), _("Toggle prop points (works best in wireframe mode)")), wxSizerFlags().Expand());
-
-		viewerButtonsSizer->Add(viewerButtonsLeft, wxSizerFlags().Expand());
-		viewerButtonsSizer->Add(viewerButtonsRight, wxSizerFlags().Expand());
+		bool optionValue = wxDynamicCast(FindWindow(option.first), wxToggleButton)->GetValue();
+		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, option.second, optionValue));
 	}
 
-	viewerSizer->Add(viewerButtonsSizer, wxSizerFlags().Expand());
-	viewerSizer->AddSpacer(3);
+	POST_MESSAGE(SetViewParamI, (AtlasMessage::eRenderView::ACTOR, (std::wstring)L"prop_points", 0));
 
-	// --- animations panel -------------------------------------------------------------------------------
+	if (g_SelectedObject == "")
+		g_SelectedObject = "actor|structures/fndn_1x1.xml";
 
-	wxSizer* viewerAnimSizer = new wxStaticBoxSizer(wxVERTICAL, m_ViewerPanel, _("Animation"));
+	m_ActorViewerAnimation = "idle";
+	m_ActorViewerSpeed = 0.f;
 
 	// TODO: this list should come from the actor
 	wxArrayString animChoices;
@@ -510,120 +391,69 @@ ObjectBottomBar::ObjectBottomBar(
 	{
 		animChoices.Add(wxString(*a));
 	}
-	wxChoice* viewerAnimSelector = new wxChoice(m_ViewerPanel, ID_ViewerAnimation, wxDefaultPosition, wxDefaultSize, animChoices);
-	viewerAnimSelector->SetSelection(0);
-	viewerAnimSizer->Add(viewerAnimSelector, wxSizerFlags().Expand());
+	wxChoice* animationList = wxDynamicCast(FindWindow(ID_ViewerAnimation), wxChoice);
+	animationList->Append(animChoices);
+	animationList->SetSelection(0);
 
-	wxSizer* viewerAnimSpeedSizer = new wxBoxSizer(wxHORIZONTAL);
-	viewerAnimSpeedSizer->Add(new wxButton(m_ViewerPanel, ID_ViewerPlay, _("Play"), wxDefaultPosition, wxSize(50, -1)), wxSizerFlags().Expand());
-	viewerAnimSpeedSizer->Add(new wxButton(m_ViewerPanel, ID_ViewerPause, _("Pause"), wxDefaultPosition, wxSize(50, -1)), wxSizerFlags().Expand());
-	viewerAnimSpeedSizer->Add(new wxButton(m_ViewerPanel, ID_ViewerSlow, _("Slow"), wxDefaultPosition, wxSize(50, -1)), wxSizerFlags().Expand());
-	viewerAnimSizer->Add(viewerAnimSpeedSizer);
+	g_SelectedObject.RegisterObserver(0, &ActorViewerPanel::OnSelectedObjectChange, this);
 
-	viewerSizer->Add(viewerAnimSizer, wxSizerFlags().Expand());
-
-	// --- add viewer-specific options -------------------------------------------------------------------------------
-
-	m_ViewerPanel->SetSizer(viewerSizer);
-	mainSizer->Add(m_ViewerPanel, wxSizerFlags().Expand());
-
-	m_ViewerPanel->Layout(); // prevents strange visibility glitch of the animation buttons on my machine (Vista 32-bit SP1) -- vtsj
-	m_ViewerPanel->Show(false);
+	scenarioEditor->GetToolManager().GetCurrentTool().RegisterObserver(0, &ActorViewerPanel::OnToolChange, this);
 }
 
-void ObjectBottomBar::OnFirstDisplay()
+void ActorViewerPanel::OnToggleButton(wxCommandEvent& evt)
 {
-	// We use messages here because the simulation is not init'd otherwise (causing a crash)
+	if (evt.GetId() == ID_ToggleViewer)
+	{
+		m_ScenarioEditor->GetToolManager().SetCurrentTool(evt.IsChecked() ? _T("ActorViewerTool") : _(""), NULL);
 
-	// Initialise the game with the default settings
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"wireframe", m_ViewerWireframe));
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"walk", m_ViewerMove));
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"ground", m_ViewerGround));
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"water", m_ViewerWater));
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"shadows", m_ViewerShadows));
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"stats", m_ViewerPolyCount));
-	POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"bounding_box", m_ViewerBoundingBox));
-	POST_MESSAGE(SetViewParamI, (AtlasMessage::eRenderView::ACTOR, L"prop_points", m_ViewerPropPointsMode));
+		PostToGame();
+		return;
+	}
+
+	std::map<int, std::wstring>::const_iterator option = m_ViewOptions.find(evt.GetId());
+
+	if (option != m_ViewOptions.end())
+		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, option->second, evt.IsChecked()));
 }
 
-void ObjectBottomBar::ShowActorViewer(bool show)
-{
-	m_ViewerPanel->Show(show);
-	Layout();
-}
-
-void ObjectBottomBar::OnViewerSetting(wxCommandEvent& evt)
+void ActorViewerPanel::OnSpeed(wxCommandEvent& evt)
 {
 	switch (evt.GetId())
 	{
-	case ID_ViewerWireframe:
-		m_ViewerWireframe = !m_ViewerWireframe;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"wireframe", m_ViewerWireframe));
-		break;
-	case ID_ViewerMove:
-		m_ViewerMove = !m_ViewerMove;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"walk", m_ViewerMove));
-		break;
-	case ID_ViewerGround:
-		m_ViewerGround = !m_ViewerGround;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"ground", m_ViewerGround));
-		break;
-	case ID_ViewerWater:
-		m_ViewerWater = !m_ViewerWater;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"water", m_ViewerWater));
-		break;
-	case ID_ViewerShadows:
-		m_ViewerShadows = !m_ViewerShadows;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"shadows", m_ViewerShadows));
-		break;
-	case ID_ViewerPolyCount:
-		m_ViewerPolyCount = !m_ViewerPolyCount;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"stats", m_ViewerPolyCount));
-		break;
-	case ID_ViewerBoundingBox:
-		m_ViewerBoundingBox = !m_ViewerBoundingBox;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"bounding_box", m_ViewerBoundingBox));
-		break;
-	case ID_ViewerAxesMarker:
-		m_ViewerAxesMarker = !m_ViewerAxesMarker;
-		POST_MESSAGE(SetViewParamB, (AtlasMessage::eRenderView::ACTOR, L"axes_marker", m_ViewerAxesMarker));
-		break;
-	case ID_ViewerPropPoints:
-		m_ViewerPropPointsMode = (m_ViewerPropPointsMode+1) % 3;
-		POST_MESSAGE(SetViewParamI, (AtlasMessage::eRenderView::ACTOR, L"prop_points", m_ViewerPropPointsMode));
-		break;
+		case ID_ViewerPlay: m_ActorViewerSpeed = 1.0f; break;
+		case ID_ViewerPause: m_ActorViewerSpeed = 0.0f; break;
+		case ID_ViewerSlow: m_ActorViewerSpeed = 0.1f; break;
 	}
+	PostToGame();
 }
 
-void ObjectBottomBar::OnSelectAnim(wxCommandEvent& evt)
+
+void ActorViewerPanel::OnToolChange(ITool* WXUNUSED(tool))
 {
-	p->m_ActorViewerAnimation = evt.GetString();
-	p->ActorViewerPostToGame();
+	wxString label = m_ScenarioEditor->GetToolManager().GetCurrentToolName() == "ActorViewerTool" ? _("Return to game view") : _("Switch to Actor Viewer");
+	wxDynamicCast(FindWindow(ID_ToggleViewer), wxToggleButton)->SetLabel(label);
 }
 
-void ObjectBottomBar::OnSpeed(wxCommandEvent& evt)
+void ActorViewerPanel::OnSelectedObjectChange(const wxString& WXUNUSED(id))
 {
-	switch (evt.GetId())
-	{
-	case ID_ViewerPlay: p->m_ActorViewerSpeed = 1.0f; break;
-	case ID_ViewerPause: p->m_ActorViewerSpeed = 0.0f; break;
-	case ID_ViewerSlow: p->m_ActorViewerSpeed = 0.1f; break;
-	}
-	p->ActorViewerPostToGame();
+	PostToGame();
 }
 
-BEGIN_EVENT_TABLE(ObjectBottomBar, wxPanel)
-	EVT_BUTTON(ID_ViewerWireframe, ObjectBottomBar::OnViewerSetting)
-	EVT_BUTTON(ID_ViewerMove, ObjectBottomBar::OnViewerSetting)
-	EVT_BUTTON(ID_ViewerGround, ObjectBottomBar::OnViewerSetting)
-	EVT_BUTTON(ID_ViewerWater, ObjectBottomBar::OnViewerSetting)
-	EVT_BUTTON(ID_ViewerShadows, ObjectBottomBar::OnViewerSetting)
-	EVT_BUTTON(ID_ViewerPolyCount, ObjectBottomBar::OnViewerSetting)
-	EVT_CHOICE(ID_ViewerAnimation, ObjectBottomBar::OnSelectAnim)
-	EVT_BUTTON(ID_ViewerPlay, ObjectBottomBar::OnSpeed)
-	EVT_BUTTON(ID_ViewerPause, ObjectBottomBar::OnSpeed)
-	EVT_BUTTON(ID_ViewerSlow, ObjectBottomBar::OnSpeed)
-	EVT_BUTTON(ID_ViewerBoundingBox, ObjectBottomBar::OnViewerSetting)
-	EVT_BUTTON(ID_ViewerAxesMarker, ObjectBottomBar::OnViewerSetting)
-	EVT_BUTTON(ID_ViewerPropPoints, ObjectBottomBar::OnViewerSetting)
-END_EVENT_TABLE();*/
+void ActorViewerPanel::OnPropPointChange(wxCommandEvent& evt)
+{
+	POST_MESSAGE(SetViewParamI, (AtlasMessage::eRenderView::ACTOR, (std::wstring)L"prop_points", evt.GetSelection()));
+}
+
+void ActorViewerPanel::OnAnimationChange(wxCommandEvent& evt)
+{
+	m_ActorViewerAnimation = evt.GetString();
+	PostToGame();
+}
+
+void ActorViewerPanel::PostToGame()
+{
+	if (m_ScenarioEditor->GetToolManager().GetCurrentToolName() != "ActorViewerTool")
+		return;
+
+	POST_MESSAGE(SetActorViewer, ((std::wstring)g_SelectedObject.wc_str(), (std::wstring)m_ActorViewerAnimation.wc_str(), m_ScenarioEditor->GetObjectSettings().GetPlayerID(), m_ActorViewerSpeed, false));
+}

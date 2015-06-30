@@ -77,4 +77,27 @@ private:
 
 	DECLARE_EVENT_TABLE();
 };
+
+class ActorViewerPanel : public wxPanel
+{
+	DECLARE_DYNAMIC_CLASS(ActorViewerTool);
+public:
+	ActorViewerPanel();
+	void Init(ScenarioEditor* scenarioEditor);
+
+	void OnToggleButton(wxCommandEvent& evt);
+	void OnAnimationChange(wxCommandEvent& evt);
+	void OnSpeed(wxCommandEvent& evt);
+	void OnPropPointChange(wxCommandEvent& evt);
+	void OnToolChange(ITool* tool);
+	void OnSelectedObjectChange(const wxString& id);
+	void PostToGame();
+private:
+	std::map<int, std::wstring> m_ViewOptions;
+	ScenarioEditor* m_ScenarioEditor;
+	wxString m_ActorViewerAnimation;
+	float m_ActorViewerSpeed;
+
+	DECLARE_EVENT_TABLE();
+};
 #endif //INCLUDED_OBJECT
