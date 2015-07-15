@@ -62,4 +62,4 @@ private:
 	std::vector<wxEvtHandler*> handlers;
 
 };
-#endif //INCLUDED_ENVIRONMENT
+#endif // INCLUDED_ENVIRONMENT

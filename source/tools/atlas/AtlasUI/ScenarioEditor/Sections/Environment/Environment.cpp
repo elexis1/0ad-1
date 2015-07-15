@@ -197,14 +197,14 @@ SunSettings::SunSettings()
 
 void SunSettings::Init(ScenarioEditor* WXUNUSED(scenarioEditor))
 {
-	//Start Sliders
+	// Start Sliders
 	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_SunRotation), wxSlider), g_EnvironmentSettings.sunrotation, -M_PIf, M_PIf));
 	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_SunElevation), wxSlider), g_EnvironmentSettings.sunelevation, -M_PIf/2, M_PIf/2));
 	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_SunOverbrightness), wxSlider), g_EnvironmentSettings.sunoverbrightness, 1.0f, 3.0f));
 	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_FogFactor), wxSlider), g_EnvironmentSettings.fogfactor, 0.0f, 0.01f));
 	handlers.push_back(new VariableSliderBox(wxDynamicCast(FindWindow(ID_FogThickness), wxSlider), g_EnvironmentSettings.fogmax, 0.5f, 0.0f));
 	
-	//Start Color Pickers
+	// Start Color Pickers
 	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_SunColor), wxColourPickerCtrl), g_EnvironmentSettings.suncolor));
 	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_FogColor), wxColourPickerCtrl), g_EnvironmentSettings.fogcolor));
 	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_TerrainAmbientColor), wxColourPickerCtrl), g_EnvironmentSettings.terraincolor));

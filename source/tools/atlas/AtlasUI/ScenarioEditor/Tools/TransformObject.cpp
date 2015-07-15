@@ -184,7 +184,7 @@ public:
 				xmlData = xmlData->GetNext();
 			}
 
-			//Update current Ownership
+			// Update current Ownership
 			this->GetScenarioEditor().GetObjectSettings().SetPlayerID(playerId);
 			this->GetScenarioEditor().GetObjectSettings().NotifyObservers();
 
@@ -193,29 +193,29 @@ public:
 			child = child->GetNext();
 		}
 
-		//Set state paste for preview the new objects
+		// Set state paste for preview the new objects
 		this->SetState(&Pasting);
 
-		//Update the objects to current mouse position
+		// Update the objects to current mouse position
 		OnMovingPaste();
 	}
 
 	void OnMovingPaste()
 	{
-		//Move the preview(s) object(s)
+		// Move the preview(s) object(s)
 		POST_MESSAGE(MoveObjectPreview, ((m_entPosition)));
 	}
 
 	void OnPasteEnd(bool canceled)
 	{
 		if (canceled)
-			//delete previews objects
+			// delete previews objects
 			POST_MESSAGE(ObjectPreview, (_T(""), GetScenarioEditor().GetObjectSettings().GetSettings(), Position(), false, Position(), 0, 0, true));
 		else
 		{
 			ScenarioEditor::GetCommandProc().FinaliseLastCommand();
 
-			//Create new Objects and delete preview objects
+			// Create new Objects and delete preview objects
 			POST_MESSAGE(ObjectPreviewToEntity, ());
 
 			AtlasMessage::qGetCurrentSelection currentSelection;
@@ -225,7 +225,7 @@ public:
 		}
 
 
-		//when all is done set default state
+		// when all is done set default state
 		this->SetState(&Waiting);
 	}
 
@@ -309,7 +309,7 @@ public:
 			}
 			else if (evt.Moving())
 			{
-				//Save position for smooth paste position
+				// Save position for smooth paste position
 				obj->m_entPosition = Position(evt.GetPosition());
 
 				// Prevent certain events from reaching game UI in this mode
@@ -525,14 +525,14 @@ public:
 		{
 			if (evt.Moving())
 			{
-				//Move the object
+				// Move the object
 				obj->m_entPosition = Position(evt.GetPosition());
 				obj->OnMovingPaste();
 				return true;
 			}
 			else if (evt.LeftDown())
 			{
-				//Place the object and update 
+				// Place the object and update 
 				obj->OnPasteEnd(false);
 				return true;
 			}

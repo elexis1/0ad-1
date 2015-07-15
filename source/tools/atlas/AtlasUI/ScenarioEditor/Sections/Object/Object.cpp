@@ -74,7 +74,7 @@ void ObjectSidebar::Init(ScenarioEditor *scenarioEditor)
 {
 	m_ScenarioEditor = scenarioEditor;
 
-	//Load TreeView Here
+	// Load TreeView Here
 	m_ObjectList = new wxDataViewTreeCtrl(this, ID_SelectObject);
 	wxXmlResource::Get()->AttachUnknownControl(wxString::Format(wxT("%i"),ID_SelectObject), m_ObjectList);
 
@@ -256,7 +256,7 @@ void EntitySettings::OnObjectSettingsChange(const ObjectSettings& settings)
 {
 	m_PlayerOwner->SetSelection(((unsigned int)settings.GetPlayerID() < m_PlayerOwner->GetCount()) ? settings.GetPlayerID() : wxNOT_FOUND );
 
-	//Load Variations
+	// Load Variations
 	m_VariationsContainer->Freeze();
 	wxSizer* sizer = m_VariationsContainer->GetSizer();
 	const std::vector<ObjectSettings::Group>& variation = settings.GetActorVariation();

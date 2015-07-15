@@ -307,14 +307,14 @@ enum
 {
 	ID_Quit = 1,
 
- 	ID_New,
+	ID_New,
 	ID_Open,
 	ID_Save,
 	ID_SaveAs,
 	ID_ImportHeightmap,
 
-    ID_Copy,
-    ID_Paste,
+	ID_Copy,
+	ID_Paste,
 
 	ID_Wireframe,
 	ID_MessageTrace,
@@ -332,7 +332,7 @@ enum
 	ID_ToolbarOpen,
 	ID_ResizeMap,
 
-	ID_ToolbarOptionsBegin = 1000, //Space for 998 options
+	ID_ToolbarOptionsBegin = 1000, // Space for 998 options
 	ID_ToolbarOptionMap,
 	ID_ToolbarOptionPlayer,
 	ID_ToolbarOptionTerrain,
@@ -340,7 +340,7 @@ enum
 	ID_ToolbarOptionEnvironment,
 	ID_ToolbarOptionsEnd,
 
-	ID_ToolbarToolsBegin = 2000, //space for 998 tools
+	ID_ToolbarToolsBegin = 2000, // space for 998 tools
 	ID_ToolbarToolsSelect,
 	ID_ToolbarToolsMove,
 	ID_ToolbarToolsAlterTerrain,
@@ -356,7 +356,7 @@ enum
 	ID_ToolbarSimulationSpeed,
 	ID_ToolbarSimulationEnd,
 
-	ID_ViewsBegin = 4000, //space for 998 views
+	ID_ViewsBegin = 4000, // space for 998 views
 	ID_DisplayTemplateView,
 	ID_EntitySettingsView,
 	ID_WaterSettings,
@@ -379,7 +379,7 @@ BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
 	EVT_CLOSE(ScenarioEditor::OnClose)
 	EVT_TIMER(wxID_ANY, ScenarioEditor::OnTimer)
 
- 	EVT_MENU(ID_New, ScenarioEditor::OnNew)
+	EVT_MENU(ID_New, ScenarioEditor::OnNew)
 	EVT_MENU(ID_Open, ScenarioEditor::OnOpen)
 	EVT_MENU(ID_Save, ScenarioEditor::OnSave)
 	EVT_MENU(ID_SaveAs, ScenarioEditor::OnSaveAs)
@@ -404,7 +404,7 @@ BEGIN_EVENT_TABLE(ScenarioEditor, wxFrame)
 	EVT_MENU(ID_RenderPathFixed, ScenarioEditor::OnRenderPath)
 	EVT_MENU(ID_RenderPathShader, ScenarioEditor::OnRenderPath)
 
-    EVT_MENU_OPEN(ScenarioEditor::OnMenuOpen)
+	EVT_MENU_OPEN(ScenarioEditor::OnMenuOpen)
 
 	EVT_TOOL(ID_ToolbarNew, ScenarioEditor::OnNew)
 	EVT_TOOL(ID_ToolbarOpen, ScenarioEditor::OnOpen)
@@ -427,7 +427,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 {
 	m_Mgr.SetManagedWindow(this);
 
-	//Load XRC
+	// Load XRC
 #if defined(__WXMSW__)
 	wxString path = wxStandardPaths::Get().GetExecutablePath().BeforeLast('\\');
 	wxSetWorkingDirectory(path);
@@ -495,7 +495,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	GetCommandProc().SetEditMenu(menuEdit);
 	GetCommandProc().Initialize();
 
-    g_SelectedObjects.RegisterObserver(0, &ScenarioEditor::OnSelectedObjectsChange, this);
+	g_SelectedObjects.RegisterObserver(0, &ScenarioEditor::OnSelectedObjectsChange, this);
 
 	m_FileHistory.LoadFromSubDir(*wxConfigBase::Get());
 
@@ -508,7 +508,7 @@ ScenarioEditor::ScenarioEditor(wxWindow* parent)
 	wxSystemOptions::SetOption(wxT("msw.remap"), 0); // (has global effect)
 	wxToolBar* commonToolbar = wxXmlResource::Get()->LoadToolBar(this, "AppToolbar");
 
-	//Hide Simulation Buttons
+	// Hide Simulation Buttons
 	commonToolbar->EnableTool(ID_ToolbarSimulationStop, false);
 	commonToolbar->EnableTool(ID_ToolbarSimulationPause, false);
 
@@ -606,34 +606,61 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 	{
 		wxString toolName = m_ToolsMap[event.GetId()];
 		this->m_ToolManager.SetCurrentTool(event.IsChecked() ? toolName : "");
+		return;
 	}
-	else if (event.GetId() == ID_ToolbarOptionMap)
-		UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
-	else if (event.GetId() == ID_ToolbarOptionPlayer)
-		UpdatePanelTool<PlayerSettingsControl>(event.IsChecked(), "playersettings", "PlayerSettings");
-	else if (event.GetId() == ID_ToolbarOptionObject)
-		UpdatePanelTool<ObjectSidebar>(event.IsChecked(), "objectlist", "ObjectList");
 	else if (event.GetId() > ID_ToolbarSimulationBegin && event.GetId() < ID_ToolbarSimulationEnd)
-		OnSimulateControls(event);
-	else if (event.GetId() == ID_DisplayTemplateView)
-		UpdatePanelTool<DisplayTemplate>(event.IsChecked(), "displayTemplate", "DisplayTemplate");
-	else if (event.GetId() == ID_EntitySettingsView)
-		UpdatePanelTool<EntitySettings>(event.IsChecked(), "entitySettings", "EntitySettings");
-	else if (event.GetId() == ID_ToolbarOptionEnvironment)
-		UpdatePanelTool<SunSettings>(event.IsChecked(), "sunSettings", "SunSettings");
-	else if (event.GetId() == ID_WaterSettings)
-		UpdatePanelTool<WaterSettings>(event.IsChecked(), "waterSettings", "WaterSettings");
-	else if (event.GetId() == ID_PostProcessingSettings)
-		UpdatePanelTool<PostProcessingSettings>(event.IsChecked(), "postProcessingSetting", "PostProcessingSetting");
-	else if (event.GetId() == ID_ToolbarOptionTerrain)
 	{
-		UpdatePanelTool<TerrainSettings>(event.IsChecked(), "terrainSettings", "TerrainSettings");
-		UpdatePanelTool<TexturePreviewPanel>(event.IsChecked(), "texturePreviewPanel", "TexturePreviewPanel", false);
+		OnSimulateControls(event);
+		return;
 	}
-	else if (event.GetId() == ID_VisualizeSettings)
-		UpdatePanelTool<VisualizeSettings>(event.IsChecked(), "visualizeSettings", "VisualizeSettings");
-	else if (event.GetId() == ID_ActorViewerPanel)
-		UpdatePanelTool<ActorViewerPanel>(event.IsChecked(), "actorViewerPanel", "ActorViewerPanel");
+	
+	switch (event.GetId())
+	{
+		case ID_ToolbarOptionMap:
+			UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
+			break;
+
+		case ID_ToolbarOptionPlayer:
+			UpdatePanelTool<PlayerSettingsControl>(event.IsChecked(), "playersettings", "PlayerSettings");
+			break;
+
+		case ID_ToolbarOptionObject:
+			UpdatePanelTool<ObjectSidebar>(event.IsChecked(), "objectlist", "ObjectList");
+			break;
+
+		case ID_DisplayTemplateView:
+			UpdatePanelTool<DisplayTemplate>(event.IsChecked(), "displayTemplate", "DisplayTemplate");
+			break;
+
+		case ID_EntitySettingsView:
+			UpdatePanelTool<EntitySettings>(event.IsChecked(), "entitySettings", "EntitySettings");
+			break;
+
+		case ID_ToolbarOptionEnvironment:
+			UpdatePanelTool<SunSettings>(event.IsChecked(), "sunSettings", "SunSettings");
+			break;
+
+		case ID_WaterSettings:
+			UpdatePanelTool<WaterSettings>(event.IsChecked(), "waterSettings", "WaterSettings");
+			break;
+
+		case ID_PostProcessingSettings:
+			UpdatePanelTool<PostProcessingSettings>(event.IsChecked(), "postProcessingSetting", "PostProcessingSetting");
+			break;
+
+		case ID_ToolbarOptionTerrain:
+			UpdatePanelTool<TerrainSettings>(event.IsChecked(), "terrainSettings", "TerrainSettings");
+			UpdatePanelTool<TexturePreviewPanel>(event.IsChecked(), "texturePreviewPanel", "TexturePreviewPanel", false);
+			break;
+
+		case ID_VisualizeSettings:
+			UpdatePanelTool<VisualizeSettings>(event.IsChecked(), "visualizeSettings", "VisualizeSettings");
+			break;
+
+		case ID_ActorViewerPanel:
+			UpdatePanelTool<ActorViewerPanel>(event.IsChecked(), "actorViewerPanel", "ActorViewerPanel");
+			break;
+	}
 }
 
 void ScenarioEditor::OnAuiPanelClosed(wxAuiManagerEvent &event)
@@ -756,7 +783,7 @@ void ScenarioEditor::OnSimulateControls(wxCommandEvent &event)
 
 	if (event.GetId() == ID_ToolbarSimulationPlay)
 	{
-		//Get wxChoiceValue
+		// Get wxChoiceValue
 		wxChoice* speedControl = dynamic_cast<wxChoice*>(toolbar->FindControl(ID_ToolbarSimulationSpeed));
 		wxString speedSelected = speedControl->GetString(speedControl->GetSelection());
 
@@ -838,13 +865,13 @@ float ScenarioEditor::GetSpeedModifier()
 
 void ScenarioEditor::OnClose(wxCloseEvent& event)
 {
-    if (event.CanVeto() && GetCommandProc().IsDirty())
-    {
-        if (wxMessageBox(_T("You have unsaved changes. Are you sure you want to quit?"), _T("Discard unsaved changes?"), wxICON_QUESTION | wxYES_NO) != wxYES)
-        {
-            event.Veto();
-            return;
-        }
+	if (event.CanVeto() && GetCommandProc().IsDirty())
+	{
+		if (wxMessageBox(_T("You have unsaved changes. Are you sure you want to quit?"), _T("Discard unsaved changes?"), wxICON_QUESTION | wxYES_NO) != wxYES)
+		{
+			event.Veto();
+			return;
+		}
 	}
 
 	m_ToolManager.SetCurrentTool(_T(""));
@@ -907,16 +934,16 @@ void ScenarioEditor::OnRedo(wxCommandEvent&)
 
 void ScenarioEditor::OnCopy(wxCommandEvent& WXUNUSED(event))
 {
-    if (GetToolManager().GetCurrentToolName() == _T("TransformObject"))
-        GetToolManager().GetCurrentTool()->OnCommand(_T("copy"), NULL);
+	if (GetToolManager().GetCurrentToolName() == _T("TransformObject"))
+		GetToolManager().GetCurrentTool()->OnCommand(_T("copy"), NULL);
 }
 
 void ScenarioEditor::OnPaste(wxCommandEvent& WXUNUSED(event))
 {
-    if (GetToolManager().GetCurrentToolName() != _T("TransformObject"))
-        GetToolManager().SetCurrentTool(_T("TransformObject"), NULL);
+	if (GetToolManager().GetCurrentToolName() != _T("TransformObject"))
+		GetToolManager().SetCurrentTool(_T("TransformObject"), NULL);
 
-    GetToolManager().GetCurrentTool()->OnCommand(_T("paste"), NULL);
+	GetToolManager().GetCurrentTool()->OnCommand(_T("paste"), NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1046,7 +1073,7 @@ void ScenarioEditor::OnSave(wxCommandEvent& event)
 		qPing qry;
 		qry.Post();
 
-        GetCommandProc().MarkAsSaved();
+		GetCommandProc().MarkAsSaved();
 	}
 }
 
@@ -1070,7 +1097,7 @@ void ScenarioEditor::OnSaveAs(wxCommandEvent& WXUNUSED(event))
 		qPing qry;
 		qry.Post();
 
-        GetCommandProc().MarkAsSaved();
+		GetCommandProc().MarkAsSaved();
 	}
 }
 
@@ -1087,7 +1114,7 @@ void ScenarioEditor::SetOpenFilename(const wxString& filename)
 
 void ScenarioEditor::NotifyOnMapReload()
 {
-	//Reset simulation
+	// Reset simulation
 	POST_MESSAGE(SimPlay, (0.f, false));
 	POST_MESSAGE(SimStopMusic, ());
 	POST_MESSAGE(GuiSwitchPage, (L"page_atlas.xml"));
@@ -1203,50 +1230,50 @@ void ScenarioEditor::OnDumpState(wxCommandEvent& event)
 
 void ScenarioEditor::OnSelectedObjectsChange(const std::vector<ObjectID>& selectedObjects)
 {
-    GetMenuBar()->Enable(ID_Copy, !selectedObjects.empty());
+	GetMenuBar()->Enable(ID_Copy, !selectedObjects.empty());
 }
 
 void ScenarioEditor::OnMenuOpen(wxMenuEvent& event)
 {
-    // This could be done far more elegantly if wxMenuItem had changeable id.
-    wxMenu* pasteMenuItem = NULL;
-    event.GetMenu()->FindItem(ID_Paste, &pasteMenuItem);
+	// This could be done far more elegantly if wxMenuItem had changeable id.
+	wxMenu* pasteMenuItem = NULL;
+	event.GetMenu()->FindItem(ID_Paste, &pasteMenuItem);
 
-    GetMenuBar()->Enable(ID_Paste, false);
+	GetMenuBar()->Enable(ID_Paste, false);
 
-    if (!pasteMenuItem)
-        return;
+	if (!pasteMenuItem)
+		return;
 
-    wxString content;
-    if (wxTheClipboard->Open())
-    {
-        if (wxTheClipboard->IsSupported(wxDF_TEXT))
-        {
-            wxTextDataObject data;
-            wxTheClipboard->GetData(data);
-            content = data.GetText();
-        }
+	wxString content;
+	if (wxTheClipboard->Open())
+	{
+		if (wxTheClipboard->IsSupported(wxDF_TEXT))
+		{
+			wxTextDataObject data;
+			wxTheClipboard->GetData(data);
+			content = data.GetText();
+		}
 
-        wxTheClipboard->Close();
-    }
+		wxTheClipboard->Close();
+	}
 
-    if (content.empty())
-        return;
+	if (content.empty())
+		return;
 
-    wxInputStream* is = new wxStringInputStream(content);
-    wxXmlDocument doc;
-    {
-        wxLogNull stopComplaining;
-        static_cast<void>(stopComplaining);
-        if (!doc.Load(*is))
-            return;
-    }
+	wxInputStream* is = new wxStringInputStream(content);
+	wxXmlDocument doc;
+	{
+		wxLogNull stopComplaining;
+		static_cast<void>(stopComplaining);
+		if (!doc.Load(*is))
+			return;
+	}
 
-    wxXmlNode* root = doc.GetRoot();
-    if (!root || root->GetName() != wxT("Entities"))
-        return;
+	wxXmlNode* root = doc.GetRoot();
+	if (!root || root->GetName() != wxT("Entities"))
+		return;
 
-    GetMenuBar()->Enable(ID_Paste, true);
+	GetMenuBar()->Enable(ID_Paste, true);
 }
 
 void ScenarioEditor::SendToGame(const AtlasMessage::sEnvironmentSettings& settings)

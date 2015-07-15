@@ -65,4 +65,4 @@ public:
 	TexturePreviewPanel();
 	void Init(ScenarioEditor* scenarioEditor);
 };
-#endif //INCLUDED_TERRAIN
+#endif // INCLUDED_TERRAIN

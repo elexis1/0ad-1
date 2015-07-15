@@ -262,15 +262,15 @@ QUERYHANDLER(GetObjectMapSettings)
 				entity_id_t id = (entity_id_t)ids[i];
 				XML_Element("Entity");
 				{
-					//Template name
+					// Template name
 					XML_Setting("Template", cmpTemplateManager->GetCurrentTemplateName(id));
 
-					//Player
+					// Player
 					CmpPtr<ICmpOwnership> cmpOwnership(*g_Game->GetSimulation2(), id);
 					if (cmpOwnership)
 						XML_Setting("Player", (int)cmpOwnership->GetOwner());
 
-					//Adding position to make some relative position later
+					// Adding position to make some relative position later
 					CmpPtr<ICmpPosition> cmpPosition(*g_Game->GetSimulation2(), id);
 					if (cmpPosition)
 					{
@@ -425,18 +425,18 @@ MESSAGEHANDLER(ObjectPreviewToEntity)
 
 	PlayerColorMap playerColor;
 
-	//I need to re create the objects finally delete preview objects
+	// I need to re create the objects finally delete preview objects
 	for (const entity_id_t& ent : g_PreviewEntitiesID)
 	{
-		//Get template
+		// Get template
 		std::string templateName = cmpTemplateManager->GetCurrentTemplateName(ent);
 		std::wstring wTemplateName(templateName.begin() + 8, templateName.end());
-		//Create new entity
+		// Create new entity
 		entity_id_t new_ent = g_Game->GetSimulation2()->AddEntity(wTemplateName);
 		if (new_ent == INVALID_ENTITY)
 			continue;
 
-		//get position, get rotation
+		// get position, get rotation
 		CmpPtr<ICmpPosition> cmpPositionNew(*g_Game->GetSimulation2(), new_ent);
 		CmpPtr<ICmpPosition> cmpPositionOld(*g_Game->GetSimulation2(), ent);
 
@@ -445,24 +445,24 @@ MESSAGEHANDLER(ObjectPreviewToEntity)
 			CVector3D pos = cmpPositionOld->GetPosition();
 			cmpPositionNew->JumpTo(entity_pos_t::FromFloat(pos.X), entity_pos_t::FromFloat(pos.Z));
 
-			//now rotate
+			// now rotate
 			CFixedVector3D rotation = cmpPositionOld->GetRotation();
 			cmpPositionNew->SetYRotation(rotation.Y);
 		}
 
-		//get owner
+		// get owner
 		CmpPtr<ICmpOwnership> cmpOwnershipNew(*g_Game->GetSimulation2(), new_ent);
 		CmpPtr<ICmpOwnership> cmpOwnershipOld(*g_Game->GetSimulation2(), ent);
 		if (cmpOwnershipNew && cmpOwnershipOld)
 			cmpOwnershipNew->SetOwner(cmpOwnershipOld->GetOwner());
 
-		//getVisual
+		// getVisual
 		CmpPtr<ICmpVisual> cmpVisualNew(*g_Game->GetSimulation2(), new_ent);
 		CmpPtr<ICmpVisual> cmpVisualOld(*g_Game->GetSimulation2(), ent);
 		if (cmpVisualNew && cmpVisualOld)
 			cmpVisualNew->SetActorSeed(cmpVisualOld->GetActorSeed());
 
-		//Update g_selectedObject and higligth
+		// Update g_selectedObject and higligth
 		g_Selection.push_back(new_ent);
 		CmpPtr<ICmpSelectable> cmpSelectable(*g_Game->GetSimulation2(), new_ent);
 		if (cmpSelectable)
@@ -479,7 +479,7 @@ MESSAGEHANDLER(MoveObjectPreview)
 	if (g_PreviewEntitiesID.size()==0)
 		return;
 
-	//TODO:Change pivot 
+	// TODO:Change pivot
 	entity_id_t referenceEntity = *g_PreviewEntitiesID.begin();
 
 	// All selected objects move relative to a pivot object,
@@ -522,7 +522,7 @@ MESSAGEHANDLER(ObjectPreview)
 		// Delete old entity
 		if (g_PreviewEntityID != INVALID_ENTITY && msg->cleanObjectPreviews)
 		{
-			//Time to delete all preview objects
+			// Time to delete all preview objects
 			if (g_PreviewEntitiesID.size() > 0)
 			{
 				std::vector<entity_id_t>::const_iterator i;

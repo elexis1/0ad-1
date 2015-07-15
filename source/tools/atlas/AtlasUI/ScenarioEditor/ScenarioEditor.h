@@ -38,7 +38,7 @@ public:
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxIdleEvent& event);
 
- 	void OnNew(wxCommandEvent& event);
+	void OnNew(wxCommandEvent& event);
 	void OnOpen(wxCommandEvent& event);
 	void OnSave(wxCommandEvent& event);
 	void OnSaveAs(wxCommandEvent& event);
@@ -48,8 +48,8 @@ public:
 	void OnQuit(wxCommandEvent& event);
 	void OnUndo(wxCommandEvent& event);
 	void OnRedo(wxCommandEvent& event);
-    void OnCopy(wxCommandEvent& event);
-    void OnPaste(wxCommandEvent& event);
+	void OnCopy(wxCommandEvent& event);
+	void OnPaste(wxCommandEvent& event);
 
 	void OnWireframe(wxCommandEvent& event);
 	void OnMessageTrace(wxCommandEvent& event);
@@ -59,7 +59,7 @@ public:
 	void OnCameraReset(wxCommandEvent& event);
 	void OnRenderPath(wxCommandEvent& event);
 	void OnDumpState(wxCommandEvent& event);
-    void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
+	void OnSelectedObjectsChange(const std::vector<AtlasMessage::ObjectID>& selectedObjects);
 	void OnSimulateControls(wxCommandEvent& event);
 	void OnAuiPanelClosed(wxAuiManagerEvent& event);
 	template<typename T>
@@ -73,7 +73,7 @@ public:
 
 	void OnToolbarButtons(wxCommandEvent& event);
 
-    void OnMenuOpen(wxMenuEvent& event);
+	void OnMenuOpen(wxMenuEvent& event);
 
 	bool OpenFile(const wxString& name, const wxString& filename);
 

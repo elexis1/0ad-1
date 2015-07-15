@@ -659,7 +659,7 @@ AtObj PlayerSettingsControl::UpdateSettingsObject()
 		// color
 		if (controls->GetColorPickerCtrl()->IsEnabled())
 		{
-			wxColour color = controls->GetColorPickerCtrl()->GetColour();
+			wxColor color = controls->GetColorPickerCtrl()->GetColour();
 			AtObj clrObj;
 			clrObj.setInt("r", (int)color.Red());
 			clrObj.setInt("g", (int)color.Green());

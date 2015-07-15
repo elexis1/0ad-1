@@ -195,8 +195,9 @@ END_EVENT_TABLE();
 
 
 NewMapConfiguration::NewMapConfiguration()
-	: m_ScenarioEditor(NULL), m_Image(NULL)
+	: m_ScenarioEditor(NULL)
 {
+	m_Image.clear();
 }
 
 void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
@@ -235,7 +236,7 @@ void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
 	FindWindow(ID_RandomScript)->GetParent()->Show(false);
 	FindWindow(ID_RandomScript)->GetParent()->Layout();
 
-	//Load Player Configuration
+	// Load Player Configuration
 	m_ScenarioEditor->GetPlayerSettingsCtrl();
 }
 
@@ -252,7 +253,7 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 	wxRadioBox* typeMap = dynamic_cast<wxRadioBox*>(FindWindow(ID_TypeMap));
 	int selection = typeMap->GetSelection();
 
-	if (selection == 2 && (m_Image == NULL || m_Image->empty()))
+	if (selection == 2 && m_Image.empty())
 	{
 		wxMessageBox(_("Please select an image to apply"));
 		return;
@@ -321,15 +322,18 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 	{
 		// Display error message and revert to old map settings
 		wxLogError(_("Random map script '%ls' failed"), scriptName.wc_str());
-		//m_MapSettingsCtrl->SetMapSettings(oldSettings);
+		m_ScenarioEditor->GetMapSettings() = oldSettings;
+		std::string oldJson = AtlasObject::SaveToJSON(oldSettings);
+		POST_COMMAND(SetMapSettings, (oldJson));
+		m_ScenarioEditor->GetMapSettings().NotifyObservers();
 	}
 
 	if (selection == 2) //Import HeighMap
-		POST_MESSAGE(ImportHeightmap, (*m_Image));
+		POST_MESSAGE(ImportHeightmap, (m_Image));
 
 	m_ScenarioEditor->SetOpenFilename(_T(""));
 	m_ScenarioEditor->NotifyOnMapReload();
-	m_Image = NULL;
+	m_Image.clear();
 	wxDynamicCast(FindWindow(ID_Image), wxStaticText)->SetLabel("");
 	scriptChoice->SetSelection(0);
 	sizeChoice->SetSelection(0);
@@ -357,14 +361,13 @@ void NewMapConfiguration::OnChooseImage(wxCommandEvent& WXUNUSED(evt))
 					  wxFD_OPEN);
 	// Set default filter
 	dlg.SetFilterIndex(0);
-	
+	m_Image.clear();
 	if (dlg.ShowModal() != wxID_OK)
 	{
 		wxDynamicCast(FindWindow(ID_Image), wxStaticText)->SetLabel("");
-		m_Image = NULL;
 		return;
 	}
 	
-	m_Image = new std::wstring(dlg.GetPath().wc_str());
+	m_Image = dlg.GetPath().wc_str();
 	wxDynamicCast(FindWindow(ID_Image), wxStaticText)->SetLabel(dlg.GetPath());
 }

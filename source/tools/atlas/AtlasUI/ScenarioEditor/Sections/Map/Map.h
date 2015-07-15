@@ -64,9 +64,9 @@ private:
 	void OnTypeMap(wxCommandEvent& evt);
 	void OnChooseImage(wxCommandEvent& evt);
 
-	std::wstring* m_Image;
+	std::wstring m_Image;
 
 	DECLARE_EVENT_TABLE();
 };
 
-#endif //INCLUDED_MAP
+#endif // INCLUDED_MAP

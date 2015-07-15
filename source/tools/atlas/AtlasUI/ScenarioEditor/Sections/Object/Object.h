@@ -100,4 +100,4 @@ private:
 
 	DECLARE_EVENT_TABLE();
 };
-#endif //INCLUDED_OBJECT
+#endif // INCLUDED_OBJECT
