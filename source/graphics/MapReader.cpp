@@ -63,7 +63,6 @@ CMapReader::CMapReader()
 	// Maps that don't override the default probably want the old lighting model
 	//m_LightEnv.SetLightingModel("old");
 	//pPostproc->SetPostEffect(L"default");
-
 }
 
 // LoadMap: try to load the map from given file; reinitialise the scene to new data if successful

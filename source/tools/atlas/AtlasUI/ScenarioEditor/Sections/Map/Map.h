@@ -21,7 +21,6 @@
 #include "precompiled.h"
 
 #include "AtlasObject/AtlasObject.h"
-#include "../../../General/Observable.h"
 #include "wx/collpane.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 

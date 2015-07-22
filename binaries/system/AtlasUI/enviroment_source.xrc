@@ -1,1 +1,488 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">	<object class="wxPanel" name="SunSettings" subclass="SunSettings">		<style>wxTAB_TRAVERSAL</style>		<size>311,459</size>		<object class="wxStaticBoxSizer">			<orient>wxVERTICAL</orient>			<label>Sun / lighting settings</label>			<object class="sizeritem">				<option>1</option>				<flag>wxEXPAND | wxALL</flag>				<border>0</border>				<object class="wxScrolledWindow" name="m_scrolledWindow1">					<style>wxHSCROLL|wxVSCROLL</style>					<scrollrate>5,5</scrollrate>					<object class="wxBoxSizer">						<orient>wxVERTICAL</orient>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Sun rotation</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxSlider" name="1">										<style>wxSL_HORIZONTAL</style>										<value>50</value>										<min>0</min>										<max>1024</max>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Sun elevation</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxSlider" name="2">										<style>wxSL_HORIZONTAL</style>										<value>50</value>										<min>0</min>										<max>1024</max>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Sun overbrightness</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxSlider" name="3">										<style>wxSL_HORIZONTAL</style>										<value>50</value>										<min>0</min>										<max>1024</max>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxEXPAND | wxALL</flag>							<border>0</border>							<object class="wxPanel" name="4">								<style>wxTAB_TRAVERSAL</style>								<size>150,150</size>								<object class="wxBoxSizer">									<orient>wxVERTICAL</orient>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Sun Color</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxColourPickerCtrl" name="5">										<value>#0f80ff</value>										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Sky set</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxComboBox" name="6">										<style>wxCB_READONLY</style>										<value>Combo!</value>										<content />									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Fog factor</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxSlider" name="7">										<style>wxSL_HORIZONTAL</style>										<value>50</value>										<min>0</min>										<max>1024</max>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Fog thickness</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxSlider" name="8">										<style>wxSL_HORIZONTAL</style>										<value>50</value>										<min>0</min>										<max>1024</max>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Fog color</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxColourPickerCtrl" name="9">										<value>#0f80ff</value>										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Terrain ambient color</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxColourPickerCtrl" name="10">										<value>#0f80ff</value>										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>									</object>								</object>							</object>						</object>						<object class="sizeritem">							<option>0</option>							<flag>wxALL|wxEXPAND</flag>							<border>0</border>							<object class="wxStaticBoxSizer">								<orient>wxVERTICAL</orient>								<label>Object ambient color</label>								<object class="sizeritem">									<option>0</option>									<flag>wxALL|wxEXPAND</flag>									<border>0</border>									<object class="wxColourPickerCtrl" name="11">										<value>#0f80ff</value>										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>									</object>								</object>							</object>						</object>					</object>				</object>			</object>		</object>	</object>	<object class="wxPanel" name="WaterSettings" subclass="WaterSettings">		<style>wxTAB_TRAVERSAL</style>		<size>311,499</size>		<object class="wxStaticBoxSizer">			<orient>wxVERTICAL</orient>			<label>Water settings</label>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>5</border>				<object class="wxButton" name="101">					<label>Reset Water Data</label>					<default>0</default>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Water Type</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxComboBox" name="102">							<style>wxCB_READONLY</style>							<value></value>							<content>								<item>lake</item>								<item>clap</item>							</content>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Water height</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="103">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Water waviness</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="104">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Water murkiness</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="105">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Wind angle</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="106">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Water Color</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxColourPickerCtrl" name="107">							<value>#0f80ff</value>							<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Water Tint</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxColourPickerCtrl" name="108">							<value>#0f80ff</value>							<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>						</object>					</object>				</object>			</object>		</object>	</object>	<object class="wxPanel" name="PostProcessingSetting" subclass="PostProcessingSettings">		<style>wxTAB_TRAVERSAL</style>		<size>311,330</size>		<object class="wxStaticBoxSizer">			<orient>wxVERTICAL</orient>			<label>Post-processing settings</label>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Post Effect</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxComboBox" name="201">							<style>wxCB_READONLY</style>							<value>Combo!</value>							<content />						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Brightness</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="202">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Contrast (HDR)</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="203">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Saturation</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="204">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>			<object class="sizeritem">				<option>0</option>				<flag>wxALL|wxEXPAND</flag>				<border>0</border>				<object class="wxStaticBoxSizer">					<orient>wxVERTICAL</orient>					<label>Bloom</label>					<object class="sizeritem">						<option>0</option>						<flag>wxALL|wxEXPAND</flag>						<border>0</border>						<object class="wxSlider" name="205">							<style>wxSL_HORIZONTAL</style>							<value>50</value>							<min>0</min>							<max>1024</max>						</object>					</object>				</object>			</object>		</object>	</object></resource>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxPanel" name="SunSettings" subclass="SunSettings">
+		<style>wxTAB_TRAVERSAL</style>
+		<size>311,459</size>
+		<object class="wxStaticBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<label>Sun / lighting settings</label>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxEXPAND | wxALL</flag>
+				<border>0</border>
+				<object class="wxScrolledWindow" name="m_scrolledWindow1">
+					<style>wxHSCROLL|wxVSCROLL</style>
+					<scrollrate>5,5</scrollrate>
+					<object class="wxBoxSizer">
+						<orient>wxVERTICAL</orient>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Sun rotation</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxSlider" name="1">
+										<style>wxSL_HORIZONTAL</style>
+										<value>50</value>
+										<min>0</min>
+										<max>1024</max>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Sun elevation</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxSlider" name="2">
+										<style>wxSL_HORIZONTAL</style>
+										<value>50</value>
+										<min>0</min>
+										<max>1024</max>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Sun overbrightness</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxSlider" name="3">
+										<style>wxSL_HORIZONTAL</style>
+										<value>50</value>
+										<min>0</min>
+										<max>1024</max>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxEXPAND | wxALL</flag>
+							<border>0</border>
+							<object class="wxPanel" name="4">
+								<style>wxTAB_TRAVERSAL</style>
+								<size>150,150</size>
+								<object class="wxBoxSizer">
+									<orient>wxVERTICAL</orient>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Sun Color</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxColourPickerCtrl" name="5">
+										<value>#0f80ff</value>
+										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Sky set</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxComboBox" name="6">
+										<style>wxCB_READONLY</style>
+										<value>Combo!</value>
+										<content />
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Fog factor</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxSlider" name="7">
+										<style>wxSL_HORIZONTAL</style>
+										<value>50</value>
+										<min>0</min>
+										<max>1024</max>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Fog thickness</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxSlider" name="8">
+										<style>wxSL_HORIZONTAL</style>
+										<value>50</value>
+										<min>0</min>
+										<max>1024</max>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Fog color</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxColourPickerCtrl" name="9">
+										<value>#0f80ff</value>
+										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Terrain ambient color</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxColourPickerCtrl" name="10">
+										<value>#0f80ff</value>
+										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>0</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Object ambient color</label>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>0</border>
+									<object class="wxColourPickerCtrl" name="11">
+										<value>#0f80ff</value>
+										<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+	<object class="wxPanel" name="WaterSettings" subclass="WaterSettings">
+		<style>wxTAB_TRAVERSAL</style>
+		<size>311,499</size>
+		<object class="wxStaticBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<label>Water settings</label>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxButton" name="101">
+					<label>Reset Water Data</label>
+					<default>0</default>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Water Type</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxComboBox" name="102">
+							<style>wxCB_READONLY</style>
+							<value></value>
+							<content>
+								<item>lake</item>
+								<item>clap</item>
+							</content>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Water height</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="103">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Water waviness</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="104">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Water murkiness</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="105">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Wind angle</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="106">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Water Color</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxColourPickerCtrl" name="107">
+							<value>#0f80ff</value>
+							<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Water Tint</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxColourPickerCtrl" name="108">
+							<value>#0f80ff</value>
+							<style>wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL</style>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+	<object class="wxPanel" name="PostProcessingSetting" subclass="PostProcessingSettings">
+		<style>wxTAB_TRAVERSAL</style>
+		<size>311,330</size>
+		<object class="wxStaticBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<label>Post-processing settings</label>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Post Effect</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxComboBox" name="201">
+							<style>wxCB_READONLY</style>
+							<value>Combo!</value>
+							<content />
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Brightness</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="202">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Contrast (HDR)</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="203">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Saturation</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="204">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>0</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Bloom</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxSlider" name="205">
+							<style>wxSL_HORIZONTAL</style>
+							<value>50</value>
+							<min>0</min>
+							<max>1024</max>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

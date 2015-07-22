@@ -18,8 +18,6 @@
 #ifndef INCLUDED_PLAYER
 #define INCLUDED_PLAYER
 
-#include "../../../General/Observable.h"
-
 #include "AtlasObject/AtlasObject.h"
 #include "GameInterface/Messages.h"
 #include "ScenarioEditor/ScenarioEditor.h"
@@ -124,4 +122,4 @@ private:
 };
 WX_DEFINE_SORTED_ARRAY(AIData*, ArrayOfAIData);
 
-#endif
+#endif // INCLUDED_PLAYER

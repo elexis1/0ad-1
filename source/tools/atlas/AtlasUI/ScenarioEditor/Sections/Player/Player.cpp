@@ -220,7 +220,7 @@ class PlayerNotebook : public wxChoicebook
 {
 public:
 	PlayerNotebook(wxWindow* parent)
-		:wxChoicebook(parent, wxID_ANY)
+		: wxChoicebook(parent, wxID_ANY)
 	{
 	}
 
@@ -470,12 +470,12 @@ void PlayerSettingsControl::ReadFromEngine()
 	if (playerDefs.defined())
 		++playerDefs;	// skip gaia
 
-	#define EMIT_CHECKBOX(id)\
+#define EMIT_CHECKBOX(id)\
 	do {\
-		wxCommandEvent evid(wxEVT_CHECKBOX, id); \
-		wxCheckBox* optionid = wxDynamicCast(FindWindowById(id, controls), wxCheckBox); \
-		evid.SetInt(defined); \
-		optionid->SetValue(defined); \
+		wxCommandEvent evid(wxEVT_CHECKBOX, id);\
+		wxCheckBox* optionid = wxDynamicCast(FindWindowById(id, controls), wxCheckBox);\
+		evid.SetInt(defined);\
+		optionid->SetValue(defined);\
 		optionid->GetEventHandler()->ProcessEvent(evid);\
 	} while(false)
 
@@ -518,7 +518,7 @@ void PlayerSettingsControl::ReadFromEngine()
 		AtObj clrObj = *player["Color"];
 		defined = clrObj.defined();
 		if (!defined)
-			clrObj = *playerDefs["Colur"];
+			clrObj = *playerDefs["Color"];
 		color = wxColor((*clrObj["r"]).getInt(), (*clrObj["g"]).getInt(), (*clrObj["b"]).getInt());
 		controls->GetColorPickerCtrl()->SetColour(color);
 		EMIT_CHECKBOX(ID_DefaultColor);
@@ -622,7 +622,7 @@ void PlayerSettingsControl::ReadFromEngine()
 			++playerDefs;
 	}
 
-	#undef EmitDefineCheckbox
+#undef EmitDefineCheckbox
 	SendToEngine();
 	m_ScenarioEditor->GetCommandProc().ClearCommands();
 

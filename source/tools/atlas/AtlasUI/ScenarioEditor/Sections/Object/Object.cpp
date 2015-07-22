@@ -19,16 +19,14 @@
 
 #include "Object.h"
 
+#include "GameInterface/Messages.h"
 #include "General/Datafile.h"
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/ObjectSettings.h"
 #include "ScenarioEditor/Tools/Common/MiscState.h"
-
-#include "GameInterface/Messages.h"
-
 #include <wx/busyinfo.h>
-#include <wx/xrc/xmlres.h>
 #include <wx/tglbtn.h>
+#include <wx/xrc/xmlres.h>
 
 enum
 {
@@ -66,7 +64,7 @@ BEGIN_EVENT_TABLE(ObjectSidebar, wxPanel)
 END_EVENT_TABLE();
 
 ObjectSidebar::ObjectSidebar()
-	:m_ScenarioEditor(NULL), m_ObjectList(NULL)
+	: m_ScenarioEditor(NULL), m_ObjectList(NULL)
 {
 }
 
@@ -143,7 +141,7 @@ void ObjectSidebar::OnSelectFilter(wxCommandEvent& WXUNUSED(evt))
 IMPLEMENT_DYNAMIC_CLASS(DisplayTemplate, wxPanel)
 
 DisplayTemplate::DisplayTemplate()
-	:m_TemplateNames(NULL)
+	: m_TemplateNames(NULL)
 {
 }
 
@@ -186,7 +184,7 @@ void DisplayTemplate::OnSelectedObjectsChange(const std::vector<AtlasMessage::Ob
 		if (lastTemplateName == name)
 		{
 			++counterTemplate;
-			return;
+			continue;
 		}
 
 		sizer->Add(CreateTemplateNameObject(m_TemplateNames, lastTemplateName, counterTemplate), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -254,7 +252,7 @@ void EntitySettings::OnMapSettingsChange(const AtObj& settings)
 
 void EntitySettings::OnObjectSettingsChange(const ObjectSettings& settings)
 {
-	m_PlayerOwner->SetSelection(((unsigned int)settings.GetPlayerID() < m_PlayerOwner->GetCount()) ? settings.GetPlayerID() : wxNOT_FOUND );
+	m_PlayerOwner->SetSelection(((unsigned int)settings.GetPlayerID() < m_PlayerOwner->GetCount()) ? settings.GetPlayerID() : wxNOT_FOUND);
 
 	// Load Variations
 	m_VariationsContainer->Freeze();
@@ -378,7 +376,7 @@ void ActorViewerPanel::Init(ScenarioEditor* scenarioEditor)
 
 	POST_MESSAGE(SetViewParamI, (AtlasMessage::eRenderView::ACTOR, (std::wstring)L"prop_points", 0));
 
-	if (g_SelectedObject == "")
+	if (g_SelectedObject.empty())
 		g_SelectedObject = "actor|structures/fndn_1x1.xml";
 
 	m_ActorViewerAnimation = "idle";
@@ -388,9 +386,8 @@ void ActorViewerPanel::Init(ScenarioEditor* scenarioEditor)
 	wxArrayString animChoices;
 	AtObj anims (Datafile::ReadList("animations"));
 	for (AtIter a = anims["item"]; a.defined(); ++a)
-	{
 		animChoices.Add(wxString(*a));
-	}
+
 	wxChoice* animationList = wxDynamicCast(FindWindow(ID_ViewerAnimation), wxChoice);
 	animationList->Append(animChoices);
 	animationList->SetSelection(0);
@@ -420,9 +417,17 @@ void ActorViewerPanel::OnSpeed(wxCommandEvent& evt)
 {
 	switch (evt.GetId())
 	{
-		case ID_ViewerPlay: m_ActorViewerSpeed = 1.0f; break;
-		case ID_ViewerPause: m_ActorViewerSpeed = 0.0f; break;
-		case ID_ViewerSlow: m_ActorViewerSpeed = 0.1f; break;
+	case ID_ViewerPlay:
+		m_ActorViewerSpeed = 1.0f;
+		break;
+
+	case ID_ViewerPause:
+		m_ActorViewerSpeed = 0.0f;
+		break;
+
+	case ID_ViewerSlow:
+		m_ActorViewerSpeed = 0.1f;
+		break;
 	}
 	PostToGame();
 }

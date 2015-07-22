@@ -616,50 +616,50 @@ void ScenarioEditor::OnToolbarButtons(wxCommandEvent& event)
 	
 	switch (event.GetId())
 	{
-		case ID_ToolbarOptionMap:
-			UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
-			break;
+	case ID_ToolbarOptionMap:
+		UpdatePanelTool<MapSettingsControl>(event.IsChecked(), "mapsettings", "MapSettings");
+		break;
 
-		case ID_ToolbarOptionPlayer:
-			UpdatePanelTool<PlayerSettingsControl>(event.IsChecked(), "playersettings", "PlayerSettings");
-			break;
+	case ID_ToolbarOptionPlayer:
+		UpdatePanelTool<PlayerSettingsControl>(event.IsChecked(), "playersettings", "PlayerSettings");
+		break;
 
-		case ID_ToolbarOptionObject:
-			UpdatePanelTool<ObjectSidebar>(event.IsChecked(), "objectlist", "ObjectList");
-			break;
+	case ID_ToolbarOptionObject:
+		UpdatePanelTool<ObjectSidebar>(event.IsChecked(), "objectlist", "ObjectList");
+		break;
 
-		case ID_DisplayTemplateView:
-			UpdatePanelTool<DisplayTemplate>(event.IsChecked(), "displayTemplate", "DisplayTemplate");
-			break;
+	case ID_DisplayTemplateView:
+		UpdatePanelTool<DisplayTemplate>(event.IsChecked(), "displayTemplate", "DisplayTemplate");
+		break;
 
-		case ID_EntitySettingsView:
-			UpdatePanelTool<EntitySettings>(event.IsChecked(), "entitySettings", "EntitySettings");
-			break;
+	case ID_EntitySettingsView:
+		UpdatePanelTool<EntitySettings>(event.IsChecked(), "entitySettings", "EntitySettings");
+		break;
 
-		case ID_ToolbarOptionEnvironment:
-			UpdatePanelTool<SunSettings>(event.IsChecked(), "sunSettings", "SunSettings");
-			break;
+	case ID_ToolbarOptionEnvironment:
+		UpdatePanelTool<SunSettings>(event.IsChecked(), "sunSettings", "SunSettings");
+		break;
 
-		case ID_WaterSettings:
-			UpdatePanelTool<WaterSettings>(event.IsChecked(), "waterSettings", "WaterSettings");
-			break;
+	case ID_WaterSettings:
+		UpdatePanelTool<WaterSettings>(event.IsChecked(), "waterSettings", "WaterSettings");
+		break;
 
-		case ID_PostProcessingSettings:
-			UpdatePanelTool<PostProcessingSettings>(event.IsChecked(), "postProcessingSetting", "PostProcessingSetting");
-			break;
+	case ID_PostProcessingSettings:
+		UpdatePanelTool<PostProcessingSettings>(event.IsChecked(), "postProcessingSetting", "PostProcessingSetting");
+		break;
 
-		case ID_ToolbarOptionTerrain:
-			UpdatePanelTool<TerrainSettings>(event.IsChecked(), "terrainSettings", "TerrainSettings");
-			UpdatePanelTool<TexturePreviewPanel>(event.IsChecked(), "texturePreviewPanel", "TexturePreviewPanel", false);
-			break;
+	case ID_ToolbarOptionTerrain:
+		UpdatePanelTool<TerrainSettings>(event.IsChecked(), "terrainSettings", "TerrainSettings");
+		UpdatePanelTool<TexturePreviewPanel>(event.IsChecked(), "texturePreviewPanel", "TexturePreviewPanel", false);
+		break;
 
-		case ID_VisualizeSettings:
-			UpdatePanelTool<VisualizeSettings>(event.IsChecked(), "visualizeSettings", "VisualizeSettings");
-			break;
+	case ID_VisualizeSettings:
+		UpdatePanelTool<VisualizeSettings>(event.IsChecked(), "visualizeSettings", "VisualizeSettings");
+		break;
 
-		case ID_ActorViewerPanel:
-			UpdatePanelTool<ActorViewerPanel>(event.IsChecked(), "actorViewerPanel", "ActorViewerPanel");
-			break;
+	case ID_ActorViewerPanel:
+		UpdatePanelTool<ActorViewerPanel>(event.IsChecked(), "actorViewerPanel", "ActorViewerPanel");
+		break;
 	}
 }
 
@@ -726,7 +726,7 @@ T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bo
 	T* panel = static_cast<T*>(wxXmlResource::Get()->LoadPanel(this, xrcName));
 	if (!panel)
 	{
-		wxLogError(_("No XRC resource found it"), xrcName);
+		wxLogError(_("No XRC resource found"), xrcName);
 		return NULL;
 	}
 
@@ -811,7 +811,7 @@ void ScenarioEditor::OnSimulateControls(wxCommandEvent &event)
 		newSimState = SimPaused;
 		speed = 0.f;
 	}
-	else
+	else // event.GetId() == ID_ToolbarSimulationStop
 	{
 		toolbar->EnableTool(ID_ToolbarSimulationStop, false);
 		toolbar->EnableTool(ID_ToolbarSimulationPause, false);

@@ -195,9 +195,8 @@ END_EVENT_TABLE();
 
 
 NewMapConfiguration::NewMapConfiguration()
-	: m_ScenarioEditor(NULL)
+	: m_ScenarioEditor(NULL), m_Image()
 {
-	m_Image.clear();
 }
 
 void NewMapConfiguration::Init(ScenarioEditor *scenarioEditor)
@@ -271,17 +270,7 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 	wxChoice* scriptChoice = wxDynamicCast(FindWindow(ID_RandomScript), wxChoice);
 
 	if (selection != 1)
-	{
-		for (size_t j = 0; j < scriptChoice->GetCount(); ++j)
-		{
-			wxString name = scriptChoice->GetString(j);
-			if (name == "Blank")
-			{
-				scriptChoice->SetSelection(j);
-				break;
-			}
-		}
-	}
+		scriptChoice->SetSelection(scriptChoice->FindString("Blank"));
 
 	if (scriptChoice->GetSelection() < 0)
 		return;
@@ -328,7 +317,7 @@ void NewMapConfiguration::OnGenerate(wxCommandEvent& WXUNUSED(evt))
 		m_ScenarioEditor->GetMapSettings().NotifyObservers();
 	}
 
-	if (selection == 2) //Import HeighMap
+	if (selection == 2) // Import HeighMap
 		POST_MESSAGE(ImportHeightmap, (m_Image));
 
 	m_ScenarioEditor->SetOpenFilename(_T(""));

@@ -1,1 +1,182 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">	<object class="wxPanel" name="MapSettings" subclass="MapSettingsControl">		<style>wxTAB_TRAVERSAL</style>		<size>296,342</size>		<object class="wxStaticBoxSizer">			<orient>wxVERTICAL</orient>			<label>Map Settings</label>			<object class="sizeritem">				<option>1</option>				<flag>wxEXPAND</flag>				<border>5</border>				<object class="wxGridBagSizer">					<vgap>0</vgap>					<hgap>0</hgap>					<growablecols>1</growablecols>					<growablerows>2</growablerows>					<object class="sizeritem">						<cellpos>0,0</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxStaticText" name="m_staticText1">							<style>wxALIGN_RIGHT</style>							<label>Name</label>							<wrap>-1</wrap>						</object>					</object>					<object class="sizeritem">						<cellpos>0,1</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxTextCtrl" name="1">							<tooltip>Displayed name of the map</tooltip>							<value></value>						</object>					</object>					<object class="sizeritem">						<cellpos>1,0</cellpos>						<cellspan>1,2</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxStaticText" name="m_staticText5">							<label>Description</label>							<wrap>-1</wrap>						</object>					</object>					<object class="sizeritem">						<cellpos>2,0</cellpos>						<cellspan>1,2</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxTextCtrl" name="2">							<style>wxTE_MULTILINE|wxTE_NO_VSCROLL</style>							<size>-1,50</size>							<tooltip>Short description used on the map selection screen</tooltip>							<value></value>						</object>					</object>					<object class="sizeritem">						<cellpos>3,0</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL</flag>						<border>5</border>						<object class="wxStaticText" name="m_staticText4">							<style>wxALIGN_RIGHT</style>							<label>Preview</label>							<wrap>-1</wrap>						</object>					</object>					<object class="sizeritem">						<cellpos>3,1</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxTextCtrl" name="5">							<tooltip>Texture used for map preview</tooltip>							<value></value>						</object>					</object>					<object class="sizeritem">						<cellpos>4,0</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL</flag>						<border>5</border>						<object class="wxStaticText" name="m_staticText8">							<style>wxALIGN_RIGHT</style>							<label>Reveal map</label>							<wrap>-1</wrap>						</object>					</object>					<object class="sizeritem">						<cellpos>4,1</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxCheckBox" name="3">							<tooltip>If checked, players won&apos;t need to explore</tooltip>							<label></label>							<checked>0</checked>						</object>					</object>					<object class="sizeritem">						<cellpos>5,0</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL</flag>						<border>5</border>						<object class="wxStaticText" name="m_staticText9">							<label>Game Type</label>							<wrap>-1</wrap>						</object>					</object>					<object class="sizeritem">						<cellpos>5,1</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxChoice" name="4">							<tooltip>Select the game type (or victory condition)</tooltip>							<selection>0</selection>							<content />						</object>					</object>					<object class="sizeritem">						<cellpos>6,0</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL</flag>						<border>5</border>						<object class="wxStaticText" name="m_staticText10">							<label>Lock teams</label>							<wrap>-1</wrap>						</object>					</object>					<object class="sizeritem">						<cellpos>6,1</cellpos>						<cellspan>1,1</cellspan>						<flag>wxALL|wxEXPAND</flag>						<border>5</border>						<object class="wxCheckBox" name="6">							<tooltip>If checked, teams will be locked</tooltip>							<label></label>							<checked>0</checked>						</object>					</object>					<object class="sizeritem">						<cellpos>7,0</cellpos>						<cellspan>1,2</cellspan>						<flag>wxEXPAND</flag>						<border>5</border>						<object class="wxStaticBoxSizer">							<orient>wxHORIZONTAL</orient>							<label>Keywords</label>							<object class="sizeritem">								<option>0</option>								<flag>wxALL</flag>								<border>5</border>								<object class="wxCheckBox" name="7">									<style>wxALIGN_RIGHT</style>									<tooltip>If checked, map will only be visible using filters in game setup</tooltip>									<label>Demo</label>									<checked>0</checked>								</object>							</object>							<object class="sizeritem">								<option>0</option>								<flag>wxALL</flag>								<border>5</border>								<object class="wxCheckBox" name="8">									<style>wxALIGN_RIGHT</style>									<tooltip>If checked, map will only be visible using filters in game setup</tooltip>									<label>Naval</label>									<checked>0</checked>								</object>							</object>						</object>					</object>				</object>			</object>		</object>	</object></resource>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxPanel" name="MapSettings" subclass="MapSettingsControl">
+		<style>wxTAB_TRAVERSAL</style>
+		<size>296,342</size>
+		<object class="wxStaticBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<label>Map Settings</label>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxGridBagSizer">
+					<vgap>0</vgap>
+					<hgap>0</hgap>
+					<growablecols>1</growablecols>
+					<growablerows>2</growablerows>
+					<object class="sizeritem">
+						<cellpos>0,0</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="m_staticText1">
+							<style>wxALIGN_RIGHT</style>
+							<label>Name</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>0,1</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxTextCtrl" name="1">
+							<tooltip>Displayed name of the map</tooltip>
+							<value></value>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>1,0</cellpos>
+						<cellspan>1,2</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="m_staticText5">
+							<label>Description</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>2,0</cellpos>
+						<cellspan>1,2</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxTextCtrl" name="2">
+							<style>wxTE_MULTILINE|wxTE_NO_VSCROLL</style>
+							<size>-1,50</size>
+							<tooltip>Short description used on the map selection screen</tooltip>
+							<value></value>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>3,0</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="m_staticText4">
+							<style>wxALIGN_RIGHT</style>
+							<label>Preview</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>3,1</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxTextCtrl" name="5">
+							<tooltip>Texture used for map preview</tooltip>
+							<value></value>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>4,0</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="m_staticText8">
+							<style>wxALIGN_RIGHT</style>
+							<label>Reveal map</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>4,1</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxCheckBox" name="3">
+							<tooltip>If checked, players won&apos;t need to explore</tooltip>
+							<label></label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>5,0</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="m_staticText9">
+							<label>Game Type</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>5,1</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxChoice" name="4">
+							<tooltip>Select the game type (or victory condition)</tooltip>
+							<selection>0</selection>
+							<content />
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>6,0</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="m_staticText10">
+							<label>Lock teams</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>6,1</cellpos>
+						<cellspan>1,1</cellspan>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxCheckBox" name="6">
+							<tooltip>If checked, teams will be locked</tooltip>
+							<label></label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<cellpos>7,0</cellpos>
+						<cellspan>1,2</cellspan>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticBoxSizer">
+							<orient>wxHORIZONTAL</orient>
+							<label>Keywords</label>
+							<object class="sizeritem">
+								<option>0</option>
+								<flag>wxALL</flag>
+								<border>5</border>
+								<object class="wxCheckBox" name="7">
+									<style>wxALIGN_RIGHT</style>
+									<tooltip>If checked, map will only be visible using filters in game setup</tooltip>
+									<label>Demo</label>
+									<checked>0</checked>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>0</option>
+								<flag>wxALL</flag>
+								<border>5</border>
+								<object class="wxCheckBox" name="8">
+									<style>wxALIGN_RIGHT</style>
+									<tooltip>If checked, map will only be visible using filters in game setup</tooltip>
+									<label>Naval</label>
+									<checked>0</checked>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

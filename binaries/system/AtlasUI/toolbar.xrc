@@ -1,1 +1,129 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">	<object class="wxToolBar" name="AppToolbar">		<style>wxTB_HORIZONTAL|wxNO_BORDER</style>		<bitmapsize>32,32</bitmapsize>		<margins></margins>		<packing>1</packing>		<separation>2</separation>		<object class="tool" name="20">			<label>New</label>			<tooltip></tooltip>			<longhelp></longhelp>			<bitmap stock_id="wxART_NEW" stock_client="wxART_TOOLBAR">undefined.png</bitmap>		</object>		<object class="tool" name="21">			<label>Open</label>			<tooltip></tooltip>			<longhelp></longhelp>			<bitmap stock_id="wxART_FILE_OPEN" stock_client="wxART_TOOLBAR">undefined.png</bitmap>		</object>		<object class="separator" />		<object class="tool" name="1001">			<label>map</label>			<tooltip></tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/map.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="1002">			<label>player</label>			<tooltip></tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/player.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="1003">			<label>terrain</label>			<tooltip></tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/terrain.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="1004">			<label>object</label>			<tooltip></tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/object.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="1005">			<label>environment</label>			<tooltip></tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/environment.png</bitmap>			<toggle>1</toggle>		</object>		<object class="separator" />		<object class="tool" name="2001">			<label>Default</label>			<tooltip>Default</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/default.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="2002">			<label>Move</label>			<tooltip>Move/rotate object</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/moveobject.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="2003">			<label>Alter terrain</label>			<tooltip>Alter terrain elevation</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/alterelevation.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="2004">			<label>Smooth</label>			<tooltip>Smooth terrain elevation</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/smoothelevation.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="2005">			<label>Flatten</label>			<tooltip>Flatten terrain elevation</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/flattenelevation.png</bitmap>			<toggle>1</toggle>		</object>		<object class="tool" name="2006">			<label>Paint Terrain</label>			<tooltip>Paint terrain texture</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/toolbar/paintterrain.png</bitmap>			<toggle>1</toggle>		</object>		<object class="separator" />		<object class="tool" name="3001">			<label>Play</label>			<tooltip>Run the simulation at normal speed</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/buttons/play_s.bmp</bitmap>		</object>		<object class="tool" name="3002">			<label>Pause</label>			<tooltip>Pause the simulation</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/buttons/pause_s.bmp</bitmap>		</object>		<object class="tool" name="3003">			<label>Reset</label>			<tooltip>Reset the editor to initial state</tooltip>			<longhelp></longhelp>			<bitmap>../../data/tools/atlas/buttons/stop_s.bmp</bitmap>		</object>		<object class="wxChoice" name="3004">			<selection>0</selection>			<content>				<item>Normal</item>				<item>Fast</item>				<item>Slow</item>			</content>		</object>		<object class="separator" />	</object></resource>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxToolBar" name="AppToolbar">
+		<style>wxTB_HORIZONTAL|wxNO_BORDER</style>
+		<bitmapsize>32,32</bitmapsize>
+		<margins></margins>
+		<packing>1</packing>
+		<separation>2</separation>
+		<object class="tool" name="20">
+			<label>New</label>
+			<tooltip></tooltip>
+			<longhelp></longhelp>
+			<bitmap stock_id="wxART_NEW" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
+		</object>
+		<object class="tool" name="21">
+			<label>Open</label>
+			<tooltip></tooltip>
+			<longhelp></longhelp>
+			<bitmap stock_id="wxART_FILE_OPEN" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
+		</object>
+		<object class="separator" />
+		<object class="tool" name="1001">
+			<label>map</label>
+			<tooltip></tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/map.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="1002">
+			<label>player</label>
+			<tooltip></tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/player.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="1003">
+			<label>terrain</label>
+			<tooltip></tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/terrain.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="1004">
+			<label>object</label>
+			<tooltip></tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/object.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="1005">
+			<label>environment</label>
+			<tooltip></tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/environment.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="separator" />
+		<object class="tool" name="2001">
+			<label>Default</label>
+			<tooltip>Default</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/default.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="2002">
+			<label>Move</label>
+			<tooltip>Move/rotate object</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/moveobject.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="2003">
+			<label>Alter terrain</label>
+			<tooltip>Alter terrain elevation</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/alterelevation.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="2004">
+			<label>Smooth</label>
+			<tooltip>Smooth terrain elevation</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/smoothelevation.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="2005">
+			<label>Flatten</label>
+			<tooltip>Flatten terrain elevation</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/flattenelevation.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="tool" name="2006">
+			<label>Paint Terrain</label>
+			<tooltip>Paint terrain texture</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/toolbar/paintterrain.png</bitmap>
+			<toggle>1</toggle>
+		</object>
+		<object class="separator" />
+		<object class="tool" name="3001">
+			<label>Play</label>
+			<tooltip>Run the simulation at normal speed</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/buttons/play_s.bmp</bitmap>
+		</object>
+		<object class="tool" name="3002">
+			<label>Pause</label>
+			<tooltip>Pause the simulation</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/buttons/pause_s.bmp</bitmap>
+		</object>
+		<object class="tool" name="3003">
+			<label>Reset</label>
+			<tooltip>Reset the editor to initial state</tooltip>
+			<longhelp></longhelp>
+			<bitmap>../../data/tools/atlas/buttons/stop_s.bmp</bitmap>
+		</object>
+		<object class="wxChoice" name="3004">
+			<selection>0</selection>
+			<content>
+				<item>Normal</item>
+				<item>Fast</item>
+				<item>Slow</item>
+			</content>
+		</object>
+		<object class="separator" />
+	</object>
+</resource>

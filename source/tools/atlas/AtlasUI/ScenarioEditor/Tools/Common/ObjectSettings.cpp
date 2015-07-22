@@ -93,7 +93,7 @@ AtlasMessage::sObjectSettings ObjectSettings::GetSettings() const
 	// Copy selections from set into vector
 	std::vector<std::wstring> selections;
 	for (const wxString& actorSelection : m_ActorSelections)
-		selections.push_back((std::wstring)actorSelection.wc_str());
+		selections.emplace_back((std::wstring)actorSelection.wc_str());
 
 	settings.selections = selections;
 

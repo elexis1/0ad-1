@@ -417,7 +417,7 @@ MESSAGEHANDLER(ObjectPreviewToEntity)
 {
 	UNUSED2(msg);
 
-	if (g_PreviewEntitiesID.size() == 0)
+	if (g_PreviewEntitiesID.empty())
 		return;
 
 	CmpPtr<ICmpTemplateManager> cmpTemplateManager(*g_Game->GetSimulation2(), SYSTEM_ENTITY);

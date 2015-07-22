@@ -37,11 +37,10 @@ class VariableSliderBox : public wxEvtHandler
 	static const int range = 1024;
 public:
 	VariableSliderBox(wxSlider* slider,Shareable<float>& var, float min, float max)
-	: wxEvtHandler(), m_Var(var), m_Min(min), m_Max(max)
+	: wxEvtHandler(), m_Var(var), m_Min(min), m_Max(max), m_Slider(slider)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableSliderBox::OnSettingsChange, this);
 
-		m_Slider = slider;
 		m_Slider->SetMin(0);
 		m_Slider->SetMax(range);
 		m_Slider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(VariableSliderBox::OnScroll), NULL, this);
@@ -83,10 +82,10 @@ class VariableListBox : public wxEvtHandler
 public:
 	VariableListBox(wxComboBox* combo, Shareable<std::wstring>& var, const std::vector<std::wstring>& choices, bool clearCombo = true)
 		: wxEvtHandler(),
-		m_Var(var)
+		m_Var(var),
+		m_Combo(combo)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableListBox::OnSettingsChange, this);
-		m_Combo = combo;
 		
 		wxArrayString choices_arraystr;
 		for (std::wstring sky : choices)
@@ -123,24 +122,23 @@ private:
 class VariableColorBox : public wxEvtHandler
 {
 public:
-	VariableColorBox(wxColourPickerCtrl* colourCtrl, Shareable<AtlasMessage::Color>& color)
+	VariableColorBox(wxColourPickerCtrl* colorCtrl, Shareable<AtlasMessage::Color>& color)
 		: wxEvtHandler(),
-		m_Color(color)
+		m_Color(color),
+		m_ColorCtr(colorCtrl)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableColorBox::OnSettingsChange, this);
-		m_ColorCtr = colourCtrl;
 		wxColor currentValue = wxColor(m_Color->r, m_Color->g, m_Color->b);
 		m_ColorCtr->SetColour(currentValue);
-		m_ColorCtr->Connect(wxEVT_COLOURPICKER_CHANGED, wxColourPickerEventHandler(VariableColorBox::OnColourChanged), NULL, this);
+		m_ColorCtr->Connect(wxEVT_COLOURPICKER_CHANGED, wxColourPickerEventHandler(VariableColorBox::OnColorChanged), NULL, this);
 	}
 
 	void OnSettingsChange(const AtlasMessage::sEnvironmentSettings& WXUNUSED(env))
 	{
-		wxColor currentValue = wxColor(m_Color->r, m_Color->g, m_Color->b);
-		m_ColorCtr->SetColour(currentValue);
+		m_ColorCtr->SetColour(wxColor(m_Color->r, m_Color->g, m_Color->b));
 	}
 
-	void OnColourChanged(wxColourPickerEvent& evt)
+	void OnColorChanged(wxColourPickerEvent& evt)
 	{
 		wxColor currentSelection = evt.GetColour();
 		m_Color = AtlasMessage::Color(currentSelection.Red(), currentSelection.Green(), currentSelection.Blue());
