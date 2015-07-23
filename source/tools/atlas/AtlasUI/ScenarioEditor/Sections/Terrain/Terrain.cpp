@@ -23,6 +23,7 @@
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/Brushes.h"
 #include "ScenarioEditor/Tools/Common/MiscState.h"
+
 #include <wx/busyinfo.h>
 #include <wx/choicebk.h>
 #include <wx/listctrl.h>

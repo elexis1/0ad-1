@@ -476,7 +476,7 @@ MESSAGEHANDLER(ObjectPreviewToEntity)
 
 MESSAGEHANDLER(MoveObjectPreview)
 {
-	if (g_PreviewEntitiesID.size()==0)
+	if (g_PreviewEntitiesID.empty())
 		return;
 
 	// TODO:Change pivot
@@ -497,9 +497,8 @@ MESSAGEHANDLER(MoveObjectPreview)
 	CFixedVector3D fTargetPos(entity_pos_t::FromFloat(targetPos.X), entity_pos_t::FromFloat(targetPos.Y), entity_pos_t::FromFloat(targetPos.Z));
 	CFixedVector3D dir = fTargetPos - referencePos;
 
-	for (size_t i = 0; i < g_PreviewEntitiesID.size(); ++i)
+	for (const entity_id_t& id : g_PreviewEntitiesID)
 	{
-		entity_id_t id = (entity_id_t)g_PreviewEntitiesID[i];
 		CFixedVector3D posFinal;
 		CmpPtr<ICmpPosition> cmpPosition(*g_Game->GetSimulation2(), id);
 		if (cmpPosition && cmpPosition->IsInWorld())
@@ -523,13 +522,11 @@ MESSAGEHANDLER(ObjectPreview)
 		if (g_PreviewEntityID != INVALID_ENTITY && msg->cleanObjectPreviews)
 		{
 			// Time to delete all preview objects
-			if (g_PreviewEntitiesID.size() > 0)
+			if (!g_PreviewEntitiesID.empty())
 			{
-				std::vector<entity_id_t>::const_iterator i;
-				for (i = g_PreviewEntitiesID.begin(); i != g_PreviewEntitiesID.end(); i++)
-				{
-					g_Game->GetSimulation2()->DestroyEntity(*i);
-				}
+				for (const entity_id_t& i : g_PreviewEntitiesID)
+					g_Game->GetSimulation2()->DestroyEntity(i);
+
 				g_PreviewEntitiesID.clear();
 			}
 		}

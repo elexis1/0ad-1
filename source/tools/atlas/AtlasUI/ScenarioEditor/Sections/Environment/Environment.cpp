@@ -81,14 +81,12 @@ class VariableListBox : public wxEvtHandler
 {
 public:
 	VariableListBox(wxComboBox* combo, Shareable<std::wstring>& var, const std::vector<std::wstring>& choices, bool clearCombo = true)
-		: wxEvtHandler(),
-		m_Var(var),
-		m_Combo(combo)
+	: wxEvtHandler(), m_Var(var), m_Combo(combo)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableListBox::OnSettingsChange, this);
 		
 		wxArrayString choices_arraystr;
-		for (std::wstring sky : choices)
+		for (const std::wstring sky : choices)
 			choices_arraystr.Add(sky.c_str());
 		
 		if (clearCombo)
@@ -123,9 +121,7 @@ class VariableColorBox : public wxEvtHandler
 {
 public:
 	VariableColorBox(wxColourPickerCtrl* colorCtrl, Shareable<AtlasMessage::Color>& color)
-		: wxEvtHandler(),
-		m_Color(color),
-		m_ColorCtr(colorCtrl)
+	: wxEvtHandler(), m_Color(color), m_ColorCtr(colorCtrl)
 	{
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableColorBox::OnSettingsChange, this);
 		wxColor currentValue = wxColor(m_Color->r, m_Color->g, m_Color->b);

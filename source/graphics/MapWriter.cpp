@@ -17,16 +17,21 @@
 
 #include "precompiled.h"
 
-#include <boost/algorithm/string/join.hpp>
+#include "MapWriter.h"
+
 #include "Camera.h"
 #include "CinemaManager.h"
 #include "GameView.h"
 #include "LightEnv.h"
 #include "MapReader.h"
-#include "MapWriter.h"
 #include "maths/MathUtil.h"
 #include "maths/NUSpline.h"
 #include "Patch.h"
+#include "Terrain.h"
+#include "TerrainTextureEntry.h"
+#include "TerrainTextureManager.h"
+#include "Unit.h"
+
 #include "ps/CLogger.h"
 #include "ps/Loader.h"
 #include "ps/Filesystem.h"
@@ -41,10 +46,8 @@
 #include "simulation2/components/ICmpTemplateManager.h"
 #include "simulation2/components/ICmpVisual.h"
 #include "simulation2/components/ICmpWaterManager.h"
-#include "Terrain.h"
-#include "TerrainTextureEntry.h"
-#include "TerrainTextureManager.h"
-#include "Unit.h"
+
+#include <boost/algorithm/string/join.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // CMapWriter constructor: nothing to do at the minute

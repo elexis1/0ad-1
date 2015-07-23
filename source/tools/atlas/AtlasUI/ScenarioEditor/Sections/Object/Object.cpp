@@ -24,6 +24,7 @@
 #include "ScenarioEditor/ScenarioEditor.h"
 #include "ScenarioEditor/Tools/Common/ObjectSettings.h"
 #include "ScenarioEditor/Tools/Common/MiscState.h"
+
 #include <wx/busyinfo.h>
 #include <wx/tglbtn.h>
 #include <wx/xrc/xmlres.h>
