@@ -730,14 +730,25 @@ T* ScenarioEditor::CreateOrGetPanelTool(wxString panelName, wxString xrcName, bo
 		return NULL;
 	}
 
+	wxBusyInfo busy(_("Loading ") + panelName);
+	wxBusyCursor busyc;
+
+	panel->Freeze();
 	panel->Init(this);
 	panel->SetMinSize(panel->GetSize());
-	panel->Layout();
+	panel->Thaw();
 
-	wxAuiPaneInfo& newPaneInfo = wxAuiPaneInfo().CloseButton(closeButton).Name(panelName).Float().MinSize(panel->GetSize()).FloatingSize(panel->GetSize()).Show(show);
+	wxAuiPaneInfo newPaneInfo = wxAuiPaneInfo();
+	newPaneInfo.CloseButton(closeButton);
+	newPaneInfo.Name(panelName);
+	newPaneInfo.Float();
+	newPaneInfo.MinSize(panel->GetSize());
+	newPaneInfo.FloatingSize(panel->GetSize());
+	newPaneInfo.Show(show);
 
 	m_Mgr.AddPane(panel, newPaneInfo);
 	m_Mgr.Update();
+
 	return panel;
 }
 

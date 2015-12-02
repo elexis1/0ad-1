@@ -370,7 +370,7 @@
                     <event name="OnUpdateUI"></event>
                 </object>
             </object>
-            <object class="wxMenu" expanded="0">
+            <object class="wxMenu" expanded="1">
                 <property name="label">&amp;Misc hacks</property>
                 <property name="name">m_Misc</property>
                 <property name="permission">protected</property>
@@ -464,7 +464,7 @@
                     <event name="OnMenuSelection"></event>
                     <event name="OnUpdateUI"></event>
                 </object>
-                <object class="submenu" expanded="0">
+                <object class="submenu" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Si&amp;mulation state</property>
                     <property name="name">m_Simulation</property>
@@ -478,21 +478,6 @@
                         <property name="kind">wxITEM_NORMAL</property>
                         <property name="label">&amp;Dump to disk</property>
                         <property name="name">17</property>
-                        <property name="permission">none</property>
-                        <property name="shortcut"></property>
-                        <property name="unchecked_bitmap"></property>
-                        <event name="OnMenuSelection"></event>
-                        <event name="OnUpdateUI"></event>
-                    </object>
-                    <object class="wxMenuItem" expanded="0">
-                        <property name="bitmap"></property>
-                        <property name="checked">0</property>
-                        <property name="enabled">1</property>
-                        <property name="help"></property>
-                        <property name="id">18</property>
-                        <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">MyMenuItem</property>
-                        <property name="name">18</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>

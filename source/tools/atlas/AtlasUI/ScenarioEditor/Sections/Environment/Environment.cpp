@@ -210,6 +210,8 @@ void SunSettings::Init(ScenarioEditor* WXUNUSED(scenarioEditor))
 	AtlasMessage::qGetSkySets qry_skysets;
 	qry_skysets.Post();
 	handlers.push_back(new VariableListBox(wxDynamicCast(FindWindow(ID_SkySet), wxComboBox), g_EnvironmentSettings.skyset, *qry_skysets.skysets));
+
+	g_EnvironmentSettings.NotifyObservers();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -231,6 +233,8 @@ void WaterSettings::Init(ScenarioEditor* WXUNUSED(scenaroEditor))
 
 	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_WaterColor), wxColourPickerCtrl), g_EnvironmentSettings.watercolor));
 	handlers.push_back(new VariableColorBox(wxDynamicCast(FindWindow(ID_WaterTint), wxColourPickerCtrl), g_EnvironmentSettings.watertint));
+
+	g_EnvironmentSettings.NotifyObservers();
 }
 
 void WaterSettings::RecomputeWaterData(wxCommandEvent& WXUNUSED(evt))

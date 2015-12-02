@@ -223,6 +223,11 @@ public:
 		: wxChoicebook(parent, wxID_ANY)
 	{
 	}
+	~PlayerNotebook()
+	{
+		while (!m_Pages.empty())
+			m_Pages.pop_back();
+	}
 
 	PlayerNotebookPage* AddPlayer(wxString name, size_t player)
 	{

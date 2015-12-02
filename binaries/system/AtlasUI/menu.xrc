@@ -130,10 +130,6 @@
 					<label>_Dump to disk</label>
 					<help></help>
 				</object>
-				<object class="wxMenuItem" name="18">
-					<label>MyMenuItem</label>
-					<help></help>
-				</object>
 			</object>
 			<object class="wxMenu" name="m_RenderPath">
 				<label>Render _path</label>

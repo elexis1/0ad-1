@@ -7,6 +7,8 @@ newoption { trigger = "icc", description = "Use Intel C++ Compiler (Linux only; 
 newoption { trigger = "jenkins-tests", description = "Configure CxxTest to use the XmlPrinter runner which produces Jenkins-compatible output" }
 newoption { trigger = "minimal-flags", description = "Only set compiler/linker flags that are really needed. Has no effect on Windows builds" }
 newoption { trigger = "outpath", description = "Location for generated project files" }
+newoption { trigger = "objpath", description = "Location for generated object files(vs)" }
+newoption { trigger = "sdl1", description = "Build using deprecated SDL 1.2" }
 newoption { trigger = "with-system-mozjs31", description = "Search standard paths for libmozjs31, instead of using bundled copy" }
 newoption { trigger = "with-system-nvtt", description = "Search standard paths for nvidia-texture-tools library, instead of using bundled copy" }
 newoption { trigger = "without-audio", description = "Disable use of OpenAL/Ogg/Vorbis APIs" }
@@ -100,6 +102,9 @@ libdirs(rootdir.."/binaries/system")
 if not _OPTIONS["outpath"] then
 	error("You must specify the 'outpath' parameter")
 end
+if not _OPTIONS["objpath"] then
+	_OPTIONS["objpath"] = _OPTIONS["outpath"]
+end
 location(_OPTIONS["outpath"])
 configurations { "Release", "Debug" }
 
@@ -140,7 +145,7 @@ function project_set_target(project_name)
 
 	-- Note: On Windows, ".exe" is added on the end, on unices the name is used directly
 
-	local obj_dir_prefix = _OPTIONS["outpath"].."/obj/"..project_name.."_"
+	local obj_dir_prefix = _OPTIONS["objpath"].."/obj/"..project_name.."_"
 
 	configuration "Debug"
 		objdir(obj_dir_prefix.."Debug")
