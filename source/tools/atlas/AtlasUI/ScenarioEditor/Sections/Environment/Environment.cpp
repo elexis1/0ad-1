@@ -86,7 +86,7 @@ public:
 		m_Conn = g_EnvironmentSettings.RegisterObserver(0, &VariableListBox::OnSettingsChange, this);
 		
 		wxArrayString choices_arraystr;
-		for (const std::wstring sky : choices)
+		for (const std::wstring& sky : choices)
 			choices_arraystr.Add(sky.c_str());
 		
 		if (clearCombo)

@@ -62,6 +62,9 @@ BEGIN_EVENT_TABLE(ObjectSidebar, wxPanel)
 	EVT_CHOICE(ID_ObjectType, ObjectSidebar::OnSelectType)
 	EVT_TEXT(ID_ObjectFilter, ObjectSidebar::OnSelectFilter)
 	EVT_DATAVIEW_SELECTION_CHANGED(ID_SelectObject, ObjectSidebar::OnSelectObject)
+	EVT_DATAVIEW_ITEM_START_EDITING(ID_SelectObject, ObjectSidebar::OnItemStartEditing)
+	EVT_DATAVIEW_ITEM_EDITING_STARTED(ID_SelectObject, ObjectSidebar::OnItemStartEditing)
+	EVT_DATAVIEW_ITEM_ACTIVATED(ID_SelectObject, ObjectSidebar::OnItemStartEditing)
 END_EVENT_TABLE();
 
 ObjectSidebar::ObjectSidebar()
@@ -136,6 +139,11 @@ void ObjectSidebar::OnSelectObject(wxDataViewEvent& evt)
 void ObjectSidebar::OnSelectFilter(wxCommandEvent& WXUNUSED(evt))
 {
 	FilterObjects();
+}
+
+void ObjectSidebar::OnItemStartEditing(wxDataViewEvent& evt)
+{
+	evt.Veto();
 }
 
 //////////////////////////////////////////////////////////////////////////

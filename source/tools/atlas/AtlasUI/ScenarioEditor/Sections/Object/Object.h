@@ -39,6 +39,7 @@ private:
 	void OnSelectType(wxCommandEvent& evt);
 	void OnSelectFilter(wxCommandEvent& evt);
 	void OnSelectObject(wxDataViewEvent& evt);
+	void OnItemStartEditing(wxDataViewEvent& evt);
 
 	DECLARE_EVENT_TABLE();
 };

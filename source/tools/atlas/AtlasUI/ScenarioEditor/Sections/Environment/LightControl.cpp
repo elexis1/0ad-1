@@ -156,6 +156,7 @@ LightControl::LightControl(wxWindow* parent, const wxSize& size, Observable<Atla
 	SetSizer(sizer);
 
 	m_Conn = environment.RegisterObserver(0, &LightControl::OnSettingsChange, this);
+	OnSettingsChange(environment);
 }
 
 void LightControl::OnSettingsChange(const AtlasMessage::sEnvironmentSettings& settings)
