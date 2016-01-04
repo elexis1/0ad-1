@@ -225,8 +225,7 @@ public:
 	}
 	~PlayerNotebook()
 	{
-		while (!m_Pages.empty())
-			m_Pages.pop_back();
+		m_Pages.clear();
 	}
 
 	PlayerNotebookPage* AddPlayer(wxString name, size_t player)

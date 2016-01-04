@@ -8,7 +8,6 @@ newoption { trigger = "jenkins-tests", description = "Configure CxxTest to use t
 newoption { trigger = "minimal-flags", description = "Only set compiler/linker flags that are really needed. Has no effect on Windows builds" }
 newoption { trigger = "outpath", description = "Location for generated project files" }
 newoption { trigger = "objpath", description = "Location for generated object files(vs)" }
-newoption { trigger = "sdl1", description = "Build using deprecated SDL 1.2" }
 newoption { trigger = "with-system-mozjs31", description = "Search standard paths for libmozjs31, instead of using bundled copy" }
 newoption { trigger = "with-system-nvtt", description = "Search standard paths for nvidia-texture-tools library, instead of using bundled copy" }
 newoption { trigger = "without-audio", description = "Disable use of OpenAL/Ogg/Vorbis APIs" }
