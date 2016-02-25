@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2016 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -76,6 +76,8 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 	// Look for special attributes
 	int at_disable = xmb.GetAttributeID("disable");
 	int at_replace = xmb.GetAttributeID("replace");
+	int at_filtered = xmb.GetAttributeID("filtered");
+	int at_merge = xmb.GetAttributeID("merge");
 	int at_op = xmb.GetAttributeID("op");
 	int at_datatype = xmb.GetAttributeID("datatype");
 	enum op {
@@ -84,6 +86,7 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		MUL
 	} op = INVALID;
 	bool replacing = false;
+	bool filtering = false;
 	{
 		XERO_ITER_ATTR(element, attr)
 		{
@@ -96,6 +99,15 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 			{
 				m_Childs.erase(name);
 				replacing = true;
+			}
+			else if (attr.Name == at_filtered)
+			{
+				filtering = true;
+			}
+			else if (attr.Name == at_merge)
+			{
+				if (m_Childs.find(name) == m_Childs.end())
+					return;
 			}
 			else if (attr.Name == at_op)
 			{
@@ -150,6 +162,9 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		}
 	}
 
+	// For the filtered case
+	ChildrenMap childs;
+
 	// Add this element as a child node
 	CParamNode& node = m_Childs[name];
 	if (op != INVALID) 
@@ -175,13 +190,21 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 	XERO_ITER_EL(element, child)
 	{
 		node.ApplyLayer(xmb, child, sourceIdentifier);
+		if (filtering)
+		{
+			std::string childname = xmb.GetElementString(child.GetNodeName()); // TODO: is GetElementString inefficient? (especially if we call it twice)
+			childs[childname] = std::move(node.m_Childs[childname]);
+		}
 	}
+
+	if (filtering)
+		node.m_Childs.swap(childs);
 
 	// Add the element's attributes, prefixing names with "@"
 	XERO_ITER_ATTR(element, attr)
 	{
 		// Skip special attributes
-		if (attr.Name == at_replace || attr.Name == at_op)
+		if (attr.Name == at_replace || attr.Name == at_op || attr.Name == at_merge || attr.Name == at_filtered)
 			continue;
 		// Add any others
 		std::string attrName = xmb.GetAttributeString(attr.Name);

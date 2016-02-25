@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2016 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ public:
 	CTemplateLoader()
 	{
 	}
-	
+
 	/**
 	 * Provides the file data for requested template.
 	 */
@@ -80,36 +80,6 @@ private:
 	 * Constructs a standard static-decorative-object template for the given actor
 	 */
 	void ConstructTemplateActor(const std::string& actorName, CParamNode& out);
-
-	/** 
-	 * Copy the non-interactive components of an entity template (position, actor, etc) into
-	 * a new entity template
-	 */
-	void CopyPreviewSubset(CParamNode& out, const CParamNode& in, bool corpse);
-
-	/** 
-	 * Copy the components of an entity template necessary for a fogged "mirage"
-	 * entity (position, actor) into a new entity template
-	 */
-	void CopyMirageSubset(CParamNode& out, const CParamNode& in);
-
-	/** 
-	 * Copy the components of an entity template necessary for a construction foundation
-	 * (position, actor, armour, health, etc) into a new entity template
-	 */
-	void CopyFoundationSubset(CParamNode& out, const CParamNode& in);
-
-	/** 
-	 * Copy the components of an entity template necessary for a non-foundation construction entity
-	 * into a new entity template
-	 */
-	void CopyConstructionSubset(CParamNode& out, const CParamNode& in);
-
-	/** 
-	 * Copy the components of an entity template necessary for a gatherable resource
-	 * into a new entity template
-	 */
-	void CopyResourceSubset(CParamNode& out, const CParamNode& in);
 
 	/**
 	 * Map from template name (XML filename or special |-separated string) to the most recently
