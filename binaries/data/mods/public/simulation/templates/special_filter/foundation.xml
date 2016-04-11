@@ -8,15 +8,14 @@
     <PopulationBonus>0</PopulationBonus>
   </Cost>
   <Decay merge=""/>
-  <!-- Initialise health to 1 -->
-  <Health>
-    <Initial>1</Initial>
-  </Health>
   <Fogging merge=""/>
   <Footprint merge=""/>
   <!-- Add the Foundation component, to deal with the construction process -->
   <Foundation replace=""/>
-  <Health merge=""/>
+  <!-- Initialise health to 1 -->
+  <Health>
+    <Initial>1</Initial>
+  </Health>
   <Identity merge=""/>
   <!-- Foundations shouldn't initially block unit movement -->
   <Obstruction merge="">

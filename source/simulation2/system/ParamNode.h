@@ -182,14 +182,6 @@ public:
 	static PSRETURN LoadXMLString(CParamNode& ret, const char* xml, const wchar_t* sourceIdentifier = NULL);
 
 	/**
-	 * Finds the childs named @a name from @a src and from @a this, and copies the source child's children
-	 * which are in the @a permitted set into this node's child.
-	 * Intended for use as a filtered clone of XML files.
-	 * @a this and @a src must have childs named @a name.
-	 */
-	void CopyFilteredChildrenOfChild(const CParamNode& src, const char* name, const std::set<std::string>& permitted);
-
-	/**
 	 * Returns the (unique) child node with the given name, or a node with IsOk() == false if there is none.
 	 */
 	const CParamNode& GetChild(const char* name) const;
