@@ -87,6 +87,7 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 	} op = INVALID;
 	bool replacing = false;
 	bool filtering = false;
+	bool merging = false;
 	{
 		XERO_ITER_ATTR(element, attr)
 		{
@@ -108,6 +109,7 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 			{
 				if (m_Childs.find(name) == m_Childs.end())
 					return;
+				merging = true;
 			}
 			else if (attr.Name == at_op)
 			{
@@ -172,6 +174,7 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		// TODO: Support parsing of data types other than fixed; log warnings in other cases
 		fixed oldval = node.ToFixed();
 		fixed mod = fixed::FromString(CStrW(value));
+
 		switch (op)
 		{
 		case ADD:
@@ -183,7 +186,8 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		}
 		hasSetValue = true;
 	}
-	if (!hasSetValue)
+
+	if (!hasSetValue && !merging)
 		node.m_Value = value;
 
 	// We also need to reset node's script val, even if it has no children
@@ -197,7 +201,8 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		if (filtering)
 		{
 			std::string childname = xmb.GetElementString(child.GetNodeName()); // TODO: is GetElementString inefficient? (especially if we call it twice)
-			childs[childname] = std::move(node.m_Childs[childname]);
+			if (node.m_Childs.find(childname) != node.m_Childs.end())
+				childs[childname] = std::move(node.m_Childs[childname]);
 		}
 	}
 
@@ -214,21 +219,6 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		std::string attrName = xmb.GetAttributeString(attr.Name);
 		node.m_Childs["@" + attrName].m_Value = attr.Value.FromUTF8();
 	}
-}
-
-void CParamNode::CopyFilteredChildrenOfChild(const CParamNode& src, const char* name, const std::set<std::string>& permitted)
-{
-	ResetScriptVal();
-
-	ChildrenMap::iterator dstChild = m_Childs.find(name);
-	ChildrenMap::const_iterator srcChild = src.m_Childs.find(name);
-	if (dstChild == m_Childs.end() || srcChild == src.m_Childs.end())
-		return; // error
-
-	ChildrenMap::const_iterator it = srcChild->second.m_Childs.begin();
-	for (; it != srcChild->second.m_Childs.end(); ++it)
-		if (permitted.count(it->first))
-			dstChild->second.m_Childs[it->first] = it->second;
 }
 
 const CParamNode& CParamNode::GetChild(const char* name) const
