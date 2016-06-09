@@ -30,9 +30,9 @@ ResourceSupply.prototype.Init = function()
 	this.amount = this.GetMaxAmount();
 
 	this.gatherers = [];	// list of IDs for each players
-	var cmpPlayerManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_PlayerManager);	// system component so that's safe.
-	var numPlayers = cmpPlayerManager.GetNumPlayers();
-	for (var i = 0; i <= numPlayers; ++i)	// use "<=" because we want Gaia too.
+	let cmpPlayerManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_PlayerManager);	// system component so that's safe.
+	let numPlayers = cmpPlayerManager.GetNumPlayers();
+	for (let i = 0; i <= numPlayers; ++i)	// use "<=" because we want Gaia too.
 		this.gatherers.push([]);
 
 	this.infinite = !isFinite(+this.template.Amount);

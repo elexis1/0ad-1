@@ -310,7 +310,6 @@ function diplomacyFormatStanceButtons(i, hidden)
 
 function diplomacyFormatTributeButtons(i, hidden)
 {
-	horizSpaceRepeatedObjects ("diplomacyPlayer["+(i-1)+"]_tribute[r]", "r", 0);
 	let resCodes = GetSimState().resources;
 	for (let r in resCodes)
 	{
@@ -318,6 +317,7 @@ function diplomacyFormatTributeButtons(i, hidden)
 		let button = Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]");
 			Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resource+".png";
 		button.hidden = hidden;
+		setPanelObjectPosition(button, r, 8, 0);
 		if (hidden)
 			continue;
 
@@ -411,13 +411,13 @@ function openTrade()
 	var button = {};
 	let resCodes = GetSimState().resources;
 	let selec = resCodes[0];
-	horizSpaceRepeatedObjects ("tradeResource[n]", "n", 0);
 	hideRemaining("tradeResource[", resCodes.length, "]");
-	
+
 	for (let i = 0; i < resCodes.length; ++i)
 	{
 		var buttonResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
-		var resource = resCodes[i];
+		setPanelObjectPosition(buttonResource, i, 8);
+		let resource = resCodes[i];
 		proba[resource] = (proba[resource] ? proba[resource] : 0);
 		var buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
 		var icon = Engine.GetGUIObjectByName("tradeResourceIcon["+i+"]");

@@ -242,10 +242,10 @@ function init(data)
 		g_Teams = false;
 
 	// Resource names and counters
-	var resHeads = [];
-	var tradeHeads = [];
-	var resPanel = g_ScorePanelsData["resources"];
-	var tradePanel = g_ScorePanelsData["market"];
+	let resHeads = [];
+	let tradeHeads = [];
+	let resPanel = g_ScorePanelsData.resources;
+	let tradePanel = g_ScorePanelsData.market;
 	for (let code of g_GameData.resources)
 	{
 		resHeads.push({
