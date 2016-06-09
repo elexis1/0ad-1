@@ -1,17 +1,14 @@
 function Loot() {}
 
+Loot.prototype.ResourcesSchema = Resources.BuildSchema("nonNegativeInteger", [ "xp" ]);
+
 Loot.prototype.Schema =
 	"<a:help>Specifies the loot credited when this entity is killed.</a:help>" +
 	"<a:example>" +
 		"<xp>35</xp>" +
 		"<metal>10</metal>" +
 	"</a:example>" +
-	"<oneOrMore>" +
-		"<element a:help='A resource or xp amount to be credited'>" +
-			"<anyName/>" +
-			"<data type='nonNegativeInteger'/>" +
-		"</element>" +
-	"</oneOrMore>";
+	Loot.prototype.ResourcesSchema;
 
 Loot.prototype.Serialize = null; // we have no dynamic state to save
 

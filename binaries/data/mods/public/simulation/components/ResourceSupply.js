@@ -1,5 +1,7 @@
 function ResourceSupply() {}
 
+ResourceSupply.prototype.ResourceChoiceSchema = Resources.BuildChoicesSchema(true, true);
+
 ResourceSupply.prototype.Schema =
 	"<a:help>Provides a supply of one particular type of resource.</a:help>" +
 	"<a:example>" +
@@ -12,8 +14,8 @@ ResourceSupply.prototype.Schema =
 	"<element name='Amount' a:help='Amount of resources available from this entity'>" +
 		"<choice><data type='nonNegativeInteger'/><value>Infinity</value></choice>" +
 	"</element>" +
-	"<element name='Type' a:help='Type and Subtype of resource available from this entity, in the form of {type}.{subtype}'>" +
-		"<text/>" +
+	"<element name='Type' a:help='Type and Subtype of resource available from this entity'>" +
+		ResourceSupply.prototype.ResourceChoiceSchema +
 	"</element>" +
 	"<element name='MaxGatherers' a:help='Amount of gatherers who can gather resources from this entity at the same time'>" +
 		"<data type='nonNegativeInteger'/>" +
@@ -38,16 +40,14 @@ ResourceSupply.prototype.Init = function()
 	this.infinite = !isFinite(+this.template.Amount);
 
 	[this.type, this.subtype] = this.template.Type.split('.');
-	var resData = Resources.GetResource(this.type);
+	let resData = Resources.GetResource(this.type);
 	if (this.type === "treasure")
 		resData = { "subtypes": Resources.GetCodes() };
 
+	// Remove entity from gameworld if the resource supplied by this entity is disabled or not valid.
 	if (!resData || resData.subtypes.indexOf(this.subtype) === -1)
-	{
-		// Display Error and Remove entity if the resource supplied is not valid.
-		error("Invalid resource type or subtype ("+this.type+"/"+this.subtype+")");
 		Engine.DestroyEntity(this.entity);
-	}
+
 	this.cachedType = { "generic" : this.type, "specific" : this.subtype };
 };
 

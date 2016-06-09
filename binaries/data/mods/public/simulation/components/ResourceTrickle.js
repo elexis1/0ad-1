@@ -1,14 +1,11 @@
 function ResourceTrickle() {}
 
+ResourceTrickle.prototype.ResourcesSchema = Resources.BuildSchema("nonNegativeDecimal");
+
 ResourceTrickle.prototype.Schema = 
 	"<a:help>Controls the resource trickle ability of the unit.</a:help>" +
 	"<element name='Rates' a:help='Trickle Rates'>" +
-		"<oneOrMore>" +
-			"<element a:help='Quantity of a Resource given to the player every interval'>" +
-			    "<anyName/>" +
-				"<ref name='nonNegativeDecimal'/>" +
-			"</element>" +
-		"</oneOrMore>" +
+		ResourceTrickle.prototype.ResourcesSchema +
 	"</element>" +
 	"<element name='Interval' a:help='Number of miliseconds must pass for the player to gain the next trickle.'>" +
 		"<ref name='nonNegativeDecimal'/>" +

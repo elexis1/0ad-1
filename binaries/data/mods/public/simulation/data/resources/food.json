@@ -8,5 +8,6 @@
 		"milk"
 	],
 	"truePrice": 100,
-	"aiAnalysisInfluenceGroup": 0
+	"aiAnalysisInfluenceGroup": 0,
+	"enabled": true
 }

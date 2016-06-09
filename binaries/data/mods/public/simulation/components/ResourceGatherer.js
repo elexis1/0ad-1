@@ -1,5 +1,8 @@
 function ResourceGatherer() {}
 
+ResourceGatherer.prototype.ResourcesSchema = Resources.BuildSchema("positiveDecimal", [ "treasure" ], true);
+ResourceGatherer.prototype.CapacitiesSchema = Resources.BuildSchema("positiveDecimal");
+
 ResourceGatherer.prototype.Schema =
 	"<a:help>Lets the unit gather resources from entities that have the ResourceSupply component.</a:help>" +
 	"<a:example>" +
@@ -25,24 +28,10 @@ ResourceGatherer.prototype.Schema =
 		"<ref name='positiveDecimal'/>" +
 	"</element>" +
 	"<element name='Rates' a:help='Per-resource-type gather rate multipliers. If a resource type is not specified then it cannot be gathered by this unit'>" +
-		"<interleave>" +
-			"<oneOrMore>" +
-				"<element a:help='A particular gather rate, with the element name in the form {type} or {type}.{subtype}'>" +
-					"<anyName/>" +
-					"<ref name='positiveDecimal'/>" +
-				"</element>" +
-			"</oneOrMore>" +
-		"</interleave>" +
+		ResourceGatherer.prototype.ResourcesSchema +
 	"</element>" +
 	"<element name='Capacities' a:help='Per-resource-type maximum carrying capacity'>" +
-		"<interleave>" +
-			"<oneOrMore>" +
-				"<element a:help='A particular resource capacity'>" +
-					"<anyName/>" +
-					"<ref name='positiveDecimal'/>" +
-				"</element>" +
-			"</oneOrMore>" +
-		"</interleave>" +
+		ResourceGatherer.prototype.CapacitiesSchema +
 	"</element>";
 
 ResourceGatherer.prototype.Init = function()
