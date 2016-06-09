@@ -39,18 +39,18 @@ Player.prototype.Init = function()
 	this.disabledTechnologies = {};
 	this.startingTechnologies = [];
 	
-	var resCodes = Resources.GetCodes();
-	var tradeProportions = [ 0, 0 ];
+	let resCodes = Resources.GetCodes();
+	let tradeProportions = [ 0, 0 ];
 	tradeProportions[0] = Math.floor(20 / resCodes.length);
 	tradeProportions[1] = 20 - resCodes.length * tradeProportions[0];
-	var resPos = 0;
+	let resPos = 0;
 	for (let res of resCodes)
 	{
 		this.resourceCount[res] = 300;
 		this.resourceNames[res] = Resources.GetResource(res).name;
 		let proportion = tradeProportions[0] + ((resPos < tradeProportions[1]) ? 1 : 0);
 		this.tradingGoods.push({ "goods":  res, "proba": (proportion * 5) });
-		resPos++;
+		++resPos;
 	}
 };
 
@@ -344,7 +344,7 @@ Player.prototype.SetTradingGoods = function(tradingGoods)
 	if (sumProba != 100)	// consistency check
 	{
 		error("Player.js SetTradingGoods: " + uneval(tradingGoods));
-		var first = true;
+		let first = true;
 		for (let res of Resources.GetCodes())
 			if (first)
 			{

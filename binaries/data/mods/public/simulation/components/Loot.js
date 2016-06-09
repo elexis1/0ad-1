@@ -22,7 +22,7 @@ Loot.prototype.GetXp = function()
 
 Loot.prototype.GetResources = function()
 {
-	var ret = {};
+	let ret = {};
 	for (let res of Resources.GetCodes())
 		ret[res] = +(this.template[res] || 0);
 	

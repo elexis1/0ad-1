@@ -260,8 +260,8 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 	// TODO: there should probably be a limit on the number of queued batches
 	// TODO: there should be a way for the GUI to determine whether it's going
 	// to be possible to add a batch (based on resource costs and length limits)
-	var cmpPlayer = QueryOwnerInterface(this.entity);
-	var resCodes = Resources.GetCodes();
+	let cmpPlayer = QueryOwnerInterface(this.entity);
+	let resCodes = Resources.GetCodes();
 
 	if (this.queue.length < MAX_QUEUE_SIZE)
 	{
@@ -349,7 +349,7 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 			let techCostMultiplier = this.GetTechCostMultiplier();
 			let time =  techCostMultiplier.time * template.researchTime * cmpPlayer.GetCheatTimeMultiplier();
 
-			var cost = {};
+			let cost = {};
 			for (let r in template.cost)
 			{
 				if (resCodes.indexOf(r) < 0)
