@@ -4,5 +4,6 @@
 		"ore"
 	],
 	"truePrice": 100,
-	"aiAnalysisInfluenceGroup": 2
+	"aiAnalysisInfluenceGroup": 2,
+	"enabled": true
 }
