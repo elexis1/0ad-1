@@ -121,7 +121,7 @@ g_SelectionPanels.Barter = {
 		let prices = data.unitEntState.barterMarket.prices;
 		amount.Buy.caption = "+" + Math.round(prices.sell[g_BarterSell] / prices.buy[data.item] * amountToSell);
 
-		let resource = translateWithContext("withinSentence", data.item);
+		let resource = getLocalizedResourceName(data.item, "withinSentence");
 		button.Buy.tooltip = sprintf(translate("Buy %(resource)s"), { "resource": resource });
 		button.Sell.tooltip = sprintf(translate("Sell %(resource)s"), { "resource": resource });
 
