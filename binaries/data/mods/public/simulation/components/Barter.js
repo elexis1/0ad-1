@@ -39,8 +39,8 @@ Barter.prototype.GetPrices = function()
 	for (let resource of Resources.GetCodes())
 	{
 		let truePrice = Resources.GetResource(resource).truePrice;
-		prices["buy"][resource] = truePrice * (100 + CONSTANT_DIFFERENCE + this.priceDifferences[resource]) / 100;
-		prices["sell"][resource] = truePrice * (100 - CONSTANT_DIFFERENCE + this.priceDifferences[resource]) / 100;
+		prices.buy[resource] = truePrice * (100 + CONSTANT_DIFFERENCE + this.priceDifferences[resource]) / 100;
+		prices.sell[resource] = truePrice * (100 - CONSTANT_DIFFERENCE + this.priceDifferences[resource]) / 100;
 	}
 	return prices;
 };

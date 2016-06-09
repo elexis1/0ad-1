@@ -14,7 +14,7 @@ function getResourceTypeDisplayName(resourceType)
 {
 	let resourceCode = resourceType.generic;
 	if (resourceCode == "treasure")
-		return getLocalizedResourceName(resourceType["specific"], "firstWord");
+		return getLocalizedResourceName(resourceType.specific, "firstWord");
 	else
 		return getLocalizedResourceName(resourceCode, "firstWord");
 }

@@ -29,9 +29,9 @@ ResourceTrickle.prototype.GetTimer = function()
 
 ResourceTrickle.prototype.GetRates = function()
 {
-	var rates = {};
-	var resCodes = Resources.GetCodes();
-	for (var resource in this.template.Rates)
+	let rates = {};
+	let resCodes = Resources.GetCodes();
+	for (let resource in this.template.Rates)
 	{
 		if (resCodes.indexOf(resource) < 0)
 			continue;
@@ -44,7 +44,7 @@ ResourceTrickle.prototype.GetRates = function()
 // Do the actual work here
 ResourceTrickle.prototype.Trickle = function(data, lateness)
 {
-	var cmpPlayer = QueryOwnerInterface(this.entity, IID_Player);
+	let cmpPlayer = QueryOwnerInterface(this.entity, IID_Player);
 	if (cmpPlayer)
 		cmpPlayer.AddResources(this.GetRates());
 };
