@@ -1,8 +1,14 @@
 function ResourceDropsite() {}
 
+ResourceDropsite.prototype.ResourceChoiceSchema = Resources.BuildChoicesSchema();
+
 ResourceDropsite.prototype.Schema =
 	"<element name='Types'>" +
-		"<text/>" +
+		"<list>" +
+			"<zeroOrMore>" +
+				ResourceDropsite.prototype.ResourceChoiceSchema +
+			"</zeroOrMore>" +
+		"</list>" +
 	"</element>" +
 	"<element name='Sharable' a:help='Allows allies to use this entity.'>" +
 		"<data type='boolean'/>" +
@@ -15,7 +21,8 @@ ResourceDropsite.prototype.Init = function()
 };
 
 /**
- * Returns the list of resource types accepted by this dropsite.
+ * Returns the list of resource types accepted by this dropsite,
+ * as defined by it being referred to in the template and the resource being enabled.
  */
 ResourceDropsite.prototype.GetTypes = function()
 {
