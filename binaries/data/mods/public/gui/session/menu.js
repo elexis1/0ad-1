@@ -823,7 +823,7 @@ function formatTributeTooltip(playerID, resource, amount)
 {
 	return sprintf(translate("Tribute %(resourceAmount)s %(resourceType)s to %(playerName)s. Shift-click to tribute %(greaterAmount)s."), {
 		"resourceAmount": amount,
-		"resourceType": translateWithContext("withinSentence", resource),
+		"resourceType": getLocalizedResourceName(resource, "withinSentence"),
 		"playerName": colorizePlayernameByID(playerID),
 		"greaterAmount": amount < 500 ? 500 : amount + 500
 	});
