@@ -46,11 +46,12 @@ function horizFitRepeatedObjects(basename, splitvar="n", margin=0, limit=0)
  */
 function hideRemaining(prefix, idx, suffix)
 {
-	for (;; ++idx)
+	while (true)
 	{
-		let obj = Engine.GetGUIObjectByName(prefix+idx+suffix);
+		let obj = Engine.GetGUIObjectByName(prefix + idx + suffix);
 		if (!obj)
 			return;
 		obj.hidden = true;
+		++idx;
 	}
 }

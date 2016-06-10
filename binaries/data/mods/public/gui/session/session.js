@@ -474,16 +474,17 @@ function updateTopPanel()
 	let viewPlayer = Engine.GetGUIObjectByName("viewPlayer");
 	viewPlayer.hidden = !g_IsObserver && !g_DevSettings.changePerspective;
 
-	horizSpaceRepeatedObjects ("resource[n]", "n", 0);
-	let resCodes = GetSimState().resources;
-	for (let r = 0; r < resCodes.length; ++r)
+	let resources = GetSimState().resources;
+	let r = 0;
+	for (let res of resources.codes)
 	{
-		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(resCodes[r], "firstWord");
-		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + resCodes[r] + ".png";
+		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(resources.names[res], "firstWord");
+		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + res + ".png";
 		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
+		++r;
 	}
-	hideRemaining("resource[", resCodes.length-1, "]");
-	horizFitRepeatedObjects ("resource[n]", "n", 0, resCodes.length-1);
+	hideRemaining("resource[", r, "]");
+	horizFitRepeatedObjects ("resource[n]", "n", 0, r);
 
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("diplomacyButton1").hidden = !isPlayer;
@@ -957,7 +958,7 @@ function updatePlayerDisplay()
 	if (!playerState)
 		return;
 
-	let resCodes = simState.resources;
+	let resCodes = simState.resources.codes;
 	for (let r = 0; r < resCodes.length; ++r)
 	{
 		let res = resCodes[r];

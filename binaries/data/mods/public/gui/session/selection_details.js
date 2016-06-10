@@ -13,10 +13,8 @@ function layoutSelectionMultiple()
 function getResourceTypeDisplayName(resourceType)
 {
 	let resourceCode = resourceType.generic;
-	if (resourceCode == "treasure")
-		return getLocalizedResourceName(resourceType.specific, "firstWord");
-	else
-		return getLocalizedResourceName(resourceCode, "firstWord");
+	let resourceName = GetSimState().resources.names[(resourceCode == "treasure" ? resourceType.specific : resourceCode)]
+	return getLocalizedResourceName(resourceName, "firstWord");
 }
 
 // Updates the health bar of garrisoned units
