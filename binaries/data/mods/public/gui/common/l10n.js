@@ -1,7 +1,7 @@
 
-function getLocalizedResourceName(resourceCode, context)
+function getLocalizedResourceName(resourceName, context)
 {
-	return translateWithContext(context, resourceCode);
+	return translateWithContext(context, resourceName);
 }
 
 /**

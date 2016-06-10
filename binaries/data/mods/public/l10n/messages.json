@@ -289,7 +289,7 @@
                     }
                 }
             },
-			{
+            {
                 "extractor": "json",
                 "filemasks": [
                     "gui/credits/texts/**.json"
@@ -558,6 +558,32 @@
                         "name",
                         "description"
                     ]
+                }
+            },
+            {
+                "extractor": "json",
+                "filemasks": [
+                    "simulation/data/resources/**.json"
+                ],
+                "options": {
+                    "keywords": [
+                        "name",
+                        "subtypes"
+                    ],
+                    "context": "firstWord"
+                }
+            },
+            {
+                "extractor": "json",
+                "filemasks": [
+                    "simulation/data/resources/**.json"
+                ],
+                "options": {
+                    "keywords": [
+                        "name",
+                        "subtypes"
+                    ],
+                    "context": "withinSentence"
                 }
             }
         ]
