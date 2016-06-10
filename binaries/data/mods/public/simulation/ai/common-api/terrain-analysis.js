@@ -405,7 +405,7 @@ m.SharedScript.prototype.createResourceMaps = function()
 		let cellSize = this.resourceMaps[resource].cellSize;
 		let x = Math.floor(ent.position()[0] / cellSize);
 		let z = Math.floor(ent.position()[1] / cellSize);
-		let grp = this.resourceAnalysisGroups[resource];
+		let grp = this.resourceInfo.aiInfluenceGroups[resource];
 		let strength = Math.floor(ent.resourceSupplyMax()/this.normalizationFactor[grp]);
 		this.resourceMaps[resource].addInfluence(x, z, this.influenceRadius[grp]/cellSize, strength/2, "constant");
 		this.resourceMaps[resource].addInfluence(x, z, this.influenceRadius[grp]/cellSize, strength/2);
@@ -447,7 +447,7 @@ m.SharedScript.prototype.updateResourceMaps = function(events)
 		let cellSize = this.resourceMaps[resource].cellSize;
 		let x = Math.floor(ent.position()[0] / cellSize);
 		let z = Math.floor(ent.position()[1] / cellSize);
-		let grp = this.resourceAnalysisGroups[resource];
+		let grp = this.resourceInfo.aiInfluenceGroups[resource];
 		let strength = -Math.floor(ent.resourceSupplyMax()/this.normalizationFactor[grp]);
 		this.resourceMaps[resource].addInfluence(x, z, this.influenceRadius[grp]/cellSize, strength/2, "constant");
 		this.resourceMaps[resource].addInfluence(x, z, this.influenceRadius[grp]/cellSize, strength/2);
@@ -466,7 +466,7 @@ m.SharedScript.prototype.updateResourceMaps = function(events)
 		let cellSize = this.resourceMaps[resource].cellSize;
 		let x = Math.floor(ent.position()[0] / cellSize);
 		let z = Math.floor(ent.position()[1] / cellSize);
-		let grp = this.resourceAnalysisGroups[resource];
+		let grp = this.resourceInfo.aiInfluenceGroups[resource];
 		let strength = Math.floor(ent.resourceSupplyMax()/this.normalizationFactor[grp]);
 		this.resourceMaps[resource].addInfluence(x, z, this.influenceRadius[grp]/cellSize, strength/2, "constant");
 		this.resourceMaps[resource].addInfluence(x, z, this.influenceRadius[grp]/cellSize, strength/2);

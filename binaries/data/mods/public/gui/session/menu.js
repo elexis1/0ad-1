@@ -235,7 +235,7 @@ function openDiplomacy()
 	g_IsDiplomacyOpen = true;
 
 	let isCeasefireActive = GetSimState().ceasefireActive;
-	let resCodes = GetSimState().resources;
+	let resCodes = GetSimState().resources.codes;
 
 	// Get offset for one line
 	let onesize = Engine.GetGUIObjectByName("diplomacyPlayer[0]").size;
@@ -310,20 +310,21 @@ function diplomacyFormatStanceButtons(i, hidden)
 
 function diplomacyFormatTributeButtons(i, hidden)
 {
-	let resCodes = GetSimState().resources;
-	for (let r in resCodes)
+	let resources = GetSimState().resources;
+	let r = 0;
+	for (let resCode of resources.codes)
 	{
-		let resource = resCodes[r];
 		let button = Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]");
-			Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resource+".png";
+			Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resCode+".png";
 		button.hidden = hidden;
 		setPanelObjectPosition(button, r, 8, 0);
 		if (hidden)
 			continue;
+		++r;
 
 		button.enabled = controlsPlayer(g_ViewedPlayer);
-		button.tooltip = formatTributeTooltip(i, resource, 100);
-		button.onpress = (function(i, resource, button) {
+		button.tooltip = formatTributeTooltip(i, resources.names[resCode], 100);
+		button.onpress = (function(i, resCode, button) {
 			// Shift+click to send 500, shift+click+click to send 1000, etc.
 			// See INPUT_MASSTRIBUTING in input.js
 			let multiplier = 1;
@@ -336,24 +337,24 @@ function diplomacyFormatTributeButtons(i, hidden)
 				}
 
 				let amounts = {};
-				for (let res of resCodes)
+				for (let res of resources.codes)
 					amounts[res] = 0;
-				amounts[resource] = 100 * multiplier,
+				amounts[resCode] = 100 * multiplier,
 
-				button.tooltip = formatTributeTooltip(i, resource, amounts[resource]);
+				button.tooltip = formatTributeTooltip(i, resources.names[resCode], amounts[resCode]);
 
 				// This is in a closure so that we have access to `player`, `amounts`, and `multiplier` without some
 				// evil global variable hackery.
 				g_FlushTributing = function() {
 					Engine.PostNetworkCommand({ "type": "tribute", "player": i, "amounts":  amounts });
 					multiplier = 1;
-					button.tooltip = formatTributeTooltip(i, resource, 100);
+					button.tooltip = formatTributeTooltip(i, resources.names[resCode], 100);
 				};
 
 				if (!isBatchTrainPressed)
 					g_FlushTributing();
 			};
-		})(i, resource, button);
+		})(i, resCode, button);
 	}
 }
 
@@ -407,26 +408,26 @@ function openTrade()
 		}
 	};
 
-	var proba = Engine.GuiInterfaceCall("GetTradingGoods", g_ViewedPlayer);
-	var button = {};
-	let resCodes = GetSimState().resources;
+	let proba = Engine.GuiInterfaceCall("GetTradingGoods", g_ViewedPlayer);
+	let button = {};
+	let resCodes = GetSimState().resources.codes;
 	let selec = resCodes[0];
 	hideRemaining("tradeResource[", resCodes.length, "]");
 
 	for (let i = 0; i < resCodes.length; ++i)
 	{
-		var buttonResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
+		let buttonResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
 		setPanelObjectPosition(buttonResource, i, 8);
-		let resource = resCodes[i];
-		proba[resource] = (proba[resource] ? proba[resource] : 0);
-		var buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
-		var icon = Engine.GetGUIObjectByName("tradeResourceIcon["+i+"]");
-		icon.sprite = "stretched:session/icons/resources/" + resource + ".png";
-		var label = Engine.GetGUIObjectByName("tradeResourceText["+i+"]");
-		var buttonUp = Engine.GetGUIObjectByName("tradeArrowUp["+i+"]");
-		var buttonDn = Engine.GetGUIObjectByName("tradeArrowDn["+i+"]");
-		var iconSel = Engine.GetGUIObjectByName("tradeResourceSelection["+i+"]");
-		button[resource] = { "up": buttonUp, "dn": buttonDn, "label": label, "sel": iconSel };
+		let resCode = resCodes[i];
+		proba[resCode] = (proba[resCode] ? proba[resCode] : 0);
+		buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
+		let icon = Engine.GetGUIObjectByName("tradeResourceIcon["+i+"]");
+		icon.sprite = "stretched:session/icons/resources/" + resCode + ".png";
+		let label = Engine.GetGUIObjectByName("tradeResourceText["+i+"]");
+		let buttonUp = Engine.GetGUIObjectByName("tradeArrowUp["+i+"]");
+		let buttonDn = Engine.GetGUIObjectByName("tradeArrowDn["+i+"]");
+		let iconSel = Engine.GetGUIObjectByName("tradeResourceSelection["+i+"]");
+		button[resCode] = { "up": buttonUp, "dn": buttonDn, "label": label, "sel": iconSel };
 
 		buttonResource.enabled = controlsPlayer(g_ViewedPlayer);
 		buttonResource.onpress = (function(resource){
@@ -441,7 +442,7 @@ function openTrade()
 				selec = resource;
 				updateButtons();
 			};
-		})(resource);
+		})(resCode);
 
 		buttonUp.enabled = controlsPlayer(g_ViewedPlayer);
 		buttonUp.onpress = (function(resource){
@@ -451,7 +452,7 @@ function openTrade()
 				Engine.PostNetworkCommand({"type": "set-trading-goods", "tradingGoods": proba});
 				updateButtons();
 			};
-		})(resource);
+		})(resCode);
 
 		buttonDn.enabled = controlsPlayer(g_ViewedPlayer);
 		buttonDn.onpress = (function(resource){
@@ -461,7 +462,7 @@ function openTrade()
 				Engine.PostNetworkCommand({"type": "set-trading-goods", "tradingGoods": proba});
 				updateButtons();
 			};
-		})(resource);
+		})(resCode);
 	}
 	updateButtons();
 

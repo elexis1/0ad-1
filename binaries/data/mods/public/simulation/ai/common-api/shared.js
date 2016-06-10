@@ -180,7 +180,6 @@ m.SharedScript.prototype.init = function(state, deserialization)
 	this.accessibility.init(state, this.terrainAnalyzer);
 
 	this.resourceInfo = state.resources;
-	this.resourceAnalysisGroups = state.aiResourceAnalysis;
 	m.Resources.prototype.types = state.resources.codes;
 
 	// Setup resources

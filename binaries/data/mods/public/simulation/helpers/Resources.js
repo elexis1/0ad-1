@@ -6,48 +6,38 @@
 var Resources = {};
 
 /**
- * Returns an object containing all readable resource data
+ * Loads all readable resource data into internal stores
  */
 Resources.LoadData = function()
 {
 	this.resourceData = [];
+	this.resourceCodes = [];
+
 	let jsonFiles = Engine.FindJSONFiles("resources", false);
-	
 	for (let filename of jsonFiles)
 	{
 		let data = Engine.ReadJSONFile("resources/"+filename+".json");
 		if (!data)
 			continue;
 
+		data.subtypeNames = data.subtypes;
+		data.subtypes = Object.keys(data.subtypes);
+
 		this.resourceData.push(data);
+		if (data.enabled)
+			this.resourceCodes.push(data.code);
 	}
-	return this.resourceData;
 };
 
 /**
- * Returns resource data as an Array
- * 
- * @param allResources If false, will only return "enabled" resources
+ * Returns all resource data
  */
-Resources.GetData = function(allResources = false)
+Resources.GetData = function()
 {
 	if (!this.resourceData)
 		this.LoadData();
 
-	return this.resourceData.filter((resource) => { return allResources || resource.enabled });
-};
-
-/**
- * Returns resource data as an Object
- * 
- * @param allResources If false, will only return "enabled" resources
- */
-Resources.GetDataAsObj = function(allResources = false)
-{
-	let resourceObject = {};
-	for (let res of this.GetData(allResources))
-		resourceObject[res.code] = res;
-	return resourceObject;
+	return this.resourceData.filter((resource) => { return resource.enabled });
 };
 
 /**
@@ -65,14 +55,32 @@ Resources.GetResource = function(type)
 };
 
 /**
- * Returns an array of codes belonging to the resources
+ * Returns an array of codes belonging to valid resources
  * 
- * @param allResources If false, will only return "enabled" resources
  * @return Array of generic resource type codes
  */
-Resources.GetCodes = function(allResources = false)
+Resources.GetCodes = function()
 {
-	return this.GetData(allResources).map((resource) => { return resource.code });
+	if (!this.resourceData)
+		this.LoadData();
+
+	return this.resourceCodes;
+};
+
+/**
+ * Returns an object containing untranslated resource names mapped to
+ * resource codes. Includes subtypes.
+ */
+Resources.GetNames = function()
+{
+	let names = {};
+	for (let res of this.GetData())
+	{
+		names[res.code] = res.name;
+		for (let subres of res.subtypes)
+			names[subres] = res.subtypeNames[subres]
+	}
+	return names;
 };
 
 /**
@@ -90,6 +98,9 @@ Resources.BuildSchema = function(datatype, additional = [], subtypes = false)
 	if (!datatype)
 		return "";
 
+	if (!this.resourceData)
+		this.LoadData();
+
 	switch (datatype)
 	{
 	case "decimal":
@@ -102,8 +113,9 @@ Resources.BuildSchema = function(datatype, additional = [], subtypes = false)
 		datatype = "<data type='" + datatype + "'/>";
 	}
 
+	let resCodes = this.resourceData.map((resource) => { return resource.code });
 	let schema = "<interleave>";
-	for (let res of this.GetCodes(true).concat(additional))
+	for (let res of resCodes.concat(additional))
 		schema +=
 			"<optional>" +
 				"<element name='" + res + "'>" +
@@ -114,7 +126,7 @@ Resources.BuildSchema = function(datatype, additional = [], subtypes = false)
 	if (!subtypes)
 		return schema + "</interleave>";
 
-	for (let res of this.GetData(true))
+	for (let res of this.resourceData)
 		for (let subtype of res.subtypes)
 			schema +=
 				"<optional>" +
@@ -124,7 +136,7 @@ Resources.BuildSchema = function(datatype, additional = [], subtypes = false)
 				"</optional>";
 
 	if (additional.indexOf("treasure") !== -1)
-		for (let res of this.GetCodes(true))
+		for (let res of resCodes)
 			schema +=
 				"<optional>" +
 					"<element name='" + "treasure." + res + "'>" +
@@ -142,18 +154,22 @@ Resources.BuildSchema = function(datatype, additional = [], subtypes = false)
  * @param treasure If set to true, the pseudo resource 'treasure' (or its subtypes) will be included
  * @return String of RelaxNG Schema `<choice/>` values.
  */
-Resources.BuildChoicesSchema = function(subtypes=false, treasure = false)
+Resources.BuildChoicesSchema = function(subtypes = false, treasure = false)
 {
+	if (!this.resourceData)
+		this.LoadData();
+
 	let schema = "<choice>";
 
 	if (!subtypes)
 	{
+		let resCodes = this.resourceData.map((resource) => { return resource.code });
 		treasure = treasure ? [ "treasure" ] : [];
-		for (let res of Resources.GetCodes(true).concat(treasure))
+		for (let res of resCodes.concat(treasure))
 			schema += "<value>" + res + "</value>";
 	}
 	else
-		for (let res of Resources.GetData(true))
+		for (let res of this.resourceData)
 		{
 			for (let subtype of res.subtypes)
 				schema += "<value>" + res.code + "." + subtype + "</value>";

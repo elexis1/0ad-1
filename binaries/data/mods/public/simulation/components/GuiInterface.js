@@ -152,11 +152,14 @@ GuiInterface.prototype.GetSimulationState = function()
 	let cmpBarter = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter);
 	ret.barterPrices = cmpBarter.GetPrices();
 
-	// Add Resource Codes
-	ret.resources = Resources.GetCodes();
-	ret.aiResourceAnalysis = {};
-	for (let res of ret.resources)
-		ret.aiResourceAnalysis[res] = Resources.GetResource(res).aiAnalysisInfluenceGroup || null;
+	// Add Resource Codes, untranslated names and AI Analysis
+	ret.resources = {
+		"codes": Resources.GetCodes(),
+		"names": Resources.GetNames(),
+		"aiInfluenceGroups": {}
+	};
+	for (let res of ret.resources.codes)
+		ret.resources.aiInfluenceGroups[res] = Resources.GetResource(res).aiAnalysisInfluenceGroup || null;
 
 	// Add basic statistics to each player
 	for (let i = 0; i < numPlayers; ++i)

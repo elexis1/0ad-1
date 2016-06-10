@@ -1,9 +1,10 @@
 {
 	"code": "stone",
-	"subtypes": [
-		"rock",
-		"ruins"
-	],
+	"name": "Stone",
+	"subtypes": {
+		"rock": "Rock",
+		"ruins": "Ruins"
+	},
 	"truePrice": 100,
 	"aiAnalysisInfluenceGroup": 2,
 	"enabled": true

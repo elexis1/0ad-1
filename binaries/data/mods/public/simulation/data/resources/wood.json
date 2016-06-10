@@ -1,9 +1,10 @@
 {
 	"code": "wood",
-	"subtypes": [
-		"tree",
-		"ruins"
-	],
+	"name": "Wood",
+	"subtypes": {
+		"tree": "Tree",
+		"ruins": "Ruins"
+	},
 	"truePrice": 100,
 	"aiAnalysisInfluenceGroup": 1,
 	"enabled": true
