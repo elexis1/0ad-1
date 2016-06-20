@@ -290,17 +290,13 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 			var buildTime = ApplyValueModificationsToTemplate("Cost/BuildTime", +template.Cost.BuildTime, cmpPlayer.GetPlayerID(), template);
 			var time = timeMult * buildTime;
 
-			for (var r in template.Cost.Resources)
+			for (let res in template.Cost.Resources)
 			{
-				let cost = +template.Cost.Resources[r];
-				if (resCodes.indexOf(r) < 0)
-				{
-					if (cost > 0)
-						warn("'"+r+"' has been specified as a required resource, but is not a valid resource.");
+				let cost = +template.Cost.Resources[res];
+				if (resCodes.indexOf(res) < 0)
 					continue;
-				}
-				costs[r] = ApplyValueModificationsToTemplate("Cost/Resources/"+r, cost, cmpPlayer.GetPlayerID(), template);
-				totalCosts[r] = Math.floor(count * costs[r]);
+				costs[res] = ApplyValueModificationsToTemplate("Cost/Resources/"+res, cost, cmpPlayer.GetPlayerID(), template);
+				totalCosts[res] = Math.floor(count * costs[res]);
 			}
 
 			var population = ApplyValueModificationsToTemplate("Cost/Population",  +template.Cost.Population, cmpPlayer.GetPlayerID(), template);
@@ -345,15 +341,11 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 			let time =  techCostMultiplier.time * template.researchTime * cmpPlayer.GetCheatTimeMultiplier();
 
 			let cost = {};
-			for (let r in template.cost)
+			for (let res in template.cost)
 			{
-				if (resCodes.indexOf(r) < 0)
-				{
-					if (Math.floor(template.cost[r]) > 0)
-						warn("'"+r+"' has been specified as a required resource, but is not a valid resource.");
+				if (resCodes.indexOf(res) < 0)
 					continue;
-				}
-				cost[r] = Math.floor((techCostMultiplier[r] ? techCostMultiplier[r] : 1) * template.cost[r]);;
+				cost[res] = Math.floor((techCostMultiplier[res] ? techCostMultiplier[res] : 1) * template.cost[res]);
 			}
 
 			// TrySubtractResources should report error to player (they ran out of resources)
