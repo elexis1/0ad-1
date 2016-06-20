@@ -197,11 +197,8 @@ Player.prototype.UnBlockTraining = function()
 Player.prototype.SetResourceCounts = function(resources)
 {
 	for (let res in resources)
-	{
-		if (this.resourceCount[res] === undefined)
-			warn("The "+res+" resourcehas been passed to cmpPlayer, but does not exist/has been disabled by mod");
-		this.resourceCount[res] = resources[res];
-	}
+		if (this.resourceCount[res])
+			this.resourceCount[res] = resources[res];
 };
 
 Player.prototype.GetResourceCounts = function()
