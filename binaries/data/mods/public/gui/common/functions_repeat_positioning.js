@@ -1,6 +1,5 @@
 /*
 	DESCRIPTION : Functions related to positioning UI elements
-	NOTES       :
 */
 
 /**

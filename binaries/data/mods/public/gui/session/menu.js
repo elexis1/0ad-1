@@ -315,12 +315,12 @@ function diplomacyFormatTributeButtons(i, hidden)
 	for (let resCode of resources.codes)
 	{
 		let button = Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]");
-			Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resCode+".png";
+		Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resCode+".png";
 		button.hidden = hidden;
 		setPanelObjectPosition(button, r, 8, 0);
+		++r;
 		if (hidden)
 			continue;
-		++r;
 
 		button.enabled = controlsPlayer(g_ViewedPlayer);
 		button.tooltip = formatTributeTooltip(i, resources.names[resCode], 100);
