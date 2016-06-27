@@ -91,7 +91,7 @@ m.chatRequestTribute = function(gameState, resource)
 		"message": message,
 		"translateMessage": true,
 		"translateParameters": {"resource": "withinSentence"},
-		"parameters": {"resource": gameState.sharedScript.resourceNames[resource]}
+		"parameters": {"resource": gameState.sharedScript.resourceInfo.names[resource]}
 	});
 };
 
