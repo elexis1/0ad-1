@@ -383,9 +383,9 @@ m.Accessibility.prototype.floodFill = function(startIndex, value, onWater)
 /** creates a map of resource density */
 m.SharedScript.prototype.createResourceMaps = function()
 {
-	for (let resource of this.resourceList)
+	for (let resource of this.resourceInfo.codes)
 	{
-		if (this.resourceTypes[resource] !== 1 && this.resourceTypes[resource] !== 2)
+		if (this.resourceInfo.aiInfluenceGroups[resource] === 0)
 			continue;
 		// if there is no resourceMap create one with an influence for everything with that resource
 		if (this.resourceMaps[resource])
@@ -420,9 +420,9 @@ m.SharedScript.prototype.createResourceMaps = function()
  */
 m.SharedScript.prototype.updateResourceMaps = function(events)
 {
-	for (let resource of this.resourceList)
+	for (let resource of this.resourceInfo.codes)
 	{
-		if (this.resourceTypes[resource] !== 1 && this.resourceTypes[resource] !== 2)
+		if (this.resourceInfo.aiInfluenceGroups[resource] === 0)
 			continue;
 		// if there is no resourceMap create one with an influence for everything with that resource
 		if (this.resourceMaps[resource])

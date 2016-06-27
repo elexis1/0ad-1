@@ -179,10 +179,9 @@ m.SharedScript.prototype.init = function(state, deserialization)
 	this.accessibility = new m.Accessibility();
 	this.accessibility.init(state, this.terrainAnalyzer);
 
+	// Setup resources
 	this.resourceInfo = state.resources;
 	m.Resources.prototype.types = state.resources.codes;
-
-	// Setup resources
 	// Resource types: 0 = not used for resource maps
 	//                 1 = abundant resource with small amount each
 	//                 2 = spare resource, but huge amount each
@@ -194,18 +193,6 @@ m.SharedScript.prototype.init = function(state, deserialization)
 	this.resourceMaps = {};   // Contains maps showing the density of resources
 	this.ccResourceMaps = {}; // Contains maps showing the density of resources, optimized for CC placement.
 	this.createResourceMaps();
-
-	/** Keep in sync with gui/common/l10n.js */
-	this.resourceNames = {
-		// Translation: Word as used in the middle of a sentence (which may require using lowercase for your language).
-		"food": markForTranslationWithContext("withinSentence", "Food"),
-		// Translation: Word as used in the middle of a sentence (which may require using lowercase for your language).
-		"wood": markForTranslationWithContext("withinSentence", "Wood"),
-		// Translation: Word as used in the middle of a sentence (which may require using lowercase for your language).
-		"metal": markForTranslationWithContext("withinSentence", "Metal"),
-		// Translation: Word as used in the middle of a sentence (which may require using lowercase for your language).
-		"stone": markForTranslationWithContext("withinSentence", "Stone"),
-	};
 
 	this.gameState = {};
 	for (let i in this._players)
