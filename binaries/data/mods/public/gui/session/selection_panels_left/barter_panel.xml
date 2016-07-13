@@ -6,14 +6,14 @@
 
 	<repeat count="8">
 
-		<!-- sell -->
+		<!-- Sell -->
 		<object name="unitBarterSellButton[n]" style="iconButton" type="button" size="0 0 36 36" tooltip_style="sessionToolTipBottomBold" hidden="true">
 			<object name="unitBarterSellIcon[n]" type="image" ghost="true" size="3 3 33 33"/>
 			<object name="unitBarterSellAmount[n]" ghost="true" style="resourceText" type="text" size="0 0 100% 50%"/>
 			<object name="unitBarterSellSelection[n]" hidden="true" type="image" ghost="true" size="3 3 33 33" sprite="stretched:session/icons/corners.png"/>
 		</object>
 
-		<!-- buy -->
+		<!-- Buy -->
 		<object name="unitBarterBuyButton[n]" style="iconButton" type="button" size="0 0 36 36" tooltip_style="sessionToolTipBottomBold" hidden="true">
 			<object name="unitBarterBuyIcon[n]" type="image" ghost="true" size="3 3 33 33"/>
 			<object name="unitBarterBuyAmount[n]" ghost="true" style="resourceText" type="text" size="0 0 100% 50%"/>

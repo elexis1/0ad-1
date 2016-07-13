@@ -483,8 +483,8 @@ function updateTopPanel()
 		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
 		++r;
 	}
+	horizontallyDistributeObjects("resources", r);
 	hideRemaining("resource[", r, "]");
-	horizFitRepeatedObjects ("resource[n]", "n", 0, r);
 
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("diplomacyButton1").hidden = !isPlayer;

@@ -256,9 +256,9 @@ function openDiplomacy()
 
 	let dialog = Engine.GetGUIObjectByName("diplomacyDialogPanel");
 	let size = dialog.size;
-	let wid = resCodes.length * 10;
-	size.left = -(260 + wid);
-	size.right = (260 + wid);
+	let width = 260 + resCodes.length * 10;
+	size.left = -width;
+	size.right = width;
 	dialog.size = size;
 	dialog.hidden = false;
 }

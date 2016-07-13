@@ -26,15 +26,9 @@ ResourceDropsite.prototype.Init = function()
  */
 ResourceDropsite.prototype.GetTypes = function()
 {
-	let typesTok = ApplyValueModificationsToEntity("ResourceDropsite/Types", this.template.Types, this.entity);
-	let typesArr = [];
+	let types = ApplyValueModificationsToEntity("ResourceDropsite/Types", this.template.Types, this.entity);
 	let resources = Resources.GetCodes();
-
-	for (let type of typesTok.split(/\s+/))
-		if (resources.indexOf(type.toLowerCase()) > -1)
-			typesArr.push(type);
-
-	return typesArr;
+	return types.split(/\s+/).filter(type => resources.indexOf(type.toLowerCase()) > -1);
 };
 
 /**

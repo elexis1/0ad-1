@@ -38,19 +38,20 @@ Player.prototype.Init = function()
 	this.disabledTemplates = {};
 	this.disabledTechnologies = {};
 	this.startingTechnologies = [];
-	
+
+	// Initial resources and trading goods probability in steps of 5
 	let resCodes = Resources.GetCodes();
-	let tradeProportions = [ 0, 0 ];
-	tradeProportions[0] = Math.floor(20 / resCodes.length);
-	tradeProportions[1] = 20 - resCodes.length * tradeProportions[0];
-	let resPos = 0;
-	for (let res of resCodes)
+	let quotient = Math.floor(20 / resCodes.length);
+	let remainder = 20 % resCodes.length;
+	for (let i in resCodes)
 	{
+		let res = resCodes[i];
 		this.resourceCount[res] = 300;
 		this.resourceNames[res] = Resources.GetResource(res).name;
-		let proportion = tradeProportions[0] + ((resPos < tradeProportions[1]) ? 1 : 0);
-		this.tradingGoods.push({ "goods":  res, "proba": (proportion * 5) });
-		++resPos;
+		this.tradingGoods.push({
+			"goods":  res,
+			"proba": 5 * (quotient + (+i < remainder ? 1 : 0))
+		});
 	}
 };
 
