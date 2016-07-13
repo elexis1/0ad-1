@@ -416,3 +416,44 @@ function formatPlayerInfo(playerDataArray, playerStates)
 
 	return teamDescription.join("\n\n");
 }
+
+/**
+ * Horizontally fit objects within a parent.
+ *
+ * @param margin - The gap, in px, between the repeated objects
+ * @param limit - The number of elements to fit
+ */
+function horizontallyDistributeObjects(parentName, margin = 0, limit = undefined)
+{
+	let objects = Engine.GetGUIObjectByName(parentName).children;
+	if (limit !== undefined)
+		objects = objects.splice(0, limit);
+
+	for (let i in objects)
+	{
+		let size = objects[i].size;
+		size.rleft = 100 / objects.length * i;
+		size.rright = 100 / objects.length * (i + 1);
+		size.right = -margin;
+		objects[i].size = size;
+	}
+}
+
+/**
+ * Hide all children after a certain index
+ *
+ * @param prefix - The part of the element name preceeding the index
+ * @param idx - The index from which to start
+ * @param prefix - The part of the element name after the index
+ */
+function hideRemaining(prefix, idx, suffix)
+{
+	while (true)
+	{
+		let obj = Engine.GetGUIObjectByName(prefix + idx + suffix);
+		if (!obj)
+			return;
+		obj.hidden = true;
+		++idx;
+	}
+}

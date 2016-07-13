@@ -34,6 +34,8 @@ let g_FormationsInfo = new Map();
 
 let g_SelectionPanels = {};
 
+let g_BarterSell;
+
 g_SelectionPanels.Alert = {
 	"getMaxNumberOfItems": function()
 	{

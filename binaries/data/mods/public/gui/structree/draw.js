@@ -235,18 +235,6 @@ function getPositionOffset(idx)
 	return size;
 }
 
-function hideRemaining(prefix, idx, suffix)
-{
-	let obj = Engine.GetGUIObjectByName(prefix + idx + suffix);
-	while (obj)
-	{
-		obj.hidden = true;
-		++idx;
-		obj = Engine.GetGUIObjectByName(prefix + idx + suffix);
-	}
-}
-
-
 /**
  * Positions certain elements that only need to be positioned once
  * (as <repeat> does not reposition automatically).

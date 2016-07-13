@@ -52,7 +52,7 @@
 				<object name="diplomacyPlayerNeutral[n]" size="380 0 400 100%" type="button" style="StoneButton" hidden="true"/>
 				<object name="diplomacyPlayerEnemy[n]" size="400 0 420 100%" type="button" style="StoneButton" hidden="true"/>
 
-				<!-- Tribute --> 
+				<!-- Tribute -->
 				<object size="430 0 100%-40 100%">
 					<repeat count="8" var="r">
 						<object name="diplomacyPlayer[n]_tribute[r]" size="0 0 20 100%" type="button" style="iconButton" tooltip_style="sessionToolTipBold" hidden="true">

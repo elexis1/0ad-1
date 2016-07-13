@@ -1,13 +1,6 @@
-/**
- * Resource handling helper script
- *
- */
 
 var Resources = {};
 
-/**
- * Loads all readable resource data into internal stores
- */
 Resources.LoadData = function()
 {
 	this.resourceData = [];
@@ -16,49 +9,31 @@ Resources.LoadData = function()
 	let jsonFiles = Engine.FindJSONFiles("resources", false);
 	for (let filename of jsonFiles)
 	{
-		let data = Engine.ReadJSONFile("resources/"+filename+".json");
+		let data = Engine.ReadJSONFile("resources/" + filename + ".json");
 		if (!data)
 			continue;
 
-		data.subtypeNames = data.subtypes;
 		data.subtypes = Object.keys(data.subtypes);
 
 		this.resourceData.push(data);
-		if (data.enabled)
-			this.resourceCodes.push(data.code);
+		this.resourceCodes.push(data.code);
 	}
 };
 
-/**
- * Returns all resource data
- */
 Resources.GetData = function()
 {
 	if (!this.resourceData)
 		this.LoadData();
 
-	return this.resourceData.filter((resource) => { return resource.enabled });
+	return this.resourceData;
 };
 
-/**
- * Returns data of a single resource. Only returns data about valid and enabled resources.
- * 
- * @param type Resource generic type
- * @return The resource data if found, else false
- */
 Resources.GetResource = function(type)
 {
-	let data = this.GetData();
-	type = type.toLowerCase();
-
-	return data.find((resource) => { return resource.code == type; }) || false;
+	let lType = type.toLowerCase();
+	return this.GetData().find(resource => resource.code == lType);
 };
 
-/**
- * Returns an array of codes belonging to valid resources
- * 
- * @return Array of generic resource type codes
- */
 Resources.GetCodes = function()
 {
 	if (!this.resourceData)
@@ -78,16 +53,16 @@ Resources.GetNames = function()
 	{
 		names[res.code] = res.name;
 		for (let subres of res.subtypes)
-			names[subres] = res.subtypeNames[subres]
+			names[subres] = res.subtypes[subres]
 	}
 	return names;
 };
 
 /**
  * Builds a RelaxRNG schema based on currently valid elements.
- * 
+ *
  * To prevent validation errors, disabled resources are included in the schema.
- * 
+ *
  * @param datatype The datatype of the element
  * @param additional Array of additional data elements. Time, xp, treasure, etc.
  * @param subtypes If true, resource subtypes will be included as well.
@@ -113,7 +88,7 @@ Resources.BuildSchema = function(datatype, additional = [], subtypes = false)
 		datatype = "<data type='" + datatype + "'/>";
 	}
 
-	let resCodes = this.resourceData.map((resource) => { return resource.code });
+	let resCodes = this.resourceData.map(resource => resource.code);
 	let schema = "<interleave>";
 	for (let res of resCodes.concat(additional))
 		schema +=
@@ -149,7 +124,7 @@ Resources.BuildSchema = function(datatype, additional = [], subtypes = false)
 
 /**
  * Builds the value choices for a RelaxNG `<choice></choice>` object, based on currently valid resources.
- * 
+ *
  * @oaram subtypes If set to true, the choices returned will be resource subtypes, rather than main types
  * @param treasure If set to true, the pseudo resource 'treasure' (or its subtypes) will be included
  * @return String of RelaxNG Schema `<choice/>` values.
@@ -163,9 +138,8 @@ Resources.BuildChoicesSchema = function(subtypes = false, treasure = false)
 
 	if (!subtypes)
 	{
-		let resCodes = this.resourceData.map((resource) => { return resource.code });
-		treasure = treasure ? [ "treasure" ] : [];
-		for (let res of resCodes.concat(treasure))
+		let resCodes = this.resourceData.map(resource => resource.code);
+		for (let res of resCodes.concat(treasure ? [ "treasure" ] : []))
 			schema += "<value>" + res + "</value>";
 	}
 	else
