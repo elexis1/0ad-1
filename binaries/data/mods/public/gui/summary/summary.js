@@ -246,10 +246,10 @@ function init(data)
 	let tradeHeads = [];
 	let resPanel = g_ScorePanelsData.resources;
 	let tradePanel = g_ScorePanelsData.market;
-	for (let code of g_GameData.resources.codes)
+	for (let code of g_GameData.gui.resources.codes)
 	{
 		resHeads.push({
-			"caption": translateWithContext("firstWord", g_GameData.resources.names[code]),
+			"caption": translateWithContext("firstWord", g_GameData.gui.resources.names[code]),
 			"yStart": 34,
 			"width": 100
 		});
@@ -263,7 +263,7 @@ function init(data)
 		tradeHeads.push({
 			"caption": sprintf(
 				translate("%(resource)s exchanged"), {
-					"resource": translateWithContext("withinSentence", g_GameData.resources.names[code])
+					"resource": translateWithContext("withinSentence", g_GameData.gui.resources.names[code])
 				}),
 			"yStart": 16,
 			"width": 100
@@ -276,7 +276,7 @@ function init(data)
 		});
 	}
 	resPanel.headings.splice.apply(resPanel.headings, [1, 0].concat(resHeads));
-	resPanel.titleHeadings[0].width = (100 * g_GameData.resources.codes.length) + 110;
+	resPanel.titleHeadings[0].width = (100 * g_GameData.gui.resources.codes.length) + 110;
 	tradePanel.headings.splice.apply(tradePanel.headings, [1, 0].concat(tradeHeads));
 
 	// Erase teams data if teams are not displayed

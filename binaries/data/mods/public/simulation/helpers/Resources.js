@@ -13,10 +13,12 @@ Resources.LoadData = function()
 		if (!data)
 			continue;
 
+		data.subtypeNames = data.subtypes;
 		data.subtypes = Object.keys(data.subtypes);
 
 		this.resourceData.push(data);
-		this.resourceCodes.push(data.code);
+		if (data.enabled)
+			this.resourceCodes.push(data.code);
 	}
 };
 
@@ -25,7 +27,7 @@ Resources.GetData = function()
 	if (!this.resourceData)
 		this.LoadData();
 
-	return this.resourceData;
+	return this.resourceData.filter(resource => resource.enabled);
 };
 
 Resources.GetResource = function(type)
@@ -53,7 +55,7 @@ Resources.GetNames = function()
 	{
 		names[res.code] = res.name;
 		for (let subres of res.subtypes)
-			names[subres] = res.subtypes[subres]
+			names[subres] = res.subtypeNames[subres]
 	}
 	return names;
 };

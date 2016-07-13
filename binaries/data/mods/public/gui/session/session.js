@@ -483,7 +483,7 @@ function updateTopPanel()
 		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
 		++r;
 	}
-	horizontallyDistributeObjects("resources", r);
+	horizontallyDistributeObjects("resourceCounts", 0, r);
 	hideRemaining("resource[", r, "]");
 
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
