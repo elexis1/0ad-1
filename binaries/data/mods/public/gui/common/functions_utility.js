@@ -260,6 +260,7 @@ function horizontallyDistributeObjects(parentName, margin = 0, limit = undefined
 
 	for (let i in objects)
 	{
+		i = +i;
 		let size = objects[i].size;
 		size.rleft = 100 / objects.length * i;
 		size.rright = 100 / objects.length * (i + 1);
