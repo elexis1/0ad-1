@@ -1278,11 +1278,11 @@ GuiInterface.prototype.SetWallPlacementPreview = function(player, cmd)
 
 	let result = {
 		"pieces": [],
-		"cost": {"population": 0, "populationBonus": 0, "time": 0},
+		"cost": { "population": 0, "populationBonus": 0, "time": 0 },
 	};
 	for (let res of Resources.GetCodes())
 		result.cost[res] = 0;
-	
+
 	let previewEntities = [];
 	if (end.pos)
 		previewEntities = GetWallPlacement(this.placementWallEntities, wallSet, start, end); // see helpers/Walls.js

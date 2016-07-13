@@ -249,19 +249,31 @@ function init(data)
 	for (let code of g_GameData.resources.codes)
 	{
 		resHeads.push({
-				"caption": translateWithContext("firstWord", g_GameData.resources.names[code]),
-				"yStart": 34, "width": 100
-			});
-		resPanel.counters.unshift({"width": 100, "fn": calculateResources, "verticalOffset": 12});
-		
+			"caption": translateWithContext("firstWord", g_GameData.resources.names[code]),
+			"yStart": 34,
+			"width": 100
+		});
+
+		resPanel.counters.unshift({
+			"width": 100,
+			"fn": calculateResources,
+			"verticalOffset": 12
+		});
+
 		tradeHeads.push({
-				"caption": sprintf(
-					translate("%(resource)s exchanged"), {
-						"resource": translateWithContext("withinSentence", g_GameData.resources.names[code])
-					}),
-				"yStart": 16, "width": 100
-			});
-		tradePanel.counters.unshift({"width": 100, "fn": calculateResourceExchanged, "verticalOffset": 12});
+			"caption": sprintf(
+				translate("%(resource)s exchanged"), {
+					"resource": translateWithContext("withinSentence", g_GameData.resources.names[code])
+				}),
+			"yStart": 16,
+			"width": 100
+		});
+
+		tradePanel.counters.unshift({
+			"width": 100,
+			"fn": calculateResourceExchanged,
+			"verticalOffset": 12
+		});
 	}
 	resPanel.headings.splice.apply(resPanel.headings, [1, 0].concat(resHeads));
 	resPanel.titleHeadings[0].width = (100 * g_GameData.resources.codes.length) + 110;

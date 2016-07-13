@@ -3,15 +3,8 @@ const BARTER_BUNCH_MULTIPLIER = 5;
 const BARTER_ACTIONS = ["Sell", "Buy"];
 const GATE_ACTIONS = ["lock", "unlock"];
 
-// upgrade constants
 const UPGRADING_NOT_STARTED = -2;
 const UPGRADING_CHOSEN_OTHER = -1;
-
-// ==============================================
-// BARTER HELPERS
-// Resource to sell by default on barter panel
-// ! - cannot be set as we don't know the possible resources yet
-var g_BarterSell = null;
 
 function canMoveSelectionIntoFormation(formationTemplate)
 {
