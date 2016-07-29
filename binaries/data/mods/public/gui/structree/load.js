@@ -5,28 +5,24 @@
  */
 function getGatherRates(templateName)
 {
-	// TODO: It would be nice to use the gather rates present in the templates
-	// instead of hard-coding the possible rates here.
+	let rates = {};
 
-	// We ignore ruins here, as those are not that common and would skew the results
-	var types = {
-		"food": ["food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk"],
-		"wood": ["wood", "wood.tree"],
-		"stone": ["stone", "stone.rock"],
-		"metal": ["metal", "metal.ore"]
-	};
-	var rates = {};
-
-	for (let type in types)
+	for (let resource of g_ResourceData.GetData())
 	{
+		let types = [resource.code];
+		for (let subtype of resource.subtypes)
+			// We ignore ruins as those are not that common and skew the results
+			if (subtype !== "ruins")
+				types.push(resource.code + "." + subtype);
+
 		let count, rate;
-		[rate, count] = types[type].reduce(function(sum, t) {
+		[rate, count] = types.reduce(function(sum, t) {
 				let r = +fetchValue(templateName, "ResourceGatherer/Rates/"+t);
 				return [sum[0] + (r > 0 ? r : 0), sum[1] + (r > 0 ? 1 : 0)];
 			}, [0, 0]);
 
 		if (rate > 0)
-			rates[type] = Math.round(rate / count * 100) / 100;
+			rates[resource.code] = Math.round(rate / count * 100) / 100;
 	}
 
 	if (!Object.keys(rates).length)

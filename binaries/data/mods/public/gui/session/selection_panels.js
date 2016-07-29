@@ -96,7 +96,7 @@ g_SelectionPanels.Barter = {
 	{
 		if (!unitEntState.barterMarket)
 			return [];
-		return GetSimState().resources.codes;
+		return g_ResourceData.GetCodes();
 	},
 	"setupButton": function(data)
 	{
@@ -117,13 +117,13 @@ g_SelectionPanels.Barter = {
 			amountToSell *= BARTER_BUNCH_MULTIPLIER;
 
 		if (!g_BarterSell)
-			g_BarterSell = GetSimState().resources.codes[0];
+			g_BarterSell = g_ResourceData.GetCodes()[0];
 
 		amount.Sell.caption = "-" + amountToSell;
 		let prices = data.unitEntState.barterMarket.prices;
 		amount.Buy.caption = "+" + Math.round(prices.sell[g_BarterSell] / prices.buy[data.item] * amountToSell);
 
-		let resource = getLocalizedResourceName(GetSimState().resources.names[data.item], "firstWord");
+		let resource = getLocalizedResourceName(g_ResourceData.GetNames()[data.item], "firstWord");
 		button.Buy.tooltip = sprintf(translate("Buy %(resource)s"), { "resource": resource });
 		button.Sell.tooltip = sprintf(translate("Sell %(resource)s"), { "resource": resource });
 

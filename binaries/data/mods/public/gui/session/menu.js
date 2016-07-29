@@ -234,7 +234,7 @@ function openDiplomacy()
 	g_IsDiplomacyOpen = true;
 
 	let isCeasefireActive = GetSimState().ceasefireActive;
-	let resCodes = GetSimState().resources.codes;
+	let resCodes = g_ResourceData.GetCodes();
 
 	// Get offset for one line
 	let onesize = Engine.GetGUIObjectByName("diplomacyPlayer[0]").size;
@@ -309,9 +309,10 @@ function diplomacyFormatStanceButtons(i, hidden)
 
 function diplomacyFormatTributeButtons(i, hidden)
 {
-	let resources = GetSimState().resources;
+	let resNames = g_ResourceData.GetNames();
+	let resCodes = g_ResourceData.GetCodes();
 	let r = 0;
-	for (let resCode of resources.codes)
+	for (let resCode of resCodes)
 	{
 		let button = Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]");
 		Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resCode+".png";
@@ -322,7 +323,7 @@ function diplomacyFormatTributeButtons(i, hidden)
 			continue;
 
 		button.enabled = controlsPlayer(g_ViewedPlayer);
-		button.tooltip = formatTributeTooltip(i, resources.names[resCode], 100);
+		button.tooltip = formatTributeTooltip(i, resNames[resCode], 100);
 		button.onpress = (function(i, resCode, button) {
 			// Shift+click to send 500, shift+click+click to send 1000, etc.
 			// See INPUT_MASSTRIBUTING in input.js
@@ -336,18 +337,18 @@ function diplomacyFormatTributeButtons(i, hidden)
 				}
 
 				let amounts = {};
-				for (let res of resources.codes)
+				for (let res of resCodes)
 					amounts[res] = 0;
 				amounts[resCode] = 100 * multiplier,
 
-				button.tooltip = formatTributeTooltip(i, resources.names[resCode], amounts[resCode]);
+				button.tooltip = formatTributeTooltip(i, resNames[resCode], amounts[resCode]);
 
 				// This is in a closure so that we have access to `player`, `amounts`, and `multiplier` without some
 				// evil global variable hackery.
 				g_FlushTributing = function() {
 					Engine.PostNetworkCommand({ "type": "tribute", "player": i, "amounts":  amounts });
 					multiplier = 1;
-					button.tooltip = formatTributeTooltip(i, resources.names[resCode], 100);
+					button.tooltip = formatTributeTooltip(i, resNames[resCode], 100);
 				};
 
 				if (!isBatchTrainPressed)
@@ -409,7 +410,7 @@ function openTrade()
 
 	let proba = Engine.GuiInterfaceCall("GetTradingGoods", g_ViewedPlayer);
 	let button = {};
-	let resCodes = GetSimState().resources.codes;
+	let resCodes = g_ResourceData.GetCodes();
 	let selec = resCodes[0];
 	hideRemaining("tradeResource[", resCodes.length, "]");
 

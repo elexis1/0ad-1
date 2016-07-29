@@ -33,6 +33,7 @@ var g_PlayerCount = 0;
 // Count players without team (or all if teams are not displayed)
 var g_WithoutTeam = 0;
 var g_GameData;
+var g_ResourceData = new Resources();
 
 function selectPanel(panel)
 {
@@ -246,10 +247,12 @@ function init(data)
 	let tradeHeads = [];
 	let resPanel = g_ScorePanelsData.resources;
 	let tradePanel = g_ScorePanelsData.market;
-	for (let code of g_GameData.gui.resources.codes)
+	let resNames = g_ResourceData.GetNames();
+	let resCodes = g_ResourceData.GetCodes();
+	for (let code of resCodes)
 	{
 		resHeads.push({
-			"caption": translateWithContext("firstWord", g_GameData.gui.resources.names[code]),
+			"caption": translateWithContext("firstWord", resNames[code]),
 			"yStart": 34,
 			"width": 100
 		});
@@ -263,7 +266,7 @@ function init(data)
 		tradeHeads.push({
 			"caption": sprintf(
 				translate("%(resource)s exchanged"), {
-					"resource": translateWithContext("withinSentence", g_GameData.gui.resources.names[code])
+					"resource": translateWithContext("withinSentence", resNames[code])
 				}),
 			"yStart": 16,
 			"width": 100
@@ -276,7 +279,7 @@ function init(data)
 		});
 	}
 	resPanel.headings.splice.apply(resPanel.headings, [1, 0].concat(resHeads));
-	resPanel.titleHeadings[0].width = (100 * g_GameData.gui.resources.codes.length) + 110;
+	resPanel.titleHeadings[0].width = (100 * resCodes.length) + 110;
 	tradePanel.headings.splice.apply(tradePanel.headings, [1, 0].concat(tradeHeads));
 
 	// Erase teams data if teams are not displayed
