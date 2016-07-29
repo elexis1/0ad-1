@@ -13,7 +13,7 @@ function layoutSelectionMultiple()
 function getResourceTypeDisplayName(resourceType)
 {
 	let resourceCode = resourceType.generic;
-	let resourceName = GetSimState().resources.names[(resourceCode == "treasure" ? resourceType.specific : resourceCode)]
+	let resourceName = g_ResourceData.GetNames()[(resourceCode == "treasure" ? resourceType.specific : resourceCode)]
 	return getLocalizedResourceName(resourceName, "firstWord");
 }
 
