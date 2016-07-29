@@ -130,6 +130,7 @@ var g_EntityStates = {};
 var g_TemplateData = {};
 var g_TemplateDataWithoutLocalization = {};
 var g_TechnologyData = {};
+var g_ResourceData = new Resources();
 
 /**
  * Top coordinate of the research list.
@@ -474,11 +475,11 @@ function updateTopPanel()
 	let viewPlayer = Engine.GetGUIObjectByName("viewPlayer");
 	viewPlayer.hidden = !g_IsObserver && !g_DevSettings.changePerspective;
 
-	let resources = GetSimState().resources;
+	let resCodes = g_ResourceData.GetCodes();
+	let resNames = g_ResourceData.GetNames();
 	let r = 0;
-	for (let res of resources.codes)
+	for (let res of resCodes)
 	{
-		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(resources.names[res], "firstWord");
 		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + res + ".png";
 		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
 		++r;
@@ -979,11 +980,12 @@ function updatePlayerDisplay()
 	if (!playerState)
 		return;
 
-	let resCodes = simState.resources.codes;
+	let resCodes = g_ResourceData.GetCodes();
+	let resNames = g_ResourceData.GetNames();
 	for (let r = 0; r < resCodes.length; ++r)
 	{
 		let res = resCodes[r];
-		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(res, "firstWord") + getAllyStatTooltip(res);
+		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(resNames[res], "firstWord") + getAllyStatTooltip(res);
 		Engine.GetGUIObjectByName("resource["+r+"]_count").caption = Math.floor(playerState.resourceCounts[res]);
 	}
 

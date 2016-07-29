@@ -250,7 +250,7 @@ function calculateUnits(playerState, position)
 
 function calculateResources(playerState, position)
 {
-	let type = g_GameData.gui.resources.codes[position];
+	let type = g_ResourceData.GetCodes()[position];
 
 	return formatIncome(
 		playerState.statistics.resourcesGathered[type],
@@ -262,7 +262,7 @@ function calculateTotalResources(playerState)
 	let totalGathered = 0;
 	let totalUsed = 0;
 
-	for (let type of g_GameData.gui.resources.codes)
+	for (let type of g_ResourceData.GetCodes())
 	{
 		totalGathered += playerState.statistics.resourcesGathered[type];
 		totalUsed += playerState.statistics.resourcesUsed[type] - playerState.statistics.resourcesSold[type];
@@ -330,7 +330,7 @@ function calculateResourcesTeam(counters)
 
 function calculateResourceExchanged(playerState, position)
 {
-	let type = g_GameData.gui.resources.codes[position];
+	let type = g_ResourceData.GetCodes()[position];
 
 	return formatIncome(
 		playerState.statistics.resourcesBought[type],
