@@ -325,6 +325,8 @@ function diplomacyFormatTributeButtons(i, hidden)
 	for (let resCode of resCodes)
 	{
 		let button = Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]");
+		if (!button)
+			break;
 		Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resCode+".png";
 		button.hidden = hidden;
 		setPanelObjectPosition(button, r, 8, 0);
@@ -444,6 +446,8 @@ function openTrade()
 
 	for (let i = 0; i < resCodes.length; ++i)
 	{
+		if (!Engine.GetGUIObjectByName("tradeResource["+i+"]"))
+			break;
 		setPanelObjectPosition(Engine.GetGUIObjectByName("tradeResource["+i+"]"), i, 8);
 		let resCode = resCodes[i];
 		proba[resCode] = proba[resCode] || 0;

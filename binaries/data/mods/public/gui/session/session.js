@@ -480,6 +480,11 @@ function updateTopPanel()
 	let r = 0;
 	for (let res of resCodes)
 	{
+		if (!Engine.GetGUIObjectByName("resource["+r+"]"))
+		{
+			warn("Current GUI limits prevent displaying more than eight (8) resources");
+			break;
+		}
 		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + res + ".png";
 		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
 		++r;
@@ -984,6 +989,8 @@ function updatePlayerDisplay()
 	let resNames = g_ResourceData.GetNames();
 	for (let r = 0; r < resCodes.length; ++r)
 	{
+		if (!Engine.GetGUIObjectByName("resource["+r+"]"))
+			break;
 		let res = resCodes[r];
 		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(resNames[res], "firstWord") + getAllyStatTooltip(res);
 		Engine.GetGUIObjectByName("resource["+r+"]_count").caption = Math.floor(playerState.resourceCounts[res]);
