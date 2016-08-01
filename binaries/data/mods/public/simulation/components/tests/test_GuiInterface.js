@@ -34,9 +34,9 @@ Engine.LoadComponentScript("interfaces/BuildingAI.js");
 Engine.LoadComponentScript("GuiInterface.js");
 
 Resources = {
-	"GetCodes": function() { return [ "food", "metal", "stone", "wood" ] },
-	"GetNames": function() { return { "food": "Food", "metal": "Metal", "stone": "Stone", "wood": "Wood" } },
-	"GetResource": function() { return {}; },
+	"GetCodes": () => ["food", "metal", "stone", "wood"],
+	"GetNames": () => ({ "food": "Food", "metal": "Metal", "stone": "Stone", "wood": "Wood" }),
+	"GetResource": () => ({}),
 };
 
 var cmp = ConstructComponent(SYSTEM_ENTITY, "GuiInterface");
@@ -336,9 +336,9 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 	circularMap: false,
 	timeElapsed: 0,
 	gameType: "conquest",
-	barterPrices: {buy: {food: 150}, sell: {food: 25}},
+	barterPrices: { buy: { "food": 150 }, sell: { "food": 25 } },
 	resources: {
-		codes: [ "food", "metal", "stone", "wood" ],
+		codes: ["food", "metal", "stone", "wood"],
 		names: {
 			"food": "Food",
 			"metal": "Metal",
@@ -470,9 +470,9 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 	circularMap: false,
 	timeElapsed: 0,
 	gameType: "conquest",
-	barterPrices: {buy: {food: 150}, sell: {food: 25}},
+	barterPrices: { buy: { "food": 150 }, sell: { "food": 25 } },
 	resources: {
-		codes: [ "food", "metal", "stone", "wood" ],
+		codes: ["food", "metal", "stone", "wood"],
 		names: {
 			"food": "Food",
 			"metal": "Metal",

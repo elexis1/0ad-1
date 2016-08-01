@@ -16,13 +16,13 @@ function getGatherRates(templateName)
 				types.push(resource.code + "." + subtype);
 
 		let count, rate;
-		[rate, count] = types.reduce(function(sum, t) {
+		[rate, count] = types.reduce((sum, t) => {
 				let r = +fetchValue(templateName, "ResourceGatherer/Rates/"+t);
 				return [sum[0] + (r > 0 ? r : 0), sum[1] + (r > 0 ? 1 : 0)];
 			}, [0, 0]);
 
 		if (rate > 0)
-			rates[resource.code] = Math.round(rate / count * 100) / 100;
+			rates[resource.code] = +(rate / count).toFixed(1);
 	}
 
 	if (!Object.keys(rates).length)

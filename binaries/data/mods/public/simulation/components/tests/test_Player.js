@@ -10,8 +10,8 @@ ConstructComponent(SYSTEM_ENTITY, "EndGameManager");
 ConstructComponent(SYSTEM_ENTITY, "Timer");
 
 Resources = {
-	"GetCodes": function() { return [ "food", "metal", "stone", "wood" ] },
-	"GetResource": function() { return {}; },
+	"GetCodes": () => ["food", "metal", "stone", "wood"],
+	"GetResource": () => ({}),
 };
 
 var cmpPlayer = ConstructComponent(10, "Player");

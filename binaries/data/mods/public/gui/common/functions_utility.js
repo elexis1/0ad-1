@@ -426,35 +426,30 @@ function formatPlayerInfo(playerDataArray, playerStates)
 function horizontallyDistributeObjects(parentName, margin = 0, limit = undefined)
 {
 	let objects = Engine.GetGUIObjectByName(parentName).children;
-	if (limit !== undefined)
+	if (limit)
 		objects = objects.splice(0, limit);
 
-	for (let i in objects)
+	let i = 0;
+	for (let child of objects)
 	{
-		i = +i;
-		let size = objects[i].size;
+		let size = child.size;
 		size.rleft = 100 / objects.length * i;
 		size.rright = 100 / objects.length * (i + 1);
 		size.right = -margin;
-		objects[i].size = size;
+		child.size = size;
+		++i;
 	}
 }
 
 /**
  * Hide all children after a certain index
  *
- * @param prefix - The part of the element name preceeding the index
  * @param idx - The index from which to start
- * @param prefix - The part of the element name after the index
  */
-function hideRemaining(prefix, idx, suffix)
+function hideRemaining(parentName, idx = 0)
 {
-	while (true)
-	{
-		let obj = Engine.GetGUIObjectByName(prefix + idx + suffix);
-		if (!obj)
-			return;
-		obj.hidden = true;
-		++idx;
-	}
+	let objects = Engine.GetGUIObjectByName(parentName).children;
+
+	for (; idx < objects.length; ++idx)
+		objects[idx].hidden = true;
 }

@@ -336,25 +336,19 @@ Player.prototype.GetTradingGoods = function()
 
 Player.prototype.SetTradingGoods = function(tradingGoods)
 {
-	var sumProba = 0;
-	for (var resource in tradingGoods)
+	let sumProba = 0;
+	for (let resource in tradingGoods)
 		sumProba += tradingGoods[resource];
 	if (sumProba != 100)	// consistency check
 	{
 		error("Player.js SetTradingGoods: " + uneval(tradingGoods));
-		let first = true;
-		for (let res of Resources.GetCodes())
-			if (first)
-			{
-				tradingGoods[res] = 100;
-				first = false;
-			}
-			else
-				tradingGoods[res] = 0;
+		let resCodes = Resources.GetCodes();
+		for (let r = 0; r < resCodes.length; ++r)
+			tradingGoods[resCodes[r]] = r == 0 ? 100 : 0;
 	}
 
 	this.tradingGoods = [];
-	for (var resource in tradingGoods)
+	for (let resource in tradingGoods)
 		this.tradingGoods.push( {"goods": resource, "proba": tradingGoods[resource]} );
 };
 
