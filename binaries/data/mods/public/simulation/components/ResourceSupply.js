@@ -48,7 +48,7 @@ ResourceSupply.prototype.Init = function()
 	if (!resData || resData.subtypes.indexOf(this.subtype) === -1)
 		Engine.DestroyEntity(this.entity);
 
-	this.cachedType = { "generic" : this.type, "specific" : this.subtype };
+	this.cachedType = { "generic": this.type, "specific": this.subtype };
 };
 
 ResourceSupply.prototype.IsInfinite = function()

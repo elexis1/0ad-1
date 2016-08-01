@@ -279,7 +279,7 @@ function init(data)
 		});
 	}
 	resPanel.headings.splice.apply(resPanel.headings, [1, 0].concat(resHeads));
-	resPanel.titleHeadings[0].width = (100 * resCodes.length) + 110;
+	resPanel.titleHeadings[0].width = 100 * resCodes.length + 110;
 	tradePanel.headings.splice.apply(tradePanel.headings, [1, 0].concat(tradeHeads));
 
 	// Erase teams data if teams are not displayed

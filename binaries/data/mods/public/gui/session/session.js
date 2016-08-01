@@ -485,7 +485,7 @@ function updateTopPanel()
 		++r;
 	}
 	horizontallyDistributeObjects("resourceCounts", 0, r);
-	hideRemaining("resource[", r, "]");
+	hideRemaining("resourceCounts", r);
 
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("diplomacyButton1").hidden = !isPlayer;

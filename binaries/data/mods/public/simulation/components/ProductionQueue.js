@@ -292,10 +292,9 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 
 			for (let res in template.Cost.Resources)
 			{
-				let cost = +template.Cost.Resources[res];
 				if (resCodes.indexOf(res) < 0)
 					continue;
-				costs[res] = ApplyValueModificationsToTemplate("Cost/Resources/"+res, cost, cmpPlayer.GetPlayerID(), template);
+				costs[res] = ApplyValueModificationsToTemplate("Cost/Resources/"+res, +template.Cost.Resources[res], cmpPlayer.GetPlayerID(), template);
 				totalCosts[res] = Math.floor(count * costs[res]);
 			}
 
@@ -345,7 +344,7 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 			{
 				if (resCodes.indexOf(res) < 0)
 					continue;
-				cost[res] = Math.floor((techCostMultiplier[res] ? techCostMultiplier[res] : 1) * template.cost[res]);
+				cost[res] = Math.floor((techCostMultiplier[res] || 1) * template.cost[res]);
 			}
 
 			// TrySubtractResources should report error to player (they ran out of resources)
