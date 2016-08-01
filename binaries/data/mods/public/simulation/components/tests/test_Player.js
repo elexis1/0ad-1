@@ -4,8 +4,8 @@ Engine.LoadComponentScript("interfaces/TechnologyManager.js");
 Engine.LoadComponentScript("Player.js");
 
 Resources = {
-	"GetCodes": function() { return [ "food", "metal", "stone", "wood" ] },
-	"GetResource": function() { return {}; },
+	"GetCodes": () => ["food", "metal", "stone", "wood"],
+	"GetResource": () => ({}),
 };
 
 var cmpPlayer = ConstructComponent(10, "Player");

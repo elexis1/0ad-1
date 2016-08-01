@@ -118,7 +118,7 @@ ResourceGatherer.prototype.RecalculateGatherRatesAndCapacities = function()
 		let type = r.split(".");
 		let res = Resources.GetResource(type[0]);
 
-		if (!res && type[0] !== "treasure" || (type.length > 1 && res.subtypes.indexOf(type[1]) < 0))
+		if (!res && type[0] !== "treasure" || type.length > 1 && res.subtypes.indexOf(type[1]) == -1)
 			continue;
 
 		let rate = ApplyValueModificationsToEntity("ResourceGatherer/Rates/" + r, +this.template.Rates[r], this.entity);
@@ -158,7 +158,7 @@ ResourceGatherer.prototype.GetRange = function()
 
 /**
  * Try to gather treasure
- * @return 'true' if treasure is successfully gathered and 'false' if not
+ * @return 'true' if treasure is successfully gathered, otherwise 'false'
  */
 ResourceGatherer.prototype.TryInstantGather = function(target)
 {

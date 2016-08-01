@@ -113,7 +113,7 @@ function draw()
 				if (p>c)
 					c = p;
 
-				hideRemaining("phase["+i+"]_struct["+s+"]_row["+r+"]_prod[", p, "]");
+				hideRemaining("phase["+i+"]_struct["+s+"]_row["+r+"]", p);
 			}
 
 			let size = thisEle.size;
@@ -133,10 +133,10 @@ function draw()
 				phaEle.size = size;
 			}
 			++r;
-			hideRemaining("phase["+i+"]_struct["+s+"]_row[", r, "]");
+			hideRemaining("phase["+i+"]_struct["+s+"]_rows", r);
 			++s;
 		}
-		hideRemaining("phase["+i+"]_struct[", s, "]");
+		hideRemaining("phase["+i+"]", s);
 		++i;
 	}
 
@@ -180,7 +180,7 @@ function draw()
 				++p;
 			}
 		}
-		hideRemaining("trainer["+t+"]_prod[", p, "]");
+		hideRemaining("trainer["+t+"]_row", p);
 
 		let size = thisEle.size;
 		size.right = size.left + Math.max(p*24, defWidth) + 4;
@@ -194,7 +194,7 @@ function draw()
 		phaEle.size = size;
 		++t;
 	}
-	hideRemaining("trainer[", t, "]");
+	hideRemaining("trainers", t);
 
 	let size = Engine.GetGUIObjectByName("display_tree").size;
 	size.right = t > 0 ? -124 : -4;
@@ -272,7 +272,7 @@ function predraw()
 			prodBarIcon.sprite = "stretched:session/portraits/"+g_ParsedData.phases[phaseList[i+j]].icon;
 		}
 		// Hide remaining prod bars
-		hideRemaining("phase["+i+"]_bar[", j-1, "]");
+		hideRemaining("phase["+i+"]_bars", j-1);
 
 		let s = 0;
 		let ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
@@ -323,8 +323,8 @@ function predraw()
 		g_DrawLimits[pha].structQuant = s;
 		++i;
 	}
-	hideRemaining("phase[", i, "]");
-	hideRemaining("phase[", i, "]_bar");
+	hideRemaining("phase_rows", i);
+	hideRemaining("phase_ident", i);
 
 	let t = 0;
 	let ele = Engine.GetGUIObjectByName("trainer["+t+"]");

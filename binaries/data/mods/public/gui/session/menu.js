@@ -225,9 +225,26 @@ function closeChat()
 	Engine.GetGUIObjectByName("chatDialogPanel").hidden = true;
 }
 
+function initDiplomacy()
+{
+	let dialog = Engine.GetGUIObjectByName("diplomacyDialogPanel");
+	let size = dialog.size;
+	let width = size.right - size.left;
+
+	let tribSize = Engine.GetGUIObjectByName("diplomacyPlayer[0]_tribute[0]").size;
+	width += g_ResourceData.GetCodes().length * (tribSize.right - tribSize.left);
+
+	size.left = -width / 2;
+	size.right = width / 2;
+	dialog.size = size;
+
+	initDiplomacy = () => {};
+}
+
 function openDiplomacy()
 {
 	closeOpenDialogs();
+	initDiplomacy();
 
 	if (g_ViewedPlayer < 1)
 		return;
@@ -235,7 +252,6 @@ function openDiplomacy()
 	g_IsDiplomacyOpen = true;
 
 	let isCeasefireActive = GetSimState().ceasefireActive;
-	let resCodes = g_ResourceData.GetCodes();
 
 	// Get offset for one line
 	let onesize = Engine.GetGUIObjectByName("diplomacyPlayer[0]").size;
@@ -253,14 +269,7 @@ function openDiplomacy()
 		diplomacyFormatTributeButtons(i, myself || playerInactive);
 		diplomacyFormatAttackRequestButton(i, myself || playerInactive || isCeasefireActive || !hasAllies || !g_Players[i].isEnemy[g_ViewedPlayer]);
 	}
-
-	let dialog = Engine.GetGUIObjectByName("diplomacyDialogPanel");
-	let size = dialog.size;
-	let width = 260 + resCodes.length * 10;
-	size.left = -width;
-	size.right = width;
-	dialog.size = size;
-	dialog.hidden = false;
+	Engine.GetGUIObjectByName("diplomacyDialogPanel").hidden = false;
 }
 
 function diplomacySetupTexts(i, rowsize)
@@ -388,9 +397,26 @@ function toggleDiplomacy()
 		openDiplomacy();
 }
 
+function initTrade()
+{
+	let dialog = Engine.GetGUIObjectByName("tradeDialogPanel");
+	let size = dialog.size;
+	let width = size.right - size.left;
+
+	let tradeSize = Engine.GetGUIObjectByName("tradeResource[0]").size;
+	width += g_ResourceData.GetCodes().length * (tradeSize.right - tradeSize.left);
+
+	size.left = -width / 2;
+	size.right = width / 2;
+	dialog.size = size;
+
+	initTrade = () => {};
+}
+
 function openTrade()
 {
 	closeOpenDialogs();
+	initTrade();
 
 	if (g_ViewedPlayer < 1)
 		return;
@@ -399,7 +425,7 @@ function openTrade()
 
 	var updateButtons = function()
 	{
-		for (var res in button)
+		for (let res in button)
 		{
 			button[res].label.caption = proba[res] + "%";
 
@@ -413,15 +439,14 @@ function openTrade()
 	let button = {};
 	let resCodes = g_ResourceData.GetCodes();
 	let selec = resCodes[0];
-	hideRemaining("tradeResource[", resCodes.length, "]");
+	hideRemaining("tradeResources", resCodes.length);
+	Engine.GetGUIObjectByName("tradeHelp").hidden = false;
 
 	for (let i = 0; i < resCodes.length; ++i)
 	{
-		let buttonResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
-		setPanelObjectPosition(buttonResource, i, 8);
+		setPanelObjectPosition(Engine.GetGUIObjectByName("tradeResource["+i+"]"), i, 8);
 		let resCode = resCodes[i];
-		proba[resCode] = (proba[resCode] ? proba[resCode] : 0);
-		buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
+		proba[resCode] = proba[resCode] || 0;
 		let icon = Engine.GetGUIObjectByName("tradeResourceIcon["+i+"]");
 		icon.sprite = "stretched:session/icons/resources/" + resCode + ".png";
 		let label = Engine.GetGUIObjectByName("tradeResourceText["+i+"]");
@@ -430,13 +455,14 @@ function openTrade()
 		let iconSel = Engine.GetGUIObjectByName("tradeResourceSelection["+i+"]");
 		button[resCode] = { "up": buttonUp, "dn": buttonDn, "label": label, "sel": iconSel };
 
+		let buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
 		buttonResource.enabled = controlsPlayer(g_ViewedPlayer);
 		buttonResource.onpress = (function(resource){
 			return function() {
 				if (Engine.HotkeyIsPressed("session.fulltradeswap"))
 				{
-					for (let ress of resCodes)
-						proba[ress] = 0;
+					for (let res of resCodes)
+						proba[res] = 0;
 					proba[resource] = 100;
 					Engine.PostNetworkCommand({"type": "set-trading-goods", "tradingGoods": proba});
 				}
@@ -470,14 +496,7 @@ function openTrade()
 	let traderNumber = Engine.GuiInterfaceCall("GetTraderNumber", g_ViewedPlayer);
 	Engine.GetGUIObjectByName("landTraders").caption = getIdleLandTradersText(traderNumber);
 	Engine.GetGUIObjectByName("shipTraders").caption = getIdleShipTradersText(traderNumber);
-
-	let dialog = Engine.GetGUIObjectByName("tradeDialogPanel");
-	let size = dialog.size;
-	let wid = resCodes.length * (58/2);
-	size.left = -(134 + wid);
-	size.right = (134 + wid);
-	dialog.size = size;
-	dialog.hidden = false;
+	Engine.GetGUIObjectByName("tradeDialogPanel").hidden = false;
 }
 
 function getIdleLandTradersText(traderNumber)

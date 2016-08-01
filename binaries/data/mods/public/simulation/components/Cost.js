@@ -71,10 +71,9 @@ Cost.prototype.GetResourceCosts = function(owner)
 
 	for (let res in this.template.Resources)
 	{
-		let cost = +this.template.Resources[res];
 		if (resCodes.indexOf(res) < 0)
 			continue;
-		costs[res] = ApplyValueModificationsToTemplate("Cost/Resources/"+res, cost, owner, entityTemplate);
+		costs[res] = ApplyValueModificationsToTemplate("Cost/Resources/"+res, +this.template.Resources[res], owner, entityTemplate);
 	}
 
 	return costs;
