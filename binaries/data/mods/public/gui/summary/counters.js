@@ -63,6 +63,8 @@ function updateCountersPlayer(playerState, counters, idGUI)
 {
 	for (let w in counters)
 	{
+		if (!Engine.GetGUIObjectByName(idGUI + "[" + w + "]"))
+			break;
 		let fn = counters[w].fn;
 		Engine.GetGUIObjectByName(idGUI + "[" + w + "]").caption = fn && fn(playerState, w);
 	}
