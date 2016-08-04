@@ -39,7 +39,7 @@ Resources.prototype.BuildSchema = function(datatype, additional = [], subtypes =
 		return "<interleave>" + schema + "</interleave>";
 
 	for (let res of this.resourceData)
-		for (let subtype of res.subtypes)
+		for (let subtype in res.subtypes)
 			schema +=
 				"<optional>" +
 					"<element name='" + res.code + "." + subtype + "'>" +
@@ -81,7 +81,7 @@ Resources.prototype.BuildChoicesSchema = function(subtypes = false, treasure = f
 	else
 		for (let res of this.resourceData)
 		{
-			for (let subtype of res.subtypes)
+			for (let subtype in res.subtypes)
 				schema += "<value>" + res.code + "." + subtype + "</value>";
 			if (treasure)
 				schema += "<value>" + "treasure." + res.code + "</value>";

@@ -10,7 +10,7 @@ function getGatherRates(templateName)
 	for (let resource of g_ResourceData.GetData())
 	{
 		let types = [resource.code];
-		for (let subtype of resource.subtypes)
+		for (let subtype in resource.subtypes)
 			// We ignore ruins as those are not that common and skew the results
 			if (subtype !== "ruins")
 				types.push(resource.code + "." + subtype);
