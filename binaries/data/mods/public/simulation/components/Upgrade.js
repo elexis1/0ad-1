@@ -1,6 +1,7 @@
 function Upgrade() {}
 
 const UPGRADING_PROGRESS_INTERVAL = 250;
+Upgrade.prototype.ResourceChoiceSchema = Resources.BuildSchema("nonNegativeInteger");
 
 Upgrade.prototype.Schema =
 	"<oneOrMore>" +
@@ -29,10 +30,7 @@ Upgrade.prototype.Schema =
 					"<element name='Cost' a:help='Resource cost to upgrade this unit'>" +
 						"<oneOrMore>" +
 							"<choice>" +
-								"<element name='food'><data type='nonNegativeInteger'/></element>" +
-								"<element name='wood'><data type='nonNegativeInteger'/></element>" +
-								"<element name='stone'><data type='nonNegativeInteger'/></element>" +
-								"<element name='metal'><data type='nonNegativeInteger'/></element>" +
+								Upgrade.prototype.ResourceChoiceSchema +
 							"</choice>" +
 						"</oneOrMore>" +
 					"</element>" +
