@@ -45,7 +45,7 @@ ResourceSupply.prototype.Init = function()
 		resData = { "subtypes": Resources.GetCodes() };
 
 	// Remove entity from gameworld if the resource supplied by this entity is disabled or not valid.
-	if (!resData || resData.subtypes.indexOf(this.subtype) === -1)
+	if (!resData || !resData.subtypes[this.subtype])
 		Engine.DestroyEntity(this.entity);
 
 	this.cachedType = { "generic": this.type, "specific": this.subtype };

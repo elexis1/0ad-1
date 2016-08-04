@@ -21,7 +21,7 @@ Loot.prototype.GetResources = function()
 {
 	let ret = {};
 	for (let res of Resources.GetCodes())
-		ret[res] = +this.template[res] || 0;
+		ret[res] = +(this.template[res] || 0);
 
 	return ret;
 };

@@ -1,9 +1,12 @@
 /**
  * Resources Global
  *
- * Engine.FindJSONFiles only exists within the session context
- * Engine.BuildDirEntList only exists within the gui context
- * The AI and test contexts have no access to any JSON file access functions
+ * - `Engine.FindJSONFiles` only exists within the session context
+ * - `Engine.BuildDirEntList` only exists within the gui context
+ * - The AI and test contexts have no access to any JSON file access functions
+ *   -- Therefore the AI gets passed an object containing the information it
+ *     requires from `GuiInterface.js::GetSimulationState()`
+ *   -- And the test environment... improvises.
  */
 function Resources()
 {
@@ -30,9 +33,6 @@ function Resources()
 		let data = Engine.ReadJSONFile(filename);
 		if (!data)
 			continue;
-
-		data.subtypeNames = data.subtypes;
-		data.subtypes = Object.keys(data.subtypes);
 
 		this.resourceData.push(data);
 		if (data.enabled)
@@ -66,8 +66,8 @@ Resources.prototype.GetNames = function()
 	for (let res of this.GetData())
 	{
 		names[res.code] = res.name;
-		for (let subres of res.subtypes)
-			names[subres] = res.subtypeNames[subres]
+		for (let subres in res.subtypes)
+			names[subres] = res.subtypes[subres]
 	}
 	return names;
 };
