@@ -200,7 +200,7 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		node.ApplyLayer(xmb, child, sourceIdentifier);
 		if (filtering)
 		{
-			std::string childname = xmb.GetElementString(child.GetNodeName()); // TODO: is GetElementString inefficient? (especially if we call it twice)
+			std::string childname = xmb.GetElementString(child.GetNodeName());
 			if (node.m_Childs.find(childname) != node.m_Childs.end())
 				childs[childname] = std::move(node.m_Childs[childname]);
 		}
