@@ -164,9 +164,6 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 		}
 	}
 
-	// For the filtered case
-	ChildrenMap childs;
-
 	// Add this element as a child node
 	CParamNode& node = m_Childs[name];
 	if (op != INVALID) 
@@ -187,6 +184,9 @@ void CParamNode::ApplyLayer(const XMBFile& xmb, const XMBElement& element, const
 	} 
 	if (!hasSetValue && !merging)
 		node.m_Value = value;
+
+	// For the filtered case
+	ChildrenMap childs;
 
 	// Recurse through the element's children
 	XERO_ITER_EL(element, child)
