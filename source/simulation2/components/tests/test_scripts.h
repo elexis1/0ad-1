@@ -59,10 +59,7 @@ public:
 	void test_scripts()
 	{
 		if (!VfsFileExists(L"simulation/components/tests/setup.js"))
-		{
-			debug_printf("WARNING: Skipping component scripts tests (can't find binaries/data/mods/public/simulation/components/tests/setup.js)\n");
 			return;
-		}
 
 		VfsPaths paths;
 		TS_ASSERT_OK(vfs::GetPathnames(g_VFS, L"simulation/components/tests/", L"test_*.js", paths));

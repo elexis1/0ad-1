@@ -31,6 +31,8 @@
 #include "ps/CLogger.h"
 #include "ps/XML/Xeromyces.h"
 
+static const char SPECIAL_FILTER[] = "simulation/templates/special_filter/";
+
 class TestCmpTemplateManager : public CxxTest::TestSuite
 {
 public:
@@ -39,6 +41,10 @@ public:
 		g_VFS = CreateVfs(20 * MiB);
 		TS_ASSERT_OK(g_VFS->Mount(L"", DataDir()/"mods"/"_test.sim", VFS_MOUNT_MUST_EXIST));
 		TS_ASSERT_OK(g_VFS->Mount(L"cache", DataDir()/"_testcache"));
+
+		// If the public mod exists, test the special_filter templates too
+		g_VFS->Mount(SPECIAL_FILTER, DataDir() / "mods" / "public" / SPECIAL_FILTER);
+
 		CXeromyces::Startup();
 	}
 
@@ -117,9 +123,23 @@ public:
 		ScriptInterface::ToJSVal(cx, &val, &actor->GetChild("VisualActor"));
 		TS_ASSERT_STR_EQUALS(man.GetScriptInterface().ToString(&val), "({Actor:\"example1\", ActorOnly:(void 0), SilhouetteDisplay:\"false\", SilhouetteOccluder:\"false\", VisibleInAtlasOnly:\"false\"})");
 
-		const CParamNode* foundation = tempMan->LoadTemplate(ent2, "foundation|actor|example1", -1);
-		ScriptInterface::ToJSVal(cx, &val, &foundation->GetChild("VisualActor"));
-		TS_ASSERT_STR_EQUALS(man.GetScriptInterface().ToString(&val), "({Actor:\"example1\", ActorOnly:(void 0), Foundation:(void 0), SilhouetteDisplay:\"false\", SilhouetteOccluder:\"false\", VisibleInAtlasOnly:\"false\"})");
+		if (VfsDirectoryExists(SPECIAL_FILTER))
+		{
+			const CParamNode* foundation = tempMan->LoadTemplate(ent2, "foundation|actor|example1", -1);
+			ScriptInterface::ToJSVal(cx, &val, &foundation->GetChild("VisualActor"));
+
+			TS_ASSERT_STR_EQUALS(
+				man.GetScriptInterface().ToString(&val),
+				"({"
+					"Actor:\"example1\", "
+					"ActorOnly:(void 0), "
+					"Foundation:(void 0), "
+					"SilhouetteDisplay:\"false\", "
+					"SilhouetteOccluder:\"false\", "
+					"VisibleInAtlasOnly:\"false\""
+				"})"
+			);
+		}
 	}
 
 	void test_LoadTemplate_errors()
