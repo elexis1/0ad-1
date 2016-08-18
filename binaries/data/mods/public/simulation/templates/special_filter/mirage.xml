@@ -11,6 +11,12 @@
   </Identity>
   <Minimap merge=""/>
   <Mirage replace=""/>
+  <Obstruction merge="">
+    <BlockMovement>false</BlockMovement>
+    <BlockPathfinding>false</BlockPathfinding>
+    <BlockFoundation>false</BlockFoundation>
+    <BlockConstruction>false</BlockConstruction>
+  </Obstruction>
   <Ownership merge=""/>
   <OverlayRenderer merge=""/>
   <Position merge=""/>
