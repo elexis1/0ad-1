@@ -55,7 +55,7 @@ bool CTemplateLoader::LoadTemplateFile(const std::string& templateName, int dept
 	{
 		std::string prefix = templateName.substr(0, pos);
 		std::string baseName = templateName.substr(pos+1);
-		
+
 		if (!LoadTemplateFile(baseName, depth+1))
 		{
 			LOGERROR("Failed to load entity template '%s'", baseName.c_str());
@@ -162,7 +162,7 @@ std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::stri
 
 	JSContext* cx = scriptInterface.GetContext();
 	JSAutoRequest rq(cx);
-	
+
 	std::vector<std::string> templates;
 	Status ok;
 	VfsPath templatePath;
@@ -203,11 +203,11 @@ std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::stri
 				std::wstring fileFilter;
 				scriptInterface.GetProperty(val, "directory", directoryPath);
 				scriptInterface.GetProperty(val, "file", fileFilter);
-				
+
 				VfsPaths filenames;
 				if (vfs::GetPathnames(g_VFS, templatePath / (directoryPath + "/"), fileFilter.c_str(), filenames) != INFO::OK)
 					continue;
-				
+
 				for (const VfsPath& filename : filenames)
 				{
 					// Strip the .xml extension
@@ -217,9 +217,8 @@ std::vector<std::string> CTemplateLoader::FindPlaceableTemplates(const std::stri
 
 					templates.emplace_back(name.begin(), name.end());
 				}
-				
+
 			}
-			
 		}
 	}
 
