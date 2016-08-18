@@ -16,6 +16,7 @@
     <Initial>1</Initial>
   </Health>
   <Identity merge=""/>
+  <Market merge=""/>
   <!-- Foundations shouldn't initially block unit movement -->
   <Obstruction merge="">
     <DisableBlockMovement>true</DisableBlockMovement>
