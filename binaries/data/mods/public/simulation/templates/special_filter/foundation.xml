@@ -12,7 +12,6 @@
   <Footprint merge=""/>
   <!-- Add the Foundation component, to deal with the construction process -->
   <Foundation replace=""/>
-  <!-- Initialise health to 1 -->
   <Health>
     <Initial>1</Initial>
   </Health>
