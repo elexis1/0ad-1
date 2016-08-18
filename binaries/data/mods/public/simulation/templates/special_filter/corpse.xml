@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Entity filtered="">
-  <!-- We only want to include components which are necessary (for the visual previewing of an entity)
+  <!--
+       We only want to include components which are necessary (for the visual previewing of an entity)
        and safe (i.e. won't do anything that affects the synchronised simulation state), so additions
-       to this list should be carefully considered -->
-  <Attack merge=""/> <!-- Needed for the Actor Viewer -->
+       to this list should be carefully considered.
+       The Attack, Sound and UnitMotion components are needed for the Actor Viewer.
+  -->
+  <Attack merge=""/>
   <BuildRestrictions merge=""/>
   <!-- Corpses should include decay components and activate them -->
   <Decay merge="">
@@ -18,8 +21,8 @@
   </Obstruction>
   <Ownership merge=""/>
   <Position merge=""/>
-  <Sound merge=""/> <!-- Needed for the Actor Viewer -->
-  <UnitMotion merge=""/> <!-- Needed for the Actor Viewer -->
+  <Sound merge=""/>
+  <UnitMotion merge=""/>
   <!-- Corpses should remain visible in fog-of-war (for the owner only) -->
   <Visibility>
     <Corpse>true</Corpse>
