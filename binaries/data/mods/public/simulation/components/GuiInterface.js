@@ -1556,8 +1556,7 @@ GuiInterface.prototype.SetWallPlacementPreview = function(player, cmd)
 			// copied over, so we need to fetch it from the template instead).
 			// TODO: we should really use a Cost object or at least some utility functions for this, this is mindless
 			// boilerplate that's probably duplicated in tons of places.
-			let entries = Resources.GetCodes().concat("population", "populationBonus", "time");
-			for (let res of entries)
+			for (let res of Resources.GetCodes().concat("population", "populationBonus", "time"))
 				result.cost[res] = tplData.cost[res];
 		}
 
