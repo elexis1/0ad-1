@@ -225,7 +225,7 @@ function closeChat()
 	Engine.GetGUIObjectByName("chatDialogPanel").hidden = true;
 }
 
-function initDiplomacy()
+function resizeDiplomacyDialog()
 {
 	let dialog = Engine.GetGUIObjectByName("diplomacyDialogPanel");
 	let size = dialog.size;
@@ -237,14 +237,11 @@ function initDiplomacy()
 	size.left = -width / 2;
 	size.right = width / 2;
 	dialog.size = size;
-
-	initDiplomacy = () => {};
 }
 
 function openDiplomacy()
 {
 	closeOpenDialogs();
-	initDiplomacy();
 
 	if (g_ViewedPlayer < 1)
 		return;
