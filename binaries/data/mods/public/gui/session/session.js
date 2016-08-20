@@ -270,6 +270,7 @@ function init(initData, hotloadData)
 	gameSpeed.selected = gameSpeedIdx != -1 ? gameSpeedIdx : g_GameSpeeds.Default;
 	gameSpeed.onSelectionChange = function() { changeGameSpeed(+this.list_data[this.selected]); };
 	initMenuPosition();
+	resizeDiplomacyDialog();
 
 	for (let slot in Engine.GetGUIObjectByName("unitHeroPanel").children)
 		initGUIHeroes(slot);
