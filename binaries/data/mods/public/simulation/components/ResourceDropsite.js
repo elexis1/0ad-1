@@ -1,12 +1,10 @@
 function ResourceDropsite() {}
 
-ResourceDropsite.prototype.ResourceChoiceSchema = Resources.BuildChoicesSchema();
-
 ResourceDropsite.prototype.Schema =
 	"<element name='Types'>" +
 		"<list>" +
 			"<zeroOrMore>" +
-				ResourceDropsite.prototype.ResourceChoiceSchema +
+				Resources.BuildChoicesSchema() +
 			"</zeroOrMore>" +
 		"</list>" +
 	"</element>" +
@@ -28,7 +26,7 @@ ResourceDropsite.prototype.GetTypes = function()
 {
 	let types = ApplyValueModificationsToEntity("ResourceDropsite/Types", this.template.Types, this.entity);
 	let resources = Resources.GetCodes();
-	return types.split(/\s+/).filter(type => resources.indexOf(type.toLowerCase()) > -1);
+	return types.split(/\s+/).filter(type => resources.indexOf(type.toLowerCase()) != -1);
 };
 
 /**

@@ -1,7 +1,5 @@
 function ResourceSupply() {}
 
-ResourceSupply.prototype.ResourceChoiceSchema = Resources.BuildChoicesSchema(true, true);
-
 ResourceSupply.prototype.Schema =
 	"<a:help>Provides a supply of one particular type of resource.</a:help>" +
 	"<a:example>" +
@@ -15,7 +13,7 @@ ResourceSupply.prototype.Schema =
 		"<choice><data type='nonNegativeInteger'/><value>Infinity</value></choice>" +
 	"</element>" +
 	"<element name='Type' a:help='Type and Subtype of resource available from this entity'>" +
-		ResourceSupply.prototype.ResourceChoiceSchema +
+		Resources.BuildChoicesSchema(true, true) +
 	"</element>" +
 	"<element name='MaxGatherers' a:help='Amount of gatherers who can gather resources from this entity at the same time'>" +
 		"<data type='nonNegativeInteger'/>" +
