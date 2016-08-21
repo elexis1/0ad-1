@@ -348,7 +348,7 @@ function diplomacyFormatTributeButtons(i, hidden)
 				let amounts = {};
 				for (let res of resCodes)
 					amounts[res] = 0;
-				amounts[resCode] = 100 * multiplier,
+				amounts[resCode] = 100 * multiplier;
 
 				button.tooltip = formatTributeTooltip(i, resNames[resCode], amounts[resCode]);
 
