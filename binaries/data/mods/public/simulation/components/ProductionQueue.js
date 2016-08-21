@@ -3,8 +3,6 @@ const MAX_QUEUE_SIZE = 16;
 
 function ProductionQueue() {}
 
-ProductionQueue.prototype.ResourceSchema = Resources.BuildSchema("nonNegativeDecimal", [ "time" ]);
-
 ProductionQueue.prototype.Schema =
 	"<a:help>Allows the building to train new units and research technologies</a:help>" +
 	"<a:example>" +
@@ -33,7 +31,7 @@ ProductionQueue.prototype.Schema =
 		"</element>" +
 	"</optional>" +
 	"<element name='TechCostMultiplier' a:help='Multiplier to modify ressources cost and research time of technologies searched in this building.'>" +
-		ProductionQueue.prototype.ResourceSchema +
+		Resources.BuildSchema("nonNegativeDecimal", ["time"]) +
 	"</element>";
 
 ProductionQueue.prototype.Init = function()

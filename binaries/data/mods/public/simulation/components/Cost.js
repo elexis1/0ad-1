@@ -1,7 +1,5 @@
 function Cost() {}
 
-Cost.prototype.ResourcesSchema = Resources.BuildSchema("nonNegativeDecimal");
-
 Cost.prototype.Schema =
 	"<a:help>Specifies the construction/training costs of this entity.</a:help>" +
 	"<a:example>" +
@@ -25,7 +23,7 @@ Cost.prototype.Schema =
 		"<ref name='nonNegativeDecimal'/>" +
 	"</element>" +
 	"<element name='Resources' a:help='Resource costs to construct/train this entity'>" +
-		Cost.prototype.ResourcesSchema +
+		Resources.BuildSchema("nonNegativeDecimal") +
 	"</element>";
 
 Cost.prototype.Init = function()
