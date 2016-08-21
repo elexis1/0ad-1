@@ -1,27 +1,23 @@
 /**
- * Resources Global
- *
- * - `Engine.FindJSONFiles` only exists within the session context
- * - `Engine.BuildDirEntList` only exists within the gui context
- * - The AI and test contexts have no access to any JSON file access functions
- *   -- Therefore the AI gets passed an object containing the information it
- *     requires from `GuiInterface.js::GetSimulationState()`
- *   -- And the test environment... improvises.
+ * Since the AI context can't access JSON functions, it gets passed an object
+ * containing the information from `GuiInterface.js::GetSimulationState()`.
  */
 function Resources()
 {
 	let jsonFiles = [];
+	// Simulation context
 	if (Engine.FindJSONFiles)
 	{
 		jsonFiles = Engine.FindJSONFiles("resources", false);
 		for (let file in jsonFiles)
 			jsonFiles[file] = "resources/" + jsonFiles[file] + ".json";
 	}
+	// GUI context
 	else if (Engine.BuildDirEntList)
 		jsonFiles = Engine.BuildDirEntList("simulation/data/resources/", "*.json", false);
 	else
 	{
-		warn("Resources: No JSON access functions are unavailable");
+		error("Resources: JSON functions are not available");
 		return;
 	}
 
