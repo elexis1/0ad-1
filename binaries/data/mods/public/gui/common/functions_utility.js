@@ -255,18 +255,17 @@ function notifyUser(userName, msgText)
 function horizontallyDistributeObjects(parentName, margin = 0, limit = undefined)
 {
 	let objects = Engine.GetGUIObjectByName(parentName).children;
+
 	if (limit)
 		objects = objects.splice(0, limit);
 
-	let i = 0;
-	for (let child of objects)
+	for (let i = 0; i < objects.length; ++i)
 	{
-		let size = child.size;
+		let size = objects[i].size;
 		size.rleft = 100 / objects.length * i;
 		size.rright = 100 / objects.length * (i + 1);
 		size.right = -margin;
-		child.size = size;
-		++i;
+		objects[i].size = size;
 	}
 }
 
@@ -275,10 +274,10 @@ function horizontallyDistributeObjects(parentName, margin = 0, limit = undefined
  *
  * @param idx - The index from which to start
  */
-function hideRemaining(parentName, idx = 0)
+function hideRemaining(parentName, start = 0)
 {
 	let objects = Engine.GetGUIObjectByName(parentName).children;
 
-	for (; idx < objects.length; ++idx)
-		objects[idx].hidden = true;
+	for (let i = start; i < objects.length; ++i)
+		objects[i].hidden = true;
 }
