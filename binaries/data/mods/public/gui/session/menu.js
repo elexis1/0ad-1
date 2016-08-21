@@ -333,7 +333,7 @@ function diplomacyFormatTributeButtons(i, hidden)
 
 		button.enabled = controlsPlayer(g_ViewedPlayer);
 		button.tooltip = formatTributeTooltip(i, resNames[resCode], 100);
-		button.onpress = (function(i, resCode, button) {
+		button.onPress = (function(i, resCode, button) {
 			// Shift+click to send 500, shift+click+click to send 1000, etc.
 			// See INPUT_MASSTRIBUTING in input.js
 			let multiplier = 1;
