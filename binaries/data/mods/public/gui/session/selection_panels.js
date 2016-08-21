@@ -168,8 +168,11 @@ g_SelectionPanels.Barter = {
 		button.Sell.hidden = false;
 		selectionIcon.hidden = !isSelected;
 
+		// Ensure the buy button is right beneath the sell button of the same resource,
+		// even when using multiple lines.
 		setPanelObjectPosition(button.Sell, data.i + (data.i >= data.rowLength ? data.rowLength : 0), data.rowLength);
 		setPanelObjectPosition(button.Buy, data.i + data.rowLength * (data.i >= data.rowLength ? 2 : 1), data.rowLength);
+
 		return true;
 	}
 };
