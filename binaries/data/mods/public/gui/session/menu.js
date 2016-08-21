@@ -445,16 +445,24 @@ function openTrade()
 	{
 		if (!Engine.GetGUIObjectByName("tradeResource["+i+"]"))
 			break;
+
 		setPanelObjectPosition(Engine.GetGUIObjectByName("tradeResource["+i+"]"), i, 8);
+
 		let resCode = resCodes[i];
 		proba[resCode] = proba[resCode] || 0;
+
 		let icon = Engine.GetGUIObjectByName("tradeResourceIcon["+i+"]");
 		icon.sprite = "stretched:session/icons/resources/" + resCode + ".png";
-		let label = Engine.GetGUIObjectByName("tradeResourceText["+i+"]");
+
 		let buttonUp = Engine.GetGUIObjectByName("tradeArrowUp["+i+"]");
 		let buttonDn = Engine.GetGUIObjectByName("tradeArrowDn["+i+"]");
-		let iconSel = Engine.GetGUIObjectByName("tradeResourceSelection["+i+"]");
-		button[resCode] = { "up": buttonUp, "dn": buttonDn, "label": label, "sel": iconSel };
+
+		button[resCode] = {
+			"up": buttonUp,
+			"dn": buttonDn,
+			"label": Engine.GetGUIObjectByName("tradeResourceText["+i+"]"),
+			"sel": Engine.GetGUIObjectByName("tradeResourceSelection["+i+"]")
+		};
 
 		let buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
 		buttonResource.enabled = controlsPlayer(g_ViewedPlayer);
