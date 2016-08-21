@@ -341,16 +341,19 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 	circularMap: false,
 	timeElapsed: 0,
 	gameType: "conquest",
-	barterPrices: { buy: { "food": 150 }, sell: { "food": 25 } },
-	resources: {
-		codes: ["food", "metal", "stone", "wood"],
-		names: {
+	"barterPrices": {
+		"buy": { "food": 150 },
+		"sell": { "food": 25 }
+	},
+	"resources": {
+		"codes": ["food", "metal", "stone", "wood"],
+		"names": {
 			"food": "Food",
 			"metal": "Metal",
 			"stone": "Stone",
 			"wood": "Wood",
 		},
-		aiInfluenceGroups: {
+		"aiInfluenceGroups": {
 			"food": 0,
 			"metal": 0,
 			"stone": 0,
@@ -475,7 +478,10 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 	circularMap: false,
 	timeElapsed: 0,
 	gameType: "conquest",
-	barterPrices: { buy: { "food": 150 }, sell: { "food": 25 } },
+	"barterPrices": {
+		"buy": { "food": 150 },
+		"sell": { "food": 25 }
+	},
 	resources: {
 		codes: ["food", "metal", "stone", "wood"],
 		names: {
