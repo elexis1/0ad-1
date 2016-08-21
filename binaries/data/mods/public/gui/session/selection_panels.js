@@ -168,10 +168,8 @@ g_SelectionPanels.Barter = {
 		button.Sell.hidden = false;
 		selectionIcon.hidden = !isSelected;
 
-		let sellPos = data.i + (data.i >= data.rowLength ? data.rowLength : 0);
-		let buyPos = data.i + data.rowLength * (data.i >= data.rowLength ? 2 : 1);
-		setPanelObjectPosition(button.Sell, sellPos, data.rowLength);
-		setPanelObjectPosition(button.Buy, buyPos, data.rowLength);
+		setPanelObjectPosition(button.Sell, data.i + (data.i >= data.rowLength ? data.rowLength : 0), data.rowLength);
+		setPanelObjectPosition(button.Buy, data.i + data.rowLength * (data.i >= data.rowLength ? 2 : 1), data.rowLength);
 		return true;
 	}
 };

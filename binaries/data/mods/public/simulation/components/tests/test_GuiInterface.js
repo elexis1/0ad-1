@@ -35,7 +35,12 @@ Engine.LoadComponentScript("GuiInterface.js");
 
 Resources = {
 	"GetCodes": () => ["food", "metal", "stone", "wood"],
-	"GetNames": () => ({ "food": "Food", "metal": "Metal", "stone": "Stone", "wood": "Wood" }),
+	"GetNames": () => ({
+		"food": "Food",
+		"metal": "Metal",
+		"stone": "Stone",
+		"wood": "Wood"
+	}),
 	"GetResource": () => ({}),
 };
 
