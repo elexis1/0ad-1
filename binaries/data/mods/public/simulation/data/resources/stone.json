@@ -1,6 +1,7 @@
 {
 	"code": "stone",
 	"name": "Stone",
+	"order": 4,
 	"subtypes": {
 		"rock": "Rock",
 		"ruins": "Ruins"

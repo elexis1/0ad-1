@@ -1,6 +1,7 @@
 {
 	"code": "food",
 	"name": "Food",
+	"order": 1,
 	"subtypes": {
 		"fish": "Fish",
 		"fruit": "Fruit",
