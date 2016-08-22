@@ -396,7 +396,7 @@ function toggleDiplomacy()
 		openDiplomacy();
 }
 
-function initTrade()
+function resizeTradeDialog()
 {
 	let dialog = Engine.GetGUIObjectByName("tradeDialogPanel");
 	let size = dialog.size;
@@ -408,14 +408,11 @@ function initTrade()
 	size.left = -width / 2;
 	size.right = width / 2;
 	dialog.size = size;
-
-	initTrade = () => {};
 }
 
 function openTrade()
 {
 	closeOpenDialogs();
-	initTrade();
 
 	if (g_ViewedPlayer < 1)
 		return;
