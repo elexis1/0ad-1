@@ -35,22 +35,15 @@ function Resources()
 			this.resourceCodes.push(data.code);
 	}
 
-	let resSort = function(a, b)
-	{
-		if (a.order < b.order)
-			return -1;
-		if (a.order > b.order)
-			return 1;
-		return 0;
-	};
+	let resSort = (a, b) =>
+		a.order < b.order ? -1 :
+		a.order > b.order ? +1 : 0;
 
-	// Preserve old gui order
 	this.resourceData.sort(resSort);
 	this.resourceCodes.sort((a, b) => resSort(
 		this.resourceData.find(resource => resource.code == a),
 		this.resourceData.find(resource => resource.code == b)
 	));
-
 };
 
 Resources.prototype.GetData = function()
