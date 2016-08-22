@@ -441,12 +441,15 @@ function openTrade()
 	hideRemaining("tradeResources", resCodes.length);
 	Engine.GetGUIObjectByName("tradeHelp").hidden = false;
 
+	let maxTradeResources = Engine.GetGUIObjectByName("tradeResources").children.length;
+
 	for (let i = 0; i < resCodes.length; ++i)
 	{
-		if (!Engine.GetGUIObjectByName("tradeResource["+i+"]"))
+		let tradeResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
+		if (!tradeResource)
 			break;
 
-		setPanelObjectPosition(Engine.GetGUIObjectByName("tradeResource["+i+"]"), i, 8);
+		setPanelObjectPosition(tradeResource, i, maxTradeResources);
 
 		let resCode = resCodes[i];
 		proba[resCode] = proba[resCode] || 0;
