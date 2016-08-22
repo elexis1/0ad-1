@@ -1,6 +1,7 @@
 {
 	"code": "metal",
 	"name": "Metal",
+	"order": 3,
 	"subtypes": {
 		"ore": "Ore"
 	},
