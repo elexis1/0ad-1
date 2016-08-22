@@ -269,8 +269,10 @@ function init(initData, hotloadData)
 	let gameSpeedIdx = g_GameSpeeds.Speed.indexOf(Engine.GetSimRate());
 	gameSpeed.selected = gameSpeedIdx != -1 ? gameSpeedIdx : g_GameSpeeds.Default;
 	gameSpeed.onSelectionChange = function() { changeGameSpeed(+this.list_data[this.selected]); };
+
 	initMenuPosition();
 	resizeDiplomacyDialog();
+	resizeTradeDialog();
 
 	for (let slot in Engine.GetGUIObjectByName("unitHeroPanel").children)
 		initGUIHeroes(slot);
