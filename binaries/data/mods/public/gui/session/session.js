@@ -479,7 +479,6 @@ function updateTopPanel()
 	viewPlayer.hidden = !g_IsObserver && !g_DevSettings.changePerspective;
 
 	let resCodes = g_ResourceData.GetCodes();
-	let resNames = g_ResourceData.GetNames();
 	let r = 0;
 	for (let res of resCodes)
 	{
@@ -492,8 +491,14 @@ function updateTopPanel()
 		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
 		++r;
 	}
-	horizontallyDistributeObjects("resourceCounts", 0, r);
+	horizontallySpaceObjects("resourceCounts", 0);
 	hideRemaining("resourceCounts", r);
+
+	let resSize = Engine.GetGUIObjectByName("resource[0]").size;
+	let resPop = Engine.GetGUIObjectByName("population");
+	let resPopSize = resPop.size;
+	resPopSize.left = (resSize.right - resSize.left) * r;
+	resPop.size = resPopSize;
 
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("diplomacyButton1").hidden = !isPlayer;
