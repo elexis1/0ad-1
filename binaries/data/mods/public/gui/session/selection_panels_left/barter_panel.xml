@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <object name="unitBarterPanel" 
-	size="12 3 100% 100%"
+	size="12 72 100% 100%"
 	hidden="true"
 >
 

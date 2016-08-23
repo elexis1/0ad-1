@@ -247,6 +247,25 @@ function notifyUser(userName, msgText)
 }
 
 /**
+ * Horizontally spaces objects within a parent
+ *
+ * @param margin The gap, in px, between the objects
+ * @return The number of elements affected
+ */
+function horizontallySpaceObjects (parentName, margin=0)
+{
+	let objects = Engine.GetGUIObjectByName(parentName).children;
+	for (let i = 0; i < objects.length; ++i)
+	{
+		let size = objects[i].size;
+		let width = size.right - size.left;
+		size.left = i * (width + margin) + margin;
+		size.right = (i + 1) * (width + margin);
+		objects[i].size = size;
+	}
+}
+
+/**
  * Horizontally fit objects within a parent.
  *
  * @param margin - The gap, in px, between the repeated objects

@@ -89,9 +89,20 @@ g_SelectionPanels.Alert = {
 g_SelectionPanels.Barter = {
 	"getMaxNumberOfItems": function()
 	{
-		return 8;
+		let barterPanel = Engine.GetGUIObjectByName("unitBarterPanel");
+		let childCount = barterPanel.children.length / 2;
+		this.rowLength = Math.ceil(childCount / 2);
+
+		if (g_ResourceData.GetCodes().length > this.rowLength)
+		{
+			let panelSize = barterPanel.size;
+			panelSize.top = 3;
+			barterPanel.size = panelSize;
+		}
+
+		return childCount;
 	},
-	"rowLength": 4,
+	"rowLength": 1,
 	"getItems": function(unitEntState, selection)
 	{
 		if (!unitEntState.barterMarket)
