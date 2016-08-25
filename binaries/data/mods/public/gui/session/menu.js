@@ -423,7 +423,7 @@ function openTrade()
 
 	g_IsTradeOpen = true;
 
-	var updateButtons = function()
+	let updateTradeButtons = function()
 	{
 		for (let res in button)
 		{
@@ -444,6 +444,27 @@ function openTrade()
 
 	for (let i = 0; i < resCodes.length; ++i)
 	{
+		let resCode = resCodes[i];
+
+		// Barter
+		let barterButton = {};
+		for (let a of ["Buy", "Sell"])
+			barterButton[a] = Engine.GetGUIObjectByName("barter" + a + "Button[" + i + "]");
+
+		if (!g_BarterSell)
+			g_BarterSell = g_ResourceData.GetCodes()[0];
+
+		let resource = getLocalizedResourceName(g_ResourceData.GetNames()[resCode], "withinSentence");
+		barterButton.Buy.tooltip = sprintf(translate("Buy %(resource)s"), { "resource": resource });
+		barterButton.Sell.tooltip = sprintf(translate("Sell %(resource)s"), { "resource": resource });
+
+		barterButton.Sell.onPress = function() {
+			g_BarterSell = resCode;
+		};
+
+		setPanelObjectPosition(Engine.GetGUIObjectByName("barterResource[" + i + "]"), i, i+1);
+
+		// Trade
 		let tradeResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
 		if (!tradeResource)
 		{
@@ -452,9 +473,6 @@ function openTrade()
 		}
 
 		setPanelObjectPosition(tradeResource, i, i+1);
-
-		let resCode = resCodes[i];
-		proba[resCode] = proba[resCode] || 0;
 
 		let icon = Engine.GetGUIObjectByName("tradeResourceIcon["+i+"]");
 		icon.sprite = "stretched:session/icons/resources/" + resCode + ".png";
@@ -469,6 +487,8 @@ function openTrade()
 			"sel": Engine.GetGUIObjectByName("tradeResourceSelection["+i+"]")
 		};
 
+		proba[resCode] = proba[resCode] || 0;
+
 		let buttonResource = Engine.GetGUIObjectByName("tradeResourceButton["+i+"]");
 		buttonResource.enabled = controlsPlayer(g_ViewedPlayer);
 		buttonResource.onpress = (function(resource){
@@ -481,7 +501,7 @@ function openTrade()
 					Engine.PostNetworkCommand({"type": "set-trading-goods", "tradingGoods": proba});
 				}
 				selec = resource;
-				updateButtons();
+				updateTradeButtons();
 			};
 		})(resCode);
 
@@ -491,7 +511,7 @@ function openTrade()
 				proba[resource] += Math.min(STEP, proba[selec]);
 				proba[selec]    -= Math.min(STEP, proba[selec]);
 				Engine.PostNetworkCommand({"type": "set-trading-goods", "tradingGoods": proba});
-				updateButtons();
+				updateTradeButtons();
 			};
 		})(resCode);
 
@@ -501,17 +521,89 @@ function openTrade()
 				proba[selec]    += Math.min(STEP, proba[resource]);
 				proba[resource] -= Math.min(STEP, proba[resource]);
 				Engine.PostNetworkCommand({"type": "set-trading-goods", "tradingGoods": proba});
-				updateButtons();
+				updateTradeButtons();
 			};
 		})(resCode);
 	}
-	updateButtons();
+	updateTradeButtons();
 
 	let traderNumber = Engine.GuiInterfaceCall("GetTraderNumber", g_ViewedPlayer);
-	Engine.GetGUIObjectByName("landTraders").caption = getIdleLandTradersText(traderNumber);
-	Engine.GetGUIObjectByName("shipTraders").caption = getIdleShipTradersText(traderNumber);
+	Engine.GetGUIObjectByName("traders").caption = getIdleLandTradersText(traderNumber) + "\n\n" + getIdleShipTradersText(traderNumber);
 	Engine.GetGUIObjectByName("tradeDialogPanel").hidden = false;
 }
+
+function updateBarterButtons()
+{
+	let resCodes = g_ResourceData.GetCodes();
+	if (!g_BarterSell)
+		g_BarterSell = resCodes[0];
+
+	let canBarter = Engine.GuiInterfaceCall("PlayerCanBarter", g_ViewedPlayer);
+	Engine.GetGUIObjectByName("barterNoMarketsMessage").hidden = canBarter;
+	Engine.GetGUIObjectByName("barterResources").hidden = !canBarter;
+	if (!canBarter)
+		return;
+
+	for (let i = 0; i < resCodes.length; ++i)
+	{
+		let resCode = resCodes[i];
+		let barterButton = {};
+		let barterIcon = {};
+		let barterAmount = {};
+		for (let a of ["Buy", "Sell"])
+		{
+			barterButton[a] = Engine.GetGUIObjectByName("barter" + a + "Button[" + i + "]");
+			barterIcon[a] = Engine.GetGUIObjectByName("barter" + a + "Icon[" + i + "]");
+			barterAmount[a] = Engine.GetGUIObjectByName("barter" + a + "Amount[" + i + "]");
+		}
+		let selectionIcon = Engine.GetGUIObjectByName("barterSellSelection[" + i + "]");
+
+
+		let amountToSell = BARTER_RESOURCE_AMOUNT_TO_SELL;
+		if (Engine.HotkeyIsPressed("session.massbarter"))
+			amountToSell *= BARTER_BUNCH_MULTIPLIER;
+
+		let isSelected = resCode == g_BarterSell;
+		let grayscale = isSelected ? "color: 0 0 0 100:grayscale:" : "";
+
+		// do we have enough of this resource to sell?
+		let neededRes = {};
+		neededRes[resCode] = amountToSell;
+		let canSellCurrent = Engine.GuiInterfaceCall("GetNeededResources", {
+			"cost": neededRes,
+			"player": g_ViewedPlayer,
+		}) ? "color:255 0 0 80:" : "";
+
+		// Let's see if we have enough resources to barter.
+		neededRes = {};
+		neededRes[g_BarterSell] = amountToSell;
+		let canBuyAny = Engine.GuiInterfaceCall("GetNeededResources", {
+			"cost": neededRes,
+			"player": g_ViewedPlayer,
+		}) ? "color:255 0 0 80:" : "";
+
+		barterIcon.Sell.sprite = canSellCurrent + "stretched:" + grayscale + "session/icons/resources/" + resCode + ".png";
+		barterIcon.Buy.sprite = canBuyAny + "stretched:" + grayscale + "session/icons/resources/" + resCode + ".png";
+
+		barterAmount.Sell.caption = "-" + amountToSell;
+		let prices = Engine.GuiInterfaceCall("GetBarterPrices");
+		barterAmount.Buy.caption = "+" + Math.round(prices.sell[g_BarterSell] / prices.buy[resCode] * amountToSell);
+
+		barterButton.Buy.onPress = function() { 
+			Engine.PostNetworkCommand({
+				"type": "barter",
+				"sell": g_BarterSell,
+				"buy": resCode,
+				"amount": amountToSell
+			});
+		};
+
+		barterButton.Buy.hidden = isSelected;
+		barterButton.Buy.enabled = controlsPlayer(g_ViewedPlayer);
+		barterButton.Sell.hidden = false;
+		selectionIcon.hidden = !isSelected;
+	}
+};
 
 function getIdleLandTradersText(traderNumber)
 {

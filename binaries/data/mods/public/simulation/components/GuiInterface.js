@@ -1938,6 +1938,17 @@ GuiInterface.prototype.GetTradingGoods = function(player)
 	return QueryPlayerIDInterface(player).GetTradingGoods();
 };
 
+GuiInterface.prototype.GetBarterPrices = function()
+{
+	return Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter).GetPrices();
+};
+
+GuiInterface.prototype.PlayerCanBarter = function(player)
+{
+	let playerEnt = Engine.QueryInterface(SYSTEM_ENTITY, IID_PlayerManager).GetPlayerByID(player);
+	return Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter).PlayerHasMarket(playerEnt);
+};
+
 GuiInterface.prototype.OnGlobalEntityRenamed = function(msg)
 {
 	this.renamedEntities.push(msg);
@@ -2002,6 +2013,8 @@ let exposedFunctions = {
 
 	"GetTraderNumber": 1,
 	"GetTradingGoods": 1,
+	"GetBarterPrices": 1,
+	"PlayerCanBarter": 1,
 };
 
 GuiInterface.prototype.ScriptCall = function(player, name, args)

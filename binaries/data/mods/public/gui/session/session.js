@@ -735,6 +735,7 @@ function updateGUIObjects()
 	updateBuildingPlacementPreview();
 	updateTimeNotifications();
 	updateIdleWorkerButton();
+	updateBarterButtons();
 
 	if (g_ViewedPlayer > 0)
 	{

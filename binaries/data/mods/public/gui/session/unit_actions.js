@@ -1208,7 +1208,7 @@ var g_EntityCommands =
 				return false;
 
 			return {
-				"tooltip": translate("Select trading goods"),
+				"tooltip": translate("Barter & Trade"),
 				"icon": "economics.png"
 			};
 		},
