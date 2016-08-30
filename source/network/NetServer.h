@@ -18,6 +18,7 @@
 #ifndef NETSERVER_H
 #define NETSERVER_H
 
+#include "DedicatedServer.h"
 #include "NetFileTransfer.h"
 #include "NetHost.h"
 
@@ -91,9 +92,11 @@ enum NetServerSessionState
 
 /**
  * Network server interface. Handles all the coordination between players.
- * One person runs this object, and every player (including the host) connects their CNetClient to it.
+ * The host runs this object and every player connects their CNetClient to it.
  *
- * The actual work is performed by CNetServerWorker in a separate thread.
+ * If it is a dedicated server, the host will not be a player (nor observer).
+ *
+ * The actual work is performed by CNetServerWorker and CDedicatedServer in a separate thread.
  */
 class CNetServer
 {
@@ -135,6 +138,9 @@ public:
 	void SetTurnLength(u32 msecs);
 
 private:
+	friend class CDedicatedServer; // TODO: needed?
+	friend class CDedicatedServer_Gamesetup;
+
 	CNetServerWorker* m_Worker;
 };
 
@@ -174,6 +180,8 @@ public:
 	bool Broadcast(const CNetMessage* message);
 
 private:
+	friend class CDedicatedServer; // TODO: needed?
+	friend class CDedicatedServer_Gamesetup;
 	friend class CNetServer;
 	friend class CNetFileReceiveTask_ServerRejoin;
 

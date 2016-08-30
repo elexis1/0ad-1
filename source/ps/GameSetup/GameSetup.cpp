@@ -710,7 +710,8 @@ void EndGame()
 	SAFE_DELETE(g_NetServer);
 	SAFE_DELETE(g_Game);
 
-	ISoundManager::CloseGame();
+	if (!g_args.Has("dedicated-host"))
+		ISoundManager::CloseGame();
 }
 
 
@@ -725,15 +726,18 @@ void Shutdown(int flags)
 
 	ShutdownPs();
 
-	TIMER_BEGIN(L"shutdown TexMan");
-	delete &g_TexMan;
-	TIMER_END(L"shutdown TexMan");
+	if (!g_args.Has("dedicated-host"))
+	{
+		TIMER_BEGIN(L"shutdown TexMan");
+		delete &g_TexMan;
+		TIMER_END(L"shutdown TexMan");
 
-	// destroy renderer
-	TIMER_BEGIN(L"shutdown Renderer");
-	delete &g_Renderer;
-	g_VBMan.Shutdown();
-	TIMER_END(L"shutdown Renderer");
+		// destroy renderer
+		TIMER_BEGIN(L"shutdown Renderer");
+		delete &g_Renderer;
+		g_VBMan.Shutdown();
+		TIMER_END(L"shutdown Renderer");
+	}
 
 	g_Profiler2.ShutdownGPU();
 
@@ -764,10 +768,13 @@ from_config:
 	TIMER_END(L"shutdown ConfigDB");
 
 	SAFE_DELETE(g_Console);
+	LOGERROR("test1");
 
 	// This is needed to ensure that no callbacks from the JSAPI try to use
 	// the profiler when it's already destructed
-	g_ScriptRuntime.reset();
+	//if (!g_args.Has("dedicated-host"))
+		g_ScriptRuntime.reset();
+	LOGERROR("test2");
 
 	// resource
 	// first shut down all resource owners, and then the handle manager.
@@ -953,7 +960,8 @@ bool Init(const CmdLineArgs& args, int flags)
 	CNetHost::Initialize();
 
 #if CONFIG2_AUDIO
-	ISoundManager::CreateSoundManager();
+	if (!args.Has("dedicated-host"))
+		ISoundManager::CreateSoundManager();
 #endif
 
 	// Check if there are mods specified on the command line,

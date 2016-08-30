@@ -642,6 +642,7 @@ void CNetServerTurnManager::NotifyFinishedClientUpdate(int client, const CStrW& 
 			break;
 
 		// Assume the host is correct (maybe we should choose the most common instead to help debugging)
+		// TODO: for dedicated hosts, we have to chose the hash of a client that didn't rejoin for the longest period
 		std::string expected = clientStateHash.second.begin()->second;
 
 		// Find all players that are OOS on that turn

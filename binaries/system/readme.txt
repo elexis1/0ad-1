@@ -6,6 +6,11 @@ Basic gameplay:
 -mod=NAME			start the game using NAME mod
 -quickstart			load faster (disables audio and some system info logging)
 
+Dedicated Server:
+-dedicated-host                 starts a dedicated multiplayer server (without graphics)
+                                please specify the mods, for example -mod="public"
+-dedicated-lobby				advertize the game of the dedicated host in the lobby
+
 Autostart:
 -autostart="TYPEDIR/MAPNAME"    enables autostart and sets MAPNAME; TYPEDIR is skirmishes, scenarios, or random
 -autostart-ai=PLAYER:AI	        sets the AI for PLAYER (e.g. 2:petra)

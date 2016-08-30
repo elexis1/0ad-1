@@ -379,8 +379,10 @@ void CNetServerWorker::Run()
 		if (!RunStep())
 			break;
 
+		if (g_DedicatedServer)
+			g_DedicatedServer->OnTick();
 		// Implement autostart mode
-		if (m_State == SERVER_STATE_PREGAME && (int)m_PlayerAssignments.size() == m_AutostartPlayers)
+		else if (m_State == SERVER_STATE_PREGAME && (int)m_PlayerAssignments.size() == m_AutostartPlayers)
 			StartGame();
 
 		// Update profiler stats
@@ -675,15 +677,21 @@ bool CNetServerWorker::HandleConnect(CNetServerSession* session)
 
 void CNetServerWorker::OnUserJoin(CNetServerSession* session)
 {
+	LOGERROR("CNetServerWorker::OnUserJoin");
+	if (g_DedicatedServer)
+		g_DedicatedServer->OnUserJoin(session);
+
+	LOGERROR("CNetServerWorker::OnUserJoin AddPlayer");
 	AddPlayer(session->GetGUID(), session->GetUserName());
 
-	if (m_HostGUID.empty() && session->IsLocalClient())
+	if (m_HostGUID.empty() && (session->IsLocalClient() || g_DedicatedServer))
 		m_HostGUID = session->GetGUID();
 
 	CGameSetupMessage gameSetupMessage(GetScriptInterface());
 	gameSetupMessage.m_Data = m_GameAttributes;
 	session->SendMessage(&gameSetupMessage);
 
+	LOGERROR("CNetServerWorker::OnUserJoin PlayerAssignmentMessage");
 	CPlayerAssignmentMessage assignMessage;
 	ConstructPlayerAssignmentMessage(assignMessage);
 	session->SendMessage(&assignMessage);
@@ -702,6 +710,9 @@ void CNetServerWorker::OnUserLeave(CNetServerSession* session)
 
 	// TODO: ought to switch the player controlled by that client
 	// back to AI control, or something?
+
+	if (g_DedicatedServer)
+		g_DedicatedServer->OnUserLeave(session);
 }
 
 void CNetServerWorker::AddPlayer(const CStr& guid, const CStrW& name)
@@ -1005,12 +1016,22 @@ bool CNetServerWorker::OnAuthenticate(void* context, CFsmEvent* event)
 
 		// Assume session 0 is most likely the local player, so they're
 		// the most efficient client to request a copy from
+
+		// TODO: When using a dedicated server we should use the client that didn't reconnect for the longest time
 		CNetServerSession* sourceSession = server.m_Sessions.at(0);
 		sourceSession->GetFileTransferer().StartTask(
 			shared_ptr<CNetFileReceiveTask>(new CNetFileReceiveTask_ServerRejoin(server, newHostID))
 		);
 
 		session->SetNextState(NSS_JOIN_SYNCING);
+	}
+
+	if (g_DedicatedServer)
+	{
+		if (isRejoining)
+			g_DedicatedServer->OnUserRejoining(session);
+		else if (g_DedicatedServer)
+			g_DedicatedServer->OnGamesetupJoin(session);
 	}
 
 	return true;
@@ -1083,6 +1104,9 @@ bool CNetServerWorker::OnChat(void* context, CFsmEvent* event)
 
 	server.Broadcast(message);
 
+	if (g_DedicatedServer)
+		g_DedicatedServer->OnChat(session, message);
+
 	return true;
 }
 
@@ -1099,6 +1123,9 @@ bool CNetServerWorker::OnReady(void* context, CFsmEvent* event)
 
 	server.Broadcast(message);
 	server.SetPlayerReady(message->m_GUID, message->m_Status);
+
+	if (g_DedicatedServer)
+		g_DedicatedServer->OnReady(session, message);
 
 	return true;
 }
@@ -1246,6 +1273,9 @@ bool CNetServerWorker::OnRejoined(void* context, CFsmEvent* event)
 		session->SendMessage(&pausedMessage);
 	}
 
+	if (g_DedicatedServer)
+		g_DedicatedServer->OnUserRejoined(session);
+
 	return true;
 }
 
@@ -1353,6 +1383,9 @@ void CNetServerWorker::StartGame()
 
 	CGameStartMessage gameStart;
 	Broadcast(&gameStart);
+
+	if (g_DedicatedServer)
+		g_DedicatedServer->OnStartGame();
 }
 
 void CNetServerWorker::UpdateGameAttributes(JS::MutableHandleValue attrs)
@@ -1365,6 +1398,9 @@ void CNetServerWorker::UpdateGameAttributes(JS::MutableHandleValue attrs)
 	CGameSetupMessage gameSetupMessage(GetScriptInterface());
 	gameSetupMessage.m_Data = m_GameAttributes;
 	Broadcast(&gameSetupMessage);
+
+	if (g_DedicatedServer)
+		g_DedicatedServer->OnUpdateGameAttributes();
 }
 
 CStrW CNetServerWorker::SanitisePlayerName(const CStrW& original)

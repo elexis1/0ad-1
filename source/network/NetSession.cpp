@@ -89,6 +89,13 @@ bool CNetClientSession::Connect(const CStr& server, const u16 port, const bool i
 	return true;
 }
 
+CStr CNetServerSession::GetIPAddressString()
+{
+	char ipAddress[256] = "(error)";
+	enet_address_get_host_ip(&(m_Peer->address), ipAddress, ARRAY_SIZE(ipAddress));
+	return CStr(ipAddress);
+}
+
 void CNetClientSession::Disconnect(u32 reason)
 {
 	ENSURE(m_Host && m_Server);

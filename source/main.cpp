@@ -521,7 +521,18 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 			Shutdown(SHUTDOWN_FROM_CONFIG);
 			continue;
 		}
+
+		if (args.Has("dedicated-host"))
+		{
+			g_DedicatedServer = new CDedicatedServer();
+			g_DedicatedServer->StartHosting();
+			delete g_DedicatedServer;
+			Shutdown(0);
+			continue;
+		}
+
 		InitGraphics(args, 0);
+
 		MainControllerInit();
 		while (!quit)
 			Frame();
@@ -568,6 +579,8 @@ extern "C" int main(int argc, char* argv[])
 
 	// Shut down profiler initialised by EarlyInit
 	g_Profiler2.Shutdown();
+
+	// TODO: crash after leaving main with dedicated server!
 
 	return EXIT_SUCCESS;
 }
