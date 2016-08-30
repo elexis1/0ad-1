@@ -250,9 +250,8 @@ function notifyUser(userName, msgText)
  * Horizontally spaces objects within a parent
  *
  * @param margin The gap, in px, between the objects
- * @return The number of elements affected
  */
-function horizontallySpaceObjects (parentName, margin=0)
+function horizontallySpaceObjects(parentName, margin=0)
 {
 	let objects = Engine.GetGUIObjectByName(parentName).children;
 	for (let i = 0; i < objects.length; ++i)
@@ -261,29 +260,6 @@ function horizontallySpaceObjects (parentName, margin=0)
 		let width = size.right - size.left;
 		size.left = i * (width + margin) + margin;
 		size.right = (i + 1) * (width + margin);
-		objects[i].size = size;
-	}
-}
-
-/**
- * Horizontally fit objects within a parent.
- *
- * @param margin - The gap, in px, between the repeated objects
- * @param limit - The number of elements to fit
- */
-function horizontallyDistributeObjects(parentName, margin = 0, limit = undefined)
-{
-	let objects = Engine.GetGUIObjectByName(parentName).children;
-
-	if (limit)
-		objects = objects.splice(0, limit);
-
-	for (let i = 0; i < objects.length; ++i)
-	{
-		let size = objects[i].size;
-		size.rleft = 100 / objects.length * i;
-		size.rright = 100 / objects.length * (i + 1);
-		size.right = -margin;
 		objects[i].size = size;
 	}
 }

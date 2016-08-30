@@ -484,7 +484,7 @@ function updateTopPanel()
 	{
 		if (!Engine.GetGUIObjectByName("resource["+r+"]"))
 		{
-			warn("Current GUI limits prevent displaying more than eight (8) resources");
+			warn("Current GUI limits prevent displaying more than " + r + " resources at the top of the screen");
 			break;
 		}
 		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + res + ".png";
@@ -494,10 +494,9 @@ function updateTopPanel()
 	horizontallySpaceObjects("resourceCounts", 0);
 	hideRemaining("resourceCounts", r);
 
-	let resSize = Engine.GetGUIObjectByName("resource[0]").size;
 	let resPop = Engine.GetGUIObjectByName("population");
 	let resPopSize = resPop.size;
-	resPopSize.left = (resSize.right - resSize.left) * r;
+	resPopSize.left = Engine.GetGUIObjectByName("resource["+ (r-1) +"]").size.right;
 	resPop.size = resPopSize;
 
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
@@ -570,7 +569,6 @@ function leaveGame(willRejoin)
 			"isReplay": g_IsReplay,
 			"replayDirectory": !g_HasRejoined && replayDirectory,
 			"replaySelectionData": g_ReplaySelectionData,
-			"resources": GetSimState().resources
 		}
 	});
 }
@@ -988,8 +986,7 @@ function getAllyStatTooltip(resource)
 
 function updatePlayerDisplay()
 {
-	let simState = GetSimState();
-	let playerState = simState.players[g_ViewedPlayer];
+	let playerState = GetSimState().players[g_ViewedPlayer];
 	if (!playerState)
 		return;
 
