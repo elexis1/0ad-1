@@ -40,7 +40,7 @@ ResourceSupply.prototype.Init = function()
 	[this.type, this.subtype] = this.template.Type.split('.');
 	let resData = Resources.GetResource(this.type);
 	if (this.type === "treasure")
-		resData = { "subtypes": Resources.GetCodes() };
+		resData = { "subtypes": Resources.GetNames() };
 
 	// Remove entity from gameworld if the resource supplied by this entity is disabled or not valid.
 	if (!resData || !resData.subtypes[this.subtype])
