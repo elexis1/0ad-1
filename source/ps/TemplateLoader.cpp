@@ -248,13 +248,10 @@ std::vector<std::string> CTemplateLoader::FindTemplates(const std::string& path,
 	size_t flags = includeSubdirectories ? vfs::DIR_RECURSIVE : 0;
 
 	if (templatesType == SIMULATION_TEMPLATES || templatesType == ALL_TEMPLATES)
-	{
 		WARN_IF_ERR(vfs::ForEachFile(g_VFS, VfsPath(TEMPLATE_ROOT) / path, AddToTemplates, (uintptr_t)&templates, L"*.xml", flags));
-	}
+
 	if (templatesType == ACTOR_TEMPLATES || templatesType == ALL_TEMPLATES)
-	{
 		WARN_IF_ERR(vfs::ForEachFile(g_VFS, VfsPath(ACTOR_ROOT) / path, AddActorToTemplates, (uintptr_t)&templates, L"*.xml", flags));
-	}
 
 	return templates;
 }
