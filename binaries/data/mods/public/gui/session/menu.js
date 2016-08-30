@@ -28,6 +28,11 @@ const STEP = 5;
 // Shown in the trade dialog.
 const g_IdleTraderTextColor = "orange";
 
+const BARTER_RESOURCE_AMOUNT_TO_SELL = 100;
+const BARTER_BUNCH_MULTIPLIER = 5;
+const BARTER_ACTIONS = ["Sell", "Buy"];
+var g_BarterSell;
+
 var g_IsMenuOpen = false;
 
 var g_IsDiplomacyOpen = false;

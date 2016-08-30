@@ -34,8 +34,6 @@ let g_FormationsInfo = new Map();
 
 let g_SelectionPanels = {};
 
-let g_BarterSell;
-
 g_SelectionPanels.Alert = {
 	"getMaxNumberOfItems": function()
 	{
@@ -82,28 +80,6 @@ g_SelectionPanels.Alert = {
 		data.button.enabled = !data.button.hidden && controlsPlayer(data.unitEntState.player);
 
 		setPanelObjectPosition(data.button, data.i, data.rowLength);
-		return true;
-	}
-};
-
-g_SelectionPanels.Barter = {
-	"getMaxNumberOfItems": function()
-	{
-		return 1;
-	},
-	"rowLength": 4,
-	"getItems": function(unitEntState, selection)
-	{
-		if (!unitEntState.barterMarket)
-			return [];
-		return [0];
-	},
-	"setupButton": function(data)
-	{
-		let button = Engine.GetGUIObjectByName("barterButton");
-		button.onPress = toggleTrade;
-		button.tooltip = translate("Barter & Trade");
-
 		return true;
 	}
 };
@@ -1082,7 +1058,6 @@ g_SelectionPanels.Upgrade = {
  */
 let g_PanelsOrder = [
 	// LEFT PANE
-	"Barter", // Must always be visible on markets
 	"Garrison", // More important than Formation, as you want to see the garrisoned units in ships
 	"Alert",
 	"Formation",
