@@ -710,8 +710,7 @@ void EndGame()
 	SAFE_DELETE(g_NetServer);
 	SAFE_DELETE(g_Game);
 
-	if (!g_args.Has("dedicated-host"))
-		ISoundManager::CloseGame();
+	ISoundManager::CloseGame();
 }
 
 
@@ -726,18 +725,15 @@ void Shutdown(int flags)
 
 	ShutdownPs();
 
-	if (!g_args.Has("dedicated-host"))
-	{
-		TIMER_BEGIN(L"shutdown TexMan");
-		delete &g_TexMan;
-		TIMER_END(L"shutdown TexMan");
+	TIMER_BEGIN(L"shutdown TexMan");
+	delete &g_TexMan;
+	TIMER_END(L"shutdown TexMan");
 
-		// destroy renderer
-		TIMER_BEGIN(L"shutdown Renderer");
-		delete &g_Renderer;
-		g_VBMan.Shutdown();
-		TIMER_END(L"shutdown Renderer");
-	}
+	// destroy renderer
+	TIMER_BEGIN(L"shutdown Renderer");
+	delete &g_Renderer;
+	g_VBMan.Shutdown();
+	TIMER_END(L"shutdown Renderer");
 
 	g_Profiler2.ShutdownGPU();
 
@@ -768,13 +764,10 @@ from_config:
 	TIMER_END(L"shutdown ConfigDB");
 
 	SAFE_DELETE(g_Console);
-	LOGERROR("test1");
 
 	// This is needed to ensure that no callbacks from the JSAPI try to use
 	// the profiler when it's already destructed
-	//if (!g_args.Has("dedicated-host"))
 		g_ScriptRuntime.reset();
-	LOGERROR("test2");
 
 	// resource
 	// first shut down all resource owners, and then the handle manager.
@@ -799,8 +792,12 @@ from_config:
 
 		// should be last, since the above use them
 		SAFE_DELETE(g_Logger);
-		delete &g_Profiler;
-		delete &g_ProfileViewer;
+
+		if (!g_args.Has("dedicated-host"))
+		{
+			delete &g_Profiler;
+			delete &g_ProfileViewer;
+		}
 
 		SAFE_DELETE(g_ScriptStatsTable);
 	TIMER_END(L"shutdown misc");

@@ -527,7 +527,7 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 			g_DedicatedServer = new CDedicatedServer(args.Has("dedicated-lobby"));
 			g_DedicatedServer->StartHosting();
 			SAFE_DELETE(g_DedicatedServer);
-			Shutdown(0);
+			Shutdown(SHUTDOWN_FROM_CONFIG);
 			continue;
 		}
 
@@ -579,8 +579,6 @@ extern "C" int main(int argc, char* argv[])
 
 	// Shut down profiler initialised by EarlyInit
 	g_Profiler2.Shutdown();
-
-	// TODO: crash after leaving main with dedicated server!
 
 	return EXIT_SUCCESS;
 }

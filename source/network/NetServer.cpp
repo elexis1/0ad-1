@@ -677,11 +677,9 @@ bool CNetServerWorker::HandleConnect(CNetServerSession* session)
 
 void CNetServerWorker::OnUserJoin(CNetServerSession* session)
 {
-	LOGERROR("CNetServerWorker::OnUserJoin");
 	if (g_DedicatedServer)
 		g_DedicatedServer->OnUserJoin(session);
 
-	LOGERROR("CNetServerWorker::OnUserJoin AddPlayer");
 	AddPlayer(session->GetGUID(), session->GetUserName());
 
 	if (m_HostGUID.empty() && (session->IsLocalClient() || g_DedicatedServer))
@@ -691,7 +689,6 @@ void CNetServerWorker::OnUserJoin(CNetServerSession* session)
 	gameSetupMessage.m_Data = m_GameAttributes;
 	session->SendMessage(&gameSetupMessage);
 
-	LOGERROR("CNetServerWorker::OnUserJoin PlayerAssignmentMessage");
 	CPlayerAssignmentMessage assignMessage;
 	ConstructPlayerAssignmentMessage(assignMessage);
 	session->SendMessage(&assignMessage);
