@@ -239,7 +239,7 @@ function init(attribs)
 	}
 
 	g_IsNetworked = attribs.type != "offline";
-	g_IsController = attribs.type != "client" || Object.keys(g_PlayerAssignments).length == 0;
+	g_IsController = true; // TODO: need gamesetup rewrite
 	g_ServerName = attribs.serverName;
 	g_ServerPort = attribs.serverPort;
 

@@ -708,6 +708,9 @@ void CNetServerWorker::OnUserLeave(CNetServerSession* session)
 	// TODO: ought to switch the player controlled by that client
 	// back to AI control, or something?
 
+	if (m_HostGUID == session->GetGUID())
+		m_HostGUID = "";
+
 	if (g_DedicatedServer)
 		g_DedicatedServer->OnUserLeave(session);
 }
