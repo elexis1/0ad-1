@@ -913,7 +913,8 @@ bool AutostartVisualReplay(const std::string& replayFile);
 
 bool Init(const CmdLineArgs& args, int flags)
 {
-	h_mgr_init();
+	if (!args.Has("dedicated-host"))
+		h_mgr_init();
 
 	// Do this as soon as possible, because it chdirs
 	// and will mess up the error reporting if anything
@@ -924,11 +925,14 @@ bool Init(const CmdLineArgs& args, int flags)
 	// (required for finding our output log files).
 	g_Logger = new CLogger;
 
-	new CProfileViewer;
-	new CProfileManager;	// before any script code
+	if (!args.Has("dedicated-host"))
+	{
+		new CProfileViewer;
+		new CProfileManager;	// before any script code
 
-	g_ScriptStatsTable = new CScriptStatsTable;
-	g_ProfileViewer.AddRootTable(g_ScriptStatsTable);
+		g_ScriptStatsTable = new CScriptStatsTable;
+		g_ProfileViewer.AddRootTable(g_ScriptStatsTable);
+	}
 
 	// Set up the console early, so that debugging
 	// messages can be logged to it. (The console's size
@@ -937,12 +941,15 @@ bool Init(const CmdLineArgs& args, int flags)
 
 	// g_ConfigDB, command line args, globals
 	CONFIG_Init(args);
-	
-	// Using a global object for the runtime is a workaround until Simulation and AI use 
-	// their own threads and also their own runtimes.
-	const int runtimeSize = 384 * 1024 * 1024;
-	const int heapGrowthBytesGCTrigger = 20 * 1024 * 1024;
-	g_ScriptRuntime = ScriptInterface::CreateRuntime(shared_ptr<ScriptRuntime>(), runtimeSize, heapGrowthBytesGCTrigger);
+
+	if (!args.Has("dedicated-host"))
+	{
+		// Using a global object for the runtime is a workaround until Simulation and AI use
+		// their own threads and also their own runtimes.
+		const int runtimeSize = 384 * 1024 * 1024;
+		const int heapGrowthBytesGCTrigger = 20 * 1024 * 1024;
+		g_ScriptRuntime = ScriptInterface::CreateRuntime(shared_ptr<ScriptRuntime>(), runtimeSize, heapGrowthBytesGCTrigger);
+	}
 
 	// Special command-line mode to dump the entity schemas instead of running the game.
 	// (This must be done after loading VFS etc, but should be done before wasting time
@@ -959,8 +966,10 @@ bool Init(const CmdLineArgs& args, int flags)
 
 	CNetHost::Initialize();
 
+	if (args.Has("dedicated-host"))
+		return true;
+
 #if CONFIG2_AUDIO
-	if (!args.Has("dedicated-host"))
 		ISoundManager::CreateSoundManager();
 #endif
 
