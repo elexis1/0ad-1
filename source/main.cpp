@@ -524,9 +524,9 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 
 		if (args.Has("dedicated-host"))
 		{
-			g_DedicatedServer = new CDedicatedServer();
+			g_DedicatedServer = new CDedicatedServer(args.Has("dedicated-lobby"));
 			g_DedicatedServer->StartHosting();
-			delete g_DedicatedServer;
+			SAFE_DELETE(g_DedicatedServer);
 			Shutdown(0);
 			continue;
 		}

@@ -33,7 +33,16 @@ class CDedicatedServer
 private:
 	friend class NetServer;
 	friend class NetServerWorker;
-	friend class DedicatedServer_Gamesetup;
+
+	/*
+	 * Whether or not to advertize the game in the multiplayer lobby.
+	 */
+	bool m_UseLobby;
+
+	/**
+	 * Whether or not we are currently connected to the multiplayer lobby.
+	 */
+	bool m_IsLobbyConnected;
 
 	/**
 	 * Whether or not the service is actually running.
@@ -52,18 +61,29 @@ private:
 
 public: // TODO: can we make this private?
 
-	CDedicatedServer();
+	CDedicatedServer(bool lobby);
 	~CDedicatedServer();
 
 	/**
-	 * Create the host. Starts listening on UDP port 20595 for player connects.
+	 * Starts the XmppClient and joins the room with the credentials from the current config.
+	 * Returns true if successful.
+	 */
+	bool ConnectLobby();
+
+	/**
+	 * Fetches the most recent Xmpp updates and triggers according events.
+	 */
+	void ParseLobbyMessages();
+
+	/**
+	 * Create the host. Starts listening on the specified UDP port for player connects.
 	 */
 	void StartHosting();
 
 	/**
 	 * Exit gracefully and safely disconnect all clients.
 	 */
-	void Shutdown();
+	void StopHosting();
 
 	/**
 	 * Exit gracefully and host a fresh instance.
@@ -87,16 +107,31 @@ public: // TODO: can we make this private?
 	 */
 	void ParseHostCommand(CStrW input);
 
-	/*
-	 * Should not be called after before all players are ready.
-	 */
-	void StartGame();
-
 	/**
 	 * Called by periodically CNetServerWorker::Run().
 	 * Can be used to process asynchronously while the main thread is waiting for user input.
 	 */
 	void OnTick();
+
+	/*
+	 * Called when the xmpp userlist has been downloaded.
+	 */
+	void OnLobbyConnected();
+
+	/**
+	 * Called after losing the Xmpp connection.
+	 */
+	void OnLobbyDisconnected(CStrW reason);
+
+	/**
+	 * Notifies the host.
+	 */
+	void OnLobbyError(CStrW error);
+
+	/**
+	 * Notifies the host.
+	 */
+	void OnUserKicked(CNetServerSession* session, bool banned);
 
 	/**
 	 * Useless as we didn't authenticate the client yet.
