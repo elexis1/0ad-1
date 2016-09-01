@@ -221,3 +221,33 @@ function getNetworkWarnings()
 		"maxTextWidth": maxTextWidth
 	};
 }
+
+var g_NetworkWindowOpen = false;
+
+function networkButton()
+{
+	g_NetworkWindowOpen = true;
+
+	Engine.PushGuiPage("page_network.xml", {
+		"callback": "networkWindowClosed",
+		"isController": g_IsController,
+		"playerData": g_GameAttributes.settings.PlayerData,
+		"playerAssignments": g_PlayerAssignments,
+		// Only available in the session
+		"players": typeof g_Players == "undefined" ? undefined : g_Players
+	});
+}
+
+function networkWindowClosed(refresh)
+{
+	g_NetworkWindowOpen = refresh;
+}
+
+function updateNetworkWindow()
+{
+	if (!g_NetworkWindowOpen)
+		return;
+
+	Engine.PopGuiPageCB();
+	networkButton();
+}

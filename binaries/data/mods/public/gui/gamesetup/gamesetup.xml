@@ -283,6 +283,19 @@
 
 			<!-- Options -->
 			<object name="gameOptionsBox" size="100%-425 529 100%-25 525">
+
+				<!-- Network Button -->
+				<object
+					name="networkButton"
+					type="button"
+					style="StoneButton"
+					size="100%-250 0 100%-130 28"
+					tooltip_style="onscreenToolTip"
+				>
+					<translatableAttribute id="caption">Network</translatableAttribute>
+					<action on="Press">networkButton();</action>
+				</object>
+
 				<!-- More Options Button -->
 				<object
 					name="showMoreOptions"

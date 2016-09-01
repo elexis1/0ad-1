@@ -2,7 +2,7 @@
 const MARGIN = 4;
 
 // Includes the main menu button
-const NUM_BUTTONS = 9;
+const NUM_BUTTONS = 10;
 
 // Regular menu buttons
 const BUTTON_HEIGHT = 32;

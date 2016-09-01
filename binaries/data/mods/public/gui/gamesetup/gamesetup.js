@@ -297,6 +297,8 @@ function initGUIObjects()
 	if (g_IsNetworked)
 		Engine.GetGUIObjectByName("chatInput").focus();
 
+	Engine.GetGUIObjectByName("networkButton").hidden = !g_IsNetworked;
+
 	if (g_IsController)
 	{
 		loadPersistMatchSettings();
@@ -727,6 +729,7 @@ function handlePlayerAssignmentMessage(message)
 
 	updatePlayerList();
 	updateReadyUI();
+	updateNetworkWindow();
 	sendRegisterGameStanza();
 }
 

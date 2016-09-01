@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<objects>
+	<script file="gui/common/color.js"/>
+	<script file="gui/common/network.js"/>
+	<script file="gui/common/settings.js"/>
+
+	<script file="gui/network/network.js"/>
+
+	<!-- Add a translucent black background to fade out the menu page -->
+	<object type="image" sprite="ModernFade"/>
+
+	<!-- Network Window -->
+	<object name="options" type="image" style="ModernDialog" size="50%-350 50%-200 50%+350 50%+200">
+
+		<object style="ModernLabelText" type="text" size="50%-128 -16 50%+128 16">
+			<translatableAttribute id="caption">Network</translatableAttribute>
+		</object>
+
+		<object
+			name="clientList"
+			type="olist"
+			size="30 30 100%-30 100%-100"
+			font="sans-bold-stroke-13"
+			default_column="player"
+			default_column_order="1"
+			sortable="true"
+			style="ModernList"
+			sprite_asc="ModernArrowDown"
+			sprite_desc="ModernArrowUp"
+			sprite_not_sorted="ModernNotSorted"
+		>
+			<def id="player" width="10%" color="255 255 255">
+				<translatableAttribute id="heading">Player</translatableAttribute>
+			</def>
+			<def id="name" width="45%" color="255 255 255">
+				<translatableAttribute id="heading">Name</translatableAttribute>
+			</def>
+			<def id="status" width="45%" color="255 255 255">
+				<translatableAttribute id="heading">Status</translatableAttribute>
+			</def>
+			<action on="SelectionColumnChange">
+				updateClientList();
+			</action>
+		</object>
+
+		<object
+			type="button"
+			name="kickButton"
+			style="StoneButton"
+			size="30 100%-50 180 100%-22"
+		>
+			<translatableAttribute id="caption">Kick</translatableAttribute>
+			<translatableAttribute id="tooltip">Disconnect the selected client.</translatableAttribute>
+			<action on="Press">kickButton(false);</action>
+		</object>
+
+		<object
+			type="button"
+			name="banButton"
+			style="StoneButton"
+			size="210 100%-50 360 100%-22"
+		>
+			<translatableAttribute id="caption">Ban</translatableAttribute>
+			<translatableAttribute id="tooltip">Disconnect the client and prevent anyone with that IP address or playername to reconnect.</translatableAttribute>
+			<action on="Press">kickButton(true);</action>
+		</object>
+
+		<object
+			type="button"
+			style="StoneButton"
+			size="100%-170 100%-50 100%-30 100%-22"
+			hotkey="cancel"
+		>
+			<translatableAttribute id="caption">Close</translatableAttribute>
+			<action on="Press">closeNetwork();</action>
+		</object>
+	</object>
+
+</objects>

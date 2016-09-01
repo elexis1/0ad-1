@@ -548,6 +548,7 @@ function handlePlayerAssignmentsMessage(message)
 	});
 
 	updateChatAddressees();
+	updateNetworkWindow();
 	sendLobbyPlayerlistUpdate();
 }
 

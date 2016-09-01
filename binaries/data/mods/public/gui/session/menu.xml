@@ -55,9 +55,23 @@
 
 		<!-- Options button -->
 		<object type="button"
-			name="optionsButton"
+			name="networkButton"
 			style="StoneButtonFancy"
 			size="0 128 100% 156"
+			tooltip_style="sessionToolTip"
+		>
+			<translatableAttribute id="caption">Network</translatableAttribute>
+			<action on="Press">
+				closeOpenDialogs();
+				networkButton();
+			</action>
+		</object>
+
+		<!-- Options button -->
+		<object type="button"
+			name="optionsButton"
+			style="StoneButtonFancy"
+			size="0 160 100% 188"
 			tooltip_style="sessionToolTip"
 		>
 			<translatableAttribute id="caption">Options</translatableAttribute>
@@ -68,7 +82,7 @@
 		<object type="button"
 			name="pauseButton"
 			style="StoneButtonFancy"
-			size="0 160 100% 188"
+			size="0 192 100% 220"
 			tooltip_style="sessionToolTip"
 		>
 			<object name="pauseButtonText" type="text" style="CenteredButtonText" ghost="true">
@@ -81,7 +95,7 @@
 		<object type="button"
 			name="menuResignButton"
 			style="StoneButtonFancy"
-			size="0 192 100% 220"
+			size="0 224 100% 252"
 			tooltip_style="sessionToolTip"
 		>
 			<translatableAttribute id="caption">Resign</translatableAttribute>
@@ -92,7 +106,7 @@
 		<object type="button"
 			name="menuExitButton"
 			style="StoneButtonFancy"
-			size="0 224 100% 252"
+			size="0 256 100% 284"
 			tooltip_style="sessionToolTip"
 		>
 			<translatableAttribute id="caption">Exit</translatableAttribute>
@@ -100,5 +114,3 @@
 		</object>
 	</object>
 </object>
-
-
