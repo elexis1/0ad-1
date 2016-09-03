@@ -1,6 +1,7 @@
 const g_MatchSettings_SP = "config/matchsettings.json";
 const g_MatchSettings_MP = "config/matchsettings.mp.json";
 
+const g_PlayerArray = Array(g_MaxPlayers).fill(0).map((v, i) => i + 1); // 1, 2, ..., MaxPlayers
 const g_Ceasefire = prepareForDropdown(g_Settings && g_Settings.Ceasefire);
 const g_GameSpeeds = prepareForDropdown(g_Settings && g_Settings.GameSpeeds.filter(speed => !speed.ReplayOnly));
 const g_MapSizes = prepareForDropdown(g_Settings && g_Settings.MapSizes);
@@ -9,6 +10,41 @@ const g_PopulationCapacities = prepareForDropdown(g_Settings && g_Settings.Popul
 const g_StartingResources = prepareForDropdown(g_Settings && g_Settings.StartingResources);
 const g_VictoryConditions = prepareForDropdown(g_Settings && g_Settings.VictoryConditions);
 const g_WonderDurations = prepareForDropdown(g_Settings && g_Settings.WonderDurations);
+
+/**
+ * Highlight the "random" dropdownlist item.
+ */
+const g_ColorRandom = "orange";
+
+const g_TeamsArray = prepareForDropdown([{
+		"label": translateWithContext("team", "None"),
+		"id": -1
+	}].concat(
+		Array(g_MaxTeams).fill(0).map((v, i) => ({
+			"label": i + 1,
+			"id": i
+		}))
+	)
+);
+
+/**
+ * Offer users to select playable civs only.
+ * Load unselectable civs as they could appear in scenario maps.
+ */
+const g_CivData = loadCivData();
+
+const g_CivList = g_CivData && prepareForDropdown([{
+		"name": '[color="' + g_ColorRandom + '"]' + translateWithContext("civilization", "Random") + '[/color]',
+		"code": "random"
+	}].concat(
+		Object.keys(g_CivData).filter(
+			civ => g_CivData[civ].SelectableInGameSetup
+		).map(civ => ({
+			"name": g_CivData[civ].Name,
+			"code": civ
+		})).sort(sortNameIgnoreCase)
+	)
+);
 
 /**
  * All selectable playercolors except gaia.
@@ -54,7 +90,7 @@ const g_ReadyData = [
 /**
  * Processes a CNetMessage (see NetMessage.h, NetMessages.h) sent by the CNetServer.
  */
-const g_NetMessageTypes = {
+var g_NetMessageTypes = {
 	"netstatus": msg => handleNetStatusMessage(msg),
 	"netwarn": msg => addNetworkWarning(msg),
 	"gamesetup": msg => handleGamesetupMessage(msg),
@@ -68,7 +104,7 @@ const g_NetMessageTypes = {
 	"chat": msg => addChatMessage({ "type": "chat", "guid": msg.guid, "text": msg.text })
 };
 
-const g_FormatChatMessage = {
+var g_FormatChatMessage = {
 	"system": (msg, user) => systemMessage(msg.text),
 	"settings": (msg, user) => systemMessage(translate('Game settings have been changed')),
 	"connect": (msg, user) => systemMessage(sprintf(translate("%(username)s has joined"), { "username": user })),
@@ -83,14 +119,12 @@ const g_FormatChatMessage = {
 	"clientlist": (msg, user) => getUsernameList()
 };
 
-/**
- * The dropdownlist items will appear in the order they are added.
- */
-const g_MapFilters = [
+var g_MapFilters = prepareForDropdown([
 	{
 		"id": "default",
 		"name": translateWithContext("map filter", "Default"),
-		"filter": mapKeywords => mapKeywords.every(keyword => ["naval", "demo", "hidden"].indexOf(keyword) == -1)
+		"filter": mapKeywords => mapKeywords.every(keyword => ["naval", "demo", "hidden"].indexOf(keyword) == -1),
+		"Default": true
 	},
 	{
 		"id": "naval",
@@ -117,7 +151,7 @@ const g_MapFilters = [
 		"name": translate("All Maps"),
 		"filter": mapKeywords => true
 	}
-];
+]);
 
 /**
  * Used for generating the botnames.
@@ -125,20 +159,9 @@ const g_MapFilters = [
 const g_RomanNumbers = [undefined, "I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
 /**
- * Offer users to select playable civs only.
- * Load unselectable civs as they could appear in scenario maps.
- */
-const g_CivData = loadCivData();
-
-/**
  * Used for highlighting the sender of chat messages.
  */
 const g_SenderFont = "sans-bold-13";
-
-/**
- * Highlight the "random" dropdownlist item.
- */
-const g_ColorRandom = "orange";
 
 /**
  * Highlight AIs in the player-dropdownlist.
@@ -156,14 +179,9 @@ const g_UnassignedColor = "140 140 140";
 const g_UnassignedPlayerColor = "170 170 250";
 
 /**
- * Placeholder item for the map-dropdownlist.
+ * Highlight ready players.
  */
-const g_RandomMap = '[color="' + g_ColorRandom + '"]' + translateWithContext("map selection", "Random") + "[/color]";
-
-/**
- * Placeholder item for the civ-dropdownlists.
- */
-const g_RandomCiv = '[color="' + g_ColorRandom + '"]' + translateWithContext("civilization", "Random") + '[/color]';
+const g_ReadyColor = "green";
 
 /**
  * Whether this is a single- or multiplayer match.
@@ -223,7 +241,13 @@ var g_GameAttributes = { "settings": {} };
 var g_ChatMessages = [];
 
 /**
- * Cache containing the mapsettings for scenario/skirmish maps. Just-in-time loading.
+ * Filename and translated title of all maps, given the currently selected
+ * maptype and filter. Sorted by title, shown in the dropdown.
+ */
+var g_MapList = [];
+
+/**
+ * Cache containing the mapsettings. Just-in-time loading.
  */
 var g_MapData = {};
 
@@ -242,6 +266,373 @@ var g_LastGameStanza;
  * Remembers if the current player viewed the AI settings of some playerslot.
  */
 var g_LastViewedAIPlayer = -1;
+/**
+ * Contains the logic of all multiple-choice gamesettings.
+ *
+ * Hidden - if so, both label and dropdown won't be visible.
+ * Enabled - Only the label will be shown if it's disabled.
+ * Default - returns the index of the default value (not the value itself).
+ *
+ * NOTICE: The first three elements need to be initialized first.
+ * If the map is changed, missing values are supplemented with defaults.
+ */
+var g_Dropdowns = g_Settings && {
+	"mapType": {
+		"labels": () => g_MapTypes.Title,
+		"ids": () => g_MapTypes.Name,
+		"default": () => g_MapTypes.Default,
+		"defined": () => g_GameAttributes.mapType !== undefined,
+		"get": () => g_GameAttributes.mapType,
+		"select": idx => {
+
+			g_MapData = {};
+
+			g_GameAttributes.mapType = g_MapTypes.Name[idx];
+			g_GameAttributes.mapPath = g_MapPath[g_GameAttributes.mapType];
+			delete g_GameAttributes.map;
+
+			if (g_GameAttributes.mapType != "scenario")
+				g_GameAttributes.settings = {
+					"PlayerData": g_DefaultPlayerData.slice(0, 4)
+				};
+
+			reloadMapList();
+			supplementDefaults();
+		}
+	},
+	"mapFilter": {
+		"labels": () => g_MapFilters.name,
+		"ids": () => g_MapFilters.id,
+		"default": () => g_MapFilters.Default,
+		"defined": () => g_GameAttributes.mapFilter !== undefined,
+		"get": () => g_GameAttributes.mapFilter,
+		"select": idx => {
+			g_GameAttributes.mapFilter = g_MapFilters.id[idx];
+			delete g_GameAttributes.map;
+			reloadMapList();
+			supplementDefaults();
+		}
+	},
+	"mapSelection": {
+		"labels": () => g_MapList.name,
+		"ids": () => g_MapList.file,
+		"default": () => 0,
+		"defined": () => g_GameAttributes.map !== undefined,
+		"get": () => g_GameAttributes.map,
+		"select": idx => {
+			selectMap(g_MapList.file[idx]);
+			supplementDefaults();
+		}
+	},
+	"mapSize": {
+		"labels": () => g_MapSizes.Name,
+		"ids": () => g_MapSizes.Tiles,
+		"default": () => g_MapSizes.Default,
+		"defined": () => g_GameAttributes.settings.Size !== undefined,
+		"get": () => g_GameAttributes.settings.Size,
+		"select": idx => {
+			g_GameAttributes.settings.Size = g_MapSizes.Tiles[idx];
+		},
+		"maps": ["random"]
+	},
+	"numPlayers": {
+		"labels": () => g_PlayerArray,
+		"ids": () => g_PlayerArray,
+		"default": () => g_MaxPlayers - 1,
+		"defined": () => g_GameAttributes.settings.PlayerData !== undefined,
+		"get": () => g_GameAttributes.settings.PlayerData.length,
+		"select": idx => {
+			selectNumPlayers(idx + 1);
+		},
+		"maps": ["random"]
+	},
+	"populationCap": {
+		"labels": () => g_PopulationCapacities.Title,
+		"ids": () => g_PopulationCapacities.Population,
+		"default": () => g_PopulationCapacities.Default,
+		"defined": () => g_GameAttributes.settings.PopulationCap !== undefined,
+		"get": () => g_GameAttributes.settings.PopulationCap,
+		"select": idx => {
+			g_GameAttributes.settings.PopulationCap = g_PopulationCapacities.Population[idx];
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"startingResources": {
+		"labels": () => g_StartingResources.Title,
+		"ids": () => g_StartingResources.Resources,
+		"default": () => g_StartingResources.Default,
+		"defined": () => g_GameAttributes.settings.StartingResources !== undefined,
+		"get": () => g_GameAttributes.settings.StartingResources,
+		"select": idx => {
+			g_GameAttributes.settings.StartingResources = g_StartingResources.Resources[idx];
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"ceasefire": {
+		"labels": () => g_Ceasefire.Title,
+		"ids": () => g_Ceasefire.Duration,
+		"default": () => g_Ceasefire.Default,
+		"defined": () => g_GameAttributes.settings.Ceasefire !== undefined,
+		"get": () => g_GameAttributes.settings.Ceasefire,
+		"select": idx => {
+			// TODO for (let ai of )
+			g_GameAttributes.settings.Ceasefire = g_Ceasefire.Duration[idx];
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"victoryCondition": {
+		"labels": () => g_VictoryConditions.Title,
+		"ids": () => g_VictoryConditions.Name,
+		"default": () => g_VictoryConditions.Default,
+		"defined": () => g_GameAttributes.settings.GameType !== undefined,
+		"get": () => g_GameAttributes.settings.GameType,
+		"select": idx => {
+			g_GameAttributes.settings.GameType = g_VictoryConditions.Name[idx];
+			g_GameAttributes.settings.VictoryScripts = g_VictoryConditions.Scripts[idx];
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"wonderDuration": {
+		"labels": () => g_WonderDurations.Title,
+		"ids": () => g_WonderDurations.Duration,
+		"default": () => g_WonderDurations.Default,
+		"defined": () => g_GameAttributes.settings.WonderDuration !== undefined,
+		"get": () => g_GameAttributes.settings.WonderDuration,
+		"select": idx => {
+			g_GameAttributes.settings.WonderDuration = g_WonderDurations.Duration[idx];
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"gameSpeed": {
+		"labels": () => g_GameSpeeds.Title,
+		"ids": () => g_GameSpeeds.Speed,
+		"default": () => g_GameSpeeds.Default,
+		"defined": () => g_GameAttributes.gameSpeed !== undefined,
+		"get": () => g_GameAttributes.gameSpeed,
+		"select": idx => {
+			g_GameAttributes.gameSpeed = g_GameSpeeds.Speed[idx];
+		}
+	}
+};
+var g_HostNameList = [];
+var g_HostGUIDList = [];
+
+var g_DropdownArrays = {
+	"playerAssignment": {
+		"labels": (idx) => g_HostNameList,
+		"ids": (idx) => g_HostGUIDList,
+		"default": (idx) => 0, // TODO: AI player
+		"defined": (idx) => true,
+		"get": (idx) => 0,// TODO
+		"select": (idx, selectedIdx) => {
+
+			// TODO: text had shown translate("Loading...") on init is that relevant?
+			let guid = g_HostGUIDList[selectedIdx];
+			if (!guid || guid.substr(0, 3) == "ai:")
+			{
+				if (g_IsNetworked)
+					Engine.AssignNetworkPlayer(playerID, "");
+
+				g_GameAttributes.settings.PlayerData[idx].AI = guid ? guid.substr(3) : "";
+			}
+			else
+				swapPlayers(guid, idx);
+
+			updateGameAttributes();
+			updateReadyUI();
+		}
+	},
+	"playerTeam": {
+		"labels": (idx) => g_TeamsArray.label,
+		"ids": (idx) => g_TeamsArray.id,
+		"default": (idx) => 0,
+		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Team !== undefined,
+		"get": (idx) => warn(idx),//g_GameAttributes.settings.PlayerData[idx].Team,
+		"select": (idx, selectedIdx) => {
+			g_GameAttributes.settings.PlayerData[idx].Team = selectedIdx - 1;
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"playerCiv": {
+		"labels": (idx) => g_CivList.name,
+		"ids": (idx) => g_CivList.code,
+		"default": (idx) => 0,
+		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Civ !== undefined,
+		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Civ,
+		"select": (idx, selectedIdx) => {
+			g_GameAttributes.settings.PlayerData[idx].Civ = g_CivList.code[selectedIdx];
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"playerColorPicker": {
+		"labels": (idx) => g_PlayerColors.map(color => ' ' + '[color="' + rgbToGuiColor(color) + '"]■[/color]'),
+		"ids": (idx) => g_PlayerColors.map((color, index) => index),
+		"default": (idx) => idx,
+		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Color !== undefined,
+		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Color,
+		"select": (idx, selectedIdx) => {
+			let playerData = g_GameAttributes.settings.PlayerData;
+
+			// If someone else has that color, give that player the old color
+			let pData = playerData.find(pData => sameColor(g_PlayerColors[selectedIdx], pData.Color));
+			if (pData)
+				pData.Color = playerData[idx].Color;
+
+			playerData[idx].Color = g_PlayerColors[selectedIdx];
+			ensureUniquePlayerColors(playerData);
+		},
+		"maps": ["random", "skirmish"]
+	}
+};
+
+/**
+ * Contains the logic of all boolean gamesettings.
+ */
+var g_Checkboxes = {
+	"revealMap": {
+		"default": () => false,
+		"defined": () => g_GameAttributes.settings.RevealMap !== undefined,
+		"get": () => g_GameAttributes.settings.RevealMap,
+		"set": checked => {
+			g_GameAttributes.settings.RevealMap = checked;
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"exploreMap": {
+		"default": () => false,
+		"defined": () => g_GameAttributes.settings.ExploreMap !== undefined,
+		"get": () => g_GameAttributes.settings.ExploreMap,
+		"set": checked => {
+			g_GameAttributes.settings.ExploreMap = checked;
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"disableTreasures": {
+		"default": () => false,
+		"defined": () => g_GameAttributes.settings.DisableTreasures !== undefined,
+		"get": () => g_GameAttributes.settings.DisableTreasures,
+		"set": checked => {
+			g_GameAttributes.settings.DisableTreasures = checked;
+		},
+		"maps": ["random", "skirmish"]
+	},
+	"lockTeams":  {
+		"default": () => Engine.HasXmppClient(),
+		"defined": () => g_GameAttributes.settings.LockTeams !== undefined,
+		"get": () => g_GameAttributes.settings.LockTeams,
+		"set": checked => {
+			g_GameAttributes.settings.LockTeams = checked;
+			g_GameAttributes.settings.LastManStanding = false;
+		},
+		"maps": ["random", "skirmish"],
+		"enabled": () => !g_GameAttributes.settings.RatingEnabled
+	},
+	"lastManStanding":  {
+		"default": () => false,
+		"defined": () => g_GameAttributes.settings.LastManStanding !== undefined,
+		"get": () => g_GameAttributes.settings.LastManStanding,
+		"set": checked => {
+			g_GameAttributes.settings.LastManStanding = checked;
+		},
+		"maps": ["random", "skirmish"],
+		"enabled": () => !g_GameAttributes.settings.LockTeams
+	},
+	"enableCheats":  {
+		"default": () => !g_IsNetworked,
+		"hidden": () => !g_IsNetworked,
+		"defined": () => g_GameAttributes.settings.CheatsEnabled !== undefined,
+		"get": () => g_GameAttributes.settings.CheatsEnabled,
+		"set": checked => {
+			g_GameAttributes.settings.CheatsEnabled = !g_IsNetworked ||
+				checked && !g_GameAttributes.settings.RatingEnabled;
+		},
+		"enabled": () => !g_GameAttributes.settings.RatingEnabled
+	},
+	"enableRating": {
+		"default": () => Engine.HasXmppClient(),
+		"defined": () => g_GameAttributes.settings.RatingEnabled !== undefined,
+		"get": () => !!g_GameAttributes.settings.RatingEnabled,
+		"set": checked => {
+			g_GameAttributes.settings.RatingEnabled = Engine.HasXmppClient() ? checked : undefined;
+			Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
+		}
+	}
+};
+
+/**
+ * For setting up some additional GUI objects.
+ */
+var g_MiscControls = {
+	"chatPanel": {
+		"hidden": () => !g_IsNetworked
+	},
+	"optionCheats": {
+		"hidden": () => !g_IsNetworked
+	},
+	"optionRating": {
+		"hidden": () => !Engine.HasXmppClient()
+	},
+	"optionWonderDuration": {
+		"hidden": () => g_GameAttributes.settings.GameType != "wonder"
+	},
+	"cheatWarningText": {
+		"hidden": () => !g_IsNetworked || !g_GameAttributes.settings.CheatsEnabled
+	},
+	"mapSize": {
+		"hidden": () => g_GameAttributes.mapType != "random" || !g_IsController
+	},
+	"mapSizeText": {
+		"hidden": () => g_GameAttributes.mapType != "random" || g_IsController
+	},
+	"mapSizeDesc": {
+		"hidden": () => g_GameAttributes.mapType != "random"
+	},
+	"cancelGame": {
+		"tooltip": () => Engine.HasXmppClient() ?
+			translate("Return to the lobby.") :
+			translate("Return to the main menu.")
+	},
+	"startGame": {
+		"enabled": () => !g_IsController ||
+		                 Object.keys(g_PlayerAssignments).every(guid => g_PlayerAssignments[guid].status ||
+		                                                                g_PlayerAssignments[guid].player == -1),
+		"hidden": () => {
+			return !g_IsController && g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1;
+		}
+	},
+	"civResetButton": {
+		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController
+	},
+	"teamResetButton": {
+		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController
+	}
+};
+
+var g_MiscControlArrays = {
+	"playerBox": {
+		"size": (idx) => ({
+			"left": 0,
+			"right": "100%",
+			"top": 32 * idx,
+			"bottom": 32 * (idx + 1)
+		})
+	},
+	"playerName": {
+		"caption": (idx) => {
+			// TODO if (g_PlayerAssignments[message.guid].status) green
+			return translate(g_DefaultPlayerData[idx].Name);
+		}
+	},
+	"playerColor": {
+		"sprite": (idx) => "color:" + rgbToGuiColor(g_GameAttributes.settings.PlayerData[idx].Color) + " 100"
+	},
+	"playerConfig": {
+		"hidden": (idx) => g_GameAttributes.settings.PlayerData[idx].AI != "",
+		"onPress": (idx) => {
+			openAIConfig(idx);
+		}
+	}
+};
 
 /**
  * Initializes some globals without touching the GUI.
@@ -281,7 +672,28 @@ function init(attribs)
 	for (let i in g_DefaultPlayerData)
 		g_DefaultPlayerData[i].Civ = "random";
 
+	supplementDefaults();
+
 	setTimeout(displayGamestateNotifications, 1000);
+}
+
+/**
+ * Sets default values for all g_GameAttribute settings which don't have a value set.
+ */
+function supplementDefaults()
+{
+	for (let dropdown in g_Dropdowns)
+		if (!g_Dropdowns[dropdown].defined())
+			g_Dropdowns[dropdown].select(g_Dropdowns[dropdown].default());
+
+	for (let checkbox in g_Checkboxes)
+		if (!g_Checkboxes[checkbox].defined())
+			g_Checkboxes[checkbox].set(g_Checkboxes[checkbox].default());
+
+	for (let dropdown in g_DropdownArrays)
+		for (let i = 0; i < g_GameAttributes.settings.PlayerData.length; ++i)
+			if (!g_DropdownArrays[dropdown].defined(i))
+				g_DropdownArrays[dropdown].select(g_DropdownArrays[dropdown].default(i));
 }
 
 /**
@@ -289,37 +701,22 @@ function init(attribs)
  */
 function initGUIObjects()
 {
-	Engine.GetGUIObjectByName("cancelGame").tooltip = Engine.HasXmppClient() ? translate("Return to the lobby.") : translate("Return to the main menu.");
+	for (let dropdown in g_Dropdowns)
+		initDropdown(dropdown);
 
-	initCivNameList();
-	initMapTypes();
-	initMapFilters();
+	for (let checkbox in g_Checkboxes)
+		initCheckbox(checkbox);
 
-	if (g_IsController)
-	{
-		g_GameAttributes.settings.CheatsEnabled = !g_IsNetworked;
-		g_GameAttributes.settings.RatingEnabled = Engine.IsRankedGame() || undefined;
-
-		initMapNameList();
-		initNumberOfPlayers();
-		initGameSpeed();
-		initPopulationCaps();
-		initStartingResources();
-		initCeasefire();
-		initWonderDurations();
-		initVictoryConditions();
-		initMapSizes();
-		initRadioButtons();
-	}
-	else
-		hideControls();
-
-	initMultiplayerSettings();
-	initPlayerAssignments();
+	for (let dropdown in g_DropdownArrays)
+		initDropdownArray(dropdown);
 
 	resizeMoreOptionsWindow();
 
 	Engine.GetGUIObjectByName("chatInput").tooltip = colorizeAutocompleteHotkey();
+
+	// The start game button should be hidden until the player assignments are received 
+	// and it is known whether the local player is an observer. 
+	hideStartGameButton(true);
 
 	if (g_IsNetworked)
 		Engine.GetGUIObjectByName("chatInput").focus();
@@ -335,31 +732,51 @@ function initGUIObjects()
 	}
 }
 
-function initMapTypes()
+function initDropdown(name, idx)
 {
-	let mapTypes = Engine.GetGUIObjectByName("mapType");
-	mapTypes.list = g_MapTypes.Title;
-	mapTypes.list_data = g_MapTypes.Name;
-	mapTypes.onSelectionChange = function() {
-		if (this.selected != -1)
-			selectMapType(this.list_data[this.selected]);
+	let idxName = idx === undefined ? "": "[" + idx + "]";
+	let data = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
+
+	let dropdown = Engine.GetGUIObjectByName(name + idxName);
+	dropdown.list = data.labels(idx);
+	dropdown.list_data = data.ids(idx);
+
+	dropdown.onSelectionChange = function() {
+
+		if (!g_IsController ||
+		    g_IsInGuiUpdate ||
+		    !this.list_data[this.selected] ||
+		    data.hidden && data.hidden(idx) ||
+		    data.enabled && !data.enabled(idx) ||
+		    data.maps && data.maps.indexOf(g_GameAttributes.mapType) == -1)
+			return;
+
+		data.select(this.selected);
+		updateGameAttributes();
 	};
-	if (g_IsController)
-		mapTypes.selected = g_MapTypes.Default;
 }
 
-function initMapFilters()
+function initCheckbox(name)
 {
-	let mapFilters = Engine.GetGUIObjectByName("mapFilter");
-	mapFilters.list = g_MapFilters.map(mapFilter => mapFilter.name);
-	mapFilters.list_data = g_MapFilters.map(mapFilter => mapFilter.id);
-	mapFilters.onSelectionChange = function() {
-		if (this.selected != -1)
-			selectMapFilter(this.list_data[this.selected]);
+	Engine.GetGUIObjectByName(name).onPress = function() {
+
+		let obj = g_Checkboxes[this.name];
+
+		if (!g_IsController ||
+		    g_IsInGuiUpdate ||
+		    obj.enabled && !obj.enabled() ||
+		    obj.hidden && obj.hidden())
+			return;
+
+		obj.set(this.checked);
+		updateGameAttributes();
 	};
-	if (g_IsController)
-		mapFilters.selected = 0;
-	g_GameAttributes.mapFilter = "default";
+}
+
+function initDropdownArray(name)
+{
+	for (let i = 0; i < g_MaxPlayers; ++i)
+		initDropdown(name, i);
 }
 
 function initSPTips()
@@ -386,9 +803,10 @@ function resizeMoreOptionsWindow()
 {
 	const elementHeight = 30;
 
+	let moreOptions = Engine.GetGUIObjectByName("moreOptions");
 	let yPos = undefined;
 
-	for (let guiOption of Engine.GetGUIObjectByName("moreOptions").children)
+	for (let guiOption of moreOptions.children)
 	{
 		if (guiOption.name == "moreOptionsLabel")
 			continue;
@@ -407,126 +825,9 @@ function resizeMoreOptionsWindow()
 	}
 
 	// Resize the vertically centered window containing the options
-	let moreOptions = Engine.GetGUIObjectByName("moreOptions");
 	let mSize = moreOptions.size;
 	mSize.bottom = mSize.top + yPos + 20;
 	moreOptions.size = mSize;
-}
-
-function initNumberOfPlayers()
-{
-	let playersArray = Array(g_MaxPlayers).fill(0).map((v, i) => i + 1); // 1, 2, ..., MaxPlayers
-	let numPlayers = Engine.GetGUIObjectByName("numPlayers");
-	numPlayers.list = playersArray;
-	numPlayers.list_data = playersArray;
-	numPlayers.onSelectionChange = function() {
-		if (this.selected != -1)
-			selectNumPlayers(this.list_data[this.selected]);
-	};
-	numPlayers.selected = g_MaxPlayers - 1;
-}
-
-function initGameSpeed()
-{
-	let gameSpeed = Engine.GetGUIObjectByName("gameSpeed");
-	gameSpeed.hidden = false;
-	Engine.GetGUIObjectByName("gameSpeedText").hidden = true;
-	gameSpeed.list = g_GameSpeeds.Title;
-	gameSpeed.list_data = g_GameSpeeds.Speed;
-	gameSpeed.onSelectionChange = function() {
-		if (this.selected != -1)
-			g_GameAttributes.gameSpeed = g_GameSpeeds.Speed[this.selected];
-
-		updateGameAttributes();
-	};
-	gameSpeed.selected = g_GameSpeeds.Default;
-}
-
-function initPopulationCaps()
-{
-	let populationCaps = Engine.GetGUIObjectByName("populationCap");
-	populationCaps.list = g_PopulationCapacities.Title;
-	populationCaps.list_data = g_PopulationCapacities.Population;
-	populationCaps.selected = g_PopulationCapacities.Default;
-	populationCaps.onSelectionChange = function() {
-		if (this.selected != -1)
-			g_GameAttributes.settings.PopulationCap = g_PopulationCapacities.Population[this.selected];
-
-		updateGameAttributes();
-	};
-}
-
-function initStartingResources()
-{
-	let startingResourcesL = Engine.GetGUIObjectByName("startingResources");
-	startingResourcesL.list = g_StartingResources.Title;
-	startingResourcesL.list_data = g_StartingResources.Resources;
-	startingResourcesL.selected = g_StartingResources.Default;
-	startingResourcesL.onSelectionChange = function() {
-		if (this.selected != -1)
-			g_GameAttributes.settings.StartingResources = g_StartingResources.Resources[this.selected];
-
-		updateGameAttributes();
-	};
-}
-
-function initCeasefire()
-{
-	let ceasefireL = Engine.GetGUIObjectByName("ceasefire");
-	ceasefireL.list = g_Ceasefire.Title;
-	ceasefireL.list_data = g_Ceasefire.Duration;
-	ceasefireL.selected = g_Ceasefire.Default;
-	ceasefireL.onSelectionChange = function() {
-		if (this.selected != -1)
-			g_GameAttributes.settings.Ceasefire = g_Ceasefire.Duration[this.selected];
-
-		updateGameAttributes();
-	};
-}
-
-function initVictoryConditions()
-{
-	let victoryConditions = Engine.GetGUIObjectByName("victoryCondition");
-	victoryConditions.list = g_VictoryConditions.Title;
-	victoryConditions.list_data = g_VictoryConditions.Name;
-	victoryConditions.onSelectionChange = function() {
-		if (this.selected != -1)
-		{
-			g_GameAttributes.settings.GameType = g_VictoryConditions.Name[this.selected];
-			g_GameAttributes.settings.VictoryScripts = g_VictoryConditions.Scripts[this.selected];
-		}
-
-		updateGameAttributes();
-	};
-	victoryConditions.selected = g_VictoryConditions.Default;
-}
-
-function initWonderDurations()
-{
-	let wonderConditions = Engine.GetGUIObjectByName("wonderDuration");
-	wonderConditions.list = g_WonderDurations.Title;
-	wonderConditions.list_data = g_WonderDurations.Duration;
-	wonderConditions.onSelectionChange = function()
-	{
-		if (this.selected != -1)
-			g_GameAttributes.settings.WonderDuration = g_WonderDurations.Duration[this.selected];
-
-		updateGameAttributes();
-	};
-	wonderConditions.selected = g_WonderDurations.Default;
-}
-
-function initMapSizes()
-{
-	let mapSize = Engine.GetGUIObjectByName("mapSize");
-	mapSize.list = g_MapSizes.Name;
-	mapSize.list_data = g_MapSizes.Tiles;
-	mapSize.onSelectionChange = function() {
-		if (this.selected != -1)
-			g_GameAttributes.settings.Size = g_MapSizes.Tiles[this.selected];
-		updateGameAttributes();
-	};
-	mapSize.selected = 0;
 }
 
 /**
@@ -575,9 +876,9 @@ function hideStartGameButton(hidden)
 
 	let cancelGame = Engine.GetGUIObjectByName("cancelGame");
 	let cancelGameSize = cancelGame.size;
-	let xButtonSize = cancelGameSize.right - cancelGameSize.left;
+	let buttonWidth = cancelGameSize.right - cancelGameSize.left;
 	cancelGameSize.right = right;
-	right -= xButtonSize;
+	right -= buttonWidth;
 
 	for (let element of ["cheatWarningText", "onscreenToolTip"])
 	{
@@ -588,117 +889,6 @@ function hideStartGameButton(hidden)
 
 	cancelGameSize.left = right;
 	cancelGame.size = cancelGameSize;
-}
-
-/**
- * If we're a network client, hide the controls and show the text instead.
- */
-function hideControls()
-{
-	for (let ctrl of ["mapType", "mapFilter", "mapSelection", "victoryCondition", "gameSpeed", "numPlayers"])
-		hideControl(ctrl, ctrl + "Text");
-
-	// TODO: Shouldn't players be able to choose their own assignment?
-	for (let i = 0; i < g_MaxPlayers; ++i)
-	{
-		Engine.GetGUIObjectByName("playerAssignment["+i+"]").hidden = true;
-		Engine.GetGUIObjectByName("playerCiv["+i+"]").hidden = true;
-		Engine.GetGUIObjectByName("playerTeam["+i+"]").hidden = true;
-	}
-
-	// The start game button should be hidden until the player assignments are received
-	// and it is known whether the local player is an observer.
-	hideStartGameButton(true);
-	Engine.GetGUIObjectByName("startGame").enabled = true;
-}
-
-/**
- * Hides the GUI controls for clients and shows the read-only label instead.
- *
- * @param {string} control - name of the GUI object able to change a setting
- * @param {string} label - name of the GUI object displaying a setting
- * @param {boolean} [allowControl] - Whether the current user is allowed to change the control.
- */
-function hideControl(control, label, allowControl = g_IsController)
-{
-	Engine.GetGUIObjectByName(control).hidden = !allowControl;
-	Engine.GetGUIObjectByName(label).hidden = allowControl;
-}
-
-/**
- * Checks a boolean checkbox for the host and sets the text of the label for the client.
- *
- * @param {string} control - name of the GUI object able to change a setting
- * @param {string} label - name of the GUI object displaying a setting
- * @param {boolean} checked - Whether the setting is active / enabled.
- */
-function setGUIBoolean(control, label, checked)
-{
-	Engine.GetGUIObjectByName(control).checked = checked;
-	Engine.GetGUIObjectByName(label).caption = checked ? translate("Yes") : translate("No");
-}
-
-/**
- * Hide and set some elements depending on whether we play single- or multiplayer.
- */
-function initMultiplayerSettings()
-{
-	Engine.GetGUIObjectByName("chatPanel").hidden = !g_IsNetworked;
-	Engine.GetGUIObjectByName("optionCheats").hidden = !g_IsNetworked;
-	Engine.GetGUIObjectByName("optionRating").hidden = !Engine.HasXmppClient();
-
-	Engine.GetGUIObjectByName("enableCheats").enabled = !Engine.IsRankedGame();
-	Engine.GetGUIObjectByName("lockTeams").enabled = !Engine.IsRankedGame();
-
-	Engine.GetGUIObjectByName("enableCheats").checked = g_GameAttributes.settings.CheatsEnabled;
-	Engine.GetGUIObjectByName("enableRating").checked = !!g_GameAttributes.settings.RatingEnabled;
-
-	for (let ctrl of ["enableCheats", "enableRating"])
-		hideControl(ctrl, ctrl + "Text");
-}
-
-/**
- * Populate team-, color- and civ-dropdowns.
- */
-function initPlayerAssignments()
-{
-	let boxSpacing = 32;
-	for (let i = 0; i < g_MaxPlayers; ++i)
-	{
-		let box = Engine.GetGUIObjectByName("playerBox["+i+"]");
-		let boxSize = box.size;
-		let h = boxSize.bottom - boxSize.top;
-		boxSize.top = i * boxSpacing;
-		boxSize.bottom = i * boxSpacing + h;
-		box.size = boxSize;
-
-		let team = Engine.GetGUIObjectByName("playerTeam["+i+"]");
-		let teamsArray = Array(g_MaxTeams).fill(0).map((v, i) => i + 1); // 1, 2, ... MaxTeams
-		team.list = [translateWithContext("team", "None")].concat(teamsArray); // "None", 1, 2, ..., maxTeams
-		team.list_data = [-1].concat(teamsArray.map(team => team - 1)); // -1, 0, ..., (maxTeams-1)
-		team.selected = 0;
-
-		let playerSlot = i;	// declare for inner function use
-		team.onSelectionChange = function() {
-			if (this.selected != -1)
-				g_GameAttributes.settings.PlayerData[playerSlot].Team = this.selected - 1;
-
-			updateGameAttributes();
-		};
-
-		let colorPicker = Engine.GetGUIObjectByName("playerColorPicker["+i+"]");
-		colorPicker.list = g_PlayerColors.map(color => ' ' + '[color="' + rgbToGuiColor(color) + '"]■[/color]');
-		colorPicker.list_data = g_PlayerColors.map((color, index) => index);
-		colorPicker.selected = -1;
-		colorPicker.onSelectionChange = function() { selectPlayerColor(playerSlot, this.selected); };
-
-		Engine.GetGUIObjectByName("playerCiv["+i+"]").onSelectionChange = function() {
-			if ((this.selected != -1)&&(g_GameAttributes.mapType !== "scenario"))
-				g_GameAttributes.settings.PlayerData[playerSlot].Civ = this.list_data[this.selected];
-
-			updateGameAttributes();
-		};
-	}
 }
 
 /**
@@ -800,7 +990,7 @@ function handlePlayerAssignmentMessage(message)
 
 	g_PlayerAssignments = message.newAssignments;
 
-	hideStartGameButton(!g_IsController && g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1);
+	hideStartGameButton(!g_IsController && g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1); 
 
 	updatePlayerList();
 	updateReadyUI();
@@ -881,27 +1071,9 @@ function getSetting(settings, defaults, property)
 }
 
 /**
- * Initialize the dropdowns containing all selectable civs (including random).
- */
-function initCivNameList()
-{
-	let civList = Object.keys(g_CivData).filter(civ => g_CivData[civ].SelectableInGameSetup).map(civ => ({ "name": g_CivData[civ].Name, "code": civ })).sort(sortNameIgnoreCase);
-	let civListNames = [g_RandomCiv].concat(civList.map(civ => civ.name));
-	let civListCodes = ["random"].concat(civList.map(civ => civ.code));
-
-	for (let i = 0; i < g_MaxPlayers; ++i)
-	{
-		let civ = Engine.GetGUIObjectByName("playerCiv["+i+"]");
-		civ.list = civListNames;
-		civ.list_data = civListCodes;
-		civ.selected = 0;
-	}
-}
-
-/**
  * Initialize the dropdown containing all maps for the selected maptype and mapfilter.
  */
-function initMapNameList()
+function reloadMapList()
 {
 	if (!g_MapPath[g_GameAttributes.mapType])
 	{
@@ -914,38 +1086,32 @@ function initMapNameList()
 		getXMLFileList(g_GameAttributes.mapPath);
 
 	// Apply map filter, if any defined
-	// TODO: Should verify these are valid maps before adding to list
 	let mapList = [];
+	if (g_GameAttributes.mapType == "random")
+		mapList.push({
+			"file": "random",
+			"name": '[color="' + g_ColorRandom + '"]' + translateWithContext("map selection", "Random") + "[/color]"
+		});
+
+	// TODO: Should verify these are valid maps before adding to list
 	for (let mapFile of mapFiles)
 	{
 		let file = g_GameAttributes.mapPath + mapFile;
 		let mapData = loadMapData(file);
-		let mapFilter = g_MapFilters.find(mapFilter => mapFilter.id == (g_GameAttributes.mapFilter || "all"));
+		let filterID = g_MapFilters.id.find(filter => filter == g_GameAttributes.mapFilter);
+		let mapFilter = g_MapFilters.filter[filterID] || undefined;
 
-		if (!!mapData.settings && mapFilter && mapFilter.filter(mapData.settings.Keywords || []))
-			mapList.push({ "name": getMapDisplayName(file), "file": file });
+		if (!mapData.settings || mapFilter && !mapFilter(mapData.settings.Keywords || []))
+			continue;
+
+		mapList.push({
+			"file": file,
+			"name": translate(getMapDisplayName(file))
+		});
 	}
 
-	translateObjectKeys(mapList, ["name"]);
-	mapList.sort(sortNameIgnoreCase);
-
-	let mapListNames = mapList.map(map => map.name);
-	let mapListFiles = mapList.map(map => map.file);
-
-	if (g_GameAttributes.mapType == "random")
-	{
-		mapListNames.unshift(g_RandomMap);
-		mapListFiles.unshift("random");
-	}
-
-	let mapSelectionBox = Engine.GetGUIObjectByName("mapSelection");
-	mapSelectionBox.list = mapListNames;
-	mapSelectionBox.list_data = mapListFiles;
-	mapSelectionBox.onSelectionChange = function() {
-		if (this.list_data[this.selected])
-			selectMap(this.list_data[this.selected]);
-	};
-	mapSelectionBox.selected = Math.max(0, mapListFiles.indexOf(g_GameAttributes.map || ""));
+	g_MapList = prepareForDropdown(mapList.sort(sortNameIgnoreCase));
+	initDropdown("mapSelection")
 }
 
 function loadMapData(name)
@@ -1012,10 +1178,12 @@ function loadPersistMatchSettings()
 		sanitizePlayerData(mapSettings.PlayerData);
 
 	// Reload, as the maptype or mapfilter might have changed
-	initMapNameList();
+	reloadMapList();
 
 	g_GameAttributes.settings.RatingEnabled = Engine.HasXmppClient();
 	Engine.SetRankedGame(g_GameAttributes.settings.RatingEnabled);
+
+	supplementDefaults();
 
 	updateGUIObjects();
 }
@@ -1145,7 +1313,7 @@ function unassignInvalidPlayers(maxPlayers)
  */
 function selectNumPlayers(num)
 {
-	if (g_IsInGuiUpdate || !g_IsController || g_GameAttributes.mapType != "random")
+	if (g_GameAttributes.mapType != "random")
 		return;
 
 	let pData = g_GameAttributes.settings.PlayerData;
@@ -1158,32 +1326,7 @@ function selectNumPlayers(num)
 
 	sanitizePlayerData(g_GameAttributes.settings.PlayerData);
 
-	updateGameAttributes();
-}
-
-/**
- * Assigns the given color to that player.
- */
-function selectPlayerColor(playerSlot, colorIndex)
-{
-	if (colorIndex == -1)
-		return;
-
-	let playerData = g_GameAttributes.settings.PlayerData;
-
-	// If someone else has that color, give that player the old color
-	let pData = playerData.find(pData => sameColor(g_PlayerColors[colorIndex], pData.Color));
-	if (pData)
-		pData.Color = playerData[playerSlot].Color;
-
-	// Assign the new color
-	playerData[playerSlot].Color = g_PlayerColors[colorIndex];
-
-	// Ensure colors are not used twice after increasing the number of players
-	ensureUniquePlayerColors(playerData);
-
-	if (!g_IsInGuiUpdate)
-		updateGameAttributes();
+	supplementDefaults();
 }
 
 function ensureUniquePlayerColors(playerData)
@@ -1194,55 +1337,8 @@ function ensureUniquePlayerColors(playerData)
 			playerData[i].Color = g_PlayerColors.find(color => playerData.every(pData => !sameColor(color, pData.Color)));
 }
 
-/**
- * Called when the user selects a map type from the list.
- *
- * @param {string} type - scenario, skirmish or random
- */
-function selectMapType(type)
-{
-	if (g_IsInGuiUpdate || !g_IsController)
-		return;
-
-	if (!g_MapPath[type])
-	{
-		error("selectMapType: Unexpected map type " + type);
-		return;
-	}
-
-	g_MapData = {};
-	g_GameAttributes.map = "";
-	g_GameAttributes.mapType = type;
-	g_GameAttributes.mapPath = g_MapPath[type];
-
-	if (type != "scenario")
-		g_GameAttributes.settings = {
-			"PlayerData": g_DefaultPlayerData.slice(0, 4),
-			"CheatsEnabled": g_GameAttributes.settings.CheatsEnabled
-		};
-
-	initMapNameList();
-
-	updateGameAttributes();
-}
-
-function selectMapFilter(id)
-{
-	if (g_IsInGuiUpdate || !g_IsController)
-		return;
-
-	g_GameAttributes.mapFilter = id;
-
-	initMapNameList();
-
-	updateGameAttributes();
-}
-
 function selectMap(name)
 {
-	if (g_IsInGuiUpdate || !g_IsController || !name)
-		return;
-
 	// Reset some map specific properties which are not necessarily redefined on each map
 	for (let prop of ["TriggerScripts", "CircularMap", "Garrison"])
 		g_GameAttributes.settings[prop] = undefined;
@@ -1275,8 +1371,79 @@ function selectMap(name)
 			g_GameAttributes.settings[prop] = mapSettings[prop];
 
 	unassignInvalidPlayers(g_GameAttributes.settings.PlayerData.length);
+	supplementDefaults();
+}
 
-	updateGameAttributes();
+/**
+ * Check can be moved to hidden() once it's not identical for all control-arrays anymore
+ */
+function hideControlArrayElement(idx)
+{
+	return idx !== undefined && idx >= g_GameAttributes.settings.PlayerData.length;
+}
+
+/**
+ * @param idx - Only specified for dropdown arrays.
+ */
+function updateGUIDropdown(name, idx = undefined)
+{
+	let idxName = idx === undefined ? "": "[" + idx + "]";
+	let obj = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
+
+	// Naming convention
+	let dropdown = Engine.GetGUIObjectByName(name + idxName);
+	let label = Engine.GetGUIObjectByName(name + "Text" + idxName);
+
+	let indexHidden = hideControlArrayElement(idx);
+
+	// TODO use hideControlArrayElement to skip evil indices
+
+	let selected = indexHidden ? -1 : dropdown.list_data.indexOf(String(obj.get(idx)));
+	let enabled = !indexHidden && (!obj.enabled || obj.enabled(idx));
+	let hidden = indexHidden || obj.hidden && obj.hidden(idx);
+
+	dropdown.hidden = !g_IsController || !enabled || hidden;
+	dropdown.selected = selected;
+
+	if (label)
+	{
+		label.hidden = g_IsController && enabled || hidden;
+		label.caption = selected == -1 ? translate("Unknown") : dropdown.list[selected];
+	}
+}
+
+function updateGUICheckbox(name)
+{
+	let obj = g_Checkboxes[name];
+
+	let checked = obj.get();
+	let hidden = obj.hidden && obj.hidden();
+	let enabled = !obj.enabled || obj.enabled();
+
+	// Naming convention
+	let checkbox = Engine.GetGUIObjectByName(name);
+	let label = Engine.GetGUIObjectByName(name + "Text");
+
+	checkbox.checked = checked;
+	checkbox.enabled = enabled;
+	checkbox.hidden = hidden || !g_IsController;
+
+	label.caption = checked ? translate("Yes") : translate("No");
+	label.hidden = hidden || g_IsController;
+}
+
+function updateGUIMiscControl(name, idx)
+{
+	let idxName = idx === undefined ? "": "[" + idx + "]";
+
+	let obj = g_MiscControls[name];
+	let control = Engine.GetGUIObjectByName(name + idxName);
+
+	for (let property in obj)
+		control[property] = obj[property]();
+
+	if (hideControlArrayElement(idx))
+		control.hidden = true;
 }
 
 function launchGame()
@@ -1391,136 +1558,23 @@ function updateGUIObjects()
 {
 	g_IsInGuiUpdate = true;
 
-	let mapSettings = g_GameAttributes.settings;
+	for (let name in g_Dropdowns)
+		updateGUIDropdown(name);
 
-	// These dropdowns don't set values while g_IsInGuiUpdate
-	let mapName = g_GameAttributes.map || "";
-	let mapFilterIdx = g_MapFilters.findIndex(mapFilter => mapFilter.id == (g_GameAttributes.mapFilter || "default"));
-	let mapTypeIdx = g_GameAttributes.mapType !== undefined ? g_MapTypes.Name.indexOf(g_GameAttributes.mapType) : g_MapTypes.Default;
-	let gameSpeedIdx = g_GameAttributes.gameSpeed !== undefined ? g_GameSpeeds.Speed.indexOf(g_GameAttributes.gameSpeed) : g_GameSpeeds.Default;
-
-	// These dropdowns might set the default (as they ignore g_IsInGuiUpdate)
-	let mapSizeIdx = mapSettings.Size !== undefined ? g_MapSizes.Tiles.indexOf(mapSettings.Size) : g_MapSizes.Default;
-	let victoryIdx = mapSettings.GameType !== undefined ? g_VictoryConditions.Name.indexOf(mapSettings.GameType) : g_VictoryConditions.Default;
-	let wonderDurationIdx = mapSettings.WonderDuration !== undefined ? g_WonderDurations.Duration.indexOf(mapSettings.WonderDuration) : g_WonderDurations.Default;
-	let popIdx = mapSettings.PopulationCap !== undefined ? g_PopulationCapacities.Population.indexOf(mapSettings.PopulationCap) : g_PopulationCapacities.Default;
-	let startingResIdx = mapSettings.StartingResources !== undefined ? g_StartingResources.Resources.indexOf(mapSettings.StartingResources) : g_StartingResources.Default;
-	let ceasefireIdx = mapSettings.Ceasefire !== undefined ? g_Ceasefire.Duration.indexOf(mapSettings.Ceasefire) : g_Ceasefire.Default;
-	let numPlayers = mapSettings.PlayerData ? mapSettings.PlayerData.length : g_MaxPlayers;
-
-	if (g_IsController)
-	{
-		Engine.GetGUIObjectByName("mapType").selected = mapTypeIdx;
-		Engine.GetGUIObjectByName("mapFilter").selected = mapFilterIdx;
-		Engine.GetGUIObjectByName("mapSelection").selected = Engine.GetGUIObjectByName("mapSelection").list_data.indexOf(mapName);
-		Engine.GetGUIObjectByName("mapSize").selected = mapSizeIdx;
-		Engine.GetGUIObjectByName("numPlayers").selected = numPlayers - 1;
-		Engine.GetGUIObjectByName("victoryCondition").selected = victoryIdx;
-		Engine.GetGUIObjectByName("wonderDuration").selected = wonderDurationIdx;
-		Engine.GetGUIObjectByName("populationCap").selected = popIdx;
-		Engine.GetGUIObjectByName("gameSpeed").selected = gameSpeedIdx;
-		Engine.GetGUIObjectByName("ceasefire").selected = ceasefireIdx;
-		Engine.GetGUIObjectByName("startingResources").selected = startingResIdx;
-	}
-	else
-	{
-		Engine.GetGUIObjectByName("mapTypeText").caption = g_MapTypes.Title[mapTypeIdx];
-		Engine.GetGUIObjectByName("mapFilterText").caption = g_MapFilters[mapFilterIdx].name;
-		Engine.GetGUIObjectByName("mapSelectionText").caption = mapName == "random" ? g_RandomMap : translate(getMapDisplayName(mapName));
-		initMapNameList();
-	}
-
-	// Can be visible to both host and clients
-	Engine.GetGUIObjectByName("mapSizeText").caption = g_GameAttributes.mapType == "random" ? g_MapSizes.Name[mapSizeIdx] : translateWithContext("map size", "Default");
-	Engine.GetGUIObjectByName("numPlayersText").caption = numPlayers;
-	Engine.GetGUIObjectByName("victoryConditionText").caption = g_VictoryConditions.Title[victoryIdx];
-	Engine.GetGUIObjectByName("wonderDurationText").caption = g_WonderDurations.Title[wonderDurationIdx];
-	Engine.GetGUIObjectByName("populationCapText").caption = g_PopulationCapacities.Title[popIdx];
-	Engine.GetGUIObjectByName("startingResourcesText").caption = g_StartingResources.Title[startingResIdx];
-	Engine.GetGUIObjectByName("ceasefireText").caption = g_Ceasefire.Title[ceasefireIdx];
-	Engine.GetGUIObjectByName("gameSpeedText").caption = g_GameSpeeds.Title[gameSpeedIdx];
-
-	setGUIBoolean("enableCheats", "enableCheatsText", !!mapSettings.CheatsEnabled);
-	setGUIBoolean("disableTreasures", "disableTreasuresText", !!mapSettings.DisableTreasures);
-	setGUIBoolean("exploreMap", "exploreMapText", !!mapSettings.ExploreMap);
-	setGUIBoolean("revealMap", "revealMapText", !!mapSettings.RevealMap);
-	setGUIBoolean("lockTeams", "lockTeamsText", !!mapSettings.LockTeams);
-	setGUIBoolean("lastManStanding", "lastManStandingText", !!mapSettings.LastManStanding);
-	setGUIBoolean("enableRating", "enableRatingText", !!mapSettings.RatingEnabled);
-
-	Engine.GetGUIObjectByName("optionWonderDuration").hidden =
-		g_GameAttributes.settings.GameType &&
-		g_GameAttributes.settings.GameType != "wonder";
-
-	Engine.GetGUIObjectByName("cheatWarningText").hidden = !g_IsNetworked || !mapSettings.CheatsEnabled;
-
-	Engine.GetGUIObjectByName("lastManStanding").enabled = !mapSettings.LockTeams;
-	Engine.GetGUIObjectByName("enableCheats").enabled = !mapSettings.RatingEnabled;
-	Engine.GetGUIObjectByName("lockTeams").enabled = !mapSettings.RatingEnabled;
-
-	// Mapsize completely hidden for non-random maps
-	let isRandom = g_GameAttributes.mapType == "random";
-	Engine.GetGUIObjectByName("mapSizeDesc").hidden = !isRandom;
-	Engine.GetGUIObjectByName("mapSize").hidden = !isRandom || !g_IsController;
-	Engine.GetGUIObjectByName("mapSizeText").hidden = !isRandom || g_IsController;
-	hideControl("numPlayers", "numPlayersText", isRandom && g_IsController);
-
-	let notScenario = g_GameAttributes.mapType != "scenario" && g_IsController ;
-
-	for (let ctrl of ["victoryCondition", "wonderDuration", "populationCap",
-	                  "startingResources", "ceasefire", "revealMap",
-	                  "exploreMap", "disableTreasures", "lockTeams", "lastManStanding"])
-		hideControl(ctrl, ctrl + "Text", notScenario);
-
-	Engine.GetGUIObjectByName("civResetButton").hidden = !notScenario;
-	Engine.GetGUIObjectByName("teamResetButton").hidden = !notScenario;
+	for (let name in g_Checkboxes)
+		updateGUICheckbox(name);
 
 	for (let i = 0; i < g_MaxPlayers; ++i)
 	{
-		Engine.GetGUIObjectByName("playerBox["+i+"]").hidden = (i >= numPlayers);
+		for (let name in g_DropdownArrays)
+			updateGUIDropdown(name, i);
 
-		if (i >= numPlayers)
-			continue;
-
-		let pName = Engine.GetGUIObjectByName("playerName["+i+"]");
-		let pAssignment = Engine.GetGUIObjectByName("playerAssignment["+i+"]");
-		let pAssignmentText = Engine.GetGUIObjectByName("playerAssignmentText["+i+"]");
-		let pCiv = Engine.GetGUIObjectByName("playerCiv["+i+"]");
-		let pCivText = Engine.GetGUIObjectByName("playerCivText["+i+"]");
-		let pTeam = Engine.GetGUIObjectByName("playerTeam["+i+"]");
-		let pTeamText = Engine.GetGUIObjectByName("playerTeamText["+i+"]");
-		let pColor = Engine.GetGUIObjectByName("playerColor["+i+"]");
-
-		let pData = mapSettings.PlayerData ? mapSettings.PlayerData[i] : {};
-		let pDefs = g_DefaultPlayerData ? g_DefaultPlayerData[i] : {};
-
-		let color = getSetting(pData, pDefs, "Color");
-		pColor.sprite = "color:" + rgbToGuiColor(color) + " 100";
-		pName.caption = translate(getSetting(pData, pDefs, "Name"));
-
-		let team = getSetting(pData, pDefs, "Team");
-		let civ = getSetting(pData, pDefs, "Civ");
-
-		pAssignmentText.caption = pAssignment.list[0] ? pAssignment.list[Math.max(0, pAssignment.selected)] : translate("Loading...");
-		pCivText.caption = civ == "random" ? g_RandomCiv : (g_CivData[civ] ? g_CivData[civ].Name : "Unknown");
-		pTeamText.caption = (team !== undefined && team >= 0) ? team+1 : "-";
-
-		pCiv.selected = civ ? pCiv.list_data.indexOf(civ) : 0;
-		pTeam.selected = team !== undefined && team >= 0 ? team+1 : 0;
-
-		hideControl("playerAssignment["+i+"]", "playerAssignmentText["+i+"]", g_IsController);
-		hideControl("playerCiv["+i+"]", "playerCivText["+i+"]", notScenario);
-		hideControl("playerTeam["+i+"]", "playerTeamText["+i+"]", notScenario);
-
-		// Allow host to chose player colors on non-scenario maps
-		let pColorPicker = Engine.GetGUIObjectByName("playerColorPicker["+i+"]");
-		let pColorPickerHeading = Engine.GetGUIObjectByName("playerColorHeading");
-		let canChangeColors = g_IsController && g_GameAttributes.mapType != "scenario";
-		pColorPicker.hidden = !canChangeColors;
-		pColorPickerHeading.hidden = !canChangeColors;
-		if (canChangeColors)
-			pColorPicker.selected = g_PlayerColors.findIndex(col => sameColor(col, color));
+		for (let name in g_MiscControlArrays)
+			updateGUIMiscControl(name, i);
 	}
+
+	for (let name in g_MiscControls)
+		updateGUIMiscControl(name);
 
 	updateGameDescription();
 	resizeMoreOptionsWindow();
@@ -1597,140 +1651,47 @@ function AIConfigCallback(ai)
 	updateGameAttributes();
 }
 
+/**
+ * TODO: delete
+ */
+var g_PlayerAssignmentChoices;
 function updatePlayerList()
 {
 	g_IsInGuiUpdate = true;
 
-	let hostNameList = [];
-	let hostGuidList = [];
+	let playerChoices = sortGUIDsByPlayerID().map(guid => ({
+		"id": "guid:" + guid,
+		"label":
+			g_PlayerAssignments[guid].player == -1 ?
+			"[color=\""+ g_UnassignedPlayerColor + "\"]" + g_PlayerAssignments[guid].name + "[/color]" :
+			g_PlayerAssignments[guid].name
+	}));
+
+	let aiChoices = g_Settings.AIDescriptions
+		.filter(ai => !ai.data.hidden || !!g_GameAttributes.settings.PlayerData.every(pData => pData.AI != ai.id))
+		.map(ai => ({
+			"id": "ai:" + ai.id,
+			"label": "[color=\""+ g_AIColor + "\"]" +
+			          sprintf(translate("AI: %(ai)s"), {
+			              "ai": translate(ai.data.name)
+			          }) + "[/color]"
+	}));
+
+	let unassignedSlot = [{
+		"id": "",
+		"label": "[color=\""+ g_UnassignedColor + "\"]" + translate("Unassigned") + "[/color]",
+	}];
+	g_PlayerAssignmentChoices = playerChoices.concat(aiChoices).concat(unassignedSlot);
+
 	let assignments = [];
 	let aiAssignments = {};
-	let noAssignment;
-	let assignedCount = 0;
 	for (let guid of sortGUIDsByPlayerID())
-	{
-		let player = g_PlayerAssignments[guid].player;
+		assignments[g_PlayerAssignments[guid].player] = g_HostNameList.length - 1;
 
-		if (player != -1)
-			hostNameList.push(g_PlayerAssignments[guid].name);
-		else
-			hostNameList.push("[color=\""+ g_UnassignedPlayerColor + "\"]" + g_PlayerAssignments[guid].name + "[/color]");
+	let playerSlot;
+	g_GameAttributes.settings.PlayerData[playerSlot].AI = g_GameAttributes.settings.PlayerData[playerSlot].AI || "";
 
-		hostGuidList.push(guid);
-		assignments[player] = hostNameList.length-1;
-
-		if (player != -1)
-			++assignedCount;
-	}
-
-	// Only enable start button if we have enough assigned players
-	if (g_IsController)
-		Engine.GetGUIObjectByName("startGame").enabled = assignedCount > 0;
-
-	for (let ai of g_Settings.AIDescriptions)
-	{
-		// If the map uses a hidden AI then don't hide it
-		if (ai.data.hidden && g_GameAttributes.settings.PlayerData.every(pData => pData.AI != ai.id))
-			continue;
-
-		aiAssignments[ai.id] = hostNameList.length;
-		hostNameList.push("[color=\""+ g_AIColor + "\"]" + sprintf(translate("AI: %(ai)s"), { "ai": translate(ai.data.name) }));
-		hostGuidList.push("ai:" + ai.id);
-	}
-
-	noAssignment = hostNameList.length;
-	hostNameList.push("[color=\""+ g_UnassignedColor + "\"]" + translate("Unassigned"));
-	hostGuidList.push("");
-
-	for (let i = 0; i < g_MaxPlayers; ++i)
-	{
-		let playerSlot = i;
-		let playerID = i+1; // we don't show Gaia, so first slot is ID 1
-
-		let selection = assignments[playerID];
-
-		let configButton = Engine.GetGUIObjectByName("playerConfig["+i+"]");
-		configButton.hidden = true;
-
-		// Look for valid player slots
-		if (playerSlot >= g_GameAttributes.settings.PlayerData.length)
-			continue;
-
-		// If no human is assigned, look for an AI instead
-		if (selection === undefined)
-		{
-			let aiId = g_GameAttributes.settings.PlayerData[playerSlot].AI;
-			if (aiId)
-			{
-				// Check for a valid AI
-				if (aiId in aiAssignments)
-				{
-					selection = aiAssignments[aiId];
-					configButton.hidden = false;
-					configButton.onpress = function()
-					{
-						openAIConfig(playerSlot);
-					};
-				}
-				else
-				{
-					g_GameAttributes.settings.PlayerData[playerSlot].AI = "";
-					warn("AI \"" + aiId + "\" not present. Defaulting to unassigned.");
-				}
-			}
-
-			if (!selection)
-				selection = noAssignment;
-		}
-		// There was a human, so make sure we don't have any AI left
-		// over in their slot, if we're in charge of the attributes
-		else if (g_IsController && g_GameAttributes.settings.PlayerData[playerSlot].AI)
-		{
-			g_GameAttributes.settings.PlayerData[playerSlot].AI = "";
-			if (g_IsNetworked)
-				Engine.SetNetworkGameAttributes(g_GameAttributes);
-		}
-
-		let assignBox = Engine.GetGUIObjectByName("playerAssignment["+i+"]");
-		let assignBoxText = Engine.GetGUIObjectByName("playerAssignmentText["+i+"]");
-		assignBox.list = hostNameList;
-		assignBox.list_data = hostGuidList;
-		if (assignBox.selected != selection)
-			assignBox.selected = selection;
-		assignBoxText.caption = hostNameList[selection];
-
-		if (g_IsController)
-			assignBox.onselectionchange = function() {
-				if (g_IsInGuiUpdate)
-					return;
-
-				let guid = hostGuidList[this.selected];
-				if (!guid)
-				{
-					if (g_IsNetworked)
-						// Unassign any host from this player slot
-						Engine.AssignNetworkPlayer(playerID, "");
-					// Remove AI from this player slot
-					g_GameAttributes.settings.PlayerData[playerSlot].AI = "";
-				}
-				else if (guid.substr(0, 3) == "ai:")
-				{
-					if (g_IsNetworked)
-						// Unassign any host from this player slot
-						Engine.AssignNetworkPlayer(playerID, "");
-					// Set the AI for this player slot
-					g_GameAttributes.settings.PlayerData[playerSlot].AI = guid.substr(3);
-				}
-				else
-					swapPlayers(guid, playerSlot);
-
-				if (g_IsNetworked)
-					Engine.SetNetworkGameAttributes(g_GameAttributes);
-				else
-					updatePlayerList();
-				updateReadyUI();
-			};
-	}
+	initDropdownArray("playerAssignment");
 
 	g_IsInGuiUpdate = false;
 }
@@ -1941,7 +1902,7 @@ function updateReadyUI()
 	if (g_IsNetworked && g_IsController)
 	{
 		let startGameButton = Engine.GetGUIObjectByName("startGame");
-		startGameButton.enabled = allReady;
+
 		// Add a explanation on to the tooltip if disabled.
 		let disabledIndex = startGameButton.tooltip.indexOf('Disabled');
 		if (disabledIndex != -1 && allReady)
