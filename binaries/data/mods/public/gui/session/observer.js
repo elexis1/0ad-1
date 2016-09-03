@@ -1,3 +1,13 @@
+/**
+ * Close the trade window if it was opened by the observermode.
+ */
+var g_TradeTimer;
+
+/**
+ * Time after which the window is closed if the observermode has opened it.
+ */
+var g_TradeWindowTime = 3500;
+
 function focusPlayerCommand(cmd, player)
 {
 	// For observers, focus the camera on units commanded by the selected player
@@ -16,6 +26,19 @@ function focusPlayerCommand(cmd, player)
 		let targetState = GetEntityState(cmd.target);
 		if (targetState)
 			Engine.CameraMoveTo(targetState.position.x, targetState.position.z);
+	}
+	// Open the trade window for some seconds
+	else if (cmd.type == "set-trading-goods")
+	{
+		let wasOpen = g_IsTradeOpen;
+		openTrade();
+		if (!wasOpen)
+		{
+			if (g_TradeTimer)
+				clearTimeout(g_TradeTimer);
+
+			g_ChatTimers.push(setTimeout(closeTrade, g_TradeWindowTime));
+		}
 	}
 	// Focus commanded entities, but don't lose previous focus when training units
 	else if (cmd.type != "train" && cmd.type != "research" && entState)
