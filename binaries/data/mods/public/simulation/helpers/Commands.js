@@ -26,12 +26,15 @@ function ProcessCommand(player, cmd)
 		data.entities = FilterEntityList(cmd.entities, player, data.controlAllUnits);
 
 	// Allow focusing the camera on recent commands
-	let cmpGuiInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
-	cmpGuiInterface.PushNotification({
+	let commandData = {
 		"type": "playercommand",
 		"players": [player],
 		"cmd": cmd
-	});
+	};
+	if (g_ObservermodeData[cmd.type])
+		commandData = g_ObservermodeData[cmd.type](commandData, player, cmd, data);
+	let cmpGuiInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
+	cmpGuiInterface.PushNotification(commandData);
 
 	// Note: checks of UnitAI targets are not robust enough here, as ownership
 	//	can change after the order is issued, they should be checked by UnitAI
@@ -771,6 +774,17 @@ var g_Commands = {
 				cmpResourceDropsite.SetSharing(cmd.shared);
 		}
 	},
+};
+
+var g_ObservermodeData = {
+	"delete-entities": function(output, player, cmd, data)
+	{
+		// Save the position, since the GUI event is received after the unit is dead
+		let cmpPosition = Engine.QueryInterface(cmd.entities[0], IID_Position);
+		if (cmpPosition && cmpPosition.IsInWorld())
+			output.position = cmpPosition.GetPosition2D();
+		return output;
+	}
 };
 
 /**

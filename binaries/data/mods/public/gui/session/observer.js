@@ -8,11 +8,13 @@ var g_TradeTimer;
  */
 var g_TradeWindowTime = 3500;
 
-function focusPlayerCommand(cmd, player)
+function focusPlayerCommand(notification, player)
 {
 	// For observers, focus the camera on units commanded by the selected player
 	if (!g_FollowPlayer || player != g_ViewedPlayer)
 		return;
+
+	let cmd = notification.cmd;
 
 	// Ignore boring animals
 	let entState = cmd.entities && cmd.entities[0] && GetEntityState(cmd.entities[0]);
@@ -26,6 +28,10 @@ function focusPlayerCommand(cmd, player)
 		let targetState = GetEntityState(cmd.target);
 		if (targetState)
 			Engine.CameraMoveTo(targetState.position.x, targetState.position.z);
+	}
+	else if (cmd.type == "delete-entities")
+	{
+		Engine.CameraMoveTo(notification.position.x, notification.position.y);
 	}
 	// Open the trade window for some seconds
 	else if (cmd.type == "set-trading-goods")

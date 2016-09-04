@@ -392,7 +392,7 @@ var g_NotificationsTypes =
 	},
 	"playercommand": function(notification, player)
 	{
-		focusPlayerCommand(notification.cmd, player);
+		focusPlayerCommand(notification, player);
 	}
 };
 
