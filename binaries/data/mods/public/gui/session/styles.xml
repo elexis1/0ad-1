@@ -247,6 +247,18 @@
 		textcolor_selected="darkgray"
 	/>
 
+	<style name="chatHistory"
+		buffer_zone="5"
+		font="sans-13"
+		scrollbar="true"
+		scrollbar_style="ModernScrollBar"
+		scroll_bottom="true"
+		textcolor="white"
+		textcolor_selected="gold"
+		text_align="left"
+		text_valign="center"
+	/>
+
 	<style name="notificationPanel"
 		buffer_zone="5"
 		font="sans-bold-stroke-14"

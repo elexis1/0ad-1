@@ -293,6 +293,9 @@ function init(initData, hotloadData)
 	if (Engine.IsAtlasRunning())
 		Engine.GetGUIObjectByName("menuExitButton").enabled = false;
 
+	showChatPage("History");
+	initChatFilters();
+
 	initHotkeyTooltips();
 
 	if (hotloadData)

@@ -15,9 +15,14 @@ const g_ChatTimeout = 30;
 const g_ChatLines = 20;
 
 /**
- * The strings to be displayed including sender and formating.
+ * The currently displayed strings, limited by the given timeframe and limit above.
  */
 var g_ChatMessages = [];
+
+/**
+ * All unparsed chat messages received since connect, including timestamp.
+ */
+var g_ChatHistory = [];
 
 /**
  * Holds the timer-IDs used for hiding the chat after g_ChatTimeout seconds.
@@ -122,6 +127,40 @@ var g_StatusMessageTypes = {
 	"join_syncing": msg => translate("Synchronising gameplay with other players..."),
 	"active": msg => ""
 };
+
+/*
+ * TODO: Should include an entry for every client once scrolling is implemented.
+ */
+var g_ChatFilter = [
+	{
+		"caption": translate("Public"),
+		"key": "public"
+	},
+	{
+		"caption": translate("Allies"),
+		"key": "allies"
+	},
+	{
+		"caption": translate("Enemies"),
+		"key": "enemies"
+	},
+	{
+		"caption": translate("Private"),
+		"key": "private"
+	},
+	{
+		"caption": translate("Observer"),
+		"key": "observer"
+	},
+	{
+		"caption": translate("Connection Status"),
+		"key": "connection"
+	},
+	{
+		"caption": translate("Game Notifications"),
+		"key": "game"
+	}
+];
 
 /**
  * Chatmessage shown after commands like /me or /enemies.
@@ -667,11 +706,12 @@ function submitChatDirectly(text)
  * Loads the text from the GUI window, checks if it is a local command
  * or cheat and executes it. Otherwise sends it as chat.
  */
-function submitChatInput()
+function submitChatInput(window)
 {
 	let text = Engine.GetGUIObjectByName("chatInput").caption;
 
 	closeChat();
+	Engine.GetGUIObjectByName("chatInput").caption = "";
 
 	if (!text.length)
 		return;
@@ -702,6 +742,13 @@ function addChatMessage(msg)
 	let formatted = g_FormatChatMessage[msg.type](msg);
 	if (!formatted)
 		return;
+
+	// Remember the original text as it depends on g_PlayerAssignments
+	g_ChatHistory.push({
+		"type": msg.type,
+		"txt": formatted
+	});
+	updateChatHistory();
 
 	g_ChatMessages.push(formatted);
 	g_ChatTimers.push(setTimeout(removeOldChatMessage, g_ChatTimeout * 1000));
