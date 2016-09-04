@@ -1,12 +1,12 @@
 /**
- * Close the trade window if it was opened by the observermode.
+ * Close the diplomacy/trade window if it was opened by the observermode.
  */
-var g_TradeTimer;
+var g_ObserverWindowTimer;
 
 /**
  * Time after which the window is closed if the observermode has opened it.
  */
-var g_TradeWindowTime = 3500;
+var g_ObserverWindowTime = 3000;
 
 function focusPlayerCommand(notification, player)
 {
@@ -33,18 +33,9 @@ function focusPlayerCommand(notification, player)
 	{
 		Engine.CameraMoveTo(notification.position.x, notification.position.y);
 	}
-	// Open the trade window for some seconds
-	else if (cmd.type == "set-trading-goods")
+	else if (cmd.type == "diplomacy" || cmd.type == "set-trading-goods")
 	{
-		let wasOpen = g_IsTradeOpen;
-		openTrade();
-		if (!wasOpen)
-		{
-			if (g_TradeTimer)
-				clearTimeout(g_TradeTimer);
-
-			g_TradeTimer = setTimeout(closeTrade, g_TradeWindowTime);
-		}
+		openObserverWindow(cmd.type == "diplomacy");
 	}
 	// Focus commanded entities, but don't lose previous focus when training units
 	else if (cmd.type != "train" && cmd.type != "research" && entState)
@@ -60,4 +51,17 @@ function focusPlayerCommand(notification, player)
 	// Allow gaia in selection when gathering
 	g_Selection.reset();
 	g_Selection.addList(selection, false, cmd.type == "gather");
+}
+
+function openObserverWindow(diplomacy = false)
+{
+	let wasOpen = diplomacy ? g_IsDiplomacyOpen : g_IsTradeOpen;
+
+	diplomacy ? openDiplomacy() : openTrade();
+
+	if (g_ObserverWindowTimer)
+		clearTimeout(g_ObserverWindowTimer);
+
+	if (!wasOpen)
+		g_ObserverWindowTimer = setTimeout(diplomacy ? closeDiplomacy : closeTrade, g_ObserverWindowTime);
 }
