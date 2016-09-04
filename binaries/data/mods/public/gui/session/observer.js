@@ -48,9 +48,8 @@ function focusPlayerCommand(notification, player)
 	if (cmd.target)
 		selection.push(cmd.target);
 
-	// Allow gaia in selection when gathering
 	g_Selection.reset();
-	g_Selection.addList(selection, false, cmd.type == "gather");
+	g_Selection.addList(selection, false, true);
 }
 
 function openObserverWindow(diplomacy = false)
