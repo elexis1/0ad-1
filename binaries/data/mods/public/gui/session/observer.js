@@ -43,7 +43,7 @@ function focusPlayerCommand(notification, player)
 			if (g_TradeTimer)
 				clearTimeout(g_TradeTimer);
 
-			g_ChatTimers.push(setTimeout(closeTrade, g_TradeWindowTime));
+			g_TradeTimer = setTimeout(closeTrade, g_TradeWindowTime);
 		}
 	}
 	// Focus commanded entities, but don't lose previous focus when training units
