@@ -280,7 +280,7 @@ std::string parseStunResponse()
     return "";
 }   // parseStunResponse
 
-JS::Value FindStunEndpoint(ScriptInterface& scriptInterface, int port)
+JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int port)
 {
 	createStunRequest();
 	std::string parse_result = parseStunResponse();
