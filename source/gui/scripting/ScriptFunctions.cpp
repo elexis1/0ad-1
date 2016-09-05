@@ -245,6 +245,11 @@ JS::Value GetEngineInfo(ScriptInterface::CxPrivate* pCxPrivate)
 	return SavedGames::GetEngineInfo(*(pCxPrivate->pScriptInterface));
 }
 
+JS::Value FindStunEndpoint(ScriptInterface::CxPrivate* pCxPrivate, int port)
+{
+	return StunClient::FindStunEndpoint(*(pCxPrivate->pScriptInterface), port);
+}
+
 void StartNetworkGame(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
 {
 	ENSURE(g_NetClient);
@@ -1047,6 +1052,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<void, int, &SendNetworkReady>("SendNetworkReady");
 	scriptInterface.RegisterFunction<JS::Value, &GetAIs>("GetAIs");
 	scriptInterface.RegisterFunction<JS::Value, &GetEngineInfo>("GetEngineInfo");
+	scriptInterface.RegisterFunction<JS::Value, &FindStunEndpoint>("FindStunEndpoint");
 
 	// Saved games
 	scriptInterface.RegisterFunction<JS::Value, std::wstring, &StartSavedGame>("StartSavedGame");

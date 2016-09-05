@@ -165,6 +165,11 @@ var g_ServerName;
 var g_ServerPort;
 
 /**
+ * STUN endpoint.
+ */
+var g_StunEndpoint;
+
+/**
  * States whether the GUI is currently updated in response to network messages instead of user input
  * and therefore shouldn't send further messages to the network.
  */
@@ -247,6 +252,7 @@ function init(attribs)
 	g_IsController = attribs.type != "client";
 	g_ServerName = attribs.serverName;
 	g_ServerPort = attribs.serverPort;
+	g_StunEndpoint = attribs.stunEndpoint;
 
 	// Replace empty playername when entering a singleplayermatch for the first time
 	if (!g_IsNetworked)
@@ -1989,6 +1995,7 @@ function sendRegisterGameStanza()
 	let stanza = {
 		"name": g_ServerName,
 		"port": g_ServerPort,
+		"stunEndpoint": g_StunEndpoint,
 		"mapName": g_GameAttributes.map,
 		"niceMapName": getMapDisplayName(g_GameAttributes.map),
 		"mapSize": mapSize,

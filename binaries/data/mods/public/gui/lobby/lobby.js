@@ -704,10 +704,21 @@ function joinSelectedGame()
 		return;
 	}
 
+	let ip;
+	let port;
+	if (g_UseStun && game.stunEndpoint !== undefined) {
+		ip = game.stunEndpoint.ip;
+		port = game.stunEndpoint.port;
+	}
+	else {
+		ip = game.ip;
+		port = game.port;
+	}
+
 	Engine.PushGuiPage("page_gamesetup_mp.xml", {
 		"multiplayerGameType": "join",
-		"ip": game.ip,
-		"port": game.port,
+		"ip": ip,
+		"port": port,
 		"name": g_Username,
 		"rating": g_UserRating
 	});

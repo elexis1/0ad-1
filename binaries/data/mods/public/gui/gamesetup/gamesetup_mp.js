@@ -214,7 +214,8 @@ function pollAndHandleNetworkClient()
 						Engine.SwitchGuiPage("page_gamesetup.xml", {
 							"type": g_GameType,
 							"serverName": g_ServerName,
-							"serverPort": g_ServerPort
+							"serverPort": g_ServerPort,
+							"stunEndpoint": g_StunEndpoint
 						});
 						return; // don't process any more messages - leave them for the game GUI loop
 					}
@@ -275,6 +276,10 @@ function startHost(playername, servername, port)
 		Engine.GetGUIObjectByName("hostFeedback").caption =
 			translate("Game name already in use.");
 		return false;
+	}
+
+	if (Engine.HasXmppClient() && g_UseStun) {
+		g_StunEndpoint = Engine.FindStunEndpoint(port);
 	}
 
 	try
