@@ -1053,7 +1053,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<void, int, &SendNetworkReady>("SendNetworkReady");
 	scriptInterface.RegisterFunction<JS::Value, &GetAIs>("GetAIs");
 	scriptInterface.RegisterFunction<JS::Value, &GetEngineInfo>("GetEngineInfo");
-	scriptInterface.RegisterFunction<JS::Value, &FindStunEndpoint>("FindStunEndpoint");
+	scriptInterface.RegisterFunction<JS::Value, int, &FindStunEndpoint>("FindStunEndpoint");
 
 	// Saved games
 	scriptInterface.RegisterFunction<JS::Value, std::wstring, &StartSavedGame>("StartSavedGame");
