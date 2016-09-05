@@ -678,6 +678,15 @@ function toggleGameSpeed()
 	gameSpeed.hidden = !gameSpeed.hidden;
 }
 
+function toggleObservermodeOptions()
+{
+	let observermodeOverlay = Engine.GetGUIObjectByName("observermodeOverlay");
+	observermodeOverlay.hidden = !observermodeOverlay.hidden;
+
+	if (!observermodeOverlay.hidden)
+		Engine.GetGUIObjectByName("devCommands").hidden = true;
+}
+
 function toggleObjectives()
 {
 	let open = g_IsObjectivesOpen;
@@ -851,6 +860,9 @@ function toggleDeveloperOverlay()
 
 	let devCommands = Engine.GetGUIObjectByName("devCommands");
 	devCommands.hidden = !devCommands.hidden;
+
+	if (!devCommands.hidden)
+		Engine.GetGUIObjectByName("observermodeOverlay").hidden = true;
 
 	let message = devCommands.hidden ?
 		markForTranslation("The Developer Overlay was closed.") :

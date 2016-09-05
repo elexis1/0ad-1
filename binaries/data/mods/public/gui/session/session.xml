@@ -88,6 +88,7 @@
 	<include file="gui/session/developer_overlay.xml"/>
 	<include file="gui/session/diplomacy_window.xml"/>
 	<include file="gui/session/objectives_window.xml"/>
+	<include file="gui/session/observermode_settings.xml"/>
 	<include file="gui/session/trade_window.xml"/>
 	<include file="gui/session/top_panel.xml"/>
 	<include file="gui/session/menu.xml"/>

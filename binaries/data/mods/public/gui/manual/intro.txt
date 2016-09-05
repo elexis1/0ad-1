@@ -102,6 +102,7 @@ Ctrl + Right Click with units selected:
 [font="sans-bold-14"]Overlays
 [font="sans-14"]Alt + G: Hide/show the GUI
 Alt + D: Show/hide developer overlay (with developer options)
+Alt + O: Show/hide observermode settings
 Alt + W: Toggle wireframe mode (press once to get wireframes overlaid over the textured models, twice to get just the wireframes colored by the textures, thrice to get back to normal textured mode)
 Alt + S: Toggle unit silhouettes (might give a small performance boost)
 Alt + Z: Toggle sky
