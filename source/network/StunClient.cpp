@@ -260,9 +260,9 @@ std::string parseStunResponse()
             m_ip   = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
             // finished parsing, we know our public transport address
             printf("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d\n",
-                ((ip >> 24) & 0xff), ((ip >> 16) & 0xff),
-                ((ip >>  8) & 0xff), ((ip >>  0) & 0xff),
-                port);
+                ((m_ip >> 24) & 0xff), ((m_ip >> 16) & 0xff),
+                ((m_ip >>  8) & 0xff), ((m_ip >>  0) & 0xff),
+                m_port);
             break;
         }   // type = 0 or 1
         // datas.skip(4 + size);
