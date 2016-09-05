@@ -1,6 +1,8 @@
 #ifndef STUNCLIENT_H
 #define STUNCLIENT_H
 
+#include "scriptinterface/ScriptInterface.h"
+
 namespace StunClient
 {
 

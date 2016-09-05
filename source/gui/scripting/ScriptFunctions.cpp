@@ -39,6 +39,7 @@
 #include "network/NetClient.h"
 #include "network/NetServer.h"
 #include "network/NetTurnManager.h"
+#include "network/StunClient.h"
 #include "ps/CConsole.h"
 #include "ps/CLogger.h"
 #include "ps/Errors.h"

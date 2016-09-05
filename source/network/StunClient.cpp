@@ -3,6 +3,8 @@
  * https://github.com/supertuxkart/stk-code
  */
 
+#include "StunClient.h"
+
 #include <cstdio>
 
 #include <stdlib.h>
@@ -18,6 +20,8 @@
 
 #include <string>
 #include <vector>
+
+#include "scriptinterface/ScriptInterface.h"
 
 ENetHost* m_transaction_host;
 unsigned int m_stun_server_ip;
