@@ -190,17 +190,9 @@ function GetTemplateDataHelper(template, player, auraTemplates)
 	if (template.Cost)
 	{
 		ret.cost = {};
-		if (template.Cost.Resources.food)
-			ret.cost.food = getEntityValue("Cost/Resources/food");
-
-		if (template.Cost.Resources.wood)
-			ret.cost.wood = getEntityValue("Cost/Resources/wood");
-
-		if (template.Cost.Resources.stone)
-			ret.cost.stone = getEntityValue("Cost/Resources/stone");
-
-		if (template.Cost.Resources.metal)
-			ret.cost.metal = getEntityValue("Cost/Resources/metal");
+		for (let resCode of Resources.GetCodes())
+			if (template.Cost.Resources[resCode])
+				ret.cost[resCode] = getEntityValue("Cost/Resources/" + resCode);
 
 		if (template.Cost.Population)
 			ret.cost.population = getEntityValue("Cost/Population");
