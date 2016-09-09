@@ -1,90 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<object name="chatDialogPanel" type="image" size="50%-180 50%-60 50%+180 50%+60" hidden="true" sprite="genericPanel">
+<object name="chatDialogPanel" size="50%-200 50%-410 50%+200 50%+60" type="image" hidden="true" sprite="genericPanel">
 
-	<object name="chatExtended" size="0 0 100% 350" hidden="true">
+	<object type="image" name="chatHistoryPage" size="0 0 100% 300" hidden="false">
+		<object name="chatHistory" type="text" size="10 10 100%-10 100%-36" sprite="ModernDarkBoxGold"  style="chatHistory"/>
 
-		<!-- Tab buttons: Chat, Filter, possibly a page for preformatted, translated messages -->
-		<object type="image" name="chatPageButtons" size="10 10 100%-10 55">
-			<object name="chatPageButtonHistory" type="button" size="0 5 140 100%-10" style="StoneButton" textcolor_disabled="245 208 96">
-				<translatableAttribute id="caption">Chat</translatableAttribute>
-				<action on="Press">showChatPage("History");</action>
-			</object>
-			<object  name="chatPageButtonFilter" type="button" size="150 5 270 100%-10" style="StoneButton" textcolor_disabled="245 208 96">
-				<translatableAttribute id="caption" context="chatWindow">Filter</translatableAttribute>
-				<action on="Press">showChatPage("Filter");</action>
-			</object>
+		<!-- Chat History Filter -->
+		<object size="16 100%-22 60 100%-2" type="text" style="chatPanel">
+			<translatableAttribute id="caption" context="chat input">Filter:</translatableAttribute>
 		</object>
-
-		<object type="image" name="chatPages" size="10 60 100%-10 100%" sprite="ModernDarkBoxGold">
-
-			<!-- History page -->
-			<object name="pageChatHistory" size="0 0 100% 100%">
-				<object name="chatHistory" type="text" size="0 0 100% 100%" style="chatHistory"/>
-			</object>
-
-			<!-- Filter page -->
-			<object name="pageChatFilter" size="0 0 100% 100%">
-				<object name="chatFilterInfo" type="text" size="0 0 100% 25" textcolor="white">
-					<translatableAttribute id="caption">Specify which messages should be shown:</translatableAttribute>
-				</object>
-				<repeat count="7" var="i">
-					<object name="chatFilter[i]" type="checkbox" style="ModernTickBox"/>
-					<object name="chatFilterLabel[i]" type="text" textcolor="white"/>
-				</repeat>
-			</object>
-
+		<object size="75 100%-24 100%-16 100%" name="chatHistoryFilter" type="dropdown" style="ModernDropDown" tooltip_style="sessionToolTipBold">
+			<translatableAttribute id="tooltip" context="chat input">Filter the chat history.</translatableAttribute>
+			<action on="SelectionChange">updateChatHistory();</action>
 		</object>
 	</object>
 
-	<object name="chatSimple" size="0 0 100% 120">
+	<!-- Message addressee -->
+	<object size="16 100%-106 50 100%-82" type="text" style="chatPanel">
+		<translatableAttribute id="caption" context="chat input">To:</translatableAttribute>
+	</object>
+	<object size="75 100%-108 100%-16 100%-84" name="chatAddressee" type="dropdown" style="ModernDropDown" tooltip_style="sessionToolTipBold">
+		<translatableAttribute id="tooltip" context="chat input">Select chatmessage addressee.</translatableAttribute>
+	</object>
 
-		<!-- Message addressee -->
-		<object type="text" size="16 14 50 38" style="chatPanel">
-			<translatableAttribute id="caption" context="chat input">To:</translatableAttribute>
-		</object>
-		<object type="dropdown" size="75 12 100%-16 36" name="chatAddressee" style="ModernDropDown" tooltip_style="sessionToolTipBold">
-			<translatableAttribute id="tooltip" context="chat input">Select chatmessage addressee</translatableAttribute>
-		</object>
+	<!-- Message text -->
+	<object size="16 100%-74 50 100%-50" type="text" style="chatPanel">
+		<translatableAttribute id="caption" context="chat input">Text:</translatableAttribute>
+	</object>
+	<object name="chatInput" size="75 100%-76 100%-16 100%-52" type="input" style="ModernInput" max_length="80">
+		<translatableAttribute id="tooltip" context="chat input">Type the message to send.</translatableAttribute>
+		<action on="Press">submitChatInput();</action>
+		<action on="Tab">
+			let playernames = [];
+			for (let player in g_PlayerAssignments)
+				playernames.push(g_PlayerAssignments[player].name);
+			autoCompleteNick(this, playernames);
+		</action>
+	</object>
 
-		<!-- Message text -->
-		<object type="text" size="16 46 50 70" style="chatPanel">
-			<translatableAttribute id="caption" context="chat input">Text:</translatableAttribute>
-		</object>
-		<object name="chatInput" type="input" size="75 44 100%-16 68" style="ModernInput" max_length="80">
-			<translatableAttribute id="tooltip" context="chat input">Type the message to send.</translatableAttribute>
-			<action on="Press">submitChatInput();</action>
-			<action on="Tab">
-				let playernames = [];
-				for (let player in g_PlayerAssignments)
-					playernames.push(g_PlayerAssignments[player].name);
+	<!-- Cancel Button -->
+	<object size="16 100%-40 30%+16 100%-12" type="button" style="StoneButton">
+		<translatableAttribute id="caption">Cancel</translatableAttribute>
+		<action on="Press">closeChat();</action>
+	</object>
+	
+	<!-- Extended Chat Checkbox -->
+	<object name="extendedChat" type="checkbox" checked="false" style="ModernTickBox" size="50%-50 100%-38 50%-24 100%-12">
+		<action on="Press">resizeChatWindow();</action>
+	</object>
 
-				autoCompleteNick(this, playernames);
-			</action>
-		</object>
+	<!-- Extended Chat Label -->
+	<object type="text" size="50%-24 100%-38 50%+40 100%-12" text_align="left" textcolor="white">
+		<translatableAttribute id="caption" context="extended chat">Extended</translatableAttribute>
+	</object>
 
-		<!-- Close Button -->
-		<object size="16 100%-40 30%+16 100%-12" type="button" style="StoneButton">
-			<translatableAttribute id="caption">Close</translatableAttribute>
-			<action on="Press">closeChat();</action>
-		</object>
-
-		<!-- Extended Chat Checkbox -->
-		<object name="extendedChat" type="checkbox" checked="false" style="ModernTickBox" size="50%-50 100%-38 50%-24 100%-12">
-			<action on="Press">toggleExtendedChat();</action>
-		</object>
-
-		<!-- Extended Chat Label -->
-		<object type="text" size="50%-24 100%-38 50%+40 100%-12" text_align="left" textcolor="white">
-			<translatableAttribute id="caption" context="extended chat">Extended</translatableAttribute>
-		</object>
-
-		<!-- Send Button -->
-		<object size="60%+16 100%-40 100%-16 100%-12" type="button" style="StoneButton">
-			<translatableAttribute id="caption">Send</translatableAttribute>
-			<action on="Press">submitChatInput();</action>
-		</object>
-
+	<!-- Send Button -->
+	<object size="60%+16 100%-40 100%-16 100%-12" type="button" style="StoneButton">
+		<translatableAttribute id="caption">Send</translatableAttribute>
+		<action on="Press">submitChatInput();</action>
 	</object>
 
 </object>

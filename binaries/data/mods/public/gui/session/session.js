@@ -297,6 +297,7 @@ function init(initData, hotloadData)
 	initChatFilters();
 
 	initHotkeyTooltips();
+	initChatHistoryFilter();
 
 	if (hotloadData)
 		g_Selection.selected = hotloadData.selection;
