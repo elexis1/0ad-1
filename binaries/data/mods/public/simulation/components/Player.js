@@ -223,9 +223,7 @@ Player.prototype.AddResource = function(type, amount)
 Player.prototype.AddResources = function(amounts)
 {
 	for (var type in amounts)
-	{
 		this.resourceCount[type] += +amounts[type];
-	}
 };
 
 Player.prototype.GetNeededResources = function(amounts)

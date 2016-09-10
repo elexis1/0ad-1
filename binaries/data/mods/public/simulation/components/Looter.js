@@ -14,12 +14,14 @@ Looter.prototype.Collect = function(targetEntity)
 	if (!cmpLoot)
 		return;
 
-	// Loot resources as defined in the templates
-	var resources = cmpLoot.GetResources();
-	for (let type in resources)
-		resources[type] = ApplyValueModificationsToEntity("Looter/Resource/"+type, resources[type], this.entity);
+	var resources = {};
+	for (let type of Resources.GetCodes())
+		resources[type] = 0;
 
-	// TODO: stop assuming that cmpLoot.GetResources() delivers all resource types (by defining them in a central location)
+	// Loot resources as defined in the templates, affected by techs and auras
+	var loot = cmpLoot.GetResources();
+	for (let type in loot)
+		resources[type] = ApplyValueModificationsToEntity("Looter/Resource/" + type, loot[type], this.entity);
 
 	// Loot resources that killed enemies carried
 	var cmpResourceGatherer = Engine.QueryInterface(targetEntity, IID_ResourceGatherer);
