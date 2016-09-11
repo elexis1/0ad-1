@@ -570,6 +570,9 @@
                         "name",
                         "subtypes"
                     ],
+                    "comments": [
+                        "Translation: Word as used at the beginning of a sentence or as a single-word sentence."
+                    ],
                     "context": "firstWord"
                 }
             },
@@ -582,6 +585,9 @@
                     "keywords": [
                         "name",
                         "subtypes"
+                    ],
+                    "comments": [
+                        "Translation: Word as used in the middle of a sentence (which may require using lowercase for your language)."
                     ],
                     "context": "withinSentence"
                 }
