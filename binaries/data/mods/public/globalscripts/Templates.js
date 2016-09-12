@@ -75,8 +75,9 @@ function MatchesClassList(classes, match)
  * @param player An optional player id to get the technology modifications
  *               of properties.
  * @param auraTemplates An object in the form of {key: {auraName: "", auraDescription: ""}}
+ * @param resources An instance of the Resources prototype
  */
-function GetTemplateDataHelper(template, player, auraTemplates)
+function GetTemplateDataHelper(template, player, auraTemplates, resources)
 {
 	// Return data either from template (in tech tree) or sim state (ingame)
 	let getEntityValue = function(tech_type) {
@@ -190,7 +191,7 @@ function GetTemplateDataHelper(template, player, auraTemplates)
 	if (template.Cost)
 	{
 		ret.cost = {};
-		for (let resCode of Resources.GetCodes())
+		for (let resCode of resources.GetCodes())
 			if (template.Cost.Resources[resCode])
 				ret.cost[resCode] = getEntityValue("Cost/Resources/" + resCode);
 
