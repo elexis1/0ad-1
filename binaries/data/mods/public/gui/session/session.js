@@ -568,7 +568,7 @@ function leaveGame(willRejoin)
 			"disconnected": g_Disconnected,
 			"isReplay": g_IsReplay,
 			"replayDirectory": !g_HasRejoined && replayDirectory,
-			"replaySelectionData": g_ReplaySelectionData,
+			"replaySelectionData": g_ReplaySelectionData
 		}
 	});
 }
