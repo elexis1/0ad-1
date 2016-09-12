@@ -621,7 +621,7 @@ GuiInterface.prototype.GetTemplateData = function(player, extendedName)
 	let aurasTemplate = {};
 
 	if (!template.Auras)
-		return GetTemplateDataHelper(template, player, aurasTemplate);
+		return GetTemplateDataHelper(template, player, aurasTemplate, Resources);
 
 	// Add aura name and description loaded from JSON file
 	let auraNames = template.Auras._string.split(/\s+/);
@@ -639,7 +639,7 @@ GuiInterface.prototype.GetTemplateData = function(player, extendedName)
 		aurasTemplate[name].auraName = auraTemplate.auraName || null;
 		aurasTemplate[name].auraDescription = auraTemplate.auraDescription || null;
 	}
-	return GetTemplateDataHelper(template, player, aurasTemplate);
+	return GetTemplateDataHelper(template, player, aurasTemplate, Resources);
 };
 
 GuiInterface.prototype.GetTechnologyData = function(player, name)

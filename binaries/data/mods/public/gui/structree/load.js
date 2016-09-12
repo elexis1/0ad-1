@@ -37,7 +37,7 @@ function loadUnit(templateName)
 		return null;
 	var template = loadTemplate(templateName);
 
-	var unit = GetTemplateDataHelper(template, null, g_AuraData);
+	var unit = GetTemplateDataHelper(template, null, g_AuraData, g_ResourceData);
 	unit.phase = false;
 
 	if (unit.requiredTechnology)
@@ -90,7 +90,7 @@ function loadUnit(templateName)
 function loadStructure(templateName)
 {
 	var template = loadTemplate(templateName);
-	var structure = GetTemplateDataHelper(template, null, g_AuraData);
+	var structure = GetTemplateDataHelper(template, null, g_AuraData, g_ResourceData);
 	structure.phase = false;
 
 	if (structure.requiredTechnology)
