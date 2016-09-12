@@ -37,16 +37,16 @@ ResourceSupply.prototype.Init = function()
 
 	this.infinite = !isFinite(+this.template.Amount);
 
-	[this.type, this.subtype] = this.template.Type.split('.');
-	let resData = Resources.GetResource(this.type);
-	if (this.type === "treasure")
+	let [type, subtype] = this.template.Type.split('.');
+	let resData = Resources.GetResource(type);
+	if (type === "treasure")
 		resData = { "subtypes": Resources.GetNames() };
 
 	// Remove entity from gameworld if the resource supplied by this entity is disabled or not valid.
-	if (!resData || !resData.subtypes[this.subtype])
+	if (!resData || !resData.subtypes[subtype])
 		Engine.DestroyEntity(this.entity);
 
-	this.cachedType = { "generic": this.type, "specific": this.subtype };
+	this.cachedType = { "generic": type, "specific": subtype };
 };
 
 ResourceSupply.prototype.IsInfinite = function()
