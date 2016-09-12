@@ -28,7 +28,7 @@ ResourceTrickle.prototype.GetRates = function()
 	let resCodes = Resources.GetCodes();
 	for (let resource in this.template.Rates)
 	{
-		if (resCodes.indexOf(resource) < 0)
+		if (resCodes.indexOf(resource) == -1)
 			continue;
 		rates[resource] = ApplyValueModificationsToEntity("ResourceTrickle/Rates/"+resource, +this.template.Rates[resource], this.entity);
 	}

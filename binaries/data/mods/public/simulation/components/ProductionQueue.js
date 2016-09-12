@@ -290,7 +290,7 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 
 			for (let res in template.Cost.Resources)
 			{
-				if (resCodes.indexOf(res) < 0)
+				if (resCodes.indexOf(res) == -1)
 					continue;
 				costs[res] = ApplyValueModificationsToTemplate("Cost/Resources/"+res, +template.Cost.Resources[res], cmpPlayer.GetPlayerID(), template);
 				totalCosts[res] = Math.floor(count * costs[res]);
@@ -340,7 +340,7 @@ ProductionQueue.prototype.AddBatch = function(templateName, type, count, metadat
 			let cost = {};
 			for (let res in template.cost)
 			{
-				if (resCodes.indexOf(res) < 0)
+				if (resCodes.indexOf(res) == -1)
 					continue;
 				cost[res] = Math.floor((techCostMultiplier[res] || 1) * template.cost[res]);
 			}
