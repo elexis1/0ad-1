@@ -184,15 +184,16 @@ function displaySingle(entState)
 				"max": entState.resourceSupply.max
 			});
 
-		let resourceType = getResourceTypeDisplayName(entState.resourceSupply.type);
-
 		let unitResourceBar = Engine.GetGUIObjectByName("resourceBar");
 		let resourceSize = unitResourceBar.size;
 
 		resourceSize.rright = entState.resourceSupply.isInfinite ? 100 :
 						100 * Math.max(0, Math.min(1, +entState.resourceSupply.amount / +entState.resourceSupply.max));
 		unitResourceBar.size = resourceSize;
-		Engine.GetGUIObjectByName("resourceLabel").caption = sprintf(translate("%(resource)s:"), { "resource": resourceType });
+
+		Engine.GetGUIObjectByName("resourceLabel").caption = sprintf(translate("%(resource)s:"), {
+			"resource": getResourceTypeDisplayName(entState.resourceSupply.type)
+		});
 		Engine.GetGUIObjectByName("resourceStats").caption = resources;
 
 		if (entState.hitpoints)

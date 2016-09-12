@@ -266,8 +266,6 @@ function horizontallySpaceObjects(parentName, margin=0)
 
 /**
  * Hide all children after a certain index
- *
- * @param idx - The index from which to start
  */
 function hideRemaining(parentName, start = 0)
 {
