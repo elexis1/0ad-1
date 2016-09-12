@@ -484,7 +484,7 @@ function updateTopPanel()
 	{
 		if (!Engine.GetGUIObjectByName("resource["+r+"]"))
 		{
-			warn("Current GUI limits prevent displaying more than " + r + " resources at the top of the screen");
+			warn("Current GUI limits prevent displaying more than " + r + " resources at the top panel!");
 			break;
 		}
 		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + res + ".png";

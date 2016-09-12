@@ -40,7 +40,7 @@
 		</object>
 	</object>
 	<object size="32 64 100%-32 384">
-		<repeat count="16">
+		<repeat count="16" var="n">
 			<object name="diplomacyPlayer[n]" size="0 0 100% 20" type="image" hidden="false">
 				<object name="diplomacyPlayerName[n]" size="0 0 150 100%" type="text" style="chatPanel" ghost="true"/>
 				<object name="diplomacyPlayerCiv[n]" size="150 0 250 100%" type="text" style="chatPanel" ghost="true"/>
