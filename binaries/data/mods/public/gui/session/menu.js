@@ -323,10 +323,14 @@ function diplomacyFormatTributeButtons(i, hidden)
 	{
 		let button = Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]");
 		if (!button)
+		{
+			warn("Current GUI limits prevent displaying more than " + r + " tribute buttons!");
 			break;
+		}
+
 		Engine.GetGUIObjectByName("diplomacyPlayer["+(i-1)+"]_tribute["+r+"]_image").sprite = "stretched:session/icons/resources/"+resCode+".png";
 		button.hidden = hidden;
-		setPanelObjectPosition(button, r, 8, 0);
+		setPanelObjectPosition(button, r, r+1, 0);
 		++r;
 		if (hidden)
 			continue;
@@ -438,15 +442,16 @@ function openTrade()
 	hideRemaining("tradeResources", resCodes.length);
 	Engine.GetGUIObjectByName("tradeHelp").hidden = false;
 
-	let maxTradeResources = Engine.GetGUIObjectByName("tradeResources").children.length;
-
 	for (let i = 0; i < resCodes.length; ++i)
 	{
 		let tradeResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
 		if (!tradeResource)
-			break;
+		{
+			 warn("Current GUI limits prevent displaying more than " + r + " resources at the trading good selection!");
+			 break;
+		}
 
-		setPanelObjectPosition(tradeResource, i, maxTradeResources);
+		setPanelObjectPosition(tradeResource, i, i+1);
 
 		let resCode = resCodes[i];
 		proba[resCode] = proba[resCode] || 0;
