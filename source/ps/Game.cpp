@@ -374,6 +374,11 @@ void CGame::StartGame(JS::MutableHandleValue attribs, const std::string& savedSt
 	RegisterInit(attribs, savedState);
 }
 
+int CGame::SimTime()
+{
+	return GetTurnManager()->GetCurrentTurn() * GetTurnManager()->GetCurrentTurnLength();
+}
+
 // TODO: doInterpolate is optional because Atlas interpolates explicitly,
 // so that it has more control over the update rate. The game might want to
 // do the same, and then doInterpolate should be redundant and removed.
@@ -384,7 +389,7 @@ void CGame::Update(const double deltaRealTime, bool doInterpolate)
 		return;
 
 	const double deltaSimTime = deltaRealTime * m_SimRate;
-	
+
 	if (deltaSimTime)
 	{
 		// To avoid confusing the profiler, we need to trigger the new turn

@@ -145,6 +145,7 @@ public:
 	void QuickLoad();
 
 	u32 GetCurrentTurn() { return m_CurrentTurn; }
+	u32 GetCurrentTurnLength() { return m_TurnLength; }
 
 protected:
 	/**

@@ -2,6 +2,30 @@
 	"generalSetting":
 	[
 		{
+			"type": "boolean",
+			"label": "Screenshot rendering",
+			"tooltip": "Take N screenshots per second",
+			"parameters": { "config": "videorendering.enabled" }
+		},
+		{
+			"type": "string",
+			"label": "Rendering directory:",
+			"tooltip": "Where to write the screenshots to",
+			"parameters": { "config": "videorendering.path" }
+		},
+		{
+			"type": "number",
+			"label": "Rendering FPS",
+			"tooltip": "Target frames per second",
+			"parameters": { "config": "videorendering.fps", "min": 1, "max": 65535 }
+		},
+		{
+			"type": "number",
+			"label": "Rendering start time",
+			"tooltip": "Gametime before starting the recording",
+			"parameters": { "config": "videorendering.start", "min": 0, "max": 65535 }
+		},
+		{
 			"type": "string",
 			"label": "Playername (Single Player)",
 			"tooltip": "How you want to be addressed in Single Player matches.",
