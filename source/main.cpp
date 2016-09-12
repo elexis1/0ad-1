@@ -324,6 +324,17 @@ static void Frame()
 
 	ogl_WarnIfError();
 
+	bool takeScreenshots;
+	int screenshotsFPS;
+	int screenshotsStartTime;
+
+	CFG_GET_VAL("videorendering.enabled", takeScreenshots);
+	CFG_GET_VAL("videorendering.fps", screenshotsFPS);
+	CFG_GET_VAL("videorendering.start", screenshotsStartTime);
+
+	bool doScreenshot = takeScreenshots && g_Game &&
+		g_Game->IsGameStarted() && g_Game->SimTime() >= screenshotsStartTime * 1000;
+
 	// get elapsed time
 	const double time = timer_Time();
 	g_frequencyFilter->Update(time);
@@ -337,12 +348,21 @@ static void Frame()
 
 	// .. new method - filtered and more smooth, but errors may accumulate
 #else
-	const float realTimeSinceLastFrame = 1.0 / g_frequencyFilter->SmoothedFrequency();
+	// Fake target FPS when rendering a video using screenshots
+	float realTimeSinceLastFrame;
+	if (doScreenshot)
+		realTimeSinceLastFrame = 1.0 / ((float) screenshotsFPS);
+	else
+		realTimeSinceLastFrame = 1.0 / g_frequencyFilter->SmoothedFrequency();
 #endif
+
 	ENSURE(realTimeSinceLastFrame > 0.0f);
 
 	// Decide if update is necessary
 	bool need_update = true;
+
+	// Don't pause renderer nor GameView Update on focus loss
+	g_app_has_focus = g_app_has_focus || doScreenshot;
 
 	// If we are not running a multiplayer game, disable updates when the game is
 	// minimized or out of focus and relinquish the CPU a bit, in order to make
@@ -409,7 +429,7 @@ static void Frame()
 
 	// We do not have to render an inactive fullscreen frame, because it can
 	// lead to errors for some graphic card families.
-	if (!g_app_minimized && (g_app_has_focus || !g_VideoMode.IsInFullscreen()))
+	if (doScreenshot || (!g_app_minimized && (g_app_has_focus || !g_VideoMode.IsInFullscreen())))
 	{
 		Render();
 
@@ -417,6 +437,9 @@ static void Frame()
 		SDL_GL_SwapWindow(g_VideoMode.GetWindow());
 	}
 	ogl_WarnIfError();
+
+	if (doScreenshot)
+		WriteScreenshot(L".png");
 
 	g_Profiler.Frame();
 

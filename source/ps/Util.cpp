@@ -276,8 +276,6 @@ void WriteScreenshot(const VfsPath& extension)
 		OsPath realPath;
 		g_VFS->GetRealPath(filename, realPath);
 
-		LOGMESSAGERENDER(g_L10n.Translate("Screenshot written to '%s'"), realPath.string8());
-
 		debug_printf(
 			CStr(g_L10n.Translate("Screenshot written to '%s'") + "\n").c_str(),
 			realPath.string8().c_str());
@@ -413,8 +411,6 @@ void WriteBigScreenshot(const VfsPath& extension, int tiles)
 	{
 		OsPath realPath;
 		g_VFS->GetRealPath(filename, realPath);
-
-		LOGMESSAGERENDER(g_L10n.Translate("Screenshot written to '%s'"), realPath.string8());
 
 		debug_printf(
 			CStr(g_L10n.Translate("Screenshot written to '%s'") + "\n").c_str(),

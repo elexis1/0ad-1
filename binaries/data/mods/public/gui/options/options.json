@@ -1,5 +1,39 @@
 [
 	{
+		"label": "Screenshot Rendering",
+		"options":
+		[
+			{
+				"type": "boolean",
+				"label": "Screenshot rendering",
+				"tooltip": "Take N screenshots per second",
+				"config": "videorendering.enabled"
+			},
+			{
+				"type": "string",
+				"label": "Rendering directory:",
+				"tooltip": "Where to write the screenshots to",
+				"config": "videorendering.path"
+			},
+			{
+				"type": "number",
+				"label": "Rendering FPS",
+				"tooltip": "Target frames per second",
+				"config": "videorendering.fps",
+				"min": 1,
+				"max": 65535
+			},
+			{
+				"type": "number",
+				"label": "Rendering start time",
+				"tooltip": "Gametime before starting the recording",
+				"config": "videorendering.start",
+				"min": 0,
+				"max": 65535
+			}
+		]
+	},
+	{
 		"label": "General",
 		"options":
 		[
