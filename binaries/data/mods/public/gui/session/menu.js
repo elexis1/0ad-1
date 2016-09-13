@@ -447,7 +447,7 @@ function openTrade()
 		let tradeResource = Engine.GetGUIObjectByName("tradeResource["+i+"]");
 		if (!tradeResource)
 		{
-			 warn("Current GUI limits prevent displaying more than " + r + " resources at the trading good selection!");
+			 warn("Current GUI limits prevent displaying more than " + r + " resources in the trading goods selection dialog!");
 			 break;
 		}
 
