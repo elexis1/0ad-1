@@ -139,7 +139,10 @@
     }
   ],
   "Preview": "dueling_cliffs.png",
-  "RevealMap": false
+  "RevealMap": false,
+  "TriggerScripts": [
+  	"skirmishes/DuelingCliffs.js"
+  ]
 }
 ]]></ScriptSettings>
 	<Entities>
@@ -23481,5 +23484,60 @@
 			<Actor seed="12949"/>
 		</Entity>
 	</Entities>
-	<Paths/>
+	<Paths>
+		<Path name="test" timescale="1" orientation="target" mode="ease_inout" style="default">
+			<Node deltatime="2">
+				<Position x="784.273315" y="416.931641" z="-113.439911"/>
+				<Target x="816.185486" y="177.270737" z="257.861420"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1111.069214" y="423.738220" z="154.504456"/>
+				<Target x="1125.280518" y="182.808960" z="536.925171"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1264.937988" y="432.967499" z="390.230255"/>
+				<Target x="1286.946045" y="236.081085" z="853.643250"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1066.666870" y="456.297089" z="857.909302"/>
+				<Target x="994.190430" y="351.903809" z="1016.736572"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1089.001221" y="447.481171" z="1074.035889"/>
+				<Target x="672.492188" y="196.021729" z="1313.220581"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1023.162292" y="352.278107" z="1398.532837"/>
+				<Target x="672.492188" y="196.021729" z="1313.220581"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="907.908142" y="311.617798" z="1420.445435"/>
+				<Target x="729.997620" y="192.648331" z="1307.079102"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="797.184143" y="261.400513" z="1333.947998"/>
+				<Target x="684.887756" y="184.187622" z="1247.110840"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="580.423096" y="322.063934" z="1163.642090"/>
+				<Target x="348.574219" y="181.586411" z="989.187012"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="216.271866" y="290.947784" z="882.353699"/>
+				<Target x="209.568970" y="171.242874" z="660.946594"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="80.947083" y="445.837006" z="586.948181"/>
+				<Target x="323.549866" y="301.302368" z="385.388977"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="261.175659" y="460.942596" z="200.698166"/>
+				<Target x="748.306396" y="180.045197" z="265.240509"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="812.271484" y="341.183716" z="24.471375"/>
+				<Target x="987.157532" y="154.348328" z="332.412231"/>
+			</Node>
+		</Path>
+		</Paths>
 </Scenario>
