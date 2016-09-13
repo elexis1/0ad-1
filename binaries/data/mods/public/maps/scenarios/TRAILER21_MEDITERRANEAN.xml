@@ -92,7 +92,11 @@
   "Script": "mediterranean.js",
   "Seed": 5437,
   "Size": 384,
-  "mapType": "random"
+  "mapType": "random",
+  "TriggerScripts": [
+    "scenarios/TRAILER21_MEDITERRANEAN.js",
+    "scripts/TriggerHelper.js"
+  ]
 }
 ]]></ScriptSettings>
 	<Entities>
@@ -37922,5 +37926,65 @@
 			<Actor seed="1942"/>
 		</Entity>
 	</Entities>
-	<Paths/>
+	<Paths>
+		<Path name="test" timescale="1" orientation="target" mode="ease_outin" style="default">
+			<Node deltatime="2">
+				<Position x="1338.393311" y="85.157799" z="1170.140381"/>
+				<Target x="1244.811279" y="28.480179" z="1241.651245"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1399.145386" y="153.635071" z="956.112061"/>
+				<Target x="1310.000000" y="25.997269" z="1262.000000"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1222.062500" y="280.772339" z="609.180725"/>
+				<Target x="1276.602783" y="45.893219" z="993.127258"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1188.013428" y="251.882507" z="592.548523"/>
+				<Target x="1180.565796" y="36.560486" z="866.506470"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1418.494263" y="195.532867" z="370.164154"/>
+				<Target x="1180.565796" y="36.560486" z="866.506470"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="1292.443481" y="207.307220" z="32.144257"/>
+				<Target x="1297.926514" y="25.216583" z="362.309326"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="925.968445" y="191.760513" z="161.579773"/>
+				<Target x="926.000000" y="27.415756" z="778.000000"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="688.831970" y="221.895050" z="194.595520"/>
+				<Target x="717.485779" y="26.848480" z="837.910828"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="314.403992" y="253.681320" z="-118.575165"/>
+				<Target x="346.000000" y="38.027161" z="310.000000"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="13.131638" y="240.432785" z="341.545380"/>
+				<Target x="306.956970" y="36.535187" z="578.303711"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="-90.737610" y="272.629608" z="766.682373"/>
+				<Target x="479.458893" y="28.472244" z="835.050903"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="263.211426" y="271.306854" z="1424.364014"/>
+				<Target x="646.054810" y="23.000000" z="1110.546875"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="619.668213" y="113.380211" z="1128.453735"/>
+				<Target x="705.103943" y="29.601227" z="998.937988"/>
+			</Node>
+			<Node deltatime="2">
+				<Position x="820.746399" y="114.416252" z="1043.405151"/>
+				<Target x="778.893188" y="26.010864" z="922.882568"/>
+			</Node>
+		</Path>
+	</Paths>
 </Scenario>
+
