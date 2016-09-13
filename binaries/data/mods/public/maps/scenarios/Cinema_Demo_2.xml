@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Scenario version="6">
+	<Environment>
+		<SkySet>fog</SkySet>
+		<SunColor r="0.529412" g="0.529412" b="0.529412"/>
+		<SunElevation angle="0.785398"/>
+		<SunRotation angle="-0.785396"/>
+		<TerrainAmbientColor r="0.501961" g="0.501961" b="0.501961"/>
+		<UnitsAmbientColor r="0.501961" g="0.501961" b="0.501961"/>
+		<Fog>
+			<FogFactor>0.00507812</FogFactor>
+			<FogThickness>0.09375</FogThickness>
+			<FogColor r="0.894118" g="0.886275" b="0.792157"/>
+		</Fog>
+		<Water>
+			<WaterBody>
+				<Type>ocean</Type>
+				<Color r="0.294118" g="0.34902" b="0.694118"/>
+				<Tint r="0.27451" g="0.294118" b="0.584314"/>
+				<Height>5</Height>
+				<Waviness>4</Waviness>
+				<Murkiness>0.45</Murkiness>
+				<WindAngle>0</WindAngle>
+			</WaterBody>
+		</Water>
+		<Postproc>
+			<Brightness>0.015625</Brightness>
+			<Contrast>0.998047</Contrast>
+			<Saturation>0.984375</Saturation>
+			<Bloom>0.2</Bloom>
+			<PostEffect>default</PostEffect>
+		</Postproc>
+	</Environment>
+	<Camera>
+		<Position x="421" y="246.918" z="381.702"/>
+		<Rotation angle="0"/>
+		<Declination angle="0.610865"/>
+	</Camera>
+	<ScriptSettings><![CDATA[
+{
+  "CircularMap": true,
+  "Description": "Give an interesting description of your map.",
+  "GameType": "conquest",
+  "Keywords": [
+    "demo"
+  ],
+  "LockTeams": false,
+  "Name": "Cinema Demo 2",
+  "PlayerData": [
+    null,
+    {
+      "Civ": "sele",
+      "Color": {
+        "b": 200,
+        "g": 46,
+        "r": 46
+      },
+      "Name": "Sele"
+    },
+    {
+      "AI": "",
+      "Civ": "pers",
+      "Color": {
+        "b": 20,
+        "g": 20,
+        "r": 150
+      },
+      "Name": "Pers"
+    }
+  ],
+  "Preview": "",
+  "RevealMap": true,
+  "TriggerScripts": [
+    "scenarios/Cinema_Demo_2.js"
+  ]
+}
+]]></ScriptSettings>
+	<Entities>
+		<Entity uid="11">
+			<Template>units/sele_infantry_archer_merc_e</Template>
+			<Player>1</Player>
+			<Position x="421" z="480"/>
+			<Orientation y="1.59951"/>
+			<Actor seed="30832"/>
+		</Entity>
+		<Entity uid="12">
+			<Template>units/pers_infantry_archer_a</Template>
+			<Player>2</Player>
+			<Position x="461" z="480"/>
+			<Orientation y="-1.9364"/>
+			<Actor seed="47088"/>
+		</Entity>
+	</Entities>
+	<Paths>
+		<Path name="test" timescale="1" orientation="target" mode="ease_inout" style="default">
+			<Node deltatime="0">
+				<Position x="460" y="180" z="440"/>
+				<Target x="421" y="180" z="480"/>
+			</Node>
+			<Node deltatime="3.3">
+				<Position x="421" y="185" z="470"/>
+			</Node>
+			<Node deltatime="2.3">
+				<Position x="411" y="185" z="480"/>
+			</Node>
+			<Node deltatime="2.3">
+				<Position x="421" y="185" z="490"/>
+				<Target x="421" y="180" z="480"/>
+			</Node>
+			<Node deltatime="3">
+				<Position x="461" y="180" z="490"/>
+				<Target x="461" y="180" z="480"/>
+			</Node>
+			<Node deltatime="3">
+				<Position x="471" y="180" z="480"/>
+			</Node>
+			<Node deltatime="3">
+				<Position x="471" y="180" z="475"/>
+				<Target x="421" y="180" z="480"/>
+			</Node>
+		</Path>
+	</Paths>
+</Scenario>
