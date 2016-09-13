@@ -545,6 +545,21 @@ float CameraGetZ(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
 		return g_Game->GetView()->GetCameraZ();
 	return -1;
 }
+
+/**
+ * Print current camera coordinates as XML.
+ */
+void CameraPrintCoordinates(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
+{
+	if (g_Game && g_Game->GetView())
+		g_Game->GetView()->PrintCameraCoordinates();
+
+	bool screenshot;
+	CFG_GET_VAL("cinematic.position_screenshot", screenshot);
+	if (screenshot)
+		WriteScreenshot(L".png");
+}
+
 /**
  * Print current camera coordinates as XML.
  */
@@ -1087,6 +1102,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<JS::Value, &GetInitAttributes>("GetInitAttributes");
 	scriptInterface.RegisterFunction<float, &CameraGetX>("CameraGetX");
 	scriptInterface.RegisterFunction<float, &CameraGetZ>("CameraGetZ");
+	scriptInterface.RegisterFunction<void, &CameraPrintCoordinates>("CameraPrintCoordinates");
 	scriptInterface.RegisterFunction<void, float, float, float, &CameraPrintLookAtCoordinates>("CameraPrintLookAtCoordinates");
 	scriptInterface.RegisterFunction<void, entity_id_t, &CameraFollow>("CameraFollow");
 	scriptInterface.RegisterFunction<void, entity_id_t, &CameraFollowFPS>("CameraFollowFPS");

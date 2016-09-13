@@ -82,6 +82,7 @@ public:
 
 	InReaction HandleEvent(const SDL_Event_* ev);
 
+	void PrintCameraCoordinates();
 	void PrintLookAtCoordinates(float lookAtX, float lookAtY, float lookAtZ);
 	float GetCameraX();
 	float GetCameraZ();

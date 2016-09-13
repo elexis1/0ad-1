@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <object>
 
-	<object hotkey="camera.printcameracoordinatesLookAt">
+	<object hotkey="camera.printcameracoordinates">
 		<action on="Press">
+
+			if (Engine.ConfigDB_GetValue("user", "cinematiccoordinate_type_lookAt") == "false")
+			{
+				Engine.CameraPrintCoordinates();
+				return;
+			}
+
 			let list = g_Selection.toList();
 			if (list.length != 1)
 			{

@@ -51,6 +51,12 @@
 		},
 		{
 			"type": "boolean",
+			"label": "Cinematic lookAt coordinates",
+			"tooltip": "Whether to use the current camera angle or look at the currently selected entity.",
+			"parameters": { "config": "cinematiccoordinate_type_lookAt" }
+		},
+		{
+			"type": "boolean",
 			"label": "Background Pause",
 			"tooltip": "Pause single player games when window loses focus",
 			"parameters": { "config": "pauseonfocusloss" }
