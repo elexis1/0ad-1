@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <object>
+
+	<object hotkey="camera.printcameracoordinatesLookAt">
+		<action on="Press">
+			let list = g_Selection.toList();
+			if (list.length != 1)
+			{
+				warn("Please select an entity to look at");
+				return;
+			}
+
+			let lookAt = GetEntityState(list[0]).position;
+			Engine.CameraPrintLookAtCoordinates(lookAt.x, lookAt.y, lookAt.z);
+		</action>
+	</object>
+
 	<object hotkey="cancel">
 		<action on="Press">closeOpenDialogs();</action>
 	</object>

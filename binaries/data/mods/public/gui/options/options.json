@@ -45,6 +45,12 @@
 		},
 		{
 			"type": "boolean",
+			"label": "Cinematic coordinate dump screenshots",
+			"tooltip": "Gametime before starting the recording",
+			"parameters": { "config": "cinematic.lookAtScreenshot" }
+		},
+		{
+			"type": "boolean",
 			"label": "Background Pause",
 			"tooltip": "Pause single player games when window loses focus",
 			"parameters": { "config": "pauseonfocusloss" }

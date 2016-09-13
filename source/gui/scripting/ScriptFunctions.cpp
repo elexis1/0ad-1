@@ -54,6 +54,7 @@
 #include "ps/Replay.h"
 #include "ps/SavedGame.h"
 #include "ps/UserReport.h"
+#include "ps/Util.h"
 #include "ps/World.h"
 #include "ps/scripting/JSInterface_ConfigDB.h"
 #include "ps/scripting/JSInterface_Console.h"
@@ -543,6 +544,19 @@ float CameraGetZ(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
 	if (g_Game && g_Game->GetView())
 		return g_Game->GetView()->GetCameraZ();
 	return -1;
+}
+/**
+ * Print current camera coordinates as XML.
+ */
+void CameraPrintLookAtCoordinates(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), float lookAtX, float lookAtY, float lookAtZ)
+{
+	if (g_Game && g_Game->GetView())
+		g_Game->GetView()->PrintLookAtCoordinates(lookAtX, lookAtY, lookAtZ);
+
+	bool lookAtScreenshot;
+	CFG_GET_VAL("cinematic.lookAtScreenshot", lookAtScreenshot);
+	if (lookAtScreenshot)
+		WriteScreenshot(L".png");
 }
 
 /**
@@ -1073,6 +1087,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<JS::Value, &GetInitAttributes>("GetInitAttributes");
 	scriptInterface.RegisterFunction<float, &CameraGetX>("CameraGetX");
 	scriptInterface.RegisterFunction<float, &CameraGetZ>("CameraGetZ");
+	scriptInterface.RegisterFunction<void, float, float, float, &CameraPrintLookAtCoordinates>("CameraPrintLookAtCoordinates");
 	scriptInterface.RegisterFunction<void, entity_id_t, &CameraFollow>("CameraFollow");
 	scriptInterface.RegisterFunction<void, entity_id_t, &CameraFollowFPS>("CameraFollowFPS");
 	scriptInterface.RegisterFunction<void, entity_pos_t, entity_pos_t, entity_pos_t, entity_pos_t, entity_pos_t, entity_pos_t, &SetCameraData>("SetCameraData");

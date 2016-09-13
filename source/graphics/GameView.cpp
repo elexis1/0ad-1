@@ -907,6 +907,14 @@ float CGameView::GetCameraZ()
 	return pivot.Z;
 }
 
+void CGameView::PrintLookAtCoordinates(float lookAtX, float lookAtY, float lookAtZ)
+{
+	debug_printf("\t\t\t<Node deltatime=\"1\">\n");
+	debug_printf("\t\t\t\t<Position x=\"%f\" y=\"%f\" z=\"%f\"/>\n", GetCameraPosX(), GetCameraPosY(), GetCameraPosZ());
+	debug_printf("\t\t\t\t<Target x=\"%f\" y=\"%f\" z=\"%f\"/>\n", lookAtX, lookAtY, lookAtZ);
+	debug_printf("\t\t\t</Node>\n");
+}
+
 float CGameView::GetCameraPosX()
 {
 	return m->PosX.GetValue();
