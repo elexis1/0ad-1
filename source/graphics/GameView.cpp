@@ -911,7 +911,7 @@ void CGameView::PrintCameraCoordinates()
 {
 	debug_printf("\t\t\t<Node deltatime=\"1\">\n");
 	debug_printf("\t\t\t\t<Position x=\"%f\" y=\"%f\" z=\"%f\"/>\n", GetCameraPosX(), GetCameraPosY(), GetCameraPosZ());
-	debug_printf("\t\t\t\t<Rotation x=\"%f\" y=\"%f\" z=\"%f\"/>\n", GetCameraPosX(), GetCameraPosY(), 0.0);
+	debug_printf("\t\t\t\t<Rotation x=\"%f\" y=\"%f\" z=\"%f\"/>\n", GetCameraRotX(), GetCameraRotY(), 0.0);
 	debug_printf("\t\t\t</Node>\n");
 }
 
