@@ -92,6 +92,11 @@ var g_ScorePanelsData = {
 	"resources": {
 		"headings": [
 			{ "caption": translate("Player name"), "yStart": 26, "width": 200 },
+			...g_ResourceData.GetCodes().map(code => ({
+				"caption": translateWithContext("firstWord", g_ResourceData.GetNames()[code]),
+				"yStart": 34,
+				"width": 100
+			})),
 			{ "caption": translate("Total"), "yStart": 34, "width": 110 },
 			{
 				"caption": sprintf(translate("Tributes \n(%(sent)s / %(received)s)"),
@@ -113,10 +118,15 @@ var g_ScorePanelsData = {
 						"used": g_OutcomeColor + translate("Used") + '[/color]'
 					}),
 				"yStart": 16,
-				"width": (100 * 4 + 110)
-			}, // width = 510
+				"width": 100 * g_ResourceData.GetCodes() + 110
+			},
 		],
 		"counters": [
+			...g_ResourceData.GetCodes().map(code => ({
+				"fn": calculateResources,
+				"verticalOffset": 12,
+				"width": 100
+			})),
 			{ "width": 110, "fn": calculateTotalResources, "verticalOffset": 12 },
 			{ "width": 121, "fn": calculateTributeSent, "verticalOffset": 12 },
 			{ "width": 100, "fn": calculateTreasureCollected, "verticalOffset": 12 },
@@ -127,11 +137,26 @@ var g_ScorePanelsData = {
 	"market": {
 		"headings": [
 			{ "caption": translate("Player name"), "yStart": 26, "width": 200 },
+			...g_ResourceData.GetCodes().map(code => ({
+				"caption": sprintf(
+					// Translation: use %(resourceWithinSentence)s if needed
+					translate("%(resourceFirstWord)s exchanged"), {
+						"resourceFirstWord": translateWithContext("firstWord", resNames[code]),
+						"resourceWithinSentence": translateWithContext("withinSentence", resNames[code])
+					}),
+				"yStart": 16,
+				"width": 100
+			})),
 			{ "caption": translate("Barter efficiency"), "yStart": 16, "width": 100 },
 			{ "caption": translate("Trade income"), "yStart": 16, "width": 100 }
 		],
 		"titleHeadings": [],
 		"counters": [
+			...g_ResourceData.GetCodes().map(code => ({
+				"width": 100,
+				"fn": calculateResourceExchanged,
+				"verticalOffset": 12
+			})),
 			{ "width": 100, "fn": calculateBarterEfficiency, "verticalOffset": 12 },
 			{ "width": 100, "fn": calculateTradeIncome, "verticalOffset": 12 }
 		],

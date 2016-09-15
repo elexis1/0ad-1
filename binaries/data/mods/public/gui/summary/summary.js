@@ -242,48 +242,6 @@ function init(data)
 	else
 		g_Teams = false;
 
-	// Resource names and counters
-	let resHeads = [];
-	let tradeHeads = [];
-	let resPanel = g_ScorePanelsData.resources;
-	let tradePanel = g_ScorePanelsData.market;
-	let resNames = g_ResourceData.GetNames();
-	let resCodes = g_ResourceData.GetCodes();
-	for (let code of resCodes)
-	{
-		resHeads.push({
-			"caption": translateWithContext("firstWord", resNames[code]),
-			"yStart": 34,
-			"width": 100
-		});
-
-		resPanel.counters.unshift({
-			"width": 100,
-			"fn": calculateResources,
-			"verticalOffset": 12
-		});
-
-		tradeHeads.push({
-			"caption": sprintf(
-				// Translation: use %(resourceWithinSentence)s if needed
-				translate("%(resourceFirstWord)s exchanged"), {
-					"resourceFirstWord": translateWithContext("firstWord", resNames[code]),
-					"resourceWithinSentence": translateWithContext("withinSentence", resNames[code])
-				}),
-			"yStart": 16,
-			"width": 100
-		});
-
-		tradePanel.counters.unshift({
-			"width": 100,
-			"fn": calculateResourceExchanged,
-			"verticalOffset": 12
-		});
-	}
-	resPanel.headings.splice.apply(resPanel.headings, [1, 0].concat(resHeads));
-	resPanel.titleHeadings[0].width = 100 * resCodes.length + 110;
-	tradePanel.headings.splice.apply(tradePanel.headings, [1, 0].concat(tradeHeads));
-
 	// Erase teams data if teams are not displayed
 	if (!g_Teams)
 	{
