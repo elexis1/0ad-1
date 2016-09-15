@@ -265,8 +265,10 @@ function init(data)
 
 		tradeHeads.push({
 			"caption": sprintf(
-				translate("%(resource)s exchanged"), {
-					"resource": translateWithContext("withinSentence", resNames[code])
+				// Translation: use %(resourceWithinSentence)s if needed
+				translate("%(resourceFirstWord)s exchanged"), {
+					"resourceFirstWord": translateWithContext("firstWord", resNames[code]),
+					"resourceWithinSentence": translateWithContext("withinSentence", resNames[code])
 				}),
 			"yStart": 16,
 			"width": 100
