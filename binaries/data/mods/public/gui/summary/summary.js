@@ -1,4 +1,4 @@
-const g_MaxHeadingTitle= 12;
+const g_MaxHeadingTitle= 8;
 
 // const for filtering long collective headings
 const g_LongHeadingWidth = 250;
