@@ -229,40 +229,102 @@ function closeChat()
 	Engine.GetGUIObjectByName("chatDialogPanel").hidden = true;
 }
 
+/**
+ * The extended part is shown above the simple one.
+ * So move the simple to the top if extended part is hidden.
+ */
 function resizeChatWindow()
 {
-	let extended = Engine.GetGUIObjectByName("extendedChat").checked;
-	let chatDialogPanel = Engine.GetGUIObjectByName("chatDialogPanel");
-	let chatHistoryPage = Engine.GetGUIObjectByName("chatHistoryPage");
-	let panelSize = chatDialogPanel.size;
-	panelSize.top = (extended ? -chatHistoryPage.size.bottom : 0) - 60;
-	chatDialogPanel.size = panelSize;
+	let chatSimple = Engine.GetGUIObjectByName("chatSimple");
+	let chatSimpleHeight = chatSimple.size.bottom - chatSimple.size.top;
 
-	if (extended)
-		updateChatHistory();
-	Engine.GetGUIObjectByName("chatHistoryPage").hidden = !extended;
+	let chatExtended = Engine.GetGUIObjectByName("chatExtended");
+	let chatExtendedHeight = chatExtended.size.bottom - chatExtended.size.top;
+
+	// Move simple part to the top if extended is hidden
+	let size = chatSimple.size;
+	size.top = chatExtended.hidden ? 0 : chatExtendedHeight;
+	size.bottom = size.top + chatSimpleHeight;
+	chatSimple.size = size;
+
+	// Resize window to show the extended part
+	let width = chatExtended.hidden ? 360 : 480;
+	let height = chatSimpleHeight + (chatExtended.hidden ? 0 : chatExtendedHeight);
+
+	// Don't center the window vertically
+	let topOffset = 60;
+
+	let chatDialogPanel = Engine.GetGUIObjectByName("chatDialogPanel");
+	let size = chatDialogPanel.size;
+	size.top = -height / 2 - topOffset;
+	size.bottom = height / 2 - topOffset;
+	size.left = -width / 2;
+	size.right = width / 2;
+	chatDialogPanel.size = size;
+
 	Engine.GetGUIObjectByName("chatInput").focus();
 }
 
-function initChatHistoryFilter()
+function initChatFilters()
 {
-	let chatHistoryFilter = Engine.GetGUIObjectByName("chatHistoryFilter");
-	chatHistoryFilter.list = [translate("All"), translate("Chat"), translate("Players chat"), translate("Ally chat")];
-	chatHistoryFilter.list_data = ["all", "isChat", "noObserver", "isAlly"];
-	chatHistoryFilter.selected = 0;
+	const checkboxSize = 20;
+	const spacing = 5;
+	const offset = Engine.GetGUIObjectByName("chatFilterInfo").size.bottom;
+
+	for (let i=0; i < g_ChatFilter.length; ++i)
+	{
+		let top = offset + i * (checkboxSize + spacing);
+		let bottom = offset + (i+1) * checkboxSize + i * spacing;
+
+		let chatFilter = Engine.GetGUIObjectByName("chatFilter[" + i + "]");
+		chatFilter.size = [0, top, checkboxSize, bottom].join(" ");
+		chatFilter.hidden = false;
+		chatFilter.checked = true;
+		chatFilter.onPress = function() {
+			updateChatHistory();
+		};
+
+		let chatFilterLabel = Engine.GetGUIObjectByName("chatFilterLabel[" + i + "]");
+		chatFilterLabel.caption = g_ChatFilter[i].caption;
+		chatFilterLabel.size = [checkboxSize, top, "100%", bottom].join(" ");
+		chatFilterLabel.hidden = false;
+	}
+}
+
+function showChatPage(pageName)
+{
+	for (let button of Engine.GetGUIObjectByName("chatPageButtons").children)
+		button.enabled = button.name != "chatPageButton" + pageName
+
+	for (let page of Engine.GetGUIObjectByName("chatPages").children)
+		page.hidden = page.name != "pageChat" + pageName;
+}
+
+function toggleExtendedChat()
+{
+	let chatExtended = Engine.GetGUIObjectByName("chatExtended");
+	chatExtended.hidden = !chatExtended.hidden;
+
+	if (!chatExtended.hidden)
+		updateChatHistory();
+
+	resizeChatWindow();
 }
 
 function updateChatHistory()
 {
-	let chatHistoryFilter = Engine.GetGUIObjectByName("chatHistoryFilter");
-	let selected = chatHistoryFilter.list_data[chatHistoryFilter.selected];
-	Engine.GetGUIObjectByName("chatHistory").caption = g_ChatHistory.filter(msg => selected == "all" || msg[selected]).map(
-		msg => Engine.ConfigDB_GetValue("user", "lobby.chattimestamp") == "true" ?
-			sprintf(translate("%(time)s %(message)s"), {
-				"time": msg.timePrefix,
-				"message": msg.txt
-			}) :
-			msg.txt).join("\n");
+	let filteredTypes = [];
+
+	for (let i=0; i < g_ChatFilter.length; ++i)
+	{
+		//if (Engine.GetGUIObjectByName("chatFilter[" + i + "]").checked)
+		// TODO: filters
+	}
+
+	Engine.GetGUIObjectByName("chatHistory").caption =
+		g_ChatHistory.filter(msg => {
+			return msg.txt; // && filteredTypes.indexOf(msg.type) != -1;
+		}).map(msg => msg.txt).join("\n");
 }
 
 function openDiplomacy()

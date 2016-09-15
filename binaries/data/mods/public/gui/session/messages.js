@@ -128,6 +128,40 @@ var g_StatusMessageTypes = {
 	"active": msg => ""
 };
 
+/*
+ * TODO: Should include an entry for every client once scrolling is implemented.
+ */
+var g_ChatFilter = [
+	{
+		"caption": translate("Public"),
+		"key": "public"
+	},
+	{
+		"caption": translate("Allies"),
+		"key": "allies"
+	},
+	{
+		"caption": translate("Enemies"),
+		"key": "enemies"
+	},
+	{
+		"caption": translate("Private"),
+		"key": "private"
+	},
+	{
+		"caption": translate("Observer"),
+		"key": "observer"
+	},
+	{
+		"caption": translate("Connection Status"),
+		"key": "connection"
+	},
+	{
+		"caption": translate("Game Notifications"),
+		"key": "game"
+	}
+];
+
 /**
  * Chatmessage shown after commands like /me or /enemies.
  */
@@ -672,11 +706,12 @@ function submitChatDirectly(text)
  * Loads the text from the GUI window, checks if it is a local command
  * or cheat and executes it. Otherwise sends it as chat.
  */
-function submitChatInput()
+function submitChatInput(window)
 {
 	let text = Engine.GetGUIObjectByName("chatInput").caption;
 
 	closeChat();
+	Engine.GetGUIObjectByName("chatInput").caption = "";
 
 	if (!text.length)
 		return;
@@ -709,19 +744,11 @@ function addChatMessage(msg)
 		return;
 
 	// Remember the original text as it depends on g_PlayerAssignments
-	let time = new Date(Date.now());
-	let senderID = g_PlayerAssignments[msg.guid].player
 	g_ChatHistory.push({
-		"txt": formatted,
-		"timePrefix": sprintf(translate("\\[%(time)s]"), {
-			"time": Engine.FormatMillisecondsIntoDateString(time.getTime(), translate("HH:mm"))
-		}),
-		"isChat": msg.type == "message",
-		"noObserver": msg.type == "message" && senderID > 0 && !isPlayerObserver(senderID),
-		"isAlly": msg.type == "message" && g_Players[Engine.GetPlayerID()] && g_Players[Engine.GetPlayerID()].isAlly[senderID]
+		"type": msg.type,
+		"txt": formatted
 	});
-	if (!Engine.GetGUIObjectByName("chatDialogPanel").hidden)
-		updateChatHistory();
+	updateChatHistory();
 
 	g_ChatMessages.push(formatted);
 	g_ChatTimers.push(setTimeout(removeOldChatMessage, g_ChatTimeout * 1000));
