@@ -255,7 +255,7 @@ function resizeChatWindow()
 	let topOffset = 60;
 
 	let chatDialogPanel = Engine.GetGUIObjectByName("chatDialogPanel");
-	let size = chatDialogPanel.size;
+	size = chatDialogPanel.size;
 	size.top = -height / 2 - topOffset;
 	size.bottom = height / 2 - topOffset;
 	size.left = -width / 2;
