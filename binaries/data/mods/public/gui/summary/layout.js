@@ -190,8 +190,6 @@ function updateGeneralPanelHeadings(headings)
 			headerGUIName = "Heading[" + (h - 1) + "]";
 
 		let headerGUI = Engine.GetGUIObjectByName(headerGUIName);
-		if (!headerGUI)
-			break;
 		headerGUI.caption = headings[h].caption;
 		headerGUI.size = left + " " + headings[h].yStart + " " + (left + headings[h].width) + " 100%";
 		headerGUI.hidden = false;
@@ -235,8 +233,6 @@ function updateGeneralPanelCounter(counters)
 		for (let w in counters)
 		{
 			counterObject = Engine.GetGUIObjectByName("valueData[" + p + "][" + w + "]");
-			if (!counterObject)
-				break;
 			counterObject.size = left + " " + counters[w].verticalOffset + " " + (left + counters[w].width) + " 100%";
 			counterObject.hidden = false;
 			left += counters[w].width;
@@ -252,8 +248,6 @@ function updateGeneralPanelCounter(counters)
 			for (let w in counters)
 			{
 				counterObject = Engine.GetGUIObjectByName("valueDataTeam[" + t + "][" + p + "][" + w + "]");
-				if (!counterObject)
-					break;
 				counterObject.size = left + " " + counters[w].verticalOffset + " " + (left + counters[w].width) + " 100%";
 				counterObject.hidden = false;
 
