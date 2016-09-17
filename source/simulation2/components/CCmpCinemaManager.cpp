@@ -214,6 +214,18 @@ public:
 		}
 	}
 
+	virtual void AddCinemaPath(const CCinemaPath& path)
+	{
+		if (!g_Game || !g_Game->GetView())
+			return;
+		LOGWARNING("ADDED");
+		/*g_Game->GetView()->GetCinema()->AddPathToQueue(name);
+				CinematicSimulationData* pCinematicSimulationData = g_Game->GetView()->GetCinema()->GetCinematicSimulationData();
+				if (pCinematicSimulationData->m_PathQueue.size() == 1)
+				pCinematicSimulationData->m_PathQueue.front().Reset();
+				pCinematicSimulationData->m_TotalTime += pCinematicSimulationData->m_Paths[name].GetDuration();*/
+	}
+
 	virtual void AddCinemaPathToQueue(const CStrW& name)
 	{
 		if (!g_Game || !g_Game->GetView())

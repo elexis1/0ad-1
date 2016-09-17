@@ -47,7 +47,7 @@
 
 
 CCinemaManager::CCinemaManager()
-	: m_DrawPaths(false)
+	: m_DrawPaths(false), m_DrawCamera(false), m_SelectedPathCameraTime(0.0f)
 {
 }
 
@@ -183,13 +183,21 @@ void CCinemaManager::Render()
 		DrawBars();
 		return;
 	}
+
+	// TODO: replace to iterator for better perfomance
+	if (!selectedPath.empty() && HasPath(selectedPath))
+		m_CinematicSimulationData.m_Paths[selectedPath].Draw(true);
 	
 	if (!m_DrawPaths)
 		return;
 
 	// draw all paths
 	for (const std::pair<CStrW, CCinemaPath>& p : m_CinematicSimulationData.m_Paths)
-		p.second.Draw();
+		if (p.first != selectedPath)
+			p.second.Draw();
+
+	if (m_DrawCamera)
+		DrawCamera();
 }
 
 void CCinemaManager::DrawBars() const
@@ -243,6 +251,57 @@ void CCinemaManager::DrawBars() const
 #endif
 }
 
+void CCinemaManager::DrawCamera()
+{
+	if (selectedPath.empty() || !HasPath(selectedPath))
+		return;
+	const CCinemaPath& path = m_CinematicSimulationData.m_Paths[selectedPath];
+	if (path.GetTargetSpline().GetAllNodes().empty())
+		return;
+	CCamera dummyCamera(*g_Game->GetView()->GetCamera());
+	CVector3D targetPosition = path.GetTargetSpline().GetPosition(m_SelectedPathCameraTime);
+	CVector3D cameraPosition = path.GetPosition(m_SelectedPathCameraTime);
+	dummyCamera.LookAt(cameraPosition, targetPosition, CVector3D(0.0f, 1.0f, 0.0f));
+
+
+#if CONFIG2_GLES
+	#warning TODO : do something about CCinemaPath on GLES
+#else
+	glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
+
+	CVector3D corners[4];
+	dummyCamera.GetCameraPlanePoints(10.0f, corners);
+	CMatrix3D orientation = dummyCamera.GetOrientation();
+	for (int i = 0; i < 4; ++i)
+	{
+		corners[i] = (orientation.Transform(corners[i]) - cameraPosition) * 5.0f + cameraPosition;
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
+		CVector3D cornerPosition = corners[i];
+		glVertex3f(cornerPosition.X, cornerPosition.Y, cornerPosition.Z);
+		glEnd();
+	}
+
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < 4; ++i)
+	{
+		CVector3D cornerPosition = corners[i];
+		glVertex3f(cornerPosition.X, cornerPosition.Y, cornerPosition.Z);
+	}
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
+	glVertex3f(targetPosition.X, targetPosition.Y, targetPosition.Z);
+	glEnd();
+
+#endif
+}
+
 InReaction cinema_manager_handler(const SDL_Event_* ev)
 {
 	// put any events that must be processed even if inactive here
@@ -256,15 +315,221 @@ InReaction cinema_manager_handler(const SDL_Event_* ev)
 
 InReaction CCinemaManager::HandleEvent(const SDL_Event_* ev)
 {
+	static float speedMultiplier = 30;
 	switch (ev->ev.type)
 	{
 	case SDL_MOUSEBUTTONDOWN:
 	case SDL_MOUSEBUTTONUP:
 		if (GetEnabled() && !m_CinematicSimulationData.m_Paused)
 			return IN_HANDLED;
+	case SDL_KEYUP:
+	{
+		if (selectedPath.empty() || !HasPath(selectedPath))
+			break;
+		CCinemaPath& path = m_CinematicSimulationData.m_Paths[selectedPath];
+		switch (ev->ev.key.keysym.sym)
+		{
+		case SDLK_RSHIFT:
+		case SDLK_LSHIFT:
+		{
+			speedMultiplier = 1;
+			break;
+		}
+		case SDLK_b:
+		{
+			CVector3D target = g_Game->GetView()->GetCamera()->GetFocus() + CVector3D(0.0f, 1.0f, 0.0f);
+			TNSpline targetSpline = path.GetTargetSpline();
+			targetSpline.AddNode(
+				CFixedVector3D(fixed::FromFloat(target.X), fixed::FromFloat(target.Y), fixed::FromFloat(target.Z)),
+				CFixedVector3D(fixed::Zero(), fixed::Zero(), fixed::Zero()), fixed::FromInt(3)
+			);
+			path = CCinemaPath(*path.GetData(), path, targetSpline);
+			LOGMESSAGERENDER("Target node added at (%0.3f, %0.3f, %0.3f)", target.X, target.Y, target.Z);
+			break;
+		}
+		case SDLK_v:
+		{
+			TNSpline targetSpline = path.GetTargetSpline();
+			path = CCinemaPath(*path.GetData(), path, targetSpline);
+			if (targetSpline.GetAllNodes().size() > 1)
+				targetSpline.RemoveNode(targetSpline.GetAllNodes().size() - 1);
+			break;
+		}
+		case SDLK_n:
+		{
+			CVector3D node = g_Game->GetView()->GetCamera()->GetFocus() + CVector3D(0.0f, 2.0f, 0.0f);
+			TNSpline positionSpline = path;
+			positionSpline.AddNode(
+				CFixedVector3D(fixed::FromFloat(node.X), fixed::FromFloat(node.Y), fixed::FromFloat(node.Z)),
+				CFixedVector3D(fixed::Zero(), fixed::Zero(), fixed::Zero()), fixed::FromInt(3)
+				);
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			LOGMESSAGERENDER("Position node added at (%0.3f, %0.3f, %0.3f)", node.X, node.Y, node.Z);
+			break;
+		}
+		case SDLK_m:
+		{
+			TNSpline positionSpline = path;
+			if (positionSpline.GetAllNodes().size() > 1)
+				positionSpline.RemoveNode(positionSpline.GetAllNodes().size() - 1);
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			break;
+		}
+		}
+	}
+	case SDL_KEYDOWN:
+	{
+		if (selectedPath.empty() || !HasPath(selectedPath))
+			break;
+		CCinemaPath& path = m_CinematicSimulationData.m_Paths[selectedPath];
+		CFixedVector3D zero(fixed::Zero(), fixed::Zero(), fixed::Zero());
+
+		TNSpline positionSpline = path;
+		int positionCount = path.GetAllNodes().size();
+		fixed positionDeltaTime = positionCount > 1 ? positionSpline.GetAllNodes()[positionCount - 2].Distance : fixed::FromInt(3);
+
+		TNSpline targetSpline = path.GetTargetSpline();
+		int targetCount = targetSpline.GetAllNodes().size();
+		fixed targetDeltaTime = targetCount > 1 ? targetSpline.GetAllNodes()[targetCount - 2].Distance : fixed::FromInt(3);
+
+		// TODO: remove tmp-hacks
+		switch (ev->ev.key.keysym.sym)
+		{
+		case SDLK_RSHIFT:
+		case SDLK_LSHIFT:
+		{
+			speedMultiplier = 20;
+			break;
+		}
+		// POSITION
+		case SDLK_u:
+		{
+			CFixedVector3D node = positionSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::FromFloat(0.2f * speedMultiplier), fixed::Zero());
+			positionSpline.RemoveNode(positionCount - 1);
+			positionSpline.AddNode(node, zero, positionDeltaTime);
+			positionSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			break;
+		}
+		case SDLK_o:
+		{
+			CFixedVector3D node = positionSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::FromFloat(-0.2f * speedMultiplier), fixed::Zero());
+			positionSpline.RemoveNode(positionCount - 1);
+			positionSpline.AddNode(node, zero, positionDeltaTime);
+			positionSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			break;
+		}
+		case SDLK_j:
+		{
+			CFixedVector3D node = positionSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::FromFloat(0.2f * speedMultiplier), fixed::Zero(), fixed::Zero());
+			positionSpline.RemoveNode(positionCount - 1);
+			positionSpline.AddNode(node, zero, positionDeltaTime);
+			positionSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			break;
+		}
+		case SDLK_l:
+		{
+			CFixedVector3D node = positionSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::FromFloat(-0.2f * speedMultiplier), fixed::Zero(), fixed::Zero());
+			positionSpline.RemoveNode(positionCount - 1);
+			positionSpline.AddNode(node, zero, positionDeltaTime);
+			positionSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			break;
+		}
+		case SDLK_i:
+		{
+			CFixedVector3D node = positionSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::Zero(), fixed::FromFloat(0.2f * speedMultiplier));
+			positionSpline.RemoveNode(positionCount - 1);
+			positionSpline.AddNode(node, zero, positionDeltaTime);
+			positionSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			break;
+		}
+		case SDLK_k:
+		{
+			CFixedVector3D node = positionSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::Zero(), fixed::FromFloat(-0.2f * speedMultiplier));
+			positionSpline.RemoveNode(positionCount - 1);
+			positionSpline.AddNode(node, zero, positionDeltaTime);
+			positionSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, path.GetTargetSpline());
+			break;
+		}
+		// TARGET
+		case SDLK_r:
+		{
+			CFixedVector3D node = targetSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::FromFloat(0.2f * speedMultiplier), fixed::Zero());
+			targetSpline.RemoveNode(targetCount - 1);
+			targetSpline.AddNode(node, zero, targetDeltaTime);
+			targetSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, targetSpline);
+			break;
+		}
+		case SDLK_y:
+		{
+			CFixedVector3D node = targetSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::FromFloat(-0.2f * speedMultiplier), fixed::Zero());
+			targetSpline.RemoveNode(targetCount - 1);
+			targetSpline.AddNode(node, zero, targetDeltaTime);
+			targetSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, targetSpline);
+			break;
+		}
+		case SDLK_f:
+		{
+			CFixedVector3D node = targetSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::FromFloat(0.2f * speedMultiplier), fixed::Zero(), fixed::Zero());
+			targetSpline.RemoveNode(targetCount - 1);
+			targetSpline.AddNode(node, zero, targetDeltaTime);
+			targetSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, targetSpline);
+			break;
+		}
+		case SDLK_h:
+		{
+			CFixedVector3D node = targetSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::FromFloat(-0.2f * speedMultiplier), fixed::Zero(), fixed::Zero());
+			targetSpline.RemoveNode(targetCount - 1);
+			targetSpline.AddNode(node, zero, targetDeltaTime);
+			targetSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, targetSpline);
+			break;
+		}
+		case SDLK_t:
+		{
+			CFixedVector3D node = targetSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::Zero(), fixed::FromFloat(0.2f * speedMultiplier));
+			targetSpline.RemoveNode(targetCount - 1);
+			targetSpline.AddNode(node, zero, targetDeltaTime);
+			targetSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, targetSpline);
+			break;
+		}
+		case SDLK_g:
+		{
+			CFixedVector3D node = targetSpline.GetAllNodes().back().Position;
+			node += CFixedVector3D(fixed::Zero(), fixed::Zero(), fixed::FromFloat(-0.2f * speedMultiplier));
+			targetSpline.RemoveNode(targetCount - 1);
+			targetSpline.AddNode(node, zero, targetDeltaTime);
+			targetSpline.BuildSpline();
+			path = CCinemaPath(*path.GetData(), positionSpline, targetSpline);
+			break;
+		}
+		}
+		break;
+	}
 	default:
 		return IN_PASS;
 	}
+	return IN_PASS;
 }
 
 bool CCinemaManager::GetEnabled() const
@@ -296,3 +561,29 @@ void CCinemaManager::SetPathsDrawing(const bool drawPath)
 {
 	m_DrawPaths = drawPath;
 }
+
+bool CCinemaManager::GetCameraDrawing() const
+{
+	return m_DrawCamera;
+}
+
+void CCinemaManager::SetCameraDrawing(const bool drawCamera)
+{
+	m_DrawCamera = drawCamera;
+}
+
+void CCinemaManager::SelectPath(const CStrW& pathName)
+{
+	selectedPath = pathName;
+	SetSelectedPathCameraTime(0.0f);
+}
+
+float CCinemaManager::GetSelectedPathCameraTime() const
+{
+	return m_SelectedPathCameraTime;
+}
+
+void CCinemaManager::SetSelectedPathCameraTime(const float cameraTime)
+{
+	m_SelectedPathCameraTime = cameraTime;
+}

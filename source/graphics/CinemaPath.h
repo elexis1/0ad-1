@@ -83,7 +83,7 @@ public:
 
 public:
 
-	void Draw() const;
+	void Draw(bool selected = false) const;
 	void DrawSpline(const RNSpline& spline, const CVector4D& RGBA, int smoothness, bool lines) const;
 	void DrawNodes(const RNSpline& spline, const CVector4D& RGBA) const;
 

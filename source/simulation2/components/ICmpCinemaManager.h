@@ -18,6 +18,7 @@
 #ifndef INCLUDED_ICMPCINEMAMANAGER
 #define INCLUDED_ICMPCINEMAMANAGER
 
+#include "graphics/CinemaPath.h"
 #include "simulation2/system/Interface.h"
 
 #include "ps/CStr.h"
@@ -31,6 +32,7 @@ class ICmpCinemaManager : public IComponent
 {
 public:
 	// TODO: add path name and description
+	virtual void AddCinemaPath(const CCinemaPath& path) = 0;
 	virtual void AddCinemaPathToQueue(const CStrW& name) = 0;
 	
 	virtual void Play() = 0;

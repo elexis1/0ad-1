@@ -20,6 +20,7 @@
 #include "scriptinterface/ScriptInterface.h"
 #include "scriptinterface/ScriptExtraHeaders.h" // for typed arrays
 
+#include "graphics/CinemaPath.h"
 #include "maths/Fixed.h"
 #include "maths/FixedVector2D.h"
 #include "maths/FixedVector3D.h"
@@ -316,4 +317,35 @@ template<> void ScriptInterface::ToJSVal<std::vector<CFixedVector2D> >(JSContext
 		JS_SetElement(cx, obj, i, el);
 	}
 	ret.setObject(*obj);
+}
+
+////////////////////////////////////////////////////////////////
+// Cinematics types:
+
+template<> bool ScriptInterface::FromJSVal<CCinemaPath>(JSContext* cx, JS::HandleValue v, CCinemaPath& out)
+{
+	JSAutoRequest rq(cx);
+	if (!v.isObject())
+		FAIL("Argument must be an object");
+
+	/*JS::RootedObject obj(cx, &v.toObject());
+	JS::RootedValue templateName(cx);
+	JS::RootedValue id(cx);
+	JS::RootedValue player(cx);
+	JS::RootedValue position(cx);
+	JS::RootedValue rotation(cx);
+
+	// TODO: Report type errors
+	if (!JS_GetProperty(cx, obj, "player", &player) || !FromJSVal(cx, player, out.playerID))
+		FAIL("Failed to read Entity.player property");
+	if (!JS_GetProperty(cx, obj, "templateName", &templateName) || !FromJSVal(cx, templateName, out.templateName))
+		FAIL("Failed to read Entity.templateName property");
+	if (!JS_GetProperty(cx, obj, "id", &id) || !FromJSVal(cx, id, out.entityID))
+		FAIL("Failed to read Entity.id property");
+	if (!JS_GetProperty(cx, obj, "position", &position) || !FromJSVal(cx, position, out.position))
+		FAIL("Failed to read Entity.position property");
+	if (!JS_GetProperty(cx, obj, "rotation", &rotation) || !FromJSVal(cx, rotation, out.rotation))
+		FAIL("Failed to read Entity.rotation property");*/
+
+	return true;
 }

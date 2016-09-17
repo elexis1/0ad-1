@@ -167,6 +167,78 @@ MESSAGEHANDLER(CinemaEvent)
 	else
 		ENSURE(false);
 }
+
+BEGIN_COMMAND(AddCinemaPath)
+{
+	void Do()
+	{
+		if (g_Game->GetView()->GetCinema()->HasPath(*msg->pathName))
+			return;
+		CCinemaData pathData;
+		pathData.m_Name = *msg->pathName;
+		pathData.m_Timescale = fixed::FromInt(1);
+		pathData.m_Orientation = L"target";
+		pathData.m_Mode = L"ease_inout";
+		pathData.m_Style = L"default";
+
+		CVector3D focus = g_Game->GetView()->GetCamera()->GetFocus();
+		CFixedVector3D target(fixed::FromFloat(focus.X), fixed::FromFloat(focus.Y + 1.0f), fixed::FromFloat(focus.Z));
+		CFixedVector3D position(target + CFixedVector3D(fixed::Zero(), fixed::FromInt(1), fixed::Zero()));
+		CFixedVector3D shift(fixed::FromInt(3), fixed::Zero(), fixed::Zero());
+
+		TNSpline positionSpline, targetSpline;
+		positionSpline.AddNode(position, CFixedVector3D(), fixed::FromInt(0));
+		positionSpline.AddNode(position + shift, CFixedVector3D(), fixed::FromInt(3));
+		targetSpline.AddNode(target, CFixedVector3D(), fixed::FromInt(0));
+		targetSpline.AddNode(target + shift, CFixedVector3D(), fixed::FromInt(3));
+
+		// Construct cinema path with data gathered
+		CCinemaPath path(pathData, positionSpline, targetSpline);
+
+		g_Game->GetView()->GetCinema()->AddPath(*msg->pathName, path);
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(AddCinemaPath)
+
+BEGIN_COMMAND(DeleteCinemaPath)
+{
+	void Do()
+	{
+		if (!g_Game->GetView()->GetCinema()->HasPath(*msg->pathName))
+			return;
+		g_Game->GetView()->GetCinema()->GetCinematicSimulationData()->m_Paths.erase(*msg->pathName);
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(DeleteCinemaPath)
+
+BEGIN_COMMAND(SelectCinemaPath)
+{
+	void Do()
+	{
+		if (!g_Game->GetView()->GetCinema()->HasPath(*msg->pathName))
+			return;
+		g_Game->GetView()->GetCinema()->SelectPath(*msg->pathName);
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(SelectCinemaPath)
 			
 BEGIN_COMMAND(SetCinemaPaths)
 {
@@ -192,5 +264,79 @@ QUERYHANDLER(GetCinemaPaths)
 {
 	msg->paths = GetCurrentPaths();
 }
+
+BEGIN_COMMAND(SetCinemaPathsDrawing)
+{
+	void Do()
+	{
+		g_Game->GetView()->GetCinema()->SetPathsDrawing(msg->drawPaths);
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(SetCinemaPathsDrawing)
+
+BEGIN_COMMAND(SetCinemaCameraDrawing)
+{
+	void Do()
+	{
+		g_Game->GetView()->GetCinema()->SetCameraDrawing(msg->drawCamera);
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(SetCinemaCameraDrawing)
+
+BEGIN_COMMAND(SetCinemaCameraTime)
+{
+	void Do()
+	{
+		g_Game->GetView()->GetCinema()->SetSelectedPathCameraTime(msg->cameraTime);
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(SetCinemaCameraTime)
+
+BEGIN_COMMAND(SetCameraCenterOnCinemaPath)
+{
+	void Do()
+	{
+		const CStrW pathName = *msg->pathName;
+		if (!g_Game->GetView()->GetCinema()->HasPath(pathName))
+			return;
+		const CCinemaPath path = g_Game->GetView()->GetCinema()->GetCinematicSimulationData()->m_Paths[pathName];
+		CBoundingBoxAligned bb;
+		for (SplineData node : path.GetAllNodes())
+			bb += node.Position;
+		for (SplineData node : path.GetTargetSpline().GetAllNodes())
+			bb += node.Position;
+		CVector3D dir(0, 1, -1), target;
+		bb.GetCentre(target);
+		// TODO: calculate view with fov/aspect ratio
+		float distance = std::max((bb[1].X - bb[0].X) / 2.0f, (bb[1].Y - bb[0].Y) / 2.0f);
+		distance = std::max(std::max((bb[1].Z - bb[0].Z) / 2.0f, distance) * 3.0f, 10.0f);
+		g_Game->GetView()->GetCamera()->LookAt(dir * distance + target, target, CVector3D(0, 1, 0));
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(SetCameraCenterOnCinemaPath)
 
 }

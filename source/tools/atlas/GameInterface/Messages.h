@@ -646,13 +646,27 @@ MESSAGE(SetBandbox,
 
 QUERY(GetCinemaPaths,
 	  , // no inputs
-	  ((std::vector<AtlasMessage::sCinemaPath> , paths))
+	  ((std::vector<AtlasMessage::sCinemaPath>, paths))
 	  );
 
 QUERY(GetCameraInfo,
 	  ,
 	  ((AtlasMessage::sCameraInfo, info))
 	  );
+
+COMMAND(AddCinemaPath, NOMERGE, ((std::wstring, pathName)));
+
+COMMAND(DeleteCinemaPath, NOMERGE, ((std::wstring, pathName)));
+
+COMMAND(SelectCinemaPath, NOMERGE, ((std::wstring, pathName)));
+
+COMMAND(SetCinemaPathsDrawing, NOMERGE, ((bool, drawPaths)));
+
+COMMAND(SetCinemaCameraDrawing, NOMERGE, ((bool, drawCamera)));
+
+COMMAND(SetCinemaCameraTime, NOMERGE, ((float, cameraTime)));
+
+COMMAND(SetCameraCenterOnCinemaPath, NOMERGE, ((std::wstring, pathName)));
 
 COMMAND(SetCinemaPaths, NOMERGE,
 		((std::vector<AtlasMessage::sCinemaPath>, paths))

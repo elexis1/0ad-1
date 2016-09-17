@@ -86,16 +86,32 @@ CCinemaPath::CCinemaPath(const CCinemaData& data, const TNSpline& spline, const 
 	}
 }
 
-void CCinemaPath::Draw() const
+void CCinemaPath::Draw(bool selected) const
 {
-	DrawSpline(*this, CVector4D(0.2f, 0.2f, 1.f, 0.5f), 100, true);
-	DrawNodes(*this, CVector4D(0.5f, 1.0f, 0.f, 0.5f));
+	CVector4D positionSplineColor(0.2f, 0.2f, 1.f, 0.5f);
+	CVector4D positionNodeColor(positionSplineColor);
+	if (selected)
+	{
+		positionSplineColor = CVector4D(0.4f, 0.4f, 1.f, 0.5f);
+		positionNodeColor = CVector4D(0.5f, 1.0f, 0.f, 0.5f);
+	}
+
+	DrawSpline(*this, positionSplineColor, 100, true);
+	DrawNodes(*this, positionNodeColor);
 
 	if (!m_LookAtTarget)
 		return;
 
-	DrawSpline(m_TargetSpline, CVector4D(1.0f, 0.2f, 0.2f, 0.5f), 100, true);
-	DrawNodes(m_TargetSpline, CVector4D(1.0f, 0.5f, 0.f, 0.5f));
+	CVector4D targetSplineColor(1.0f, 0.2f, 0.2f, 0.5f);
+	CVector4D targetNodeColor(targetSplineColor);
+	if (selected)
+	{
+		targetSplineColor = CVector4D(1.0f, 0.4f, 0.4f, 0.5f);
+		targetNodeColor = CVector4D(1.0f, 0.5f, 0.f, 0.5f);
+	}
+
+	DrawSpline(m_TargetSpline, targetSplineColor, 100, true);
+	DrawNodes(m_TargetSpline, targetNodeColor);
 }
 
 void CCinemaPath::DrawSpline(const RNSpline& spline, const CVector4D& RGBA, int smoothness, bool lines) const

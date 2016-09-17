@@ -105,6 +105,7 @@ public:
 	 */
 	void Render();
 	void DrawBars() const;
+	void DrawCamera();
 
 	/**
 	 * Get current enable state of the cinema manager
@@ -130,8 +131,18 @@ public:
 	bool GetPathsDrawing() const;
 	void SetPathsDrawing(const bool drawPath);
 
+	bool GetCameraDrawing() const;
+	void SetCameraDrawing(const bool drawCamera);
+
+	float GetSelectedPathCameraTime() const;
+	void SetSelectedPathCameraTime(const float cameraTime);
+
+	void SelectPath(const CStrW& pathName);
+
 private:    
-	bool m_DrawPaths;
+	bool m_DrawPaths, m_DrawCamera;
+	CStrW selectedPath;
+	float m_SelectedPathCameraTime;
 
 	// Cinematic data is accessed from the simulation
 	CinematicSimulationData m_CinematicSimulationData;
