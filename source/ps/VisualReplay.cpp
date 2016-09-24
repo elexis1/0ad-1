@@ -62,10 +62,8 @@ void VisualReplay::StartVisualReplay(const CStrW& directory)
 }
 
 /**
- * Load all replays found in the directory.
- *
- * Since files are spread across the harddisk,
- * loading hundreds of them can consume a lot of time.
+ * Load the replay cache and check if there are new/deleted ones
+ * If so, update their data.
  */
 JS::Value VisualReplay::GetReplays(ScriptInterface& scriptInterface)
 {
@@ -73,20 +71,110 @@ JS::Value VisualReplay::GetReplays(ScriptInterface& scriptInterface)
 	JSContext* cx = scriptInterface.GetContext();
 	JSAutoRequest rq(cx);
 
-	u32 i = 0;
-	DirectoryNames directories;
-	JS::RootedObject replays(cx, JS_NewArrayObject(cx, 0));
+	// Maps the filename onto the index and size
+	std::map<CStr, std::pair<u32, u64>> fileList;
 
-	if (GetDirectoryEntries(GetDirectoryName(), NULL, &directories) == INFO::OK)
-		for (OsPath& directory : directories)
+	const OsPath cacheFileName = GetDirectoryName() / L"replayCache.json";
+	const OsPath tempCacheFileName = GetDirectoryName() / L"replayCache_temp.json";
+	JS::RootedObject cachedReplaysObject(cx);
+
+	if (FileExists(cacheFileName))
+	{
+		// Open cache file
+		std::istream* cacheStream = new std::ifstream(cacheFileName.string8().c_str());
+
+		// Read file into chacheStr
+		CStr cacheStr((std::istreambuf_iterator<char>(*cacheStream)), std::istreambuf_iterator<char>());
+
+		// Create empty JS object and parse the context of the cache into it
+		JS::RootedValue cachedReplays(cx);
+		scriptInterface.ParseJSON(cacheStr, &cachedReplays);
+		SAFE_DELETE(cacheStream);
+
+		cachedReplaysObject = &cachedReplays.toObject();
+
+		// Create list of files included in the cache
+		u32 cacheLength = 0;
+		JS_GetArrayLength(cx, cachedReplaysObject, &cacheLength);
+		for (u32 j = 0; j < cacheLength ; ++j)
 		{
-			if (SDL_QuitRequested())
-				return JSVAL_NULL;
+			JS::RootedValue replay(cx);
+			JS_GetElement(cx, cachedReplaysObject, j, &replay);
 
+			JS::RootedValue file(cx);
+			CStr fileName;
+			u32 fileSize;
+			scriptInterface.GetProperty(replay, "directory", fileName);
+			scriptInterface.GetProperty(replay, "fileSize", fileSize);
+
+			fileList.emplace(fileName, std::make_pair(j, fileSize));
+		}
+	}
+
+	JS::RootedObject replays(cx, JS_NewArrayObject(cx, 0));
+	DirectoryNames directories;
+
+	if (GetDirectoryEntries(GetDirectoryName(), NULL, &directories) != INFO::OK)
+		return JS::ObjectValue(*replays);
+
+	bool newReplays = false;
+	std::vector<u32> copyFromOldCache;
+	// Specifies where the next replay data should go in replays
+	u32 i = 0;
+
+	for (const OsPath& directory : directories)
+	{
+		if (SDL_QuitRequested())
+			break;
+
+		bool isNew = true;
+		std::map<CStr, std::pair<u32, u64>>::iterator it = fileList.find(directory.string8());
+		// directory is in fileList
+		if (it != fileList.end())
+		{
+			CFileInfo fileInfo;
+			GetFileInfo(GetDirectoryName() / directory / L"commands.txt", &fileInfo);
+			if (fileInfo.Size() == it->second.second)
+				isNew = false;
+		}
+
+		if (isNew)
+		{
 			JS::RootedValue replayData(cx, LoadReplayData(scriptInterface, directory));
 			if (!replayData.isNull())
+			{
 				JS_SetElement(cx, replays, i++, replayData);
+				newReplays = true;
+			}
 		}
+		else
+			copyFromOldCache.push_back(it->second.first);
+	}
+
+	if (!newReplays && fileList.empty())
+		return JS::ObjectValue(*replays);
+	// No replay was changed, so just return the cache
+	if (!newReplays && fileList.size() == copyFromOldCache.size())
+		return JS::ObjectValue(*cachedReplaysObject);
+
+	// Copy the replays from the old cache that are not deleted
+	if (!copyFromOldCache.empty())
+		for (u32 j : copyFromOldCache)
+		{
+			JS::RootedValue replay(cx);
+			JS_GetElement(cx, cachedReplaysObject, j, &replay);
+			JS_SetElement(cx, replays, i++, replay);
+		}
+
+	JS::RootedValue replaysRooted(cx, JS::ObjectValue(*replays));
+	std::ofstream stream(tempCacheFileName.string8().c_str(), std::ofstream::out | std::ofstream::trunc);
+	stream << scriptInterface.StringifyJSON(&replaysRooted);
+	stream.close();
+
+	wunlink(cacheFileName);
+	if (wrename(tempCacheFileName, cacheFileName))
+		LOGERROR("Could not store the replay cache");
+
 	return JS::ObjectValue(*replays);
 }
 
@@ -173,7 +261,7 @@ inline int getReplayDuration(std::istream* replayStream, const CStr& fileName, c
 	return -1;
 }
 
-JS::Value VisualReplay::LoadReplayData(ScriptInterface& scriptInterface, OsPath& directory)
+JS::Value VisualReplay::LoadReplayData(ScriptInterface& scriptInterface, const OsPath& directory)
 {
 	// The directory argument must not be constant, otherwise concatenating will fail
 	const OsPath replayFile = GetDirectoryName() / directory / L"commands.txt";
@@ -251,6 +339,7 @@ JS::Value VisualReplay::LoadReplayData(ScriptInterface& scriptInterface, OsPath&
 	scriptInterface.Eval("({})", &replayData);
 	scriptInterface.SetProperty(replayData, "file", replayFile);
 	scriptInterface.SetProperty(replayData, "directory", directory);
+	scriptInterface.SetProperty(replayData, "fileSize", (u32)fileSize);
 	scriptInterface.SetProperty(replayData, "filemod_timestamp", std::to_string(fileTime));
 	scriptInterface.SetProperty(replayData, "attribs", attribs);
 	scriptInterface.SetProperty(replayData, "duration", duration);
@@ -265,7 +354,6 @@ bool VisualReplay::DeleteReplay(const CStrW& replayDirectory)
 	const OsPath directory = GetDirectoryName() / replayDirectory;
 	return DirectoryExists(directory) && DeleteDirectory(directory) == INFO::OK;
 }
-
 
 JS::Value VisualReplay::GetReplayAttributes(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& directoryName)
 {
@@ -290,6 +378,46 @@ JS::Value VisualReplay::GetReplayAttributes(ScriptInterface::CxPrivate* pCxPriva
 	pCxPrivate->pScriptInterface->ParseJSON(line, &attribs);
 	SAFE_DELETE(replayStream);;
 	return attribs;
+}
+
+void VisualReplay::AddReplayToCache(ScriptInterface& scriptInterface, const CStrW& directoryName)
+{
+	TIMER(L"AddReplayToCache");
+	JSContext* cx = scriptInterface.GetContext();
+	JSAutoRequest rq(cx);
+
+	JS::RootedValue replayData(cx, LoadReplayData(scriptInterface, OsPath(directoryName)));
+
+	if (replayData.isNull())
+		return;
+
+	const OsPath cacheFileName = GetDirectoryName() / L"replayCache.json";
+	JS::RootedObject cachedReplaysObject(cx, JS_NewArrayObject(cx, 0));
+
+	if (FileExists(cacheFileName))
+	{
+		// Open cache file
+		std::istream* cacheStream = new std::ifstream(cacheFileName.string8().c_str());
+
+		// Read file into chacheStr
+		CStr cacheStr((std::istreambuf_iterator<char>(*cacheStream)), std::istreambuf_iterator<char>());
+
+		// Create empty JS object and parse the content of the cache into it
+		JS::RootedValue cachedReplays(cx);
+		scriptInterface.ParseJSON(cacheStr, &cachedReplays);
+		SAFE_DELETE(cacheStream);
+
+		cachedReplaysObject = &cachedReplays.toObject();
+	}
+
+	u32 cacheLength = 0;
+	JS_GetArrayLength(cx, cachedReplaysObject, &cacheLength);
+	JS_SetElement(cx, cachedReplaysObject, cacheLength, replayData);
+
+	JS::RootedValue replaysRooted(cx, JS::ObjectValue(*cachedReplaysObject));
+	std::ofstream cacheStream(cacheFileName.string8().c_str(), std::ofstream::out | std::ofstream::trunc);
+	cacheStream << scriptInterface.StringifyJSON(&replaysRooted);
+	cacheStream.close();
 }
 
 void VisualReplay::SaveReplayMetadata(ScriptInterface* scriptInterface)

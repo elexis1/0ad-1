@@ -53,7 +53,7 @@ JS::Value GetReplays(ScriptInterface& scriptInterface);
  * Parses a commands.txt file and extracts metadata.
  * Works similarly to CGame::LoadReplayData().
  */
-JS::Value LoadReplayData(ScriptInterface& scriptInterface, OsPath& directory);
+JS::Value LoadReplayData(ScriptInterface& scriptInterface, const OsPath& directory);
 
 /**
  * Permanently deletes the visual replay (including the parent directory)
@@ -83,6 +83,10 @@ JS::Value GetReplayMetadata(ScriptInterface::CxPrivate* pCxPrivate, const CStrW&
  */
 void SaveReplayMetadata(ScriptInterface* scriptInterface);
 
+/**
+* Adds a replay to the replayCache
+*/
+void AddReplayToCache(ScriptInterface& scriptInterface, const CStrW& directoryName);
 }
 
 #endif
