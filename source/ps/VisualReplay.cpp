@@ -134,7 +134,7 @@ JS::Value VisualReplay::GetReplays(ScriptInterface& scriptInterface)
 		{
 			CFileInfo fileInfo;
 			GetFileInfo(GetDirectoryName() / directory / L"commands.txt", &fileInfo);
-			if (fileInfo.Size() == it->second.second)
+			if ((u64)fileInfo.Size() == it->second.second)
 				isNew = false;
 		}
 
