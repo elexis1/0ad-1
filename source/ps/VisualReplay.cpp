@@ -72,7 +72,7 @@ JS::Value VisualReplay::GetReplays(ScriptInterface& scriptInterface)
 	JSAutoRequest rq(cx);
 
 	// Maps the filename onto the index and size
-	std::map<CStr, std::pair<u32, u64>> fileList;
+	std::vector<std::pair<CStr, std::pair<u32, u64>>> fileList;
 
 	const OsPath cacheFileName = GetDirectoryName() / L"replayCache.json";
 	const OsPath tempCacheFileName = GetDirectoryName() / L"replayCache_temp.json";
@@ -107,8 +107,9 @@ JS::Value VisualReplay::GetReplays(ScriptInterface& scriptInterface)
 			scriptInterface.GetProperty(replay, "directory", fileName);
 			scriptInterface.GetProperty(replay, "fileSize", fileSize);
 
-			fileList.emplace(fileName, std::make_pair(j, fileSize));
+			fileList.push_back(std::make_pair(fileName, std::make_pair(j, fileSize)));
 		}
+		std::sort(fileList.begin(), fileList.end());
 	}
 
 	JS::RootedObject replays(cx, JS_NewArrayObject(cx, 0));
@@ -128,9 +129,10 @@ JS::Value VisualReplay::GetReplays(ScriptInterface& scriptInterface)
 			break;
 
 		bool isNew = true;
-		std::map<CStr, std::pair<u32, u64>>::iterator it = fileList.find(directory.string8());
+		std::pair<CStr, std::pair<u32, u64>> searchVal = std::make_pair(directory.string8(), std::make_pair(0, 0));
+		std::vector<std::pair<CStr, std::pair<u32, u64>>>::iterator it = lower_bound(fileList.begin(), fileList.end(), searchVal);
 		// directory is in fileList
-		if (it != fileList.end())
+		if (it != fileList.end() && it->first == directory.string8())
 		{
 			CFileInfo fileInfo;
 			GetFileInfo(GetDirectoryName() / directory / L"commands.txt", &fileInfo);
