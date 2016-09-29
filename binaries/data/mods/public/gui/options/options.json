@@ -46,7 +46,7 @@
 		{
 			"type": "boolean",
 			"label": "Cinematic coordinate dump screenshots",
-			"tooltip": "Gametime before starting the recording",
+			"tooltip": "Whether to take a screenshot everytime the coordinate-snapshot hotkey is pressed.",
 			"parameters": { "config": "cinematic.lookAtScreenshot" }
 		},
 		{
