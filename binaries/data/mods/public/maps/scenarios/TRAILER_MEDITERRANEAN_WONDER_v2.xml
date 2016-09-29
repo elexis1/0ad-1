@@ -96,7 +96,7 @@
   "TriggerScripts": [
     "scenarios/TRAILER_MEDITERRANEAN_WONDER_v2.js",
     "scripts/TriggerHelper.js"
-  ]
+  ],
   "Seed": 8205,
   "Size": 320,
   "mapType": "random"
