@@ -250,7 +250,6 @@ std::string parseStunResponse()
 
 	// Those are the port and the address to be detected
 
-	int pos = 20;
 	while (true)
 	{
 		int type = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
