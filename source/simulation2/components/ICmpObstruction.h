@@ -87,7 +87,7 @@ public:
 	 * Returns a list of units that are colliding with this entity,
 	 * @return vector of blocking units
 	 */
-	virtual std::vector<entity_id_t> GetUnitCollisions() = 0;
+	virtual std::vector<entity_id_t> GetCollisionsWithFlag(ICmpObstructionManager::flags_t flags) = 0;
 
 	/**
 	 * Detects collisions between foundation-blocking entities and

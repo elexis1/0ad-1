@@ -215,7 +215,7 @@ Gate.prototype.CloseGate = function()
 		return;
 
 	// The gate can't be closed if there are entities colliding with it.
-	var collisions = cmpObstruction.GetUnitCollisions();
+	var collisions = cmpObstruction.GetCollisionsWithFlag(4);
 	if (collisions.length)
 	{		
 		if (!this.timer)

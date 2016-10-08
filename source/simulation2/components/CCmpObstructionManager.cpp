@@ -474,6 +474,7 @@ public:
 	virtual void GetUnitObstructionsInRange(const IObstructionTestFilter& filter, entity_pos_t x0, entity_pos_t z0, entity_pos_t x1, entity_pos_t z1, std::vector<ObstructionSquare>& squares);
 	virtual void GetStaticObstructionsInRange(const IObstructionTestFilter& filter, entity_pos_t x0, entity_pos_t z0, entity_pos_t x1, entity_pos_t z1, std::vector<ObstructionSquare>& squares);
 	virtual void GetUnitsOnObstruction(const ObstructionSquare& square, std::vector<entity_id_t>& out, const IObstructionTestFilter& filter, bool strict = false);
+	virtual void GetObstructionsOnObstruction(const ObstructionSquare& square, std::vector<entity_id_t>& out, const IObstructionTestFilter& filter, bool strict = false);
 
 	virtual void SetPassabilityCircular(bool enabled)
 	{
@@ -1048,6 +1049,40 @@ void CCmpObstructionManager::GetUnitsOnObstruction(const ObstructionSquare& squa
 				break;
 			}
 		}
+	}
+}
+
+void CCmpObstructionManager::GetObstructionsOnObstruction(const ObstructionSquare& square, std::vector<entity_id_t>& out, const IObstructionTestFilter& filter, bool strict)
+{
+	PROFILE("GetObstructionsOnObstruction");
+
+	// fetch units on the obstruction square
+	GetUnitsOnObstruction(square, out, filter, strict);
+
+	std::vector<entity_id_t> staticShapes;
+	CFixedVector2D center(square.x, square.z);
+	CFixedVector2D expandedBox =
+	Geometry::GetHalfBoundingBox(square.u, square.v, CFixedVector2D(square.hw, square.hh)) +
+	CFixedVector2D(m_MaxClearance, m_MaxClearance);
+	m_StaticSubdivision.GetInRange(staticShapes, center - expandedBox, center + expandedBox);
+
+	std::map<entity_pos_t, SimRasterize::Spans> rasterizedRects;
+
+	for (const u32& staticShape : staticShapes)
+	{
+		auto it = m_StaticShapes.find(staticShape);
+		ENSURE(it != m_StaticShapes.end());
+
+		StaticShape& shape = it->second;
+
+		if (!filter.TestShape(STATIC_INDEX_TO_TAG(staticShape), shape.flags, shape.group, shape.group2))
+			continue;
+
+		if (Geometry::TestSquareSquare(center, square.u, square.v, CFixedVector2D(square.hw, square.hh), CFixedVector2D(shape.x,shape.z), shape.u, shape.v, CFixedVector2D(shape.hw,shape.hh)))
+		{
+			out.push_back(shape.entity);
+		}
+
 	}
 }
 
