@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2016 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -1079,10 +1079,7 @@ void CCmpObstructionManager::GetObstructionsOnObstruction(const ObstructionSquar
 			continue;
 
 		if (Geometry::TestSquareSquare(center, square.u, square.v, CFixedVector2D(square.hw, square.hh), CFixedVector2D(shape.x,shape.z), shape.u, shape.v, CFixedVector2D(shape.hw,shape.hh)))
-		{
 			out.push_back(shape.entity);
-		}
-
 	}
 }
 
