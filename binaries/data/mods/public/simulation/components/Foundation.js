@@ -180,7 +180,7 @@ Foundation.prototype.Build = function(builderEnt, work)
 	if (cmpObstruction && cmpObstruction.GetBlockMovementFlag())
 	{
 		var collisions = cmpObstruction.GetCollisionsWithFlag(0);
-		warn(uneval(collisions))
+
 		if (collisions.length)
 		{
 			var cmpFoundationOwnership = Engine.QueryInterface(this.entity, IID_Ownership);
