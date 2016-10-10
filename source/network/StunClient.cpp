@@ -258,7 +258,12 @@ std::string parseStunResponse()
 		{
 			assert(size == 8);
 			m_current_offset++;  // skip 1 byte
-			assert(m_buffer[m_current_offset++] == 0x01); // Family IPv4 only
+
+			// Check address family
+			char address_family = m_buffer[m_current_offset++];
+			if (address_family != 0x01)
+				return "Unsupported address family, IPv4 is expected";
+
 			m_port = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 			m_ip   = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
 			// finished parsing, we know our public transport address
