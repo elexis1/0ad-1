@@ -74,7 +74,7 @@ T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
 void createStunRequest(int port)
 {
 	// TODO: make STUN server configurable
-	const char* server_name = "stun1.voiceeclipse.net";
+	const char* server_name = "stun.ekiga.net";
 	printf("GetPublicAddress: Using STUN server %s\n", server_name);
 
 	struct addrinfo hints, *res;
