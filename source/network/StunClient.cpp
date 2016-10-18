@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include "ps/ConfigDB.h"
 #include "scriptinterface/ScriptInterface.h"
 
 ENetHost* m_transaction_host;
@@ -73,9 +74,9 @@ T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
  */
 void createStunRequest(int port)
 {
-	// TODO: make STUN server configurable
-	const char* server_name = "stun.ekiga.net";
-	printf("GetPublicAddress: Using STUN server %s\n", server_name);
+	std::string server_name;
+	CFG_GET_VAL("stun.server", server_name);
+	printf("GetPublicAddress: Using STUN server %s\n", server_name.c_str());
 
 	struct addrinfo hints, *res;
 
@@ -84,7 +85,7 @@ void createStunRequest(int port)
 	hints.ai_socktype = SOCK_STREAM;
 
 	// Resolve the stun server name so we can send it a STUN request
-	int status = getaddrinfo(server_name, NULL, &hints, &res);
+	int status = getaddrinfo(server_name.c_str(), NULL, &hints, &res);
 	if (status != 0)
 	{
 		printf("GetPublicAddress: Error in getaddrinfo: %s\n",
