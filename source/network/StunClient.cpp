@@ -296,13 +296,18 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 	if (!parse_result.empty())
 			printf("Parse error: %s\n", parse_result.c_str());
 
+	// Convert m_ip to string
+	char ipStr[256] = "(error)";
+	ENetAddress addr;
+	addr.host = ntohl(m_ip);
+	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
 	JSContext* cx = scriptInterface.GetContext();
 	JSAutoRequest rq(cx);
 
 	JS::RootedValue stunEndpoint(cx);
 	scriptInterface.Eval("({})", &stunEndpoint);
-	scriptInterface.SetProperty(stunEndpoint, "ip", m_ip);
+	scriptInterface.SetProperty(stunEndpoint, "ip", std::string(ipStr));
 	scriptInterface.SetProperty(stunEndpoint, "port", m_port);
 	return stunEndpoint;
 }
