@@ -193,6 +193,8 @@ std::string parseStunResponse()
 		printf("GetPublicAddress: recvfrom error: %d\n", err);
 	}
 
+	// We don't need the m_transaction_host anymore
+	enet_host_destroy(m_transaction_host);
 
 	// No message received
 	if (len < 0)
