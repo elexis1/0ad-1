@@ -23,6 +23,9 @@ var g_GameAttributes; // used when rejoining
 var g_PlayerAssignments; // used when rejoining
 var g_UserRating;
 
+var g_StunEnabled = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
+var g_StunEndpoint;
+
 function init(attribs)
 {
 	g_UserRating = attribs.rating;
@@ -278,9 +281,8 @@ function startHost(playername, servername, port)
 		return false;
 	}
 
-	if (Engine.HasXmppClient() && g_UseStun) {
+	if (Engine.HasXmppClient() && g_StunEnabled)
 		g_StunEndpoint = Engine.FindStunEndpoint(port);
-	}
 
 	try
 	{

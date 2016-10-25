@@ -1995,7 +1995,6 @@ function sendRegisterGameStanza()
 	let stanza = {
 		"name": g_ServerName,
 		"port": g_ServerPort,
-		"stunEndpoint": g_StunEndpoint,
 		"mapName": g_GameAttributes.map,
 		"niceMapName": getMapDisplayName(g_GameAttributes.map),
 		"mapSize": mapSize,
@@ -2005,6 +2004,11 @@ function sendRegisterGameStanza()
 		"maxnbp": g_GameAttributes.settings.PlayerData.length,
 		"players": clients.list,
 	};
+
+	if (g_StunEndpoint !== undefined) {
+		stanza.stunIp = g_StunEndpoint.ip;
+		stanza.stunPort = g_StunEndpoint.port;
+	}
 
 	// Only send the stanza if the relevant settings actually changed
 	if (g_LastGameStanza && Object.keys(stanza).every(prop => g_LastGameStanza[prop] == stanza[prop]))

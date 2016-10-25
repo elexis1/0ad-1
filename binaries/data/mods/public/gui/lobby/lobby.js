@@ -34,6 +34,12 @@ const g_ModeratorPrefix = "@";
 const g_Username = Engine.LobbyGetNick();
 
 /**
+ * If STUN is enabled for both host and client, we are using it
+ * to discovered NAT-mapped host endpoint
+ */
+const g_StunEnabled = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
+
+/**
  * Current games will be listed in these colors.
  */
 const g_GameColors = {
@@ -692,7 +698,18 @@ function joinSelectedGame()
 	if (!game)
 		return;
 
-	if (game.ip.split('.').length != 4)
+	let ip;
+	let port;
+	if (g_StunEnabled && game.stunIp !== undefined) {
+		ip = game.stunIp;
+		port = game.stunPort;
+	}
+	else {
+		ip = game.ip;
+		port = game.port;
+	}
+
+	if (ip.split('.').length != 4)
 	{
 		addChatMessage({
 			"from": "system",
@@ -702,17 +719,6 @@ function joinSelectedGame()
 			)
 		});
 		return;
-	}
-
-	let ip;
-	let port;
-	if (g_UseStun && game.stunEndpoint !== undefined) {
-		ip = game.stunEndpoint.ip;
-		port = game.stunEndpoint.port;
-	}
-	else {
-		ip = game.ip;
-		port = game.port;
 	}
 
 	Engine.PushGuiPage("page_gamesetup_mp.xml", {
