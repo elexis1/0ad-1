@@ -22,7 +22,6 @@ const tCorals2 = "medit_sea_coral_deep";
 const tSeaDepths = "medit_sea_depths";
 
 // gaia entities
-const oBerryBush = "gaia/flora_bush_berry";
 const oDeer = "gaia/fauna_deer";
 const oFish = "gaia/fauna_fish";
 const oSheep = "gaia/fauna_sheep";
@@ -131,21 +130,9 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tCityPlaza, tCity], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
-
 	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
+	placeDefaultBerries(fx, fz, clBaseResource);
 
 	// create metal mine
 	var mAngle = bbAngle;

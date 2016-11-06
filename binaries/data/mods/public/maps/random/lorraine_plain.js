@@ -20,7 +20,6 @@ const tWater = "temp_mud_a";
 // gaia entities
 const oBeech = "gaia/flora_tree_euro_beech";
 const oOak = "gaia/flora_tree_oak";
-const oBerryBush = "gaia/flora_bush_berry";
 const oDeer = "gaia/fauna_deer";
 const oFish = "gaia/fauna_fish";
 const oRabbit = "gaia/fauna_rabbit";
@@ -133,16 +132,7 @@ for (var i = 0; i < numPlayers; i++)
 
 	placeDefaultChicken(fx, fz, clBaseResource);
 
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
+	placeDefaultBerries(fx, fz, clBaseResource);
 
 	// create metal mine
 	var mAngle = bbAngle;

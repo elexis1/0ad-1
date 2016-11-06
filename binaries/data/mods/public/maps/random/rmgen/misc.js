@@ -209,7 +209,7 @@ function placeCivDefaultEntities(fx, fz, playerid, kwargs = {})
 function placeDefaultChicken(playerX, playerZ, tileClass, constraint = undefined, template = "gaia/fauna_chicken")
 {
 	for (let j = 0; j < 2; ++j)
-		for (var tries = 0; tries < 10; ++tries)
+		for (let tries = 0; tries < 10; ++tries)
 		{
 			let aAngle = randFloat(0, TWO_PI);
 
@@ -228,6 +228,27 @@ function placeDefaultChicken(playerX, playerZ, tileClass, constraint = undefined
 				break;
 		}
 }
+
+function placeDefaultBerries(playerX, playerZ, tileClass, constraint = undefined, template = "gaia/flora_bush_berry")
+{
+	let dist = 12;
+
+	for (let tries = 0; tries < 10; ++tries)
+	{
+		let angle = randFloat(0, TWO_PI);
+
+		let group = new SimpleGroup(
+			[new SimpleObject(template, 5,5, 0,3)],
+			true,
+			tileClass,
+			round(playerX + dist * cos(angle)),
+			round(playerZ + dist * sin(angle)));
+
+		if (createObjectGroup(group, 0, constraint))
+			break;
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // paintTerrainBasedOnHeight
 //

@@ -20,7 +20,6 @@ const tWater = "medit_sand_wet";
 const oPoplar = "gaia/flora_tree_poplar";
 const oApple = "gaia/flora_tree_apple";
 const oCarob = "gaia/flora_tree_carob";
-const oBerryBush = "gaia/flora_bush_berry";
 const oDeer = "gaia/fauna_deer";
 const oFish = "gaia/fauna_fish";
 const oSheep = "gaia/fauna_sheep";
@@ -146,21 +145,9 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id, { 'iberWall': false });
-
 	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 8;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
+	placeDefaultBerries(fx, fz, clBaseResource);
 
 	// create metal mine
 	var mAngle = bbAngle;
@@ -171,7 +158,7 @@ for (var i = 0; i < numPlayers; i++)
 	var mDist = 10;
 	var mX = round(fx + mDist * cos(mAngle));
 	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
 		true, clBaseResource, mX, mZ
 	);

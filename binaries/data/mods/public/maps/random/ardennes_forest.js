@@ -18,7 +18,6 @@ const oBoar = "gaia/fauna_boar";
 const oDeer = "gaia/fauna_deer";
 const oBear = "gaia/fauna_bear";
 const oPig = "gaia/fauna_pig";
-const oBerryBush = "gaia/flora_bush_berry";
 const oMetalSmall = "gaia/geology_metal_alpine";
 const oMetalLarge = "gaia/geology_metal_temperate_slabs";
 const oStoneSmall = "gaia/geology_stone_alpine_a";

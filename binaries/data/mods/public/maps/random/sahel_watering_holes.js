@@ -17,7 +17,6 @@ const tWater = "savanna_riparian_wet";
 // gaia entities
 const oBaobab = "gaia/flora_tree_baobab";
 const oFig = "gaia/flora_tree_fig";
-const oBerryBush = "gaia/flora_bush_berry";
 const oWildebeest = "gaia/fauna_wildebeest";
 const oFish = "gaia/fauna_fish";
 const oGazelle = "gaia/fauna_gazelle";
@@ -111,21 +110,9 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
-
 	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
+	placeDefaultBerries(fx, fz, clBaseResource);
 
 	// create metal mine
 	var mAngle = bbAngle;

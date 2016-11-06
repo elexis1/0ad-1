@@ -27,7 +27,6 @@ const tForestFloor = "medit_forestfloor_a";
 
 // gaia entities
 const oBeech = "gaia/flora_tree_euro_beech";
-const oBerryBush = "gaia/flora_bush_berry";
 const oCarob = "gaia/flora_tree_carob";
 const oCypress1 = "gaia/flora_tree_cypress";
 const oCypress2 = "gaia/flora_tree_cypress";
