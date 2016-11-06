@@ -276,6 +276,11 @@ function placeTerrain(x, z, terrain)
 	g_Map.placeTerrain(x, z, createTerrain(terrain));
 }
 
+function isNomad()
+{
+	return true; //g_MapSettings.Nomad;
+}
+
 function isCircularMap()
 {
 	return !!g_MapSettings.CircularMap;
