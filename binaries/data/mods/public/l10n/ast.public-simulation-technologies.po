@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-12 09:01+0200\n"
-"PO-Revision-Date: 2016-08-12 10:06+0000\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-10-25 18:35+0000\n"
 "Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Asturian (http://www.transifex.com/wildfire-games/0ad/language/ast/)\n"
 "MIME-Version: 1.0\n"
@@ -719,7 +719,7 @@ msgid "Reinforce the foundations in preparation of an attack."
 msgstr ""
 
 #: simulation/data/technologies/attack_tower_defense.jsontooltip
-msgid "Increases armour level of the defense tower by 2 levels."
+msgid "Increases armor level of the defense tower by 2 levels."
 msgstr ""
 
 #: simulation/data/technologies/attack_tower_defense.jsongenericName
@@ -1279,7 +1279,7 @@ msgstr ""
 msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
 msgstr ""
 
 #: simulation/data/technologies/phase_city.jsongenericName
@@ -1310,7 +1310,7 @@ msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Silver Owls civ bonus "
 "grants an extra +10% metal gather rate to all workers. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
 msgstr ""
 
 #: simulation/data/technologies/phase_town.jsondescription
@@ -1774,7 +1774,9 @@ msgid ""
 msgstr ""
 
 #: simulation/data/technologies/unlock_shared_los.jsontooltip
-msgid "Player sees what his allies see."
+msgid ""
+"See what your allies see, browse their summary and check their resources and"
+" population count in the top panel."
 msgstr ""
 
 #: simulation/data/technologies/unlock_shared_los.jsongenericName
@@ -1873,7 +1875,7 @@ msgstr ""
 
 #: simulation/data/technologies/carthaginians/civbonus_triple_walls.jsongenericName
 msgid "Triple Walls"
-msgstr ""
+msgstr "Muries triples"
 
 #: simulation/data/technologies/carthaginians/cost_celt_mercs.jsondescription
 #: simulation/data/technologies/carthaginians/cost_celt_mercs_2.jsondescription
@@ -1978,7 +1980,7 @@ msgstr ""
 msgid ""
 "Carthaginians established many trading centers as colonies and ultimately "
 "held dominion over 300 cities and towns in North Africa alone."
-msgstr ""
+msgstr "Los cartaxineses convirtieron munchos centros comerciales en colonies y últimamente dominaben más de 300 ciudaes y villes solo na África'l Norte."
 
 #: simulation/data/technologies/carthaginians/special_colonisation.jsontooltip
 msgid ""
@@ -1988,14 +1990,14 @@ msgstr ""
 
 #: simulation/data/technologies/carthaginians/special_colonisation.jsongenericName
 msgid "Colonization"
-msgstr ""
+msgstr "Colonización"
 
 #: simulation/data/technologies/carthaginians/special_exploration.jsondescription
 msgid ""
 "Nobody knew better than the Carthaginians where in the ancient world they "
 "were going and going to go; their merchant traders had missions to "
 "everywhere."
-msgstr ""
+msgstr "Los cartaxineses sabíen meyor que naide áu diben y diríen en mundiu antiguu; los sos mercaderos teníen misiones comerciales perdayuri."
 
 #: simulation/data/technologies/carthaginians/special_exploration.jsontooltip
 msgid "Carthaginians were explorers. All Traders and Ships +25% vision range."
@@ -2003,7 +2005,7 @@ msgstr ""
 
 #: simulation/data/technologies/carthaginians/special_exploration.jsongenericName
 msgid "Exploration"
-msgstr ""
+msgstr "Esploración"
 
 #: simulation/data/technologies/carthaginians/training_phoenician_naval_architects.jsondescription
 msgid ""
@@ -2260,7 +2262,7 @@ msgid ""
 "Themistocles and extended 6 km from the city to the port of Piraeus. This "
 "secured the city's sea supply routes and prevented an enemy from starving "
 "out the city during a siege."
-msgstr ""
+msgstr "Les muries llongues d'Atenes construyéronse sol patrociniu del astutu Temístocles y estendiéronse 6 km dende la ciudá al puertu'l Piréu. Esto aseguró les rutes de suministru ya impidió que los enemigos esfamiaren la ciudá n'asediándola."
 
 #: simulation/data/technologies/hellenes/special_long_walls.jsontooltip
 msgid "Build stone walls in neutral territory."

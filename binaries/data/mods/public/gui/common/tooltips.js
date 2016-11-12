@@ -226,7 +226,7 @@ function getGarrisonTooltip(template)
 	let tooltips = [
 		sprintf(translate("%(label)s: %(garrisonLimit)s"), {
 			"label": headerFont(translate("Garrison Limit")),
-			"garrisonLimit": template.garrisonHolder.capacity || template.garrisonHolder.max
+			"garrisonLimit": template.garrisonHolder.capacity
 		})
 	];
 
@@ -235,7 +235,7 @@ function getGarrisonTooltip(template)
 			sprintf(translate("%(healRateLabel)s %(value)s %(health)s / %(second)s"), {
 				"healRateLabel": headerFont(translate("Heal:")),
 				"value": Math.round(template.garrisonHolder.buffHeal),
-				"health": unitFont(translate("health")),
+				"health": unitFont(translate("Health")),
 				"second": unitFont(translate("second")),
 			})
 		);
@@ -252,7 +252,7 @@ function getProjectilesTooltip(template)
 		template.buildingAI.maxArrowCount || Infinity,
 		template.buildingAI.defaultArrowCount +
 			template.buildingAI.garrisonArrowMultiplier *
-			(template.garrisonHolder.capacity || template.garrisonHolder.max)
+			template.garrisonHolder.capacity
 	);
 
 	if (!limit)
@@ -284,9 +284,9 @@ function getRepairRateTooltip(template)
 	return sprintf(translate("%(repairRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"), {
 		"repairRateLabel": headerFont(translate("Repair Rate:")),
 		"value": template.repairRate.toFixed(1),
-		"health": unitFont(translate("health")),
+		"health": unitFont(translate("Health")),
 		"second": unitFont(translate("second")),
-		"worker": unitFont(translate("worker"))
+		"worker": unitFont(translate("Worker"))
 	});
 }
 
@@ -298,9 +298,9 @@ function getBuildRateTooltip(template)
 	return sprintf(translate("%(buildRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"), {
 		"buildRateLabel": headerFont(translate("Build Rate:")),
 		"value": template.buildRate.toFixed(1),
-		"health": unitFont(translate("health")),
+		"health": unitFont(translate("Health")),
 		"second": unitFont(translate("second")),
-		"worker": unitFont(translate("worker"))
+		"worker": unitFont(translate("Worker"))
 	});
 }
 
@@ -466,7 +466,10 @@ function getNeededResourcesTooltip(resources)
 			"cost": resources[resource]
 		}));
 
-	return '\n[font="sans-bold-13"][color="red"]' + translate("Insufficient resources:") + '[/color][/font]\n' + formatted.join("  ");
+	return '[font="sans-bold-13"][color="red"]' +
+		translate("Insufficient resources:") +
+		'[/color][/font]' + " " +
+		formatted.join("  ");
 }
 
 function getSpeedTooltip(template)
@@ -558,6 +561,7 @@ function getEntityNamesFormatted(template)
 	if (!template.name.specific)
 		return '[font="sans-bold-16"]' + template.name.generic + "[/font]";
 
+	// Translation: Example: "Epibátēs Athēnaîos [font="sans-bold-16"](Athenian Marine)[/font]"
 	return sprintf(translate("%(specificName)s %(fontStart)s(%(genericName)s)%(fontEnd)s"), {
 		"specificName":
 			'[font="sans-bold-16"]' + template.name.specific[0] + '[/font]' +
@@ -600,6 +604,7 @@ function getLootTooltip(template)
 		if (!loot)
 			continue;
 
+		// Translation: %(component) will be the icon for the loot type and %(loot) will be the value.
 		lootLabels.push(sprintf(translate("%(component)s %(loot)s"), {
 			"component": costIcon(type),
 			"loot": loot

@@ -26,7 +26,6 @@ const oTree3 = rBiomeE3();
 const oTree4 = rBiomeE4();
 const oTree5 = rBiomeE5();
 const oFruitBush = rBiomeE6();
-const oChicken = rBiomeE7();
 const oMainHuntableAnimal = rBiomeE8();
 const oFish = rBiomeE9();
 const oSecondaryHuntableAnimal = rBiomeE10();
@@ -64,7 +63,6 @@ var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clHill2 = createTileClass();
 var clForest = createTileClass();
-var clWater = createTileClass();
 var clDirt = createTileClass();
 var clRock = createTileClass();
 var clMetal = createTileClass();
@@ -128,7 +126,7 @@ for (var i = 0; i < numPlayers; i++)
 {
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-	
+
 	// some constants
 	var radius = scaleByMapSize(18,32);
 	var cliffRadius = 2;
@@ -154,32 +152,20 @@ for (var i = 0; i < numPlayers; i++)
 
 	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
-	
-	// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 7;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(oChicken, 5,5, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
-	
+
+	placeDefaultChicken(fx, fz, clBaseResource);
+
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
 	var bbX = round(fx + bbDist * cos(bbAngle));
 	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(oFruitBush, 5,5, 0,3)],
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create metal mine
 	var mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
@@ -194,7 +180,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create stone mines
 	mAngle += randFloat(PI/8, PI/4);
 	mX = round(fx + mDist * cos(mAngle));
@@ -216,7 +202,7 @@ for (var i = 0; i < numPlayers; i++)
 		false, clBaseResource, tX, tZ
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-	
+
 	// create grass tufts
 	var num = hillSize / 250;
 	for (var j = 0; j < num; j++)
@@ -231,13 +217,13 @@ for (var i = 0; i < numPlayers; i++)
 		);
 		createObjectGroup(group, 0);
 	}
-	
+
 	// create the city patch
 	var cityRadius = radius/2;
 	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]));
 	var painter = new LayeredPainter([tMainTerrain, tMainTerrain], [1]);
 	createArea(placer, [painter, paintClass(clPlayer)], null);
-	
+
 }
 
 placer = new ClumpPlacer(150, 0.6, 0.3, 10, fractionToTiles(0.5), fractionToTiles(0.5));
@@ -317,7 +303,7 @@ for (var g = 0; g < scaleByMapSize(5,30); g++)
 			3				// blend radius
 		);
 		createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand)], null);
-		
+
 		if (numPlayers > 1)
 		{
 			var placer = new PathPlacer(tx, tz, mapSize*playerX[p2], mapSize*playerZ[p2], scaleByMapSize(11,17), 0.4, 3*(scaleByMapSize(1,4)), 0.1, 0.1);
@@ -356,7 +342,7 @@ for (var i = 0; i < numPlayers; i++)
 		2				// blend radius
 	);
 	createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand), paintClass(clHill)], null);
-	
+
 	var placer = new PathPlacer(fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]), fractionToTiles(0.5), fractionToTiles(0.5), scaleByMapSize(8,13), 0.4, 3*(scaleByMapSize(1,4)), 0.1, 0);
 	var terrainPainter = new LayeredPainter(
 		[tRoadWild, tRoad],		// terrains
@@ -368,7 +354,7 @@ for (var i = 0; i < numPlayers; i++)
 		2				// blend radius
 	);
 	createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand), paintClass(clHill)], null);
-	
+
 }
 
 for (var i = 0; i < numPlayers; i++)
@@ -401,7 +387,7 @@ createHills([tCliff, tCliff, tMainTerrain], avoidClasses(clLand, 1, clHill, 1), 
 // create forests
 createForests(
  [tMainTerrain, tForestFloor1, tForestFloor2, pForest1, pForest2],
- [avoidClasses(clPlayer, 1, clForest, 15, clHill, 1, clHill2, 0), stayClasses(clLand, 4)], 
+ [avoidClasses(clPlayer, 1, clForest, 15, clHill, 1, clHill2, 0), stayClasses(clLand, 4)],
  clForest,
  1.0,
  random_terrain
@@ -434,7 +420,7 @@ createMines(
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
  [avoidClasses(clForest, 1, clPlayer, 3, clRock, 10, clHill, 1, clHill2, 1), stayClasses(clLand, 2)]
-)
+);
 
 log("Creating metal mines...");
 // create large metal quarries
@@ -444,7 +430,7 @@ createMines(
  ],
  [avoidClasses(clForest, 1, clPlayer, 3, clMetal, 10, clRock, 5, clHill, 1, clHill2, 1), stayClasses(clLand, 2)],
  clMetal
-)
+);
 
 RMS.SetProgress(65);
 
@@ -456,7 +442,7 @@ if (random_terrain == g_BiomeTropic)
 
 createDecoration
 (
- [[new SimpleObject(aRockMedium, 1,3, 0,1)], 
+ [[new SimpleObject(aRockMedium, 1,3, 0,1)],
   [new SimpleObject(aRockLarge, 1,2, 0,1), new SimpleObject(aRockMedium, 1,3, 0,2)],
   [new SimpleObject(aGrassShort, 1,2, 0,1, -PI/8,PI/8)],
   [new SimpleObject(aGrass, 2,4, 0,1.8, -PI/8,PI/8), new SimpleObject(aGrassShort, 3,6, 1.2,2.5, -PI/8,PI/8)],
@@ -492,12 +478,12 @@ createFood
  [
   [new SimpleObject(oMainHuntableAnimal, 5,7, 0,4)],
   [new SimpleObject(oSecondaryHuntableAnimal, 2,3, 0,2)]
- ], 
+ ],
  [
   3 * numPlayers,
   3 * numPlayers
  ],
- [avoidClasses(clWater, 0, clForest, 0, clPlayer, 4, clHill, 1, clFood, 20, clHill2, 1), stayClasses(clLand, 3)]
+ [avoidClasses(clForest, 0, clPlayer, 4, clHill, 1, clFood, 20, clHill2, 1), stayClasses(clLand, 3)]
 );
 
 // create fruits
@@ -505,11 +491,11 @@ createFood
 (
  [
   [new SimpleObject(oFruitBush, 5,7, 0,4)]
- ], 
+ ],
  [
   3 * numPlayers
  ],
- [avoidClasses(clWater, 0, clForest, 0, clPlayer, 4, clHill, 1, clFood, 10, clHill2, 1), stayClasses(clLand, 3)]
+ [avoidClasses(clForest, 0, clPlayer, 4, clHill, 1, clFood, 10, clHill2, 1), stayClasses(clLand, 3)]
 );
 
 RMS.SetProgress(85);
@@ -525,13 +511,10 @@ createStragglerTrees(types, [avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, c
 var fx = fractionToTiles(0.5);
 var fz = fractionToTiles(0.5);
 for (var i = 0; i < randInt(3,8); i++)
-{
-	placeObject(fx+randFloat(-7,7), fz+randFloat(-7,7), oWood, 0, randFloat(0, TWO_PI))
-}
+	placeObject(fx+randFloat(-7,7), fz+randFloat(-7,7), oWood, 0, randFloat(0, TWO_PI));
+
 for (var i = 0; i < randInt(3,8); i++)
-{
-	placeObject(fx+randFloat(-7,7), fz+randFloat(-7,7), oFood, 0, randFloat(0, TWO_PI))
-}
+	placeObject(fx+randFloat(-7,7), fz+randFloat(-7,7), oFood, 0, randFloat(0, TWO_PI));
 
 // Export map data
 ExportMap();

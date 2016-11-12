@@ -11,18 +11,11 @@
       <Crush>0.0</Crush>
       <MaxRange>6.0</MaxRange>
       <RepeatTime>3500</RepeatTime>
-      <PreferredClasses datatype="tokens">Human Siege</PreferredClasses>
+      <PreferredClasses datatype="tokens">Siege Human</PreferredClasses>
     </Melee>
   </Attack>
   <Identity>
     <VisibleClasses datatype="tokens">Melee Spear</VisibleClasses>
     <GenericName>Hero Cavalry Spearman</GenericName>
   </Identity>
-  <Loot>
-    <xp>500</xp>
-    <food>10</food>
-    <wood>20</wood>
-    <stone>0</stone>
-    <metal>5</metal>
-  </Loot>
 </Entity>

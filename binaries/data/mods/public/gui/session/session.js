@@ -36,6 +36,12 @@ var g_IsController;
 var g_IsNetworked = false;
 
 /**
+ * Whether we have finished the synchronization and
+ * can start showing simulation related message boxes.
+ */
+var g_IsNetworkedActive = false;
+
+/**
  * True if the connection to the server has been lost.
  */
 var g_Disconnected = false;
@@ -297,10 +303,10 @@ function init(initData, hotloadData)
 	if (Engine.IsAtlasRunning())
 		Engine.GetGUIObjectByName("menuExitButton").enabled = false;
 
-	initHotkeyTooltips();
-
 	if (hotloadData)
 		g_Selection.selected = hotloadData.selection;
+
+	initChatWindow();
 
 	sendLobbyPlayerlistUpdate();
 	onSimulationUpdate();
@@ -317,14 +323,27 @@ function init(initData, hotloadData)
 	//setTimeout(function() { reportPerformance(60); }, 60000);
 }
 
-function initHotkeyTooltips()
+/**
+ * Depends on the current player (g_IsObserver).
+ */
+function updateHotkeyTooltips()
 {
+	Engine.GetGUIObjectByName("chatInput").tooltip =
+		translateWithContext("chat input", "Type the message to send.") + "\n" +
+		colorizeAutocompleteHotkey() +
+		colorizeHotkey("\n" + translate("Press %(hotkey)s to open the public chat."), "chat") +
+		colorizeHotkey(
+			"\n" + (g_IsObserver ?
+				translate("Press %(hotkey)s to open the observer chat.") :
+				translate("Press %(hotkey)s to open the ally chat.")),
+			"teamchat");
+
 	Engine.GetGUIObjectByName("idleWorkerButton").tooltip =
 		colorizeHotkey("%(hotkey)s" + " ", "selection.idleworker") +
 		translate("Find idle worker");
 
 	Engine.GetGUIObjectByName("tradeHelp").tooltip =
-		translate("Select one goods as origin of the changes, then use the arrows of the target goods to make the changes.") +
+		translate("Select one type of goods as origin of the changes, then use the arrows of the target type of goods to make the changes.") +
 		colorizeHotkey(
 			"\n" + translate("Using %(hotkey)s will put the selected resource to 100%%."),
 			"session.fulltradeswap");
@@ -393,8 +412,8 @@ function selectViewPlayer(playerID)
 	Engine.SetViewedPlayer(g_ViewedPlayer);
 
 	updateTopPanel();
-
 	updateChatAddressees();
+	updateHotkeyTooltips();
 
 	// Update GUI and clear player-dependent cache
 	onSimulationUpdate();
@@ -440,6 +459,12 @@ function playerFinished(player, won)
 	updateDiplomacy();
 	updateChatAddressees();
 
+	if (player != g_ViewedPlayer)
+		return;
+
+	// Select "observer" item on loss. On win enable observermode without changing perspective
+	Engine.GetGUIObjectByName("viewPlayer").selected = won ? g_ViewedPlayer + 1 : 0;
+
 	if (player != Engine.GetPlayerID() || Engine.IsAtlasRunning())
 		return;
 
@@ -448,9 +473,6 @@ function playerFinished(player, won)
 			global.music.states.VICTORY :
 			global.music.states.DEFEAT
 	);
-
-	// Select "observer" item on loss. On win enable observermode without changing perspective
-	Engine.GetGUIObjectByName("viewPlayer").selected = won ? g_ViewedPlayer + 1 : 0;
 
 	g_ConfirmExit = won ? "won" : "defeated";
 }
@@ -693,6 +715,9 @@ function onSimulationUpdate()
  */
 function confirmExit()
 {
+	if (g_IsNetworked && !g_IsNetworkedActive)
+		return;
+
 	closeOpenDialogs();
 
 	let subject = g_PlayerStateMessages[g_ConfirmExit] + "\n" +
@@ -905,7 +930,7 @@ function updateGroups()
 	let getCostSum = (template) =>
 	{
 		let cost = GetTemplateData(template).cost;
-		return Object.keys(cost).map(key => cost[key]).reduce((sum, cur) => sum + cur);
+		return cost ? Object.keys(cost).map(key => cost[key]).reduce((sum, cur) => sum + cur) : 0;
 	};
 
 	for (let i in Engine.GetGUIObjectByName("unitGroupPanel").children)
@@ -1190,6 +1215,7 @@ function reportGame()
 		"Cavalry",
 		"Champion",
 		"Hero",
+		"Siege",
 		"Ship",
 		"Trader"
 	];

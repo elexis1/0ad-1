@@ -56,42 +56,42 @@
 		<object name="tabDividerLeft" type="image" sprite="TabSpacer" size="172 120 174 122"/>
 		<object name="tabDividerRight" type="image" sprite="TabSpacer" size="328 120 330 122"/>
 
-		<object name="scorePanelButton" type="button" sprite="ForegroundTab" size="20 92 136 120">
+		<object name="scorePanelButton" type="button" sprite="ForegroundTab" style="TabButton" size="20 92 136 120">
 			<action on="Press">selectPanel(this);</action>
 			<object type="text" style="ModernLabelText" ghost="true">
 				<translatableAttribute id="caption">Score</translatableAttribute>
 			</object>
 		</object>
 
-		<object name="buildingsPanelButton" type="button" sprite="BackgroundTab" size="142 92 260 120">
+		<object name="buildingsPanelButton" type="button" sprite="BackgroundTab" style="TabButton" size="142 92 260 120">
 			<action on="Press">selectPanel(this);</action>
 			<object type="text" style="ModernLabelText" ghost="true">
 				<translatableAttribute id="caption">Buildings</translatableAttribute>
 			</object>
 		</object>
 
-		<object name="unitsPanelButton" type="button" sprite="BackgroundTab" size="266 92 384 120">
+		<object name="unitsPanelButton" type="button" sprite="BackgroundTab" style="TabButton" size="266 92 384 120">
 			<action on="Press">selectPanel(this);</action>
 			<object type="text" style="ModernLabelText" ghost="true">
 				<translatableAttribute id="caption">Units</translatableAttribute>
 			</object>
 		</object>
 
-		<object name="resourcesPanelButton" type="button" sprite="BackgroundTab" size="390 92 508 120">
+		<object name="resourcesPanelButton" type="button" sprite="BackgroundTab" style="TabButton" size="390 92 508 120">
 			<action on="Press">selectPanel(this);</action>
 			<object type="text" style="ModernLabelText" ghost="true">
 				<translatableAttribute id="caption">Resources</translatableAttribute>
 			</object>
 		</object>
 
-		<object name="marketPanelButton" type="button" sprite="BackgroundTab" size="514 92 632 120">
+		<object name="marketPanelButton" type="button" sprite="BackgroundTab" style="TabButton" size="514 92 632 120">
 			<action on="Press">selectPanel(this);</action>
 			<object type="text" style="ModernLabelText" ghost="true">
 				<translatableAttribute id="caption">Market</translatableAttribute>
 			</object>
 		</object>
 
-		<object name="miscPanelButton" type="button" sprite="BackgroundTab" size="638 92 756 120">
+		<object name="miscPanelButton" type="button" sprite="BackgroundTab" style="TabButton" size="638 92 756 120">
 			<action on="Press">selectPanel(this);</action>
 			<object type="text" style="ModernLabelText" ghost="true">
 				<translatableAttribute id="caption">Miscellaneous</translatableAttribute>
@@ -103,11 +103,11 @@
 				<object name="playerNameHeading" type="text" style="ModernLeftTabLabelText">
 					<translatableAttribute id="caption">Player name</translatableAttribute>
 				</object>
-				<repeat var="x" count="8">
+				<repeat var="x" count="9">
 					<object name="titleHeading[x]" type="text" style="ModernTabLabelText">
 					</object>
 				</repeat>
-				<repeat var="x" count="8">
+				<repeat var="x" count="9">
 					<object name="Heading[x]" type="text" style="ModernTabLabelText">
 					</object>
 				</repeat>
@@ -119,12 +119,10 @@
 					<object size="0 30 100% 100%">
 						<repeat count="8" var="n">
 							<object type="image" name="playerBoxt[i][n]" size="10 0 10 30" hidden="true">
-								<object type="image" sprite="ForegroundBox" size="10 9 34 33">
-									<object name="playerColorBoxt[i][n]" type="image" size="2 2 22 22"/>
-								</object>
+								<object name="playerOutcomet[i][n]" type="image" size="4 8 30 35"/>
 								<object name="playerNamet[i][n]" type="text" size="40 2 208 100%" style="ModernLeftLabelText"/>
 								<object name="civIcont[i][n]" type="image" size="208 5 240 37" />
-								<repeat var="x" count="8">
+								<repeat var="x" count="9">
 									<object name="valueDataTeam[i][n][x]" type="text" style="ModernTabLabelText">
 									</object>
 								</repeat>
@@ -132,7 +130,7 @@
 						</repeat>
 					</object>
 					<object name="teamHeadingt[i]" type="text" style="ModernLeftTabLabelText"/>
-					<repeat var="x" count="8">
+					<repeat var="x" count="9">
 						<object name="valueDataTeam[i][x]" type="text" style="ModernTabLabelText">
 						</object>
 					</repeat>
@@ -142,12 +140,10 @@
 			<object type="image" name="noTeamsBox" size="0 65 100% 100%-50" hidden="true">
 				<repeat count="8">
 					<object type="image" name="playerBox[n]" size="10 0 10 30" hidden="true">
-						<object type="image" sprite="ForegroundBox" size="10 9 34 33">
-							<object name="playerColorBox[n]" type="image" size="2 2 22 22"/>
-						</object>
+						<object name="playerOutcome[n]" type="image" size="4 8 30 35"/>
 						<object name="playerName[n]" type="text" size="40 2 208 100%" style="ModernLeftLabelText"/>
 						<object name="civIcon[n]" type="image" size="208 5 240 37"/>
-						<repeat var="x" count="8">
+						<repeat var="x" count="9">
 							<object name="valueData[n][x]" type="text" style="ModernTabLabelText">
 							</object>
 						</repeat>

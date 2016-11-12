@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-07-22 09:01+0200\n"
-"PO-Revision-Date: 2016-07-22 09:55+0000\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-09-30 08:28+0000\n"
 "Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Korean (http://www.transifex.com/wildfire-games/0ad/language/ko/)\n"
 "MIME-Version: 1.0\n"
@@ -132,7 +132,7 @@ msgstr ""
 #, javascript-format
 msgid ""
 "A new trade route is set up with %(_player_)s. Take your share of the "
-"profits"
+"profits."
 msgstr ""
 
 #: simulation/ai/petra/chatHelper.js:120
@@ -672,12 +672,12 @@ msgctxt "Territory type list"
 msgid "enemy"
 msgstr "적군"
 
-#: simulation/components/CeasefireManager.js:100
+#: simulation/components/CeasefireManager.js:99
 #, javascript-format
 msgid "You can attack in %(time)s"
 msgstr ""
 
-#: simulation/components/CeasefireManager.js:113
+#: simulation/components/CeasefireManager.js:112
 msgid "You can attack now!"
 msgstr ""
 
@@ -743,11 +743,11 @@ msgid ""
 "%(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 msgstr "자원 부족 - %(resourceAmount1)s %(resourceType1)s, %(resourceAmount2)s %(resourceType2)s, %(resourceAmount3)s %(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 
-#: simulation/components/ProductionQueue.js:391
+#: simulation/components/ProductionQueue.js:400
 msgid "The production queue is full."
 msgstr ""
 
-#: simulation/components/ProductionQueue.js:768
+#: simulation/components/ProductionQueue.js:777
 msgid "Can't find free space to spawn trained units"
 msgstr ""
 
@@ -759,34 +759,34 @@ msgstr ""
 msgid "(Cheat - control all units)"
 msgstr ""
 
-#: simulation/helpers/Commands.js:568
+#: simulation/helpers/Commands.js:575
 msgid "(Cheat - promoted units)"
 msgstr ""
 
-#: simulation/helpers/Commands.js:678
+#: simulation/helpers/Commands.js:685
 msgid ""
 "Cannot upgrade as distance requirements are not verified or terrain is "
 "obstructed."
 msgstr ""
 
-#: simulation/helpers/Commands.js:688
+#: simulation/helpers/Commands.js:695
 msgid "Cannot upgrade a garrisoned entity."
 msgstr ""
 
-#: simulation/helpers/Commands.js:734
+#: simulation/helpers/Commands.js:741
 #, javascript-format
 msgid "Attack against %(_player_)s requested."
 msgstr ""
 
-#: simulation/helpers/Commands.js:771
+#: simulation/helpers/Commands.js:778
 msgid "Unable to ungarrison unit(s)"
 msgstr ""
 
-#: simulation/helpers/Commands.js:785
+#: simulation/helpers/Commands.js:792
 msgid "Some unit(s) can't go back to work"
 msgstr ""
 
-#: simulation/helpers/Commands.js:1041
+#: simulation/helpers/Commands.js:1047
 msgid "The building's technology requirements are not met."
 msgstr ""
 
@@ -871,7 +871,7 @@ msgid "Fast Forward (20x)"
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Description
-msgid "Defeat all opponents"
+msgid "Defeat all opponents to win."
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Title
@@ -879,7 +879,7 @@ msgid "Conquest"
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Description
-msgid "Destroy all structures of enemies"
+msgid "Destroy all enemy structures to win."
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Title
@@ -887,7 +887,7 @@ msgid "Conquest Structures"
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Description
-msgid "Kill all enemy units"
+msgid "Kill all enemy units to win."
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Title
@@ -895,7 +895,7 @@ msgid "Conquest Units"
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Description
-msgid "Defeat opponents by killing their hero"
+msgid "Defeat opponents by killing their hero."
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Title
@@ -903,7 +903,9 @@ msgid "Regicide"
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/wonder.jsonData.Description
-msgid "Build and protect a wonder to win"
+msgid ""
+"Be the first to build or capture a wonder and keep it for a certain time to "
+"win the game."
 msgstr ""
 
 #: simulation/data/settings/victory_conditions/wonder.jsonData.Title

@@ -17,7 +17,6 @@ const tWater = "desert_sand_wet";
 const ePalmShort = "gaia/flora_tree_cretan_date_palm_short";
 const ePalmTall = "gaia/flora_tree_cretan_date_palm_tall";
 const eBush = "gaia/flora_bush_grapes";
-const eChicken = "gaia/fauna_chicken";
 const eCamel = "gaia/fauna_camel";
 const eGazelle = "gaia/fauna_gazelle";
 const eLion = "gaia/fauna_lion";
@@ -100,11 +99,11 @@ for (var i = 0; i < numPlayers; i++)
 {
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-	
+
 	// some constants
 	var radius = scaleByMapSize(15,25);
 	var elevation = 20;
-	
+
 	// get the x and z in tiles
 	fx = fractionToTiles(playerX[i]);
 	fz = fractionToTiles(playerZ[i]);
@@ -115,41 +114,29 @@ for (var i = 0; i < numPlayers; i++)
 	addToClass(ix, iz+5, clPlayer);
 	addToClass(ix-5, iz, clPlayer);
 	addToClass(ix, iz-5, clPlayer);
-	
+
 	// create the city patch
 	var cityRadius = radius/3;
 	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
-	
+
 	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
-		
-	// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 9;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(eChicken, 5,5, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
-	
+
+	placeDefaultChicken(fx, fz, clBaseResource);
+
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
 	var bbX = round(fx + bbDist * cos(bbAngle));
 	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(eBush, 5,5, 0,3)],
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create metal mine
 	var mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
@@ -187,7 +174,7 @@ for (var i = 0; i < numPlayers; i++)
 							[new SimpleObject(eStoneMine, 1,1, 0,2),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 3,3),new SimpleObject(ePalmShort, 2,2, 3,3),new SimpleObject(ePalmTall, 1,1, 3,3)],
 							true, clBaseResource, mX, mZ
 							);
-	createObjectGroup(group, 0);	
+	createObjectGroup(group, 0);
 	// Create starting batches of wood
 	var types = [tForestFloor, pForestMain];	// some variation
 	var forestX = 0;
@@ -205,7 +192,7 @@ for (var i = 0; i < numPlayers; i++)
 	do {
 		var watAngle = forestAngle + randFloat((PI/3), (5*PI/3));
 		var watX = round(forestX + 6 * cos(watAngle));
-		var watY = round(forestY + 6 * sin(watAngle));	
+		var watY = round(forestY + 6 * sin(watAngle));
 		placer = new ClumpPlacer(60, 0.9, 0.4, 5,watX,watY);
 		terrainPainter = new LayeredPainter( [tShore,tShoreBlend], [1] );
 		painter = new SmoothElevationPainter(ELEVATION_MODIFY, -5, 3);
@@ -214,7 +201,7 @@ for (var i = 0; i < numPlayers; i++)
 		group = new SimpleGroup( [new SimpleObject(aReedsA, 1,3, 0,0)], true, undefined, round(forestX + 5 * cos(watAngle)),round(forestY + 5 * sin(watAngle)) );
 		createObjectGroup(group, 0);
 	} while (createArea( placer, [terrainPainter, painter],  avoidClasses(clBaseResource,0) ) === undefined);
-	
+
 	// TODO: add a few random trees here and there
 }
 
@@ -224,21 +211,21 @@ RMS.SetProgress(20);
 log("Creating bumps...");
 placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);
 painter = new SmoothElevationPainter(ELEVATION_MODIFY, 4, 3);
-createAreas( placer, painter, 
-			avoidClasses(clWater, 5, clPlayer, 10, clBaseResource, 6),
+createAreas( placer, painter,
+			avoidClasses(clPlayer, 10, clBaseResource, 6),
 			scaleByMapSize(30, 70)
 			);
 log("Creating dirt Patches...");
 placer = new ClumpPlacer(80, 0.3, 0.06, 1);
 var terrainPainter = new TerrainPainter(tDirt);
-createAreas( placer, terrainPainter, avoidClasses(clWater, 10, clPlayer, 10, clBaseResource, 6), scaleByMapSize(15, 50) );
+createAreas(placer, terrainPainter, avoidClasses(clPlayer, 10, clBaseResource, 6), scaleByMapSize(15, 50) );
 
 log("Creating Dunes...");
 placer = new ClumpPlacer(120, 0.3, 0.06, 1);
 var terrainPainter = new TerrainPainter(tDune);
 painter = new SmoothElevationPainter(ELEVATION_MODIFY, 18, 30);
-createAreas( placer, [terrainPainter, painter], 
-			avoidClasses(clWater, 13, clPlayer, 10, clBaseResource, 6),
+createAreas( placer, [terrainPainter, painter],
+			avoidClasses(clPlayer, 10, clBaseResource, 6),
 			scaleByMapSize(15, 50)
 			);
 
@@ -263,7 +250,7 @@ if(mapSize > 150 && randInt(0,1)) {
 	var py = round(fz) + round(fractionToTiles(0.13 * sin(pAngle)));
 	var pex = round(fx) + round(fractionToTiles(0.13 * -cos(pAngle)));
 	var pey = round(fz) + round(fractionToTiles(0.13 * sin(pAngle + PI)));
-	var path = new PathPlacer(px,py,pex,pey,scaleByMapSize(7,18), 0.4,1,0.2,0)
+	var path = new PathPlacer(px,py,pex,pey,scaleByMapSize(7,18), 0.4, 1, 0.2, 0);
 	terrainPainter = new TerrainPainter(tSand);
 	elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, 4, 5 );
 	createArea(path, [terrainPainter, elevationPainter, paintClass(clPassage)], null);
@@ -289,37 +276,8 @@ createObjectGroups(group, 0,
 	avoidClasses(clWater, 10, clForest, 1, clPlayer, 30, clMetal, 10,clBaseResource, 2, clRock, 10, clHill, 1),
 	scaleByMapSize(6,25), 100
 );
-
 RMS.SetProgress(65);
 
-/*
-// create small decorative rocks
-log("Creating small decorative rocks...");
-group = new SimpleGroup(
-	[new SimpleObject(rba5, 1,3, 0,1)],
-	true
-);
-createObjectGroups(
-	group, 0,
-	avoidClasses(clWater, 0, clForest, 0, clPlayer, 0, clHill, 0),
-	scaleByMapSize(16, 262), 50
-);
-
-
-// create large decorative rocks
-log("Creating large decorative rocks...");
-group = new SimpleGroup(
-	[new SimpleObject(rba5, 1,2, 0,1), new SimpleObject(rba5, 1,3, 0,2)],
-	true
-);
-createObjectGroups(
-	group, 0,
-	avoidClasses(clWater, 0, clForest, 0, clPlayer, 0, clHill, 0),
-	scaleByMapSize(8, 131), 50
-);
-
-RMS.SetProgress(70);
-*/
 log("Creating small decorative rocks...");
 group = new SimpleGroup( [new SimpleObject(aRock, 2,4, 0,2)], true, undefined );
 createObjectGroups(group, 0, avoidClasses(clWater, 3, clForest, 0, clPlayer, 10, clHill, 1, clFood, 20), 30, scaleByMapSize(10,50) );
@@ -421,7 +379,7 @@ for (var sandx = 0; sandx < mapSize; sandx += 4)
 				{
 					group = new SimpleGroup( [new SimpleObject(aReedsA, 5,12, 0,2),new SimpleObject(aReedsB, 5,12, 0,2)], true, undefined, sandx,sandz );
 					createObjectGroup(group, 0);
-				}				
+				}
 			}
 		}
 	}

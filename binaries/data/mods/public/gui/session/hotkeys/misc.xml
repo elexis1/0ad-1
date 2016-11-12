@@ -43,7 +43,11 @@
 	</object>
 
 	<object hotkey="session.kill">
-		<action on="Press">performCommand(g_Selection.getFirstSelected(), "delete");</action>
+		<action on="Press">
+			let ent = g_Selection.getFirstSelected();
+			if (ent)
+				performCommand(GetExtendedEntityState(ent), "delete");
+		</action>
 	</object>
 
 	<object hotkey="session.unload">
@@ -52,6 +56,10 @@
 
 	<object hotkey="session.stop">
 		<action on="Press">stopUnits(g_Selection.toList());</action>
+	</object>
+
+	<object hotkey="session.backtowork">
+		<action on="Press">backToWork();</action>
 	</object>
 
 	<!-- Find idle warrior - TODO: Potentially move this to own UI button? -->

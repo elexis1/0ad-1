@@ -16,11 +16,11 @@ patch -p1 < ../FixZLibMozBuild.diff
 #
 # Applied in the following order, they are:
 # * https://bugzilla.mozilla.org/show_bug.cgi?id=1223767
-#    Assertion failure: i < size_, at js/src/vm/TraceLoggingTypes.h:210 
+#    Assertion failure: i < size_, at js/src/vm/TraceLoggingTypes.h:210
 #    Also fix stop-information to make reduce.py work correctly.
 # * https://bugzilla.mozilla.org/show_bug.cgi?id=1227914
 #    Limit the memory tracelogger can take.
-#    This causes tracelogger to flush data to the disk regularly and prevents out of 
+#    This causes tracelogger to flush data to the disk regularly and prevents out of
 #    memory issues if a lot of data gets logged.
 # * https://bugzilla.mozilla.org/show_bug.cgi?id=1155618
 #    Fix tracelogger destructor that touches possibly uninitialised hash table.

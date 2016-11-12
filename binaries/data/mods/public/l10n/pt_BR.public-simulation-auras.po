@@ -6,12 +6,13 @@
 # Jefferson Gomes <jefferson.mg2@hotmail.com>, 2016
 # Monstro Socialista <monstrosocialista@gmail.com>, 2016
 # Pedro Augustus Diniz Falcão Silva <pedro.falcao.ufcg@gmail.com>, 2016
+# Rafael Monteiro <rafaelimabsb2@hotmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-12 09:01+0200\n"
-"PO-Revision-Date: 2016-08-23 16:39+0000\n"
-"Last-Translator: Pedro Augustus Diniz Falcão Silva <pedro.falcao.ufcg@gmail.com>\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-10-08 12:58+0000\n"
+"Last-Translator: Rafael Monteiro <rafaelimabsb2@hotmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/wildfire-games/0ad/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +26,7 @@ msgstr "Reformas de formação."
 
 #: simulation/data/auras/athen_hero_iphicrates_1.jsonauraDescription
 msgid "All units in his formation +15% speed and +1 armor."
-msgstr "Todas as unidades em sua formação ganham +15% de velocidade e +1 de armadura."
+msgstr "Todas as unidades nesta formação ganham +15% de velocidade e +1 de armadura."
 
 #: simulation/data/auras/athen_hero_iphicrates_2.jsonauraName
 msgid "Peltast Reforms"
@@ -295,8 +296,8 @@ msgid "Shield of Rome Aura"
 msgstr "Aura de Escudo de Roma"
 
 #: simulation/data/auras/rome_hero_maximus.jsonauraDescription
-msgid "+1 armour for all units and structures."
-msgstr "+1 armadura para todas as unidades estruturas."
+msgid "+1 armor for all units and structures."
+msgstr "+1 de armadura para todas as unidades e estruturas"
 
 #: simulation/data/auras/rotary_mill.jsonauraName
 msgid "Farming bonus"
@@ -311,8 +312,8 @@ msgid "Ilarchès Aura"
 msgstr "Ilarchès Aura"
 
 #: simulation/data/auras/sele_hero_antiochus_great.jsonauraDescription
-msgid "All Cavalry gains +2 levels of all armour types."
-msgstr "Todos Cavalaria ganha +2 níveis de todos os tipos de armaduras ."
+msgid "All Cavalry gains +2 levels of all armor types."
+msgstr "Toda Cavalaria ganha +2 níveis de todos os tipos de armadura."
 
 #: simulation/data/auras/sele_hero_antiochus_righteous.jsonauraName
 msgid "Conquest Aura"
@@ -410,8 +411,8 @@ msgid ""
 msgstr "Reduz o custo para skirmishers cidadão - soldado com 20% para os aliados dos jogadores ibéricos"
 
 #: simulation/data/auras/teambonuses/sele_player_teambonus.jsonauraName
-msgid "Syryan Tetrapolis"
-msgstr "Syryan Tetrapolis"
+msgid "Syrian Tetrapolis"
+msgstr "Tetrápoles Síria"
 
 #: simulation/data/auras/teambonuses/sele_player_teambonus.jsonauraDescription
 msgid ""

@@ -3,26 +3,28 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
+# Dalcio Marçal <dalciomarcal@gmail.com>, 2016
 # Erick Alves <erickalves@outlook.com>, 2014
 # Gustavo Moitinho <gustavo.moitinho@outlook.com>, 2016
 # Igor Aleixo <igor.pavao@gmail.com>, 2016
 # Jhonatan Morfim <joemorfim@gmail.com>, 2016
 # Marcelo Augusto Kniss <marcelo.kniss@outlook.com>, 2016
 # Marcelo Augusto Kniss <marcelo.kniss@outlook.com>, 2015
-# Mateus Seenem Tavares <maseta.mateus@gmail.com>, 2016
+# mateus.tavares <maseta.mateus@gmail.com>, 2016
 # Matheus Clemente <matheus.xb@gmail.com>, 2014-2015
 # mogafi, 2014
 # Monstro Socialista <monstrosocialista@gmail.com>, 2016
 # Nicolas Frasson <nicfrasson@gmail.com>, 2014
 # Pedro Augustus Diniz Falcão Silva <pedro.falcao.ufcg@gmail.com>, 2014-2015
 # PedroDognani <pedro_dognani_@hotmail.com>, 2015
+# Rafael Monteiro <rafaelimabsb2@hotmail.com>, 2016
 # Ricardo Siqueira Oliveira Leite <ricardooliveira88@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-12 09:01+0200\n"
-"PO-Revision-Date: 2016-08-12 10:06+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-10-19 20:00+0000\n"
+"Last-Translator: Dalcio Marçal <dalciomarcal@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/wildfire-games/0ad/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,29 +40,29 @@ msgstr "Estrutura Civil"
 msgid "Civic"
 msgstr "Cívico"
 
-#: simulation/templates/template_structure_civic_civil_centre.xml:68
+#: simulation/templates/template_structure_civic_civil_centre.xml:73
 msgid "Civic Center"
 msgstr "Centro Cívico"
 
-#: simulation/templates/template_structure_civic_civil_centre.xml:69
+#: simulation/templates/template_structure_civic_civil_centre.xml:74
 msgid "Build to acquire large tracts of territory. Train citizens."
 msgstr "Construa para adquirir maiores extensões de território. Treine cidadãos."
 
-#: simulation/templates/template_structure_civic_civil_centre.xml:71
-#: simulation/templates/template_structure_civic_civil_centre.xml:33
+#: simulation/templates/template_structure_civic_civil_centre.xml:76
+#: simulation/templates/template_structure_civic_civil_centre.xml:38
 msgid "CivilCentre"
 msgstr "CentroCivil"
 
-#: simulation/templates/template_structure_civic_civil_centre_military_colony.xml:25
+#: simulation/templates/template_structure_civic_civil_centre_military_colony.xml:12
 msgid "Colony"
 msgstr "Colônia"
 
-#: simulation/templates/template_structure_civic_civil_centre_military_colony.xml:46
-#: simulation/templates/structures/ptol_military_colony.xml:5
+#: simulation/templates/template_structure_civic_civil_centre_military_colony.xml:33
+#: simulation/templates/structures/ptol_military_colony.xml:9
 msgid "Military Colony"
 msgstr "Colônia Militar"
 
-#: simulation/templates/template_structure_civic_civil_centre_military_colony.xml:47
+#: simulation/templates/template_structure_civic_civil_centre_military_colony.xml:34
 msgid "Klēroukhía"
 msgstr "Klēroukhía"
 
@@ -76,13 +78,29 @@ msgstr "Estoa Real Helênica"
 msgid "Recruit special units."
 msgstr "Recrutar unidades especiais."
 
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:31
+#: simulation/templates/template_structure_civic_temple.xml:33
+#: simulation/templates/template_structure_defense_defense_tower.xml:57
+#: simulation/templates/template_structure_economic_market.xml:24
+#: simulation/templates/template_structure_military_blacksmith.xml:32
+#: simulation/templates/template_structure_military_embassy.xml:24
+#: simulation/templates/structures/brit_blacksmith.xml:11
+#: simulation/templates/structures/brit_kennel.xml:35
+#: simulation/templates/structures/cart_super_dock.xml:37
+#: simulation/templates/structures/gaul_blacksmith.xml:11
+#: simulation/templates/structures/gaul_tavern.xml:29
+#: simulation/templates/structures/maur_elephant_stables.xml:29
+#: simulation/templates/structures/ptol_lighthouse.xml:20
+msgid "Town"
+msgstr "Cidade"
+
 #: simulation/templates/template_structure_civic_house.xml:34
 msgid "Increase the population limit."
 msgstr "Aumente a população limite."
 
 #: simulation/templates/template_structure_civic_house.xml:36
-#: simulation/templates/template_structure_defense_outpost.xml:60
-#: simulation/templates/template_structure_defense_wooden_tower.xml:49
+#: simulation/templates/template_structure_defense_outpost.xml:65
+#: simulation/templates/template_structure_defense_wooden_tower.xml:42
 #: simulation/templates/template_structure_economic_farmstead.xml:27
 #: simulation/templates/template_structure_economic_storehouse.xml:27
 #: simulation/templates/template_structure_military_barracks.xml:31
@@ -103,16 +121,6 @@ msgid ""
 msgstr "Treine curandeiros. Abrigue unidades para curá-las rapidamente (3 HP por segundo). Pesquise as melhorias de cura e religião."
 
 #: simulation/templates/template_structure_civic_temple.xml:33
-#: simulation/templates/template_structure_defense_defense_tower.xml:57
-#: simulation/templates/template_structure_economic_market.xml:24
-#: simulation/templates/template_structure_military_blacksmith.xml:32
-#: simulation/templates/template_structure_military_embassy.xml:24
-#: simulation/templates/structures/brit_blacksmith.xml:11
-#: simulation/templates/structures/gaul_blacksmith.xml:11
-msgid "Town"
-msgstr "Cidade"
-
-#: simulation/templates/template_structure_civic_temple.xml:33
 #: simulation/templates/template_structure_civic_temple.xml:31
 msgid "Temple"
 msgstr "Templo"
@@ -120,11 +128,6 @@ msgstr "Templo"
 #: simulation/templates/template_structure_defense.xml:14
 msgid "Defensive Structure"
 msgstr "Estrutura Defensiva"
-
-#: simulation/templates/template_structure_defense.xml:15
-#: simulation/templates/template_structure_military_fortress.xml:66
-msgid "Defensive"
-msgstr "Defensivo"
 
 #: simulation/templates/template_structure_defense_defense_tower.xml:54
 msgid "Defense Tower"
@@ -138,26 +141,26 @@ msgstr "Atira flechas. Garnecer para fornecer defesa extra. Presisa de buracos d
 
 #: simulation/templates/template_structure_defense_defense_tower.xml:57
 #: simulation/templates/template_structure_defense_defense_tower.xml:26
-#: simulation/templates/template_structure_defense_wooden_tower.xml:20
 msgid "DefenseTower"
 msgstr "TorreDefensiva"
 
-#: simulation/templates/template_structure_defense_outpost.xml:58
+#: simulation/templates/template_structure_defense_outpost.xml:63
 msgid ""
 "Build in neutral and own territories to scout areas of the map. Slowly "
 "converts to Gaia while in neutral territory."
 msgstr "Construa em território neutro ou aliado para patrulhar áreas do mapa. Converte-se lentamente em Gaia enquanto em território neutro."
 
-#: simulation/templates/template_structure_defense_outpost.xml:60
-#: simulation/templates/template_structure_defense_outpost.xml:57
+#: simulation/templates/template_structure_defense_outpost.xml:65
+#: simulation/templates/template_structure_defense_outpost.xml:33
+#: simulation/templates/template_structure_defense_outpost.xml:62
 msgid "Outpost"
 msgstr "Posto avançado"
 
-#: simulation/templates/template_structure_defense_wall.xml:27
+#: simulation/templates/template_structure_defense_wall.xml:24
 msgid "Stone Wall"
 msgstr "Muralha de pedra"
 
-#: simulation/templates/template_structure_defense_wall.xml:28
+#: simulation/templates/template_structure_defense_wall.xml:25
 #: simulation/templates/template_structure_defense_wallset.xml:11
 msgid "Wall off your town for a stout defense."
 msgstr "Mure sua cidade para uma defesa robusta."
@@ -180,11 +183,11 @@ msgid ""
 "This will allow you to let units circulate through your fortifications."
 msgstr "Isto deixará você fazer unidades circularem por suas fortificações"
 
-#: simulation/templates/template_structure_defense_wall_tower.xml:53
+#: simulation/templates/template_structure_defense_wall_tower.xml:50
 msgid "Wall Turret"
 msgstr "Guarita"
 
-#: simulation/templates/template_structure_defense_wall_tower.xml:54
+#: simulation/templates/template_structure_defense_wall_tower.xml:51
 msgid "Shoots arrows. Garrison to defend a city wall against attackers."
 msgstr "Lança flechas. Abrigue para defender sua muralha contra atacantes."
 
@@ -192,16 +195,20 @@ msgstr "Lança flechas. Abrigue para defender sua muralha contra atacantes."
 msgid "City Wall"
 msgstr "Muralha da Cidade"
 
-#: simulation/templates/template_structure_defense_wooden_tower.xml:46
-#: simulation/templates/template_structure_defense_wooden_tower.xml:45
-msgid "Wooden Tower"
-msgstr "Torre de Madeira"
+#: simulation/templates/template_structure_defense_wooden_tower.xml:39
+#: simulation/templates/template_structure_defense_wooden_tower.xml:38
+msgid "Sentry Tower"
+msgstr "Torre Sentinela"
 
-#: simulation/templates/template_structure_economic.xml:11
+#: simulation/templates/template_structure_defense_wooden_tower.xml:67
+msgid "Reinforce with stone and upgrade to a defense tower."
+msgstr "Reforçar com pedra e evoluir para torre de defesa."
+
+#: simulation/templates/template_structure_economic.xml:14
 msgid "Economic Structure"
 msgstr "Estrutura Econômica"
 
-#: simulation/templates/template_structure_economic.xml:12
+#: simulation/templates/template_structure_economic.xml:15
 #: simulation/templates/template_structure_military_dock.xml:27
 msgid "Economic"
 msgstr "Econômico"
@@ -291,21 +298,22 @@ msgstr "Doca"
 msgid "Embassy"
 msgstr "Embaixada"
 
-#: simulation/templates/template_structure_military_fortress.xml:64
+#: simulation/templates/template_structure_military_fortress.xml:29
+#: simulation/templates/template_structure_military_fortress.xml:62
+msgid "Fortress"
+msgstr "Fortaleza"
+
+#: simulation/templates/template_structure_military_fortress.xml:63
 msgid ""
 "Train heroes, champions, and siege weapons. Research siege weapon "
 "improvements."
 msgstr "Treine heróis, campeões e armas de cerco. Pesquise melhorias de arma de cerco."
 
-#: simulation/templates/template_structure_military_fortress.xml:66
+#: simulation/templates/template_structure_military_fortress.xml:65
+#: simulation/templates/template_structure_special.xml:45
+#: simulation/templates/template_structure_wonder.xml:49
 msgid "City"
 msgstr "Cidade"
-
-#: simulation/templates/template_structure_military_fortress.xml:66
-#: simulation/templates/template_structure_military_fortress.xml:30
-#: simulation/templates/template_structure_military_fortress.xml:63
-msgid "Fortress"
-msgstr "Fortaleza"
 
 #: simulation/templates/template_structure_resource.xml:17
 msgid "Resource Structure"
@@ -368,15 +376,16 @@ msgstr "Teatro Grego"
 msgid "Théātron"
 msgstr "Théātron"
 
-#: simulation/templates/template_structure_wonder.xml:47
-msgid "Wonder"
-msgstr "Maravilha"
-
 #: simulation/templates/template_structure_wonder.xml:48
 msgid ""
 "Bring glory to your civilization and add large tracts of land to your "
 "empire."
 msgstr "Traga glória à sua civilização e adicione grandes extensões de terra ao seu império."
+
+#: simulation/templates/template_structure_wonder.xml:49
+#: simulation/templates/template_structure_wonder.xml:47
+msgid "Wonder"
+msgstr "Maravilha"
 
 #: simulation/templates/structures/athen_barracks.xml:18
 #: simulation/templates/structures/mace_barracks.xml:18
@@ -493,8 +502,8 @@ msgid "Apothḗkē"
 msgstr "Apothḗkē"
 
 #: simulation/templates/structures/athen_temple.xml:9
-msgid "Neṓs"
-msgstr "Neṓs"
+msgid "Naṓs"
+msgstr "Templo"
 
 #: simulation/templates/structures/athen_wall_gate.xml:9
 #: simulation/templates/structures/mace_wall_gate.xml:9
@@ -555,8 +564,8 @@ msgstr "Gwersyllty"
 msgid "Amoridas"
 msgstr "Amoridas"
 
-#: simulation/templates/structures/brit_civil_centre.xml:9
-#: simulation/templates/structures/gaul_civil_centre.xml:9
+#: simulation/templates/structures/brit_civil_centre.xml:12
+#: simulation/templates/structures/gaul_civil_centre.xml:12
 msgid "Caer"
 msgstr "Caer"
 
@@ -565,15 +574,15 @@ msgstr "Caer"
 msgid "Cavalidos"
 msgstr "Cavalidos"
 
-#: simulation/templates/structures/brit_crannog.xml:21
+#: simulation/templates/structures/brit_crannog.xml:13
 msgid "Island Settlement"
 msgstr "Povoado Insular"
 
-#: simulation/templates/structures/brit_crannog.xml:24
+#: simulation/templates/structures/brit_crannog.xml:17
 msgid "Increase population limit and defend waterways."
 msgstr "Aumenta o limite populacional e defende as hidrovias."
 
-#: simulation/templates/structures/brit_crannog.xml:25
+#: simulation/templates/structures/brit_crannog.xml:18
 #: simulation/templates/structures/brit_dock.xml:15
 #: simulation/templates/structures/gaul_dock.xml:15
 msgid "Crannóc"
@@ -613,7 +622,7 @@ msgstr "Annedd"
 msgid "Kennel"
 msgstr "Canil"
 
-#: simulation/templates/structures/brit_kennel.xml:35
+#: simulation/templates/structures/brit_kennel.xml:36
 msgid "Train Celtic war dogs."
 msgstr "Treinar cães de guerra celtas."
 
@@ -678,7 +687,7 @@ msgstr "Treine cidadãos-soldados africanos. Pesquise melhoramentos para as unid
 msgid "?"
 msgstr "?"
 
-#: simulation/templates/structures/cart_civil_centre.xml:5
+#: simulation/templates/structures/cart_civil_centre.xml:8
 msgid "Merkāz"
 msgstr "Merkāz"
 
@@ -765,15 +774,19 @@ msgstr "Posto avançado cartaginês"
 msgid "Maḥṣabah"
 msgstr "Maḥṣabah"
 
-#: simulation/templates/structures/cart_super_dock.xml:11
+#: simulation/templates/structures/cart_super_dock.xml:35
 msgid "Naval Shipyard"
 msgstr "Estaleiro Naval"
 
-#: simulation/templates/structures/cart_super_dock.xml:12
+#: simulation/templates/structures/cart_super_dock.xml:36
 msgid "Cothon"
 msgstr "Cothon"
 
-#: simulation/templates/structures/cart_super_dock.xml:15
+#: simulation/templates/structures/cart_super_dock.xml:37
+msgid "Shipyard"
+msgstr "Estaleiro"
+
+#: simulation/templates/structures/cart_super_dock.xml:39
 msgid "Construct and repair mighty warships."
 msgstr "Construa e repare poderosos navios de guerra."
 
@@ -842,7 +855,7 @@ msgstr "Kaserna"
 msgid "Harotz"
 msgstr "Harotz"
 
-#: simulation/templates/structures/iber_civil_centre.xml:5
+#: simulation/templates/structures/iber_civil_centre.xml:8
 msgid "Oppidum"
 msgstr "Oppidum"
 
@@ -964,7 +977,7 @@ msgstr "Sainyavasa"
 msgid "Lohakāra"
 msgstr "Lohakāra"
 
-#: simulation/templates/structures/maur_civil_centre.xml:9
+#: simulation/templates/structures/maur_civil_centre.xml:12
 msgid "Rajadhanika"
 msgstr "Rajadhanika"
 
@@ -1088,7 +1101,7 @@ msgstr "Palácio Persa"
 msgid "Apadana"
 msgstr "Apadana"
 
-#: simulation/templates/structures/pers_apadana.xml:34
+#: simulation/templates/structures/pers_apadana.xml:31
 msgid ""
 "\"Satrapy Tribute\": Gain a trickle of food, wood, stone, and metal "
 "resources. Train Persian heroes and their \"Immortals\" bodyguards."
@@ -1106,11 +1119,11 @@ msgstr "Recrute cidadãos-soldados."
 msgid "Arštišta"
 msgstr "Arštišta"
 
-#: simulation/templates/structures/pers_civil_centre.xml:5
+#: simulation/templates/structures/pers_civil_centre.xml:8
 msgid "Provincial Governor"
 msgstr "Governador Provincial"
 
-#: simulation/templates/structures/pers_civil_centre.xml:6
+#: simulation/templates/structures/pers_civil_centre.xml:9
 msgid "Xšaçapāvan"
 msgstr "Xšaçapāvan"
 
@@ -1152,10 +1165,8 @@ msgid "Duvarthi Visadahyu"
 msgstr "Duvarthi Visadahyu"
 
 #: simulation/templates/structures/pers_hall.xml:28
-msgid ""
-"Special Building.\n"
-"Train War Elephants and Kardakes mercenaries."
-msgstr "\nBuilding. especial Trem de Guerra elefantes e mercenários Kardakes."
+msgid "Train War Elephants and Kardakes mercenaries."
+msgstr "Treina Elefantes de Guerra e Mercenários Cárdaces"
 
 #: simulation/templates/structures/pers_house.xml:9
 msgid "Huvādā"
@@ -1237,7 +1248,7 @@ msgid ""
 "improvements."
 msgstr "Treine cidadãos-soldados do Egito e do Oriente Médio. Pesquise melhorias de recrutamento."
 
-#: simulation/templates/structures/ptol_civil_centre.xml:15
+#: simulation/templates/structures/ptol_civil_centre.xml:12
 msgid "pr-'a"
 msgstr "pr-'a"
 
@@ -1279,7 +1290,7 @@ msgstr "Farol"
 msgid "Pháros"
 msgstr "Pháros"
 
-#: simulation/templates/structures/ptol_lighthouse.xml:20
+#: simulation/templates/structures/ptol_lighthouse.xml:21
 msgid ""
 "Build along the shore to reveal the shorelines over the entire map. Very "
 "large vision range: 180 meters."
@@ -1299,21 +1310,20 @@ msgstr "Stratopedeía Misthophórōn"
 
 #: simulation/templates/structures/ptol_mercenary_camp.xml:33
 msgid ""
-"Cheap barracks-like structure that is buildable in Neutral territory, but casts no territory influence.\n"
-"- Train Mercenaries. \n"
-"- Min. distance from other Military Settlements: 100 meters."
-msgstr "Estrutura de alojamento barata que é compilável em território neutro, mas não projeta nenhuma influência territorial.\n- Treinar mercenários.\n- Min. de distância de outros assentamentos militares: 100 metros."
+"Cheap barracks-like structure that is buildable in neutral territory, but "
+"casts no territory influence. Train Mercenaries."
+msgstr "Estrutura do tipo Quartel, pode ser construída em território neutro, mas não influencia no território. Treina Mercenários."
 
-#: simulation/templates/structures/ptol_military_colony.xml:6
+#: simulation/templates/structures/ptol_military_colony.xml:10
 msgid "Klēroukhia"
 msgstr "Klēroukhia"
 
-#: simulation/templates/structures/ptol_military_colony.xml:8
+#: simulation/templates/structures/ptol_military_colony.xml:12
 msgid ""
-"This is the Ptolemaic expansion building, similar to Civic Centers for other factions. It is weaker and carries a smaller territory influence, but is cheaper and built faster.\n"
-"- Train settler-soldiers of various nationalities.\n"
-"- Min. distance from other Military Colonies: 120 meters."
-msgstr "Esta é a construção de expansão ptolomaica, semelhante ao Centro Civil de outras facções. Ela é mais fraca e tem menor influência territorial, mas é mais barata e rápida de ser construída.\n- Treine soldados-colonizadores de várias nacionalidades.\n- Distância mínima de outras Colônias Militares: 120 metros."
+"This is the Ptolemaic expansion building, similar to Civic Centers for other"
+" factions. It is weaker and carries a smaller territory influence, but is "
+"cheaper and built faster. Train settler-soldiers of various nationalities."
+msgstr "Construção de expansão Ptolemaica, equivalente ao Centro Cívico de outras facções. Mais fraca e com menor influência no território, porém mais barata e de construção mais rápida. Treina cidadãos-soldados de várias nacionalidades."
 
 #: simulation/templates/structures/ptol_outpost.xml:5
 msgid "mktr-n-ḫt"
@@ -1358,7 +1368,7 @@ msgstr "Acampamento Militar Entrincheirado"
 msgid "Castrum Vallum"
 msgstr "Castrum Vallum"
 
-#: simulation/templates/structures/rome_army_camp.xml:65
+#: simulation/templates/structures/rome_army_camp.xml:63
 msgid ""
 "Build anywhere on the map, even in enemy territory. Construct siege weapons "
 "and train citizen-soldiers. Heal garrisoned units slowly."
@@ -1372,7 +1382,7 @@ msgstr "Castrum"
 msgid "Armamentarium"
 msgstr "Armamentarium"
 
-#: simulation/templates/structures/rome_civil_centre.xml:9
+#: simulation/templates/structures/rome_civil_centre.xml:12
 msgid "Forum"
 msgstr "Forum"
 
@@ -1433,9 +1443,9 @@ msgstr "Muralhas"
 msgid "Murus Circummunitionis"
 msgstr "Murus Circummunitionis"
 
-#: simulation/templates/structures/rome_siege_wall_long.xml:57
-#: simulation/templates/structures/rome_siege_wall_medium.xml:51
-#: simulation/templates/structures/rome_siege_wall_short.xml:38
+#: simulation/templates/structures/rome_siege_wall_long.xml:55
+#: simulation/templates/structures/rome_siege_wall_medium.xml:49
+#: simulation/templates/structures/rome_siege_wall_short.xml:36
 #: simulation/templates/structures/rome_wallset_siege.xml:8
 msgid "A wooden and turf palisade buildable in enemy and neutral territories."
 msgstr "Uma palisada de madeira que pode ser construída em territórios hostil e neutro."
@@ -1468,11 +1478,11 @@ msgstr "Aedes Martis"
 msgid "Train healers. Garrison units to heal them at a quick rate."
 msgstr "Treine curandeiros. Abrigue unidades para curá-las rapidamente."
 
-#: simulation/templates/structures/rome_temple_vesta.xml:16
+#: simulation/templates/structures/rome_temple_vesta.xml:15
 msgid "Temple of Vesta"
 msgstr "Templo de Vesta"
 
-#: simulation/templates/structures/rome_temple_vesta.xml:18
+#: simulation/templates/structures/rome_temple_vesta.xml:17
 msgid "Aedes Vestae"
 msgstr "Aedes Vestae"
 
@@ -1542,7 +1552,7 @@ msgid ""
 "defense."
 msgstr "Construa Armas de Cerco e treine Campeões. Abrigue soldados em seu interior para uma defesa mais forte."
 
-#: simulation/templates/structures/sele_library.xml:5
+#: simulation/templates/structures/sele_library.xml:9
 msgid "Bibliothikon"
 msgstr "Bibliothikon"
 
@@ -1550,12 +1560,12 @@ msgstr "Bibliothikon"
 msgid "Empórion"
 msgstr "Empórion"
 
-#: simulation/templates/structures/sele_military_colony.xml:6
+#: simulation/templates/structures/sele_military_colony.xml:10
 msgid ""
-"This is the Seleucid expansion building, similar to Civic Centers for other factions. It is weaker and carries a smaller territory influence, but is cheaper and built faster.\n"
-"- Train settler-soldiers of various nationalities.\n"
-"- Min. distance from other Military Colonies: 120 meters."
-msgstr "Este é o edifício de expansão dos Selêucidas, similar aos Centros Cívicos de outras facções. É mais fraco e tem menor influência territorial, mas é mais barato e rápido de construir.\n - Treina cidadãos-soldados de diversas nacionalidades.\n - Distância mínima de outras Colônias Militares: 120 metros."
+"This is the Seleucid expansion building, similar to Civic Centers for other "
+"factions. It is weaker and carries a smaller territory influence, but is "
+"cheaper and built faster. Train settler-soldiers of various nationalities."
+msgstr "Construção de expansão Selêucida, equivalente ao Centro Cívico de outras facções. Mais fraca e com menor influência no território, porém mais barata e de construção mais rápida. Treina cidadãos-soldados de várias nacionalidades."
 
 #: simulation/templates/structures/sele_outpost.xml:5
 msgid "Prophylax"
@@ -1598,7 +1608,7 @@ msgstr "Refeitório Militar"
 msgid "Syssítion"
 msgstr "Syssítion"
 
-#: simulation/templates/structures/spart_syssiton.xml:26
+#: simulation/templates/structures/spart_syssiton.xml:24
 msgid "Train Spartan heroes and Spartiate champion hoplites."
 msgstr "Treine heróis espartanos e Hoplitas Esparciatas de Elite."
 

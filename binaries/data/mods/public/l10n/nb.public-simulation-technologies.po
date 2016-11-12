@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Allan Nordhøy <epost@anotheragency.no>, 2016
-# Jarl.Arntzen <jarl.arntzen@gmail.com>, 2015
+# Jarl Arntzen <jarl.arntzen@gmail.com>, 2015
 # Kurt-Håkon Eilertsen <kurt@kheds.com>, 2014
 # Matias Lavik <matias.lavik@hotmail.com>, 2016
 # Ole Sannes Riiser <OLE-SR@online.no>, 2015-2016
@@ -12,9 +12,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-12 09:01+0200\n"
-"PO-Revision-Date: 2016-09-01 16:06+0000\n"
-"Last-Translator: Matias Lavik <matias.lavik@hotmail.com>\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-10-01 21:56+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/wildfire-games/0ad/language/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -539,7 +539,7 @@ msgstr "Utstyr ditt nærkampkavaleri med bedre våpen. +20% nærkampangrep for k
 #: simulation/data/technologies/attack_cavalry_ranged_02.jsongenericName
 #: simulation/data/technologies/attack_infantry_melee_02.jsongenericName
 msgid "Iron Weapons"
-msgstr "Jern våpen"
+msgstr "Jernvåpen"
 
 #: simulation/data/technologies/attack_cavalry_ranged_01.jsondescription
 msgid "Training increases ranged attack."
@@ -725,8 +725,8 @@ msgid "Reinforce the foundations in preparation of an attack."
 msgstr "Forsterk fundamentene for å forberede et angrep. "
 
 #: simulation/data/technologies/attack_tower_defense.jsontooltip
-msgid "Increases armour level of the defense tower by 2 levels."
-msgstr "Øker rustning nivået av forsvarstårnet med 2 nivåer."
+msgid "Increases armor level of the defense tower by 2 levels."
+msgstr "Øker pansernivået til forsvarstårnet med 2 nivåer."
 
 #: simulation/data/technologies/attack_tower_defense.jsongenericName
 msgid "Sturdy Foundations"
@@ -750,7 +750,7 @@ msgstr "Bueskyttere øker det maksimale rekkevidde av flammepiler."
 
 #: simulation/data/technologies/attack_tower_range.jsontooltip
 msgid "Increases defense tower maximum range by 8 meters."
-msgstr "Øker forsvarstårnet sitt maksimale rekkevidde med 8 meter."
+msgstr "Øker forsvarstårnets maksimale rekkevidde med 8 meter."
 
 #: simulation/data/technologies/attack_tower_range.jsongenericName
 msgid "Arrow Shooters"
@@ -884,7 +884,7 @@ msgstr "Utrust dine arbeidere med jernploger. +15% gårdsdriftshastighet."
 
 #: simulation/data/technologies/gather_farming_plows.jsongenericName
 msgid "Iron Plow"
-msgstr "Jern plog"
+msgstr "Jernplog"
 
 #: simulation/data/technologies/gather_farming_training.jsondescription
 msgid "Training for workers to increase farm gathering speed."
@@ -993,7 +993,7 @@ msgstr "Treff en åre med verdifullt sølv. +50% metallutvinningstakt."
 
 #: simulation/data/technologies/gather_mining_silvermining.jsongenericName
 msgid "Silver Mining"
-msgstr "Sølv gruve"
+msgstr "Sølvgruve"
 
 #: simulation/data/technologies/gather_mining_silvermining.jsonspecificName.mace
 msgid "Mines of Krenides"
@@ -1020,7 +1020,7 @@ msgstr "Andrápoda"
 
 #: simulation/data/technologies/gather_mining_wedgemallet.jsontooltip
 msgid "Equip your workers with helpful tools. +15% metal gathering rate."
-msgstr ""
+msgstr "Utstyr dine arbeidere med hjelpsomme verktøy. +15% metallutvinningsrate."
 
 #: simulation/data/technologies/gather_mining_wedgemallet.jsongenericName
 msgid "Wedge and Mallet"
@@ -1285,8 +1285,8 @@ msgstr "Framskrider fra en myldrende by til et ekte metropol, full av den modern
 msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
-msgstr ""
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
+msgstr "Avanser til by-fasen, som låser opp flere bygninger og enheter. Radiusen for territoriet rundt samfunnssenteret øker med enda +50%. Innbyggersoldater høyeste helsenivå økes med +10%. Alle strukturer får +9 helbredingsrate med enheter forskanset i dem."
 
 #: simulation/data/technologies/phase_city.jsongenericName
 #: simulation/data/technologies/phase_city_athen.jsongenericName
@@ -1316,8 +1316,8 @@ msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Silver Owls civ bonus "
 "grants an extra +10% metal gather rate to all workers. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
-msgstr ""
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
+msgstr "Avanser til by-fasen, som låser opp flere bygninger og enheter. Radiusen for territoriet rundt samfunnssenteret øker med enda +50%. 'Sølv-ugler' sivilisasjons-bonus skjenker ytterligere +10% metall sankebonus til alle arbeidere. Innbyggersoldaters høyeste helsenivå økes med +10%. Alle strukturer får +9 helbredingsrate med enheter forskanset i dem."
 
 #: simulation/data/technologies/phase_town.jsondescription
 msgid ""
@@ -1329,7 +1329,7 @@ msgid ""
 "Advance to Town Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by +30%. Citizen soldiers max health "
 "increased by +20%. All structures +7 garrisoned regeneration rate."
-msgstr ""
+msgstr "Avanser til tettsted-fasen, som tilgjengeliggjør flere strukturer og enheter. Radiusen for territoriet rundt samfunnssenteret øker med +30%.\nInnbyggersoldater høyeste helsenivå økes med +20%. Alle strukturer får +7 helbredingsrate med enheter forskanset i dem."
 
 #: simulation/data/technologies/phase_town.jsongenericName
 #: simulation/data/technologies/phase_town_athen.jsongenericName
@@ -1361,7 +1361,7 @@ msgid ""
 "radius for Civic Centers increased by +30%. 'Silver Owls' civ bonus grants "
 "an extra +10% metal gather rate to all workers. Citizen soldiers max health "
 "increased by +20%. All structures +7 garrisoned regeneration rate."
-msgstr ""
+msgstr "Avanser til tettsted-fasen, som låser opp flere bygninger og enheter. Radiusen for territoriet rundt samfunnssenteret øker med +30%. 'Sølv-ugler' sivilisasjons-bonus skjenker ytterligere +10% metall-utvinningsbonus til alle arbeidere. Innbyggersoldaters høyeste helsenivå økes med +20%. Alle strukturer får +7 helbredingsrate med enheter forskanset i dem."
 
 #: simulation/data/technologies/phase_village.jsongenericName
 msgid "Village Phase"
@@ -1464,7 +1464,7 @@ msgstr "Underet tiltrekker seg mange flere folk til din sivilisasjon."
 msgid ""
 "Enable Glorious Expansion. Further increase the population limit by 40 per "
 "Wonder owned."
-msgstr ""
+msgstr "Skru på praktfull utvidelse. Øker befolkningstaket med ytterligere 40 per eide under."
 
 #: simulation/data/technologies/pop_wonder.jsongenericName
 msgid "Glorious Expansion"
@@ -1758,11 +1758,11 @@ msgid ""
 "The extension of trade leads to the permanent establishment of storekeepers "
 "and their families in foreign countries, allowing them to exploit the wealth"
 " of these countries."
-msgstr ""
+msgstr "Utvidelse av handelsvirksomhet fører til at materialforvaltere og deres familier etablerer seg i fremmede land, der de vil utnytte disse landenes rikdom. "
 
 #: simulation/data/technologies/unlock_shared_dropsites.jsontooltip
 msgid "Allows using allied dropsites."
-msgstr "Tillater bruk av allierte sine avlastningssteder."
+msgstr "Tillater bruk av allierte avlastningssteder."
 
 #: simulation/data/technologies/unlock_shared_dropsites.jsongenericName
 msgid "Diaspora"
@@ -1780,8 +1780,10 @@ msgid ""
 msgstr "Ved handel og reiser utforsket folk forbi yttergrensene av deres eget land og tegnet kart for å dele og huske sine oppdagelser."
 
 #: simulation/data/technologies/unlock_shared_los.jsontooltip
-msgid "Player sees what his allies see."
-msgstr "Spillere deler oversikten deres allierte har."
+msgid ""
+"See what your allies see, browse their summary and check their resources and"
+" population count in the top panel."
+msgstr "Se hva dine allierte ser, se gjennom deres sammendrag og sjekk deres ressurser og befolkningsantall i toppanelet."
 
 #: simulation/data/technologies/unlock_shared_los.jsongenericName
 msgid "Cartography"
@@ -2162,7 +2164,7 @@ msgstr "Oppgrader alle dine iberiske leiesoldater til eliterang."
 msgid ""
 "Upgrade all of your Iberian mercenaries to Elite rank. This increases their "
 "military prowess, but decreases their resource gathering rates another -25%."
-msgstr "Oppgrader alle dine iberiske leiesoldater til eliterang. Dette øker deres militære djervhet, men reduserer deres resurs-sanking med ytterligere -25%."
+msgstr "Oppgrader alle dine iberiske leiesoldater til eliterang. Dette øker deres militære djervhet, men reduserer deres evne til å sanke ressurser med ytterligere -25%."
 
 #: simulation/data/technologies/carthaginians/upgrade_rank_elite_iberian.jsongenericName
 msgid "Elite Iberian Mercenaries"
@@ -2192,7 +2194,7 @@ msgstr "Keltiske bygninger ble som oftest laget av tre med småsteinsfundament. 
 
 #: simulation/data/technologies/celts/civbonus_celts_wooden_struct.jsongenericName
 msgid "Wooden Construction"
-msgstr "Tre konstruksjon"
+msgstr "Trekonstruksjon"
 
 #: simulation/data/technologies/hellenes/attack_inf_spearfighting.jsondescription
 msgid "Spear fighting training increases damage of infantry spear units."

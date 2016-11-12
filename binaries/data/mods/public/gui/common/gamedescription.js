@@ -31,10 +31,9 @@ function getMapDescriptionAndPreview(mapType, mapName)
  */
 function setMapPreviewImage(guiObject, filename)
 {
-	let path = "session/icons/mappreview/";
 	Engine.GetGUIObjectByName(guiObject).sprite =
 		"cropped:" + 400/512 + "," + 300/512 + ":" +
-		path + (Engine.FileExists("art/textures/ui/" + path + filename) ? filename : "nopreview.png");
+		"session/icons/mappreview/" + filename;
 }
 
 /**
@@ -210,7 +209,7 @@ function getGameDescription(extended = false)
 	    g_GameAttributes.settings.PlayerData.length == 2)
 		titles.push({
 			"label": translate("Rated game"),
-			"value": translate("When the winner of this match was determined, the lobby score will be adapted.")
+			"value": translate("When the winner of this match is determined, the lobby score will be adapted.")
 		});
 
 	if (g_GameAttributes.settings.LockTeams)
@@ -221,7 +220,7 @@ function getGameDescription(extended = false)
 	else
 		titles.push({
 			"label": translate("Diplomacy"),
-			"value": translate("Players can setup alliances and declare war on allies.")
+			"value": translate("Players can make alliances and declare war on allies.")
 		});
 
 	if (g_GameAttributes.settings.LastManStanding)
@@ -261,7 +260,7 @@ function getGameDescription(extended = false)
 
 		if (g_GameAttributes.mapType == "random")
 		{
-			let mapSize = g_MapSizes.LongName[g_MapSizes.Tiles.indexOf(g_GameAttributes.settings.Size)];
+			let mapSize = g_MapSizes.Name[g_MapSizes.Tiles.indexOf(g_GameAttributes.settings.Size)];
 			if (mapSize)
 				titles.push({
 					"label": translate("Map Size"),

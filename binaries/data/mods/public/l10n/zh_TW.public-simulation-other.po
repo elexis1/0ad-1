@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-07-22 09:01+0200\n"
-"PO-Revision-Date: 2016-07-22 12:37+0000\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-09-30 13:56+0000\n"
 "Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/wildfire-games/0ad/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -132,8 +132,8 @@ msgstr "我已經與 %(_player_)s 設定了一條新的路線。這交易對我�
 #, javascript-format
 msgid ""
 "A new trade route is set up with %(_player_)s. Take your share of the "
-"profits"
-msgstr "與 %(_player_)s 成立一條新的貿易路線。獲取您的那一份利潤吧"
+"profits."
+msgstr "與 %(_player_)s 成立一條新的貿易路線。獲取您的那一份利潤吧。"
 
 #: simulation/ai/petra/chatHelper.js:120
 #, javascript-format
@@ -672,12 +672,12 @@ msgctxt "Territory type list"
 msgid "enemy"
 msgstr "敵方的"
 
-#: simulation/components/CeasefireManager.js:100
+#: simulation/components/CeasefireManager.js:99
 #, javascript-format
 msgid "You can attack in %(time)s"
 msgstr "您可以在 %(time)s 內攻擊"
 
-#: simulation/components/CeasefireManager.js:113
+#: simulation/components/CeasefireManager.js:112
 msgid "You can attack now!"
 msgstr "您現在可以攻擊了！"
 
@@ -743,11 +743,11 @@ msgid ""
 "%(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 msgstr "資源不足 - %(resourceAmount1)s %(resourceType1)s, %(resourceAmount2)s %(resourceType2)s, %(resourceAmount3)s %(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 
-#: simulation/components/ProductionQueue.js:391
+#: simulation/components/ProductionQueue.js:400
 msgid "The production queue is full."
 msgstr "生產佇列已滿。"
 
-#: simulation/components/ProductionQueue.js:768
+#: simulation/components/ProductionQueue.js:777
 msgid "Can't find free space to spawn trained units"
 msgstr "找不到空間產出已訓練的單位"
 
@@ -759,34 +759,34 @@ msgstr "您需要選取一棟要訓練單位的建築物。"
 msgid "(Cheat - control all units)"
 msgstr "（作弊 - 控制所有單位）"
 
-#: simulation/helpers/Commands.js:568
+#: simulation/helpers/Commands.js:575
 msgid "(Cheat - promoted units)"
 msgstr "（作弊 - 升級所有單位）"
 
-#: simulation/helpers/Commands.js:678
+#: simulation/helpers/Commands.js:685
 msgid ""
 "Cannot upgrade as distance requirements are not verified or terrain is "
 "obstructed."
 msgstr "無法升級，因為必須的距離無法被驗證，或是地形有阻礙。"
 
-#: simulation/helpers/Commands.js:688
+#: simulation/helpers/Commands.js:695
 msgid "Cannot upgrade a garrisoned entity."
 msgstr "無法升級已駐守的實體。"
 
-#: simulation/helpers/Commands.js:734
+#: simulation/helpers/Commands.js:741
 #, javascript-format
 msgid "Attack against %(_player_)s requested."
 msgstr "請攻擊 %(_player_)s。"
 
-#: simulation/helpers/Commands.js:771
+#: simulation/helpers/Commands.js:778
 msgid "Unable to ungarrison unit(s)"
 msgstr "無法解除單位駐軍"
 
-#: simulation/helpers/Commands.js:785
+#: simulation/helpers/Commands.js:792
 msgid "Some unit(s) can't go back to work"
 msgstr "部份單位無法回到工作崗位"
 
-#: simulation/helpers/Commands.js:1041
+#: simulation/helpers/Commands.js:1047
 msgid "The building's technology requirements are not met."
 msgstr "建築物的科技需求不符合。"
 
@@ -871,40 +871,42 @@ msgid "Fast Forward (20x)"
 msgstr "快轉 (20x)"
 
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Description
-msgid "Defeat all opponents"
-msgstr "擊敗所有對手"
+msgid "Defeat all opponents to win."
+msgstr "擊敗所有對手以取得勝利。"
 
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Title
 msgid "Conquest"
 msgstr "征服"
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Description
-msgid "Destroy all structures of enemies"
-msgstr "破壞敵人所有的建築物"
+msgid "Destroy all enemy structures to win."
+msgstr "破壞敵人所有的建築物以取得勝利。"
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Title
 msgid "Conquest Structures"
 msgstr "征服建築物"
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Description
-msgid "Kill all enemy units"
-msgstr "殺死敵方所有單位"
+msgid "Kill all enemy units to win."
+msgstr "殺死敵方所有單位以取得勝利。"
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Title
 msgid "Conquest Units"
 msgstr "征服單位"
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Description
-msgid "Defeat opponents by killing their hero"
-msgstr "透過殺死他們的英雄來擊敗對手"
+msgid "Defeat opponents by killing their hero."
+msgstr "透過殺死他們的英雄來擊敗對手。"
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Title
 msgid "Regicide"
 msgstr "弒君"
 
 #: simulation/data/settings/victory_conditions/wonder.jsonData.Description
-msgid "Build and protect a wonder to win"
-msgstr "建造並保護奇觀以獲得勝利"
+msgid ""
+"Be the first to build or capture a wonder and keep it for a certain time to "
+"win the game."
+msgstr "成為第一個建造或是捕獲一座奇觀並保護它一段時間的玩家以取得勝利。"
 
 #: simulation/data/settings/victory_conditions/wonder.jsonData.Title
 msgid "Wonder"

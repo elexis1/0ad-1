@@ -81,6 +81,11 @@ const g_MapFilters = [
 		"filter": mapKeywords => mapKeywords.indexOf("demo") != -1
 	},
 	{
+		"id": "new",
+		"name": translate("New Maps"),
+		"filter": mapKeywords => mapKeywords.indexOf("new") != -1
+	},
+	{
 		"id": "trigger",
 		"name": translate("Trigger Maps"),
 		"filter": mapKeywords => mapKeywords.indexOf("trigger") != -1
@@ -294,6 +299,8 @@ function initGUIObjects()
 
 	resizeMoreOptionsWindow();
 
+	Engine.GetGUIObjectByName("chatInput").tooltip = colorizeAutocompleteHotkey();
+
 	if (g_IsNetworked)
 		Engine.GetGUIObjectByName("chatInput").focus();
 
@@ -473,7 +480,7 @@ function initWonderDurations()
 function initMapSizes()
 {
 	let mapSize = Engine.GetGUIObjectByName("mapSize");
-	mapSize.list = g_MapSizes.LongName;
+	mapSize.list = g_MapSizes.Name;
 	mapSize.list_data = g_MapSizes.Tiles;
 	mapSize.onSelectionChange = function() {
 		if (this.selected != -1)
@@ -895,7 +902,7 @@ function initMapNameList()
 	mapSelectionBox.list = mapListNames;
 	mapSelectionBox.list_data = mapListFiles;
 	mapSelectionBox.onSelectionChange = function() {
-		if (this.selected != -1)
+		if (this.list_data[this.selected])
 			selectMap(this.list_data[this.selected]);
 	};
 	mapSelectionBox.selected = Math.max(0, mapListFiles.indexOf(g_GameAttributes.map || ""));
@@ -988,7 +995,13 @@ function sanitizePlayerData(playerData)
 	playerData.forEach((pData, index) => {
 		pData.Color = pData.Color || g_PlayerColors[index];
 		pData.Civ = pData.Civ || "random";
-		pData.AI = pData.AI || "";
+
+		// Use default AI if the map doesn't specify any explicitly
+		if (!("AI" in pData))
+			pData.AI = g_DefaultPlayerData[index].AI;
+
+		if (!("AIDiff" in pData))
+			pData.AIDiff = g_DefaultPlayerData[index].AIDiff;
 	});
 
 	// Replace colors with the best matching color of PlayerDefaults
@@ -1068,7 +1081,7 @@ function onTick()
 /**
  * Called when the map or the number of players changes.
  */
-function resizePlayerData(targetPlayerData, maxPlayers)
+function unassignInvalidPlayers(maxPlayers)
 {
 	if (g_IsNetworked)
 	{
@@ -1084,11 +1097,6 @@ function resizePlayerData(targetPlayerData, maxPlayers)
 				"player": 1
 			}
 		};
-
-	let pData = g_GameAttributes.settings.PlayerData;
-	return maxPlayers > pData.length ?
-		pData.concat(targetPlayerData.slice(pData.length, maxPlayers)) :
-		pData.slice(0, maxPlayers);
 }
 
 /**
@@ -1100,7 +1108,15 @@ function selectNumPlayers(num)
 	if (g_IsInGuiUpdate || !g_IsController || g_GameAttributes.mapType != "random")
 		return;
 
-	g_GameAttributes.settings.PlayerData = resizePlayerData(g_DefaultPlayerData, num);
+	let pData = g_GameAttributes.settings.PlayerData;
+	g_GameAttributes.settings.PlayerData =
+		num > pData.length ?
+			pData.concat(g_DefaultPlayerData.slice(pData.length, num)) :
+			pData.slice(0, num);
+
+	unassignInvalidPlayers(num);
+
+	sanitizePlayerData(g_GameAttributes.settings.PlayerData);
 
 	updateGameAttributes();
 }
@@ -1211,10 +1227,6 @@ function selectMap(name)
 	if (mapSettings.PlayerData)
 		sanitizePlayerData(mapSettings.PlayerData);
 
-	// Persist player data
-	if (g_GameAttributes.mapType == "skirmish")
-		mapSettings.PlayerData = resizePlayerData(mapSettings.PlayerData, mapSettings.PlayerData.length);
-
 	// Copy any new settings
 	g_GameAttributes.map = name;
 	g_GameAttributes.script = mapSettings.Script;
@@ -1222,14 +1234,7 @@ function selectMap(name)
 		for (let prop in mapSettings)
 			g_GameAttributes.settings[prop] = mapSettings[prop];
 
-	// Use default AI if the map doesn't specify any explicitly
-	for (let i in g_GameAttributes.settings.PlayerData)
-	{
-		if (!('AI' in g_GameAttributes.settings.PlayerData[i]))
-			g_GameAttributes.settings.PlayerData[i].AI = g_DefaultPlayerData[i].AI;
-		if (!('AIDiff' in g_GameAttributes.settings.PlayerData[i]))
-			g_GameAttributes.settings.PlayerData[i].AIDiff = g_DefaultPlayerData[i].AIDiff;
-	}
+	unassignInvalidPlayers(g_GameAttributes.settings.PlayerData.length);
 
 	updateGameAttributes();
 }
@@ -1386,7 +1391,7 @@ function updateGUIObjects()
 	}
 
 	// Can be visible to both host and clients
-	Engine.GetGUIObjectByName("mapSizeText").caption = g_GameAttributes.mapType == "random" ? g_MapSizes.LongName[mapSizeIdx] : translate("Default");
+	Engine.GetGUIObjectByName("mapSizeText").caption = g_GameAttributes.mapType == "random" ? g_MapSizes.Name[mapSizeIdx] : translate("Default");
 	Engine.GetGUIObjectByName("numPlayersText").caption = numPlayers;
 	Engine.GetGUIObjectByName("victoryConditionText").caption = g_VictoryConditions.Title[victoryIdx];
 	Engine.GetGUIObjectByName("wonderDurationText").caption = g_WonderDurations.Title[wonderDurationIdx];
@@ -1794,7 +1799,17 @@ function addChatMessage(msg)
 
 	let user = colorizePlayernameByGUID(msg.guid || -1, msg.username || "");
 
-	g_ChatMessages.push(g_FormatChatMessage[msg.type](msg, user));
+	let text = g_FormatChatMessage[msg.type](msg, user);
+
+	if (Engine.ConfigDB_GetValue("user", "chat.timestamp") == "true")
+		text = sprintf(translate("%(time)s %(message)s"), {
+			"time": sprintf(translate("\\[%(time)s]"), {
+				"time": Engine.FormatMillisecondsIntoDateString(new Date().getTime(), translate("HH:mm"))
+			}),
+			"message": text
+		});
+
+	g_ChatMessages.push(text);
 
 	Engine.GetGUIObjectByName("chatText").caption = g_ChatMessages.join("\n");
 }

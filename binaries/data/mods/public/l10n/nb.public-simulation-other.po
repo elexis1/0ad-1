@@ -9,9 +9,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-07-22 09:01+0200\n"
-"PO-Revision-Date: 2016-07-22 09:55+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-10-01 21:38+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/wildfire-games/0ad/language/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -134,7 +134,7 @@ msgstr "Jeg har satt opp en ny rute med %(_player_)s. Handel vil være innbringe
 #, javascript-format
 msgid ""
 "A new trade route is set up with %(_player_)s. Take your share of the "
-"profits"
+"profits."
 msgstr "En ny handelsrute er satt opp med %(_player_)s. Ta din andel av inntektene. "
 
 #: simulation/ai/petra/chatHelper.js:120
@@ -286,7 +286,7 @@ msgstr "Legg en gruppe (Shift+klikk) spydkastere i treningskøen."
 
 #: simulation/ai/tutorial-ai/economic_walkthrough.js:148
 msgid "Research the stone mining technology from the storehouse."
-msgstr "Utforsk teknikk for steingruver fra lagerhuset."
+msgstr "Utforsk teknikk for steinutgraving fra lagerhuset."
 
 #: simulation/ai/tutorial-ai/economic_walkthrough.js:153
 msgid "Queue a batch of slingers."
@@ -501,7 +501,7 @@ msgstr "Start med å trene 5 kvinnelige borgere i samfunnssenteret og sett marsj
 msgid ""
 "Build a Barracks nearby. Whenever your population limit is reached, build an"
 " extra house using any available builder units."
-msgstr "Bygg kaserner i nærheten. Bygg nye bolighus ved hjelp av alle ledige enheter hver gang befolkingsgrensen nås."
+msgstr "Bygg kaserner i nærheten. Bygg nye bolighus ved hjelp av alle ledige enheter hver gang befolkingstaket nås."
 
 #: simulation/ai/tutorial-ai/introductory_tutorial.js:80
 msgid ""
@@ -676,18 +676,18 @@ msgctxt "Territory type list"
 msgid "enemy"
 msgstr "fiende"
 
-#: simulation/components/CeasefireManager.js:100
+#: simulation/components/CeasefireManager.js:99
 #, javascript-format
 msgid "You can attack in %(time)s"
 msgstr "Du kan angripe om %(time)s"
 
-#: simulation/components/CeasefireManager.js:113
+#: simulation/components/CeasefireManager.js:112
 msgid "You can attack now!"
 msgstr "Du kan angripe nå!"
 
 #: simulation/components/EndGameManager.js:114
 msgid "Last remaining player wins."
-msgstr ""
+msgstr "Siste gjenværende spiller vinner."
 
 #: simulation/components/EntityLimits.js:166
 #, javascript-format
@@ -747,11 +747,11 @@ msgid ""
 "%(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 msgstr "Utilstrekkelige ressurser - %(resourceAmount1)s %(resourceType1)s, %(resourceAmount2)s %(resourceType2)s, %(resourceAmount3)s %(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 
-#: simulation/components/ProductionQueue.js:391
+#: simulation/components/ProductionQueue.js:400
 msgid "The production queue is full."
 msgstr "Produksjonskøen er full."
 
-#: simulation/components/ProductionQueue.js:768
+#: simulation/components/ProductionQueue.js:777
 msgid "Can't find free space to spawn trained units"
 msgstr "Kan ikke finne ledig rom for å frembringe trente enheter"
 
@@ -763,34 +763,34 @@ msgstr "Du må velge en bygning som trener enheter."
 msgid "(Cheat - control all units)"
 msgstr "(Juksekode - kontroller alle enheter)"
 
-#: simulation/helpers/Commands.js:568
+#: simulation/helpers/Commands.js:575
 msgid "(Cheat - promoted units)"
 msgstr "(Juksekode - forfremmede enheter)"
 
-#: simulation/helpers/Commands.js:678
+#: simulation/helpers/Commands.js:685
 msgid ""
 "Cannot upgrade as distance requirements are not verified or terrain is "
 "obstructed."
-msgstr ""
+msgstr "Kan ikke oppgradere siden distansekrav ikke er bekreftet eller terrenget har hindringer."
 
-#: simulation/helpers/Commands.js:688
+#: simulation/helpers/Commands.js:695
 msgid "Cannot upgrade a garrisoned entity."
-msgstr ""
+msgstr "Kan ikke oppgradere en forskanset enhet."
 
-#: simulation/helpers/Commands.js:734
+#: simulation/helpers/Commands.js:741
 #, javascript-format
 msgid "Attack against %(_player_)s requested."
 msgstr "Angrep mot %(_player_)s forespurt."
 
-#: simulation/helpers/Commands.js:771
+#: simulation/helpers/Commands.js:778
 msgid "Unable to ungarrison unit(s)"
 msgstr "Kan ikke stasjonere enhet(er)"
 
-#: simulation/helpers/Commands.js:785
+#: simulation/helpers/Commands.js:792
 msgid "Some unit(s) can't go back to work"
 msgstr "Enhet(er) kan ikke gå tilbake til arbeid"
 
-#: simulation/helpers/Commands.js:1041
+#: simulation/helpers/Commands.js:1047
 msgid "The building's technology requirements are not met."
 msgstr "Bygningens teknologikrav er ikke oppfylt."
 
@@ -875,40 +875,42 @@ msgid "Fast Forward (20x)"
 msgstr "Spol hurtig (20x)"
 
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Description
-msgid "Defeat all opponents"
-msgstr "Beiseir alle motstandere"
+msgid "Defeat all opponents to win."
+msgstr "Overvinn alle motstandere for å vinne."
 
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Title
 msgid "Conquest"
 msgstr "Erobring"
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Description
-msgid "Destroy all structures of enemies"
-msgstr "Ødelegg alle fiendens bygninger"
+msgid "Destroy all enemy structures to win."
+msgstr "Ødelegg alle fiendens bygninger for å vinne."
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Title
 msgid "Conquest Structures"
 msgstr "Erobringsbygninger"
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Description
-msgid "Kill all enemy units"
-msgstr "Drep alle fiendens enheter"
+msgid "Kill all enemy units to win."
+msgstr "Drep alle fiendtlige enheter for å vinne."
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Title
 msgid "Conquest Units"
 msgstr "Erobringsenheter"
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Description
-msgid "Defeat opponents by killing their hero"
-msgstr ""
+msgid "Defeat opponents by killing their hero."
+msgstr "Overvinn motstandere ved å drepe deres helt."
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Title
 msgid "Regicide"
-msgstr ""
+msgstr "Kongsbane"
 
 #: simulation/data/settings/victory_conditions/wonder.jsonData.Description
-msgid "Build and protect a wonder to win"
-msgstr "Bygg og forsvar et underverk for å vinne"
+msgid ""
+"Be the first to build or capture a wonder and keep it for a certain time to "
+"win the game."
+msgstr "Vær den første til å bygge eller ta over et under og holde det en gitt tid for å vinne spillet."
 
 #: simulation/data/settings/victory_conditions/wonder.jsonData.Title
 msgid "Wonder"

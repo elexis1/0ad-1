@@ -29,14 +29,13 @@ if (random_var == 1)
 	// gaia entities
 	var oPine = "gaia/flora_tree_pine";
 	var oBerryBush = "gaia/flora_bush_berry";
-	var oChicken = "gaia/fauna_chicken";
 	var oDeer = "gaia/fauna_deer";
 	var oFish = "gaia/fauna_fish";
 	var oRabbit = "gaia/fauna_rabbit";
 	var oStoneLarge = "gaia/geology_stonemine_alpine_quarry";
 	var oStoneSmall = "gaia/geology_stone_alpine_a";
 	var oMetalLarge = "gaia/geology_metal_alpine_slabs";
-	
+
 	// decorative props
 	var aGrass = "actor|props/flora/grass_soft_small_tall.xml";
 	var aGrassShort = "actor|props/flora/grass_soft_large.xml";
@@ -68,14 +67,13 @@ else
 	// gaia entities
 	var oPine = "gaia/flora_tree_pine_w";
 	var oBerryBush = "gaia/flora_bush_berry";
-	var oChicken = "gaia/fauna_chicken";
 	var oDeer = "gaia/fauna_deer";
 	var oFish = "gaia/fauna_fish";
 	var oRabbit = "gaia/fauna_rabbit";
 	var oStoneLarge = "gaia/geology_stonemine_alpine_quarry";
 	var oStoneSmall = "gaia/geology_stone_alpine_a";
 	var oMetalLarge = "gaia/geology_metal_alpine_slabs";
-	
+
 	// decorative props
 	var aGrass = "actor|props/flora/grass_soft_dry_small_tall.xml";
 	var aGrassShort = "actor|props/flora/grass_soft_dry_large.xml";
@@ -144,12 +142,12 @@ for (var i = 0; i < numPlayers; i++)
 {
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-	
+
 	// some constants
 	var radius = scaleByMapSize(15,25);
 	var cliffRadius = 2;
 	var elevation = 20;
-	
+
 	// get the x and z in tiles
 	var fx = fractionToTiles(playerX[i]);
 	var fz = fractionToTiles(playerZ[i]);
@@ -160,41 +158,29 @@ for (var i = 0; i < numPlayers; i++)
 	addToClass(ix, iz+5, clPlayer);
 	addToClass(ix-5, iz, clPlayer);
 	addToClass(ix, iz-5, clPlayer);
-	
+
 	// create the city patch
 	var cityRadius = radius/3;
 	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
-	
+
 	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
-	
-	// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 7;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(oChicken, 5,5, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
-	
+
+	placeDefaultChicken(fx, fz, clBaseResource);
+
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
 	var bbX = round(fx + bbDist * cos(bbAngle));
 	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(oBerryBush, 5,5, 0,3)],
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create metal mine
 	var mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
@@ -209,7 +195,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create stone mines
 	mAngle += randFloat(PI/8, PI/4);
 	mX = round(fx + mDist * cos(mAngle));
@@ -231,7 +217,7 @@ for (var i = 0; i < numPlayers; i++)
 		false, clBaseResource, tX, tZ
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-	
+
 	// create grass tufts
 	var num = hillSize / 250;
 	for (var j = 0; j < num; j++)
@@ -271,13 +257,13 @@ var lakeAreaLen;
 // create lakes
 log("Creating lakes...");
 
-var numLakes = scaleByMapSize(5, 16)
+var numLakes = scaleByMapSize(5, 16);
 for (var i = 0; i < numLakes; ++i)
 {
 	lakeAreaLen = lakeAreas.length;
 	if (!lakeAreaLen)
 		break;
-	
+
 	chosenPoint = lakeAreas[randInt(lakeAreaLen)];
 
 	placer = new ChainPlacer(1, floor(scaleByMapSize(4, 8)), floor(scaleByMapSize(40, 180)), 0.7, chosenPoint[0], chosenPoint[1]);
@@ -288,7 +274,7 @@ for (var i = 0; i < numLakes; ++i)
 	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -5, 5);
 	var newLake = createAreas(
 		placer,
-		[terrainPainter, elevationPainter, paintClass(clWater)], 
+		[terrainPainter, elevationPainter, paintClass(clWater)],
 		avoidClasses(clPlayer, 20, clWater, 8),
 		1, 1
 	);
@@ -304,7 +290,7 @@ for (var i = 0; i < numLakes; ++i)
 		}
 		lakeAreas.length = n;
 	}
-	
+
 }
 paintTerrainBasedOnHeight(3, floor(scaleByMapSize(20, 40)), 0, tCliff);
 paintTerrainBasedOnHeight(floor(scaleByMapSize(20, 40)), 100, 3, tSnowLimited);
@@ -315,7 +301,7 @@ createBumps(avoidClasses(clWater, 2, clPlayer, 20));
 // create forests
 createForests(
  [tPrimary, tForestFloor, tForestFloor, pForest, pForest],
- avoidClasses(clPlayer, 20, clForest, 17, clHill, 0, clWater, 2), 
+ avoidClasses(clPlayer, 20, clForest, 17, clHill, 0, clWater, 2),
  clForest,
  1.0
 );
@@ -349,7 +335,7 @@ createMines(
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
  avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clRock, 10, clHill, 1)
-)
+);
 
 log("Creating metal mines...");
 // create large metal quarries
@@ -359,14 +345,14 @@ createMines(
  ],
  avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clMetal, 10, clRock, 5, clHill, 1),
  clMetal
-)
+);
 
 RMS.SetProgress(70);
 
 // create decoration
 createDecoration
 (
- [[new SimpleObject(aRockMedium, 1,3, 0,1)], 
+ [[new SimpleObject(aRockMedium, 1,3, 0,1)],
   [new SimpleObject(aRockLarge, 1,2, 0,1), new SimpleObject(aRockMedium, 1,3, 0,2)],
   [new SimpleObject(aGrassShort, 1,2, 0,1, -PI/8,PI/8)],
   [new SimpleObject(aGrass, 2,4, 0,1.8, -PI/8,PI/8), new SimpleObject(aGrassShort, 3,6, 1.2,2.5, -PI/8,PI/8)],
@@ -390,7 +376,7 @@ createFood
  [
   [new SimpleObject(oDeer, 5,7, 0,4)],
   [new SimpleObject(oRabbit, 2,3, 0,2)]
- ], 
+ ],
  [
   3 * numPlayers,
   3 * numPlayers
@@ -403,7 +389,7 @@ createFood
 (
  [
   [new SimpleObject(oBerryBush, 5,7, 0,4)]
- ], 
+ ],
  [
   randInt(1, 4) * numPlayers + 2
  ],
@@ -415,7 +401,7 @@ createFood
 (
  [
   [new SimpleObject(oFish, 2,3, 0,2)]
- ], 
+ ],
  [
   15 * numPlayers
  ],
@@ -428,7 +414,7 @@ RMS.SetProgress(85);
 var types = [oPine];
 createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 3, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1));
 
-random_var = randInt(1,3)
+random_var = randInt(1,3);
 
 if (random_var==1)
 	setSkySet("cirrus");

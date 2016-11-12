@@ -116,6 +116,7 @@ function GetTemplateDataHelper(template, player, auraTemplates, resources)
 					"value": getAttackStat("Value")
 				};
 			else
+			{
 				ret.attack[type] = {
 					"hack": getAttackStat("Hack"),
 					"pierce": getAttackStat("Pierce"),
@@ -124,7 +125,9 @@ function GetTemplateDataHelper(template, player, auraTemplates, resources)
 					"maxRange": getAttackStat("MaxRange"),
 					"elevationBonus": getAttackStat("ElevationBonus")
 				};
-
+				ret.attack[type].elevationAdaptedRange = Math.sqrt(ret.attack[type].maxRange *
+					(2 * ret.attack[type].elevationBonus + ret.attack[type].maxRange));
+			}
 			ret.attack[type].repeatTime = getAttackStat("RepeatTime");
 
 			if (template.Attack[type].Splash)
@@ -227,7 +230,7 @@ function GetTemplateDataHelper(template, player, auraTemplates, resources)
 		};
 
 		if (template.GarrisonHolder.Max)
-			ret.garrisonHolder.max = getEntityValue("GarrisonHolder/Max");
+			ret.garrisonHolder.capacity = getEntityValue("GarrisonHolder/Max");
 	}
 
 	if (template.Heal)
@@ -371,11 +374,19 @@ function GetTechnologyDataHelper(template, civ)
 	ret.tooltip = template.tooltip;
 	ret.requirementsTooltip = template.requirementsTooltip || "";
 
+	// TODO: This doesn't handle all types of requirements
 	if (template.requirements && template.requirements.class)
 		ret.classRequirements = {
 			"class": template.requirements.class,
 			"number": template.requirements.number
 		};
+	else if (template.requirements && template.requirements.all)
+		for (let req of template.requirements.all)
+			if (req.class)
+				ret.classRequirements = {
+					"class": req.class,
+					"number": req.number
+				};
 
 	ret.description = template.description;
 

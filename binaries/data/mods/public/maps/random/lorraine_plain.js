@@ -21,7 +21,6 @@ const tWater = "temp_mud_a";
 const oBeech = "gaia/flora_tree_euro_beech";
 const oOak = "gaia/flora_tree_oak";
 const oBerryBush = "gaia/flora_bush_berry";
-const oChicken = "gaia/fauna_chicken";
 const oDeer = "gaia/fauna_deer";
 const oFish = "gaia/fauna_fish";
 const oRabbit = "gaia/fauna_rabbit";
@@ -106,10 +105,10 @@ for (var i = 0; i < numPlayers; i++)
 {
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-	
+
 	// scale radius of player area by map size
 	var radius = scaleByMapSize(15,25);
-	
+
 	// get the x and z in tiles
 	var fx = fractionToTiles(playerX[i]);
 	var fz = fractionToTiles(playerZ[i]);
@@ -118,45 +117,33 @@ for (var i = 0; i < numPlayers; i++)
 
 	// calculate size based on the radius
 	var size = PI * radius * radius / 4;
-	
+
 	// create the player area
 	var placer = new ClumpPlacer(size, 0.9, 0.5, 10, ix, iz);
 	createArea(placer, paintClass(clPlayer), null);
-	
+
 	// create the city patch
 	var cityRadius = 10;
 	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 	var painter = new LayeredPainter([tRoadWild, tRoad], [3]);
 	createArea(placer, painter, null);
-	
+
 	// create starting units
 	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-	
-	// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 7;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(oChicken, 5,5, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
-	
+
+	placeDefaultChicken(fx, fz, clBaseResource);
+
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
 	var bbX = round(fx + bbDist * cos(bbAngle));
 	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(oBerryBush, 5,5, 0,3)],
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create metal mine
 	var mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
@@ -171,7 +158,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create stone mines
 	mAngle += randFloat(PI/8, PI/4);
 	mX = round(fx + mDist * cos(mAngle));
@@ -181,7 +168,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create starting trees
 	var num = 3;
 	var tAngle = randFloat(-PI/3, 4*PI/3);
@@ -272,8 +259,8 @@ passageMaker(floor(fractionToTiles(0.2)), floor(fractionToTiles(0.25)), floor(fr
 passageMaker(floor(fractionToTiles(0.2)), floor(fractionToTiles(0.75)), floor(fractionToTiles(0.8)), floor(fractionToTiles(0.75)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
 
 paintTerrainBasedOnHeight(-5, 1, 1, tWater);
-paintTerrainBasedOnHeight(1, 2, 1, pForestR)
-paintTileClassBasedOnHeight(-6, 0.5, 1, clWater)
+paintTerrainBasedOnHeight(1, 2, 1, pForestR);
+paintTileClassBasedOnHeight(-6, 0.5, 1, clWater);
 
 
 RMS.SetProgress(50);
@@ -284,7 +271,7 @@ placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);
 painter = new SmoothElevationPainter(ELEVATION_MODIFY, 2, 2);
 createAreas(
 	placer,
-	painter, 
+	painter,
 	avoidClasses(clWater, 2, clPlayer, 15),
 	scaleByMapSize(100, 200)
 );
@@ -317,7 +304,7 @@ for (var i = 0; i < types.length; ++i)
 		);
 	createAreas(
 		placer,
-		[painter, paintClass(clForest)], 
+		[painter, paintClass(clForest)],
 		avoidClasses(clPlayer, 15, clWater, 3, clForest, 16, clHill, 1),
 		num
 	);
@@ -508,8 +495,8 @@ createObjectGroups(group, 0,
 
 // Set environment
 setSkySet("cirrus");
-setWaterColor(0.443,0.412,0.322);
-setWaterTint(0.647,0.82,0.949);
+setWaterColor(0.1,0.212,0.422);
+setWaterTint(0.3,0.1,0.949);
 setWaterWaviness(3.0);
 setWaterType("lake");
 setWaterMurkiness(0.80);

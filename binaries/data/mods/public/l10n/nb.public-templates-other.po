@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# Jarl.Arntzen <jarl.arntzen@gmail.com>, 2014
+# Allan Nordhøy <epost@anotheragency.no>, 2016
+# Jarl Arntzen <jarl.arntzen@gmail.com>, 2014
 # Kurt-Håkon Eilertsen <kurt@kheds.com>, 2014
 # Ole Sannes Riiser <OLE-SR@online.no>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-07-04 09:01+0200\n"
-"PO-Revision-Date: 2016-07-04 08:28+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-10-01 21:41+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/wildfire-games/0ad/language/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -117,11 +118,11 @@ msgstr "Skatt"
 msgid "A treasure that can be quickly gathered."
 msgstr "En skatt som raskt kan sankes."
 
-#: simulation/templates/template_structure.xml:58
+#: simulation/templates/template_structure.xml:55
 msgid "Structure"
 msgstr "Bygning"
 
-#: simulation/templates/template_unit.xml:39
+#: simulation/templates/template_unit.xml:40
 msgid "Unit"
 msgstr "Enhet"
 
@@ -154,6 +155,11 @@ msgstr "Leonidas I's hær"
 #: simulation/templates/campaigns/army_spart_hero_leonidas.xml:28
 msgid "Army of Leonidas I"
 msgstr "Leonidas I's hær"
+
+#: simulation/templates/campaigns/campaign_city_minor_test.xml:25
+#: simulation/templates/campaigns/campaign_city_test.xml:25
+msgid "Market"
+msgstr "Marked"
 
 #: simulation/templates/campaigns/campaign_city_minor_test.xml:26
 #: simulation/templates/campaigns/campaign_city_test.xml:26
@@ -226,7 +232,7 @@ msgstr "Ingen"
 
 #: simulation/templates/formations/phalanx.xml:6
 msgid "10 melee infantry units required"
-msgstr "10 nærangrep soldat enheter kreves"
+msgstr "10 nærangrepssoldat-enheter kreves"
 
 #: simulation/templates/formations/phalanx.xml:7
 msgid "Phalanx"
@@ -238,7 +244,7 @@ msgstr "Spredning"
 
 #: simulation/templates/formations/skirmish.xml:5
 msgid "Only ranged units allowed"
-msgstr "Bare langdistanse soldater tillatt"
+msgstr "Bare langdistanse-soldater tillattes"
 
 #: simulation/templates/formations/skirmish.xml:6
 msgid "Skirmish"
@@ -246,7 +252,7 @@ msgstr "Trefning"
 
 #: simulation/templates/formations/syntagma.xml:6
 msgid "9 pike infantry units required"
-msgstr "9 spyd soldater enheter kreves"
+msgstr "9 spyd soldat-enheter kreves"
 
 #: simulation/templates/formations/syntagma.xml:7
 msgid "Syntagma"
@@ -254,7 +260,7 @@ msgstr "Syntagma"
 
 #: simulation/templates/formations/testudo.xml:6
 msgid "9 melee infantry units required"
-msgstr "9 sverd soldater enheter kreves"
+msgstr "9 sverd-soldater enheter kreves"
 
 #: simulation/templates/formations/testudo.xml:7
 msgid "Testudo"
@@ -262,7 +268,7 @@ msgstr "Testudo"
 
 #: simulation/templates/formations/wedge.xml:6
 msgid "3 cavalry units required"
-msgstr "3 kavaleri enheter kreves"
+msgstr "3 kavaleri-enheter kreves"
 
 #: simulation/templates/formations/wedge.xml:7
 msgid "Wedge"
@@ -296,7 +302,7 @@ msgstr "Krokodille fra Nilen"
 msgid "Deer"
 msgstr "Hjort"
 
-#: simulation/templates/gaia/fauna_elephant_african_bush.xml:46
+#: simulation/templates/gaia/fauna_elephant_african_bush.xml:33
 msgid "African Bush Elephant"
 msgstr "Afrikansk busk-elefant"
 
@@ -304,7 +310,7 @@ msgstr "Afrikansk busk-elefant"
 msgid "African Elephant (Infant)"
 msgstr "Afrikansk elefant (unge)"
 
-#: simulation/templates/gaia/fauna_elephant_asian.xml:46
+#: simulation/templates/gaia/fauna_elephant_asian.xml:33
 msgid "Asian Elephant"
 msgstr "Asiatisk elefant"
 
@@ -336,11 +342,11 @@ msgstr "Gaselle"
 
 #: simulation/templates/gaia/fauna_giraffe.xml:12
 msgid "Giraffe (Adult)"
-msgstr "Giraff (Voksen)"
+msgstr "Giraff (voksen)"
 
 #: simulation/templates/gaia/fauna_giraffe_infant.xml:9
 msgid "Giraffe (Juvenile)"
-msgstr "Giraff (Ung)"
+msgstr "Giraff (ungdyr)"
 
 #: simulation/templates/gaia/fauna_goat.xml:15
 msgid "Goat"
@@ -380,7 +386,7 @@ msgstr "Neshorn"
 
 #: simulation/templates/gaia/fauna_shark.xml:13
 msgid "Great White"
-msgstr "Stor Hvit"
+msgstr "Hvithai"
 
 #: simulation/templates/gaia/fauna_shark.xml:14
 msgid "Shark"
@@ -416,7 +422,7 @@ msgstr "Ulv"
 
 #: simulation/templates/gaia/fauna_wolf_snow.xml:18
 msgid "Snow Wolf"
-msgstr "Snø tiger"
+msgstr "Snøtiger"
 
 #: simulation/templates/gaia/fauna_zebra.xml:9
 msgid "Zebra"
@@ -711,7 +717,7 @@ msgstr "Naos Parthenos"
 
 #: simulation/templates/other/hellenic_epic_temple.xml:32
 msgid "Garrison units to heal them at a quick rate."
-msgstr ""
+msgstr "Forskanse enheter for å helbrede dem raskt."
 
 #: simulation/templates/other/hellenic_propylaea.xml:25
 msgid "Portico"
@@ -770,14 +776,14 @@ msgid "Palisade Fort"
 msgstr "Palisade-fort"
 
 #: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Wooden Tower"
-msgstr "Tømmertårn"
+msgid "Sentry Tower"
+msgstr "Utkikkstårn"
 
-#: simulation/templates/other/palisades_rocks_gate.xml:25
+#: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
 msgstr "Palisade-port"
 
-#: simulation/templates/other/palisades_rocks_gate.xml:26
+#: simulation/templates/other/palisades_rocks_gate.xml:19
 msgid "Wooden Gate"
 msgstr "Tømmerport"
 
@@ -845,11 +851,11 @@ msgstr "Kro"
 msgid "Warehouse"
 msgstr "Forretning"
 
-#: simulation/templates/other/plane.xml:37
+#: simulation/templates/other/plane.xml:41
 msgid "P-51 Mustang"
 msgstr "P-51 Mustang"
 
-#: simulation/templates/other/plane.xml:39
+#: simulation/templates/other/plane.xml:43
 msgid "A World War 2 American fighter plane."
 msgstr "Et amerikansk jagerfly fra Den andre verdenskrig ."
 
@@ -868,11 +874,11 @@ msgstr "Mindre pyramide"
 
 #: simulation/templates/other/sele_colonnade.xml:20
 msgid "Colonnade"
-msgstr ""
+msgstr "Søylegang"
 
 #: simulation/templates/other/sele_colonnade.xml:21
 msgid "Corinthian Colonnade"
-msgstr ""
+msgstr "Korintisk søylegang"
 
 #: simulation/templates/other/special_treasure_shipwreck.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_ram_bow.xml:10
@@ -943,7 +949,7 @@ msgid ""
 "for other civs"
 msgstr "Endringer i et 10-innbyggershus for sivilisasjoner med disse husene slettes for andre sivilisasjoner"
 
-#: simulation/templates/skirmish/structures/default_house_5.xml:5
+#: simulation/templates/skirmish/structures/default_house_5.xml:9
 msgid ""
 "Changes in a 5-pop house for civilisations with those houses, is deleted for"
 " other civs"
