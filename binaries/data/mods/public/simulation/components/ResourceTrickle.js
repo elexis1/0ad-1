@@ -11,37 +11,51 @@ ResourceTrickle.prototype.Schema =
 
 ResourceTrickle.prototype.Init = function()
 {
-	// Call the timer
-	var cmpTimer = Engine.QueryInterface(SYSTEM_ENTITY, IID_Timer);
+	this.ComputeRates();
+
+	let cmpTimer = Engine.QueryInterface(SYSTEM_ENTITY, IID_Timer);
  	cmpTimer.SetInterval(this.entity, IID_ResourceTrickle, "Trickle", this.GetTimer(), this.GetTimer(), undefined);
 };
 
 ResourceTrickle.prototype.GetTimer = function()
 {
-	var interval = +this.template.Interval;
-	return interval;
+	return +this.template.Interval;
 };
 
 ResourceTrickle.prototype.GetRates = function()
 {
-	let rates = {};
+	return this.rates;
+};
+
+ResourceTrickle.prototype.ComputeRates = function()
+{
+	this.rates = {};
 	let resCodes = Resources.GetCodes();
 	for (let resource in this.template.Rates)
 	{
 		if (resCodes.indexOf(resource) == -1)
 			continue;
-		rates[resource] = ApplyValueModificationsToEntity("ResourceTrickle/Rates/"+resource, +this.template.Rates[resource], this.entity);
-	}
 
-	return rates;
+		this.rates[resource] = ApplyValueModificationsToEntity("ResourceTrickle/Rates/"+resource, +this.template.Rates[resource], this.entity);
+	}
 };
 
-// Do the actual work here
 ResourceTrickle.prototype.Trickle = function(data, lateness)
 {
-	let cmpPlayer = QueryOwnerInterface(this.entity, IID_Player);
-	if (cmpPlayer)
-		cmpPlayer.AddResources(this.GetRates());
+	// The player entity may also have a ResourceTrickle component
+	let cmpPlayer = QueryOwnerInterface(this.entity) || Engine.QueryInterface(this.entity, IID_Player);
+	if (!cmpPlayer)
+		return;
+
+	cmpPlayer.AddResources(this.rates);
+};
+
+ResourceTrickle.prototype.OnValueModification = function(msg)
+{
+	if (msg.component != "ResourceTrickle")
+		return;
+
+	this.ComputeRates();
 };
 
 Engine.RegisterComponentType(IID_ResourceTrickle, "ResourceTrickle", ResourceTrickle);
