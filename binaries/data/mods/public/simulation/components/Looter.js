@@ -26,7 +26,7 @@ Looter.prototype.Collect = function(targetEntity)
 	// Loot resources as defined in the templates
 	let lootTemplate = cmpLoot.GetResources();
 	let resources = {};
-	for (let type in Resources.GetCodes())
+	for (let type of Resources.GetCodes())
 		resources[type] =
 			ApplyValueModificationsToEntity(
 				"Looter/Resource/"+type, lootTemplate[type] || 0, this.entity) +
