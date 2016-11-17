@@ -7,6 +7,5 @@
 		"ruins": "Ruins"
 	},
 	"truePrice": 100,
-	"aiAnalysisInfluenceGroup": 2,
-	"enabled": true
+	"aiAnalysisInfluenceGroup": 2
 }

@@ -10,6 +10,5 @@
 		"milk": "Milk"
 	},
 	"truePrice": 100,
-	"aiAnalysisInfluenceGroup": 0,
-	"enabled": true
+	"aiAnalysisInfluenceGroup": 0
 }

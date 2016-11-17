@@ -34,8 +34,7 @@ function Resources()
 			warn("Resource codes should use lower case: " + data.code);
 
 		this.resourceData.push(data);
-		if (data.enabled)
-			this.resourceCodes.push(data.code);
+		this.resourceCodes.push(data.code);
 	}
 
 	let resSort = (a, b) =>
@@ -51,12 +50,12 @@ function Resources()
 
 Resources.prototype.GetData = function()
 {
-	return this.resourceData.filter(resource => resource.enabled);
+	return this.resourceData;
 };
 
 Resources.prototype.GetResource = function(type)
 {
-	return this.GetData().find(resource => resource.code == type);
+	return this.resourceData.find(resource => resource.code == type);
 };
 
 Resources.prototype.GetCodes = function()
@@ -71,7 +70,7 @@ Resources.prototype.GetCodes = function()
 Resources.prototype.GetNames = function()
 {
 	let names = {};
-	for (let res of this.GetData())
+	for (let res of this.resourceData)
 	{
 		names[res.code] = res.name;
 		for (let subres in res.subtypes)
