@@ -22,7 +22,9 @@ function Resources()
 	}
 
 	this.resourceData = [];
+	this.resourceDataObj = {};
 	this.resourceCodes = [];
+	this.resourceNames = {};
 
 	for (let filename of jsonFiles)
 	{
@@ -34,9 +36,14 @@ function Resources()
 			warn("Resource codes should use lower case: " + data.code);
 
 		this.resourceData.push(data);
+		this.resourceDataObj[data.code] = data;
 		this.resourceCodes.push(data.code);
+		this.resourceNames[data.code] = data.name;
+		for (let subres in data.subtypes)
+			this.resourceNames[subres] = data.subtypes[subres]
 	}
 
+	// Sort arrays by specified order
 	let resSort = (a, b) =>
 		a.order < b.order ? -1 :
 		a.order > b.order ? +1 : 0;
@@ -48,33 +55,37 @@ function Resources()
 	));
 };
 
+/**
+ * Returns the objects defined in the JSON files for all availbale resources,
+ * ordered as defined in these files.
+ */
 Resources.prototype.GetData = function()
 {
 	return this.resourceData;
 };
 
+/**
+ * Returns the object defined in the JSON file for the given resource.
+ */
 Resources.prototype.GetResource = function(type)
 {
-	return this.resourceData.find(resource => resource.code == type);
+	return this.resourceDataObj[type];
 };
 
+/**
+ * Returns an array containing all resource codes ordered as defined in the resource files.
+ * For example ["food", "wood", "stone", "metal"].
+ */
 Resources.prototype.GetCodes = function()
 {
 	return this.resourceCodes;
 };
 
 /**
- * Returns an object containing untranslated resource names mapped to
- * resource codes. Includes subtypes.
+ * Returns an object mapping resource codes to untranslated resource names, includes subtypes.
+ * For example { "food": "Food", "fish": "Fish", "fruit": "Fruit", "metal": "Metal", ... }
  */
 Resources.prototype.GetNames = function()
 {
-	let names = {};
-	for (let res of this.resourceData)
-	{
-		names[res.code] = res.name;
-		for (let subres in res.subtypes)
-			names[subres] = res.subtypes[subres]
-	}
-	return names;
+	return this.resourceNames;
 };
