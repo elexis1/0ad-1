@@ -30,6 +30,9 @@ function Resources()
 		if (!data)
 			continue;
 
+		if (data.code != data.code.toLowerCase())
+			warn("Resource codes should use lower case: " + data.code);
+
 		this.resourceData.push(data);
 		if (data.enabled)
 			this.resourceCodes.push(data.code);
@@ -53,8 +56,7 @@ Resources.prototype.GetData = function()
 
 Resources.prototype.GetResource = function(type)
 {
-	let lType = type.toLowerCase();
-	return this.GetData().find(resource => resource.code == lType);
+	return this.GetData().find(resource => resource.code == type);
 };
 
 Resources.prototype.GetCodes = function()
