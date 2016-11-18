@@ -409,7 +409,8 @@ function displayMultiple(entStates)
 	if (Object.keys(totalCarrying).length)
 		numberOfUnits.tooltip = sprintf(translate("%(label)s %(details)s\n"), {
 			"label": headerFont(translate("Carrying:")),
-			"details": bodyFont(RESOURCES.filter(res => !!totalCarrying[res]).map(
+			"details": bodyFont(Object.keys(totalCarrying).filter(
+				res => totalCarrying[res] != 0).map(
 				res => sprintf(translate("%(type)s %(amount)s"),
 					{ "type": costIcon(res), "amount": totalCarrying[res] })).join("  "))
 		});
@@ -417,7 +418,8 @@ function displayMultiple(entStates)
 	if (Object.keys(totalLoot).length)
 		numberOfUnits.tooltip += sprintf(translate("%(label)s %(details)s"), {
 			"label": headerFont(translate("Loot:")),
-			"details": bodyFont(Object.keys(totalLoot).map(
+			"details": bodyFont(Object.keys(totalLoot).filter(
+				res => totalLoot[res] != 0).map(
 				res => sprintf(translate("%(type)s %(amount)s"),
 					{ "type": costIcon(res), "amount": totalLoot[res] })).join("  "))
 		});
