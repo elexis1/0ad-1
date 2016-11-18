@@ -95,8 +95,8 @@ var g_ScorePanelsData = {
 	"resources": {
 		"headings": [
 			{ "caption": translate("Player name"), "yStart": 26, "width": 200 },
-			...g_ResourceData.GetCodes().map(code => ({
-				"caption": translateWithContext("firstWord", g_ResourceData.GetNames()[code]),
+			...g_ResourceData.GetData().map(res => ({
+				"caption": translateWithContext("firstWord", res.name),
 				"yStart": 34,
 				"width": 100
 			})),
@@ -121,7 +121,7 @@ var g_ScorePanelsData = {
 						"used": g_OutcomeColor + translate("Used") + '[/color]'
 					}),
 				"yStart": 16,
-				"width": 100 * g_ResourceData.GetCodes() + 110
+				"width": 100 * g_ResourceData.GetCodes().length + 110
 			},
 		],
 		"counters": [
@@ -140,16 +140,18 @@ var g_ScorePanelsData = {
 	"market": {
 		"headings": [
 			{ "caption": translate("Player name"), "yStart": 26, "width": 200 },
-			...g_ResourceData.GetCodes().map(code => ({
-				"caption": sprintf(
-					// Translation: use %(resourceWithinSentence)s if needed
-					translate("%(resourceFirstWord)s exchanged"), {
-						"resourceFirstWord": translateWithContext("firstWord", resNames[code]),
-						"resourceWithinSentence": translateWithContext("withinSentence", resNames[code])
-					}),
-				"yStart": 16,
-				"width": 100
-			})),
+			...g_ResourceData.GetData().map(res => {
+				return {
+					"caption":
+						// Translation: use %(resourceWithinSentence)s if needed
+						sprintf(translate("%(resourceFirstWord)s exchanged"), {
+							"resourceFirstWord": translateWithContext("firstWord", res.name),
+							"resourceWithinSentence": translateWithContext("withinSentence", res.name)
+						}),
+					"yStart": 16,
+					"width": 100
+				};
+			}),
 			{ "caption": translate("Barter efficiency"), "yStart": 16, "width": 100 },
 			{ "caption": translate("Trade income"), "yStart": 16, "width": 100 }
 		],
