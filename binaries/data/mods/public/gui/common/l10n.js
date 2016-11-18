@@ -1,4 +1,3 @@
-
 function getLocalizedResourceName(resourceName, context)
 {
 	return translateWithContext(context, resourceName);
@@ -13,7 +12,7 @@ function getLocalizedResourceAmounts(resources)
 		.filter(type => resources[type] > 0)
 		.map(type => sprintf(translate("%(amount)s %(resourceType)s"), {
 			"amount": resources[type],
-			"resourceType": translateWithContext("withinSentence", type)
+			"resourceType": getLocalizedResourceName(g_ResourceData.GetResource(type).name, "withinSentence")
 		}));
 
 	if (amounts.length > 1)
