@@ -35,6 +35,13 @@ function Resources()
 		if (data.code != data.code.toLowerCase())
 			warn("Resource codes should use lower case: " + data.code);
 
+		// Treasures are supported for every specified resource
+		if (data.code == "treasure")
+		{
+			error("Encountered resource with reserved keyword: " + data.code);
+			continue;
+		}
+
 		this.resourceData.push(data);
 		this.resourceDataObj[data.code] = data;
 		this.resourceCodes.push(data.code);
@@ -82,7 +89,7 @@ Resources.prototype.GetCodes = function()
 };
 
 /**
- * Returns an object mapping resource codes to untranslated resource names, includes subtypes.
+ * Returns an object mapping resource codes to translatable resource names. Includes subtypes.
  * For example { "food": "Food", "fish": "Fish", "fruit": "Fruit", "metal": "Metal", ... }
  */
 Resources.prototype.GetNames = function()

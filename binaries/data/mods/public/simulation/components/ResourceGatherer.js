@@ -113,10 +113,12 @@ ResourceGatherer.prototype.RecalculateGatherRatesAndCapacities = function()
 	for (let r in this.template.Rates)
 	{
 		let type = r.split(".");
-		let res = Resources.GetResource(type[0]);
 
-		if (!res && type[0] !== "treasure" || type.length > 1 && !res.subtypes[type[1]])
+		if (type[0] != "treasure" && type.length > 1 && !Resources.GetResource(type[0]).subtypes[type[1]])
+		{
+			error("Resource subtype not found: " + type[0] + "." + type[1]);
 			continue;
+		}
 
 		let rate = ApplyValueModificationsToEntity("ResourceGatherer/Rates/" + r, +this.template.Rates[r], this.entity);
 		this.rates[r] = rate * this.baseSpeed;
