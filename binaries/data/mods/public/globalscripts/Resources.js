@@ -66,7 +66,7 @@ function Resources()
  * Returns the objects defined in the JSON files for all availbale resources,
  * ordered as defined in these files.
  */
-Resources.prototype.GetData = function()
+Resources.prototype.GetResources = function()
 {
 	return this.resourceData;
 };

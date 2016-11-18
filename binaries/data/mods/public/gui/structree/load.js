@@ -7,7 +7,7 @@ function getGatherRates(templateName)
 {
 	let rates = {};
 
-	for (let resource of g_ResourceData.GetData())
+	for (let resource of g_ResourceData.GetResources())
 	{
 		let types = [resource.code];
 		for (let subtype in resource.subtypes)

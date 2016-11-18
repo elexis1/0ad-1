@@ -95,7 +95,7 @@ var g_ScorePanelsData = {
 	"resources": {
 		"headings": [
 			{ "caption": translate("Player name"), "yStart": 26, "width": 200 },
-			...g_ResourceData.GetData().map(res => ({
+			...g_ResourceData.GetResources().map(res => ({
 				"caption": translateWithContext("firstWord", res.name),
 				"yStart": 34,
 				"width": 100
@@ -140,7 +140,7 @@ var g_ScorePanelsData = {
 	"market": {
 		"headings": [
 			{ "caption": translate("Player name"), "yStart": 26, "width": 200 },
-			...g_ResourceData.GetData().map(res => {
+			...g_ResourceData.GetResources().map(res => {
 				return {
 					"caption":
 						// Translation: use %(resourceWithinSentence)s if needed
