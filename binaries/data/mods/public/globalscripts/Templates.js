@@ -341,8 +341,9 @@ function GetTemplateDataHelper(template, player, auraTemplates, resources)
  * Get information about a technology template.
  * @param template A valid template as obtained by loading the tech JSON file.
  * @param civ Civilization for which the specific name should be returned.
+ * @param resources An instance of the Resources prototype.
  */
-function GetTechnologyDataHelper(template, civ)
+function GetTechnologyDataHelper(template, civ, resources)
 {
 	var ret = {};
 
@@ -363,13 +364,9 @@ function GetTechnologyDataHelper(template, civ)
 
 	ret.icon = template.icon ? "technologies/" + template.icon : null;
 
-	ret.cost = {
-		"food": template.cost ? +template.cost.food : 0,
-		"wood": template.cost ? +template.cost.wood : 0,
-		"metal": template.cost ? +template.cost.metal : 0,
-		"stone": template.cost ? +template.cost.stone : 0,
-		"time": template.researchTime ? +template.researchTime : 0,
-	}
+	ret.cost = { "time": template.researchTime ? +template.researchTime : 0 }
+	for (let type of resources.GetCodes())
+		ret.cost[type] = template.cost ? +template.cost[type] : 0;
 
 	ret.tooltip = template.tooltip;
 	ret.requirementsTooltip = template.requirementsTooltip || "";

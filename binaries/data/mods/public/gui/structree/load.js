@@ -176,7 +176,7 @@ function loadStructure(templateName)
 function loadTechnology(techName)
 {
 	var template = loadTechData(techName);
-	var tech = GetTechnologyDataHelper(template, g_SelectedCiv);
+	var tech = GetTechnologyDataHelper(template, g_SelectedCiv, g_ResourceData);
 	tech.reqs = {};
 
 	if (template.pair !== undefined)
@@ -239,7 +239,7 @@ function loadTechnology(techName)
 function loadPhase(phaseCode)
 {
 	var template = loadTechData(phaseCode);
-	var phase = GetTechnologyDataHelper(template, g_SelectedCiv);
+	var phase = GetTechnologyDataHelper(template, g_SelectedCiv, g_ResourceData);
 
 	phase.actualPhase = phaseCode;
 	if (template.replaces !== undefined)

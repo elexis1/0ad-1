@@ -670,7 +670,7 @@ GuiInterface.prototype.GetTechnologyData = function(player, name)
 	}
 
 	let cmpPlayer = QueryPlayerIDInterface(player, IID_Player);
-	return GetTechnologyDataHelper(template, cmpPlayer.GetCiv());
+	return GetTechnologyDataHelper(template, cmpPlayer.GetCiv(), Resources);
 };
 
 GuiInterface.prototype.IsTechnologyResearched = function(player, data)
