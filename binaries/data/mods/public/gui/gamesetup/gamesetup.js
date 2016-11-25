@@ -276,7 +276,7 @@ var g_LastViewedAIPlayer = -1;
  * NOTICE: The first three elements need to be initialized first.
  * If the map is changed, missing values are supplemented with defaults.
  */
-var g_Dropdowns = g_Settings && {
+var g_Dropdowns = {
 	"mapType": {
 		"labels": () => g_MapTypes.Title,
 		"ids": () => g_MapTypes.Name,
@@ -447,7 +447,10 @@ var g_DropdownArrays = {
 		"ids": (idx) => g_TeamsArray.id,
 		"default": (idx) => 0,
 		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Team !== undefined,
-		"get": (idx) => warn(idx),//g_GameAttributes.settings.PlayerData[idx].Team,
+		"get": (idx) => {
+			warn(idx);
+			return g_GameAttributes.settings.PlayerData[idx].Team;
+		},
 		"select": (idx, selectedIdx) => {
 			g_GameAttributes.settings.PlayerData[idx].Team = selectedIdx - 1;
 		},
@@ -1687,9 +1690,6 @@ function updatePlayerList()
 	let aiAssignments = {};
 	for (let guid of sortGUIDsByPlayerID())
 		assignments[g_PlayerAssignments[guid].player] = g_HostNameList.length - 1;
-
-	let playerSlot;
-	g_GameAttributes.settings.PlayerData[playerSlot].AI = g_GameAttributes.settings.PlayerData[playerSlot].AI || "";
 
 	initDropdownArray("playerAssignment");
 
