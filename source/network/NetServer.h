@@ -168,10 +168,9 @@ public:
 	void KickPlayer(const CStrW& playerName, const bool ban);
 
 	/**
-	 * Send a message to all clients who have completed the full connection process
-	 * (i.e. are in the pre-game or in-game states).
+	 * Send a message to all clients who match one of the given states.
 	 */
-	bool Broadcast(const CNetMessage* message);
+	bool Broadcast(const CNetMessage* message, std::vector<NetServerSessionState> targetStates);
 
 private:
 	friend class CNetServer;
