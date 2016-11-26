@@ -849,7 +849,7 @@ void CNetServerWorker::SendPlayerAssignments()
 {
 	CPlayerAssignmentMessage message;
 	ConstructPlayerAssignmentMessage(message);
-	Broadcast(&message, { NSS_PREGAME, NSS_INGAME });
+	Broadcast(&message, { NSS_PREGAME, NSS_JOIN_SYNCING, NSS_INGAME });
 }
 
 ScriptInterface& CNetServerWorker::GetScriptInterface()
