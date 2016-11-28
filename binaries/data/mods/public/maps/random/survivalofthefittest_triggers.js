@@ -1,3 +1,46 @@
+/**
+ * When the first wave will be started.
+ */
+var firstWaveTime = 4;
+
+/**
+ * Least amount of time between two waves.
+ */
+var minWaveTime = 2;
+
+/**
+ * Greatest amount of time between two waves.
+ */
+var maxWaveTime = 5;
+
+/**
+ * Number of attackers on the first wave.
+ */
+var firstWaveAttackers = 5;
+
+/**
+ * Increase the number of attackers exponentially, by this percent value per minute.
+ */
+var percentPerMinute = 1.03;
+
+/**
+ * Greatest number of attacker that can be spawned.
+ */
+var totalAttackerLimit = 400;
+
+/**
+ * Least amount of siege per wave.
+ */
+var minSiegeFraction = 0.2;
+
+/**
+ * Greatest amount of siege per wave.
+ */
+var maxSiegeFraction = 0.5;
+
+/**
+ * The following templates can't be built by any player.
+ */
 var disabledTemplates = (civ) => [
 	// Economic structures
 	"structures/" + civ + "_corral",
@@ -23,8 +66,10 @@ var disabledTemplates = (civ) => [
 	"structures/ptol_lighthouse"
 ];
 
-var treasures =
-[
+/**
+ * Spawn these treasures in regular intervals.
+ */
+var treasures = [
 	"gaia/special_treasure_food_barrel",
 	"gaia/special_treasure_food_bin",
 	"gaia/special_treasure_food_crate",
@@ -36,90 +81,178 @@ var treasures =
 	"gaia/special_treasure_wood"
 ];
 
-var attackerEntityTemplates =
-[
-	[
-		"units/athen_champion_infantry",
-		"units/athen_champion_marine",
-		"units/athen_champion_ranged",
-		"units/athen_mechanical_siege_lithobolos_packed",
-		"units/athen_mechanical_siege_oxybeles_packed",
-	],
-	[
-		"units/brit_champion_cavalry",
-		"units/brit_champion_infantry",
-		"units/brit_mechanical_siege_ram",
-	],
-	[
-		"units/cart_champion_cavalry",
-		"units/cart_champion_elephant",
-		"units/cart_champion_infantry",
-		"units/cart_champion_pikeman",
-	],
-	[
-		"units/gaul_champion_cavalry",
-		"units/gaul_champion_fanatic",
-		"units/gaul_champion_infantry",
-		"units/gaul_mechanical_siege_ram",
-	],
-	[
-		"units/iber_champion_cavalry",
-		"units/iber_champion_infantry",
-		"units/iber_mechanical_siege_ram",
-	],
-	[
-		"units/mace_champion_cavalry",
-		"units/mace_champion_infantry_a",
-		"units/mace_champion_infantry_e",
-		"units/mace_mechanical_siege_lithobolos_packed",
-		"units/mace_mechanical_siege_oxybeles_packed",
-	],
-	[
-		"units/maur_champion_chariot",
-		"units/maur_champion_elephant",
-		"units/maur_champion_infantry",
-		"units/maur_champion_maiden",
-		"units/maur_champion_maiden_archer",
-	],
-	[
-		"units/pers_champion_cavalry",
-		"units/pers_champion_infantry",
-		"units/pers_champion_elephant",
-	],
-	[
-		"units/ptol_champion_cavalry",
-		"units/ptol_champion_elephant",
-	],
-	[
-		"units/rome_champion_cavalry",
-		"units/rome_champion_infantry",
-		"units/rome_mechanical_siege_ballista_packed",
-		"units/rome_mechanical_siege_scorpio_packed",
-	],
-	[
-		"units/sele_champion_cavalry",
-		"units/sele_champion_chariot",
-		"units/sele_champion_elephant",
-		"units/sele_champion_infantry_pikeman",
-		"units/sele_champion_infantry_swordsman",
-	],
-	[
-		"units/spart_champion_infantry_pike",
-		"units/spart_champion_infantry_spear",
-		"units/spart_champion_infantry_sword",
-		"units/spart_mechanical_siege_ram",
-	],
-];
+var attackerEntityTemplates = {
+	"athen": {
+		"champions": [
+			"athen_champion_infantry",
+			"athen_champion_marine",
+			"athen_champion_ranged",
+		],
+		"siege": [
+			"athen_mechanical_siege_lithobolos_packed",
+			"athen_mechanical_siege_oxybeles_packed",
+		],
+	},
+	"brit": {
+		"champions": [
+			"brit_champion_cavalry",
+			"brit_champion_infantry",
+		],
+		"siege": [
+			"brit_mechanical_siege_ram",
+		]
+	},
+	"cart": {
+		"champions": [
+			"cart_champion_cavalry",
+			"cart_champion_infantry",
+			"cart_champion_pikeman",
+		],
+		"siege": [
+			"cart_champion_elephant",
+			"cart_mechanical_siege_ballista_packed",
+		]
+	},
+	"gaul": {
+		"champions": [
+			"gaul_champion_cavalry",
+			"gaul_champion_fanatic",
+			"gaul_champion_infantry",
+		],
+		"siege": [
+			"gaul_mechanical_siege_ram",
+		]
+	},
+	"iber": {
+		"champions": [
+			"iber_champion_cavalry",
+			"iber_champion_infantry",
+		],
+		"siege": [
+			"iber_mechanical_siege_ram",
+		]
+	},
+	"mace": {
+		"champions": [
+			"mace_champion_cavalry",
+			"mace_champion_infantry_a",
+			"mace_champion_infantry_e",
+		],
+		"siege": [
+			"mace_mechanical_siege_lithobolos_packed",
+			"mace_mechanical_siege_oxybeles_packed",
+		]
+	},
+	"maur": {
+		"champions": [
+			"maur_champion_chariot",
+			"maur_champion_infantry",
+			"maur_champion_maiden",
+			"maur_champion_maiden_archer",
+		],
+		"siege": [
+			"maur_champion_elephant",
+		]
+	},
+	"pers": {
+		"champions": [
+			"pers_champion_cavalry",
+			"pers_champion_infantry",
+		],
+		"siege": [
+			"pers_champion_elephant",
+		]
+	},
+	"ptol": {
+		"champions": [
+			"ptol_champion_cavalry",
+		],
+		"siege": [
+			"ptol_champion_elephant",
+		]
+	},
+	"rome": {
+		"champions": [
+			"rome_champion_cavalry",
+			"rome_champion_infantry",
+		],
+		"siege": [
+			"rome_mechanical_siege_ballista_packed",
+			"rome_mechanical_siege_scorpio_packed",
+		],
+	},
+	"sele": {
+		"champions": [
+			"sele_champion_cavalry",
+			"sele_champion_chariot",
+			"sele_champion_infantry_pikeman",
+			"sele_champion_infantry_swordsman",
+		],
+		"siege": [
+			"sele_champion_elephant",
+		]
+	},
+	"spart": {
+		"champions": [
+			"spart_champion_infantry_pike",
+			"spart_champion_infantry_spear",
+			"spart_champion_infantry_sword",
+		],
+		"siege": [
+			"spart_mechanical_siege_ram",
+		]
+	}
+};
 
 Trigger.prototype.StartAnEnemyWave = function()
 {
 	let cmpTimer = Engine.QueryInterface(SYSTEM_ENTITY, IID_Timer);
-	let attackerTemplates = attackerEntityTemplates[Math.floor(Math.random() * attackerEntityTemplates.length)];
-	// A soldier for each 2-3 minutes of the game. Should be waves of 20 soldiers after an hour
-	let nextTime = Math.round(120000 + Math.random() * 60000);
-	let attackersPerTemplate = Math.ceil(cmpTimer.GetTime() / nextTime / attackerTemplates.length);
-	let spawned = false;
+	let currentMin = cmpTimer.GetTime() / 60000;
 
+	let nextWaveTime = Math.round(minWaveTime + Math.random() * (maxWaveTime - minWaveTime));
+
+	// Determine attacker civ
+	let civs = Object.keys(attackerEntityTemplates);
+	let civ = "athen"; //civs[Math.floor(Math.random() * civs.length)];
+
+	// Determine total attacker count of the wave
+	let totalAttackers = Math.ceil(Math.min(totalAttackerLimit,
+		firstWaveAttackers * Math.pow(percentPerMinute, currentMin - firstWaveTime) * nextWaveTime/maxWaveTime));
+
+	warn("Spawning " + totalAttackers + " attackers at " + Math.round(currentMin));
+
+	let attackerTemplates = [];
+
+	// Random siege to champion ratio
+	let siegeRatio = Math.random() * (maxSiegeFraction - minSiegeFraction) + minSiegeFraction;
+	let siegeCount = Math.round(siegeRatio * totalAttackers);
+	warn("  Siege ratio: " + Math.round(siegeRatio * 100) + "%");
+	let attackerTypeCounts = {
+		"siege": siegeCount,
+		"champions": totalAttackers - siegeCount
+	};
+
+	// Random ratio of the given templates
+	for (let attackerType in attackerTypeCounts)
+	{
+		let attackerTypeCount = attackerTypeCounts[attackerType];
+		for (let i in attackerEntityTemplates[civ][attackerType])
+		{
+			let count =
+				+i == attackerEntityTemplates[civ][attackerType].length ?
+				attackerTypeCount :
+				Math.max(attackerTypeCount, Math.round(Math.random() * attackerTypeCounts[attackerType]));
+
+			attackerTemplates.push({
+				"template": attackerEntityTemplates[civ][attackerType][i],
+				"count": count
+			});
+			attackerTypeCount -= count;
+		}
+	}
+
+	// Spawn the templates
+	let spawned = false;
 	for (let point of this.GetTriggerPoints("A"))
 	{
 		let cmpPlayer = QueryOwnerInterface(point, IID_Player);
@@ -131,9 +264,12 @@ Trigger.prototype.StartAnEnemyWave = function()
 			continue;
 		let targetPos = cmpPosition.GetPosition();
 
-		for (let template of attackerTemplates)
+		for (let attackerTemplate of attackerTemplates)
 		{
-			let entities = TriggerHelper.SpawnUnits(point, template, attackersPerTemplate, 0);
+			let entities = TriggerHelper.SpawnUnits(point, "units/" + attackerTemplate.template, attackerTemplate.count, 0);
+
+			if (cmpPlayer.GetPlayerID() == 1)
+				warn("  Spawning " + attackerTemplate.count + " " + attackerTemplate.template);
 
 			ProcessCommand(0, {
 				"type": "attack-walk",
@@ -155,17 +291,17 @@ Trigger.prototype.StartAnEnemyWave = function()
 		"message": markForTranslation("An enemy wave is attacking!"),
 		"translateMessage": true
 	});
-	this.DoAfterDelay(nextTime, "StartAnEnemyWave", {}); // The next wave will come in 3 minutes
+	this.DoAfterDelay(nextWaveTime * 60 * 1000, "StartAnEnemyWave", {});
 };
 
 Trigger.prototype.InitGame = function()
 {
+	// Rmember civic centers and make women invincible
 	let numberOfPlayers = TriggerHelper.GetNumberOfPlayers();
-	// Find all of the civic centers, disable some structures
 	for (let i = 1; i < numberOfPlayers; ++i)
 	{
 		let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
-		let playerEntities = cmpRangeManager.GetEntitiesByPlayer(i); // Get all of each player's entities
+		let playerEntities = cmpRangeManager.GetEntitiesByPlayer(i);
 
 		for (let entity of playerEntities)
 		{
@@ -206,7 +342,8 @@ Trigger.prototype.PlaceTreasures = function()
 
 Trigger.prototype.InitializeEnemyWaves = function()
 {
-	let time = (5 + Math.round(Math.random() * 10)) * 60 * 1000;
+	let time = firstWaveTime * 60 * 1000;
+	warn(firstWaveTime);
 	let cmpGUIInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
 	cmpGUIInterface.AddTimeNotification({
 		"message": markForTranslation("The first wave will start in %(time)s!"),
