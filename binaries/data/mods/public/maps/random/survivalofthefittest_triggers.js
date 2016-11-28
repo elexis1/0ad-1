@@ -39,6 +39,16 @@ var minSiegeFraction = 0.2;
 var maxSiegeFraction = 0.5;
 
 /**
+ * Least amount of time to pass until potentially spawning gaia heroes.
+ */
+var minHeroTime = 30;
+
+/**
+ * Definitely spawn heroes after this time.
+ */
+var maxHeroTime = 60;
+
+/**
  * The following templates can't be built by any player.
  */
 var disabledTemplates = (civ) => [
@@ -221,7 +231,20 @@ Trigger.prototype.StartAnEnemyWave = function()
 
 	warn("Spawning " + totalAttackers + " attackers at " + Math.round(currentMin));
 
+	// Add hero
+	// TODO: only add hero if there is no existing one!!!
 	let attackerTemplates = [];
+	let rnd = Math.random();
+	let spawnHero = rnd < currentMin / heroTime;
+	warn((spawnHero ? "S" : "Not s") + "pawning Hero " + Math.round(rnd * 100) + "%");
+	if (spawnHero)
+	{
+		attackerTemplates.push({
+			"template": attackerEntityTemplates[civ].heroes[Math.floor(Math.random() * attackerEntityTemplates[civ].heroes.length)],
+			"count": 1
+		});
+		--totalAttackers;
+	}
 
 	// Random siege to champion ratio
 	let siegeRatio = Math.random() * (maxSiegeFraction - minSiegeFraction) + minSiegeFraction;
@@ -296,6 +319,23 @@ Trigger.prototype.StartAnEnemyWave = function()
 
 Trigger.prototype.InitGame = function()
 {
+	// Load Hero Templates
+	let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
+	for (let templateName of cmpTemplateManager.FindAllTemplates(false))
+	{
+		if (templateName.substring(0,6) != "units/")
+			continue;
+
+		let identity = cmpTemplateManager.GetTemplate(templateName).Identity;
+		if (GetIdentityClasses(identity).indexOf("Hero") == -1)
+			continue;
+
+		if (!attackerEntityTemplates[identity.Civ].heroes)
+			attackerEntityTemplates[identity.Civ].heroes = [];
+
+		attackerEntityTemplates[identity.Civ].heroes.push(templateName.substring(6));
+	}
+
 	// Rmember civic centers and make women invincible
 	let numberOfPlayers = TriggerHelper.GetNumberOfPlayers();
 	for (let i = 1; i < numberOfPlayers; ++i)
