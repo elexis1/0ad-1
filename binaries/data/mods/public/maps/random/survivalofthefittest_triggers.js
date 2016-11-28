@@ -78,6 +78,7 @@ var disabledTemplates = (civ) => [
 
 /**
  * Spawn these treasures in regular intervals.
+ * TODO: spawn enemy gaia women simultaenously later
  */
 var treasures = [
 	"gaia/special_treasure_food_barrel",
@@ -279,7 +280,7 @@ Trigger.prototype.StartAnEnemyWave = function()
 	for (let point of this.GetTriggerPoints("A"))
 	{
 		let cmpPlayer = QueryOwnerInterface(point, IID_Player);
-		if (cmpPlayer.GetPlayerID() == 0 || cmpPlayer.GetState() != "active")
+		if (cmpPlayer.GetPlayerID() == 0) // || cmpPlayer.GetState() != "active")
 			continue;
 
 		let cmpPosition =  Engine.QueryInterface(this.playerCivicCenter[cmpPlayer.GetPlayerID()], IID_Position);
