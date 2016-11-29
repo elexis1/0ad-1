@@ -224,25 +224,25 @@ Trigger.prototype.StartAnEnemyWave = function()
 
 	// Determine attacker civ
 	let civs = Object.keys(attackerEntityTemplates);
-	let civ = "athen"; //civs[Math.floor(Math.random() * civs.length)];
+	let civ = civs[Math.floor(Math.random() * civs.length)];
 
 	// Determine total attacker count of the wave
 	let totalAttackers = Math.ceil(Math.min(totalAttackerLimit,
 		firstWaveAttackers * Math.pow(percentPerMinute, currentMin - firstWaveTime) * nextWaveTime/maxWaveTime));
 
-	warn("Spawning " + totalAttackers + " attackers at " + Math.round(currentMin));
+	warn("[" + Math.round(currentMin) + "]  Spawning " + totalAttackers + " attackers");
+
+	let attackerTemplates = [];
 
 	// Add hero
-	// TODO: only add hero if there is no existing one!!!
-	let attackerTemplates = [];
-	let rnd = Math.random();
-	let spawnHero = rnd < currentMin / heroTime;
-	warn((spawnHero ? "S" : "Not s") + "pawning Hero " + Math.round(rnd * 100) + "%");
+	let spawnHero = currentMin > Math.random() * (maxHeroTime - minHeroTime) + minHeroTime;
 	if (spawnHero)
 	{
+		warn("  Spawning hero");
 		attackerTemplates.push({
 			"template": attackerEntityTemplates[civ].heroes[Math.floor(Math.random() * attackerEntityTemplates[civ].heroes.length)],
-			"count": 1
+			"count": 1,
+			"hero": true
 		});
 		--totalAttackers;
 	}
@@ -250,12 +250,13 @@ Trigger.prototype.StartAnEnemyWave = function()
 	// Random siege to champion ratio
 	let siegeRatio = Math.random() * (maxSiegeFraction - minSiegeFraction) + minSiegeFraction;
 	let siegeCount = Math.round(siegeRatio * totalAttackers);
-	warn("  Siege ratio: " + Math.round(siegeRatio * 100) + "%");
+	warn("  Siege Ratio: " + Math.round(siegeRatio * 100) + "%");
 	let attackerTypeCounts = {
 		"siege": siegeCount,
 		"champions": totalAttackers - siegeCount
 	};
 
+	warn("  Spawning:" + uneval(attackerTypeCounts));
 	// Random ratio of the given templates
 	for (let attackerType in attackerTypeCounts)
 	{
@@ -275,26 +276,41 @@ Trigger.prototype.StartAnEnemyWave = function()
 		}
 	}
 
+	let meh = true;
 	// Spawn the templates
 	let spawned = false;
+	let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
 	for (let point of this.GetTriggerPoints("A"))
 	{
 		let cmpPlayer = QueryOwnerInterface(point, IID_Player);
-		if (cmpPlayer.GetPlayerID() == 0) // || cmpPlayer.GetState() != "active")
+/*
+		if (cmpPlayer.GetPlayerID() == 0)
 			continue;
-
-		let cmpPosition =  Engine.QueryInterface(this.playerCivicCenter[cmpPlayer.GetPlayerID()], IID_Position);
-		if (!cmpPosition || !cmpPosition.IsInWorld)
-			continue;
-		let targetPos = cmpPosition.GetPosition();
+*/
+		if (cmpPlayer.GetPlayerID() != 0)
+		{
+			var cmpPosition =  Engine.QueryInterface(this.playerCivicCenter[cmpPlayer.GetPlayerID()], IID_Position);
+			if (!cmpPosition || !cmpPosition.IsInWorld)
+				continue;
+			var targetPos = cmpPosition.GetPosition();
+		}
 
 		for (let attackerTemplate of attackerTemplates)
 		{
-			let entities = TriggerHelper.SpawnUnits(point, "units/" + attackerTemplate.template, attackerTemplate.count, 0);
-
-			if (cmpPlayer.GetPlayerID() == 1)
+			if (meh && attackerTemplate.count)
 				warn("  Spawning " + attackerTemplate.count + " " + attackerTemplate.template);
 
+			if (cmpPlayer.GetPlayerID() == 0)
+				continue;
+
+			if (attackerTemplate.hero)
+			{
+				let cmpHealth = Engine.QueryInterface(this.gaiaHeroes[cmpPlayer.GetPlayerID()], IID_Health);
+				if (cmpHealth && cmpHealth.GetHitpoints() != 0)
+					continue;
+			}
+
+			let entities = TriggerHelper.SpawnUnits(point, "units/" + attackerTemplate.template, attackerTemplate.count, 0);
 			ProcessCommand(0, {
 				"type": "attack-walk",
 				"entities": entities,
@@ -303,7 +319,11 @@ Trigger.prototype.StartAnEnemyWave = function()
 				"queued": true,
 				"targetClasses": undefined
 			});
+
+			if (attackerTemplate.hero)
+				this.gaiaHeroes[cmpPlayer.GetPlayerID()] = entities[0];
 		}
+		meh=false;
 		spawned = true;
 	}
 
@@ -384,7 +404,6 @@ Trigger.prototype.PlaceTreasures = function()
 Trigger.prototype.InitializeEnemyWaves = function()
 {
 	let time = firstWaveTime * 60 * 1000;
-	warn(firstWaveTime);
 	let cmpGUIInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
 	cmpGUIInterface.AddTimeNotification({
 		"message": markForTranslation("The first wave will start in %(time)s!"),
