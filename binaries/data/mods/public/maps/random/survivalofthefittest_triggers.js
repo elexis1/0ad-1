@@ -1,7 +1,7 @@
 /**
  * When the first wave will be started.
  */
-var firstWaveTime = 4;
+var firstWaveTime = 2 + Math.random() * 3;
 
 /**
  * Least amount of time between two waves.
@@ -16,7 +16,7 @@ var maxWaveTime = 5;
 /**
  * Number of attackers on the first wave.
  */
-var firstWaveAttackers = 5;
+var firstWaveAttackers = 8;
 
 /**
  * Increase the number of attackers exponentially, by this percent value per minute.
@@ -26,7 +26,7 @@ var percentPerMinute = 1.03;
 /**
  * Greatest number of attacker that can be spawned.
  */
-var totalAttackerLimit = 400;
+var totalAttackerLimit = 300;
 
 /**
  * Least amount of siege per wave.
@@ -41,7 +41,7 @@ var maxSiegeFraction = 0.5;
 /**
  * Least amount of time to pass until potentially spawning gaia heroes.
  */
-var minHeroTime = 30;
+var minHeroTime = 20;
 
 /**
  * Definitely spawn heroes after this time.
