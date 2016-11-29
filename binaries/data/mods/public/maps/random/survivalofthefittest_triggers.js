@@ -263,9 +263,9 @@ Trigger.prototype.StartAnEnemyWave = function()
 		for (let i in attackerEntityTemplates[civ][attackerType])
 		{
 			let count =
-				+i == attackerEntityTemplates[civ][attackerType].length ?
+				+i == attackerEntityTemplates[civ][attackerType].length - 1 ?
 				attackerTypeCount :
-				Math.max(attackerTypeCount, Math.round(Math.random() * attackerTypeCounts[attackerType]));
+				Math.min(attackerTypeCount, Math.round(Math.random() * attackerTypeCount));
 
 			attackerTemplates.push({
 				"template": attackerEntityTemplates[civ][attackerType][i],
@@ -337,7 +337,7 @@ Trigger.prototype.InitGame = function()
 		attackerEntityTemplates[identity.Civ].heroes.push(templateName.substring(6));
 	}
 
-	// Rmember civic centers and make women invincible
+	// Remember civic centers and make women invincible
 	let numberOfPlayers = TriggerHelper.GetNumberOfPlayers();
 	for (let i = 1; i < numberOfPlayers; ++i)
 	{
