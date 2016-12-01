@@ -292,12 +292,12 @@ function getRepairRateTooltip(template)
 
 function getBuildRateTooltip(template)
 {
-	if (!template.buildRate)
+	if (!template.foundation || !template.foundation.buildRate)
 		return "";
 
 	return sprintf(translate("%(buildRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"), {
 		"buildRateLabel": headerFont(translate("Build Rate:")),
-		"value": template.buildRate.toFixed(1),
+		"value": template.foundation.buildRate.toFixed(1),
 		"health": unitFont(translate("Health")),
 		"second": unitFont(translate("second")),
 		"worker": unitFont(translate("Worker"))

@@ -591,7 +591,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedEntityState(-1, 10), {
 	turretParent: null,
 	promotion: null,
 	repairRate: null,
-	buildRate: null,
+	foundation: null,
 	resourceDropsite: null,
 	resourceGatherRates: null,
 	resourceSupply: null,

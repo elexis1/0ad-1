@@ -436,7 +436,7 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 		"turretParent":null,
 		"promotion": null,
 		"repairRate": null,
-		"buildRate": null,
+		"foundation": null,
 		"resourceDropsite": null,
 		"resourceGatherRates": null,
 		"resourceSupply": null,
@@ -531,7 +531,11 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 
 	let cmpFoundation = Engine.QueryInterface(ent, IID_Foundation);
 	if (cmpFoundation)
-		ret.buildRate = cmpFoundation.GetBuildRate();
+		ret.foundation = {
+			"progress": cmpFoundation.GetBuildPercentage(),
+			"numBuilders": cmpFoundation.GetNumBuilders(),
+			"buildRate": cmpFoundation.GetBuildRate(),
+		};
 
 	let cmpResourceSupply = QueryMiragedInterface(ent, IID_ResourceSupply);
 	if (cmpResourceSupply)
