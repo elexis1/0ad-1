@@ -1427,6 +1427,8 @@ function someGuarding(entities)
 
 /**
  * Keep in sync with Commands.js.
+ *
+ * @param entState - extended entity state
  */
 function isUndeletable(entState)
 {

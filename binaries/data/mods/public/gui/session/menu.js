@@ -164,6 +164,120 @@ function openDeleteDialog(selection)
 {
 	closeOpenDialogs();
 
+	// IDs of selected entities that can be deleted
+	let entities = [];
+
+	// Translated name, count and summed up cost and true price of
+	// these entities grouped by template
+	let deleteInfo = {};
+
+	// Total resources lost and refunded after deletion
+	let refund = {};
+	let loss = {};
+
+	for (let entity of selection)
+	{
+		let entState = GetExtendedEntityState(entity);
+		if (!entState || !controlsPlayer(entState.player) || isUndeletable(entState))
+			continue;
+
+		entities.push(entity);
+
+		let templateID = entState.template;
+		let template = GetTemplateData(templateID);
+		if (!template.name || !template.name.generic)
+			continue;
+
+		let name = translate(template.name.generic);
+		if (entState.foundation)
+			name = sprintf(translate("%(buildingName)s foundation"), {
+				"buildingName": name
+			});
+
+		if (!deleteInfo[templateID])
+			deleteInfo[templateID] = {
+				"name": name,
+				"cost": 0,
+				"truePrice": 0,
+				"count": 0,
+			};
+
+		++deleteInfo[templateID].count;
+
+		// Add to cost and true price of this group
+		for (let resource of g_ResourceData.GetResources())
+		{
+			let cost = template.cost[resource.code];
+
+			if (entState.foundation)
+				cost -= entState.foundation.refund[resource.code] || 0;
+
+			deleteInfo[templateID].cost += cost;
+			deleteInfo[templateID].truePrice += cost * resource.truePrice;
+		}
+
+		// Add to total loss and refund
+		for (let r of g_ResourceData.GetCodes())
+		{
+			let ref = entState.foundation && entState.foundation.refund[r] || 0;
+			if (ref)
+				refund[r] = (refund[r] || 0) + ref;
+
+			let lost = (template.cost && template.cost[r] || 0) - ref;
+			if (lost)
+				loss[r] = (loss[r] || 0) + lost;
+		}
+	}
+
+	if (!entities.length)
+		return;
+
+	let textLines = [translate("Destroy everything kjshkjhsfhksdfhsdfhlkshdfcurrently selected?")];
+	let titles = [
+		{
+			"string": translate("Refund: %(resources)s"),
+			"resources": refund,
+		},
+		{
+			"string": translate("Loss: %(resources)s"),
+			"resources": loss,
+		}
+	];
+	for (let title of titles)
+		if (Object.keys(title.resources).length)
+			textLines.push(sprintf(title.string, {
+				"resources":
+					Object.keys(title.resources).map(resource =>
+						sprintf(translate(translate("%(component)s %(cost)s")), {
+							"component": resourceIcon(resource),
+							"cost": title.resources[resource]
+						})).join("  ")
+			}));
+
+
+	// Sort deleted entities by true price and limit shown entries
+	// TODO: sometimes cost2 undefined
+	warn(uneval(deleteInfo));
+	let maxMessageBoxLines = 4;
+	let maxListSize = maxMessageBoxLines - textLines.length;
+
+	let deletedShown = Object.keys(deleteInfo).sort((ent1, ent2) => ent2.cost - ent1.cost).slice(0, maxListSize);
+
+	textLines = textLines.concat(
+		deletedShown.map(templateID =>
+			// Translation: The delete confirmation dialog shows a list of the affected units
+			sprintf(translate("%(count)s %(unitName)s"), {
+				"unitName": deleteInfo[templateID].name,
+				"count": deleteInfo[templateID].count
+			})));
+
+	if (deletedShown.length > Object.keys(deleteInfo).length)
+		// Translation: The delete confirmation dialog shows a list of units to delete
+		textLines.push(sprintf(translate("%(number)s other units or buildings"), {
+			"number": Object.keys(deletedInfo).filter(name => !deleteShown[name]).reduce(
+				(total, templateID) => total + deleteInfo[templateID].count, 0)
+		}));
+
 	let deleteSelectedEntities = function (selectionArg)
 	{
 		Engine.PostNetworkCommand({
@@ -174,11 +288,11 @@ function openDeleteDialog(selection)
 
 	messageBox(
 		400, 200,
-		translate("Destroy everything currently selected?"),
+		textLines.join("\n"),
 		translate("Delete"),
 		[translate("No"), translate("Yes")],
 		[resumeGame, deleteSelectedEntities],
-		[null, selection]
+		[null, entities]
 	);
 }
 

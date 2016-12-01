@@ -83,13 +83,11 @@ Foundation.prototype.GetNumBuilders = function()
 
 Foundation.prototype.IsFinished = function()
 {
-	return (this.GetBuildProgress() == 1.0);
+	return this.GetBuildProgress() == 1.0;
 };
 
 Foundation.prototype.OnDestroy = function()
 {
-	// Refund a portion of the construction cost, proportional to the amount of build progress remaining
-
 	if (!this.initialised) // this happens if the foundation was destroyed because the player had insufficient resources
 		return;
 
@@ -102,19 +100,31 @@ Foundation.prototype.OnDestroy = function()
 	if (this.IsFinished())
 		return;
 
+	let refund = this.GetResourcesRefunded();
 	let cmpPlayer = QueryPlayerIDInterface(this.owner);
-
-	for (var r in this.costs)
+	cmpPlayer.AddResources(refund);
+	for (let resource in refund)
 	{
-		var scaled = Math.ceil(this.costs[r] * (1.0 - this.maxProgress));
-		if (scaled)
-		{
-			cmpPlayer.AddResource(r, scaled);
-			var cmpStatisticsTracker = QueryPlayerIDInterface(this.owner, IID_StatisticsTracker);
-			if (cmpStatisticsTracker)
-				cmpStatisticsTracker.IncreaseResourceUsedCounter(r, -scaled);
-		}
+		let cmpStatisticsTracker = QueryPlayerIDInterface(this.owner, IID_StatisticsTracker);
+		if (cmpStatisticsTracker)
+			cmpStatisticsTracker.IncreaseResourceUsedCounter(resource, -refund[resource]);
 	}
+};
+
+/**
+ * Refund a portion of the construction cost,
+ * proportional to the amount of build progress remaining.
+ */
+Foundation.prototype.GetResourcesRefunded = function()
+{
+	let resources = {};
+	for (let type in this.costs)
+	{
+		let refunded = Math.ceil(this.costs[type] * (1.0 - this.maxProgress));
+		if (refunded)
+			resources[type] = refunded;
+	}
+	return resources;
 };
 
 /**

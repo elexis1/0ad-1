@@ -535,6 +535,7 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 			"progress": cmpFoundation.GetBuildPercentage(),
 			"numBuilders": cmpFoundation.GetNumBuilders(),
 			"buildRate": cmpFoundation.GetBuildRate(),
+			"refund": cmpFoundation.GetResourcesRefunded()
 		};
 
 	let cmpResourceSupply = QueryMiragedInterface(ent, IID_ResourceSupply);
