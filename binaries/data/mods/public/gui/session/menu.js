@@ -319,7 +319,7 @@ function openOptions()
 
 function openChat(teamChat = false)
 {
-	if (g_Disconnected)
+	if (g_Disconnected || Engine.IsAtlasRunning())
 		return;
 
 	closeOpenDialogs();
