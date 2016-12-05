@@ -154,7 +154,7 @@ void CNetClient::SetUserName(const CStrW& username)
 	m_UserName = username;
 }
 
-bool CNetClient::SetupConnection(const CStr& server, const u16 port)
+bool CNetClient::SetupConnection(const CStr& server, const u16 port, EnetHost* enetClient)
 {
 	CNetClientSession* session = new CNetClientSession(*this);
 	bool ok = session->Connect(server, port, m_IsLocalClient);

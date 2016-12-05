@@ -72,7 +72,7 @@ T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
  *  The request is send through m_transaction_host, from which the answer
  *  will be retrieved by parseStunResponse()
  */
-void createStunRequest(int port)
+void createStunRequest(ENetHost* transactionHost, int port)
 {
 	std::string server_name;
 	CFG_GET_VAL("stun.server", server_name);
@@ -98,11 +98,19 @@ void createStunRequest(int port)
 	m_stun_server_ip = ntohl(current_interface->sin_addr.s_addr);
 
 	// Create a new socket for the stun server.
-	ENetAddress addr;
-	addr.host = ENET_HOST_ANY;
-	addr.port = port;
+	if (transactionHost != NULL)
+	{
+		m_transaction_host = transactionHost;
+	}
+	else
+	{
+		ENetAddress addr;
+		addr.host = ENET_HOST_ANY;
+		addr.port = port;
 
-	m_transaction_host = enet_host_create(&addr, 1, 1, 0, 0);
+		m_transaction_host = enet_host_create(&addr, 1, 1, 0, 0);
+	}
+
 	if (m_transaction_host == NULL) {
 		printf("Failed to create enet host");
 		return;
@@ -293,7 +301,7 @@ std::string parseStunResponse()
 
 JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int port)
 {
-	createStunRequest(port);
+	createStunRequest(NULL, port);
 	std::string parse_result = parseStunResponse();
 	if (!parse_result.empty())
 			printf("Parse error: %s\n", parse_result.c_str());
@@ -314,3 +322,21 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 	return stunEndpoint;
 }
 
+StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
+{
+	createStunRequest(transactionHost, 0);
+	std::string parse_result = parseStunResponse();
+	if (!parse_result.empty())
+			printf("Parse error: %s\n", parse_result.c_str());
+
+	// Convert m_ip to string
+	char ipStr[256] = "(error)";
+	ENetAddress addr;
+	addr.host = ntohl(m_ip);
+	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
+
+	StunEndpoint stunEndpoint;
+	stunEndpoint.ip = m_ip;
+	stunEndpoint.port = m_port;
+	return stunEndpoint;
+}

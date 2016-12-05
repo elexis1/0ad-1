@@ -68,7 +68,7 @@ IXmppClient* IXmppClient::create(const std::string& sUsername, const std::string
  * @param regOpt If we are just registering or not.
  */
 XmppClient::XmppClient(const std::string& sUsername, const std::string& sPassword, const std::string& sRoom, const std::string& sNick, const int historyRequestSize, bool regOpt)
-	: m_client(NULL), m_mucRoom(NULL), m_registration(NULL), m_username(sUsername), m_password(sPassword), m_nick(sNick), m_initialLoadComplete(false)
+	: m_client(NULL), m_mucRoom(NULL), m_registration(NULL), m_username(sUsername), m_password(sPassword), m_nick(sNick), m_initialLoadComplete(false), m_sessionManager()
 {
 	// Read lobby configuration from default.cfg
 	std::string sServer;
@@ -129,6 +129,13 @@ XmppClient::XmppClient(const std::string& sUsername, const std::string& sPasswor
 		m_registration = new glooxwrapper::Registration(m_client);
 		m_registration->registerRegistrationHandler(this);
 	}
+
+	m_sessionManager = new glooxwrapper::SessionManager(m_client, this);
+	// Register plugins to allow gloox parse them in incoming sessions
+	m_sessionManager->registerPlugin(new gloox::Jingle::Content());
+	m_sessionManager->registerPlugin(new gloox::Jingle::ICEUDP());
+	m_sessionManager->registerPlugin(new glooxwrapper::ZeroAdGameData());
+
 }
 
 /**
@@ -1098,4 +1105,61 @@ std::string XmppClient::RegistrationResultToString(gloox::RegistrationResult res
 	}
 #undef DEBUG_CASE
 #undef CASE
+}
+
+
+void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, std::string& hostJid)
+{
+	gloox::Jingle::Session* session = m_sessionManager->createSession(hostJid, this);
+
+	glooxwrapper::ZeroAdGameData *gameData = new glooxwrapper::ZeroAdGameData();
+
+	gloox::Jingle::ICEUDP::CandidateList *candidateList = new gloox::Jingle::ICEUDP::CandidateList();
+	// ICEUDP::Candidate has some extra params which we aren't using, so we are passing empty values in them
+	candidateList->push_back(gloox::Jingle::ICEUDP::Candidate
+		{/*component_id*/"1", /*foundation*/1,
+		/*candidate_generation*/0, /*candidate_id*/1,
+		stunEndpoint.ip, /*network*/"", stunEndpoint.port,
+		/*priotiry*/0, "udp", /*base_ip*/"", /*base_port*/0, /*type*/gloox::Jingle::ICEUDP::ServerReflexive}
+	);
+
+	gloox::Jingle::ICEUDP *iceUdp = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/0, *candidateList);
+
+	gloox::Jingle::PluginList *pluginList = new gloox::Jingle::PluginList();
+	pluginList->push_back(gameData);
+	pluginList->push_back(iceUdp);
+	gloox::Jingle::Content *content = new gloox::Jingle::Content(std::string("game-data"), *pluginList);
+	bool result = session->sessionInitiate(content);
+}
+
+void XmppClient::handleSessionAction(gloox::Jingle::Action action, gloox::Jingle::Session *session, const gloox::Jingle::Session::Jingle *jingle)
+{
+	if (action != gloox::Jingle::SessionInitiate) {
+		return;
+	}
+
+	processJingleData(jingle);
+}
+
+void processJingleData(const gloox::Jingle::Session::Jingle *jingle)
+{
+	const gloox::Jingle::Content *content = dynamic_cast<const gloox::Jingle::Content*>(jingle->plugins().front());
+	if (content == NULL) {
+		printf("Failed to retrieve Jingle content\n");
+		return;
+	}
+	const glooxwrapper::ZeroAdGameData *gameData = dynamic_cast<const glooxwrapper::ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
+	if (gameData == NULL) {
+		printf("Failed to retrieve Jingle game data\n");
+		return;
+	}
+	const gloox::Jingle::ICEUDP *iceUdp = dynamic_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
+	if (iceUdp == NULL) {
+		printf("Failed to retrieve Jingle ICE-UDP data\n");
+		return;
+	}
+
+	gloox::Jingle::ICEUDP::Candidate candidate = iceUdp->candidates().front();
+
+	g_NetServer->SendHolePunchingMessage(candidate.ip, candidate.port);
 }

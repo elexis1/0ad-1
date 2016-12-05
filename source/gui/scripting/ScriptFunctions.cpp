@@ -380,10 +380,22 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	ENSURE(!g_NetServer);
 	ENSURE(!g_Game);
 
+	bool stunEnabled;
+	CFG_GET_VAL("stun.enabled", stunEnabled);
+	ENetHost* enetClient = NULL;
+	if (stunEnabled) {
+		enetClient = enet_host_create(NULL, 1, 1, 0, 0);
+		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpoint(enetClient);
+		g_XmppClient->SendStunEndpointToHost(stunEndpoint, hostJid);
+		// Note: we are sending endpoint and starting to connect right away
+		// we may actually need to wait for host's response (this needs
+		// to be checked)
+	}
+
 	g_Game = new CGame();
 	g_NetClient = new CNetClient(g_Game, false);
 	g_NetClient->SetUserName(playerName);
-	if (!g_NetClient->SetupConnection(serverAddress, serverPort))
+	if (!g_NetClient->SetupConnection(serverAddress, serverPort, enetClient))
 	{
 		pCxPrivate->pScriptInterface->ReportError("Failed to connect to server");
 		SAFE_DELETE(g_NetClient);

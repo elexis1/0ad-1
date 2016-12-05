@@ -370,6 +370,10 @@ namespace glooxwrapper
 		int m_extensionType;
 	};
 
+	class GLOOXWRAPPER_API SessionHandler
+	{
+	};
+
 
 	class GLOOXWRAPPER_API Client
 	{
@@ -570,6 +574,46 @@ namespace glooxwrapper
 		string cdata() const;
 		const Tag* findTag_clone(const string& expression) const; // like findTag but must be Tag::free()d
 		ConstTagList findTagList_clone(const string& expression) const; // like findTagList but each tag must be Tag::free()d
+	};
+
+	static const std::string XMLNS_JINGLE_0AD_GAME = "urn:xmpp:jingle:apps:0ad-game:1";
+
+	class GLOOXWRAPPER_API ZeroAdGameData : public gloox::Jingle::Plugin
+	{
+	public:
+		ZeroAdGameData(): gloox::Jingle::Plugin(gloox::Jingle::PluginUser) {}
+
+		ZeroAdGameData(const Tag* tag): gloox::Jingle::Plugin(gloox::Jingle::PluginUser) {
+			if (!tag) {
+				return;
+			}
+		}
+
+		const std::string& filterString() const {
+			static const std::string filter = "content/description[@xmlns='" + XMLNS_JINGLE_0AD_GAME + "']";
+			return filter;
+		}
+
+		Tag* tag() const {
+			Tag* r = new gloox::Tag("description", gloox::XMLNS, XMLNS_JINGLE_0AD_GAME);
+			return r;
+		}
+
+		Plugin* newInstance(const Tag* tag) const {
+			return new ZeroAdGameData(tag);
+		}
+
+		Plugin* clone() const {
+			return new ZeroAdGameData(*this);
+		}
+	};
+
+	class GLOOXWRAPPER_API SessionManager
+	{
+	public:
+		SessionManager(Client* parent, SessionHandler* sh);
+		void registerPlugin(gloox::Jingle::Plugin* plugin);
+		gloox::Jingle::Session* createSession(const JID& callee, SessionHandler* handler);
 	};
 }
 
