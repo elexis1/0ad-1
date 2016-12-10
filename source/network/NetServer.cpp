@@ -1415,10 +1415,13 @@ CStrW CNetServerWorker::DeduplicatePlayerName(const CStrW& original)
 	}
 }
 
-void CNetServerWorker::SendHolePunchingMessage(std::string ip, int port) {
-	// TODO: send a UDP message from enet host to ip:port
-	// Note: may reuse StunClient.createStunRequest passing m_Host as the transactionHost and ip:port as the stun server endpoint
-	m_Host->SendUdpMessage(ip, port);
+void CNetServerWorker::SendHolePunchingMessage(std::string ipStr, int port) {
+	// Convert ip string to int64
+	ENetAddress addr;
+	addr.port = port;
+	enet_address_set_host(&addr, ipStr.c_str());
+	// Send a UDP message from enet host to ip:port
+	StunClient::SendStunRequest(m_Host, addr.host, port);
 }
 
 

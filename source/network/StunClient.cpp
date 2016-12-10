@@ -116,6 +116,13 @@ void createStunRequest(ENetHost* transactionHost, int port)
 		return;
 	}
 
+	static const int m_stun_server_port = 3478;
+	StunClient::SendStunRequest(m_transaction_host, m_stun_server_ip, m_stun_server_port);
+
+	freeaddrinfo(res);
+}   // createStunRequest
+
+void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort) {
 	// Assemble the message for the stun server
 	std::vector<uint8_t> m_buffer;
 
@@ -135,7 +142,6 @@ void createStunRequest(ENetHost* transactionHost, int port)
 	}
 	//m_buffer.push_back(0); -- this breaks STUN message
 
-	static const int m_stun_server_port = 3478;
 
 	// sendRawPacket
 	struct sockaddr_in to;
@@ -143,20 +149,18 @@ void createStunRequest(ENetHost* transactionHost, int port)
 	memset(&to,0,to_len);
 
 	to.sin_family = AF_INET;
-	to.sin_port = htons(m_stun_server_port);
-	to.sin_addr.s_addr = htonl(m_stun_server_ip);
+	to.sin_port = htons(targetPort);
+	to.sin_addr.s_addr = htonl(targetIp);
 
 	printf("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d\n",
-	       ((m_stun_server_ip >> 24) & 0xff), ((m_stun_server_ip >> 16) & 0xff),
-	       ((m_stun_server_ip >>  8) & 0xff), ((m_stun_server_ip >>  0) & 0xff),
-	       m_stun_server_port);
+	       ((targetIp >> 24) & 0xff), ((targetIp >> 16) & 0xff),
+	       ((targetIp >>  8) & 0xff), ((targetIp >>  0) & 0xff),
+	       targetPort);
 
-	int send_result = sendto(m_transaction_host->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0,
+	int send_result = sendto(transactionHost->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0,
 	       (sockaddr*)&to, to_len);
 	printf("GetPublicAddress: sendto result: %d\n", send_result);
-
-	freeaddrinfo(res);
-}   // createStunRequest
+}
 
 // ----------------------------------------------------------------------------
 /**
