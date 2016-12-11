@@ -114,6 +114,13 @@ void PopGuiPageCB(ScriptInterface::CxPrivate* pCxPrivate, JS::HandleValue args)
 	g_GUI->PopPageCB(pCxPrivate->pScriptInterface->WriteStructuredClone(args));
 }
 
+CStrW SetCursor(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const CStrW& name)
+{
+	CStrW old = g_CursorName;
+	g_CursorName = name;
+	return old;
+}
+
 void ResetCursor(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
 {
 	g_GUI->ResetCursor();
@@ -199,13 +206,6 @@ CFixedVector3D GetTerrainAtScreenPoint(ScriptInterface::CxPrivate* UNUSED(pCxPri
 {
 	CVector3D pos = g_Game->GetView()->GetCamera()->GetWorldCoordinates(x, y, true);
 	return CFixedVector3D(fixed::FromFloat(pos.X), fixed::FromFloat(pos.Y), fixed::FromFloat(pos.Z));
-}
-
-std::wstring SetCursor(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::wstring& name)
-{
-	std::wstring old = g_CursorName;
-	g_CursorName = name;
-	return old;
 }
 
 CStr md5sum(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const CStr &input)
@@ -1037,6 +1037,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<void, &PopGuiPage>("PopGuiPage");
 	scriptInterface.RegisterFunction<void, JS::HandleValue, &PopGuiPageCB>("PopGuiPageCB");
 	scriptInterface.RegisterFunction<JS::Value, CStr, &GetGUIObjectByName>("GetGUIObjectByName");
+	scriptInterface.RegisterFunction<CStrW, CStrW, &SetCursor>("SetCursor");
 	scriptInterface.RegisterFunction<void, &ResetCursor>("ResetCursor");
 
 	// Simulation<->GUI interface functions:
@@ -1080,7 +1081,6 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<void, &QuickLoad>("QuickLoad");
 
 	// Misc functions
-	scriptInterface.RegisterFunction<std::wstring, std::wstring, &SetCursor>("SetCursor");
 	scriptInterface.RegisterFunction<CStr, CStr, &md5sum>("md5sum");
 	scriptInterface.RegisterFunction<bool, &IsVisualReplay>("IsVisualReplay");
 	scriptInterface.RegisterFunction<std::wstring, &GetCurrentReplayDirectory>("GetCurrentReplayDirectory");
