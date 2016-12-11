@@ -3,7 +3,7 @@ var currentSubmenuType; // contains submenu type
 const MARGIN = 4; // menu border size
 var g_BackgroundCode; // Background type.
 
-var g_ShowSplashScreens;
+var g_ShowSplashScreen;
 var g_BackgroundLayerData = [];
 
 var g_T0 = +(new Date());
@@ -23,7 +23,7 @@ function init(initData, hotloadData)
 	EnableUserReport(Engine.IsUserReportEnabled());
 
 	// Only show splash screen(s) once at startup, but not again after hotloading
-	g_ShowSplashScreens = hotloadData ? hotloadData.showSplashScreens : initData && initData.isStartup;
+	g_ShowSplashScreen = hotloadData ? hotloadData.showSplashScreen : initData && initData.isStartup;
 
 	// Pick a random background and initialise it
 	g_BackgroundCode = Math.floor(Math.random() * g_BackgroundLayerData.length);
@@ -39,7 +39,7 @@ function init(initData, hotloadData)
 
 function getHotloadData()
 {
-	return { "showSplashScreens": g_ShowSplashScreens };
+	return { "showSplashScreen": g_ShowSplashScreen };
 }
 
 function scrollBackgrounds()
@@ -123,10 +123,10 @@ function onTick()
 				formatUserReportStatus(Engine.GetUserReportStatus()));
 	}
 
-	// Show splash screens here, so we don't interfere with main menu hotloading
-	if (g_ShowSplashScreens)
+	// Show the splash screen here, so we don't interfere with main menu hotloading
+	if (g_ShowSplashScreen)
 	{
-		g_ShowSplashScreens = false;
+		g_ShowSplashScreen = false;
 		let splashScreenData = getSplashScreenData();
 
 		if (Engine.ConfigDB_GetValue("user", "splashscreendisable") !== "true" ||
