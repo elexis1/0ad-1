@@ -28,7 +28,7 @@
 		{
 			"type": "boolean",
 			"label": "Disable Welcome Screen",
-			"tooltip": "When disabled, the welcome screen will nevertheless be shown once when a new version is available and you can always launch it from the main menu.",
+			"tooltip": "When disabled, the welcome screen will only be shown when a new version of it was installed. The screen can always be launched from the main menu.",
 			"parameters": { "config": "splashscreendisable" }
 		},
 		{
