@@ -36,6 +36,7 @@
 #include "lib/utf8.h"
 #include "lobby/scripting/JSInterface_Lobby.h"
 #include "maths/FixedVector3D.h"
+#include "maths/MD5.h"
 #include "network/NetClient.h"
 #include "network/NetServer.h"
 #include "network/NetTurnManager.h"
@@ -205,6 +206,21 @@ std::wstring SetCursor(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std
 	std::wstring old = g_CursorName;
 	g_CursorName = name;
 	return old;
+}
+
+CStr md5sum(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const CStr &input)
+{
+	u8 digest[MD5::DIGESTSIZE];
+
+	MD5 m;
+	m.Update((const u8*)input.c_str(), strlen(input.c_str()));
+	m.Final(digest);
+
+	char digeststr[MD5::DIGESTSIZE*2+1];
+	for (size_t i = 0; i < MD5::DIGESTSIZE; ++i)
+		sprintf_s(digeststr+2*i, 3, "%02x", (unsigned int)digest[i]);
+
+	return digeststr;
 }
 
 bool IsVisualReplay(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
@@ -1065,6 +1081,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 
 	// Misc functions
 	scriptInterface.RegisterFunction<std::wstring, std::wstring, &SetCursor>("SetCursor");
+	scriptInterface.RegisterFunction<CStr, CStr, &md5sum>("md5sum");
 	scriptInterface.RegisterFunction<bool, &IsVisualReplay>("IsVisualReplay");
 	scriptInterface.RegisterFunction<std::wstring, &GetCurrentReplayDirectory>("GetCurrentReplayDirectory");
 	scriptInterface.RegisterFunction<int, &GetPlayerID>("GetPlayerID");

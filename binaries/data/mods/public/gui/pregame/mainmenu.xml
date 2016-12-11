@@ -384,7 +384,10 @@
 					<action on="Press">
 						<![CDATA[
 						closeMenu();
-						Engine.PushGuiPage("page_splashscreen.xml", { "page": "splashscreen", callback : "SplashScreenClosedCallback" } );
+						Engine.PushGuiPage("page_splashscreen.xml", {
+							"callback": "SplashScreenClosedCallback",
+							"data": getSplashScreenData()
+						});
 						]]>
 					</action>
 				</object>

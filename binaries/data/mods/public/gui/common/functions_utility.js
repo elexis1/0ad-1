@@ -274,3 +274,12 @@ function hideRemaining(parentName, start = 0)
 	for (let i = start; i < objects.length; ++i)
 		objects[i].hidden = true;
 }
+
+function getSplashScreenData()
+{
+	let text = Engine.ReadFile("gui/splashscreen/splashscreen.txt");
+	return {
+		"text": text,
+		"hash": Engine.md5sum(text)
+	};
+}

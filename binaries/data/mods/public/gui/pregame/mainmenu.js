@@ -127,10 +127,14 @@ function onTick()
 	if (g_ShowSplashScreens)
 	{
 		g_ShowSplashScreens = false;
+		let splashScreenData = getSplashScreenData();
 
 		if (Engine.ConfigDB_GetValue("user", "splashscreendisable") !== "true" ||
-		    Engine.ConfigDB_GetValue("user", "splashscreenversion") < Engine.GetFileMTime("gui/splashscreen/splashscreen.txt"))
-			Engine.PushGuiPage("page_splashscreen.xml", { "page": "splashscreen", callback : "SplashScreenClosedCallback" } );
+		    Engine.ConfigDB_GetValue("user", "splashscreenversion") != splashScreenData.hash)
+			Engine.PushGuiPage("page_splashscreen.xml", {
+				"callback": "SplashScreenClosedCallback",
+				"data": splashScreenData
+			});
 		else
 			ShowRenderPathMessage();
 	}
