@@ -17,6 +17,17 @@ var g_DamageTypes = {
 	"crush": translate("Crush"),
 };
 
+var g_RangeTooltipString = {
+	"relative": {
+		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"),
+		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"),
+	},
+	"non-relative": {
+		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s %(rangeUnit)s, %(rate)s"),
+		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s %(rangeUnit)s, %(rate)s"),
+	}
+};
+
 function resourceIcon(resource)
 {
 	return '[icon="icon_' + resource + '"]';
@@ -132,13 +143,12 @@ function damageTypesToText(dmg)
 		})).join(commaFont(translate(", ")));
 }
 
-// TODO: should also show minRange
 function getAttackTooltip(template)
 {
 	if (!template.attack)
 		return "";
 
-	let attacks = [];
+	let tooltips = [];
 	for (let type in template.attack)
 	{
 		if (type == "Slaughter")
@@ -156,7 +166,7 @@ function getAttackTooltip(template)
 		let attackLabel = headerFont(g_AttackTypes[type]);
 		if (type == "Capture" || type != "Ranged")
 		{
-			attacks.push(sprintf(translate("%(attackLabel)s %(details)s, %(rate)s"), {
+			tooltips.push(sprintf(translate("%(attackLabel)s %(details)s, %(rate)s"), {
 				"attackLabel": attackLabel,
 				"details":
 					type == "Capture" ?
@@ -167,28 +177,27 @@ function getAttackTooltip(template)
 			continue;
 		}
 
+		let minRange = Math.round(template.attack[type].minRange);
+		let maxRange = Math.round(template.attack[type].maxRange);
 		let realRange = template.attack[type].elevationAdaptedRange;
-		let range = Math.round(template.attack[type].maxRange);
-		let relativeRange = realRange ? Math.round(realRange - range) : 0;
+		let relativeRange = realRange ? Math.round(realRange - maxRange) : 0;
 
-		let rangeString = relativeRange ?
-			translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s (%(relative)s), %(rate)s") :
-			translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s, %(rate)s");
-
-		attacks.push(sprintf(rangeString, {
+		tooltips.push(sprintf(g_RangeTooltipString[relativeRange ? "relative" : "non-relative"][minRange ? "minRange" : "no-minRange"], {
 			"attackLabel": attackLabel,
 			"damageTypes": damageTypesToText(template.attack[type]),
-			"rangeLabel": translate("Range:"),
-			"rangeString": sprintf(
-				translatePlural("%(range)s %(meters)s", "%(range)s %(meters)s", range), {
-					"range": range,
-					"meters": unitFont(translatePlural("meter", "meters", range))
-				}),
+			"rangeLabel": headerFont(translate("Range:")),
+			"minRange": minRange,
+			"maxRange": maxRange,
+			"relativeRange": relativeRange > 0 ? "+" + relativeRange : relativeRange,
+			"rangeUnit":
+				unitFont(minRange || relativeRange ?
+					// Translation: For example "0.5 to 1 meters", "1 (+1) meters" or "1 to 2 (+3) meters"
+					translate("meters") :
+					translatePlural("meter", "meters", maxRange)),
 			"rate": rate,
-			"relative": relativeRange > 0 ? "+" + relativeRange : relativeRange,
 		}));
 	}
-	return attacks.join("\n");
+	return tooltips.join("\n");
 }
 
 function getSplashDamageTooltip(template)
