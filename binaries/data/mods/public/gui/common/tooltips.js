@@ -181,7 +181,9 @@ function getAttackTooltip(template)
 		let maxRange = Math.round(template.attack[type].maxRange);
 		let realRange = template.attack[type].elevationAdaptedRange;
 		let relativeRange = realRange ? Math.round(realRange - maxRange) : 0;
-		let spread = +template.attack[type].spread.toFixed(1);
+
+		// Compare spread at a defined distance
+		let spread = +(+template.attack[type].spread / maxRange * 100).toFixed(1);
 
 		tooltips.push(sprintf(g_RangeTooltipString[relativeRange ? "relative" : "non-relative"][minRange ? "minRange" : "no-minRange"], {
 			"attackLabel": attackLabel,
