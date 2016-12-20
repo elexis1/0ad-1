@@ -1,17 +1,17 @@
-const g_TooltipTextFormats = {
+var g_TooltipTextFormats = {
 	"unit": ['[font="sans-10"][color="orange"]', '[/color][/font]'],
 	"header": ['[font="sans-bold-13"]', '[/font]'],
 	"body": ['[font="sans-13"]', '[/font]'],
 	"comma": ['[font="sans-12"]', '[/font]']
 };
 
-const g_AttackTypes = {
+var g_AttackTypes = {
 	"Melee": translate("Melee Attack:"),
 	"Ranged": translate("Ranged Attack:"),
 	"Capture": translate("Capture Attack:")
 };
 
-const g_DamageTypes = {
+var g_DamageTypes = {
 	"hack": translate("Hack"),
 	"pierce": translate("Pierce"),
 	"crush": translate("Crush"),
