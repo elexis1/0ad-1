@@ -123,7 +123,8 @@ function GetTemplateDataHelper(template, player, auraTemplates, resources)
 					"crush": getAttackStat("Crush"),
 					"minRange": getAttackStat("MinRange"),
 					"maxRange": getAttackStat("MaxRange"),
-					"elevationBonus": getAttackStat("ElevationBonus")
+					"elevationBonus": getAttackStat("ElevationBonus"),
+					"spread": getAttackStat("Spread")
 				};
 				ret.attack[type].elevationAdaptedRange = Math.sqrt(ret.attack[type].maxRange *
 					(2 * ret.attack[type].elevationBonus + ret.attack[type].maxRange));

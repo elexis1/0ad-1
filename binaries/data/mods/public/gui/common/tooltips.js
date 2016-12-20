@@ -19,12 +19,12 @@ var g_DamageTypes = {
 
 var g_RangeTooltipString = {
 	"relative": {
-		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"),
-		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"),
+		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(spread)s, %(rate)s"),
+		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(spread)s, %(rate)s"),
 	},
 	"non-relative": {
-		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s %(rangeUnit)s, %(rate)s"),
-		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s %(rangeUnit)s, %(rate)s"),
+		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s %(rangeUnit)s, %(spread)s, %(rate)s"),
+		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s %(rangeUnit)s, %(spread)s, %(rate)s"),
 	}
 };
 
@@ -181,6 +181,7 @@ function getAttackTooltip(template)
 		let maxRange = Math.round(template.attack[type].maxRange);
 		let realRange = template.attack[type].elevationAdaptedRange;
 		let relativeRange = realRange ? Math.round(realRange - maxRange) : 0;
+		let spread = +template.attack[type].spread.toFixed(1);
 
 		tooltips.push(sprintf(g_RangeTooltipString[relativeRange ? "relative" : "non-relative"][minRange ? "minRange" : "no-minRange"], {
 			"attackLabel": attackLabel,
@@ -195,6 +196,11 @@ function getAttackTooltip(template)
 					translate("meters") :
 					translatePlural("meter", "meters", maxRange)),
 			"rate": rate,
+			"spread": sprintf(translatePlural("%(label)s %(val)s %(unit)s", "%(label)s %(val)s %(unit)s", spread), {
+				"label": headerFont(translate("Spread:")),
+				"val": spread,
+				"unit": unitFont(translatePlural("meter", "meters", spread))
+			})
 		}));
 	}
 	return tooltips.join("\n");

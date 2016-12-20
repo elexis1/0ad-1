@@ -380,6 +380,15 @@ Attack.prototype.GetAttackStrengths = function(type)
 	};
 };
 
+Attack.prototype.GetSpread = function()
+{
+	if (!this.template.Ranged)
+		return 0;
+
+	let spread = +this.template.Ranged.Spread;
+	return ApplyValueModificationsToEntity("Attack/Ranged/Spread", spread, this.entity);
+}
+
 Attack.prototype.GetSplashDamage = function(type)
 {
 	if (!this.template[type].Splash)
@@ -440,7 +449,8 @@ Attack.prototype.GetAttackBonus = function(type, target)
 
 // Returns a 2d random distribution scaled for a spread of scale 1.
 // The current implementation is a 2d gaussian with sigma = 1
-Attack.prototype.GetNormalDistribution = function(){
+Attack.prototype.GetNormalDistribution = function()
+{
 
 	// Use the Box-Muller transform to get a gaussian distribution
 	let a = Math.random();
@@ -475,9 +485,6 @@ Attack.prototype.PerformAttack = function(type, target)
 		let horizSpeed = +this.template[type].ProjectileSpeed;
 		let gravity = 9.81; // this affects the shape of the curve; assume it's constant for now
 
-		let spread = +this.template.Ranged.Spread;
-		spread = ApplyValueModificationsToEntity("Attack/Ranged/Spread", spread, this.entity);
-
 		//horizSpeed /= 2; gravity /= 2; // slow it down for testing
 
 		let cmpPosition = Engine.QueryInterface(this.entity, IID_Position);
@@ -511,7 +518,7 @@ Attack.prototype.PerformAttack = function(type, target)
 		let range = this.GetRange(type);
 		let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
 		let elevationAdaptedMaxRange = cmpRangeManager.GetElevationAdaptedRange(selfPosition, cmpPosition.GetRotation(), range.max, range.elevationBonus, 0);
-		let distanceModifiedSpread = spread * horizDistance/elevationAdaptedMaxRange;
+		let distanceModifiedSpread = this.GetSpread() * horizDistance/elevationAdaptedMaxRange;
 
 		let randNorm = this.GetNormalDistribution();
 		let offsetX = randNorm[0] * distanceModifiedSpread * (1 + targetVelocity.length() / 20);

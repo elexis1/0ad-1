@@ -454,6 +454,7 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 		for (let type of types)
 		{
 			ret.attack[type] = cmpAttack.GetAttackStrengths(type);
+			ret.attack[type].spread = cmpAttack.GetSpread();
 			ret.attack[type].splash = cmpAttack.GetSplashDamage(type);
 
 			let range = cmpAttack.GetRange(type);
