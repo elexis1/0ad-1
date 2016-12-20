@@ -380,13 +380,13 @@ Attack.prototype.GetAttackStrengths = function(type)
 	};
 };
 
-Attack.prototype.GetSpread = function()
+Attack.prototype.GetSpread = function(type)
 {
-	if (!this.template.Ranged)
+	if (type != "Ranged" || !this.template[type])
 		return 0;
 
-	let spread = +this.template.Ranged.Spread;
-	return ApplyValueModificationsToEntity("Attack/Ranged/Spread", spread, this.entity);
+	let spread = +this.template[type].Spread;
+	return ApplyValueModificationsToEntity("Attack/" + type + "/Spread", spread, this.entity);
 }
 
 Attack.prototype.GetSplashDamage = function(type)
@@ -518,7 +518,7 @@ Attack.prototype.PerformAttack = function(type, target)
 		let range = this.GetRange(type);
 		let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
 		let elevationAdaptedMaxRange = cmpRangeManager.GetElevationAdaptedRange(selfPosition, cmpPosition.GetRotation(), range.max, range.elevationBonus, 0);
-		let distanceModifiedSpread = this.GetSpread() * horizDistance/elevationAdaptedMaxRange;
+		let distanceModifiedSpread = this.GetSpread(type) * horizDistance/elevationAdaptedMaxRange;
 
 		let randNorm = this.GetNormalDistribution();
 		let offsetX = randNorm[0] * distanceModifiedSpread * (1 + targetVelocity.length() / 20);
