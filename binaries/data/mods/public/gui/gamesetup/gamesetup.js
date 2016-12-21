@@ -241,6 +241,7 @@ var g_LastGameStanza;
  * Remembers if the current player viewed the AI settings of some playerslot.
  */
 var g_LastViewedAIPlayer = -1;
+
 /**
  * Contains the logic of all multiple-choice gamesettings.
  *
@@ -648,15 +649,20 @@ function init(attribs)
 		Engine.ConfigDB_WriteValueToFile("user", "playername.singleplayer", singleplayerName(), "config/user.cfg");
 	}
 
-	// Get default player data - remove gaia
-	g_DefaultPlayerData = g_Settings.PlayerDefaults;
-	g_DefaultPlayerData.shift();
-	for (let i in g_DefaultPlayerData)
-		g_DefaultPlayerData[i].Civ = "random";
-
+	initDefaults();
 	supplementDefaults();
 
 	setTimeout(displayGamestateNotifications, 1000);
+}
+
+function initDefaults()
+{
+	// Remove gaia from both arrays
+	g_DefaultPlayerData = g_Settings.PlayerDefaults;
+	g_DefaultPlayerData.shift();
+
+	for (let i in g_DefaultPlayerData)
+		g_DefaultPlayerData[i].Civ = "random";
 }
 
 /**
