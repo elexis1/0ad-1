@@ -280,12 +280,13 @@ var g_LastViewedAIPlayer = -1;
  */
 var g_Dropdowns = {
 	"mapType": {
+		"tooltip": () => translate("Select a map type."),
 		"labels": () => g_MapTypes.Title,
 		"ids": () => g_MapTypes.Name,
 		"default": () => g_MapTypes.Default,
 		"defined": () => g_GameAttributes.mapType !== undefined,
 		"get": () => g_GameAttributes.mapType,
-		"select": idx => {
+		"select": (idx) => {
 
 			g_MapData = {};
 
@@ -300,119 +301,129 @@ var g_Dropdowns = {
 
 			reloadMapList();
 			supplementDefaults();
-		}
+		},
 	},
 	"mapFilter": {
+		"tooltip": () => translate("Select a map filter."),
 		"labels": () => g_MapFilters.name,
 		"ids": () => g_MapFilters.id,
 		"default": () => g_MapFilters.Default,
 		"defined": () => g_GameAttributes.mapFilter !== undefined,
 		"get": () => g_GameAttributes.mapFilter,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.mapFilter = g_MapFilters.id[idx];
 			delete g_GameAttributes.map;
 			reloadMapList();
 			supplementDefaults();
-		}
+		},
 	},
 	"mapSelection": {
+		"tooltip": () => translate("Select a map to play on."),
 		"labels": () => g_MapList.name,
 		"ids": () => g_MapList.file,
 		"default": () => 0,
 		"defined": () => g_GameAttributes.map !== undefined,
 		"get": () => g_GameAttributes.map,
-		"select": idx => {
+		"select": (idx) => {
 			selectMap(g_MapList.file[idx]);
 			supplementDefaults();
-		}
+		},
 	},
 	"mapSize": {
+		"tooltip": () => translate("Select map size. (Larger sizes may reduce performance.)"),
 		"labels": () => g_MapSizes.Name,
 		"ids": () => g_MapSizes.Tiles,
 		"default": () => g_MapSizes.Default,
 		"defined": () => g_GameAttributes.settings.Size !== undefined,
 		"get": () => g_GameAttributes.settings.Size,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.settings.Size = g_MapSizes.Tiles[idx];
 		},
-		"maps": ["random"]
+		"maps": ["random"],
 	},
 	"numPlayers": {
+		"tooltip": () => translate("Select number of players."),
 		"labels": () => g_PlayerArray,
 		"ids": () => g_PlayerArray,
 		"default": () => g_MaxPlayers - 1,
 		"defined": () => g_GameAttributes.settings.PlayerData !== undefined,
 		"get": () => g_GameAttributes.settings.PlayerData.length,
-		"select": idx => {
+		"select": (idx) => {
 			selectNumPlayers(idx + 1);
 		},
-		"maps": ["random"]
+		"maps": ["random"],
 	},
 	"populationCap": {
+		"tooltip": () => translate("Select population cap."),
 		"labels": () => g_PopulationCapacities.Title,
 		"ids": () => g_PopulationCapacities.Population,
 		"default": () => g_PopulationCapacities.Default,
 		"defined": () => g_GameAttributes.settings.PopulationCap !== undefined,
 		"get": () => g_GameAttributes.settings.PopulationCap,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.settings.PopulationCap = g_PopulationCapacities.Population[idx];
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"startingResources": {
+		"tooltip": () => translate("Select the game's starting resources."),
 		"labels": () => g_StartingResources.Title,
 		"ids": () => g_StartingResources.Resources,
 		"default": () => g_StartingResources.Default,
 		"defined": () => g_GameAttributes.settings.StartingResources !== undefined,
 		"get": () => g_GameAttributes.settings.StartingResources,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.settings.StartingResources = g_StartingResources.Resources[idx];
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"ceasefire": {
+		"tooltip": () => translate("Set time where no attacks are possible."),
 		"labels": () => g_Ceasefire.Title,
 		"ids": () => g_Ceasefire.Duration,
 		"default": () => g_Ceasefire.Default,
 		"defined": () => g_GameAttributes.settings.Ceasefire !== undefined,
 		"get": () => g_GameAttributes.settings.Ceasefire,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.settings.Ceasefire = g_Ceasefire.Duration[idx];
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"victoryCondition": {
+		"tooltip": () => translate("Select victory condition."),
 		"labels": () => g_VictoryConditions.Title,
 		"ids": () => g_VictoryConditions.Name,
 		"default": () => g_VictoryConditions.Default,
 		"defined": () => g_GameAttributes.settings.GameType !== undefined,
 		"get": () => g_GameAttributes.settings.GameType,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.settings.GameType = g_VictoryConditions.Name[idx];
 			g_GameAttributes.settings.VictoryScripts = g_VictoryConditions.Scripts[idx];
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"wonderDuration": {
+		"tooltip": () => translate("Number of minutes that the player has to keep the wonder in order to win."),
 		"labels": () => g_WonderDurations.Title,
 		"ids": () => g_WonderDurations.Duration,
 		"default": () => g_WonderDurations.Default,
 		"defined": () => g_GameAttributes.settings.WonderDuration !== undefined,
 		"get": () => g_GameAttributes.settings.WonderDuration,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.settings.WonderDuration = g_WonderDurations.Duration[idx];
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"gameSpeed": {
+		"tooltip": () => translate("Select game speed."),
 		"labels": () => g_GameSpeeds.Title,
 		"ids": () => g_GameSpeeds.Speed,
 		"default": () => g_GameSpeeds.Default,
 		"defined": () => g_GameAttributes.gameSpeed !== undefined,
 		"get": () => g_GameAttributes.gameSpeed,
-		"select": idx => {
+		"select": (idx) => {
 			g_GameAttributes.gameSpeed = g_GameSpeeds.Speed[idx];
-		}
+		},
 	}
 };
 var g_HostNameList = [];
@@ -494,13 +505,19 @@ var g_DropdownArrays = {
  */
 var g_Checkboxes = {
 	"revealMap": {
+		"tooltip":
+			// Make sure to differentiate between the revealed map and explored map options!
+			() => translate("Toggle explored map (see initial map)."),
 		"default": () => false,
 		"defined": () => g_GameAttributes.settings.RevealMap !== undefined,
 		"get": () => g_GameAttributes.settings.RevealMap,
 		"set": checked => {
 			g_GameAttributes.settings.RevealMap = checked;
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
+		"tooltip":
+			// Make sure to differentiate between the revealed map and explored map options!
+			() => translate("Toggle revealed map (see everything)."),
 	},
 	"exploreMap": {
 		"default": () => false,
@@ -509,18 +526,20 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.ExploreMap = checked;
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"disableTreasures": {
+		"tooltip": () => translate("Disable all treasures on the map."),
 		"default": () => false,
 		"defined": () => g_GameAttributes.settings.DisableTreasures !== undefined,
 		"get": () => g_GameAttributes.settings.DisableTreasures,
 		"set": checked => {
 			g_GameAttributes.settings.DisableTreasures = checked;
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"lockTeams":  {
+		"tooltip": () => translate("Toggle locked teams."),
 		"default": () => Engine.HasXmppClient(),
 		"defined": () => g_GameAttributes.settings.LockTeams !== undefined,
 		"get": () => g_GameAttributes.settings.LockTeams,
@@ -529,9 +548,10 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.LastManStanding = false;
 		},
 		"maps": ["random", "skirmish"],
-		"enabled": () => !g_GameAttributes.settings.RatingEnabled
+		"enabled": () => !g_GameAttributes.settings.RatingEnabled,
 	},
 	"lastManStanding":  {
+		"tooltip": () => translate("Toggle whether the last remaining player or the last remaining set of allies wins."),
 		"default": () => false,
 		"defined": () => g_GameAttributes.settings.LastManStanding !== undefined,
 		"get": () => g_GameAttributes.settings.LastManStanding,
@@ -539,9 +559,10 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.LastManStanding = checked;
 		},
 		"maps": ["random", "skirmish"],
-		"enabled": () => !g_GameAttributes.settings.LockTeams
+		"enabled": () => !g_GameAttributes.settings.LockTeams,
 	},
 	"enableCheats":  {
+		"tooltip": () => translate("Toggle the usability of cheats."),
 		"default": () => !g_IsNetworked,
 		"hidden": () => !g_IsNetworked,
 		"defined": () => g_GameAttributes.settings.CheatsEnabled !== undefined,
@@ -550,16 +571,17 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.CheatsEnabled = !g_IsNetworked ||
 				checked && !g_GameAttributes.settings.RatingEnabled;
 		},
-		"enabled": () => !g_GameAttributes.settings.RatingEnabled
+		"enabled": () => !g_GameAttributes.settings.RatingEnabled,
 	},
 	"enableRating": {
+		"tooltip": () => translate("Toggle if this game will be rated for the leaderboard."),
 		"default": () => Engine.HasXmppClient(),
 		"defined": () => g_GameAttributes.settings.RatingEnabled !== undefined,
 		"get": () => !!g_GameAttributes.settings.RatingEnabled,
 		"set": checked => {
 			g_GameAttributes.settings.RatingEnabled = Engine.HasXmppClient() ? checked : undefined;
 			Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
-		}
+		},
 	}
 };
 
@@ -607,7 +629,8 @@ var g_MiscControls = {
 		                                                                g_PlayerAssignments[guid].player == -1),
 		"hidden": () => {
 			return !g_IsController && g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1;
-		}
+		},
+		"tooltip": () => translate("Start a new game with the current settings."),
 	},
 	"civResetButton": {
 		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController,
@@ -1355,6 +1378,7 @@ function updateGUIDropdown(name, idx = undefined)
 
 	dropdown.hidden = !g_IsController || !enabled || hidden;
 	dropdown.selected = selected;
+	dropdown.tooltip = obj.tooltip ? obj.tooltip() : "";
 
 	if (label)
 	{
@@ -1378,6 +1402,7 @@ function updateGUICheckbox(name)
 	checkbox.checked = checked;
 	checkbox.enabled = enabled;
 	checkbox.hidden = hidden || !g_IsController;
+	checkbox.tooltip = obj.tooltip ? obj.tooltip() : "";
 
 	label.caption = checked ? translate("Yes") : translate("No");
 	label.hidden = hidden || g_IsController;
