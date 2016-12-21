@@ -730,11 +730,15 @@ function initGUIObjects()
 
 	if (g_IsController)
 	{
+		// TODO: move to init
 		loadPersistMatchSettings();
 		if (g_IsInGuiUpdate)
 			warn("initGUIObjects() called while in GUI update");
 		updateGameAttributes();
 	}
+
+	Engine.GetGUIObjectByName("loadingWindow").hidden = true;
+	Engine.GetGUIObjectByName("setupWindow").hidden = false;
 
 	if (g_IsNetworked)
 		Engine.GetGUIObjectByName("chatInput").focus();
@@ -1201,34 +1205,36 @@ function onTick()
 
 	// First tick happens before first render, so don't load yet
 	if (g_LoadingState == 0)
-	{
 		++g_LoadingState;
-	}
 	else if (g_LoadingState == 1)
 	{
-		Engine.GetGUIObjectByName("loadingWindow").hidden = true;
-		Engine.GetGUIObjectByName("setupWindow").hidden = false;
 		initGUIObjects();
 		++g_LoadingState;
 	}
 	else if (g_LoadingState == 2)
-	{
-		while (true)
-		{
-			let message = Engine.PollNetworkClient();
-			if (!message)
-				break;
-
-			log("Net message: " + uneval(message));
-
-			if (g_NetMessageTypes[message.type])
-				g_NetMessageTypes[message.type](message);
-			else
-				error("Unrecognised net message type " + message.type);
-		}
-	}
+		handleNetMessages();
 
 	updateTimers();
+}
+
+/**
+ * Handles all pending messages sent by the net client.
+ */
+function handleNetMessages()
+{
+	while (g_IsNetworked)
+	{
+		let message = Engine.PollNetworkClient();
+		if (!message)
+			break;
+
+		log("Net message: " + uneval(message));
+
+		if (g_NetMessageTypes[message.type])
+			g_NetMessageTypes[message.type](message);
+		else
+			error("Unrecognised net message type " + message.type);
+	}
 }
 
 /**
