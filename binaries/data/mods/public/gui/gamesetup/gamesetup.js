@@ -441,7 +441,7 @@ var g_DropdownArrays = {
 
 			updateGameAttributes();
 			updateReadyUI();
-		}
+		},
 	},
 	"playerTeam": {
 		"labels": (idx) => g_TeamsArray.label,
@@ -455,7 +455,7 @@ var g_DropdownArrays = {
 		"select": (idx, selectedIdx) => {
 			g_GameAttributes.settings.PlayerData[idx].Team = selectedIdx - 1;
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"playerCiv": {
 		"labels": (idx) => g_CivList.name,
@@ -466,7 +466,7 @@ var g_DropdownArrays = {
 		"select": (idx, selectedIdx) => {
 			g_GameAttributes.settings.PlayerData[idx].Civ = g_CivList.code[selectedIdx];
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	},
 	"playerColorPicker": {
 		"labels": (idx) => g_PlayerColors.map(color => ' ' + '[color="' + rgbToGuiColor(color) + '"]■[/color]'),
@@ -485,7 +485,7 @@ var g_DropdownArrays = {
 			playerData[idx].Color = g_PlayerColors[selectedIdx];
 			ensureUniquePlayerColors(playerData);
 		},
-		"maps": ["random", "skirmish"]
+		"maps": ["random", "skirmish"],
 	}
 };
 
@@ -568,37 +568,37 @@ var g_Checkboxes = {
  */
 var g_MiscControls = {
 	"chatPanel": {
-		"hidden": () => !g_IsNetworked
+		"hidden": () => !g_IsNetworked,
 	},
 	"chatInput": {
-		"tooltip": () => colorizeAutocompleteHotkey()
+		"tooltip": () => colorizeAutocompleteHotkey(),
 	},
 	"optionCheats": {
-		"hidden": () => !g_IsNetworked
+		"hidden": () => !g_IsNetworked,
 	},
 	"optionRating": {
-		"hidden": () => !Engine.HasXmppClient()
+		"hidden": () => !Engine.HasXmppClient(),
 	},
 	"optionWonderDuration": {
-		"hidden": () => g_GameAttributes.settings.GameType != "wonder"
+		"hidden": () => g_GameAttributes.settings.GameType != "wonder",
 	},
 	"cheatWarningText": {
-		"hidden": () => !g_IsNetworked || !g_GameAttributes.settings.CheatsEnabled
+		"hidden": () => !g_IsNetworked || !g_GameAttributes.settings.CheatsEnabled,
 	},
 	"mapSize": {
-		"hidden": () => g_GameAttributes.mapType != "random" || !g_IsController
+		"hidden": () => g_GameAttributes.mapType != "random" || !g_IsController,
 	},
 	"mapSizeText": {
-		"hidden": () => g_GameAttributes.mapType != "random" || g_IsController
+		"hidden": () => g_GameAttributes.mapType != "random" || g_IsController,
 	},
 	"mapSizeDesc": {
-		"hidden": () => g_GameAttributes.mapType != "random"
+		"hidden": () => g_GameAttributes.mapType != "random",
 	},
 	"cancelGame": {
 		"tooltip": () =>
 			Engine.HasXmppClient() ?
 				translate("Return to the lobby.") :
-				translate("Return to the main menu.")
+				translate("Return to the main menu."),
 	},
 	"startGame": {
 		// TODO: right align stuff
@@ -610,10 +610,10 @@ var g_MiscControls = {
 		}
 	},
 	"civResetButton": {
-		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController
+		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController,
 	},
 	"teamResetButton": {
-		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController
+		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController,
 	}
 };
 
@@ -623,24 +623,24 @@ var g_MiscControlArrays = {
 			"left": 0,
 			"right": "100%",
 			"top": 32 * idx,
-			"bottom": 32 * (idx + 1)
-		})
+			"bottom": 32 * (idx + 1),
+		}),
 	},
 	"playerName": {
 		"caption": (idx) => {
 			// TODO if (g_PlayerAssignments[message.guid].status) green
 			return translate(g_DefaultPlayerData[idx].Name);
-		}
+		},
 	},
 	"playerColor": {
-		"sprite": (idx) => "color:" + rgbToGuiColor(g_GameAttributes.settings.PlayerData[idx].Color) + " 100"
+		"sprite": (idx) => "color:" + rgbToGuiColor(g_GameAttributes.settings.PlayerData[idx].Color) + " 100",
 	},
 	"playerConfig": {
 		"hidden": (idx) => g_GameAttributes.settings.PlayerData[idx].AI != "",
 		"onPress": (idx) => {
 			openAIConfig(idx);
-		}
-	}
+		},
+	},
 };
 
 /**
