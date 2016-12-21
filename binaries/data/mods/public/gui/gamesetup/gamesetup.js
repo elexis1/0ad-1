@@ -740,6 +740,12 @@ function initDropdown(name, idx)
 	};
 }
 
+function initDropdownArray(name)
+{
+	for (let i = 0; i < g_MaxPlayers; ++i)
+		initDropdown(name, i);
+}
+
 function initCheckbox(name)
 {
 	Engine.GetGUIObjectByName(name).onPress = function() {
@@ -755,12 +761,6 @@ function initCheckbox(name)
 		obj.set(this.checked);
 		updateGameAttributes();
 	};
-}
-
-function initDropdownArray(name)
-{
-	for (let i = 0; i < g_MaxPlayers; ++i)
-		initDropdown(name, i);
 }
 
 /**
