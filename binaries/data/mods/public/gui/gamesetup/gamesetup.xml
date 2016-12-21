@@ -134,6 +134,7 @@
 			</object>
 			<object size="24 64 100%-460 358" type="image" sprite="CoverFillDark" name="playerAssignmentsPanelCover" hidden="true"/>
 
+			<!-- Singleplayer / AI tips -->
 			<object name="spTips" size="24 370 560 520" type="image" hidden="true">
 				<object size="4 10 28 34" type="image" sprite="ModernGear"/>
 				<object name="aiTips" size="32 0 100%-20 100%-32" type="text" style="ModernLeftLabelText"/>

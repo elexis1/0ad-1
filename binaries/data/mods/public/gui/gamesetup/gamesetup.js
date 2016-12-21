@@ -729,10 +729,7 @@ function initGUIObjects()
 	// and it is known whether the local player is an observer. 
 	hideStartGameButton(true);
 
-	if (g_IsNetworked)
-		Engine.GetGUIObjectByName("chatInput").focus();
-	else
-		initSPTips();
+	initSPTips();
 
 	if (g_IsController)
 	{
@@ -741,6 +738,9 @@ function initGUIObjects()
 			warn("initGUIObjects() called while in GUI update");
 		updateGameAttributes();
 	}
+
+	if (g_IsNetworked)
+		Engine.GetGUIObjectByName("chatInput").focus();
 }
 
 function initDropdown(name, idx)
@@ -792,7 +792,7 @@ function initDropdownArray(name)
 
 function initSPTips()
 {
-	if (Engine.ConfigDB_GetValue("user", "gui.gamesetup.enabletips") !== "true")
+	if (g_IsNetworked || Engine.ConfigDB_GetValue("user", "gui.gamesetup.enabletips") !== "true")
 		return;
 
 	Engine.GetGUIObjectByName("spTips").hidden = false;
