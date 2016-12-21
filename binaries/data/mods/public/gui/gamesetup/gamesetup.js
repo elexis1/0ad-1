@@ -704,9 +704,6 @@ function initGUIObjects()
 	// and it is known whether the local player is an observer. 
 	hideStartGameButton(true);
 
-	if (g_IsNetworked)
-		Engine.GetGUIObjectByName("chatInput").focus();
-
 	if (g_IsController)
 	{
 		loadPersistMatchSettings();
@@ -714,6 +711,9 @@ function initGUIObjects()
 			warn("initGUIObjects() called while in GUI update");
 		updateGameAttributes();
 	}
+
+	if (g_IsNetworked)
+		Engine.GetGUIObjectByName("chatInput").focus();
 }
 
 function initDropdown(name, idx)
