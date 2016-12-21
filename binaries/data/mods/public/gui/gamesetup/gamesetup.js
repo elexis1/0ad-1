@@ -569,6 +569,9 @@ var g_MiscControls = {
 	"chatPanel": {
 		"hidden": () => !g_IsNetworked
 	},
+	"chatInput": {
+		"tooltip": () => colorizeAutocompleteHotkey()
+	},
 	"optionCheats": {
 		"hidden": () => !g_IsNetworked
 	},
@@ -591,9 +594,10 @@ var g_MiscControls = {
 		"hidden": () => g_GameAttributes.mapType != "random"
 	},
 	"cancelGame": {
-		"tooltip": () => Engine.HasXmppClient() ?
-			translate("Return to the lobby.") :
-			translate("Return to the main menu.")
+		"tooltip": () =>
+			Engine.HasXmppClient() ?
+				translate("Return to the lobby.") :
+				translate("Return to the main menu.")
 	},
 	"startGame": {
 		"enabled": () => !g_IsController ||
@@ -715,8 +719,6 @@ function initGUIObjects()
 
 	resizeMoreOptionsWindow();
 
-	Engine.GetGUIObjectByName("chatInput").tooltip = colorizeAutocompleteHotkey();
-
 	// The start game button should be hidden until the player assignments are received 
 	// and it is known whether the local player is an observer. 
 	hideStartGameButton(true);
@@ -831,42 +833,6 @@ function resizeMoreOptionsWindow()
 	let mSize = moreOptions.size;
 	mSize.bottom = mSize.top + yPos + 20;
 	moreOptions.size = mSize;
-}
-
-/**
- * Assign update-functions to all checkboxes.
- */
-function initRadioButtons()
-{
-	let options = {
-		"RevealMap": "revealMap",
-		"ExploreMap": "exploreMap",
-		"DisableTreasures": "disableTreasures",
-		"LockTeams": "lockTeams",
-		"LastManStanding" : "lastManStanding",
-		"CheatsEnabled": "enableCheats"
-	};
-
-	Object.keys(options).forEach(attribute => {
-		Engine.GetGUIObjectByName(options[attribute]).onPress = function() {
-			g_GameAttributes.settings[attribute] = this.checked;
-			updateGameAttributes();
-		};
-	});
-
-	Engine.GetGUIObjectByName("enableRating").onPress = function() {
-		g_GameAttributes.settings.RatingEnabled = this.checked;
-		Engine.SetRankedGame(this.checked);
-		Engine.GetGUIObjectByName("enableCheats").enabled = !this.checked;
-		Engine.GetGUIObjectByName("lockTeams").enabled = !this.checked;
-		updateGameAttributes();
-	};
-
-	Engine.GetGUIObjectByName("lockTeams").onPress = function() {
-		g_GameAttributes.settings.LockTeams = this.checked;
-		g_GameAttributes.settings.LastManStanding = false;
-		updateGameAttributes();
-	};
 }
 
 function hideStartGameButton(hidden)
