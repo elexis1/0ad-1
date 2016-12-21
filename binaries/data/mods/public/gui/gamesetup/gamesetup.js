@@ -251,6 +251,7 @@ var g_LastViewedAIPlayer = -1;
  *
  * NOTICE: The first three elements need to be initialized first.
  * If the map is changed, missing values are supplemented with defaults.
+ * TODO: add "priority" property, to ensure init order?
  */
 var g_Dropdowns = {
 	"mapType": {
@@ -351,7 +352,6 @@ var g_Dropdowns = {
 		"defined": () => g_GameAttributes.settings.Ceasefire !== undefined,
 		"get": () => g_GameAttributes.settings.Ceasefire,
 		"select": idx => {
-			// TODO for (let ai of )
 			g_GameAttributes.settings.Ceasefire = g_Ceasefire.Duration[idx];
 		},
 		"maps": ["random", "skirmish"]
