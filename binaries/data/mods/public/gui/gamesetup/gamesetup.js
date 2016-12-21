@@ -576,6 +576,7 @@ var g_MiscControls = {
 				translate("Return to the main menu.")
 	},
 	"startGame": {
+		// TODO: right align stuff
 		"enabled": () => !g_IsController ||
 		                 Object.keys(g_PlayerAssignments).every(guid => g_PlayerAssignments[guid].status ||
 		                                                                g_PlayerAssignments[guid].player == -1),
@@ -700,10 +701,6 @@ function initGUIObjects()
 
 	resizeMoreOptionsWindow();
 
-	// The start game button should be hidden until the player assignments are received 
-	// and it is known whether the local player is an observer. 
-	hideStartGameButton(true);
-
 	if (g_IsController)
 	{
 		loadPersistMatchSettings();
@@ -795,31 +792,6 @@ function resizeMoreOptionsWindow()
 	let mSize = moreOptions.size;
 	mSize.bottom = mSize.top + yPos + 20;
 	moreOptions.size = mSize;
-}
-
-function hideStartGameButton(hidden)
-{
-	const offset = 10;
-
-	let startGame = Engine.GetGUIObjectByName("startGame");
-	startGame.hidden = hidden;
-	let right = hidden ? startGame.size.right : startGame.size.left - offset;
-
-	let cancelGame = Engine.GetGUIObjectByName("cancelGame");
-	let cancelGameSize = cancelGame.size;
-	let buttonWidth = cancelGameSize.right - cancelGameSize.left;
-	cancelGameSize.right = right;
-	right -= buttonWidth;
-
-	for (let element of ["cheatWarningText", "onscreenToolTip"])
-	{
-		let elementSize = Engine.GetGUIObjectByName(element).size;
-		elementSize.right = right - (cancelGameSize.left - elementSize.right);
-		Engine.GetGUIObjectByName(element).size = elementSize;
-	}
-
-	cancelGameSize.left = right;
-	cancelGame.size = cancelGameSize;
 }
 
 /**
@@ -919,8 +891,6 @@ function handlePlayerAssignmentMessage(message)
 			onClientLeave(guid);
 
 	g_PlayerAssignments = message.newAssignments;
-
-	hideStartGameButton(!g_IsController && g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1); 
 
 	updatePlayerList();
 	updateReadyUI();
