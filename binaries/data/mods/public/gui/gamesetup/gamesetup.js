@@ -853,35 +853,40 @@ function initCheckbox(name)
 	};
 }
 
+function verticallyDistributeGUIObjects(parent, objectHeight, ignore)
+{
+	let yPos = undefined;
+
+	let parentObject = Engine.GetGUIObjectByName(parent);
+	for (let child of parentObject.children)
+	{
+		if (ignore.indexOf(child.name) != -1)
+			continue;
+
+		let childSize = child.size;
+		yPos = yPos || childSize.top;
+
+		if (child.hidden)
+			continue;
+
+		childSize.top = yPos;
+		childSize.bottom = yPos + objectHeight - 2;
+		child.size = childSize;
+
+		yPos += objectHeight;
+	}
+	return yPos;
+}
+
 /**
  * Remove empty space in case of hidden options (like cheats, rating or wonder duration)
  */
 function resizeMoreOptionsWindow()
 {
-	const elementHeight = 30;
-
-	let moreOptions = Engine.GetGUIObjectByName("moreOptions");
-	let yPos = undefined;
-
-	for (let guiOption of moreOptions.children)
-	{
-		if (guiOption.name == "moreOptionsLabel")
-			continue;
-
-		let gSize = guiOption.size;
-		yPos = yPos || gSize.top;
-
-		if (guiOption.hidden)
-			continue;
-
-		gSize.top = yPos;
-		gSize.bottom = yPos + elementHeight - 2;
-		guiOption.size = gSize;
-
-		yPos += elementHeight;
-	}
+	let yPos = verticallyDistributeGUIObjects("moreOptions", 32, ["moreOptionsLabel"]);
 
 	// Resize the vertically centered window containing the options
+	let moreOptions = Engine.GetGUIObjectByName("moreOptions");
 	let mSize = moreOptions.size;
 	mSize.bottom = mSize.top + yPos + 20;
 	moreOptions.size = mSize;
