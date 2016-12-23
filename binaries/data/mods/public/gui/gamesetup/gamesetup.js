@@ -902,32 +902,40 @@ function saveSPTipsSetting()
 /**
  * Remove empty space in case of hidden options (like cheats, rating or wonder duration)
  */
-function resizeMoreOptionsWindow()
+function verticallyDistributeGUIObjects(parent, objectHeight, ignore)
 {
-	const elementHeight = 30;
-
-	let moreOptions = Engine.GetGUIObjectByName("moreOptions");
 	let yPos = undefined;
 
-	for (let guiOption of moreOptions.children)
+	let parentObject = Engine.GetGUIObjectByName(parent);
+	for (let child of parentObject.children)
 	{
-		if (guiOption.name == "moreOptionsLabel")
+		if (ignore.indexOf(child.name) != -1)
 			continue;
 
-		let gSize = guiOption.size;
-		yPos = yPos || gSize.top;
+		let childSize = child.size;
+		yPos = yPos || childSize.top;
 
-		if (guiOption.hidden)
+		if (child.hidden)
 			continue;
 
-		gSize.top = yPos;
-		gSize.bottom = yPos + elementHeight - 2;
-		guiOption.size = gSize;
+		childSize.top = yPos;
+		childSize.bottom = yPos + objectHeight - 2;
+		child.size = childSize;
 
-		yPos += elementHeight;
+		yPos += objectHeight;
 	}
+	return yPos;
+}
+
+/**
+ * Remove empty space in case of hidden options (like cheats, rating or wonder duration)
+ */
+function resizeMoreOptionsWindow()
+{
+	let yPos = verticallyDistributeGUIObjects("moreOptions", 32, ["moreOptionsLabel"]);
 
 	// Resize the vertically centered window containing the options
+	let moreOptions = Engine.GetGUIObjectByName("moreOptions");
 	let mSize = moreOptions.size;
 	mSize.bottom = mSize.top + yPos + 20;
 	moreOptions.size = mSize;
