@@ -1366,7 +1366,7 @@ function selectMap(name)
 /**
  * Check can be moved to hidden() once it's not identical for all control-arrays anymore
  */
-function hideControlArrayElement(idx)
+function isControlArrayElementHidden(idx)
 {
 	return idx !== undefined && idx >= g_GameAttributes.settings.PlayerData.length;
 }
@@ -1385,7 +1385,7 @@ function updateGUIDropdown(name, idx = undefined)
 	let frame = Engine.GetGUIObjectByName(guiName + "Frame" + guiIdx + idxName);
 	let title = Engine.GetGUIObjectByName(guiName + "Title" + guiIdx);
 
-	let indexHidden = hideControlArrayElement(idx);
+	let indexHidden = isControlArrayElementHidden(idx);
 	let obj = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
 	let selected = indexHidden ? -1 : dropdown.list_data.indexOf(String(obj.get(idx)));
 	let enabled = !indexHidden && (!obj.enabled || obj.enabled(idx));
@@ -1451,7 +1451,7 @@ function updateGUIMiscControl(name, idx)
 	for (let property in obj)
 		control[property] = obj[property]();
 
-	if (hideControlArrayElement(idx))
+	if (isControlArrayElementHidden(idx))
 		control.hidden = true;
 }
 
