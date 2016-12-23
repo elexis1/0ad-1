@@ -243,27 +243,39 @@ var g_LastGameStanza;
 var g_LastViewedAIPlayer = -1;
 
 /**
- * Options in the "More Options" window will be shown in this order.
  * All valid options are required to appear here.
  */
-var g_MoreOptionsOrder = {
-	"Dropdown": [
-		"gameSpeed",
-		"victoryCondition",
-		"wonderDuration",
-		"populationCap",
-		"startingResources",
-		"ceasefire",
-	],
-	"Checkbox": [
-		"revealMap",
-		"exploreMap",
-		"disableTreasures",
-		"lockTeams",
-		"lastManStanding",
-		"enableCheats",
-		"enableRating",
-	],
+var g_OptionOrder = {
+	"map": {
+		"Dropdown": [
+			"mapType",
+			"mapFilter",
+			"mapSelection",
+			"numPlayers",
+			"mapSize",
+		],
+		"Checkbox": [
+		],
+	},
+	"more": {
+		"Dropdown": [
+			"gameSpeed",
+			"victoryCondition",
+			"wonderDuration",
+			"populationCap",
+			"startingResources",
+			"ceasefire",
+		],
+		"Checkbox": [
+			"revealMap",
+			"exploreMap",
+			"disableTreasures",
+			"lockTeams",
+			"lastManStanding",
+			"enableCheats",
+			"enableRating",
+		],
+	},
 };
 
 /**
@@ -280,6 +292,7 @@ var g_MoreOptionsOrder = {
  */
 var g_Dropdowns = {
 	"mapType": {
+		"title": () => translate("Map Type"),
 		"tooltip": () => translate("Select a map type."),
 		"labels": () => g_MapTypes.Title,
 		"ids": () => g_MapTypes.Name,
@@ -304,6 +317,7 @@ var g_Dropdowns = {
 		},
 	},
 	"mapFilter": {
+		"title": () => translate("Map Filter"),
 		"tooltip": () => translate("Select a map filter."),
 		"labels": () => g_MapFilters.name,
 		"ids": () => g_MapFilters.id,
@@ -318,6 +332,7 @@ var g_Dropdowns = {
 		},
 	},
 	"mapSelection": {
+		"title": () => translate("Select Map"),
 		"tooltip": () => translate("Select a map to play on."),
 		"labels": () => g_MapList.name,
 		"ids": () => g_MapList.file,
@@ -330,6 +345,7 @@ var g_Dropdowns = {
 		},
 	},
 	"mapSize": {
+		"title": () => translate("Map Size"),
 		"tooltip": () => translate("Select map size. (Larger sizes may reduce performance.)"),
 		"labels": () => g_MapSizes.Name,
 		"ids": () => g_MapSizes.Tiles,
@@ -342,6 +358,7 @@ var g_Dropdowns = {
 		"hidden": () => g_GameAttributes.mapType != "random",
 	},
 	"numPlayers": {
+		"title": () => translate("Number of Players"),
 		"tooltip": () => translate("Select number of players."),
 		"labels": () => g_PlayerArray,
 		"ids": () => g_PlayerArray,
@@ -593,9 +610,7 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.CheatsEnabled = !g_IsNetworked ||
 				checked && !g_GameAttributes.settings.RatingEnabled;
 		},
-		"enabled": () =>
-			g_GameAttributes.mapType != "scenario" &&
-			!g_GameAttributes.settings.RatingEnabled,
+		"enabled": () => !g_GameAttributes.settings.RatingEnabled,
 	},
 	"enableRating": {
 		"title": () => translate("Rated Game"),
@@ -623,15 +638,6 @@ var g_MiscControls = {
 	},
 	"cheatWarningText": {
 		"hidden": () => !g_IsNetworked || !g_GameAttributes.settings.CheatsEnabled,
-	},
-	"mapSize": {
-		"hidden": () => g_GameAttributes.mapType != "random" || !g_IsController,
-	},
-	"mapSizeText": {
-		"hidden": () => g_GameAttributes.mapType != "random" || g_IsController,
-	},
-	"mapSizeDesc": {
-		"hidden": () => g_GameAttributes.mapType != "random",
 	},
 	"cancelGame": {
 		"tooltip": () =>
@@ -797,12 +803,13 @@ function initGUIObjects()
  */
 function getGUIObjectNameFromSetting(name)
 {
-	for (let type in g_MoreOptionsOrder)
-	{
-		let idx = g_MoreOptionsOrder[type].indexOf(name);
-		if (idx != -1)
-			return ["option" + type, "[" + idx + "]"]
-	}
+	for (let panel in g_OptionOrder)
+		for (let type in g_OptionOrder[panel])
+		{
+			let idx = g_OptionOrder[panel][type].indexOf(name);
+			if (idx != -1)
+				return [panel + "Option" + type, "[" + idx + "]"]
+		}
 
 	// Assume there is a GUI object with exactly that setting name
 	return [name, ""];
@@ -886,6 +893,8 @@ function verticallyDistributeGUIObjects(parent, objectHeight, ignore)
  */
 function resizeMoreOptionsWindow()
 {
+	verticallyDistributeGUIObjects("mapOptions", 32, []);
+
 	let yPos = verticallyDistributeGUIObjects("moreOptions", 32, ["moreOptionsLabel"]);
 
 	// Resize the vertically centered window containing the options
@@ -1461,6 +1470,8 @@ function updateGUIMiscControl(name, idx)
 
 	let obj = g_MiscControls[name];
 	let control = Engine.GetGUIObjectByName(name + idxName);
+	if (!control)
+		warn("No GUI object with name '" + name + "'");
 
 	for (let property in obj)
 		control[property] = obj[property]();
