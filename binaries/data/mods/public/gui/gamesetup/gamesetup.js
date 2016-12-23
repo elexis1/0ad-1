@@ -339,7 +339,7 @@ var g_Dropdowns = {
 		"select": (idx) => {
 			g_GameAttributes.settings.Size = g_MapSizes.Tiles[idx];
 		},
-		"maps": ["random"],
+		"hidden": () => g_GameAttributes.mapType != "random",
 	},
 	"numPlayers": {
 		"tooltip": () => translate("Select number of players."),
@@ -348,10 +348,10 @@ var g_Dropdowns = {
 		"default": () => g_MaxPlayers - 1,
 		"defined": () => g_GameAttributes.settings.PlayerData !== undefined,
 		"get": () => g_GameAttributes.settings.PlayerData.length,
+		"enabled": () => g_GameAttributes.mapType == "random",
 		"select": (idx) => {
 			selectNumPlayers(idx + 1);
 		},
-		"maps": ["random"],
 	},
 	"populationCap": {
 		"title": () => translate("Population Cap"),
@@ -364,7 +364,7 @@ var g_Dropdowns = {
 		"select": (idx) => {
 			g_GameAttributes.settings.PopulationCap = g_PopulationCapacities.Population[idx];
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"startingResources": {
 		"title": () => translate("Starting Resources"),
@@ -377,7 +377,7 @@ var g_Dropdowns = {
 		"select": (idx) => {
 			g_GameAttributes.settings.StartingResources = g_StartingResources.Resources[idx];
 		},
-		"maps": ["random", "skirmish"],
+		"hidden": () => g_GameAttributes.mapType == "scenario",
 	},
 	"ceasefire": {
 		"title": () => translate("Ceasefire"),
@@ -390,7 +390,7 @@ var g_Dropdowns = {
 		"select": (idx) => {
 			g_GameAttributes.settings.Ceasefire = g_Ceasefire.Duration[idx];
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"victoryCondition": {
 		"title": () => translate("Victory Condition"),
@@ -404,7 +404,7 @@ var g_Dropdowns = {
 			g_GameAttributes.settings.GameType = g_VictoryConditions.Name[idx];
 			g_GameAttributes.settings.VictoryScripts = g_VictoryConditions.Scripts[idx];
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"wonderDuration": {
 		"title": () => translate("Wonder Victory"),
@@ -418,7 +418,7 @@ var g_Dropdowns = {
 			g_GameAttributes.settings.WonderDuration = g_WonderDurations.Duration[idx];
 		},
 		"hidden": () => g_GameAttributes.settings.GameType != "wonder",
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"gameSpeed": {
 		"title": () => translate("Game Speed"),
@@ -476,7 +476,7 @@ var g_DropdownArrays = {
 		"select": (idx, selectedIdx) => {
 			g_GameAttributes.settings.PlayerData[idx].Team = selectedIdx - 1;
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"playerCiv": {
 		"labels": (idx) => g_CivList.name,
@@ -487,7 +487,7 @@ var g_DropdownArrays = {
 		"select": (idx, selectedIdx) => {
 			g_GameAttributes.settings.PlayerData[idx].Civ = g_CivList.code[selectedIdx];
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"playerColorPicker": {
 		"labels": (idx) => g_PlayerColors.map(color => ' ' + '[color="' + rgbToGuiColor(color) + '"]■[/color]'),
@@ -506,7 +506,7 @@ var g_DropdownArrays = {
 			playerData[idx].Color = g_PlayerColors[selectedIdx];
 			ensureUniquePlayerColors(playerData);
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 };
 
@@ -527,7 +527,7 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.RevealMap = checked;
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"exploreMap": {
 		"title":
@@ -542,7 +542,7 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.ExploreMap = checked;
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"disableTreasures": {
 		"title": () => translate("Disable Treasures"),
@@ -553,7 +553,7 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.DisableTreasures = checked;
 		},
-		"maps": ["random", "skirmish"],
+		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"lockTeams":  {
 		"title": () => translate("Teams Locked"),
@@ -565,8 +565,9 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.LockTeams = checked;
 			g_GameAttributes.settings.LastManStanding = false;
 		},
-		"maps": ["random", "skirmish"],
-		"enabled": () => !g_GameAttributes.settings.RatingEnabled,
+		"enabled": () =>
+			g_GameAttributes.mapType != "scenario" &&
+			!g_GameAttributes.settings.RatingEnabled,
 	},
 	"lastManStanding":  {
 		"title": () => translate("Last Man Standing"),
@@ -577,8 +578,9 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.LastManStanding = checked;
 		},
-		"maps": ["random", "skirmish"],
-		"enabled": () => !g_GameAttributes.settings.LockTeams,
+		"enabled": () =>
+			g_GameAttributes.mapType != "scenario" &&
+			!g_GameAttributes.settings.LockTeams,
 	},
 	"enableCheats":  {
 		"title": () => translate("Cheats"),
@@ -591,7 +593,9 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.CheatsEnabled = !g_IsNetworked ||
 				checked && !g_GameAttributes.settings.RatingEnabled;
 		},
-		"enabled": () => !g_GameAttributes.settings.RatingEnabled,
+		"enabled": () =>
+			g_GameAttributes.mapType != "scenario" &&
+			!g_GameAttributes.settings.RatingEnabled,
 	},
 	"enableRating": {
 		"title": () => translate("Rated Game"),
@@ -820,8 +824,7 @@ function initDropdown(name, idx)
 		    g_IsInGuiUpdate ||
 		    !this.list_data[this.selected] ||
 		    data.hidden && data.hidden(idx) ||
-		    data.enabled && !data.enabled(idx) ||
-		    data.maps && data.maps.indexOf(g_GameAttributes.mapType) == -1)
+		    data.enabled && !data.enabled(idx))
 			return;
 
 		data.select(this.selected);
