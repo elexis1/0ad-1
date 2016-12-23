@@ -300,22 +300,21 @@
 						<object
 							name="optionDropdownTitle[n]"
 							type="text"
-							style="ModernRightLabelText"
 							size="0 0 40% 28"
+							style="ModernRightLabelText"
 						/>
 						<object
 							name="optionDropdownText[n]"
 							type="text"
+							size="40% 0 100% 28"
 							style="ModernLeftLabelText"
-							size="40% 0 100% 100%"
 						/>
 						<object
 							name="optionDropdown[n]"
 							type="dropdown"
-							style="ModernDropDown"
 							size="40%+10 0 100% 28"
+							style="ModernDropDown"
 							tooltip_style="onscreenToolTip"
-							hidden="true"
 						/>
 					</object>
 				</repeat>
@@ -324,23 +323,22 @@
 					<object name="optionCheckboxFrame[n]" size="14 30 94% 60">
 						<object
 							name="optionCheckboxTitle[n]"
-							size="0 0 40% 28"
 							type="text"
+							size="0 0 40% 28"
 							style="ModernRightLabelText"
 						/>
 						<object
 							name="optionCheckboxText[n]"
-							size="40% 0 100% 28"
 							type="text"
+							size="40% 0 100% 28"
 							style="ModernLeftLabelText"
 						/>
 						<object
 							name="optionCheckbox[n]"
 							type="checkbox"
+							size="40%+10 5 40%+28 28"
 							style="ModernTickBox"
-							size="40%+10 5 40%+30 100%-5"
 							tooltip_style="onscreenToolTip"
-							hidden="true"
 						/>
 					</object>
 				</repeat>
@@ -360,6 +358,7 @@
 				</object>
 			<!-- End More Options -->
 			</object>
+
 		</object>
 	</object>
 </objects>
