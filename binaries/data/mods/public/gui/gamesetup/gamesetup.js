@@ -270,9 +270,10 @@ var g_LastViewedAIPlayer = -1;
 /**
  * Contains the logic of all multiple-choice gamesettings.
  *
- * Hidden - if so, both label and dropdown won't be visible.
+ * Hidden - If hidden, both the label and dropdown won't be visible.
  * Enabled - Only the label will be shown if it's disabled.
- * Default - returns the index of the default value (not the value itself).
+ * Default - Returns the index of the default value (not the value itself).
+ * Tooltip - A description shown when hovering the option.
  *
  * NOTICE: The first three elements need to be initialized first.
  * If the map is changed, missing values are supplemented with defaults.
@@ -429,6 +430,9 @@ var g_Dropdowns = {
 var g_HostNameList = [];
 var g_HostGUIDList = [];
 
+/**
+ * These dropdowns provide a setting that is repeated once for each player.
+ */
 var g_DropdownArrays = {
 	"playerAssignment": {
 		"labels": (idx) => g_HostNameList,
@@ -1357,6 +1361,7 @@ function hideControlArrayElement(idx)
 }
 
 /**
+ * @param name - Name of the setting to be changed (not the one of the dropdown)
  * @param idx - Only specified for dropdown arrays.
  */
 function updateGUIDropdown(name, idx = undefined)
@@ -1387,6 +1392,10 @@ function updateGUIDropdown(name, idx = undefined)
 	}
 }
 
+/**
+ * Not used for the player assignments, so checkboxArrays are not implemented,
+ * hence no index.
+ */
 function updateGUICheckbox(name)
 {
 	let obj = g_Checkboxes[name];
