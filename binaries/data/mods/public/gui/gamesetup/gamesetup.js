@@ -801,6 +801,8 @@ function initGUIObjects()
 		updateGameAttributes();
 	}
 
+	updateGUIObjects();
+
 	Engine.GetGUIObjectByName("loadingWindow").hidden = true;
 	Engine.GetGUIObjectByName("setupWindow").hidden = false;
 
