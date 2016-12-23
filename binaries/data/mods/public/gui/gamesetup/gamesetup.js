@@ -1446,7 +1446,7 @@ function updateGUIDropdown(name, idx = undefined)
 		frame.hidden = hidden;
 
 	if (title && obj.title)
-		title.caption = obj.title();
+		title.caption = sprintf(translate("%(option)s:"), { "option": obj.title() });
 
 	if (label)
 	{
@@ -1485,7 +1485,7 @@ function updateGUICheckbox(name)
 		frame.hidden = hidden;
 
 	if (title && obj.title)
-		title.caption = obj.title();
+		title.caption = sprintf(translate("%(option)s:"), { "option": obj.title() });
 }
 
 function updateGUIMiscControl(name, idx)
