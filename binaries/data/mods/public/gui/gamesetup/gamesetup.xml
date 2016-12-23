@@ -145,66 +145,60 @@
 					<action on="Press">saveSPTipsSetting();</action>
 				</object>
 			</object>
-			<!-- Map selection -->
 
-			<object size="100%-425 355 100%-285 470" name="mapTypeTooltip">
-				<object type="text" style="ModernRightLabelText" size="0 0 100% 30">
-					<translatableAttribute id="caption">Map Type:</translatableAttribute>
-				</object>
-				<object type="text" style="ModernRightLabelText" size="0 32 100% 62">
-					<translatableAttribute id="caption">Map Filter:</translatableAttribute>
-				</object>
-				<object type="text" style="ModernRightLabelText" size="0 64 100% 94">
-					<translatableAttribute id="caption">Select Map:</translatableAttribute>
-				</object>
-				<object type="text" style="ModernRightLabelText" size="0 96 100% 126">
-					<translatableAttribute id="caption">Number of Players:</translatableAttribute>
-				</object>
-				<object name="mapSizeDesc" type="text" style="ModernRightLabelText" size="0 128 100% 158">
-					<translatableAttribute id="caption">Map Size:</translatableAttribute>
-				</object>
+			<!-- Map Options -->
+			<object name="mapOptions" size="100%-425 355 100%-25 470">
+
+				<repeat count="15" var="n">
+					<object name="mapOptionDropdownFrame[n]" size="0 0 100% 30">
+						<object
+							name="mapOptionDropdownTitle[n]"
+							type="text"
+							size="0 0 140 28"
+							style="ModernRightLabelText"
+						/>
+						<object
+							name="mapOptionDropdownText[n]"
+							type="text"
+							size="150 0 100% 28"
+							style="ModernLeftLabelText"
+						/>
+						<object
+							name="mapOptionDropdown[n]"
+							type="dropdown"
+							size="150 0 100% 28"
+							style="ModernDropDown"
+							tooltip_style="onscreenToolTip"
+						/>
+					</object>
+				</repeat>
+
+				<repeat count="15" var="n">
+					<object name="mapOptionCheckboxFrame[n]" size="0 0 100% 30">
+						<object
+							name="mapOptionCheckboxTitle[n]"
+							type="text"
+							size="0 0 140 28"
+							style="ModernRightLabelText"
+						/>
+						<object
+							name="mapOptionCheckboxText[n]"
+							type="text"
+							size="150 0 100% 28"
+							style="ModernLeftLabelText"
+						/>
+						<object
+							name="mapOptionCheckbox[n]"
+							type="checkbox"
+							size="150 0 180 28"
+							style="ModernTickBox"
+							tooltip_style="onscreenToolTip"
+						/>
+					</object>
+				</repeat>
 			</object>
+			<!-- End Map Options -->
 
-
-			<object size="100%-275 355 100%-25 470" name="mapFilterTooltip">
-				<object name="mapTypeText" type="text" style="ModernLeftLabelText" size="0 0 100% 30" hidden="true"/>
-				<object name="mapFilterText" type="text" style="ModernLeftLabelText" size="0 32 100% 62" hidden="true"/>
-				<object name="mapSelectionText" type="text" style="ModernLeftLabelText" size="0 64 100% 94" hidden="true"/>
-				<object name="mapSizeText" type="text" style="ModernLeftLabelText" size="0 128 100% 158" hidden="true"/>
-			</object>
-
-			<object name="mapType"
-				type="dropdown"
-				style="ModernDropDown"
-				size="100%-275 355 100%-25 383"
-				tooltip_style="onscreenToolTip">
-			</object>
-
-			<object name="mapFilter"
-				type="dropdown"
-				style="ModernDropDown"
-				size="100%-275 387 100%-25 415"
-				tooltip_style="onscreenToolTip">
-			</object>
-
-			<object size="100%-275 419 100%-25 447" name="mapSelectionPannel">
-				<object name="mapSelection"
-					style="ModernDropDown"
-					type="dropdown"
-					size="0 0 100% 100%"
-					tooltip_style="onscreenToolTip">
-				</object>
-			</object>
-
-			<object name="numPlayersText" size="100%-275 451 100%-25 483" type="text" style="ModernLeftLabelText"/>
-				<object name="numPlayers"
-					type="dropdown"
-					style="ModernDropDown"
-					size="100%-275 451 100%-25 479"
-					tooltip_style="onscreenToolTip">
-			</object>
-
-			<object name="mapSize" size="100%-275 483 100%-25 511" type="dropdown" style="ModernDropDown" hidden="true" tooltip_style="onscreenToolTip"/>
 
 			<!-- Map Preview -->
 			<object type="image" sprite="ModernDarkBoxGold" name="gamePreviewBox" size="100%-426 49 100%-24 345">
@@ -308,21 +302,21 @@
 				</object>
 
 				<repeat count="15" var="n">
-					<object name="optionDropdownFrame[n]" size="14 30 94% 60">
+					<object name="moreOptionDropdownFrame[n]" size="14 30 94% 60">
 						<object
-							name="optionDropdownTitle[n]"
+							name="moreOptionDropdownTitle[n]"
 							type="text"
 							size="0 0 40% 28"
 							style="ModernRightLabelText"
 						/>
 						<object
-							name="optionDropdownText[n]"
+							name="moreOptionDropdownText[n]"
 							type="text"
 							size="40% 0 100% 28"
 							style="ModernLeftLabelText"
 						/>
 						<object
-							name="optionDropdown[n]"
+							name="moreOptionDropdown[n]"
 							type="dropdown"
 							size="40%+10 0 100% 28"
 							style="ModernDropDown"
@@ -332,21 +326,21 @@
 				</repeat>
 
 				<repeat count="15" var="n">
-					<object name="optionCheckboxFrame[n]" size="14 30 94% 60">
+					<object name="moreOptionCheckboxFrame[n]" size="14 30 94% 60">
 						<object
-							name="optionCheckboxTitle[n]"
+							name="moreOptionCheckboxTitle[n]"
 							type="text"
 							size="0 0 40% 28"
 							style="ModernRightLabelText"
 						/>
 						<object
-							name="optionCheckboxText[n]"
+							name="moreOptionCheckboxText[n]"
 							type="text"
 							size="40% 0 100% 28"
 							style="ModernLeftLabelText"
 						/>
 						<object
-							name="optionCheckbox[n]"
+							name="moreOptionCheckbox[n]"
 							type="checkbox"
 							size="40%+10 5 40%+28 28"
 							style="ModernTickBox"
