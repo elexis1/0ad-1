@@ -510,8 +510,8 @@ var g_DropdownArrays = {
 var g_Checkboxes = {
 	"revealMap": {
 		"tooltip":
-			// Make sure to differentiate between the revealed map and explored map options!
-			() => translate("Toggle explored map (see initial map)."),
+			// Translation: Make sure to differentiate between the revealed map and explored map options!
+			() => translate("Toggle revealed map (see everything)."),
 		"default": () => false,
 		"defined": () => g_GameAttributes.settings.RevealMap !== undefined,
 		"get": () => g_GameAttributes.settings.RevealMap,
@@ -519,11 +519,11 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.RevealMap = checked;
 		},
 		"maps": ["random", "skirmish"],
-		"tooltip":
-			// Make sure to differentiate between the revealed map and explored map options!
-			() => translate("Toggle revealed map (see everything)."),
 	},
 	"exploreMap": {
+		"tooltip":
+			// Translation: Make sure to differentiate between the revealed map and explored map options!
+			() => translate("Toggle explored map (see initial map)."),
 		"default": () => false,
 		"defined": () => g_GameAttributes.settings.ExploreMap !== undefined,
 		"get": () => g_GameAttributes.settings.ExploreMap,
