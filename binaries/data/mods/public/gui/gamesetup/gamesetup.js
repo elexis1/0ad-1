@@ -379,7 +379,7 @@ var g_Dropdowns = {
 		"maps": ["random"],
 	},
 	"populationCap": {
-		"title": () => translate("Population cap"),
+		"title": () => translate("Population Cap"),
 		"tooltip": () => translate("Select population cap."),
 		"labels": () => g_PopulationCapacities.Title,
 		"ids": () => g_PopulationCapacities.Population,
