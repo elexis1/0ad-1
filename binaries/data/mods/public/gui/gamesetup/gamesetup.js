@@ -2052,3 +2052,9 @@ function sendRegisterGameStanza()
 	g_LastGameStanza = stanza;
 	Engine.SendRegisterGame(stanza);
 }
+
+function getChatAutocompleteEntries()
+{
+	// TODO: autocomplete civ names
+	return Object.keys(g_PlayerAssignments).map(guid => g_PlayerAssignments.name);
+}
