@@ -763,8 +763,6 @@ function initGUIObjects()
 	for (let dropdown in g_DropdownArrays)
 		initDropdownArray(dropdown);
 
-	resizeMoreOptionsWindow();
-
 	if (g_IsController)
 	{
 		// TODO: move to init
@@ -773,6 +771,8 @@ function initGUIObjects()
 			warn("initGUIObjects() called while in GUI update");
 		updateGameAttributes();
 	}
+
+	updateGUIObjects();
 
 	Engine.GetGUIObjectByName("loadingWindow").hidden = true;
 	Engine.GetGUIObjectByName("setupWindow").hidden = false;
