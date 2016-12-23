@@ -74,7 +74,7 @@ var g_NetMessageTypes = {
 		"type": msg.banned ? "banned" : "kicked",
 		"username": msg.username
 	}),
-	"chat": msg => addChatMessage({ "type": "chat", "guid": msg.guid, "text": msg.text })
+	"chat": msg => addChatMessage({ "type": "chat", "guid": msg.guid, "text": msg.text }),
 };
 
 var g_FormatChatMessage = {
@@ -94,7 +94,7 @@ var g_FormatChatMessage = {
 	"not-ready": (msg, user) => sprintf(translate("* %(username)s is not ready."), {
 		"username": user
 	}),
-	"clientlist": (msg, user) => getUsernameList()
+	"clientlist": (msg, user) => getUsernameList(),
 };
 
 var g_MapFilters = prepareForDropdown([
@@ -128,7 +128,7 @@ var g_MapFilters = prepareForDropdown([
 		"id": "all",
 		"name": translate("All Maps"),
 		"filter": mapKeywords => true
-	}
+	},
 ]);
 
 /**
@@ -399,7 +399,7 @@ var g_Dropdowns = {
 		"select": (idx) => {
 			g_GameAttributes.gameSpeed = g_GameSpeeds.Speed[idx];
 		},
-	}
+	},
 };
 var g_HostNameList = [];
 var g_HostGUIDList = [];
@@ -472,7 +472,7 @@ var g_DropdownArrays = {
 			ensureUniquePlayerColors(playerData);
 		},
 		"maps": ["random", "skirmish"],
-	}
+	},
 };
 
 /**
@@ -557,7 +557,7 @@ var g_Checkboxes = {
 			g_GameAttributes.settings.RatingEnabled = Engine.HasXmppClient() ? checked : undefined;
 			Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
 		},
-	}
+	},
 };
 
 /**
@@ -612,7 +612,7 @@ var g_MiscControls = {
 	},
 	"teamResetButton": {
 		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController,
-	}
+	},
 };
 
 var g_MiscControlArrays = {
