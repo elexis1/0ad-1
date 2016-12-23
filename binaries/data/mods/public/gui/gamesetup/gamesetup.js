@@ -243,6 +243,30 @@ var g_LastGameStanza;
 var g_LastViewedAIPlayer = -1;
 
 /**
+ * Options in the "More Options" window will be shown in this order.
+ * All valid options are required to appear here.
+ */
+var g_MoreOptionsOrder = {
+	"Dropdown": [
+		"gameSpeed",
+		"victoryCondition",
+		"wonderDuration",
+		"populationCap",
+		"startingResources",
+		"ceasefire",
+	],
+	"Checkbox": [
+		"revealMap",
+		"exploreMap",
+		"disableTreasures",
+		"lockTeams",
+		"lastManStanding",
+		"enableCheats",
+		"enableRating",
+	],
+};
+
+/**
  * Contains the logic of all multiple-choice gamesettings.
  *
  * Hidden - If hidden, both the label and dropdown won't be visible.
@@ -330,6 +354,7 @@ var g_Dropdowns = {
 		"maps": ["random"],
 	},
 	"populationCap": {
+		"title": () => translate("Population cap"),
 		"tooltip": () => translate("Select population cap."),
 		"labels": () => g_PopulationCapacities.Title,
 		"ids": () => g_PopulationCapacities.Population,
@@ -342,6 +367,7 @@ var g_Dropdowns = {
 		"maps": ["random", "skirmish"],
 	},
 	"startingResources": {
+		"title": () => translate("Starting Resources"),
 		"tooltip": () => translate("Select the game's starting resources."),
 		"labels": () => g_StartingResources.Title,
 		"ids": () => g_StartingResources.Resources,
@@ -354,6 +380,7 @@ var g_Dropdowns = {
 		"maps": ["random", "skirmish"],
 	},
 	"ceasefire": {
+		"title": () => translate("Ceasefire"),
 		"tooltip": () => translate("Set time where no attacks are possible."),
 		"labels": () => g_Ceasefire.Title,
 		"ids": () => g_Ceasefire.Duration,
@@ -366,6 +393,7 @@ var g_Dropdowns = {
 		"maps": ["random", "skirmish"],
 	},
 	"victoryCondition": {
+		"title": () => translate("Victory Condition"),
 		"tooltip": () => translate("Select victory condition."),
 		"labels": () => g_VictoryConditions.Title,
 		"ids": () => g_VictoryConditions.Name,
@@ -379,6 +407,7 @@ var g_Dropdowns = {
 		"maps": ["random", "skirmish"],
 	},
 	"wonderDuration": {
+		"title": () => translate("Wonder Victory"),
 		"tooltip": () => translate("Number of minutes that the player has to keep the wonder in order to win."),
 		"labels": () => g_WonderDurations.Title,
 		"ids": () => g_WonderDurations.Duration,
@@ -388,9 +417,11 @@ var g_Dropdowns = {
 		"select": (idx) => {
 			g_GameAttributes.settings.WonderDuration = g_WonderDurations.Duration[idx];
 		},
+		"hidden": () => g_GameAttributes.settings.GameType != "wonder",
 		"maps": ["random", "skirmish"],
 	},
 	"gameSpeed": {
+		"title": () => translate("Game Speed"),
 		"tooltip": () => translate("Select game speed."),
 		"labels": () => g_GameSpeeds.Title,
 		"ids": () => g_GameSpeeds.Speed,
@@ -484,6 +515,9 @@ var g_DropdownArrays = {
  */
 var g_Checkboxes = {
 	"revealMap": {
+		"title": () =>
+			// Translation: Make sure to differentiate between the revealed map and explored map options!
+			translate("Revealed Map"),
 		"tooltip":
 			// Translation: Make sure to differentiate between the revealed map and explored map options!
 			() => translate("Toggle revealed map (see everything)."),
@@ -496,6 +530,9 @@ var g_Checkboxes = {
 		"maps": ["random", "skirmish"],
 	},
 	"exploreMap": {
+		"title":
+			// Translation: Make sure to differentiate between the revealed map and explored map options!
+			() => translate("Explored Map"),
 		"tooltip":
 			// Translation: Make sure to differentiate between the revealed map and explored map options!
 			() => translate("Toggle explored map (see initial map)."),
@@ -508,6 +545,7 @@ var g_Checkboxes = {
 		"maps": ["random", "skirmish"],
 	},
 	"disableTreasures": {
+		"title": () => translate("Disable Treasures"),
 		"tooltip": () => translate("Disable all treasures on the map."),
 		"default": () => false,
 		"defined": () => g_GameAttributes.settings.DisableTreasures !== undefined,
@@ -518,6 +556,7 @@ var g_Checkboxes = {
 		"maps": ["random", "skirmish"],
 	},
 	"lockTeams":  {
+		"title": () => translate("Teams Locked"),
 		"tooltip": () => translate("Toggle locked teams."),
 		"default": () => Engine.HasXmppClient(),
 		"defined": () => g_GameAttributes.settings.LockTeams !== undefined,
@@ -530,6 +569,7 @@ var g_Checkboxes = {
 		"enabled": () => !g_GameAttributes.settings.RatingEnabled,
 	},
 	"lastManStanding":  {
+		"title": () => translate("Last Man Standing"),
 		"tooltip": () => translate("Toggle whether the last remaining player or the last remaining set of allies wins."),
 		"default": () => false,
 		"defined": () => g_GameAttributes.settings.LastManStanding !== undefined,
@@ -541,6 +581,7 @@ var g_Checkboxes = {
 		"enabled": () => !g_GameAttributes.settings.LockTeams,
 	},
 	"enableCheats":  {
+		"title": () => translate("Cheats"),
 		"tooltip": () => translate("Toggle the usability of cheats."),
 		"default": () => !g_IsNetworked,
 		"hidden": () => !g_IsNetworked,
@@ -553,8 +594,10 @@ var g_Checkboxes = {
 		"enabled": () => !g_GameAttributes.settings.RatingEnabled,
 	},
 	"enableRating": {
+		"title": () => translate("Rated Game"),
 		"tooltip": () => translate("Toggle if this game will be rated for the leaderboard."),
 		"default": () => Engine.HasXmppClient(),
+		"hidden": () => !Engine.HasXmppClient(),
 		"defined": () => g_GameAttributes.settings.RatingEnabled !== undefined,
 		"get": () => !!g_GameAttributes.settings.RatingEnabled,
 		"set": checked => {
@@ -565,7 +608,7 @@ var g_Checkboxes = {
 };
 
 /**
- * For setting up some additional GUI objects.
+ * For setting up arbitrary GUI objects.
  */
 var g_MiscControls = {
 	"chatPanel": {
@@ -573,15 +616,6 @@ var g_MiscControls = {
 	},
 	"chatInput": {
 		"tooltip": () => colorizeAutocompleteHotkey(),
-	},
-	"optionCheats": {
-		"hidden": () => !g_IsNetworked,
-	},
-	"optionRating": {
-		"hidden": () => !Engine.HasXmppClient(),
-	},
-	"optionWonderDuration": {
-		"hidden": () => g_GameAttributes.settings.GameType != "wonder",
 	},
 	"cheatWarningText": {
 		"hidden": () => !g_IsNetworked || !g_GameAttributes.settings.CheatsEnabled,
@@ -619,6 +653,9 @@ var g_MiscControls = {
 	},
 };
 
+/**
+ * Contains options that are repeated for every player.
+ */
 var g_MiscControlArrays = {
 	"playerBox": {
 		"size": (idx) => ({
@@ -744,12 +781,30 @@ function initGUIObjects()
 		Engine.GetGUIObjectByName("chatInput").focus();
 }
 
+/**
+ * The main options (like map selection) and dropdownArrays have a specific name.
+ * Options in the "More Options" dialog use a generic name.
+ */
+function getGUIObjectNameFromSetting(name)
+{
+	for (let type in g_MoreOptionsOrder)
+	{
+		let idx = g_MoreOptionsOrder[type].indexOf(name);
+		if (idx != -1)
+			return ["option" + type, "[" + idx + "]"]
+	}
+
+	// Assume there is a GUI object with exactly that setting name
+	return [name, ""];
+}
+
 function initDropdown(name, idx)
 {
+	let [guiName, guiIdx] = getGUIObjectNameFromSetting(name);
 	let idxName = idx === undefined ? "": "[" + idx + "]";
 	let data = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
 
-	let dropdown = Engine.GetGUIObjectByName(name + idxName);
+	let dropdown = Engine.GetGUIObjectByName(guiName + guiIdx + idxName);
 	dropdown.list = data.labels(idx);
 	dropdown.list_data = data.ids(idx);
 
@@ -776,9 +831,10 @@ function initDropdownArray(name)
 
 function initCheckbox(name)
 {
-	Engine.GetGUIObjectByName(name).onPress = function() {
+	let [guiName, guiIdx] = getGUIObjectNameFromSetting(name);
+	Engine.GetGUIObjectByName(guiName + guiIdx).onPress = function() {
 
-		let obj = g_Checkboxes[this.name];
+		let obj = g_Checkboxes[name];
 
 		if (!g_IsController ||
 		    g_IsInGuiUpdate ||
@@ -1321,17 +1377,16 @@ function hideControlArrayElement(idx)
  */
 function updateGUIDropdown(name, idx = undefined)
 {
+	let [guiName, guiIdx] = getGUIObjectNameFromSetting(name);
 	let idxName = idx === undefined ? "": "[" + idx + "]";
-	let obj = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
 
-	// Naming convention
-	let dropdown = Engine.GetGUIObjectByName(name + idxName);
-	let label = Engine.GetGUIObjectByName(name + "Text" + idxName);
+	let dropdown = Engine.GetGUIObjectByName(guiName + guiIdx + idxName);
+	let label = Engine.GetGUIObjectByName(guiName + "Text" + guiIdx + idxName);
+	let frame = Engine.GetGUIObjectByName(guiName + "Frame" + guiIdx + idxName);
+	let title = Engine.GetGUIObjectByName(guiName + "Title" + guiIdx);
 
 	let indexHidden = hideControlArrayElement(idx);
-
-	// TODO use hideControlArrayElement to skip evil indices
-
+	let obj = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
 	let selected = indexHidden ? -1 : dropdown.list_data.indexOf(String(obj.get(idx)));
 	let enabled = !indexHidden && (!obj.enabled || obj.enabled(idx));
 	let hidden = indexHidden || obj.hidden && obj.hidden(idx);
@@ -1340,10 +1395,16 @@ function updateGUIDropdown(name, idx = undefined)
 	dropdown.selected = selected;
 	dropdown.tooltip = obj.tooltip ? obj.tooltip() : "";
 
+	if (frame)
+		frame.hidden = hidden;
+
+	if (title && obj.title)
+		title.caption = obj.title();
+
 	if (label)
 	{
 		label.hidden = g_IsController && enabled || hidden;
-		label.caption = selected == -1 ? translate("Unknown") : dropdown.list[selected];
+		label.caption = selected == -1 ? translateWithContext("option value", "Unknown") : dropdown.list[selected];
 	}
 }
 
@@ -1359,9 +1420,11 @@ function updateGUICheckbox(name)
 	let hidden = obj.hidden && obj.hidden();
 	let enabled = !obj.enabled || obj.enabled();
 
-	// Naming convention
-	let checkbox = Engine.GetGUIObjectByName(name);
-	let label = Engine.GetGUIObjectByName(name + "Text");
+	let [guiName, guiIdx] = getGUIObjectNameFromSetting(name);
+	let checkbox = Engine.GetGUIObjectByName(guiName + guiIdx);
+	let label = Engine.GetGUIObjectByName(guiName + "Text" + guiIdx);
+	let frame = Engine.GetGUIObjectByName(guiName + "Frame" + guiIdx);
+	let title = Engine.GetGUIObjectByName(guiName + "Title" + guiIdx);
 
 	checkbox.checked = checked;
 	checkbox.enabled = enabled;
@@ -1370,6 +1433,12 @@ function updateGUICheckbox(name)
 
 	label.caption = checked ? translate("Yes") : translate("No");
 	label.hidden = hidden || g_IsController;
+
+	if (frame)
+		frame.hidden = hidden;
+
+	if (title && obj.title)
+		title.caption = obj.title();
 }
 
 function updateGUIMiscControl(name, idx)
@@ -1498,6 +1567,12 @@ function updateGUIObjects()
 {
 	g_IsInGuiUpdate = true;
 
+	// Hide exceeding dropdowns and checkboxes
+	for (let child of Engine.GetGUIObjectByName("moreOptions").children)
+		if (child.name != "moreOptionsLabel" && child.name != "hideMoreOptions")
+			child.hidden = true;
+
+	// Show the relevant ones
 	for (let name in g_Dropdowns)
 		updateGUIDropdown(name);
 
@@ -1909,11 +1984,6 @@ function sendRegisterGameStanza()
 	if (!g_IsController || !Engine.HasXmppClient())
 		return;
 
-	let selectedMapSize = Engine.GetGUIObjectByName("mapSize").selected;
-	let selectedVictoryCondition = Engine.GetGUIObjectByName("victoryCondition").selected;
-
-	let mapSize = g_GameAttributes.mapType == "random" ? Engine.GetGUIObjectByName("mapSize").list_data[selectedMapSize] : "Default";
-	let victoryCondition = Engine.GetGUIObjectByName("victoryCondition").list[selectedVictoryCondition];
 	let clients = formatClientsForStanza();
 
 	let stanza = {
@@ -1921,9 +1991,10 @@ function sendRegisterGameStanza()
 		"port": g_ServerPort,
 		"mapName": g_GameAttributes.map,
 		"niceMapName": getMapDisplayName(g_GameAttributes.map),
-		"mapSize": mapSize,
+		// TODO: once persist-matchsettings aren't bugging anymore, this should become g_GameAttributes.settings.Size || 0
+		"mapSize": g_GameAttributes.mapType == "random" ? g_GameAttributes.settings.Size : "Default",
 		"mapType": g_GameAttributes.mapType,
-		"victoryCondition": victoryCondition,
+		"victoryCondition": g_VictoryConditions.Title[g_VictoryConditions.Name.indexOf(g_GameAttributes.settings.GameType)],
 		"nbp": clients.connectedPlayers,
 		"maxnbp": g_GameAttributes.settings.PlayerData.length,
 		"players": clients.list,
