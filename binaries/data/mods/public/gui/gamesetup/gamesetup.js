@@ -676,6 +676,12 @@ var g_MiscControls = {
 	"teamResetButton": {
 		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController,
 	},
+	"moreOptionsLabel": {
+		"hidden": () => false,
+	},
+	"hideMoreOptions": {
+		"hidden": () => false,
+	},
 };
 
 /**
@@ -1615,8 +1621,8 @@ function updateGUIObjects()
 	g_IsInGuiUpdate = true;
 
 	// Hide exceeding dropdowns and checkboxes
-	for (let child of Engine.GetGUIObjectByName("moreOptions").children)
-		if (child.name != "moreOptionsLabel" && child.name != "hideMoreOptions")
+	for (let panel in g_OptionOrder)
+		for (let child of Engine.GetGUIObjectByName(panel + "Options").children)
 			child.hidden = true;
 
 	// Show the relevant ones
@@ -1639,6 +1645,7 @@ function updateGUIObjects()
 		updateGUIMiscControl(name);
 
 	updateGameDescription();
+
 	resizeMoreOptionsWindow();
 
 	g_IsInGuiUpdate = false;
