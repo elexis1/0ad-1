@@ -671,6 +671,10 @@ var g_MiscControls = {
 				translate("Return to the main menu."),
 	},
 	"startGame": {
+		"caption": () =>
+			g_IsController ? translate("Start game!") : g_ReadyData[g_IsReady].caption,
+		"tooltip": () =>
+			g_IsController ? translate("Start a new game with the current settings.") : g_ReadyData[g_IsReady].tooltip,
 		// TODO: right align stuff
 		"enabled": () => !g_IsController ||
 		                 Object.keys(g_PlayerAssignments).every(guid => g_PlayerAssignments[guid].status ||
@@ -678,7 +682,6 @@ var g_MiscControls = {
 		"hidden": () => {
 			return !g_IsController && g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1;
 		},
-		"tooltip": () => translate("Start a new game with the current settings."),
 	},
 	"civResetButton": {
 		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController,
@@ -1940,12 +1943,7 @@ function setReady(ready, sendMessage)
 	if (sendMessage)
 		Engine.SendNetworkReady(g_IsReady);
 
-	if (g_IsController)
-		return;
-
-	let button = Engine.GetGUIObjectByName("startGame");
-	button.caption = g_ReadyData[g_IsReady].caption;
-	button.tooltip = g_ReadyData[g_IsReady].tooltip;
+	updateGUIObjects();
 }
 
 function updateReadyUI()
