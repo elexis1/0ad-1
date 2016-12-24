@@ -242,7 +242,6 @@
 				tooltip_style="onscreenToolTip"
 				enabled="false"
 			>
-				<translatableAttribute id="caption">Start game!</translatableAttribute>
 				<action on="Press">
 					if (g_IsController)
 						launchGame();
