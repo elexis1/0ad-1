@@ -132,7 +132,6 @@
 					</repeat>
 				</object>
 			</object>
-			<object size="24 64 100%-460 358" type="image" sprite="CoverFillDark" name="playerAssignmentsPanelCover" hidden="true"/>
 
 			<!-- Map Options -->
 			<object name="mapOptions" size="100%-425 355 100%-25 470">
