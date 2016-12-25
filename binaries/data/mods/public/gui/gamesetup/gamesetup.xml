@@ -132,7 +132,6 @@
 					</repeat>
 				</object>
 			</object>
-			<object size="24 64 100%-460 358" type="image" sprite="CoverFillDark" name="playerAssignmentsPanelCover" hidden="true"/>
 
 			<!-- Singleplayer / AI tips -->
 			<object name="spTips" size="24 370 560 520" type="image" hidden="true">
