@@ -238,6 +238,12 @@ var g_DefaultPlayerData = [];
 
 var g_GameAttributes = { "settings": {} };
 
+/**
+ * List of translated words that can be used to autocomplete titles of settings
+ * and their values (for example playernames).
+ */
+var g_Autocomplete = [];
+
 var g_ChatMessages = [];
 
 /**
@@ -340,6 +346,7 @@ var g_Dropdowns = {
 			reloadMapList();
 			supplementDefaults();
 		},
+		"autocomplete": true,
 	},
 	"mapFilter": {
 		"title": () => translate("Map Filter"),
@@ -355,6 +362,7 @@ var g_Dropdowns = {
 			reloadMapList();
 			supplementDefaults();
 		},
+		"autocomplete": true,
 	},
 	"mapSelection": {
 		"title": () => translate("Select Map"),
@@ -368,6 +376,7 @@ var g_Dropdowns = {
 			selectMap(g_MapList.file[idx]);
 			supplementDefaults();
 		},
+		"autocomplete": true,
 	},
 	"mapSize": {
 		"title": () => translate("Map Size"),
@@ -381,6 +390,7 @@ var g_Dropdowns = {
 			g_GameAttributes.settings.Size = g_MapSizes.Tiles[idx];
 		},
 		"hidden": () => g_GameAttributes.mapType != "random",
+		"autocomplete": true,
 	},
 	"numPlayers": {
 		"title": () => translate("Number of Players"),
@@ -420,6 +430,7 @@ var g_Dropdowns = {
 			g_GameAttributes.settings.StartingResources = g_StartingResources.Resources[idx];
 		},
 		"hidden": () => g_GameAttributes.mapType == "scenario",
+		"autocomplete": true,
 	},
 	"ceasefire": {
 		"title": () => translate("Ceasefire"),
@@ -447,6 +458,7 @@ var g_Dropdowns = {
 			g_GameAttributes.settings.VictoryScripts = g_VictoryConditions.Scripts[idx];
 		},
 		"enabled": () => g_GameAttributes.mapType != "scenario",
+		"autocomplete": true,
 	},
 	"wonderDuration": {
 		"title": () => translate("Wonder Victory"),
@@ -505,6 +517,7 @@ var g_DropdownArrays = {
 			updateGameAttributes();
 			updateReadyUI();
 		},
+		"autocomplete": true,
 	},
 	"playerTeam": {
 		"labels": (idx) => g_TeamsArray.label,
@@ -530,6 +543,7 @@ var g_DropdownArrays = {
 			g_GameAttributes.settings.PlayerData[idx].Civ = g_CivList.code[selectedIdx];
 		},
 		"enabled": () => g_GameAttributes.mapType != "scenario",
+		"autocomplete": true,
 	},
 	"playerColorPicker": {
 		"labels": (idx) => g_PlayerColors.map(color => ' ' + '[color="' + rgbToGuiColor(color) + '"]■[/color]'),
@@ -659,7 +673,7 @@ var g_MiscControls = {
 		"hidden": () => !g_IsNetworked,
 	},
 	"chatInput": {
-		"tooltip": () => colorizeAutocompleteHotkey(),
+		"tooltip": () => colorizeAutocompleteHotkey(translate("Press %(hotkey)s to autocomplete playernames or settings.")),
 	},
 	"cheatWarningText": {
 		"hidden": () => !g_IsNetworked || !g_GameAttributes.settings.CheatsEnabled,
@@ -1672,6 +1686,7 @@ function updateGUIObjects()
 	updateGameDescription();
 
 	resizeMoreOptionsWindow();
+       updateAutocompleteEntries();
 
 	g_IsInGuiUpdate = false;
 
@@ -2082,8 +2097,16 @@ function sendRegisterGameStanza()
 	Engine.SendRegisterGame(stanza);
 }
 
-function getChatAutocompleteEntries()
+function updateAutocompleteEntries()
 {
-	// TODO: autocomplete civ names
-	return Object.keys(g_PlayerAssignments).map(guid => g_PlayerAssignments.name);
+	g_Autocomplete = [];
+
+	for (let control of [g_Dropdowns, g_Checkboxes])
+		for (let name in control)
+			g_Autocomplete = g_Autocomplete.concat(control[name].title());
+
+	for (let dropdown of [g_Dropdowns, g_DropdownArrays])
+		for (let name in dropdown)
+			if (dropdown[name].autocomplete)
+				g_Autocomplete = g_Autocomplete.concat(dropdown[name].labels());
 }
