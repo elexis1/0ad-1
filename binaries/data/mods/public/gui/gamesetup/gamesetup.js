@@ -487,20 +487,25 @@ var g_Dropdowns = {
 		},
 	},
 };
-var g_HostNameList = [];
-var g_HostGUIDList = [];
+
+var g_PlayerAssignmentChoices = [];
 
 /**
  * These dropdowns provide a setting that is repeated once for each player.
  */
 var g_DropdownArrays = {
 	"playerAssignment": {
-		"labels": (idx) => g_HostNameList,
-		"ids": (idx) => g_HostGUIDList,
-		"default": (idx) => 0, // TODO: AI player
+		"labels": (idx) => {
+			return [];
+			// g_PlayerAssignmentChoices.Name;
+		},
+		"ids": (idx) => [], // g_PlayerAssignmentChoices.guid,
+		"default": (idx) => "ai:petra",
+		// This setting doesn't correlate with g_GameAttributes nor
+		// g_PlayerAssignments directly
 		"defined": (idx) => true,
-		"get": (idx) => 0,// TODO
-		"select": (idx, selectedIdx) => {
+		"get": (idx) => 0,
+		"select": (selectedIdx, idx) => {
 
 			// TODO: text had shown translate("Loading...") on init is that relevant?
 			let guid = g_HostGUIDList[selectedIdx];
@@ -524,11 +529,8 @@ var g_DropdownArrays = {
 		"ids": (idx) => g_TeamsArray.id,
 		"default": (idx) => 0,
 		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Team !== undefined,
-		"get": (idx) => {
-			warn(idx);
-			return g_GameAttributes.settings.PlayerData[idx].Team;
-		},
-		"select": (idx, selectedIdx) => {
+		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Team,
+		"select": (selectedIdx, idx) => {
 			g_GameAttributes.settings.PlayerData[idx].Team = selectedIdx - 1;
 		},
 		"enabled": () => g_GameAttributes.mapType != "scenario",
@@ -539,9 +541,7 @@ var g_DropdownArrays = {
 		"default": (idx) => 0,
 		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Civ !== undefined,
 		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Civ,
-		"select": (idx, selectedIdx) => {
-			g_GameAttributes.settings.PlayerData[idx].Civ = g_CivList.code[selectedIdx];
-		},
+		"select": (selectedIdx, idx) => g_GameAttributes.settings.PlayerData[idx].Civ = g_CivList.code[selectedIdx],
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 		"autocomplete": true,
 	},
@@ -551,7 +551,7 @@ var g_DropdownArrays = {
 		"default": (idx) => idx,
 		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Color !== undefined,
 		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Color,
-		"select": (idx, selectedIdx) => {
+		"select": (selectedIdx, idx) => {
 			let playerData = g_GameAttributes.settings.PlayerData;
 
 			// If someone else has that color, give that player the old color
@@ -716,12 +716,10 @@ var g_MiscControls = {
  */
 var g_MiscControlArrays = {
 	"playerBox": {
-		"size": (idx) => ({
-			"left": 0,
-			"right": "100%",
-			"top": 32 * idx,
-			"bottom": 32 * (idx + 1),
-		}),
+		"size": (idx) => ["0", 32 * idx, "100%", 32 * (idx + 1)].join(" "),
+		// "hidden": (idx) => {
+		// return !!g_GameAttributes.settings.PlayerData[idx];
+		// },
 	},
 	"playerName": {
 		"caption": (idx) => {
@@ -733,10 +731,8 @@ var g_MiscControlArrays = {
 		"sprite": (idx) => "color:" + rgbToGuiColor(g_GameAttributes.settings.PlayerData[idx].Color) + " 100",
 	},
 	"playerConfig": {
-		"hidden": (idx) => g_GameAttributes.settings.PlayerData[idx].AI != "",
-		"onPress": (idx) => {
-			openAIConfig(idx);
-		},
+		"hidden": (idx) => !g_GameAttributes.settings.PlayerData[idx].AI,
+		"onPress": (idx) => openAIConfig,
 	},
 };
 
@@ -803,8 +799,8 @@ function supplementDefaults()
 
 	for (let dropdown in g_DropdownArrays)
 		for (let i = 0; i < g_GameAttributes.settings.PlayerData.length; ++i)
-			if (!g_DropdownArrays[dropdown].defined(i))
-				g_DropdownArrays[dropdown].select(g_DropdownArrays[dropdown].default(i));
+			if (!isControlArrayElementHidden(i) && !g_DropdownArrays[dropdown].defined(i))
+				g_DropdownArrays[dropdown].select(g_DropdownArrays[dropdown].default(i), i);
 }
 
 /**
@@ -880,7 +876,7 @@ function initDropdown(name, idx)
 		    data.enabled && !data.enabled(idx))
 			return;
 
-		data.select(this.selected);
+		data.select(this.selected, idx);
 		updateGameAttributes();
 	};
 }
@@ -1049,6 +1045,9 @@ function handleGamesetupMessage(message)
 	}
 
 	Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
+
+	// Game attributes include AI settings, so update the player list
+	updatePlayerList();
 
 	updateGUIObjects();
 }
@@ -1281,6 +1280,9 @@ function sanitizePlayerData(playerData)
 		pData.Color = pData.Color || g_PlayerColors[index];
 		pData.Civ = pData.Civ || "random";
 
+		if (!("Team" in pData))
+			pData.Team = -1;
+
 		// Use default AI if the map doesn't specify any explicitly
 		if (!("AI" in pData))
 			pData.AI = g_DefaultPlayerData[index].AI;
@@ -1396,15 +1398,14 @@ function selectNumPlayers(num)
 		return;
 
 	let pData = g_GameAttributes.settings.PlayerData;
+
 	g_GameAttributes.settings.PlayerData =
 		num > pData.length ?
 			pData.concat(g_DefaultPlayerData.slice(pData.length, num)) :
 			pData.slice(0, num);
 
 	unassignInvalidPlayers(num);
-
 	sanitizePlayerData(g_GameAttributes.settings.PlayerData);
-
 	supplementDefaults();
 }
 
@@ -1473,7 +1474,7 @@ function updateGUIDropdown(name, idx = undefined)
 	let dropdown = Engine.GetGUIObjectByName(guiName + guiIdx + idxName);
 	let label = Engine.GetGUIObjectByName(guiName + "Text" + guiIdx + idxName);
 	let frame = Engine.GetGUIObjectByName(guiName + "Frame" + guiIdx + idxName);
-	let title = Engine.GetGUIObjectByName(guiName + "Title" + guiIdx);
+	let title = Engine.GetGUIObjectByName(guiName + "Title" + guiIdx + idxName);
 
 	let indexHidden = isControlArrayElementHidden(idx);
 	let obj = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
@@ -1482,16 +1483,16 @@ function updateGUIDropdown(name, idx = undefined)
 	let hidden = indexHidden || obj.hidden && obj.hidden(idx);
 
 	dropdown.hidden = !g_IsController || !enabled || hidden;
-	dropdown.selected = selected;
-	dropdown.tooltip = obj.tooltip ? obj.tooltip() : "";
+	dropdown.selected = indexHidden ? -1 : selected;
+	dropdown.tooltip = !indexHidden && obj.tooltip ? obj.tooltip(idx) : "";
 
 	if (frame)
 		frame.hidden = hidden;
 
-	if (title && obj.title)
-		title.caption = sprintf(translate("%(option)s:"), { "option": obj.title() });
+	if (title && obj.title && !indexHidden)
+		title.caption = sprintf(translate("%(option)s:"), { "option": obj.title(idx) });
 
-	if (label)
+	if (label && !indexHidden)
 	{
 		label.hidden = g_IsController && enabled || hidden;
 		label.caption = selected == -1 ? translateWithContext("option value", "Unknown") : dropdown.list[selected];
@@ -1534,17 +1535,20 @@ function updateGUICheckbox(name)
 function updateGUIMiscControl(name, idx)
 {
 	let idxName = idx === undefined ? "": "[" + idx + "]";
+	let obj = (idx === undefined ? g_MiscControls : g_MiscControlArrays)[name];
 
-	let obj = g_MiscControls[name];
 	let control = Engine.GetGUIObjectByName(name + idxName);
 	if (!control)
 		warn("No GUI object with name '" + name + "'");
 
-	for (let property in obj)
-		control[property] = obj[property]();
+	let hide = isControlArrayElementHidden(idx);
+	control.hidden = hide;
 
-	if (isControlArrayElementHidden(idx))
-		control.hidden = true;
+	if (hide)
+		return;
+
+	for (let property in obj)
+		control[property] = obj[property](idx);
 }
 
 function launchGame()
@@ -1686,12 +1690,10 @@ function updateGUIObjects()
 	updateGameDescription();
 
 	resizeMoreOptionsWindow();
-       updateAutocompleteEntries();
+
+	updateAutocompleteEntries();
 
 	g_IsInGuiUpdate = false;
-
-	// Game attributes include AI settings, so update the player list
-	updatePlayerList();
 
 	resetReadyData();
 
@@ -1760,43 +1762,33 @@ function AIConfigCallback(ai)
 	updateGameAttributes();
 }
 
-/**
- * TODO: delete
- */
-var g_PlayerAssignmentChoices;
 function updatePlayerList()
 {
 	g_IsInGuiUpdate = true;
 
 	let playerChoices = sortGUIDsByPlayerID().map(guid => ({
-		"id": "guid:" + guid,
-		"label":
+		"guid": "guid:" + guid,
+		"Name":
 			g_PlayerAssignments[guid].player == -1 ?
-			"[color=\""+ g_UnassignedPlayerColor + "\"]" + g_PlayerAssignments[guid].name + "[/color]" :
-			g_PlayerAssignments[guid].name
+				"[color=\""+ g_UnassignedPlayerColor + "\"]" + g_PlayerAssignments[guid].name + "[/color]" :
+				g_PlayerAssignments[guid].name
 	}));
 
 	let aiChoices = g_Settings.AIDescriptions
 		.filter(ai => !ai.data.hidden || !!g_GameAttributes.settings.PlayerData.every(pData => pData.AI != ai.id))
 		.map(ai => ({
-			"id": "ai:" + ai.id,
-			"label": "[color=\""+ g_AIColor + "\"]" +
+			"guid": "ai:" + ai.id,
+			"Name": "[color=\""+ g_AIColor + "\"]" +
 			          sprintf(translate("AI: %(ai)s"), {
 			              "ai": translate(ai.data.name)
 			          }) + "[/color]"
 	}));
 
 	let unassignedSlot = [{
-		"id": "",
-		"label": "[color=\""+ g_UnassignedColor + "\"]" + translate("Unassigned") + "[/color]",
+		"guid": "",
+		"Name": "[color=\""+ g_UnassignedColor + "\"]" + translate("Unassigned") + "[/color]",
 	}];
-	g_PlayerAssignmentChoices = playerChoices.concat(aiChoices).concat(unassignedSlot);
-
-	let assignments = [];
-	let aiAssignments = {};
-	for (let guid of sortGUIDsByPlayerID())
-		assignments[g_PlayerAssignments[guid].player] = g_HostNameList.length - 1;
-
+	g_PlayerAssignmentChoices = prepareForDropdown(playerChoices.concat(aiChoices).concat(unassignedSlot))
 	initDropdownArray("playerAssignment");
 
 	g_IsInGuiUpdate = false;
