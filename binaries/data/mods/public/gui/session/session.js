@@ -665,6 +665,8 @@ function onTick()
 	Engine.GetGUIObjectByName("resourcePop").textcolor = g_IsTrainingBlocked && Date.now() % 1000 < 500 ? g_PopulationAlertColor : g_DefaultPopulationColor;
 
 	Engine.GuiInterfaceCall("ClearRenamedEntities");
+
+	updateDisco();
 }
 
 function changeGameSpeed(speed)
@@ -1411,4 +1413,104 @@ function reportGame()
 	reportObject.tradeIncome = playerStatistics.tradeIncome;
 
 	Engine.SendGameReport(reportObject);
+}
+
+/**
+ * @param period - Number of milliseconds to rotate through all colors
+ */
+var g_PartyPeriod = 5 * 1000;
+var g_PartySaturation = 0.8;
+var g_PartyLightness = 0.5;
+
+var g_ColorModes = {
+	"party": () =>
+		hslToRgb(
+			(g_SimState.timeElapsed % g_PartyPeriod) / g_PartyPeriod,
+			g_PartySaturation,
+			g_PartyLightness),
+	"black": () => [0, 0, 0],
+	"white": () => [1000, 1000, 1000],
+	"red": () => [255, 0, 0],
+	"green": () => [0, 255, 0],
+	"blue": () => [0, 0, 255],
+}
+
+/**
+ * Maps unit ID to colormode name.
+ */
+var g_PartyUnits = {};
+
+function addPartyUnits(colorMode)
+{
+	for (let entityID of g_Selection.toList())
+		g_PartyUnits[entityID] = colorMode;
+}
+
+/**
+ * Rotates through all colors periodically.
+ */
+function startDisco()
+{
+	addPartyUnits("party");
+}
+
+function stopDisco()
+{
+	colorizeUnits(g_Selection.toList(), [255, 255, 255]);
+	g_PartyUnits = {};
+}
+
+function stopAllDisco()
+{
+	colorizeUnits(Object.keys(g_PartyUnits), [255, 255, 255]);
+	g_PartyUnits = {};
+}
+
+function updateDisco()
+{
+	for (let mode in g_ColorModes)
+		colorizeUnits(
+			Object.keys(g_PartyUnits).filter(ent => g_PartyUnits[ent] == mode),
+			g_ColorModes[mode]());
+}
+
+/**
+ * @param units - an array of entity IDs, these units will be colored
+ * @param rgb - an array [red, green, blue] with numbers between 0 and 255
+ */
+function colorizeUnits(units, rgb)
+{
+	if (!units.length)
+		return;
+
+	Engine.PostNetworkCommand({
+		"type": "set-shading-color",
+		"entities": units.map(meh => +meh),
+		"rgb": rgb.map(c => c / 255),
+	});
+}
+
+function black()
+{
+	addPartyUnits("black");
+}
+
+function red()
+{
+	addPartyUnits("red");
+}
+
+function green()
+{
+	addPartyUnits("green");
+}
+
+function blue()
+{
+	addPartyUnits("blue");
+}
+
+function white()
+{
+	addPartyUnits("white");
 }

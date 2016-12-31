@@ -81,4 +81,32 @@
 		<action on="Press">clearSelection();</action>
 	</object>
 
+	<object hotkey="session.disco.start">
+		<action on="Press">startDisco();</action>
+	</object>
+
+	<object hotkey="session.disco.stop">
+		<action on="Press">stopDisco();</action>
+	</object>
+
+	<object hotkey="session.disco.white">
+		<action on="Press">white();</action>
+	</object>
+
+	<object hotkey="session.disco.black">
+		<action on="Press">black();</action>
+	</object>
+
+	<object hotkey="session.disco.red">
+		<action on="Press">red();</action>
+	</object>
+
+	<object hotkey="session.disco.green">
+		<action on="Press">green();</action>
+	</object>
+
+	<object hotkey="session.disco.blue">
+		<action on="Press">blue();</action>
+	</object>
+
 </object>
