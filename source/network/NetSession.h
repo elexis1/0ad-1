@@ -39,6 +39,8 @@ class CNetServerWorker;
 
 class CNetStatsTable;
 
+typedef struct _ENetHost ENetHost;
+
 /**
  * @file
  * Network client/server sessions.
@@ -70,7 +72,7 @@ public:
 	CNetClientSession(CNetClient& client);
 	~CNetClientSession();
 
-	bool Connect(const CStr& server, const u16 port, const bool isLocalClient, EnetHost* enetClient);
+	bool Connect(const CStr& server, const u16 port, const bool isLocalClient, ENetHost* enetClient);
 
 	/**
 	 * Process queued incoming messages.

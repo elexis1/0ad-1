@@ -3,6 +3,8 @@
 
 #include "scriptinterface/ScriptInterface.h"
 
+typedef struct _ENetHost ENetHost;
+
 namespace StunClient
 {
 
@@ -11,7 +13,7 @@ struct StunEndpoint {
 	uint16_t port;
 };
 
-void SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort) {
+void SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort);
 
 JS::Value FindStunEndpoint(ScriptInterface& scriptInterface, int port);
 

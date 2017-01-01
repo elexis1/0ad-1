@@ -33,7 +33,7 @@ namespace glooxwrapper
 	struct CertInfo;
 }
 
-class XmppClient : public IXmppClient, public glooxwrapper::ConnectionListener, public glooxwrapper::MUCRoomHandler, public glooxwrapper::IqHandler, public glooxwrapper::RegistrationHandler, public glooxwrapper::MessageHandler, public glooxwrapper::SessionHandler
+class XmppClient : public IXmppClient, public glooxwrapper::ConnectionListener, public glooxwrapper::MUCRoomHandler, public glooxwrapper::IqHandler, public glooxwrapper::RegistrationHandler, public glooxwrapper::MessageHandler, public glooxwrapper::Jingle::SessionHandler
 {
 	NONCOPYABLE(XmppClient);
 
@@ -84,7 +84,7 @@ public:
 	void GUIGetBoardList(ScriptInterface& scriptInterface, JS::MutableHandleValue ret);
 	void GUIGetProfile(ScriptInterface& scriptInterface, JS::MutableHandleValue ret);
 
-	void SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, std::string& hostJid);
+	void SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, const std::string& hostJid);
 
 	//Script
 	ScriptInterface& GetScriptInterface();
@@ -125,7 +125,7 @@ protected:
 	virtual void handleMessage(const glooxwrapper::Message& msg, glooxwrapper::MessageSession * session);
 
 	/* Session Handler */
-	virtual void handleSessionAction(gloox::Jingle::Action action, gloox::Jingle::Session *session, const gloox::Jingle::Session::Jingle *jingle);
+	virtual void handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *session, const glooxwrapper::Jingle::Session::Jingle *jingle);
 
 	// Helpers
 	void GetPresenceString(const gloox::Presence::PresenceType p, std::string& presence) const;
@@ -133,6 +133,8 @@ protected:
 	std::string StanzaErrorToString(gloox::StanzaError err) const;
 	std::string ConnectionErrorToString(gloox::ConnectionError err) const;
 	std::string RegistrationResultToString(gloox::RegistrationResult res) const;
+
+	void ProcessJingleData(const glooxwrapper::Jingle::Session::Jingle *jingle);
 
 public:
 	/* Messages */

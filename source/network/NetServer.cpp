@@ -26,6 +26,7 @@
 #include "NetTurnManager.h"
 
 #include "lib/external_libraries/enet.h"
+#include "network/StunClient.h"
 #include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
 #include "ps/Profile.h"

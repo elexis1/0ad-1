@@ -30,11 +30,13 @@
 #include "gui/scripting/JSInterface_GUITypes.h"
 #include "i18n/L10n.h"
 #include "i18n/scripting/JSInterface_L10n.h"
+#include "lib/external_libraries/enet.h"
 #include "lib/svn_revision.h"
 #include "lib/sysdep/sysdep.h"
 #include "lib/timer.h"
 #include "lib/utf8.h"
 #include "lobby/scripting/JSInterface_Lobby.h"
+#include "lobby/IXmppClient.h"
 #include "maths/FixedVector3D.h"
 #include "network/NetClient.h"
 #include "network/NetServer.h"
@@ -374,7 +376,7 @@ void StartNetworkHost(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	}
 }
 
-void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, const CStr& serverAddress, u16 serverPort)
+void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, const CStr& serverAddress, u16 serverPort, const std::string& hostJid)
 {
 	ENSURE(!g_NetClient);
 	ENSURE(!g_NetServer);
@@ -1052,7 +1054,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<void, JS::HandleValue, int, &StartGame>("StartGame");
 	scriptInterface.RegisterFunction<void, &Script_EndGame>("EndGame");
 	scriptInterface.RegisterFunction<void, CStrW, u16, &StartNetworkHost>("StartNetworkHost");
-	scriptInterface.RegisterFunction<void, CStrW, CStr, u16, &StartNetworkJoin>("StartNetworkJoin");
+	scriptInterface.RegisterFunction<void, CStrW, CStr, u16, std::string, &StartNetworkJoin>("StartNetworkJoin");
 	scriptInterface.RegisterFunction<u16, &GetDefaultPort>("GetDefaultPort");
 	scriptInterface.RegisterFunction<void, &DisconnectNetworkGame>("DisconnectNetworkGame");
 	scriptInterface.RegisterFunction<std::string, &GetPlayerGUID>("GetPlayerGUID");

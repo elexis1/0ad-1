@@ -277,6 +277,30 @@ public:
 	}
 };
 
+class SessionHandlerWrapper : public gloox::Jingle::SessionHandler
+{
+public:
+	glooxwrapper::Jingle::SessionHandler* m_Wrapped;
+	bool m_Owned;
+
+	SessionHandlerWrapper(glooxwrapper::Jingle::SessionHandler* wrapped, bool owned) : m_Wrapped(wrapped), m_Owned(owned) {}
+
+	virtual void handleSessionAction(gloox::Jingle::Action action, gloox::Jingle::Session* session, const gloox::Jingle::Session::Jingle* jingle)
+	{
+		m_Wrapped->handleSessionAction(action, new glooxwrapper::Jingle::Session(session, false), new glooxwrapper::Jingle::Session::Jingle(jingle, false));
+	}
+
+	virtual void handleSessionActionError(gloox::Jingle::Action action, gloox::Jingle::Session* session, const gloox::Error* error)
+	{
+
+	}
+
+	virtual void handleIncomingSession(gloox::Jingle::Session* session )
+	{
+
+	}
+};
+
 class ClientImpl
 {
 public:
@@ -737,3 +761,129 @@ glooxwrapper::ConstTagList glooxwrapper::Tag::findTagList_clone(const string& ex
 		tagListWrapper.push_back(new glooxwrapper::Tag(const_cast<gloox::Tag*>(t), false));
 	return tagListWrapper;
 }
+
+glooxwrapper::Jingle::Plugin::~Plugin()
+{
+	if (m_Owned)
+		delete m_Wrapped;
+}
+
+const glooxwrapper::Jingle::Plugin glooxwrapper::Jingle::Plugin::findPlugin(int type) const
+{
+	return glooxwrapper::Jingle::Plugin(m_Wrapped->findPlugin(type), false);
+}
+
+glooxwrapper::Jingle::Content::Content(const string& name, const PluginList& plugins)
+	: glooxwrapper::Jingle::Plugin(NULL, false)
+{
+	gloox::Jingle::PluginList glooxPluginList;
+	for (const glooxwrapper::Jingle::Plugin* const& plugin: plugins)
+		glooxPluginList.push_back(plugin->getWrapped());
+
+	m_Wrapped = new gloox::Jingle::Content(name.to_string(), glooxPluginList);
+	m_Owned = true;
+}
+
+glooxwrapper::Jingle::Content::Content()
+	: glooxwrapper::Jingle::Plugin(NULL, false)
+{
+	m_Wrapped = new gloox::Jingle::Content();
+	m_Owned = true;
+}
+
+const glooxwrapper::Jingle::PluginList glooxwrapper::Jingle::Session::Jingle::plugins() const
+{
+	glooxwrapper::Jingle::PluginList pluginListWrapper;
+	for (const gloox::Jingle::Plugin* const& plugin: m_Wrapped->plugins())
+		pluginListWrapper.push_back(new glooxwrapper::Jingle::Plugin(const_cast<gloox::Jingle::Plugin*>(plugin), false));
+	return pluginListWrapper;
+}
+
+glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::getCandidate() const
+{
+	const gloox::Jingle::Content *content = dynamic_cast<const gloox::Jingle::Content*>(m_Wrapped->plugins().front());
+	if (content == NULL) {
+		printf("Failed to retrieve Jingle content\n");
+		return glooxwrapper::Jingle::ICEUDP::Candidate();
+	}
+	const gloox::Jingle::ZeroAdGameData *gameData = dynamic_cast<const gloox::Jingle::ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
+	if (gameData == NULL) {
+		printf("Failed to retrieve Jingle game data\n");
+		return glooxwrapper::Jingle::ICEUDP::Candidate();
+	}
+	const gloox::Jingle::ICEUDP *iceUdp = dynamic_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
+	if (iceUdp == NULL) {
+		printf("Failed to retrieve Jingle ICE-UDP data\n");
+		return glooxwrapper::Jingle::ICEUDP::Candidate();
+	}
+	gloox::Jingle::ICEUDP::Candidate glooxCandidate = iceUdp->candidates().front();
+	return glooxwrapper::Jingle::ICEUDP::Candidate{glooxCandidate.ip, glooxCandidate.port};
+}
+
+bool glooxwrapper::Jingle::Session::sessionInitiate(const Content* content)
+{
+	return m_Wrapped->sessionInitiate(dynamic_cast<const gloox::Jingle::Content*>(content->getWrapped()));
+}
+
+glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList& candidates)
+	: glooxwrapper::Jingle::Plugin(NULL, false)
+{
+	gloox::Jingle::ICEUDP::CandidateList glooxCandidates;
+	for (const glooxwrapper::Jingle::ICEUDP::Candidate candidate: candidates)
+		glooxCandidates.push_back(gloox::Jingle::ICEUDP::Candidate
+				{/*component_id*/"1", /*foundation*/"1",
+				/*candidate_generation*/"0", /*candidate_id*/"1",
+				candidate.ip.to_string(), /*network*/"", candidate.port,
+				/*priotiry*/0, "udp", /*base_ip*/"", /*base_port*/0, /*type*/gloox::Jingle::ICEUDP::ServerReflexive});
+	m_Wrapped = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/0, glooxCandidates);
+	m_Owned = true;
+}
+
+glooxwrapper::Jingle::ICEUDP::ICEUDP()
+	: glooxwrapper::Jingle::Plugin(NULL, false)
+{
+	m_Wrapped = new gloox::Jingle::ICEUDP();
+	m_Owned = true;
+}
+
+const glooxwrapper::Jingle::ICEUDP::CandidateList glooxwrapper::Jingle::ICEUDP::candidates() const
+{
+	glooxwrapper::Jingle::ICEUDP::CandidateList candidateListWrapper;
+	for (const gloox::Jingle::ICEUDP::Candidate candidate: dynamic_cast<const gloox::Jingle::ICEUDP*>(m_Wrapped)->candidates())
+		candidateListWrapper.push_back(glooxwrapper::Jingle::ICEUDP::Candidate{candidate.ip, candidate.port});
+	return candidateListWrapper;
+}
+
+glooxwrapper::Jingle::ZeroAdGameData::ZeroAdGameData()
+	: glooxwrapper::Jingle::Plugin(NULL, false)
+{
+	m_Wrapped = new gloox::Jingle::ZeroAdGameData();
+	m_Owned = true;
+}
+
+glooxwrapper::SessionManager::SessionManager(Client* parent, Jingle::SessionHandler* sh)
+{
+	m_HandlerWrapper = new SessionHandlerWrapper(sh, false);
+	m_Wrapped = new gloox::Jingle::SessionManager(parent->getWrapped(), m_HandlerWrapper);
+}
+
+glooxwrapper::SessionManager::~SessionManager()
+{
+	delete m_Wrapped;
+	delete m_HandlerWrapper;
+}
+
+void glooxwrapper::SessionManager::registerPlugins()
+{
+	m_Wrapped->registerPlugin(new gloox::Jingle::Content());
+	m_Wrapped->registerPlugin(new gloox::Jingle::ICEUDP());
+	m_Wrapped->registerPlugin(new gloox::Jingle::ZeroAdGameData());
+}
+
+glooxwrapper::Jingle::Session glooxwrapper::SessionManager::createSession(const JID& callee)
+{
+	gloox::Jingle::Session* glooxSession = m_Wrapped->createSession(callee.getWrapped(), m_HandlerWrapper);
+	return glooxwrapper::Jingle::Session(glooxSession, false);
+}
+
+
