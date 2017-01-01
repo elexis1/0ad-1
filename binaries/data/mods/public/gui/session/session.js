@@ -665,8 +665,6 @@ function onTick()
 	Engine.GetGUIObjectByName("resourcePop").textcolor = g_IsTrainingBlocked && Date.now() % 1000 < 500 ? g_PopulationAlertColor : g_DefaultPopulationColor;
 
 	Engine.GuiInterfaceCall("ClearRenamedEntities");
-
-	updateDisco();
 }
 
 function changeGameSpeed(speed)
@@ -710,6 +708,7 @@ function onSimulationUpdate()
 
 	handleNotifications();
 	updateGUIObjects();
+	updateDisco();
 
 	if (g_ConfirmExit)
 		confirmExit();
