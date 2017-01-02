@@ -111,14 +111,6 @@ var g_PlayerAssignments = {
 };
 
 /**
- * Cache dev-mode settings that are frequently or widely used.
- */
-var g_DevSettings = {
-	"changePerspective": false,
-	"controlAll": false
-};
-
-/**
  * Whether status bars should be shown for all of the player's units.
  */
 var g_ShowAllStatusBars = false;
@@ -306,6 +298,7 @@ function init(initData, hotloadData)
 	if (hotloadData)
 		g_Selection.selected = hotloadData.selection;
 
+	initDeveloperOverlay();
 	initChatWindow();
 
 	sendLobbyPlayerlistUpdate();
@@ -380,12 +373,6 @@ function initializeMusic()
 	playAmbient();
 }
 
-function toggleChangePerspective(enabled)
-{
-	g_DevSettings.changePerspective = enabled;
-	selectViewPlayer(g_ViewedPlayer);
-}
-
 /**
  * Change perspective tool.
  * Shown to observers or when enabling the developers option.
@@ -400,14 +387,14 @@ function selectViewPlayer(playerID)
 
 	g_IsObserver = isPlayerObserver(Engine.GetPlayerID());
 
-	if (g_IsObserver || g_DevSettings.changePerspective)
+	if (g_IsObserver || g_DeveloperOverlay.changePerspective.active)
 	{
 		if (g_ViewedPlayer != playerID)
 			clearSelection();
 		g_ViewedPlayer = playerID;
 	}
 
-	if (g_DevSettings.changePerspective)
+	if (g_DeveloperOverlay.changePerspective.active)
 	{
 		Engine.SetPlayerID(g_ViewedPlayer);
 		g_IsObserver = isPlayerObserver(g_ViewedPlayer);
@@ -501,7 +488,7 @@ function updateTopPanel()
 	Engine.GetGUIObjectByName("optionFollowPlayer").hidden = !g_IsObserver || !isPlayer;
 
 	let viewPlayer = Engine.GetGUIObjectByName("viewPlayer");
-	viewPlayer.hidden = !g_IsObserver && !g_DevSettings.changePerspective;
+	viewPlayer.hidden = !g_IsObserver && !g_DeveloperOverlay.changePerspective.active;
 
 	let resCodes = g_ResourceData.GetCodes();
 	let r = 0;
@@ -772,8 +759,12 @@ function updateGUIObjects()
 	if (g_ViewedPlayer > 0)
 	{
 		let playerState = GetSimState().players[g_ViewedPlayer];
-		g_DevSettings.controlAll = playerState && playerState.controlsAll;
-		Engine.GetGUIObjectByName("devControlAll").checked = g_DevSettings.controlAll;
+		g_DeveloperOverlay.controlAllUnits.active = playerState && playerState.controlsAll;
+
+		Engine.GetGUIObjectByName(
+			"devOverlayCheckbox[" +
+			Object.keys(g_DeveloperOverlay).indexOf("controlAllUnits") +
+			"]").checked = g_DeveloperOverlay.controlAllUnits.active;
 	}
 
 	if (!g_IsObserver)
@@ -972,7 +963,7 @@ function updateDebug()
 {
 	let debug = Engine.GetGUIObjectByName("debugEntityState");
 
-	if (!Engine.GetGUIObjectByName("devDisplayState").checked)
+	if (!g_DeveloperOverlay.displaySelectionState.active)
 	{
 		debug.hidden = true;
 		return;

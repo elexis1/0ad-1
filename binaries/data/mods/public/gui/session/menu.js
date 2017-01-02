@@ -37,6 +37,107 @@ var g_IsObjectivesOpen = false;
 // Redefined every time someone makes a tribute (so we can save some data in a closure). Called in input.js handleInputBeforeGui.
 var g_FlushTributing = function() {};
 
+var g_DeveloperOverlay = {
+
+	// GUI modification
+	"changePerspective": {
+		"caption": translate("Change Perspective"),
+		"press": (checked) => {
+			selectViewPlayer(g_ViewedPlayer);
+		},
+	},
+	"displaySelectionState": {
+		"caption": translate("Display selection state"),
+		// Pulled by updateDebug()
+	},
+	"restrictCamera": {
+		"caption": translate("Restrict Camerea"),
+		"checkedInit": () => true,
+		"press": (checked) => {
+			Engine.GameView_SetConstrainCameraEnabled(checked);
+		},
+	},
+
+	// Simulation cheats
+	"revealMap": {
+		"caption": translate("Reveal Map"),
+		"checkedInit": () => Engine.GuiInterfaceCall("IsMapRevealed"),
+		"press": (checked) => {
+			Engine.PostNetworkCommand({
+				"type": "reveal-map",
+				"enable": checked
+			});
+		},
+	},
+	"controlAllUnits": {
+		"caption": translate("Control All Units"),
+		"press": (checked) => {
+			Engine.PostNetworkCommand({
+				"type": "control-all",
+				"flag": this.checked
+			});
+		},
+	},
+	"promoteUnits": {
+		"caption": translate("Promote selected units"),
+		"press": (checked) => {
+			Engine.PostNetworkCommand({
+				"type": "promote",
+				"entities": g_Selection.toList()
+			});
+			Engine.GetGUIObjectByName("promoteUnits").checked = false;
+		},
+	},
+
+	// Hacks
+	"timeWarpMode": {
+		"caption": translate("Time Warp Mode"),
+		"press": (checked) => {
+			if (checked)
+				showTimeWarpMessageBox();
+			Engine.EnableTimeWarpRecording(checked ? 10 : 0);
+		},
+	},
+
+	// Overlays
+	"pathfinderOverlay": {
+		"caption": translate("Pathfinder Overlay"),
+		"press": (checked) => {
+			Engine.GuiInterfaceCall("SetPathfinderDebugOverlay", checked);
+		},
+	},
+	"hierarchicalPathfinderOverlay": {
+		"caption": translate("Hierarchical Pathfinder Overlay"),
+		"press": (checked) => {
+			Engine.GuiInterfaceCall("SetPathfinderHierDebugOverlay", checked);
+		},
+	},
+	"obstructionOverlay": {
+		"caption": translate("Obstruction Overlay"),
+		"press": (checked) => {
+			Engine.GuiInterfaceCall("SetObstructionDebugOverlay", checked);
+		},
+	},
+	"unitMotionOverlay": {
+		"caption": translate("Unit Motion Overlay"),
+		"onPress": (checked) => {
+			g_Selection.SetMotionDebugOverlay(checked);
+		},
+	},
+	"rangeOverlay": {
+		"caption": translate("Range Overlay"),
+		"press": (checked) => {
+			Engine.GuiInterfaceCall("SetRangeDebugOverlay", checked);
+		},
+	},
+	"boundingBoxOverlay": {
+		"caption": translate("Bounding Box Overlay"),
+		"press": (checked) => {
+			Engine.SetBoundingBoxDebugOverlay(checked);
+		},
+	},
+};
+
 // Ignore size defined in XML and set the actual menu size here
 function initMenuPosition()
 {
@@ -886,6 +987,36 @@ function openManual()
 		"url": "http://trac.wildfiregames.com/wiki/0adManual",
 		"callback": "resumeGame"
 	});
+}
+
+function initDeveloperOverlay()
+{
+	let height = 16;
+
+	for (let child of Engine.GetGUIObjectByName("devCommands").children)
+		child.hidden = true;
+
+	for (let name in g_DeveloperOverlay)
+	{
+		let i = Object.keys(g_DeveloperOverlay).indexOf(name);
+
+		let label = Engine.GetGUIObjectByName("devOverlayLabel[" + i + "]");
+		label.size = [0, i * height, "100%-18", (i+1) * height].join(" ");
+		label.caption = g_DeveloperOverlay[name].caption;
+		label.hidden = false;
+
+		let checkbox = Engine.GetGUIObjectByName("devOverlayCheckbox[" + i + "]");
+		checkbox.size = ["100%-16", i * height, "100%", (i+1) * height].join(" ");
+		checkbox.checked = g_DeveloperOverlay[name].checkedInit && g_DeveloperOverlay[name].checkedInit();
+		checkbox.hidden = false;
+		(function(name, checkbox) {
+			checkbox.onPress = () => {
+				g_DeveloperOverlay[name].active = checkbox.checked;
+				if (g_DeveloperOverlay[name].press)
+					g_DeveloperOverlay[name].press(checkbox.checked);
+			};
+		})(name, checkbox);
+	}
 }
 
 function toggleDeveloperOverlay()

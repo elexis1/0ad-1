@@ -1430,7 +1430,7 @@ function someGuarding(entities)
  */
 function isUndeletable(entState)
 {
-	if (g_DevSettings.controlAll)
+	if (g_DeveloperOverlay.controlAllUnits.active)
 		return false;
 
 	if (entState.resourceSupply && entState.resourceSupply.killBeforeGather)

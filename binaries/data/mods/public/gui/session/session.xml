@@ -83,9 +83,26 @@
 		font="mono-stroke-10"
 	/>
 
+	<object
+		name="devCommands"
+		type="image"
+		sprite="devCommandsBackground"
+		size="100%-225 50%-88 100%-8 50%+120"
+		z="40"
+		hidden="true"
+		hotkey="session.devcommands.toggle"
+	>
+		<action on="Press">
+			toggleDeveloperOverlay();
+		</action>
+		<repeat count="20" var="n">
+			<object name="devOverlayLabel[n]" type="text" style="devCommandsText"/>
+			<object name="devOverlayCheckbox[n]" type="checkbox" style="ModernTickBox"/>
+		</repeat>
+	</object>
+
 	<include directory="gui/session/dialogs/"/>
 	<include file="gui/session/chat_window.xml"/>
-	<include file="gui/session/developer_overlay.xml"/>
 	<include file="gui/session/diplomacy_window.xml"/>
 	<include file="gui/session/objectives_window.xml"/>
 	<include file="gui/session/trade_window.xml"/>

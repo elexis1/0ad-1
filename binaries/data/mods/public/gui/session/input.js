@@ -268,7 +268,7 @@ function determineAction(x, y, fromMinimap)
 		return entState && entState.player == g_ViewedPlayer;
 	});
 
-	if (!g_DevSettings.controlAll && !allOwnedByPlayer)
+	if (!g_DeveloperOverlay.controlAllUnits.active && !allOwnedByPlayer)
 		return undefined;
 
 	var target = undefined;
@@ -812,7 +812,7 @@ function handleInputAfterGui(ev)
 		ev.hotkey = null;
 
 	// Handle the time-warp testing features, restricted to single-player
-	if (!g_IsNetworked && Engine.GetGUIObjectByName("devTimeWarp").checked)
+	if (!g_IsNetworked && g_DeveloperOverlay.timeWarpMode.active)
 	{
 		if (ev.type == "hotkeydown" && ev.hotkey == "session.timewarp.fastforward")
 			Engine.SetSimRate(20.0);
