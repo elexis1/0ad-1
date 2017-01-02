@@ -76,13 +76,6 @@ var g_Commands = {
 		Cheat(cmd);
 	},
 
-	"quit": function(player, cmd, data)
-	{
-		// Let the AI exit the game for testing purposes
-		var cmpGuiInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
-		cmpGuiInterface.PushNotification({ "type": "quit", "players": [player] });
-	},
-
 	"diplomacy": function(player, cmd, data)
 	{
 		let cmpCeasefireManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_CeasefireManager);
