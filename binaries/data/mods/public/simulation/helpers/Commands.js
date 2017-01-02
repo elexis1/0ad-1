@@ -628,6 +628,10 @@ var g_Commands = {
 
 	"set-shading-color": function(player, cmd, data)
 	{
+		// Prevent multiplayer abuse
+		if (!data.cmpPlayer.IsAI())
+			return;
+
 		// Debug command to make an entity brightly colored
 		for (let ent of cmd.entities)
 		{
