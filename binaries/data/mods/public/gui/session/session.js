@@ -398,6 +398,13 @@ function selectViewPlayer(playerID)
 	{
 		Engine.SetPlayerID(g_ViewedPlayer);
 		g_IsObserver = isPlayerObserver(g_ViewedPlayer);
+
+		if (g_ViewedPlayer == -1)
+			submitChatDirectly("/translate Changing perspective to observermode");
+		else
+			sendCheaterMessage(
+				markForTranslation("Changing perspective to %(player)s"),
+				{ "player": colorizePlayernameByID(g_ViewedPlayer) });
 	}
 
 	Engine.SetViewedPlayer(g_ViewedPlayer);

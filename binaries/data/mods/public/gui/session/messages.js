@@ -117,6 +117,7 @@ var g_FormatChatMessage = {
 	"message": msg => formatChatCommand(msg),
 	"defeat": msg => formatDefeatMessage(msg),
 	"won": msg => formatWinMessage(msg),
+	"cheater": msg => formatCheaterMessage(msg),
 	"diplomacy": msg => formatDiplomacyMessage(msg),
 	"tribute": msg => formatTributeMessage(msg),
 	"barter": msg => formatBarterMessage(msg),
@@ -328,6 +329,14 @@ var g_NotificationsTypes =
 		});
 		playerFinished(player, true);
 		sendLobbyPlayerlistUpdate();
+	},
+	"cheater": function(notification, player)
+	{
+		addChatMessage({
+			"type": "cheater",
+			"player": player,
+			"message": notification.message
+		});
 	},
 	"diplomacy": function(notification, player)
 	{
@@ -549,7 +558,6 @@ function updateTimeNotifications()
 			translateObjectKeys(parameters, n.translateParameters);
 
 		parameters.time = timeToString(n.endTime - g_SimState.timeElapsed);
-
 		notificationText += sprintf(message, parameters) + "\n";
 	}
 	Engine.GetGUIObjectByName("notificationText").caption = notificationText;
@@ -852,6 +860,19 @@ function formatWinMessage(msg)
 {
 	return sprintf(translate("%(player)s has won."), {
 		"player": colorizePlayernameByID(msg.player)
+	});
+}
+
+function formatCheaterMessage(msg)
+{
+	return sprintf(translate("%(cheatLabel)s: %(cheatMessage)"), {
+		"cheatLabel":
+			'[font="sans-bold-13"][color="red"]' +
+			translate("Cheat") + "[/font][/color]",
+
+		"cheatMessage": sprintf(msg.message, {
+			"player": colorizePlayernameByID(msg.player),
+		})
 	});
 }
 

@@ -576,10 +576,12 @@ var g_Commands = {
 	{
 		var cmpGuiInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
 		cmpGuiInterface.PushNotification({
-			"type": "aichat",
+			"type": "cheater",
 			"players": [player],
-			"message": markForTranslation("(Cheat - promoted units)"),
-			"translateMessage": true
+			"message": markForPluralTranslation("Promoted %(units)s unit", "Promoted %(units)s units"),
+			"translateMessage": true,
+			"units": cmd.entities.length,
+
 		});
 
 		for (let ent of cmd.entities)
