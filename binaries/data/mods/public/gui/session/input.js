@@ -1346,6 +1346,12 @@ function addTrainingByPosition(position)
 	return;
 }
 
+function batchTrainSize()
+{
+	let size = +Engine.ConfigDB_GetValue("user", "gui.session.batchtrainingsize");
+	return isNaN(size) ? 5 : Math.min(1, Math.round(size));
+}
+
 // Called by GUI when user clicks training button
 function addTrainingToQueue(selection, trainEntType, playerState)
 {
@@ -1362,7 +1368,7 @@ function addTrainingToQueue(selection, trainEntType, playerState)
 	if (!decrement)
 		var template = GetTemplateData(trainEntType);
 
-	let batchIncrementSize = +Engine.ConfigDB_GetValue("user", "gui.session.batchtrainingsize");
+	let batchIncrementSize = batchTrainSize();
 
 	if (Engine.HotkeyIsPressed("session.batchtrain") && batchTrainingPossible)
 	{
@@ -1445,7 +1451,7 @@ function addResearchToQueue(entity, researchType)
  */
 function getTrainingBatchStatus(playerState, trainEntType, selection)
 {
-	let batchIncrementSize = +Engine.ConfigDB_GetValue("user", "gui.session.batchtrainingsize");
+	let batchIncrementSize = batchTrainSize();
 	var appropriateBuildings = [];
 	if (selection)
 		appropriateBuildings = getBuildingsWhichCanTrainEntity(selection, trainEntType);

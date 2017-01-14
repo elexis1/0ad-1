@@ -266,6 +266,12 @@ var g_Commands = {
 		if (template.TrainingRestrictions)
 			unitCategory = template.TrainingRestrictions.Category;
 
+		if (isNaN(+cmd.count) || +cmd.count < 1 || +cmd.count != cmdMath.round(+cmd.count))
+		{
+			warn("Invalid command: cannot train " + uneval(+cmd.count) + "units!";
+			return;
+		}
+
 		// Verify that the building(s) can be controlled by the player
 		if (data.entities.length <= 0)
 		{
