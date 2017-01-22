@@ -40,6 +40,11 @@ const g_Username = Engine.LobbyGetNick();
 const g_StunEnabled = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
 
 /**
+ * Lobby server address to construct host JID
+ */
+const g_LobbyServer = Engine.ConfigDB_GetValue("user", "lobby.server");
+
+/**
  * Current games will be listed in these colors.
  */
 const g_GameColors = {
@@ -721,12 +726,15 @@ function joinSelectedGame()
 		return;
 	}
 
+	let hostJid = g_Username + "@" + g_LobbyServer + "/0ad";
+
 	Engine.PushGuiPage("page_gamesetup_mp.xml", {
 		"multiplayerGameType": "join",
 		"ip": ip,
 		"port": port,
 		"name": g_Username,
-		"rating": g_UserRating
+		"rating": g_UserRating,
+		"hostJid": hostJid
 	});
 }
 
