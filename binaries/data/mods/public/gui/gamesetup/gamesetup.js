@@ -672,13 +672,12 @@ var g_MiscControls = {
 			g_IsReady ?
 				translate("State that you are not ready to play.") :
 				translate("State that you are ready to play!"),
-		// TODO: right align stuff
 		"enabled": () => !g_IsController ||
 		                 Object.keys(g_PlayerAssignments).every(guid => g_PlayerAssignments[guid].status ||
 		                                                                g_PlayerAssignments[guid].player == -1),
-		"hidden": () => {
-			return !g_IsController && g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1;
-		},
+		"hidden": () =>
+			!g_PlayerAssignments[Engine.GetPlayerGUID()] ||
+			g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1 && !g_IsController,
 	},
 	"civResetButton": {
 		"hidden": () => g_GameAttributes.mapType == "scenario" || !g_IsController,
@@ -1646,9 +1645,8 @@ function updateGUIObjects()
 		updateGUIMiscControl(name);
 
 	updateGameDescription();
-
 	resizeMoreOptionsWindow();
-
+	rightAlignCancelButton();
 	updateAutocompleteEntries();
 
 	g_IsInGuiUpdate = false;
@@ -1661,6 +1659,30 @@ function updateGUIObjects()
 		Engine.PopGuiPage();
 		openAIConfig(g_LastViewedAIPlayer);
 	}
+}
+
+function rightAlignCancelButton()
+{
+	const offset = 10;
+
+	let startGame = Engine.GetGUIObjectByName("startGame");
+	let right = startGame.hidden ? startGame.size.right : startGame.size.left - offset;
+
+	let cancelGame = Engine.GetGUIObjectByName("cancelGame");
+	let cancelGameSize = cancelGame.size;
+	let buttonWidth = cancelGameSize.right - cancelGameSize.left;
+	cancelGameSize.right = right;
+	right -= buttonWidth;
+
+	for (let element of ["cheatWarningText", "onscreenToolTip"])
+	{
+		let elementSize = Engine.GetGUIObjectByName(element).size;
+		elementSize.right = right - (cancelGameSize.left - elementSize.right);
+		Engine.GetGUIObjectByName(element).size = elementSize;
+	}
+
+	cancelGameSize.left = right;
+	cancelGame.size = cancelGameSize;
 }
 
 function updateGameDescription()
