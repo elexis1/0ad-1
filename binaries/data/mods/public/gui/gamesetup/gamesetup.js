@@ -534,7 +534,6 @@ var g_DropdownArrays = {
 			else
 				swapPlayers(choice.substr("guid:".length), idx);
 
-			updatePlayerList();
 			updateGameAttributes();
 			updateReadyUI();
 		},
@@ -1068,8 +1067,6 @@ function handleGamesetupMessage(message)
 
 	Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
 
-	// Game attributes include AI settings, so update the player list
-	updatePlayerList();
 	updateGUIObjects();
 }
 
@@ -1088,7 +1085,7 @@ function handlePlayerAssignmentMessage(message)
 
 	g_PlayerAssignments = message.newAssignments;
 
-	updatePlayerList();
+	updateGUIObjects();
 	updateReadyUI();
 	sendRegisterGameStanza();
 }
@@ -1283,7 +1280,6 @@ function loadPersistMatchSettings()
 	Engine.SetRankedGame(g_GameAttributes.settings.RatingEnabled);
 
 	supplementDefaults();
-
 	updateGUIObjects();
 }
 
@@ -1404,7 +1400,7 @@ function unassignInvalidPlayers(maxPlayers)
 	else if (g_PlayerAssignments.local.player > maxPlayers)
 		g_PlayerAssignments.local.player = -1;
 
-	updatePlayerList();
+	updateGUIObjects();
 }
 
 /**
@@ -1680,6 +1676,8 @@ function updateGUIObjects()
 {
 	g_IsInGuiUpdate = true;
 
+	updatePlayerAssignmentChoices();
+
 	// Hide exceeding dropdowns and checkboxes
 	for (let panel in g_OptionOrder)
 		for (let child of Engine.GetGUIObjectByName(panel + "Options").children)
@@ -1710,8 +1708,6 @@ function updateGUIObjects()
 	updateAutocompleteEntries();
 
 	g_IsInGuiUpdate = false;
-
-	resetReadyData();
 
 	// Refresh AI config page
 	if (g_LastViewedAIPlayer != -1)
@@ -1768,6 +1764,7 @@ function updateGameAttributes()
 		Engine.SetNetworkGameAttributes(g_GameAttributes);
 		if (g_LoadingState >= 2)
 			sendRegisterGameStanza();
+		resetReadyData();
 	}
 	else
 		updateGUIObjects();
@@ -1802,10 +1799,8 @@ function AIConfigCallback(ai)
 	updateGameAttributes();
 }
 
-function updatePlayerList()
+function updatePlayerAssignmentChoices()
 {
-	g_IsInGuiUpdate = true;
-
 	let playerChoices = sortGUIDsByPlayerID().map(guid => ({
 		"Choice": "guid:" + guid,
 		"Name":
@@ -1832,11 +1827,6 @@ function updatePlayerList()
 	g_PlayerAssignmentChoices = prepareForDropdown(playerChoices.concat(aiChoices).concat(unassignedSlot))
 
 	initDropdownArray("playerAssignment");
-
-	for (let i = 0; i < g_MaxPlayers; ++i)
-		updateGUIDropdown("playerAssignment", i);
-
-	g_IsInGuiUpdate = false;
 }
 
 function swapPlayers(guid, newSlot)
