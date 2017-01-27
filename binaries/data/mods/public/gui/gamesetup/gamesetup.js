@@ -232,6 +232,16 @@ var g_ReadyChanged = 2;
  */
 var g_GameStarted = false;
 
+/**
+ * Selectable options (player, AI, unassigned) in the player assignment dropdowns and
+ * their colorized, textual representation.
+ */
+var g_PlayerAssignmentChoices = [];
+
+/**
+ * Remembers which clients are assigned to which player slots and whether they are ready.
+ * The keys are guids or "local" in Singleplayer.
+ */
 var g_PlayerAssignments = {};
 
 var g_DefaultPlayerData = [];
@@ -312,10 +322,10 @@ var g_OptionOrder = {
 /**
  * Contains the logic of all multiple-choice gamesettings.
  *
- * Hidden - If hidden, both the label and dropdown won't be visible.
- * Enabled - Only the label will be shown if it's disabled.
- * Default - Returns the index of the default value (not the value itself).
- * Tooltip - A description shown when hovering the option.
+ * hidden - If hidden, both the label and dropdown won't be visible.
+ * enabled - Only the label will be shown if it's disabled.
+ * default - Returns the index of the default value (not the value itself).
+ * tooltip - A description shown when hovering the option.
  *
  * NOTICE: The first three elements need to be initialized first.
  * If the map is changed, missing values are supplemented with defaults.
@@ -488,37 +498,40 @@ var g_Dropdowns = {
 	},
 };
 
-var g_PlayerAssignmentChoices = [];
-
 /**
  * These dropdowns provide a setting that is repeated once for each player.
  */
 var g_DropdownArrays = {
 	"playerAssignment": {
-		"labels": (idx) => {
-			return [];
-			// g_PlayerAssignmentChoices.Name;
-		},
-		"ids": (idx) => [], // g_PlayerAssignmentChoices.guid,
+		"labels": (idx) => g_PlayerAssignmentChoices.Name || [],
+		"ids": (idx) => g_PlayerAssignmentChoices.Choice || [],
 		"default": (idx) => "ai:petra",
-		// This setting doesn't correlate with g_GameAttributes nor
-		// g_PlayerAssignments directly
-		"defined": (idx) => true,
-		"get": (idx) => 0,
+		"defined": (idx) => idx < g_GameAttributes.settings.PlayerData.length,
+		"get": (idx) => {
+			for (let guid in g_PlayerAssignments)
+				if (g_PlayerAssignments[guid].player == idx + 1)
+					return "guid:" + guid;
+
+			for (let ai of g_Settings.AIDescriptions)
+				if (g_GameAttributes.settings.PlayerData[idx].AI == ai.id)
+					return "ai:" + ai.id;
+
+			return "unassigned";
+		},
 		"select": (selectedIdx, idx) => {
 
-			// TODO: text had shown translate("Loading...") on init is that relevant?
-			let guid = g_HostGUIDList[selectedIdx];
-			if (!guid || guid.substr(0, 3) == "ai:")
+			let choice = g_PlayerAssignmentChoices.Choice[selectedIdx];
+			if (choice == "unassigned" || choice.startsWith("ai:"))
 			{
 				if (g_IsNetworked)
-					Engine.AssignNetworkPlayer(playerID, "");
+					Engine.AssignNetworkPlayer(idx+1, "");
 
-				g_GameAttributes.settings.PlayerData[idx].AI = guid ? guid.substr(3) : "";
+				g_GameAttributes.settings.PlayerData[idx].AI = choice.startsWith("ai:") ? choice.substr(3) : "";
 			}
 			else
-				swapPlayers(guid, idx);
+				swapPlayers(choice.substr("guid:".length), idx);
 
+			updatePlayerList();
 			updateGameAttributes();
 			updateReadyUI();
 		},
@@ -716,9 +729,6 @@ var g_MiscControls = {
 var g_MiscControlArrays = {
 	"playerBox": {
 		"size": (idx) => ["0", 32 * idx, "100%", 32 * (idx + 1)].join(" "),
-		// "hidden": (idx) => {
-		// return !!g_GameAttributes.settings.PlayerData[idx];
-		// },
 	},
 	"playerName": {
 		"caption": (idx) => {
@@ -731,7 +741,9 @@ var g_MiscControlArrays = {
 	},
 	"playerConfig": {
 		"hidden": (idx) => !g_GameAttributes.settings.PlayerData[idx].AI,
-		"onPress": (idx) => openAIConfig,
+		"onPress": (idx) => function() {
+			openAIConfig(idx);
+		},
 	},
 };
 
@@ -1047,7 +1059,6 @@ function handleGamesetupMessage(message)
 
 	// Game attributes include AI settings, so update the player list
 	updatePlayerList();
-
 	updateGUIObjects();
 }
 
@@ -1084,13 +1095,16 @@ function onClientJoin(newGUID, newAssignments)
 		Object.keys(g_PlayerAssignments).every(guid => g_PlayerAssignments[guid].player != i+1)
 	);
 
-	// Client is not and cannot assigned as player
+	// Client is not and cannot become assigned as player
 	if (newAssignments[newGUID].player == -1 && freeSlot == -1)
 		return;
 
 	// Assign the joining client to the free slot
 	if (g_IsController && newAssignments[newGUID].player == -1)
 		Engine.AssignNetworkPlayer(freeSlot + 1, newGUID);
+
+	g_GameAttributes.settings.PlayerData[freeSlot].AI = "";
+	g_GameAttributes.settings.PlayerData[freeSlot].AIDiff = g_DefaultPlayerData[freeSlot].AIDiff;
 
 	resetReadyData();
 }
@@ -1385,6 +1399,8 @@ function unassignInvalidPlayers(maxPlayers)
 				"player": 1
 			}
 		};
+
+	updatePlayerList();
 }
 
 /**
@@ -1789,17 +1805,18 @@ function updatePlayerList()
 	g_IsInGuiUpdate = true;
 
 	let playerChoices = sortGUIDsByPlayerID().map(guid => ({
-		"guid": "guid:" + guid,
+		"Choice": "guid:" + guid,
 		"Name":
 			g_PlayerAssignments[guid].player == -1 ?
 				"[color=\""+ g_UnassignedPlayerColor + "\"]" + g_PlayerAssignments[guid].name + "[/color]" :
 				g_PlayerAssignments[guid].name
 	}));
 
+	// Only display hidden AIs if the map preselects them
 	let aiChoices = g_Settings.AIDescriptions
-		.filter(ai => !ai.data.hidden || !!g_GameAttributes.settings.PlayerData.every(pData => pData.AI != ai.id))
+		.filter(ai => !ai.data.hidden || g_GameAttributes.settings.PlayerData.some(pData => pData.AI == ai.id))
 		.map(ai => ({
-			"guid": "ai:" + ai.id,
+			"Choice": "ai:" + ai.id,
 			"Name": "[color=\""+ g_AIColor + "\"]" +
 			          sprintf(translate("AI: %(ai)s"), {
 			              "ai": translate(ai.data.name)
@@ -1807,11 +1824,15 @@ function updatePlayerList()
 	}));
 
 	let unassignedSlot = [{
-		"guid": "",
+		"Choice": "unassigned",
 		"Name": "[color=\""+ g_UnassignedColor + "\"]" + translate("Unassigned") + "[/color]",
 	}];
 	g_PlayerAssignmentChoices = prepareForDropdown(playerChoices.concat(aiChoices).concat(unassignedSlot))
+
 	initDropdownArray("playerAssignment");
+
+	for (let i = 0; i < g_MaxPlayers; ++i)
+		updateGUIDropdown("playerAssignment", i);
 
 	g_IsInGuiUpdate = false;
 }
