@@ -525,6 +525,8 @@ var g_DropdownArrays = {
 			{
 				if (g_IsNetworked)
 					Engine.AssignNetworkPlayer(idx+1, "");
+				else if (g_PlayerAssignments.local.player == idx+1)
+					g_PlayerAssignments.local.player = -1;
 
 				g_GameAttributes.settings.PlayerData[idx].AI = choice.startsWith("ai:") ? choice.substr(3) : "";
 			}
