@@ -990,7 +990,6 @@ function resizeMoreOptionsWindow()
 /**
  * Called when the client disconnects.
  * The other cases from NetClient should never occur in the gamesetup.
- * @param {Object} message
  */
 function handleNetStatusMessage(message)
 {
@@ -1006,7 +1005,6 @@ function handleNetStatusMessage(message)
 
 /**
  * Called whenever a client clicks on ready (or not ready).
- * @param {Object} message
  */
 function handleReadyMessage(message)
 {
@@ -1028,7 +1026,6 @@ function handleReadyMessage(message)
 
 /**
  * Called after every player is ready and the host decided to finally start the game.
- * @param {Object} message
  */
 function handleGamestartMessage(message)
 {
@@ -1049,7 +1046,6 @@ function handleGamestartMessage(message)
 
 /**
  * Called whenever the host changed any setting.
- * @param {Object} message
  */
 function handleGamesetupMessage(message)
 {
@@ -1074,7 +1070,6 @@ function handleGamesetupMessage(message)
 
 /**
  * Called whenever a client joins/leaves or any gamesetting is changed.
- * @param {Object} message
  */
 function handlePlayerAssignmentMessage(message)
 {
@@ -1409,7 +1404,6 @@ function unassignInvalidPlayers(maxPlayers)
 
 /**
  * Called when the host choses the number of players on a random map.
- * @param {Number} num
  */
 function selectNumPlayers(num)
 {
@@ -1482,7 +1476,6 @@ function isControlArrayElementHidden(idx)
 }
 
 /**
- * @param name - Name of the setting to be changed (not the one of the dropdown)
  * @param idx - Only specified for dropdown arrays.
  */
 function updateGUIDropdown(name, idx = undefined)
