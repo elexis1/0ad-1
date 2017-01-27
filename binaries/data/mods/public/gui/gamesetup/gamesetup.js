@@ -320,16 +320,17 @@ var g_OptionOrder = {
 };
 
 /**
+ * These options must be initialized first, in the given order.
+ */
+var g_DropdownPriority = ["mapType", "mapFilter", "mapSelection"];
+
+/**
  * Contains the logic of all multiple-choice gamesettings.
  *
  * hidden - If hidden, both the label and dropdown won't be visible.
  * enabled - Only the label will be shown if it's disabled.
  * default - Returns the index of the default value (not the value itself).
  * tooltip - A description shown when hovering the option.
- *
- * NOTICE: The first three elements need to be initialized first.
- * If the map is changed, missing values are supplemented with defaults.
- * TODO: add "priority" property, to ensure init order?
  */
 var g_Dropdowns = {
 	"mapType": {
@@ -829,8 +830,12 @@ function supplementDefaults()
  */
 function initGUIObjects()
 {
-	for (let dropdown in g_Dropdowns)
+	for (let dropdown of g_DropdownPriority)
 		initDropdown(dropdown);
+
+	for (let dropdown in g_Dropdowns)
+		if (g_DropdownPriority.indexOf(dropdown) == -1)
+			initDropdown(dropdown);
 
 	for (let checkbox in g_Checkboxes)
 		initCheckbox(checkbox);
