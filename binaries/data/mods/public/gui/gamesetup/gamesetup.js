@@ -774,6 +774,14 @@ function init(attribs)
 	g_ServerName = attribs.serverName;
 	g_ServerPort = attribs.serverPort;
 
+	if (!g_IsNetworked)
+		g_PlayerAssignments = {
+			"local": {
+				"name": singleplayerName(),
+				"player": 1
+			}
+		};
+
 	// Replace empty playername when entering a singleplayermatch for the first time
 	if (!g_IsNetworked)
 	{
@@ -1393,14 +1401,8 @@ function unassignInvalidPlayers(maxPlayers)
 		for (let playerID = +maxPlayers + 1; playerID <= g_MaxPlayers; ++playerID)
 			Engine.AssignNetworkPlayer(playerID, "");
 	}
-	else if (!g_PlayerAssignments.local ||
-	         g_PlayerAssignments.local.player > maxPlayers)
-		g_PlayerAssignments = {
-			"local": {
-				"name": singleplayerName(),
-				"player": 1
-			}
-		};
+	else if (g_PlayerAssignments.local.player > maxPlayers)
+		g_PlayerAssignments.local.player = -1;
 
 	updatePlayerList();
 }
