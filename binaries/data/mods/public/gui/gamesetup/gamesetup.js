@@ -508,9 +508,6 @@ var g_DropdownArrays = {
 			}
 			else
 				swapPlayers(choice.substr("guid:".length), idx);
-
-			updateGameAttributes();
-			updateReadyUI();
 		},
 		"autocomplete": true,
 	},
@@ -683,7 +680,10 @@ var g_MiscControls = {
 				translate("I'm ready"),
 		"tooltip": () =>
 			g_IsController ?
-				translate("Start a new game with the current settings.") :
+				(!g_IsNetworked || Object.keys(g_PlayerAssignments).every(guid =>
+						g_PlayerAssignments[guid].status || g_PlayerAssignments[guid].player == -1) ?
+					translate("Start a new game with the current settings.") :
+					translate("Start a new game with the current settings (disabled until all players are ready)")) :
 			g_IsReady ?
 				translate("State that you are not ready to play.") :
 				translate("State that you are ready to play!"),
@@ -717,8 +717,17 @@ var g_MiscControlArrays = {
 	},
 	"playerName": {
 		"caption": (idx) => {
-			// TODO if (g_PlayerAssignments[message.guid].status) green
-			return translate(g_DefaultPlayerData[idx].Name);
+			let pData = g_GameAttributes.settings.PlayerData[idx+1];
+
+			let assignedGUID = Object.keys(g_PlayerAssignments).find(
+				guid => g_PlayerAssignments[guid].player == idx+1);
+
+			let name = translate(pData.Name);
+
+			if (g_IsNetworked && (pData.AI || !assignedGUID || g_PlayerAssignments[assignedGUID].status))
+				name = '[color="' + g_ReadyColor + '"]' +  name + '[/color]';
+
+			return name;
 		},
 	},
 	"playerColor": {
@@ -981,9 +990,9 @@ function handleReadyMessage(message)
 
 	if (!g_IsController)
 		return;
-
+warn("ready")
 	g_PlayerAssignments[message.guid].status = +message.status == 1;
-	updateReadyUI();
+	//updateGUIObjects();
 }
 
 /**
@@ -1040,11 +1049,10 @@ function handlePlayerAssignmentMessage(message)
 	for (let guid in g_PlayerAssignments)
 		if (!message.newAssignments[guid])
 			onClientLeave(guid);
-
+warn("ass")
 	g_PlayerAssignments = message.newAssignments;
 
 	updateGUIObjects();
-	updateReadyUI();
 	sendRegisterGameStanza();
 }
 
@@ -1943,55 +1951,6 @@ function setReady(ready, sendMessage = true)
 		Engine.SendNetworkReady(+g_IsReady);
 
 	updateGUIObjects();
-}
-
-function updateReadyUI()
-{
-	if (!g_IsNetworked)
-		return;
-
-	let isAI = new Array(g_MaxPlayers + 1).fill(true);
-	let allReady = true;
-	for (let guid in g_PlayerAssignments)
-	{
-		// We don't really care whether observers are ready.
-		if (g_PlayerAssignments[guid].player == -1 || !g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player - 1])
-			continue;
-		let pData = g_GameAttributes.settings.PlayerData ? g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player - 1] : {};
-		let pDefs = g_DefaultPlayerData ? g_DefaultPlayerData[g_PlayerAssignments[guid].player - 1] : {};
-		isAI[g_PlayerAssignments[guid].player] = false;
-		if (g_PlayerAssignments[guid].status || !g_IsNetworked)
-			Engine.GetGUIObjectByName("playerName[" + (g_PlayerAssignments[guid].player - 1) + "]").caption = '[color="' + g_ReadyColor + '"]' + translate(getSetting(pData, pDefs, "Name")) + '[/color]';
-		else
-		{
-			Engine.GetGUIObjectByName("playerName[" + (g_PlayerAssignments[guid].player - 1) + "]").caption = translate(getSetting(pData, pDefs, "Name"));
-			allReady = false;
-		}
-	}
-
-	// AIs are always ready.
-	for (let playerid = 0; playerid < g_MaxPlayers; ++playerid)
-	{
-		if (!g_GameAttributes.settings.PlayerData[playerid])
-			continue;
-		let pData = g_GameAttributes.settings.PlayerData ? g_GameAttributes.settings.PlayerData[playerid] : {};
-		let pDefs = g_DefaultPlayerData ? g_DefaultPlayerData[playerid] : {};
-		if (isAI[playerid + 1])
-			Engine.GetGUIObjectByName("playerName[" + playerid + "]").caption = '[color="' + g_ReadyColor + '"]' + translate(getSetting(pData, pDefs, "Name")) + '[/color]';
-	}
-
-	// The host is not allowed to start until everyone is ready.
-	if (g_IsNetworked && g_IsController)
-	{
-		let startGameButton = Engine.GetGUIObjectByName("startGame");
-
-		// Add a explanation on to the tooltip if disabled.
-		let disabledIndex = startGameButton.tooltip.indexOf('Disabled');
-		if (disabledIndex != -1 && allReady)
-			startGameButton.tooltip = startGameButton.tooltip.substring(0, disabledIndex - 2);
-		else if (disabledIndex == -1 && !allReady)
-			startGameButton.tooltip = startGameButton.tooltip + " (Disabled until all players are ready)";
-	}
 }
 
 function resetReadyData()
