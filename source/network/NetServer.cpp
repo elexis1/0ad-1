@@ -1422,7 +1422,7 @@ void CNetServerWorker::SendHolePunchingMessage(std::string ipStr, int port) {
 	addr.port = port;
 	enet_address_set_host(&addr, ipStr.c_str());
 	// Send a UDP message from enet host to ip:port
-	StunClient::SendStunRequest(m_Host, addr.host, port);
+	StunClient::SendStunRequest(m_Host, htonl(addr.host), port);
 }
 
 
