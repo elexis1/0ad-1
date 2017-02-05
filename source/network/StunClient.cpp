@@ -24,7 +24,6 @@
 #include "ps/ConfigDB.h"
 #include "scriptinterface/ScriptInterface.h"
 
-ENetHost* m_transaction_host;
 unsigned int m_stun_server_ip;
 const uint32_t m_stun_magic_cookie = 0x2112A442;
 uint8_t m_stun_tansaction_id[12];
@@ -72,7 +71,7 @@ T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
  *  The request is send through m_transaction_host, from which the answer
  *  will be retrieved by parseStunResponse()
  */
-void createStunRequest(ENetHost* transactionHost, int port)
+void createStunRequest(ENetHost* transactionHost)
 {
 	std::string server_name;
 	CFG_GET_VAL("stun.server", server_name);
@@ -97,27 +96,13 @@ void createStunRequest(ENetHost* transactionHost, int port)
 	struct sockaddr_in* current_interface = (struct sockaddr_in*)(res->ai_addr);
 	m_stun_server_ip = ntohl(current_interface->sin_addr.s_addr);
 
-	// Create a new socket for the stun server.
-	if (transactionHost != NULL)
-	{
-		m_transaction_host = transactionHost;
-	}
-	else
-	{
-		ENetAddress addr;
-		addr.host = ENET_HOST_ANY;
-		addr.port = port;
-
-		m_transaction_host = enet_host_create(&addr, 1, 1, 0, 0);
-	}
-
-	if (m_transaction_host == NULL) {
+	if (transactionHost == NULL) {
 		printf("Failed to create enet host");
 		return;
 	}
 
 	static const int m_stun_server_port = 3478;
-	StunClient::SendStunRequest(m_transaction_host, m_stun_server_ip, m_stun_server_port);
+	StunClient::SendStunRequest(transactionHost, m_stun_server_ip, m_stun_server_port);
 
 	freeaddrinfo(res);
 }   // createStunRequest
@@ -168,7 +153,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
  * then parses the answer into address and port
  * \return "" if the address could be parsed or an error message
 */
-std::string parseStunResponse()
+std::string parseStunResponse(ENetHost* transactionHost)
 {
 	// TransportAddress sender;
 	const int LEN = 2048;
@@ -185,7 +170,7 @@ std::string parseStunResponse()
 	socklen_t from_len = sizeof(addr);
 
 	int err;
-	int len = recvfrom(m_transaction_host->socket, buffer, LEN, 0,
+	int len = recvfrom(transactionHost->socket, buffer, LEN, 0,
 	                   (struct sockaddr*)(&addr), &from_len);
 
 	int count = 0;
@@ -194,7 +179,7 @@ std::string parseStunResponse()
 	{
 		count++;
 		usleep(1000);
-		len = recvfrom(m_transaction_host->socket, buffer, LEN, 0,
+		len = recvfrom(transactionHost->socket, buffer, LEN, 0,
 		        (struct sockaddr*)(&addr), &from_len);
 	}
 	if (len == -1) {
@@ -204,9 +189,6 @@ std::string parseStunResponse()
 	if (len == -1) {
 		printf("GetPublicAddress: recvfrom error: %d\n", err);
 	}
-
-	// We don't need the m_transaction_host anymore
-	enet_host_destroy(m_transaction_host);
 
 	// No message received
 	if (len < 0)
@@ -305,8 +287,16 @@ std::string parseStunResponse()
 
 JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int port)
 {
-	createStunRequest(NULL, port);
-	std::string parse_result = parseStunResponse();
+	ENetAddress hostAddr;
+	hostAddr.host = ENET_HOST_ANY;
+	hostAddr.port = port;
+
+	ENetHost* transactionHost = enet_host_create(&hostAddr, 1, 1, 0, 0);
+
+	createStunRequest(transactionHost);
+	std::string parse_result = parseStunResponse(transactionHost);
+	enet_host_destroy(transactionHost);
+
 	if (!parse_result.empty())
 			printf("Parse error: %s\n", parse_result.c_str());
 
@@ -328,8 +318,8 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 
 StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
 {
-	createStunRequest(transactionHost, 0);
-	std::string parse_result = parseStunResponse();
+	createStunRequest(transactionHost);
+	std::string parse_result = parseStunResponse(transactionHost);
 	if (!parse_result.empty())
 			printf("Parse error: %s\n", parse_result.c_str());
 
