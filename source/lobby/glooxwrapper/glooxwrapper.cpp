@@ -835,7 +835,7 @@ glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList
 				/*candidate_generation*/"0", /*candidate_id*/"1",
 				candidate.ip.to_string(), /*network*/"", candidate.port,
 				/*priotiry*/0, "udp", /*base_ip*/"", /*base_port*/0, /*type*/gloox::Jingle::ICEUDP::ServerReflexive});
-	m_Wrapped = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/0, glooxCandidates);
+	m_Wrapped = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", glooxCandidates);
 	m_Owned = true;
 }
 
