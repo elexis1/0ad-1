@@ -45,9 +45,9 @@
  * Number of peers to allocate for the enet host.
  * Limited by ENET_PROTOCOL_MAXIMUM_PEER_ID (4096).
  *
- * At most 8 players, 16 observers and 1 temporary connection to send the "server full" disconnect-reason.
+ * At most 8 players, 32 observers and 1 temporary connection to send the "server full" disconnect-reason.
  */
-#define MAX_CLIENTS 25
+#define MAX_CLIENTS 41
 
 #define	DEFAULT_SERVER_NAME			L"Unnamed Server"
 #define DEFAULT_WELCOME_MESSAGE		L"Welcome"
@@ -373,7 +373,7 @@ void CNetServerWorker::Run()
 	// To avoid the need for JS_SetContextThread, we create and use and destroy
 	// the script interface entirely within this network thread
 	m_ScriptInterface = new ScriptInterface("Engine", "Net server", ScriptInterface::CreateRuntime(g_ScriptRuntime));
-	m_GameAttributes.set(m_ScriptInterface->GetJSRuntime(), JS::UndefinedValue());
+	m_GameAttributes.init(m_ScriptInterface->GetJSRuntime(), JS::UndefinedValue());
 
 	while (true)
 	{
@@ -389,7 +389,6 @@ void CNetServerWorker::Run()
 	}
 
 	// Clear roots before deleting their context
-	m_GameAttributes.clear();
 	m_SavedCommands.clear();
 
 	SAFE_DELETE(m_ScriptInterface);
@@ -503,6 +502,9 @@ bool CNetServerWorker::RunStep()
 			delete session;
 			event.peer->data = NULL;
 		}
+
+		if (m_State == SERVER_STATE_LOADING)
+			CheckGameLoadStatus(NULL);
 
 		break;
 	}
@@ -683,7 +685,7 @@ void CNetServerWorker::OnUserJoin(CNetServerSession* session)
 		m_HostGUID = session->GetGUID();
 
 	CGameSetupMessage gameSetupMessage(GetScriptInterface());
-	gameSetupMessage.m_Data = m_GameAttributes.get();
+	gameSetupMessage.m_Data = m_GameAttributes;
 	session->SendMessage(&gameSetupMessage);
 
 	CPlayerAssignmentMessage assignMessage;
@@ -807,7 +809,9 @@ void CNetServerWorker::KickPlayer(const CStrW& playerName, const bool ban)
 	CKickedMessage kickedMessage;
 	kickedMessage.m_Name = playerName;
 	kickedMessage.m_Ban = ban;
-	Broadcast(&kickedMessage);
+	for (CNetServerSession* session : m_Sessions)
+		if (session->GetCurrState() > NSS_AUTHENTICATE)
+			session->SendMessage(&kickedMessage);
 }
 
 void CNetServerWorker::AssignPlayer(int playerID, const CStr& guid)
@@ -1037,7 +1041,7 @@ bool CNetServerWorker::OnInGame(void* context, CFsmEvent* event)
 		JSContext* cx = scriptInterface.GetContext();
 		JSAutoRequest rq(cx);
 		JS::RootedValue settings(cx);
-		scriptInterface.GetProperty(server.m_GameAttributes.get(), "settings", &settings);
+		scriptInterface.GetProperty(server.m_GameAttributes, "settings", &settings);
 		if (scriptInterface.HasProperty(settings, "CheatsEnabled"))
 			scriptInterface.GetProperty(settings, "CheatsEnabled", cheatsEnabled);
 
@@ -1320,10 +1324,8 @@ bool CNetServerWorker::OnClientPaused(void* context, CFsmEvent* event)
 void CNetServerWorker::CheckGameLoadStatus(CNetServerSession* changedSession)
 {
 	for (const CNetServerSession* session : m_Sessions)
-	{
 		if (session != changedSession && session->GetCurrState() != NSS_INGAME)
 			return;
-	}
 
 	CLoadedGameMessage loaded;
 	loaded.m_CurrentTurn = 0;
@@ -1342,7 +1344,7 @@ void CNetServerWorker::StartGame()
 	m_State = SERVER_STATE_LOADING;
 
 	// Send the final setup state to all clients
-	UpdateGameAttributes(&m_GameAttributes.get());
+	UpdateGameAttributes(&m_GameAttributes);
 
 	// Remove players and observers that are not present when the game starts
 	for (PlayerAssignmentMap::iterator it = m_PlayerAssignments.begin(); it != m_PlayerAssignments.end();)
@@ -1359,13 +1361,13 @@ void CNetServerWorker::StartGame()
 
 void CNetServerWorker::UpdateGameAttributes(JS::MutableHandleValue attrs)
 {
-	m_GameAttributes.set(m_ScriptInterface->GetJSRuntime(), attrs);
+	m_GameAttributes = attrs;
 
 	if (!m_Host)
 		return;
 
 	CGameSetupMessage gameSetupMessage(GetScriptInterface());
-	gameSetupMessage.m_Data.set(m_GameAttributes.get());
+	gameSetupMessage.m_Data = m_GameAttributes;
 	Broadcast(&gameSetupMessage);
 }
 

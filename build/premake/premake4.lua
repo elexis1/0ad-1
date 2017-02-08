@@ -7,7 +7,7 @@ newoption { trigger = "icc", description = "Use Intel C++ Compiler (Linux only; 
 newoption { trigger = "jenkins-tests", description = "Configure CxxTest to use the XmlPrinter runner which produces Jenkins-compatible output" }
 newoption { trigger = "minimal-flags", description = "Only set compiler/linker flags that are really needed. Has no effect on Windows builds" }
 newoption { trigger = "outpath", description = "Location for generated project files" }
-newoption { trigger = "with-system-mozjs31", description = "Search standard paths for libmozjs31, instead of using bundled copy" }
+newoption { trigger = "with-system-mozjs38", description = "Search standard paths for libmozjs38, instead of using bundled copy" }
 newoption { trigger = "with-system-nvtt", description = "Search standard paths for nvidia-texture-tools library, instead of using bundled copy" }
 newoption { trigger = "without-audio", description = "Disable use of OpenAL/Ogg/Vorbis APIs" }
 newoption { trigger = "without-lobby", description = "Disable the use of gloox and the multiplayer lobby" }
@@ -24,6 +24,7 @@ newoption { trigger = "sysroot", description = "Set compiler system root path, u
 -- Windows specific options
 newoption { trigger = "build-shared-glooxwrapper", description = "Rebuild glooxwrapper DLL for Windows. Requires the same compiler version that gloox was built with" }
 newoption { trigger = "use-shared-glooxwrapper", description = "Use prebuilt glooxwrapper DLL for Windows" }
+newoption { trigger = "large-address-aware", description = "Make the executable large address aware. Do not use for development, in order to spot memory issues easily" }
 
 -- Install options
 newoption { trigger = "bindir", description = "Directory for executables (typically '/usr/games'); default is to be relocatable" }
@@ -216,7 +217,7 @@ function project_set_build_flags()
 
 	else	-- *nix
 
-		-- TODO, FIXME: This check is incorrect because it means that some additional flags will be added inside the "else" branch if the 
+		-- TODO, FIXME: This check is incorrect because it means that some additional flags will be added inside the "else" branch if the
 		-- compiler is ICC and minimal-flags is specified (ticket: #2994)
 		if cc == "icc" and not _OPTIONS["minimal-flags"] then
 			buildoptions {
@@ -281,6 +282,7 @@ function project_set_build_flags()
 				end
 
 				if os.is("linux") or os.is("bsd") then
+					buildoptions { "-fPIC" }
 					linkoptions { "-Wl,--no-undefined", "-Wl,--as-needed" }
 				end
 
@@ -296,7 +298,7 @@ function project_set_build_flags()
 					}
 				end
 			end
-			
+
 			buildoptions {
 				-- Enable C++11 standard.
 				"-std=c++0x"
@@ -379,7 +381,7 @@ function project_set_build_flags()
 
 				-- Adding the executable path and taking care of correct escaping
 				if _ACTION == "gmake" then
-					linkoptions { "-Wl,-rpath,'$$ORIGIN'" } 
+					linkoptions { "-Wl,-rpath,'$$ORIGIN'" }
 				elseif _ACTION == "codeblocks" then
 					linkoptions { "-Wl,-R\\\\$$$ORIGIN" }
 				end
@@ -607,10 +609,10 @@ function setup_all_libs ()
 		"boost",
 	}
 	setup_third_party_static_lib_project("tinygettext", source_dirs, extern_libs, { } )
-	
+
 	-- it's an external library and we don't want to modify its source to fix warnings, so we just disable them to avoid noise in the compile output
 	if _ACTION == "vs2013" then
-		buildoptions { 
+		buildoptions {
 			"/wd4127",
 			"/wd4309",
 			"/wd4800",
@@ -730,12 +732,12 @@ function setup_all_libs ()
 		"icu",
 		"iconv",
 	}
-	
+
 	if not _OPTIONS["without-audio"] then
 		table.insert(extern_libs, "openal")
 		table.insert(extern_libs, "vorbis")
 	end
-	
+
 	setup_static_lib_project("engine", source_dirs, extern_libs, {})
 
 
@@ -843,7 +845,7 @@ function setup_all_libs ()
 	for i,v in pairs(sysdep_dirs[os.get()]) do
 		table.insert(source_dirs, v);
 	end
-	
+
 	if os.is("linux") then
 		if _OPTIONS["android"] then
 			table.insert(source_dirs, "lib/sysdep/os/android")
@@ -974,6 +976,12 @@ function setup_main_exe ()
 			"/DELAY:UNLOAD",
 		}
 
+		-- allow the executable to use more than 2GB of RAM.
+		-- this should not be enabled during development, so that memory issues are easily spotted.
+		if _OPTIONS["large-address-aware"] then
+			linkoptions { "/LARGEADDRESSAWARE" }
+		end
+
 		-- see manifest.cpp
 		project_add_manifest()
 
@@ -1088,7 +1096,7 @@ function setup_atlas_projects()
 	{	-- src
 		".",
 		"../../../third_party/jsonspirit"
-		
+
 	},{	-- include
 		"../../../third_party/jsonspirit"
 	},{	-- extern_libs
@@ -1185,7 +1193,7 @@ function setup_atlas_frontend_project (project_name)
 
 		-- required to use WinMain() on Windows, otherwise will default to main()
 		flags { "WinMain" }
-		
+
 		-- see manifest.cpp
 		project_add_manifest()
 

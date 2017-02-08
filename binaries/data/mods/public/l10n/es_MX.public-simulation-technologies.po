@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-12 09:01+0200\n"
-"PO-Revision-Date: 2016-08-12 10:06+0000\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-09-30 09:38+0000\n"
 "Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/wildfire-games/0ad/language/es_MX/)\n"
 "MIME-Version: 1.0\n"
@@ -723,8 +723,8 @@ msgid "Reinforce the foundations in preparation of an attack."
 msgstr "Mejora los cimientos en previsión de un ataque."
 
 #: simulation/data/technologies/attack_tower_defense.jsontooltip
-msgid "Increases armour level of the defense tower by 2 levels."
-msgstr "Incrementa el nivel de armadura de la torre defensiva en 2 niveles."
+msgid "Increases armor level of the defense tower by 2 levels."
+msgstr ""
 
 #: simulation/data/technologies/attack_tower_defense.jsongenericName
 msgid "Sturdy Foundations"
@@ -1283,7 +1283,7 @@ msgstr "Avanzade una bulliciosa ciudad a una verdadera metropolis, llena de mara
 msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
 msgstr ""
 
 #: simulation/data/technologies/phase_city.jsongenericName
@@ -1314,7 +1314,7 @@ msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Silver Owls civ bonus "
 "grants an extra +10% metal gather rate to all workers. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
 msgstr ""
 
 #: simulation/data/technologies/phase_town.jsondescription
@@ -1778,8 +1778,10 @@ msgid ""
 msgstr "Mediante el comercio y la exploración las gentes descubrían nuevas tierras más allá de sus fronteras, dibujando mapas con los que memorizar y compartir sus peripecias con otros."
 
 #: simulation/data/technologies/unlock_shared_los.jsontooltip
-msgid "Player sees what his allies see."
-msgstr "El jugador ve lo que sus aliados ven."
+msgid ""
+"See what your allies see, browse their summary and check their resources and"
+" population count in the top panel."
+msgstr ""
 
 #: simulation/data/technologies/unlock_shared_los.jsongenericName
 msgid "Cartography"

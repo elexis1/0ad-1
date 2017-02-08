@@ -10,16 +10,12 @@ DataTemplateManager.prototype.Init = function()
 {
 	this.allTechs = {};
 	this.allAuras = {};
-	var techNames = this.ListAllTechs();
-	for (var i in techNames)
-		this.GetTechnologyTemplate(techNames[i]);
-};
 
-DataTemplateManager.prototype.Serialize = null; // we have no dynamic state to save
+	for (let techName of this.ListAllTechs())
+		this.GetTechnologyTemplate(techName);
 
-DataTemplateManager.prototype.Deserialize = function()
-{
-	this.Init();
+	for (let auraName of this.ListAllAuras())
+		this.GetAuraTemplate(auraName);
 };
 
 DataTemplateManager.prototype.GetTechnologyTemplate = function(template)
@@ -49,6 +45,11 @@ DataTemplateManager.prototype.GetAuraTemplate = function(template)
 DataTemplateManager.prototype.ListAllTechs = function()
 {
 	return Engine.FindJSONFiles("technologies", true);
+};
+
+DataTemplateManager.prototype.ListAllAuras = function()
+{
+	return Engine.FindJSONFiles("auras", true);
 };
 
 DataTemplateManager.prototype.GetAllTechs = function()

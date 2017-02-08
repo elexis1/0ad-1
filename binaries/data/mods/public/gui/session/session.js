@@ -1,5 +1,13 @@
 const g_IsReplay = Engine.IsVisualReplay();
+
+const g_Ceasefire = prepareForDropdown(g_Settings && g_Settings.Ceasefire);
 const g_GameSpeeds = prepareForDropdown(g_Settings && g_Settings.GameSpeeds.filter(speed => !speed.ReplayOnly || g_IsReplay));
+const g_MapSizes = prepareForDropdown(g_Settings && g_Settings.MapSizes);
+const g_MapTypes = prepareForDropdown(g_Settings && g_Settings.MapTypes);
+const g_PopulationCapacities = prepareForDropdown(g_Settings && g_Settings.PopulationCapacities);
+const g_StartingResources = prepareForDropdown(g_Settings && g_Settings.StartingResources);
+const g_VictoryConditions = prepareForDropdown(g_Settings && g_Settings.VictoryConditions);
+const g_WonderDurations = prepareForDropdown(g_Settings && g_Settings.WonderDurations);
 
 /**
  * Colors to flash when pop limit reached.
@@ -26,6 +34,12 @@ var g_IsController;
  * True if this is a multiplayer game.
  */
 var g_IsNetworked = false;
+
+/**
+ * Whether we have finished the synchronization and
+ * can start showing simulation related message boxes.
+ */
+var g_IsNetworkedActive = false;
 
 /**
  * True if the connection to the server has been lost.
@@ -285,10 +299,10 @@ function init(initData, hotloadData)
 	if (Engine.IsAtlasRunning())
 		Engine.GetGUIObjectByName("menuExitButton").enabled = false;
 
-	initHotkeyTooltips();
-
 	if (hotloadData)
 		g_Selection.selected = hotloadData.selection;
+
+	initChatWindow();
 
 	sendLobbyPlayerlistUpdate();
 	onSimulationUpdate();
@@ -305,14 +319,27 @@ function init(initData, hotloadData)
 	//setTimeout(function() { reportPerformance(60); }, 60000);
 }
 
-function initHotkeyTooltips()
+/**
+ * Depends on the current player (g_IsObserver).
+ */
+function updateHotkeyTooltips()
 {
+	Engine.GetGUIObjectByName("chatInput").tooltip =
+		translateWithContext("chat input", "Type the message to send.") + "\n" +
+		colorizeAutocompleteHotkey() +
+		colorizeHotkey("\n" + translate("Press %(hotkey)s to open the public chat."), "chat") +
+		colorizeHotkey(
+			"\n" + (g_IsObserver ?
+				translate("Press %(hotkey)s to open the observer chat.") :
+				translate("Press %(hotkey)s to open the ally chat.")),
+			"teamchat");
+
 	Engine.GetGUIObjectByName("idleWorkerButton").tooltip =
 		colorizeHotkey("%(hotkey)s" + " ", "selection.idleworker") +
 		translate("Find idle worker");
 
 	Engine.GetGUIObjectByName("tradeHelp").tooltip =
-		translate("Select one goods as origin of the changes, then use the arrows of the target goods to make the changes.") +
+		translate("Select one type of goods as origin of the changes, then use the arrows of the target type of goods to make the changes.") +
 		colorizeHotkey(
 			"\n" + translate("Using %(hotkey)s will put the selected resource to 100%%."),
 			"session.fulltradeswap");
@@ -381,8 +408,8 @@ function selectViewPlayer(playerID)
 	Engine.SetViewedPlayer(g_ViewedPlayer);
 
 	updateTopPanel();
-
 	updateChatAddressees();
+	updateHotkeyTooltips();
 
 	// Update GUI and clear player-dependent cache
 	onSimulationUpdate();
@@ -428,6 +455,12 @@ function playerFinished(player, won)
 	updateDiplomacy();
 	updateChatAddressees();
 
+	if (player != g_ViewedPlayer)
+		return;
+
+	// Select "observer" item on loss. On win enable observermode without changing perspective
+	Engine.GetGUIObjectByName("viewPlayer").selected = won ? g_ViewedPlayer + 1 : 0;
+
 	if (player != Engine.GetPlayerID() || Engine.IsAtlasRunning())
 		return;
 
@@ -436,9 +469,6 @@ function playerFinished(player, won)
 			global.music.states.VICTORY :
 			global.music.states.DEFEAT
 	);
-
-	// Select "observer" item on loss. On win enable observermode without changing perspective
-	Engine.GetGUIObjectByName("viewPlayer").selected = won ? g_ViewedPlayer + 1 : 0;
 
 	g_ConfirmExit = won ? "won" : "defeated";
 }
@@ -664,13 +694,13 @@ function onSimulationUpdate()
  */
 function confirmExit()
 {
+	if (g_IsNetworked && !g_IsNetworkedActive)
+		return;
+
 	closeOpenDialogs();
 
-	let subject = g_ConfirmExit == "won" ?
-		translate("You have won!") :
-		translate("You have been defeated!");
-
-	subject += "\n" + translate("Do you want to quit?");
+	let subject = g_PlayerStateMessages[g_ConfirmExit] + "\n" +
+		translate("Do you want to quit?");
 
 	if (g_IsNetworked && g_IsController)
 		subject += "\n" + translate("Leaving will disconnect all other players.");
@@ -875,6 +905,13 @@ function updateGroups()
 {
 	g_Groups.update();
 
+	// Determine the sum of the costs of a given template
+	let getCostSum = (template) =>
+	{
+		let cost = GetTemplateData(template).cost;
+		return cost ? Object.keys(cost).map(key => cost[key]).reduce((sum, cur) => sum + cur) : 0;
+	};
+
 	for (let i in Engine.GetGUIObjectByName("unitGroupPanel").children)
 	{
 		Engine.GetGUIObjectByName("unitGroupLabel[" + i + "]").caption = i;
@@ -884,6 +921,20 @@ function updateGroups()
 		button.onpress = (function(i) { return function() { performGroup((Engine.HotkeyIsPressed("selection.add") ? "add" : "select"), i); }; })(i);
 		button.ondoublepress = (function(i) { return function() { performGroup("snap", i); }; })(i);
 		button.onpressright = (function(i) { return function() { performGroup("breakUp", i); }; })(i);
+
+		// Chose icon of the most common template (or the most costly if it's not unique)
+		if (g_Groups.groups[i].getTotalCount() > 0)
+		{
+			let icon = GetTemplateData(g_Groups.groups[i].getEntsGrouped().reduce((pre, cur) => {
+				if (pre.ents.length == cur.ents.length)
+					return getCostSum(pre.template) > getCostSum(cur.template) ? pre : cur;
+				return pre.ents.length > cur.ents.length ? pre : cur;
+			}).template).icon;
+
+			Engine.GetGUIObjectByName("unitGroupIcon[" + i + "]").sprite =
+				icon ? ("stretched:session/portraits/" + icon) : "groupsIcon";
+		}
+
 		setPanelObjectPosition(button, i, 1);
 	}
 }
@@ -1138,6 +1189,7 @@ function reportGame()
 		"Cavalry",
 		"Champion",
 		"Hero",
+		"Siege",
 		"Ship",
 		"Trader"
 	];

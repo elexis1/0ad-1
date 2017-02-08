@@ -6,12 +6,13 @@
 	<script file="gui/common/color.js" />
 	<script file="gui/common/functions_civinfo.js" />
 	<script file="gui/common/functions_utility.js" />
+	<script file="gui/common/gamedescription.js"/>
 	<script file="gui/common/settings.js" />
 
 	<!-- Used to display message boxes. -->
 	<script file="gui/common/functions_global_object.js" />
 
-	<!-- Used for engine + mod version checks. -->
+	<!-- Used for engine + mod version checks and deleteTooltip. -->
 	<script file="gui/common/functions_utility_loadsave.js" />
 
 	<!-- Actual replay scripts after settings.js, as it initializes g_Settings. -->

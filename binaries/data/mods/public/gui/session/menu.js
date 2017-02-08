@@ -35,6 +35,7 @@ var g_IsMenuOpen = false;
 
 var g_IsDiplomacyOpen = false;
 var g_IsTradeOpen = false;
+var g_IsObjectivesOpen = false;
 
 // Redefined every time someone makes a tribute (so we can save some data in a closure). Called in input.js handleInputBeforeGui.
 var g_FlushTributing = function() {};
@@ -218,6 +219,8 @@ function openChat(teamChat = false)
 
 	Engine.GetGUIObjectByName("chatInput").focus();
 	Engine.GetGUIObjectByName("chatDialogPanel").hidden = false;
+
+	updateChatHistory();
 }
 
 function closeChat()
@@ -225,6 +228,70 @@ function closeChat()
 	Engine.GetGUIObjectByName("chatInput").caption = "";
 	Engine.GetGUIObjectByName("chatInput").blur(); // Remove focus
 	Engine.GetGUIObjectByName("chatDialogPanel").hidden = true;
+}
+
+function initChatWindow()
+{
+	let filters = prepareForDropdown(g_ChatHistoryFilters);
+	let chatHistoryFilter = Engine.GetGUIObjectByName("chatHistoryFilter");
+	chatHistoryFilter.list = filters.text;
+	chatHistoryFilter.list_data = filters.key;
+	chatHistoryFilter.selected = 0;
+
+	Engine.GetGUIObjectByName("extendedChat").checked =
+		Engine.ConfigDB_GetValue("user", "chat.session.extended") == "true";
+
+	resizeChatWindow();
+}
+
+function resizeChatWindow()
+{
+	// Hide/show the panel
+	let chatHistoryPage = Engine.GetGUIObjectByName("chatHistoryPage");
+	let extended = Engine.GetGUIObjectByName("extendedChat").checked;
+	chatHistoryPage.hidden = !extended;
+
+	// Resize the window
+	let chatDialogPanel = Engine.GetGUIObjectByName("chatDialogPanel");
+	let chatPage = Engine.GetGUIObjectByName("chatPage");
+	let panelSize = chatDialogPanel.size;
+	let topOffset = 80;
+	let height = -chatPage.size.top + (extended ? chatHistoryPage.size.bottom : 0);
+	panelSize.top = -height / 2 - topOffset;
+	panelSize.bottom = height / 2 - topOffset;
+	chatDialogPanel.size = panelSize;
+}
+
+function updateChatHistory()
+{
+	if (Engine.GetGUIObjectByName("chatDialogPanel").hidden ||
+	    !Engine.GetGUIObjectByName("extendedChat").checked)
+		return;
+
+	let chatHistoryFilter = Engine.GetGUIObjectByName("chatHistoryFilter");
+	let selected = chatHistoryFilter.list_data[chatHistoryFilter.selected];
+
+	Engine.GetGUIObjectByName("chatHistory").caption =
+		g_ChatHistory.filter(msg => msg.filter[selected]).map(msg =>
+			Engine.ConfigDB_GetValue("user", "chat.timestamp") == "true" ?
+				sprintf(translate("%(time)s %(message)s"), {
+					"time": msg.timePrefix,
+					"message": msg.txt
+				}) :
+				msg.txt
+		).join("\n");
+}
+
+function onToggleChatWindowExtended()
+{
+	// Save user preference
+	let extended = Engine.GetGUIObjectByName("extendedChat").checked.toString();
+	Engine.ConfigDB_CreateValue("user", "chat.session.extended", extended);
+	Engine.ConfigDB_WriteValueToFile("user", "chat.session.extended", extended, "config/user.cfg");
+
+	resizeChatWindow();
+
+	Engine.GetGUIObjectByName("chatInput").focus();
 }
 
 function openDiplomacy()
@@ -610,6 +677,45 @@ function toggleGameSpeed()
 	let gameSpeed = Engine.GetGUIObjectByName("gameSpeed");
 	gameSpeed.hidden = !gameSpeed.hidden;
 }
+
+function toggleObjectives()
+{
+	let open = g_IsObjectivesOpen;
+	closeOpenDialogs();
+
+	if (!open)
+		openObjectives();
+}
+
+function openObjectives()
+{
+	g_IsObjectivesOpen = true;
+
+	let player = g_Players[Engine.GetPlayerID()];
+	let playerState = player && player.state;
+	let isActive = !playerState || playerState == "active";
+
+	Engine.GetGUIObjectByName("gameDescriptionText").caption = getGameDescription(true);
+
+	let objectivesPlayerstate = Engine.GetGUIObjectByName("objectivesPlayerstate");
+	objectivesPlayerstate.hidden = isActive;
+	objectivesPlayerstate.caption = g_PlayerStateMessages[playerState] || "";
+
+	let gameDescription = Engine.GetGUIObjectByName("gameDescription");
+	let gameDescriptionSize = gameDescription.size;
+	gameDescriptionSize.top = Engine.GetGUIObjectByName(
+		isActive ? "objectivesTitle" : "objectivesPlayerstate").size.bottom;
+	gameDescription.size = gameDescriptionSize;
+
+	Engine.GetGUIObjectByName("objectivesPanel").hidden = false;
+}
+
+function closeObjectives()
+{
+	g_IsObjectivesOpen = false;
+	Engine.GetGUIObjectByName("objectivesPanel").hidden = true;
+}
+
 /**
  * Allows players to see their own summary.
  * If they have shared ally vision researched, they are able to see the summary of there allies too.
@@ -766,6 +872,7 @@ function closeOpenDialogs()
 	closeChat();
 	closeDiplomacy();
 	closeTrade();
+	closeObjectives();
 }
 
 function formatTributeTooltip(playerID, resource, amount)

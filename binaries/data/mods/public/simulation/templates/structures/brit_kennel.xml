@@ -11,7 +11,6 @@
     </Foundation>
   </Armour>
   <Cost>
-    <PopulationBonus>0</PopulationBonus>
     <BuildTime>50</BuildTime>
     <Resources>
       <wood>50</wood>
@@ -22,7 +21,9 @@
     <Square width="8.0" depth="7.0"/>
     <Height>5.0</Height>
   </Footprint>
-  <GarrisonHolder disable=""/>
+  <GarrisonHolder>
+    <List>Dog</List>
+  </GarrisonHolder>
   <Health>
     <Max>500</Max>
     <SpawnEntityOnDeath>rubble/rubble_2x2</SpawnEntityOnDeath>
@@ -32,10 +33,14 @@
     <GenericName>Special Building</GenericName>
     <SpecificName>Kennel</SpecificName>
     <Classes datatype="tokens">Kennel</Classes>
+    <VisibleClasses datatype="tokens">-City Town</VisibleClasses>
     <Tooltip>Train Celtic war dogs.</Tooltip>
     <Icon>structures/kennel.png</Icon>
     <RequiredTechnology>phase_town</RequiredTechnology>
   </Identity>
+  <Loot>
+    <stone>10</stone>
+  </Loot>
   <Obstruction>
     <Static width="7.5" depth="6.75"/>
   </Obstruction>

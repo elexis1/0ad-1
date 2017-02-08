@@ -10,6 +10,7 @@
 # Erik Johansson <erik@feneur.com>, 2013,2015
 # Jacob Carlsson <yejcob@gmail.com>, 2015
 # Jonatan Nyberg <jonatan@autistici.org>, 2016
+# Kristoffer Grundström <kristoffer.grundstrom1983@gmail.com>, 2016
 # liothe <lucy@liothe.se>, 2013
 # magicae, 2014
 # pilino1234 <mhilgendrf@aol.com>, 2016
@@ -21,8 +22,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-03-19 09:25+0100\n"
-"PO-Revision-Date: 2016-06-28 18:11+0000\n"
+"POT-Creation-Date: 2016-09-30 09:00+0200\n"
+"PO-Revision-Date: 2016-10-01 14:30+0000\n"
 "Last-Translator: pilino1234 <mhilgendrf@aol.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/wildfire-games/0ad/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +39,7 @@ msgstr "Athenare"
 
 #: simulation/data/civs/athen.jsonCivBonuses[0].Description
 msgid "Metal mining gathering rates increased by +10% for each passing age."
-msgstr "Metallutvinningens insamlingsfrekvens ökar med +10% för varje ålder."
+msgstr "Metallutvinningens insamlingstakt ökar med +10% för varje ålder."
 
 #: simulation/data/civs/athen.jsonCivBonuses[0].Name
 msgid "Silver Owls"
@@ -486,7 +487,7 @@ msgid ""
 "agreed upon a will with his wife and subordinates; his daughters would "
 "inherit the physical running of the territory, under Boudicca's stewardship "
 "until they were adults, and the Emperor of Rome would have overlordship, "
-"collecting taxes and being allowed to request military aide. Much the same "
+"collecting taxes and being allowed to request military aid. Much the same "
 "situation as he already held. The problem lay in that the Romans did not "
 "recognize female heirs, and thus asserted, upon Prasutagus's death, that "
 "only the Emperor's claim to the kingdom of Icenia was valid. They further "
@@ -1075,7 +1076,7 @@ msgstr ""
 
 #: simulation/data/civs/iber.jsonFactions[0].Heroes[2].History
 msgid ""
-"Indibil was king of the Ilegetes, a large federation ranged principally "
+"Indibil was king of the Ilergetes, a large federation ranged principally "
 "along the Ebro River in the northwest of the Iberian Peninsula. During the "
 "Barcid expansion, from 212 B.C. he had initially been talked into allying "
 "himself with the Carthaginians who had taken control of a lot of territory "
@@ -1414,7 +1415,7 @@ msgstr ""
 
 #: simulation/data/civs/maur.jsonCivBonuses[1].Description
 msgid "The Mauryans enjoy access to 4 champions."
-msgstr "Mauryarna har tillgång till 4 mästare."
+msgstr "Mauryer har tillgång till 4 mästare."
 
 #: simulation/data/civs/maur.jsonCivBonuses[1].Name
 msgid "Kṣhatriya Warrior Caste."
@@ -1576,7 +1577,7 @@ msgstr ""
 
 #: simulation/data/civs/pers.jsonCivBonuses[0].Name
 msgid "Corral Camels and Horses"
-msgstr ""
+msgstr "Korall-kameler och hästar"
 
 #: simulation/data/civs/pers.jsonCivBonuses[0].History
 msgid ""
@@ -2637,7 +2638,7 @@ msgstr ""
 
 #: simulation/data/civs/spart.jsonFactions[0].Technologies[0].Name
 msgid "Feminine Mystique"
-msgstr ""
+msgstr "Kvinnlig mystik"
 
 #: simulation/data/civs/spart.jsonFactions[0].Technologies[0].History
 msgid ""

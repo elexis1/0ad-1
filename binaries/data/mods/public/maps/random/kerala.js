@@ -22,7 +22,6 @@ const oMetalLarge = "gaia/geology_metal_tropic_slabs";
 const oFish = "gaia/fauna_fish";
 const oDeer = "gaia/fauna_deer";
 const oSheep = "gaia/fauna_tiger";
-const oChicken = "gaia/fauna_chicken";
 const oBush = "gaia/flora_bush_berry";
 
 // decorative props
@@ -77,7 +76,7 @@ var playerPos = new Array(numPlayers);
 for (var i = 0; i < numPlayers; i++)
 {
 	playerPos[i] = (i + 1) / (numPlayers + 1);
-	playerX[i] = 0.45 + 0.2*(i%2)
+	playerX[i] = 0.45 + 0.2*(i%2);
 	playerZ[i] = playerPos[i];
 }
 
@@ -85,12 +84,12 @@ for (var i = 0; i < numPlayers; i++)
 {
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-	
+
 	// some constants
 	var radius = scaleByMapSize(15,25);
 	var cliffRadius = 2;
 	var elevation = 20;
-	
+
 	// get the x and z in tiles
 	var fx = fractionToTiles(playerX[i]);
 	var fz = fractionToTiles(playerZ[i]);
@@ -101,41 +100,29 @@ for (var i = 0; i < numPlayers; i++)
 	addToClass(ix, iz+5, clPlayer);
 	addToClass(ix-5, iz, clPlayer);
 	addToClass(ix, iz-5, clPlayer);
-	
+
 	// create the city patch
 	var cityRadius = radius/3;
 	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
-	
+
 	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
-	
-		// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 7;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(oChicken, 5,5, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
-	
+
+		placeDefaultChicken(fx, fz, clBaseResource);
+
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
 	var bbX = round(fx + bbDist * cos(bbAngle));
 	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(oBush, 5,5, 0,3)],
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create metal mine
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
@@ -154,7 +141,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create stone mines
 	mAngle += randFloat(PI/8, PI/4);
 	mX = round(fx + mDist * cos(mAngle));
@@ -176,7 +163,7 @@ for (var i = 0; i < numPlayers; i++)
 		false, clBaseResource, tX, tZ
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-	
+
 }
 
 RMS.SetProgress(15);
@@ -203,9 +190,7 @@ for (var ix = 0; ix < mapSize; ix++)
 			}
 		}
 		else if (ix > 0.69 * mapSize)
-		{
-			addToClass(ix, iz, clMountains)
-		}
+			addToClass(ix, iz, clMountains);
 	}
 }
 
@@ -221,7 +206,7 @@ for (var i = 0; i < scaleByMapSize(20,120); i++)
 	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 3, 3);
 	createArea(
 		placer,
-		[terrainPainter, elevationPainter, unPaintClass(clWater)], 
+		[terrainPainter, elevationPainter, unPaintClass(clWater)],
 		null
 	);
 }
@@ -229,7 +214,7 @@ for (var i = 0; i < scaleByMapSize(20,120); i++)
 paintTerrainBasedOnHeight(-6, 1, 1, tWater);
 paintTerrainBasedOnHeight(1, 2.8, 1, tShoreBlend);
 paintTerrainBasedOnHeight(0, 1, 1, tShore);
-paintTileClassBasedOnHeight(-6, 0.5, 1, clWater)
+paintTileClassBasedOnHeight(-6, 0.5, 1, clWater);
 
 RMS.SetProgress(45);
 
@@ -243,7 +228,7 @@ var terrainPainter = new LayeredPainter(
 var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 25, 3);
 createAreas(
 	placer,
-	[terrainPainter, elevationPainter, paintClass(clHill)], 
+	[terrainPainter, elevationPainter, paintClass(clHill)],
 	[avoidClasses(clPlayer, 20, clHill, 5, clWater, 2, clBaseResource, 2), stayClasses(clMountains, 0)],
 	scaleByMapSize(5, 40) * numPlayers
 );
@@ -279,7 +264,7 @@ for (var i = 0; i < types.length; ++i)
 		);
 	createAreas(
 		placer,
-		[painter, paintClass(clForest)], 
+		[painter, paintClass(clForest)],
 		avoidClasses(clPlayer, 20, clForest, 10, clHill, 0, clWater, 8),
 		num
 	);
@@ -466,7 +451,7 @@ createObjectGroups(group, 0,
 	25 * numPlayers, 60
 );
 
-setSunColor(0.6, 0.6, 0.6);	
+setSunColor(0.6, 0.6, 0.6);
 setSunElevation(PI/ 3);
 
 setWaterColor(0.524,0.734,0.839);

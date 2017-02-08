@@ -14,7 +14,6 @@ const tWater = "savanna_riparian_wet";
 // gaia entities
 const oBaobab = "gaia/flora_tree_baobab";
 const oBerryBush = "gaia/flora_bush_berry";
-const oChicken = "gaia/fauna_chicken";
 const oGazelle = "gaia/fauna_gazelle";
 const oGiraffe = "gaia/fauna_giraffe";
 const oGiraffeInfant = "gaia/fauna_giraffe_infant";
@@ -37,17 +36,17 @@ function placeStoneMineFormation(x, z)
 	var placer = new ChainPlacer(1, 2, 2, 1, x, z, undefined, [5]);
 	var painter = new TerrainPainter(tDirt4);
 	createArea(placer, painter, null);
-	
+
 	var bbAngle = randFloat(0, TWO_PI);
 	const bbDist = 2.5;
-	
+
 	for (var i = 0; i < 8; ++i)
 	{
 		var bbX = round(x + (bbDist + randFloat(0,1)) * cos(bbAngle));
 		var bbZ = round(z + (bbDist + randFloat(0,1)) * sin(bbAngle));
-		
-		placeObject(bbX, bbZ, oStoneSmall, 0, randFloat(0, TWO_PI)); 
-	
+
+		placeObject(bbX, bbZ, oStoneSmall, 0, randFloat(0, TWO_PI));
+
 		bbAngle += PI12;
 	}
 }
@@ -99,12 +98,12 @@ for (var i = 0; i < numPlayers; i++)
 {
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-	
+
 	// some constants
 	var radius = scaleByMapSize(15,25);
 	var cliffRadius = 2;
 	var elevation = 20;
-	
+
 	// get the x and z in tiles
 	var fx = fractionToTiles(playerX[i]);
 	var fz = fractionToTiles(playerZ[i]);
@@ -115,35 +114,23 @@ for (var i = 0; i < numPlayers; i++)
 	addToClass(ix, iz+5, clPlayer);
 	addToClass(ix-5, iz, clPlayer);
 	addToClass(ix, iz-5, clPlayer);
-	
+
 	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
-	
-	// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 7;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(oChicken, 5,5, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
-	
+
+	placeDefaultChicken(fx, fz, clBaseResource);
+
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
 	var bbX = round(fx + bbDist * cos(bbAngle));
 	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(oBerryBush, 5,5, 0,3)],
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create metal mine
 	var mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
@@ -158,7 +145,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create stone mines
 	mAngle += randFloat(PI/8, PI/4);
 	mX = round(fx + mDist * cos(mAngle));
@@ -170,7 +157,7 @@ for (var i = 0; i < numPlayers; i++)
 	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 	var painter = new TerrainPainter(tCityTiles);
 	createArea(placer, painter, null);
-	
+
 	var hillSize = PI * radius * radius;
 	// create starting trees
 	var num = floor(hillSize / 300);
@@ -183,7 +170,7 @@ for (var i = 0; i < numPlayers; i++)
 		false, clBaseResource, tX, tZ
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-	
+
 }
 
 RMS.SetProgress(20);

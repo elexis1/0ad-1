@@ -60,10 +60,10 @@ function getDisconnectReason(id, wasConnected)
 	{
 	case 0: return wasConnected ?
 		translateWithContext("network disconnect", "Unknown reason") :
-		translate("This is often caused by UDP port 20595 not being forwarded on the host side, by a firewall or anti-virus software");
+		translate("This is often caused by UDP port 20595 not being forwarded on the host side, by a firewall, or anti-virus software");
 	case 1: return translate("The host has ended the game");
 	case 2: return translate("Incorrect network protocol version");
-	case 3: return translate("Game is loading, please try later");
+	case 3: return translate("Game is loading, please try again later");
 	case 4: return translate("Game has already started, no observers allowed");
 	case 5: return translate("You have been kicked");
 	case 6: return translate("You have been banned");
@@ -136,8 +136,11 @@ function getUsernameList()
 {
 	let usernames = sortGUIDsByPlayerID().map(guid => colorizePlayernameByGUID(guid));
 
-	return sprintf(translate("Users: %(users)s"),
-		{ "users": usernames.join(translate(", ")) });
+	// Translation: Number of currently connected players/observers and their names
+	return sprintf(translate("Users (%(num)s): %(users)s"), {
+		"users": usernames.join(translate(", ")),
+		"num": usernames.length
+	});
 }
 
 /**

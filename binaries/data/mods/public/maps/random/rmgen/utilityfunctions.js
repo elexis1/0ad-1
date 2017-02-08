@@ -1,4 +1,4 @@
-var g_numStragglerTrees = 0
+var g_numStragglerTrees = 0;
 
 function createBumps(constraint, count, minsize, maxsize, spread, failfraction, elevation)
 {
@@ -10,12 +10,12 @@ function createBumps(constraint, count, minsize, maxsize, spread, failfraction, 
 	failfraction = (failfraction !== undefined ? failfraction : 0);
 	elevation = (elevation !== undefined ? elevation : 2);
 	count = (count !== undefined ? count : scaleByMapSize(100, 200));
-	
+
 	var placer = new ChainPlacer(minsize, maxsize, spread, failfraction);
 	var painter = new SmoothElevationPainter(ELEVATION_MODIFY, elevation, 2);
 	createAreas(
 		placer,
-		painter, 
+		painter,
 		constraint,
 		count
 	);
@@ -24,7 +24,7 @@ function createBumps(constraint, count, minsize, maxsize, spread, failfraction, 
 function createHills(terrainset, constraint, tileclass, count, minsize, maxsize, spread, failfraction, elevation, elevationsmooth)
 {
 	log("Creating hills...");
-	
+
 	tileclass = (tileclass !== undefined ? tileclass : clHill);
 	constraint = (constraint !== undefined ? constraint : avoidClasses(clPlayer, 20, clHill, 15));
 	count = (count !== undefined ? count : scaleByMapSize(1, 4) * getNumPlayers());
@@ -34,7 +34,7 @@ function createHills(terrainset, constraint, tileclass, count, minsize, maxsize,
 	failfraction = (failfraction !== undefined ? failfraction : 0.5);
 	elevation = (elevation !== undefined ? elevation : 18);
 	elevationsmooth = (elevationsmooth !== undefined ? elevationsmooth : 2);
-	
+
 	var placer = new ChainPlacer(minsize, maxsize, spread, failfraction);
 	var terrainPainter = new LayeredPainter(
 		terrainset,		// terrains
@@ -43,7 +43,7 @@ function createHills(terrainset, constraint, tileclass, count, minsize, maxsize,
 	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, elevation, elevationsmooth);
 	createAreas(
 		placer,
-		[terrainPainter, elevationPainter, paintClass(clHill)], 
+		[terrainPainter, elevationPainter, paintClass(clHill)],
 		constraint,
 		count
 	);
@@ -52,19 +52,17 @@ function createHills(terrainset, constraint, tileclass, count, minsize, maxsize,
 function createMountains(terrain, constraint, tileclass, count, maxHeight, minRadius, maxRadius, numCircles)
 {
 	log("Creating mountains...");
-	
-	tileclass = (tileclass !== undefined ? tileclass : clHill);
-	constraint = (constraint !== undefined ? constraint : avoidClasses(clPlayer, 20, clHill, 15));
-	count = (count !== undefined ? count : scaleByMapSize(1, 4) * getNumPlayers());
-	maxHeight = (maxHeight !== undefined ? maxHeight : floor(scaleByMapSize(30, 50)));
-	minRadius = (minRadius !== undefined ? minRadius : floor(scaleByMapSize(3, 4)));
-	maxRadius = (maxRadius !== undefined ? maxRadius : floor(scaleByMapSize(6, 12)));
-	numCircles = (numCircles !== undefined ? numCircles : floor(scaleByMapSize(4, 10)));
-	
-	var numHills = count
+
+	tileclass = tileclass !== undefined ? tileclass : clHill;
+	constraint = constraint !== undefined ? constraint : avoidClasses(clPlayer, 20, clHill, 15);
+	count = count !== undefined ? count : scaleByMapSize(1, 4) * getNumPlayers();
+	maxHeight = maxHeight !== undefined ? maxHeight : floor(scaleByMapSize(30, 50));
+	minRadius = minRadius !== undefined ? minRadius : floor(scaleByMapSize(3, 4));
+	maxRadius = maxRadius !== undefined ? maxRadius : floor(scaleByMapSize(6, 12));
+	numCircles = numCircles !== undefined ? numCircles : floor(scaleByMapSize(4, 10));
+
+	var numHills = count;
 	for (var i = 0; i < numHills; ++i)
-	{
-		
 		createMountain(
 			maxHeight,
 			minRadius,
@@ -77,7 +75,6 @@ function createMountains(terrain, constraint, tileclass, count, maxHeight, minRa
 			tileclass,
 			14
 		);
-	}
 }
 
 function createForests(terrainset, constraint, tileclass, numMultiplier, biomeID)
@@ -88,12 +85,8 @@ function createForests(terrainset, constraint, tileclass, numMultiplier, biomeID
 	constraint = (constraint !== undefined ? constraint : avoidClasses(clPlayer, 20, clForest, 17, clHill, 0));
 	numMultiplier = (numMultiplier !== undefined ? numMultiplier : 1.0);
 	biomeID = (biomeID !== undefined ? biomeID : 0);
-	
-	var tM = terrainset[0]
-	var tFF1 = terrainset[1]
-	var tFF2 = terrainset[2]
-	var tF1 = terrainset[3]
-	var tF2 = terrainset[4]
+
+	var [tM, tFF1, tFF2, tF1, tF2] = terrainset;
 
 	if (biomeID == g_BiomeSavanna)
 	{
@@ -117,7 +110,6 @@ function createForests(terrainset, constraint, tileclass, numMultiplier, biomeID
 	var numForest = totalTrees * P_FOREST;
 	g_numStragglerTrees = totalTrees * (1.0 - P_FOREST);
 
-	// create forests
 	log("Creating forests...");
 	var types = [
 		[[tFF2, tM, tF1], [tFF2, tF1]],
@@ -137,7 +129,7 @@ function createForests(terrainset, constraint, tileclass, numMultiplier, biomeID
 				);
 			createAreas(
 				placer,
-				[painter, paintClass(tileclass)], 
+				[painter, paintClass(tileclass)],
 				constraint,
 				num
 			);
@@ -178,7 +170,7 @@ function createPatches(sizes, terrain, constraint, count,  tileclass, failfracti
 	for (var i = 0; i < sizes.length; i++)
 	{
 		var placer = new ChainPlacer(1, floor(scaleByMapSize(3, 5)), sizes[i], failfraction);
-		var painter = new TerrainPainter(terrain)
+		var painter = new TerrainPainter(terrain);
 		createAreas(
 			placer,
 			[painter, paintClass(tileclass)],
@@ -244,9 +236,12 @@ function createStragglerTrees(types, constraint, tileclass)
 {
 	log("Creating straggler trees...");
 
-	constraint = (constraint !== undefined ? constraint : avoidClasses(clForest, 8, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1));
-	tileclass = (tileclass !== undefined ? tileclass : clForest);
-	
+	constraint = constraint !== undefined ?
+		constraint :
+		avoidClasses(clForest, 8, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1);
+
+	tileclass = tileclass !== undefined ? tileclass : clForest;
+
 	var num = floor(g_numStragglerTrees / types.length);
 	for (var i = 0; i < types.length; ++i)
 	{

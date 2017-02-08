@@ -242,7 +242,7 @@ Attack.prototype.CanAttack = function(target)
 		if (!restrictedClasses.length)
 			return true;
 
-		if (targetClasses.every(c => restrictedClasses.indexOf(c) == -1))
+		if (!MatchesClassList(targetClasses, restrictedClasses))
 			return true;
 	}
 
@@ -545,10 +545,11 @@ Attack.prototype.PerformAttack = function(type, target)
 		};
 		if (this.template.Ranged.Splash)
 		{
-			data.friendlyFire = this.template.Ranged.Splash.FriendlyFire;
+			data.friendlyFire = this.template.Ranged.Splash.FriendlyFire != "false";
 			data.radius = +this.template.Ranged.Splash.Range;
 			data.shape = this.template.Ranged.Splash.Shape;
 			data.isSplash = true;
+			data.splashStrengths = this.GetAttackStrengths(type+".Splash");
 		}
 		cmpTimer.SetTimeout(SYSTEM_ENTITY, IID_Damage, "MissileHit", timeToTarget * 1000, data);
 	}

@@ -208,6 +208,52 @@ var unitActions =
 		"specificness": 10,
 	},
 
+	"patrol":
+	{
+		"execute": function(target, action, selection, queued)
+		{
+			Engine.PostNetworkCommand({
+				"type": "patrol",
+				"entities": selection,
+				"x": target.x,
+				"z": target.z,
+				"target": action.target,
+				"targetClasses": { "attack": ["Unit"] }, // patrol should only attack units
+				"queued": queued,
+				"allowCapture": false
+			});
+			Engine.GuiInterfaceCall("PlaySound", { "name": "order_patrol", "entity": selection[0] });
+			return true;
+		},
+		"getActionInfo": function(entState, targetState)
+		{
+			return { "possible": true };
+		},
+		"hotkeyActionCheck": function(target, selection)
+		{
+			if (!someUnitAI(selection) ||
+			    !Engine.HotkeyIsPressed("session.patrol") ||
+			    !getActionInfo("patrol", target).possible)
+				return false;
+			return {
+				"type": "patrol",
+				"cursor": "action-patrol",
+				"target": target
+			};
+		},
+		"preSelectedActionCheck" : function(target)
+		{
+			if (preSelectedAction != ACTION_PATROL || !getActionInfo("patrol", target).possible)
+				return false;
+			return {
+				"type": "patrol",
+				"cursor": "action-patrol",
+				"target": target
+			};
+		},
+		"specificness": 37,
+	},
+
 	"heal":
 	{
 		"execute": function(target, action, selection, queued)
@@ -1071,7 +1117,7 @@ var g_EntityCommands =
 
 			return {
 				"tooltip": colorizeHotkey("%(hotkey)s" + " ", "session.garrison") +
-				           translate("Order the selected units to garrison a building or unit."),
+				           translate("Order the selected units to garrison in a building or unit."),
 				"icon": "garrison.png"
 			};
 		},
@@ -1154,7 +1200,8 @@ var g_EntityCommands =
 				return false;
 
 			return {
-				"tooltip": translate("Back to Work"),
+				"tooltip": colorizeHotkey("%(hotkey)s" + " ", "session.backtowork") +
+				           translate("Back to Work"),
 				"icon": "production.png"
 			};
 		},
@@ -1215,6 +1262,25 @@ var g_EntityCommands =
 		"execute": function(entState)
 		{
 			toggleTrade();
+		},
+	},
+
+	"patrol": {
+		"getInfo": function(entState)
+		{
+			if (g_Selection.toList().every(ent => !GetEntityState(ent).unitAI))
+				return false;
+			return {
+				"tooltip": colorizeHotkey("%(hotkey)s" + " ", "session.patrol") +
+				           translate("Patrol") + "\n" +
+				           translate("Attack all encountered enemy units while avoiding buildings."),
+				"icon": "patrol.png"
+			};
+		},
+		"execute": function(entState)
+		{
+			inputState = INPUT_PRESELECTEDACTION;
+			preSelectedAction = ACTION_PATROL;
 		},
 	},
 

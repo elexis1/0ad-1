@@ -10,17 +10,11 @@
       <Hack>0.0</Hack>
       <Pierce>6.0</Pierce>
       <Crush>0.0</Crush>
-      <MaxRange>60.0</MaxRange>
+      <MaxRange>66.0</MaxRange>
       <MinRange>4.0</MinRange>
+      <ElevationBonus>9.0</ElevationBonus>
     </Ranged>
   </Attack>
-  <BuildRestrictions>
-    <Category>DefenseTower</Category>
-    <Distance>
-      <FromClass>DefenseTower</FromClass>
-      <MinDistance>40</MinDistance>
-    </Distance>
-  </BuildRestrictions>
   <Capturable>
     <CapturePoints>800</CapturePoints>
   </Capturable>
@@ -42,13 +36,17 @@
     <Max>250</Max>
   </Health>
   <Identity>
-    <SpecificName>Wooden Tower</SpecificName>
-    <GenericName>Wooden Tower</GenericName>
-    <Icon>structures/palisade_fort.png</Icon>
+    <SpecificName>Sentry Tower</SpecificName>
+    <GenericName>Sentry Tower</GenericName>
+    <Icon>structures/sentry_tower.png</Icon>
     <Classes datatype="tokens">WoodenTower</Classes>
     <VisibleClasses datatype="tokens">Village -Town</VisibleClasses>
     <RequiredTechnology>phase_village</RequiredTechnology>
   </Identity>
+  <Loot>
+    <wood>20</wood>
+    <stone>0</stone>
+  </Loot>
   <Obstruction>
     <Static width="9.0" depth="7.5"/>
   </Obstruction>
@@ -63,7 +61,21 @@
   <StatusBars>
     <HeightOffset>18.0</HeightOffset>
   </StatusBars>
-  <TerritoryInfluence disable=""/>
+  <TerritoryInfluence>
+    <Radius op="mul">0.5</Radius>
+  </TerritoryInfluence>
+  <Upgrade>
+    <Tower>
+      <Entity>structures/{civ}_defense_tower</Entity>
+      <Tooltip>Reinforce with stone and upgrade to a defense tower.</Tooltip>
+      <RequiredTechnology>phase_town</RequiredTechnology>
+      <Cost>
+        <wood>50</wood>
+        <stone>100</stone>
+      </Cost>
+      <Time>100</Time>
+    </Tower>
+  </Upgrade>
   <VisualActor>
     <Actor>props/special/palisade_rocks_fort.xml</Actor>
   </VisualActor>

@@ -9,11 +9,6 @@ const g_MapSizes = prepareForDropdown(g_Settings && g_Settings.MapSizes);
 const g_MapTypes = prepareForDropdown(g_Settings && g_Settings.MapTypes);
 
 /**
- * Whether or not to display timestamps in the chat window.
- */
-const g_ShowTimestamp = Engine.ConfigDB_GetValue("user", "lobby.chattimestamp") == "true";
-
-/**
  * Mute clients who exceed the rate of 1 message per second for this time
  */
 const g_SpamBlockTimeframe = 5;
@@ -235,6 +230,8 @@ function init(attribs)
 	Engine.LobbyClearPresenceUpdates();
 	updatePlayerList();
 	updateSubject(Engine.LobbyGetRoomSubject());
+
+	Engine.GetGUIObjectByName("chatInput").tooltip = colorizeAutocompleteHotkey();
 }
 
 function returnToMainMenu()
@@ -639,6 +636,7 @@ function updateGameSelection()
 	sgGameStartTime.hidden = !game.startTime;
 	if (game.startTime)
 		sgGameStartTime.caption = sprintf(
+			// Translation: %(time)s is the hour and minute here.
 			translate("Game started at %(time)s"), {
 				"time": Engine.FormatMillisecondsIntoDateString(+game.startTime*1000, translate("HH:mm"))
 			});
@@ -1002,7 +1000,7 @@ function ircFormat(msg)
 	}
 
 	// Add chat message timestamp
-	if (!g_ShowTimestamp)
+	if (Engine.ConfigDB_GetValue("user", "chat.timestamp") != "true")
 		return formattedMessage;
 
 	let time;

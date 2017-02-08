@@ -225,8 +225,8 @@ function loadVictoryConditions()
 	// Until then, we supplement the endless gametype here.
 	victoryConditions.push({
 		"Name": "endless",
-		"Title": translate("None"),
-		"Description": translate("Endless Game"),
+		"Title": translateWithContext("victory condition", "None"),
+		"Description": translate("Endless game."),
 		"Scripts": []
 	});
 

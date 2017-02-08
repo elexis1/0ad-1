@@ -7,7 +7,7 @@
 # Henrik Mattsson-Mårn <h@reglage.net>, 2016
 # Jacob Carlsson <yejcob@gmail.com>, 2015
 # Jonatan Nyberg <jonatan@autistici.org>, 2016
-# Kristoffer Grundström <kristoffer.grundstrom1983@gmail.com>, 2015
+# Kristoffer Grundström <kristoffer.grundstrom1983@gmail.com>, 2015-2016
 # Marco tom Suden, 2014
 # Marco tom Suden, 2014
 # pilino1234 <mhilgendrf@aol.com>, 2016
@@ -18,9 +18,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-12 09:01+0200\n"
-"PO-Revision-Date: 2016-08-12 10:06+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2016-09-30 09:01+0200\n"
+"PO-Revision-Date: 2016-10-19 09:17+0000\n"
+"Last-Translator: pilino1234 <mhilgendrf@aol.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/wildfire-games/0ad/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -397,7 +397,7 @@ msgstr "Khrysaspís"
 msgid ""
 "Only the most celebrated soldiers had shields faced with silver, as did the "
 "famous 'Silver Shields' regiment in Alexander the Great's army."
-msgstr "Endast de berömdaste soldaterna hade sköldar av silver, som det berömda 'silverskölds' regementet i Alexander den Stores armé."
+msgstr "Endast de berömdaste soldaterna hade sköldar av silver, som det berömda 'Silversköldar' regementet i Alexander den Stores armé."
 
 #: simulation/data/technologies/armor_infantryspearmen_pierce_04.jsontooltip
 msgid "Champions +2 Pierce Armor Levels, but also +10 Metal Cost."
@@ -557,7 +557,7 @@ msgstr "+20% attack för distansattack kavalleri"
 
 #: simulation/data/technologies/attack_cavalry_ranged_01.jsongenericName
 msgid "Ranged Combat Cavalry Training"
-msgstr "Distansattack Träning för Stridskavalleri"
+msgstr "Distansattack träning för Stridskavalleri"
 
 #: simulation/data/technologies/attack_cavalry_ranged_02.jsontooltip
 msgid ""
@@ -595,7 +595,7 @@ msgid ""
 "Often, an infantryman would carry a secondary weapon in addition to his "
 "primary weapon of choice, to be drawn when the primary weapon has failed or "
 "been broken."
-msgstr "Ofta bar en infaterist med sig ett sekundärt vapen utöver sitt primära vapen, som skulle dras när det primära vapnet inte funkade eller hade gått sönder."
+msgstr "Ofta bar en infanterist med sig ett sekundärt vapen utöver sitt primära vapen, som skulle dras när det primära vapnet inte funkade eller hade gått sönder."
 
 #: simulation/data/technologies/attack_infantry_melee_01.jsontooltip
 #: simulation/data/technologies/attack_infantry_melee_02.jsontooltip
@@ -731,7 +731,7 @@ msgid "Reinforce the foundations in preparation of an attack."
 msgstr "Förstärk fundamenten i förberedelse för en attack."
 
 #: simulation/data/technologies/attack_tower_defense.jsontooltip
-msgid "Increases armour level of the defense tower by 2 levels."
+msgid "Increases armor level of the defense tower by 2 levels."
 msgstr "Ökar rustningsnivån av försvarstornet med 2 nivåer."
 
 #: simulation/data/technologies/attack_tower_defense.jsongenericName
@@ -921,7 +921,7 @@ msgstr "Fiskenät"
 #: simulation/data/technologies/gather_lumbering_sharpaxes.jsondescription
 #: simulation/data/technologies/gather_lumbering_strongeraxes.jsondescription
 msgid "Increases wood gathering rates for trees."
-msgstr "Ökar träsamlings takt för träd."
+msgstr "Ökar trä samlingstakt för träd."
 
 #: simulation/data/technologies/gather_lumbering_ironaxes.jsontooltip
 #: simulation/data/technologies/gather_lumbering_strongeraxes.jsontooltip
@@ -948,12 +948,12 @@ msgstr "Starkare Yxa"
 #: simulation/data/technologies/gather_mining_servants.jsondescription
 #: simulation/data/technologies/gather_mining_slaves.jsondescription
 msgid "Increases stone gathering rates."
-msgstr "Ökar stensamlings takt."
+msgstr "Ökar sten samlingstakt."
 
 #: simulation/data/technologies/gather_mining_serfs.jsontooltip
 msgid ""
 "Compel serfs to help your workers mine stone. +15% stone gathering rate."
-msgstr "Tvinga livegna att hjälpa dina arbetare i gruvor. +15% stensamlings takt."
+msgstr "Tvinga livegna att hjälpa dina arbetare i gruvor. +15% sten samlingstakt."
 
 #: simulation/data/technologies/gather_mining_serfs.jsongenericName
 msgid "Serfs"
@@ -967,7 +967,7 @@ msgstr "Heílōtes"
 
 #: simulation/data/technologies/gather_mining_servants.jsontooltip
 msgid "Hire servants to help mine stone. +15% stone gathering rate."
-msgstr ""
+msgstr "Anställ tjänare för att hjälpa i gruvorna. +15% sten samlingstakt."
 
 #: simulation/data/technologies/gather_mining_servants.jsongenericName
 msgid "Servants"
@@ -983,11 +983,11 @@ msgstr "Doûloi"
 #: simulation/data/technologies/gather_mining_silvermining.jsondescription
 #: simulation/data/technologies/gather_mining_wedgemallet.jsondescription
 msgid "Increases metal gathering rates."
-msgstr "Öka metallsamlings takt."
+msgstr "Öka metall samlingstakt."
 
 #: simulation/data/technologies/gather_mining_shaftmining.jsontooltip
 msgid "Develop shaft mining. +15% metal gathering rate."
-msgstr "Utveckla schaktgruvor. +15% metallsamlings takt."
+msgstr "Utveckla schaktgruvor. +15% metall samlingstakt."
 
 #: simulation/data/technologies/gather_mining_shaftmining.jsongenericName
 msgid "Shaft Mining"
@@ -1203,11 +1203,11 @@ msgstr "Sidḗreai Aikhmaí"
 
 #: simulation/data/technologies/pair_cav_01.jsongenericName
 msgid "Lance vs. Chamfron"
-msgstr ""
+msgstr "Lance mot Chamfron"
 
 #: simulation/data/technologies/pair_champ_02.jsongenericName
 msgid "Champions vs. Part-timers"
-msgstr ""
+msgstr "Mästare mot Deltidsarbetare"
 
 #: simulation/data/technologies/pair_gather_01.jsongenericName
 msgid "Servants vs. Wedge and Mallet"
@@ -1291,8 +1291,8 @@ msgstr "Avancera från en livlig stad till en veritabel metropol, full av modern
 msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
-msgstr "Avancera till Storstadsfasen, som låser upp mer strukturer och enheter. Territorieradius för samhällscenter ökar med +50% igen. Max hälsa för medborgarsoldater ökad med +20%. Alla strukturer +9 garnisonerad regenereringstakt."
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
+msgstr ""
 
 #: simulation/data/technologies/phase_city.jsongenericName
 #: simulation/data/technologies/phase_city_athen.jsongenericName
@@ -1322,8 +1322,8 @@ msgid ""
 "Advance to City Phase, which unlocks more structures and units. Territory "
 "radius for Civic Centers increased by another +50%. Silver Owls civ bonus "
 "grants an extra +10% metal gather rate to all workers. Citizen soldiers max "
-"health increased by +20%. All structures +9 garrisoned regeneration rate."
-msgstr "Avancera till Storstadsfasen, som låser upp mer strukturer och enheter. Territorieradius för samhällscenter ökar med +50% igen. Silverugglor civilisationsbonusen ger extra +10% metall samlingstakt för alla arbetare. Max hälsa för medborgarsoldater ökad med +20%. Alla strukturer +9 garnisonerad regenereringstakt."
+"health increased by +10%. All structures +9 garrisoned regeneration rate."
+msgstr ""
 
 #: simulation/data/technologies/phase_town.jsondescription
 msgid ""
@@ -1529,11 +1529,11 @@ msgstr "Avancerad Belägring"
 
 #: simulation/data/technologies/siege_bolt_accuracy.jsondescription
 msgid "Improvement to projectile accuracy"
-msgstr "Ökad projektilprecision"
+msgstr "Ökad projektilträffsäkerhet"
 
 #: simulation/data/technologies/siege_bolt_accuracy.jsontooltip
 msgid "Bolt shooter accuracy increased 25%."
-msgstr ""
+msgstr "Pilskjutare träffsäkerhet +25%"
 
 #: simulation/data/technologies/siege_bolt_accuracy.jsongenericName
 msgid "Bolt Accuracy"
@@ -1786,8 +1786,10 @@ msgid ""
 msgstr ""
 
 #: simulation/data/technologies/unlock_shared_los.jsontooltip
-msgid "Player sees what his allies see."
-msgstr "Spelaren ser vad sina allierade ser."
+msgid ""
+"See what your allies see, browse their summary and check their resources and"
+" population count in the top panel."
+msgstr ""
 
 #: simulation/data/technologies/unlock_shared_los.jsongenericName
 msgid "Cartography"

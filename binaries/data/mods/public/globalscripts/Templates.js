@@ -115,6 +115,7 @@ function GetTemplateDataHelper(template, player, auraTemplates)
 					"value": getAttackStat("Value")
 				};
 			else
+			{
 				ret.attack[type] = {
 					"hack": getAttackStat("Hack"),
 					"pierce": getAttackStat("Pierce"),
@@ -123,7 +124,9 @@ function GetTemplateDataHelper(template, player, auraTemplates)
 					"maxRange": getAttackStat("MaxRange"),
 					"elevationBonus": getAttackStat("ElevationBonus")
 				};
-
+				ret.attack[type].elevationAdaptedRange = Math.sqrt(ret.attack[type].maxRange *
+					(2 * ret.attack[type].elevationBonus + ret.attack[type].maxRange));
+			}
 			ret.attack[type].repeatTime = getAttackStat("RepeatTime");
 
 			if (template.Attack[type].Splash)
@@ -234,7 +237,7 @@ function GetTemplateDataHelper(template, player, auraTemplates)
 		};
 
 		if (template.GarrisonHolder.Max)
-			ret.garrisonHolder.max = getEntityValue("GarrisonHolder/Max");
+			ret.garrisonHolder.capacity = getEntityValue("GarrisonHolder/Max");
 	}
 
 	if (template.Heal)
@@ -243,6 +246,13 @@ function GetTemplateDataHelper(template, player, auraTemplates)
 			"range": getEntityValue("Heal/Range"),
 			"rate": getEntityValue("Heal/Rate")
 		};
+
+	if (template.Loot)
+	{
+		ret.loot = {};
+		for (let type in template.Loot)
+			ret.loot[type] = getEntityValue("Loot/"+ type);
+	}
 
 	if (template.Obstruction)
 	{
@@ -371,13 +381,40 @@ function GetTechnologyDataHelper(template, civ)
 	ret.tooltip = template.tooltip;
 	ret.requirementsTooltip = template.requirementsTooltip || "";
 
+	// TODO: This doesn't handle all types of requirements
 	if (template.requirements && template.requirements.class)
 		ret.classRequirements = {
 			"class": template.requirements.class,
 			"number": template.requirements.number
 		};
+	else if (template.requirements && template.requirements.all)
+		for (let req of template.requirements.all)
+			if (req.class)
+				ret.classRequirements = {
+					"class": req.class,
+					"number": req.number
+				};
 
 	ret.description = template.description;
 
 	return ret;
 }
+
+function calculateCarriedResources(carriedResources, tradingGoods)
+{
+	var resources = {};
+
+	if (carriedResources)
+		for (let resource of carriedResources)
+			resources[resource.type] = (resources[resource.type] || 0) + resource.amount;
+
+	if (tradingGoods && tradingGoods.amount)
+		resources[tradingGoods.type] =
+			(resources[tradingGoods.type] || 0) +
+			(tradingGoods.amount.traderGain || 0) +
+			(tradingGoods.amount.market1Gain || 0) +
+			(tradingGoods.amount.market2Gain || 0);
+
+	return resources;
+}
+

@@ -20,7 +20,6 @@ const tWater = "medit_sand_wet";
 
 // gaia entities
 const oBerryBush = "gaia/flora_bush_berry";
-const oChicken = "gaia/fauna_chicken";
 const oDeer = "gaia/fauna_deer";
 const oFish = "gaia/fauna_fish";
 const oSheep = "gaia/fauna_sheep";
@@ -118,7 +117,7 @@ paintTerrainBasedOnHeight(-6, 1, 1, tWater);
 paintTerrainBasedOnHeight(1, 2, 1, tShore);
 paintTerrainBasedOnHeight(2, 5, 1, tGrass);
 
-paintTileClassBasedOnHeight(-6, 0.5, 1, clWater)
+paintTileClassBasedOnHeight(-6, 0.5, 1, clWater);
 
 // randomize player order
 var playerIDs = [];
@@ -160,53 +159,41 @@ for (var i = 0; i < numPlayers; i++)
 {
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-	
+
 	// some constants
 	var radius = scaleByMapSize(15,25);
 	var cliffRadius = 2;
 	var elevation = 20;
-	
+
 	// get the x and z in tiles
 	var fx = fractionToTiles(playerX[i]);
 	var fz = fractionToTiles(playerZ[i]);
 	var ix = floor(fx);
 	var iz = floor(fz);
 	addToClass(ix, iz, clPlayer);
-	
+
 	// create the city patch
 	var cityRadius = radius/3;
 	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 	var painter = new LayeredPainter([tCityPlaza, tCity], [1]);
 	createArea(placer, painter, null);
-	
+
 	// create starting units
 	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-	
-	// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 7;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(oChicken, 5,5, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
-	
+
+	placeDefaultChicken(fx, fz, clBaseResource);
+
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 12;
 	var bbX = round(fx + bbDist * cos(bbAngle));
 	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
+	var group = new SimpleGroup(
 		[new SimpleObject(oBerryBush, 5,5, 0,3)],
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create metal mine
 	var mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
@@ -221,7 +208,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	
+
 	// create stone mines
 	mAngle += randFloat(PI/8, PI/4);
 	mX = round(fx + mDist * cos(mAngle));
@@ -243,7 +230,7 @@ for (var i = 0; i < numPlayers; i++)
 		false, clBaseResource, tX, tZ
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-	
+
 	// create grass tufts
 	var num = hillSize / 250;
 	for (var j = 0; j < num; j++)
@@ -268,7 +255,7 @@ createBumps(avoidClasses(clWater, 2, clPlayer, 20));
 // create forests
 createForests(
  [tForestFloor, tForestFloor, tForestFloor, pForest, pForest],
- avoidClasses(clPlayer, 20, clForest, 17, clWater, 2, clBaseResource, 3), 
+ avoidClasses(clPlayer, 20, clForest, 17, clWater, 2, clBaseResource, 3),
  clForest
 );
 
@@ -310,7 +297,7 @@ createMines(
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
  avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clWater, 1, clHill, 1)
-)
+);
 
 log("Creating metal mines...");
 // create large metal quarries
@@ -320,14 +307,14 @@ createMines(
  ],
  avoidClasses(clForest, 1, clPlayer, 20, clMetal, 10, clRock, 5, clWater, 1, clHill, 1),
  clMetal
-)
+);
 
 RMS.SetProgress(65);
 
 // create decoration
 createDecoration
 (
- [[new SimpleObject(aDecorativeRock, 1,3, 0,1)], 
+ [[new SimpleObject(aDecorativeRock, 1,3, 0,1)],
   [new SimpleObject(aBush2, 1,2, 0,1), new SimpleObject(aBush1, 1,3, 0,2), new SimpleObject(aBush4, 1,2, 0,1), new SimpleObject(aBush3, 1,3, 0,2)]
  ],
  [
@@ -344,7 +331,7 @@ createFood
 (
  [
   [new SimpleObject(oFish, 2,3, 0,2)]
- ], 
+ ],
  [
   3*scaleByMapSize(5,20)
  ],
@@ -358,7 +345,7 @@ createFood
   [new SimpleObject(oSheep, 5,7, 0,4)],
   [new SimpleObject(oGoat, 2,4, 0,3)],
   [new SimpleObject(oDeer, 2,4, 0,2)]
- ], 
+ ],
  [
   scaleByMapSize(5,20),
   scaleByMapSize(5,20),
@@ -372,7 +359,7 @@ createFood
 (
  [
   [new SimpleObject(oBerryBush, 5,7, 0,4)]
- ], 
+ ],
  [
   3 * numPlayers
  ],
@@ -388,9 +375,8 @@ createStragglerTrees(types, avoidClasses(clForest, 0, clWater, 2, clPlayer, 8, c
 
 // Set environment
 setSkySet("sunny");
-setSunColor(0.917, 0.828, 0.734);	
-setWaterColor(0.292, 0.347, 0.691);		
-setWaterColor(0, 0.501961, 1);		
+setSunColor(0.917, 0.828, 0.734);
+setWaterColor(0, 0.501961, 1);
 setWaterTint(0.501961, 1, 1);
 setWaterWaviness(2.5);
 setWaterType("ocean");
