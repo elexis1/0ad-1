@@ -10,39 +10,21 @@ const tTier1Terrain = rBiomeT5();
 const tTier2Terrain = rBiomeT6();
 const tTier3Terrain = rBiomeT7();
 const tHill = rBiomeT8();
-const tDirt = rBiomeT9();
-const tRoad = rBiomeT10();
-const tRoadWild = rBiomeT11();
 const tTier4Terrain = rBiomeT12();
-const tShoreBlend = rBiomeT13();
-const tShore = rBiomeT14();
-const tWater = rBiomeT15();
 
 const oTree1 = rBiomeE1();
 const oTree2 = rBiomeE2();
 const oTree3 = rBiomeE3();
 const oTree4 = rBiomeE4();
 const oTree5 = rBiomeE5();
-const oFruitBush = rBiomeE6();
-const oMainHuntableAnimal = rBiomeE8();
-const oFish = rBiomeE9();
-const oSecondaryHuntableAnimal = rBiomeE10();
-const oStoneLarge = rBiomeE11();
-const oStoneSmall = rBiomeE12();
-const oMetalLarge = rBiomeE13();
-const oWood = "gaia/special_treasure_wood";
-const oFood = "gaia/special_treasure_food_bin";
 
 // decorative props
 const aGrass = rBiomeA1();
 const aGrassShort = rBiomeA2();
-const aReeds = rBiomeA3();
-const aLillies = rBiomeA4();
 const aRockLarge = rBiomeA5();
 const aRockMedium = rBiomeA6();
 const aBushMedium = rBiomeA7();
 const aBushSmall = rBiomeA8();
-const aTree = rBiomeA9();
 
 const pForest1 = [tForestFloor2 + TERRAIN_SEPARATOR + oTree1, tForestFloor2 + TERRAIN_SEPARATOR + oTree2, tForestFloor2];
 const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TERRAIN_SEPARATOR + oTree5, tForestFloor1];
@@ -56,27 +38,18 @@ var mapArea = mapSize*mapSize;
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
-var clHill2 = createTileClass();
 var clForest = createTileClass();
 var clWater = createTileClass();
 var clDirt = createTileClass();
 var clRock = createTileClass();
 var clMetal = createTileClass();
-var clFood = createTileClass();
 var clBaseResource = createTileClass();
-var clSettlement = createTileClass();
 var clLand = createTileClass();
 var clWomen = createTileClass();
 
 for (var ix = 0; ix < mapSize; ix++)
-{
 	for (var iz = 0; iz < mapSize; iz++)
-	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
-			placeTerrain(ix, iz, tMainTerrain);
-	}
-}
+		placeTerrain(ix, iz, tMainTerrain);
 
 var fx = fractionToTiles(0.5);
 var fz = fractionToTiles(0.5);
@@ -129,8 +102,6 @@ for (var i = 0; i < numPlayers; i++)
 	log("Creating base for player " + id + "...");
 
 	var radius = scaleByMapSize(15,25);
-	var cliffRadius = 2;
-	var elevation = 20;
 
 	// place the attacker spawning trigger point
 	var ax = round(fractionToTiles(attackerX[i]));
