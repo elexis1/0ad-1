@@ -421,7 +421,8 @@ Trigger.prototype.DefeatPlayerOnceCCIsDestroyed = function(data)
 
 {
 	let cmpTrigger = Engine.QueryInterface(SYSTEM_ENTITY, IID_Trigger);
-	cmpTrigger.playerCivicCenter = {};
+	cmpTrigger.playerCivicCenter = [];
+	cmpTrigger.gaiaHeroes = [];
 	cmpTrigger.DoAfterDelay(1000, "InitializeEnemyWaves", {});
 	cmpTrigger.RegisterTrigger("OnInitGame", "InitGame", { "enabled": true });
 	cmpTrigger.RegisterTrigger("OnOwnershipChanged", "DefeatPlayerOnceCCIsDestroyed", { "enabled": true });
