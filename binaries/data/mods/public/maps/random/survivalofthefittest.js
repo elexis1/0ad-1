@@ -12,6 +12,7 @@ const tTier3Terrain = rBiomeT7();
 const tHill = rBiomeT8();
 const tTier4Terrain = rBiomeT12();
 
+// TODO: use tree actors, notice createForests can't be used with actors
 const oTree1 = rBiomeE1();
 const oTree2 = rBiomeE2();
 const oTree3 = rBiomeE3();
