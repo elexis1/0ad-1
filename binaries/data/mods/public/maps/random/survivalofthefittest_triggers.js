@@ -230,7 +230,7 @@ Trigger.prototype.StartAnEnemyWave = function()
 	let totalAttackers = Math.ceil(Math.min(totalAttackerLimit,
 		firstWaveAttackers * Math.pow(percentPerMinute, currentMin - firstWaveTime) * nextWaveTime/maxWaveTime));
 
-	warn("[" + Math.round(currentMin) + "]  Spawning " + totalAttackers + " attackers");
+	print("[" + Math.round(currentMin) + "]  Spawning " + totalAttackers + " attackers\n");
 
 	let attackerTemplates = [];
 
@@ -238,7 +238,7 @@ Trigger.prototype.StartAnEnemyWave = function()
 	let spawnHero = currentMin > Math.random() * (maxHeroTime - minHeroTime) + minHeroTime;
 	if (spawnHero)
 	{
-		warn("  Spawning hero");
+		print("  Spawning hero\n");
 		attackerTemplates.push({
 			"template": attackerEntityTemplates[civ].heroes[Math.floor(Math.random() * attackerEntityTemplates[civ].heroes.length)],
 			"count": 1,
@@ -250,13 +250,13 @@ Trigger.prototype.StartAnEnemyWave = function()
 	// Random siege to champion ratio
 	let siegeRatio = Math.random() * (maxSiegeFraction - minSiegeFraction) + minSiegeFraction;
 	let siegeCount = Math.round(siegeRatio * totalAttackers);
-	warn("  Siege Ratio: " + Math.round(siegeRatio * 100) + "%");
+	print("  Siege Ratio: " + Math.round(siegeRatio * 100) + "%\n");
 	let attackerTypeCounts = {
 		"siege": siegeCount,
 		"champions": totalAttackers - siegeCount
 	};
 
-	warn("  Spawning:" + uneval(attackerTypeCounts));
+	print("  Spawning:" + uneval(attackerTypeCounts) + "\n");
 	// Random ratio of the given templates
 	for (let attackerType in attackerTypeCounts)
 	{
@@ -298,7 +298,7 @@ Trigger.prototype.StartAnEnemyWave = function()
 		for (let attackerTemplate of attackerTemplates)
 		{
 			if (meh && attackerTemplate.count)
-				warn("  Spawning " + attackerTemplate.count + " " + attackerTemplate.template);
+				print("  Spawning " + attackerTemplate.count + " " + attackerTemplate.template + "\n");
 
 			if (cmpPlayer.GetPlayerID() == 0)
 				continue;
