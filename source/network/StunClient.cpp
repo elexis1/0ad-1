@@ -2,6 +2,7 @@
  * Note: the code is extracted from SuperTuxKart:
  * https://github.com/supertuxkart/stk-code
  */
+#include "precompiled.h"
 
 #include "StunClient.h"
 
