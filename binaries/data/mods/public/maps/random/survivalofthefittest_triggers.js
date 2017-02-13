@@ -111,7 +111,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"brit_mechanical_siege_ram",
-		]
+		],
 	},
 	"cart": {
 		"champions": [
@@ -122,7 +122,7 @@ var attackerEntityTemplates = {
 		"siege": [
 			"cart_champion_elephant",
 			"cart_mechanical_siege_ballista_packed",
-		]
+		],
 	},
 	"gaul": {
 		"champions": [
@@ -132,7 +132,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"gaul_mechanical_siege_ram",
-		]
+		],
 	},
 	"iber": {
 		"champions": [
@@ -141,7 +141,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"iber_mechanical_siege_ram",
-		]
+		],
 	},
 	"mace": {
 		"champions": [
@@ -152,7 +152,7 @@ var attackerEntityTemplates = {
 		"siege": [
 			"mace_mechanical_siege_lithobolos_packed",
 			"mace_mechanical_siege_oxybeles_packed",
-		]
+		],
 	},
 	"maur": {
 		"champions": [
@@ -163,7 +163,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"maur_champion_elephant",
-		]
+		],
 	},
 	"pers": {
 		"champions": [
@@ -172,7 +172,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"pers_champion_elephant",
-		]
+		],
 	},
 	"ptol": {
 		"champions": [
@@ -180,7 +180,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"ptol_champion_elephant",
-		]
+		],
 	},
 	"rome": {
 		"champions": [
@@ -201,7 +201,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"sele_champion_elephant",
-		]
+		],
 	},
 	"spart": {
 		"champions": [
@@ -211,7 +211,7 @@ var attackerEntityTemplates = {
 		],
 		"siege": [
 			"spart_mechanical_siege_ram",
-		]
+		],
 	}
 };
 
