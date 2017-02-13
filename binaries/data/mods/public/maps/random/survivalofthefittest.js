@@ -1,6 +1,5 @@
 RMS.LoadLibrary("rmgen");
 
-//random terrain textures
 var random_terrain = randomizeBiome();
 
 const tMainTerrain = rBiomeT1();
@@ -19,7 +18,6 @@ const tShoreBlend = rBiomeT13();
 const tShore = rBiomeT14();
 const tWater = rBiomeT15();
 
-// gaia entities
 const oTree1 = rBiomeE1();
 const oTree2 = rBiomeE2();
 const oTree3 = rBiomeE3();
@@ -50,14 +48,11 @@ const pForest1 = [tForestFloor2 + TERRAIN_SEPARATOR + oTree1, tForestFloor2 + TE
 const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TERRAIN_SEPARATOR + oTree5, tForestFloor1];
 
 log("Initializing map...");
-
 InitMap();
 
 var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -133,7 +128,6 @@ for (var i = 0; i < numPlayers; i++)
 	var id = playerIDs[i];
 	log("Creating base for player " + id + "...");
 
-	// some constants
 	var radius = scaleByMapSize(15,25);
 	var cliffRadius = 2;
 	var elevation = 20;
@@ -228,17 +222,14 @@ createObjectGroups(group, 0,
 	scaleByMapSize(40, 140), 100
 );
 
-// create bumps
 createBumps([avoidClasses(clWater, 2, clPlayer, 10), stayClasses(clLand, 5)]);
 
-// create hills
 if (randInt(1,2) == 1)
 	createHills([tMainTerrain, tCliff, tHill], [avoidClasses(clPlayer, 20, clHill, 5, clBaseResource, 3, clWomen, 5), stayClasses(clLand, 5)], clHill, scaleByMapSize(10, 60) * numPlayers);
 else
 	createMountains(tCliff, [avoidClasses(clPlayer, 20, clHill, 5, clBaseResource, 3, clWomen, 5), stayClasses(clLand, 5)], clHill, scaleByMapSize(10, 60) * numPlayers);
 createHills([tCliff, tCliff, tHill], avoidClasses(clPlayer, 20, clHill, 5, clBaseResource, 3, clWomen, 5, clLand, 5), clHill, scaleByMapSize(15, 90) * numPlayers, undefined, undefined, undefined, undefined, 55);
 
-// create forests
 createForests(
  [tMainTerrain, tForestFloor1, tForestFloor2, pForest1, pForest2],
  [avoidClasses(clPlayer, 20, clForest, 5, clHill, 0, clBaseResource,2, clWomen, 5), stayClasses(clLand, 4)],
@@ -246,10 +237,8 @@ createForests(
  1.0,
  random_terrain
 );
-
 RMS.SetProgress(50);
 
-// create dirt patches
 log("Creating dirt patches...");
 createLayeredPatches(
  [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)],
@@ -258,7 +247,6 @@ createLayeredPatches(
  [avoidClasses(clForest, 0, clHill, 0, clDirt, 5, clPlayer, 12, clWomen, 5), stayClasses(clLand, 5)]
 );
 
-// create grass patches
 log("Creating grass patches...");
 createPatches(
  [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)],
@@ -290,11 +278,9 @@ createDecoration
  [avoidClasses(clForest, 0, clPlayer, 0, clHill, 0), stayClasses(clLand, 5)]
 );
 
-// create straggler trees
 log("Creating straggler trees...");
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
 createStragglerTrees(types, [avoidClasses(clForest, 7, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6), stayClasses(clLand, 7)]);
 
 
-// Export map data
 ExportMap();
