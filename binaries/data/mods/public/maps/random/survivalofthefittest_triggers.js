@@ -1,4 +1,9 @@
 /**
+ * If set to true, it will print how many templates would be spawned if the players were not defeated.
+ */
+const dryRun = false;
+
+/**
  * When the first wave will be started.
  */
 var firstWaveTime = 2 + Math.random() * 3;
@@ -230,7 +235,7 @@ Trigger.prototype.StartAnEnemyWave = function()
 	let totalAttackers = Math.ceil(Math.min(totalAttackerLimit,
 		firstWaveAttackers * Math.pow(percentPerMinute, currentMin - firstWaveTime) * nextWaveTime/maxWaveTime));
 
-	print("[" + Math.round(currentMin) + "]  Spawning " + totalAttackers + " attackers\n");
+	print("DEBUG [" + Math.round(currentMin) + "]  Spawning " + totalAttackers + " attackers\n");
 
 	let attackerTemplates = [];
 
@@ -238,7 +243,7 @@ Trigger.prototype.StartAnEnemyWave = function()
 	let spawnHero = currentMin > Math.random() * (maxHeroTime - minHeroTime) + minHeroTime;
 	if (spawnHero)
 	{
-		print("  Spawning hero\n");
+		print("DEBUG   Spawning hero\n");
 		attackerTemplates.push({
 			"template": attackerEntityTemplates[civ].heroes[Math.floor(Math.random() * attackerEntityTemplates[civ].heroes.length)],
 			"count": 1,
@@ -250,13 +255,13 @@ Trigger.prototype.StartAnEnemyWave = function()
 	// Random siege to champion ratio
 	let siegeRatio = Math.random() * (maxSiegeFraction - minSiegeFraction) + minSiegeFraction;
 	let siegeCount = Math.round(siegeRatio * totalAttackers);
-	print("  Siege Ratio: " + Math.round(siegeRatio * 100) + "%\n");
+	print("DEBUG   Siege Ratio: " + Math.round(siegeRatio * 100) + "%\n");
 	let attackerTypeCounts = {
 		"siege": siegeCount,
 		"champions": totalAttackers - siegeCount
 	};
 
-	print("  Spawning:" + uneval(attackerTypeCounts) + "\n");
+	print("DEBUG   Spawning:" + uneval(attackerTypeCounts) + "\n");
 	// Random ratio of the given templates
 	for (let attackerType in attackerTypeCounts)
 	{
@@ -276,39 +281,35 @@ Trigger.prototype.StartAnEnemyWave = function()
 		}
 	}
 
-	let meh = true;
 	// Spawn the templates
 	let spawned = false;
 	let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
 	for (let point of this.GetTriggerPoints("A"))
 	{
 		let cmpPlayer = QueryOwnerInterface(point, IID_Player);
-/*
-		if (cmpPlayer.GetPlayerID() == 0)
+
+		// Trigger point owned by Gaia if the player is defeated
+		if (!dryRun && cmpPlayer.GetPlayerID() == 0)
 			continue;
-*/
-		if (cmpPlayer.GetPlayerID() != 0)
-		{
-			var cmpPosition =  Engine.QueryInterface(this.playerCivicCenter[cmpPlayer.GetPlayerID()], IID_Position);
-			if (!cmpPosition || !cmpPosition.IsInWorld)
-				continue;
-			var targetPos = cmpPosition.GetPosition();
-		}
+
+		var cmpPosition =  Engine.QueryInterface(this.playerCivicCenter[cmpPlayer.GetPlayerID()], IID_Position);
+		var targetPos = cmpPosition.GetPosition();
 
 		for (let attackerTemplate of attackerTemplates)
 		{
-			if (meh && attackerTemplate.count)
-				print("  Spawning " + attackerTemplate.count + " " + attackerTemplate.template + "\n");
-
-			if (cmpPlayer.GetPlayerID() == 0)
-				continue;
-
-			if (attackerTemplate.hero)
+			// Don't spawn gaia hero if the previous one is still alive
+			if (attackerTemplate.hero && this.gaiaHeroes[cmpPlayer.GetPlayerID()])
 			{
 				let cmpHealth = Engine.QueryInterface(this.gaiaHeroes[cmpPlayer.GetPlayerID()], IID_Health);
 				if (cmpHealth && cmpHealth.GetHitpoints() != 0)
+				{
+					print("DEBUG   Not spawning hero for player " + cmpPlayer.GetPlayerID() + " as the previous one is still alive\n");
 					continue;
+				}
 			}
+
+			if (dryRun)
+				continue;
 
 			let entities = TriggerHelper.SpawnUnits(point, "units/" + attackerTemplate.template, attackerTemplate.count, 0);
 			ProcessCommand(0, {
@@ -323,7 +324,6 @@ Trigger.prototype.StartAnEnemyWave = function()
 			if (attackerTemplate.hero)
 				this.gaiaHeroes[cmpPlayer.GetPlayerID()] = entities[0];
 		}
-		meh=false;
 		spawned = true;
 	}
 
