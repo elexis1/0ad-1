@@ -4,6 +4,11 @@
 const dryRun = false;
 
 /**
+ * Spawn new treasure each time this interval has passed.
+ */
+var treasureTime = 4;
+
+/**
  * When the first wave will be started.
  */
 var firstWaveTime = 2 + Math.random() * 3;
@@ -398,7 +403,7 @@ Trigger.prototype.PlaceTreasures = function()
 		let template = treasures[Math.floor(Math.random() * treasures.length)];
 		TriggerHelper.SpawnUnits(point, template, 1, 0);
 	}
-	this.DoAfterDelay(4*60*1000, "PlaceTreasures", {}); // Place more treasures after 4 minutes
+	this.DoAfterDelay(treasureTime * 60 * 1000, "PlaceTreasures", {});
 };
 
 Trigger.prototype.InitializeEnemyWaves = function()
