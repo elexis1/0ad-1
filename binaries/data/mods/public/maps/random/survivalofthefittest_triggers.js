@@ -381,6 +381,8 @@ Trigger.prototype.InitStartingUnits = function()
 				this.playerCivicCenter[i] = entity;
 			else if (TriggerHelper.EntityHasClass(entity, "Female"))
 			{
+				this.treasureFemale[i] = entity;
+
 				let cmpDamageReceiver = Engine.QueryInterface(entity, IID_DamageReceiver);
 				cmpDamageReceiver.SetInvulnerability(true);
 
@@ -414,10 +416,15 @@ Trigger.prototype.InitializeEnemyWaves = function()
 	this.DoAfterDelay(time, "StartAnEnemyWave", {});
 };
 
-Trigger.prototype.DefeatPlayerOnceCCIsDestroyed = function(data)
+Trigger.prototype.OnOwnershipChanged = function(data)
 {
 	if (data.entity == this.playerCivicCenter[data.from])
 		TriggerHelper.DefeatPlayer(data.from);
+	else if (data.entity == this.treasureFemale[data.from])
+	{
+		this.treasureFemale[data.from] = undefined;
+		Engine.DestroyEntity(data.entity);
+	}
 };
 
 Trigger.prototype.SetDisableTemplates = function()
@@ -440,8 +447,9 @@ Trigger.prototype.InitGame = function()
 
 {
 	let cmpTrigger = Engine.QueryInterface(SYSTEM_ENTITY, IID_Trigger);
+	cmpTrigger.treasureFemale = [];
 	cmpTrigger.playerCivicCenter = [];
 	cmpTrigger.DoAfterDelay(1000, "InitializeEnemyWaves", {});
 	cmpTrigger.RegisterTrigger("OnInitGame", "InitGame", { "enabled": true });
-	cmpTrigger.RegisterTrigger("OnOwnershipChanged", "DefeatPlayerOnceCCIsDestroyed", { "enabled": true });
+	cmpTrigger.RegisterTrigger("OnOwnershipChanged", "OnOwnershipChanged", { "enabled": true });
 }
