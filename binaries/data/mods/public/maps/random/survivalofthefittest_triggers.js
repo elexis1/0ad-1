@@ -297,8 +297,8 @@ Trigger.prototype.StartAnEnemyWave = function()
 		if (!dryRun && cmpPlayer.GetPlayerID() == 0)
 			continue;
 
-		var cmpPosition =  Engine.QueryInterface(this.playerCivicCenter[cmpPlayer.GetPlayerID()], IID_Position);
-		var targetPos = cmpPosition.GetPosition();
+		let cmpPosition =  Engine.QueryInterface(this.playerCivicCenter[cmpPlayer.GetPlayerID()], IID_Position);
+		let targetPos = cmpPosition.GetPosition();
 
 		for (let attackerTemplate of attackerTemplates)
 		{
@@ -343,10 +343,12 @@ Trigger.prototype.StartAnEnemyWave = function()
 	this.DoAfterDelay(nextWaveTime * 60 * 1000, "StartAnEnemyWave", {});
 };
 
-Trigger.prototype.InitGame = function()
+Trigger.prototype.LoadHeroTemplates = function()
 {
-	// Load Hero Templates
+	this.gaiaHeroes = [];
+
 	let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
+
 	for (let templateName of cmpTemplateManager.FindAllTemplates(false))
 	{
 		if (templateName.substring(0,6) != "units/")
@@ -361,10 +363,14 @@ Trigger.prototype.InitGame = function()
 
 		attackerEntityTemplates[identity.Civ].heroes.push(templateName.substring(6));
 	}
+}
 
-	// Remember civic centers and make women invincible
-	let numberOfPlayers = TriggerHelper.GetNumberOfPlayers();
-	for (let i = 1; i < numberOfPlayers; ++i)
+/**
+ *  Remember civic centers and make women invincible
+ */
+Trigger.prototype.InitStartingUnits = function()
+{
+	for (let i = 1; i < TriggerHelper.GetNumberOfPlayers(); ++i)
 	{
 		let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
 		let playerEntities = cmpRangeManager.GetEntitiesByPlayer(i);
@@ -383,16 +389,7 @@ Trigger.prototype.InitGame = function()
 			}
 		}
 	}
-
-	this.PlaceTreasures();
-
-	for (let i = 1; i < numberOfPlayers; ++i)
-	{
-		let cmpPlayer = QueryPlayerIDInterface(i);
-		let civ = cmpPlayer.GetCiv();
-		cmpPlayer.SetDisabledTemplates(disabledTemplates(civ));
-	}
-};
+}
 
 Trigger.prototype.PlaceTreasures = function()
 {
@@ -423,11 +420,27 @@ Trigger.prototype.DefeatPlayerOnceCCIsDestroyed = function(data)
 		TriggerHelper.DefeatPlayer(data.from);
 };
 
+Trigger.prototype.SetDisableTemplates = function()
+{
+	for (let i = 1; i < TriggerHelper.GetNumberOfPlayers(); ++i)
+	{
+		let cmpPlayer = QueryPlayerIDInterface(i);
+		cmpPlayer.SetDisabledTemplates(disabledTemplates(cmpPlayer.GetCiv()));
+	}
+}
+
+Trigger.prototype.InitGame = function()
+{
+	this.InitStartingUnits();
+	this.LoadHeroTemplates();
+	this.PlaceTreasures();
+	this.SetDisableTemplates();
+};
+
 
 {
 	let cmpTrigger = Engine.QueryInterface(SYSTEM_ENTITY, IID_Trigger);
 	cmpTrigger.playerCivicCenter = [];
-	cmpTrigger.gaiaHeroes = [];
 	cmpTrigger.DoAfterDelay(1000, "InitializeEnemyWaves", {});
 	cmpTrigger.RegisterTrigger("OnInitGame", "InitGame", { "enabled": true });
 	cmpTrigger.RegisterTrigger("OnOwnershipChanged", "DefeatPlayerOnceCCIsDestroyed", { "enabled": true });
