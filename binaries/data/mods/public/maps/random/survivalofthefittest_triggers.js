@@ -9,9 +9,9 @@ const dryRun = false;
 var treasureTime = 4;
 
 /**
- * When the first wave will be started.
+ * When the first wave of attackers will be spawned.
  */
-var firstWaveTime = 2 + Math.random() * 3;
+var firstWaveTime = treasureTime * (1 + Math.random());
 
 /**
  * Least amount of time between two waves.
@@ -21,22 +21,22 @@ var minWaveTime = 2;
 /**
  * Greatest amount of time between two waves.
  */
-var maxWaveTime = 5;
+var maxWaveTime = 4;
 
 /**
  * Number of attackers on the first wave.
  */
-var firstWaveAttackers = 8;
+var firstWaveAttackers = 5;
 
 /**
  * Increase the number of attackers exponentially, by this percent value per minute.
  */
-var percentPerMinute = 1.03;
+var percentPerMinute = 1.04;
 
 /**
  * Greatest number of attacker that can be spawned.
  */
-var totalAttackerLimit = 300;
+var totalAttackerLimit = 400;
 
 /**
  * Least amount of siege per wave.
