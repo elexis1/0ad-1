@@ -801,17 +801,17 @@ const glooxwrapper::Jingle::PluginList glooxwrapper::Jingle::Session::Jingle::pl
 
 glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::getCandidate() const
 {
-	const gloox::Jingle::Content *content = dynamic_cast<const gloox::Jingle::Content*>(m_Wrapped->plugins().front());
+	const gloox::Jingle::Content *content = static_cast<const gloox::Jingle::Content*>(m_Wrapped->plugins().front());
 	if (content == NULL) {
 		printf("Failed to retrieve Jingle content\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
-	const gloox::Jingle::ZeroAdGameData *gameData = dynamic_cast<const gloox::Jingle::ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
+	const gloox::Jingle::ZeroAdGameData *gameData = static_cast<const gloox::Jingle::ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
 	if (gameData == NULL) {
 		printf("Failed to retrieve Jingle game data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
-	const gloox::Jingle::ICEUDP *iceUdp = dynamic_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
+	const gloox::Jingle::ICEUDP *iceUdp = static_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
 	if (iceUdp == NULL) {
 		printf("Failed to retrieve Jingle ICE-UDP data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
@@ -822,7 +822,7 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 
 bool glooxwrapper::Jingle::Session::sessionInitiate(const Content* content)
 {
-	return m_Wrapped->sessionInitiate(dynamic_cast<const gloox::Jingle::Content*>(content->getWrapped()));
+	return m_Wrapped->sessionInitiate(static_cast<const gloox::Jingle::Content*>(content->getWrapped()));
 }
 
 glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList& candidates)
@@ -849,7 +849,7 @@ glooxwrapper::Jingle::ICEUDP::ICEUDP()
 const glooxwrapper::Jingle::ICEUDP::CandidateList glooxwrapper::Jingle::ICEUDP::candidates() const
 {
 	glooxwrapper::Jingle::ICEUDP::CandidateList candidateListWrapper;
-	for (const gloox::Jingle::ICEUDP::Candidate candidate: dynamic_cast<const gloox::Jingle::ICEUDP*>(m_Wrapped)->candidates())
+	for (const gloox::Jingle::ICEUDP::Candidate candidate: static_cast<const gloox::Jingle::ICEUDP*>(m_Wrapped)->candidates())
 		candidateListWrapper.push_back(glooxwrapper::Jingle::ICEUDP::Candidate{candidate.ip, candidate.port});
 	return candidateListWrapper;
 }
