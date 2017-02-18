@@ -25,6 +25,14 @@
 #include "NetStats.h"
 #include "NetTurnManager.h"
 
+#ifdef WIN32
+#  include <winsock2.h>
+// Undefine conflicting names from winsock2.h and underlying headers
+#  undef GetUserName
+#  undef SendMessage
+#  undef max
+#endif
+
 #include "lib/external_libraries/enet.h"
 #include "network/StunClient.h"
 #include "ps/CLogger.h"

@@ -19,6 +19,10 @@
 #include "XmppClient.h"
 #include "StanzaExtensions.h"
 
+#ifdef WIN32
+#  include <winsock2.h>
+#endif
+
 #include "glooxwrapper/glooxwrapper.h"
 #include "i18n/L10n.h"
 #include "lib/external_libraries/enet.h"
