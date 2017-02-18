@@ -310,6 +310,39 @@ public:
 	std::list<shared_ptr<gloox::IqHandler> > m_IqHandlers;
 };
 
+static const std::string XMLNS = "xmlns";
+static const std::string XMLNS_JINGLE_0AD_GAME = "urn:xmpp:jingle:apps:0ad-game:1";
+
+class ZeroAdGameData : public gloox::Jingle::Plugin
+{
+public:
+	ZeroAdGameData() : Plugin(gloox::Jingle::PluginUser) {}
+
+	ZeroAdGameData(const gloox::Tag* tag) : Plugin(gloox::Jingle::PluginUser) {
+		if (!tag) {
+			return;
+		}
+	}
+
+	const std::string& filterString() const {
+		static const std::string filter = "content/description[@xmlns='" + XMLNS_JINGLE_0AD_GAME + "']";
+		return filter;
+	}
+
+	gloox::Tag* tag() const {
+		gloox::Tag* r = new gloox::Tag("description", XMLNS, XMLNS_JINGLE_0AD_GAME);
+		return r;
+	}
+
+	Plugin* newInstance(const gloox::Tag* tag) const {
+		return new ZeroAdGameData(tag);
+	}
+
+	Plugin* clone() const {
+		return new ZeroAdGameData(*this);
+	}
+};
+
 } // namespace glooxwrapper
 
 
@@ -806,7 +839,7 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 		printf("Failed to retrieve Jingle content\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
-	const gloox::Jingle::ZeroAdGameData *gameData = static_cast<const gloox::Jingle::ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
+	const ZeroAdGameData *gameData = static_cast<const ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
 	if (gameData == NULL) {
 		printf("Failed to retrieve Jingle game data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
@@ -820,9 +853,26 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 	return glooxwrapper::Jingle::ICEUDP::Candidate{glooxCandidate.ip, glooxCandidate.port};
 }
 
-bool glooxwrapper::Jingle::Session::sessionInitiate(const Content* content)
+bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, uint16_t port)
 {
-	return m_Wrapped->sessionInitiate(static_cast<const gloox::Jingle::Content*>(content->getWrapped()));
+	ZeroAdGameData *gameData = new ZeroAdGameData();
+
+	gloox::Jingle::ICEUDP::CandidateList *candidateList = new gloox::Jingle::ICEUDP::CandidateList();
+
+	candidateList->push_back(gloox::Jingle::ICEUDP::Candidate
+	   {/*component_id*/"1", /*foundation*/"1",
+		/*candidate_generation*/"0", /*candidate_id*/"1",
+		ipStr, /*network*/"", port,
+		/*priotiry*/0, "udp", /*base_ip*/"", /*base_port*/0, /*type*/gloox::Jingle::ICEUDP::ServerReflexive });
+
+	gloox::Jingle::ICEUDP *iceUdp = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", *candidateList);
+
+	gloox::Jingle::PluginList *pluginList = new gloox::Jingle::PluginList();
+	pluginList->push_back(gameData);
+	pluginList->push_back(iceUdp);
+	gloox::Jingle::Content *content = new gloox::Jingle::Content(std::string("game-data"), *pluginList);
+
+	return m_Wrapped->sessionInitiate(content);
 }
 
 glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList& candidates)
@@ -854,13 +904,6 @@ const glooxwrapper::Jingle::ICEUDP::CandidateList glooxwrapper::Jingle::ICEUDP::
 	return candidateListWrapper;
 }
 
-glooxwrapper::Jingle::ZeroAdGameData::ZeroAdGameData()
-	: glooxwrapper::Jingle::Plugin(NULL, false)
-{
-	m_Wrapped = new gloox::Jingle::ZeroAdGameData();
-	m_Owned = true;
-}
-
 glooxwrapper::SessionManager::SessionManager(Client* parent, Jingle::SessionHandler* sh)
 {
 	m_HandlerWrapper = new SessionHandlerWrapper(sh, false);
@@ -877,7 +920,7 @@ void glooxwrapper::SessionManager::registerPlugins()
 {
 	m_Wrapped->registerPlugin(new gloox::Jingle::Content());
 	m_Wrapped->registerPlugin(new gloox::Jingle::ICEUDP());
-	m_Wrapped->registerPlugin(new gloox::Jingle::ZeroAdGameData());
+	m_Wrapped->registerPlugin(new ZeroAdGameData());
 }
 
 glooxwrapper::Jingle::Session glooxwrapper::SessionManager::createSession(const JID& callee)

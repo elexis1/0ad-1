@@ -1114,24 +1114,12 @@ void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, c
 	glooxwrapper::JID hostJid(hostJidStr);
 	glooxwrapper::Jingle::Session session = m_sessionManager->createSession(hostJid);
 
-	glooxwrapper::Jingle::ZeroAdGameData *gameData = new glooxwrapper::Jingle::ZeroAdGameData();
-
-	glooxwrapper::Jingle::ICEUDP::CandidateList *candidateList = new glooxwrapper::Jingle::ICEUDP::CandidateList();
-
 	char ipStr[256] = "(error)";
 	ENetAddress addr;
 	addr.host = ntohl(stunEndpoint.ip);
 	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
-	candidateList->push_back(glooxwrapper::Jingle::ICEUDP::Candidate{ipStr, stunEndpoint.port});
-
-	glooxwrapper::Jingle::ICEUDP *iceUdp = new glooxwrapper::Jingle::ICEUDP(*candidateList);
-
-	glooxwrapper::Jingle::PluginList *pluginList = new glooxwrapper::Jingle::PluginList();
-	pluginList->push_back(gameData);
-	pluginList->push_back(iceUdp);
-	glooxwrapper::Jingle::Content *content = new glooxwrapper::Jingle::Content(glooxwrapper::string("game-data"), *pluginList);
-	bool result = session.sessionInitiate(content);
+	bool result = session.sessionInitiate(ipStr, stunEndpoint.port);
 }
 
 void XmppClient::handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *session, const glooxwrapper::Jingle::Session::Jingle *jingle)

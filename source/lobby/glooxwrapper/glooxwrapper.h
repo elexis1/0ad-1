@@ -647,7 +647,7 @@ namespace glooxwrapper
 
 			Session(gloox::Jingle::Session* wrapped, bool owned) : m_Wrapped(wrapped), m_Owned(owned) {}
 
-			bool sessionInitiate(const Content* content);
+			bool sessionInitiate(char* ipStr, uint16_t port);
 		};
 
 		class GLOOXWRAPPER_API SessionHandler
@@ -657,11 +657,6 @@ namespace glooxwrapper
 			virtual void handleSessionAction(gloox::Jingle::Action action, Session *session, const Session::Jingle *jingle) = 0;
 		};
 
-		class GLOOXWRAPPER_API ZeroAdGameData : public Plugin
-		{
-		public:
-			ZeroAdGameData();
-		};
 	}
 
 	class GLOOXWRAPPER_API SessionManager
@@ -677,45 +672,6 @@ namespace glooxwrapper
 		Jingle::Session createSession(const JID& callee);
 	};
 
-
-}
-
-namespace gloox
-{
-	namespace Jingle
-	{
-		static const std::string XMLNS_JINGLE_0AD_GAME = "urn:xmpp:jingle:apps:0ad-game:1";
-
-		class GLOOXWRAPPER_API ZeroAdGameData : public Jingle::Plugin
-		{
-		public:
-			ZeroAdGameData(): Plugin(gloox::Jingle::PluginUser) {}
-
-			ZeroAdGameData(const Tag* tag): Plugin(gloox::Jingle::PluginUser) {
-				if (!tag) {
-					return;
-				}
-			}
-
-			const std::string& filterString() const {
-				static const std::string filter = "content/description[@xmlns='" + XMLNS_JINGLE_0AD_GAME + "']";
-				return filter;
-			}
-
-			Tag* tag() const {
-				Tag* r = new Tag("description", gloox::XMLNS, XMLNS_JINGLE_0AD_GAME);
-				return r;
-			}
-
-			Plugin* newInstance(const gloox::Tag* tag) const {
-				return new ZeroAdGameData(tag);
-			}
-
-			Plugin* clone() const {
-				return new ZeroAdGameData(*this);
-			}
-		};
-	}
 
 }
 
