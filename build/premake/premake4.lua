@@ -636,6 +636,7 @@ function setup_all_libs ()
 		extern_libs = {
 			"spidermonkey",
 			"boost",
+			"enet",
 			"gloox",
 			"icu",
 			"iconv",
@@ -784,6 +785,7 @@ function setup_all_libs ()
 		"sdl",	-- key definitions
 		"opengl",
 		"boost",
+		"enet",
 		"tinygettext",
 		"icu",
 		"iconv",
