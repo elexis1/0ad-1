@@ -18,6 +18,7 @@
 #include <assert.h>
 
 #include "lib/external_libraries/enet.h"
+#include "lib/external_libraries/libsdl.h"
 
 #include <string>
 #include <vector>
@@ -179,7 +180,7 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	while(len < 0 && (count<max_tries || max_tries==-1) )
 	{
 		count++;
-		usleep(1000);
+		SDL_Delay(1000);
 		len = recvfrom(transactionHost->socket, buffer, LEN, 0,
 		        (struct sockaddr*)(&addr), &from_len);
 	}
