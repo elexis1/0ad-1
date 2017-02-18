@@ -17,7 +17,7 @@
 
 #include <assert.h>
 
-#include <enet/enet.h>
+#include "lib/external_libraries/enet.h"
 
 #include <string>
 #include <vector>
