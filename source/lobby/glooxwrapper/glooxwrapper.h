@@ -632,7 +632,7 @@ namespace glooxwrapper
 			bool m_Owned;
 
 		public:
-			class Jingle
+			class GLOOXWRAPPER_API Jingle
 			{
 			private:
 				const gloox::Jingle::Session::Jingle* m_Wrapped;
