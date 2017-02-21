@@ -56,14 +56,11 @@ const aDecorativeRock = "actor|geology/stone_desert_med.xml";
 const pForestO = [tForestFloor + TERRAIN_SEPARATOR + oOak, tForestFloor + TERRAIN_SEPARATOR + oOak, tForestFloor, tDirtMain, tDirtMain];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -87,13 +84,10 @@ for (var ix = 0; ix < mapSize; ix++)
 
 var playerIDs = [];
 for (var i = 0; i < numPlayers; i++)
-{
 	playerIDs.push(i+1);
-}
 playerIDs = sortPlayers(playerIDs);
 
 // place players
-
 var playerX = new Array(numPlayers);
 var playerZ = new Array(numPlayers);
 var playerAngle = new Array(numPlayers);
@@ -133,7 +127,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tCity, tCity], [3]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -228,10 +221,8 @@ painter = new LayeredPainter([tLakebed2, tLakebed1], [6]);
 var elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, -10, 8);
 createArea(placer, [painter, elevationPainter, paintClass(clCP)], avoidClasses(clPlayer, 18));
 
-
 RMS.SetProgress(30);
 
-// create hills
 log("Creating hills...");
 var numHills = scaleByMapSize(20, 80);
 for (var i = 0; i < numHills; ++i)
@@ -262,7 +253,6 @@ var totalTrees = scaleByMapSize(MIN_TREES, MAX_TREES);
 var numForest = totalTrees * P_FOREST;
 var numStragglers = totalTrees * (1.0 - P_FOREST);
 
-// create forests
 log("Creating forests...");
 var types = [
 	[[tDirtMain, tForestFloor, pForestO], [tForestFloor, pForestO]],
@@ -287,16 +277,14 @@ for (var i = 0; i < types.length; ++i)
 
 RMS.SetProgress(50);
 
-
 log("Creating stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clCP, 1)],
 	scaleByMapSize(2,8), 100
 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clCP, 1)],
@@ -304,23 +292,20 @@ createObjectGroups(group, 0,
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clMetal);
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clMetal, 10, clRock, 5, clHill, 1, clCP, 1)],
 	scaleByMapSize(2,8), 100
 );
 
-
 log("Creating centeral stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
 createObjectGroups(group, 0,
 	stayClasses(clCP, 6),
 	5*scaleByMapSize(5,30), 50
 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
 createObjectGroups(group, 0,
 	stayClasses(clCP, 6),
@@ -328,7 +313,6 @@ createObjectGroups(group, 0,
 );
 
 log("Creating centeral metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clMetal);
 createObjectGroups(group, 0,
 	stayClasses(clCP, 6),
@@ -409,10 +393,8 @@ createObjectGroups(group, 0,
 	3 * numPlayers, 50
 );
 
-
 RMS.SetProgress(90);
 
-// create straggler trees
 log("Creating straggler trees...");
 var types = [oOak];	// some variation
 var num = floor(numStragglers / types.length);

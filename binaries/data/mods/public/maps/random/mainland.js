@@ -1,8 +1,5 @@
 RMS.LoadLibrary("rmgen");
 
-//random terrain textures
-var random_terrain = randomizeBiome();
-
 const tMainTerrain = rBiomeT1();
 const tForestFloor1 = rBiomeT2();
 const tForestFloor2 = rBiomeT3();
@@ -47,14 +44,11 @@ const pForest1 = [tForestFloor2 + TERRAIN_SEPARATOR + oTree1, tForestFloor2 + TE
 const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TERRAIN_SEPARATOR + oTree5, tForestFloor1];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -119,7 +113,6 @@ for (var i = 0; i < numPlayers; i++)
 	addToClass(ix-5, iz, clPlayer);
 	addToClass(ix, iz-5, clPlayer);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	// create the city patch
@@ -180,10 +173,8 @@ for (var i = 0; i < numPlayers; i++)
 
 	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
-
 RMS.SetProgress(20);
 
-// create bumps
 createBumps();
 
 // create hills
@@ -192,7 +183,6 @@ if (randInt(1,2) == 1)
 else
 	createMountains(tCliff, avoidClasses(clPlayer, 20, clHill, 15), clHill, scaleByMapSize(3, 15));
 
-// create forests
 createForests(
  [tMainTerrain, tForestFloor1, tForestFloor2, pForest1, pForest2],
  avoidClasses(clPlayer, 20, clForest, 18, clHill, 0),
@@ -203,7 +193,6 @@ createForests(
 
 RMS.SetProgress(50);
 
-// create dirt patches
 log("Creating dirt patches...");
 createLayeredPatches(
  [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)],
@@ -211,7 +200,6 @@ createLayeredPatches(
  [1,1]
 );
 
-// create grass patches
 log("Creating grass patches...");
 createPatches(
  [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)],
@@ -220,9 +208,7 @@ createPatches(
 
 RMS.SetProgress(55);
 
-
 log("Creating stone mines...");
-// create stone quarries
 createMines(
  [
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
@@ -231,7 +217,6 @@ createMines(
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 createMines(
  [
   [new SimpleObject(oMetalLarge, 1,1, 0,4)]
@@ -242,7 +227,6 @@ createMines(
 
 RMS.SetProgress(65);
 
-// create decoration
 var planetm = 1;
 
 if (random_terrain == g_BiomeTropic)
@@ -296,10 +280,7 @@ createFood
 
 RMS.SetProgress(85);
 
-// create straggler trees
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
 createStragglerTrees(types);
-
-// Export map data
 
 ExportMap();

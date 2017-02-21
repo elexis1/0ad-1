@@ -166,7 +166,6 @@ SemiRandomElevationPainter.prototype.paint = function(area)
 	}
 };
 
-
 TILE_CENTERED_HEIGHT_MAP = true;
 
 const tGrassSpecific = ["new_alpine_grass_d","new_alpine_grass_d", "new_alpine_grass_e"];
@@ -216,8 +215,6 @@ const oStoneLarge = "gaia/geology_stonemine_alpine_quarry";
 const oStoneSmall = "gaia/geology_stone_alpine_a";
 const oMetalLarge = "gaia/geology_metal_alpine_slabs";
 
-
-
 // decorative props
 const aRain = "actor|particle/rain_shower.xml";
 const aGrass = "actor|props/flora/grass_soft_small_tall.xml";
@@ -243,14 +240,11 @@ const pForestLandVeryLight = [ tGrassLandForest2 + TERRAIN_SEPARATOR + oPine,tGr
 						tGrassLandForest2,tGrassLandForest2,tGrassLandForest2,tGrassLandForest2];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clDirt = createTileClass();
 var clLush = createTileClass();
@@ -294,7 +288,6 @@ for (var ix = 0; ix < mapSize; ix++)
 			baseHeights[ix].push(-100);
 	}
 }
-
 
 // randomize player order
 var playerIDs = [];
@@ -348,7 +341,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -568,8 +560,6 @@ painter = new SemiRandomElevationPainter(7, 4,1);
 var terrainPainter = new TerrainPainter(tGrassSpecific);
 createAreas( placer, [painter,terrainPainter, paintClass(clHill)],  avoidClasses(clWater, 5, clPlayer, 20, clBaseResource, 6, clPyrenneans, 2), scaleByMapSize(5, 35) );
 
-
-// create forests
 log("Creating forests...");
 var types = [ [tForestTransition,pForestLandVeryLight, pForestLandLight, pForestLand]];
 var size = scaleByMapSize(40,115)*PI;
@@ -668,7 +658,6 @@ for (var x = 0; x < mapSize; x++) {
 		}
 	}
 }
-// create dirt patches
 log("Creating dirt patches...");
 var sizes = [scaleByMapSize(3, 20), scaleByMapSize(5, 40), scaleByMapSize(8, 60)];
 for (var i = 0; i < sizes.length; i++)
@@ -678,7 +667,6 @@ for (var i = 0; i < sizes.length; i++)
 	createAreas( placer, [painter, paintClass(clDirt)], avoidClasses(clWater, 3, clForest, 0, clPyrenneans,5, clHill, 0, clDirt, 5, clPlayer, 6), scaleByMapSize(15, 45) );
 }
 
-// create grass patches
 log("Creating grass patches...");
 var sizes = [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)];
 for (var i = 0; i < sizes.length; i++)
@@ -687,7 +675,6 @@ for (var i = 0; i < sizes.length; i++)
 	painter = new TerrainPainter(tLushGrass);
 	createAreas( placer, [painter,paintClass(clLush)], avoidClasses(clWater, 3, clForest, 0, clPyrenneans,5, clHill, 0, clDirt, 5, clPlayer, 6), scaleByMapSize(15, 45) );
 }
-
 
 RMS.SetProgress(70);
 
@@ -711,11 +698,10 @@ createObjectGroups(group, 0, avoidClasses(clWater, 2, clPlayer, 1, clPyrenneans,
 RMS.SetProgress(80);
 
 log("Creating stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroups(group, 0,  avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clRock, 8, clPyrenneans, 1),  scaleByMapSize(4,16), 100 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroups(group, 0,  avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clRock, 8, clPyrenneans, 1),  scaleByMapSize(4,16), 100 );
 
@@ -794,7 +780,6 @@ function PassMaker(x1, z1, x2, z2, startWidth, centerWidth, startElevation, cent
 
 		var width = (abs(step - stepNB/2.0) *startWidth + (stepNB/2 - abs(step - stepNB/2.0)) * centerWidth ) / (stepNB/2);
 
-
 		var oldDirection = [x2-x1, z2-z1];
 		// let's get the perpendicular direction
 		var direction = [ -oldDirection[1],oldDirection[0] ];
@@ -865,5 +850,4 @@ function getHeightDifference(x1, z1)
 		diff /= todiv;
 	return diff;
 }
-
 

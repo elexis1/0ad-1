@@ -1,8 +1,6 @@
 RMS.LoadLibrary("rmgen");
 
 TILE_CENTERED_HEIGHT_MAP = true;
-//random terrain textures
-var random_terrain = randomizeBiome();
 
 const tMainTerrain = rBiomeT1();
 const tForestFloor1 = rBiomeT2();
@@ -49,14 +47,12 @@ const pForest1 = [tForestFloor2 + TERRAIN_SEPARATOR + oTree1, tForestFloor2 + TE
 const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TERRAIN_SEPARATOR + oTree5, tForestFloor1];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
 
-// create tile classes
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clForest = createTileClass();
@@ -118,7 +114,6 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createArea(placer, [terrainPainter, elevationPainter, paintClass(clPlayer)], null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -292,7 +287,6 @@ for (var i = 0; i < numPlayers; i++)
 	createArea(placer, painter, null);
 }
 
-// create bumps
 log("Creating bumps...");
 placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);
 painter = new SmoothElevationPainter(ELEVATION_MODIFY, 2, 2);
@@ -303,7 +297,6 @@ createAreas(
 	scaleByMapSize(20, 100)
 );
 
-// create hills
 log("Creating hills...");
 placer = new ChainPlacer(1, floor(scaleByMapSize(4, 6)), floor(scaleByMapSize(16, 40)), 0.5);
 terrainPainter = new LayeredPainter(
@@ -317,7 +310,6 @@ createAreas(
 	[avoidClasses(clPlayer, 2, clHill, 15), stayClasses(clLand, 0)],
 	scaleByMapSize(4, 13)
 );
-
 
 // calculate desired number of trees for map (based on size)
 if (random_terrain == g_BiomeSavanna)
@@ -342,7 +334,6 @@ var totalTrees = scaleByMapSize(MIN_TREES, MAX_TREES);
 var numForest = totalTrees * P_FOREST;
 var numStragglers = totalTrees * (1.0 - P_FOREST);
 
-// create forests
 log("Creating forests...");
 var types = [
 	[[tForestFloor2, tMainTerrain, pForest1], [tForestFloor2, pForest1]],
@@ -370,7 +361,6 @@ if (random_terrain != g_BiomeSavanna)
 }
 
 RMS.SetProgress(50);
-// create dirt patches
 log("Creating dirt patches...");
 var sizes = [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)];
 var numb = 1;
@@ -391,7 +381,6 @@ for (var i = 0; i < sizes.length; i++)
 	);
 }
 
-// create grass patches
 log("Creating grass patches...");
 var sizes = [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)];
 for (var i = 0; i < sizes.length; i++)
@@ -407,16 +396,14 @@ for (var i = 0; i < sizes.length; i++)
 }
 RMS.SetProgress(55);
 
-
 log("Creating stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 0, clRock, 10, clHill, 1), stayClasses(clLand, 5)],
 	scaleByMapSize(4,16), 100
 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 0, clRock, 10, clHill, 1), stayClasses(clLand, 5)],
@@ -424,7 +411,6 @@ createObjectGroups(group, 0,
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal);
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 0, clMetal, 10, clRock, 5, clHill, 1), stayClasses(clLand, 5)],
@@ -444,7 +430,6 @@ createObjectGroups(
 	[avoidClasses(clForest, 0, clPlayer, 0, clHill, 0), stayClasses(clLand, 5)],
 	scaleByMapSize(16, 262), 50
 );
-
 
 // create large decorative rocks
 log("Creating large decorative rocks...");
@@ -508,8 +493,6 @@ createObjectGroups(group, 0,
 
 RMS.SetProgress(85);
 
-
-// create straggler trees
 log("Creating straggler trees...");
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
 var num = floor(numStragglers / types.length);
@@ -568,5 +551,4 @@ setSunRotation(randFloat(0, TWO_PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 setWaterWaviness(2);
 
-// Export map data
 ExportMap();

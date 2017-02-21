@@ -46,14 +46,11 @@ const aDecorativeRock = "actor|geology/stone_granite_med.xml";
 const pForest = [tForestFloor, tForestFloor + TERRAIN_SEPARATOR + oCarob, tForestFloor + TERRAIN_SEPARATOR + oDatePalm, tForestFloor + TERRAIN_SEPARATOR + oSDatePalm, tForestFloor];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clForest = createTileClass();
@@ -178,7 +175,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tCityPlaza, tCity], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -236,7 +232,6 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(40);
 
-// create bumps
 createBumps(avoidClasses(clWater, 2, clPlayer, 20));
 
 // create forests
@@ -360,7 +355,6 @@ log("Creating straggler trees...");
 var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];	// some variation
 createStragglerTrees(types, avoidClasses(clForest, 1, clWater, 2, clPlayer, 8, clMetal, 6, clHill, 1));
 
-// Set environment
 setSkySet("sunny");
 setSunColor(0.917, 0.828, 0.734);
 setWaterColor(0, 0.501961, 1);

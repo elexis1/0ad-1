@@ -120,14 +120,11 @@ else
 const pForest = [tForestFloor + TERRAIN_SEPARATOR + oPine, tForestFloor];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -202,7 +199,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -346,7 +342,6 @@ else
 	paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 }
 
-// create bumps
 createBumps(avoidClasses(clWater, 2, clPlayer, 10));
 
 // create hills
@@ -355,7 +350,6 @@ if (randInt(1,2) == 1)
 else
 	createMountains(tCliff, avoidClasses(clPlayer, 20, clHill, 15, clWater, 0), clHill, scaleByMapSize(1, 4) * numPlayers);
 
-// create forests
 createForests(
  [tPrimary, tForestFloor, tForestFloor, pForest, pForest],
  avoidClasses(clPlayer, 20, clForest, 16, clHill, 0, clWater, 2),
@@ -366,7 +360,6 @@ createForests(
 
 RMS.SetProgress(60);
 
-// create dirt patches
 log("Creating dirt patches...");
 createLayeredPatches(
  [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)],
@@ -375,7 +368,6 @@ createLayeredPatches(
  avoidClasses(clWater, 6, clForest, 0, clHill, 0, clDirt, 5, clPlayer, 12)
 );
 
-// create grass patches
 log("Creating grass patches...");
 createPatches(
  [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)],
@@ -386,7 +378,6 @@ createPatches(
 RMS.SetProgress(65);
 
 log("Creating stone mines...");
-// create stone quarries
 createMines(
  [
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
@@ -396,7 +387,6 @@ createMines(
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 createMines(
  [
   [new SimpleObject(oMetalLarge, 1,1, 0,4)]
@@ -407,7 +397,6 @@ createMines(
 
 RMS.SetProgress(70);
 
-// create decoration
 var multiplier = 0;
 if (random_terrain !== 3) multiplier = 1;
 
@@ -428,7 +417,6 @@ createDecoration
  ],
  avoidClasses(clWater, 0, clForest, 0, clPlayer, 0, clHill, 0)
 );
-
 
 RMS.SetProgress(75);
 
@@ -475,7 +463,6 @@ if (random_terrain !== 3)
 
 RMS.SetProgress(85);
 
-// create straggler trees
 log("Creating straggler trees...");
 var types = [oPine];
 createStragglerTrees(types, avoidClasses(clWater, 3, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
@@ -489,7 +476,5 @@ setWaterTint(0.28, 0.3, 0.59);
 setWaterWaviness(5.0);
 setWaterType("lake");
 setWaterMurkiness(0.88);
-
-// Export map data
 
 ExportMap();

@@ -58,7 +58,6 @@ const mapSize = getMapSize();
 const mapArea = mapSize * mapSize;
 const centerOfMap = mapSize / 2;
 
-// Create tile classes
 let clPlayer = createTileClass();
 let clHill = createTileClass();
 let clMountain = createTileClass();

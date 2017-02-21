@@ -287,13 +287,13 @@ function getPointsByHeight(heightRange, avoidPoints = [], avoidClass = undefined
 			points.push(point);
 			placements.push(point);
 		}
-		if ((tries != 0) && (tries % 100 == 0)) // Time Check
+
+		if (tries != 0 && tries % 100 == 0) // Time Check
 			log(points.length + " points found after " + tries + " tries after " + ((new Date().getTime() - genStartTime) / 1000) + "s");
 	}
 
 	return points;
 }
-
 
 /**
  * Design resource spots
@@ -306,6 +306,7 @@ let decorations = [
 	"actor|props/flora/bush.xml", "actor|props/flora/bush_dry_a.xml", "actor|props/flora/bush_highlands.xml",
 	"actor|props/flora/bush_tempe_a.xml", "actor|props/flora/bush_tempe_b.xml", "actor|props/flora/ferns.xml"
 ];
+
 function placeMine(point, centerEntity)
 {
 	placeObject(point.x, point.y, centerEntity, 0, randFloat(0, TWO_PI));
@@ -391,7 +392,6 @@ function placeCamp(point,
 		placeObject(point.x + dist * Math.cos(angle), point.y + dist * Math.sin(angle), pickRandom(otherEntities), 0, randFloat(0, 2 * PI));
 	}
 }
-
 
 function placeStartLocationResources(point, foodEntities = ["gaia/flora_bush_berry", "gaia/fauna_chicken", "gaia/fauna_chicken"])
 {

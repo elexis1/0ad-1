@@ -41,14 +41,11 @@ const aBushSmall = "actor|props/flora/bush_dry_a.xml";
 const pForest = [tForestFloor + TERRAIN_SEPARATOR + oBaobab, tForestFloor + TERRAIN_SEPARATOR + oBaobab, tForestFloor];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -111,7 +108,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -195,7 +191,6 @@ for (var m = 0; m < numPlayers; m++)
 	createArea(placer, [painter, elevationPainter, paintClass(clWater)], avoidClasses(clPlayer, 5));
 }
 
-
 for (var i = 0; i < numPlayers; i++)
 {
 	if (i+1 == numPlayers)
@@ -250,8 +245,6 @@ for (var i = 0; i < numPlayers; i++)
 }
 paintTerrainBasedOnHeight(-6, 2, 1, tWater);
 
-
-// create bumps
 log("Creating bumps...");
 placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);
 painter = new SmoothElevationPainter(ELEVATION_MODIFY, 2, 2);
@@ -262,7 +255,6 @@ createAreas(
 	scaleByMapSize(100, 200)
 );
 
-// create hills
 log("Creating hills...");
 placer = new ClumpPlacer(scaleByMapSize(20, 150), 0.2, 0.1, 1);
 terrainPainter = new LayeredPainter(
@@ -277,7 +269,6 @@ createAreas(
 	scaleByMapSize(1, 4) * numPlayers
 );
 
-
 // calculate desired number of trees for map (based on size)
 var MIN_TREES = 160;
 var MAX_TREES = 900;
@@ -287,12 +278,10 @@ var totalTrees = scaleByMapSize(MIN_TREES, MAX_TREES);
 var numForest = totalTrees * P_FOREST;
 var numStragglers = totalTrees * (1.0 - P_FOREST);
 
-// create forests
 log("Creating forests...");
 var types = [
 	[[tForestFloor, tGrass, pForest], [tForestFloor, pForest]]
 ];	// some variation
-
 
 var size = numForest / (0.5 * scaleByMapSize(2,8) * numPlayers);
 var num = floor(size / types.length);
@@ -313,7 +302,6 @@ for (var i = 0; i < types.length; ++i)
 
 RMS.SetProgress(50);
 
-// create dirt patches
 log("Creating dirt patches...");
 var sizes = [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)];
 for (var i = 0; i < sizes.length; i++)
@@ -331,7 +319,6 @@ for (var i = 0; i < sizes.length; i++)
 	);
 }
 
-// create grass patches
 log("Creating grass patches...");
 var sizes = [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)];
 for (var i = 0; i < sizes.length; i++)
@@ -347,16 +334,14 @@ for (var i = 0; i < sizes.length; i++)
 }
 RMS.SetProgress(55);
 
-
 log("Creating stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroups(group, 0,
 	avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clRock, 10, clHill, 1),
 	scaleByMapSize(4,16), 100
 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroups(group, 0,
 	avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clRock, 10, clHill, 1),
@@ -364,7 +349,6 @@ createObjectGroups(group, 0,
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal);
 createObjectGroups(group, 0,
 	avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clMetal, 10, clRock, 5, clHill, 1),
@@ -384,7 +368,6 @@ createObjectGroups(
 	avoidClasses(clWater, 0, clForest, 0, clPlayer, 0, clHill, 0),
 	scaleByMapSize(16, 262), 50
 );
-
 
 // create large decorative rocks
 log("Creating large decorative rocks...");
@@ -468,7 +451,6 @@ createObjectGroups(group, 0,
 	25 * numPlayers, 60
 );
 
-// create berry bush
 log("Creating berry bush...");
 group = new SimpleGroup(
 	[new SimpleObject(oBerryBush, 5,7, 0,4)],
@@ -481,7 +463,6 @@ createObjectGroups(group, 0,
 
 RMS.SetProgress(85);
 
-// create straggler trees
 log("Creating straggler trees...");
 var types = [oBaobab, oBaobab, oBaobab, oFig];	// some variation
 var num = floor(numStragglers / types.length);
@@ -532,7 +513,6 @@ createObjectGroups(group, 0,
 	planetm * scaleByMapSize(13, 200), 50
 );
 
-
 setSkySet("sunny");
 
 setSunRotation(randFloat(0, TWO_PI));
@@ -542,7 +522,5 @@ setWaterTint(0.58,0.22,0.067);				// reddish
 setWaterMurkiness(0.87);
 setWaterWaviness(0.5);
 setWaterType("clap");
-
-// Export map data
 
 ExportMap();

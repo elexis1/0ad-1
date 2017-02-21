@@ -223,7 +223,6 @@ for (var i = 0; i < numPlayers; ++i)
 	createArea(placer, painter, null);
 }
 
-// create bumps
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);
 
 if (randBool())

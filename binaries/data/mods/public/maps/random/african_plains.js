@@ -60,11 +60,7 @@ var clBaseResource = createTileClass();
 // Cover the ground with the primary terrain chosen in the beginning
 for (var ix = 0; ix < mapSize; ++ix)
 	for (var iz = 0; iz < mapSize; ++iz)
-	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
 		placeTerrain(ix, iz, tPrimary);
-	}
 
 // Randomize player order
 var playerIDs = [];

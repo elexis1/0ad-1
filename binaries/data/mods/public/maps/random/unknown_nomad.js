@@ -1,7 +1,6 @@
 RMS.LoadLibrary("rmgen");
 
 TILE_CENTERED_HEIGHT_MAP = true;
-//random terrain textures
 var rt = randomizeBiome();
 
 var tGrass = rBiomeT1();
@@ -49,14 +48,11 @@ var pForestD = [tGrassDForest + TERRAIN_SEPARATOR + oOak, tGrassDForest + TERRAI
 var pForestP = [tGrassPForest + TERRAIN_SEPARATOR + oPine, tGrassPForest + TERRAIN_SEPARATOR + oAleppoPine, tGrassPForest];
 
 log("Initializing map...");
-
 InitMap();
 
 var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -1397,7 +1393,6 @@ for (var i = 0; i < numPlayers; i++)
 	createArea(placer, paintClass(clPlayer), null);
 }
 
-// create bumps
 log("Creating bumps...");
 placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);
 var painter = new SmoothElevationPainter(ELEVATION_MODIFY, 2, 2);
@@ -1519,7 +1514,6 @@ RMS.SetProgress(55);
 
 
 log("Creating stone mines...");
-// create large stone quarries
 var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1), stayClasses(clLand, 3)],

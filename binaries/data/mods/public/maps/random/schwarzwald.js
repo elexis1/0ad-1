@@ -5,7 +5,6 @@ log('Initializing map...');
 
 InitMap();
 
-
 ////////////////
 //
 //  Initializing
@@ -57,7 +56,6 @@ var aBushMedium = 'actor|props/flora/bush_medit_me.xml';
 var aBushSmall = 'actor|props/flora/bush_medit_sm.xml';
 var aReeds = 'actor|props/flora/reeds_pond_lush_b.xml';
 var oFish = "gaia/fauna_fish";
-
 
 // Setup terrain
 var terrainWood = ['alpine_forrestfloor|gaia/flora_tree_oak', 'alpine_forrestfloor|gaia/flora_tree_pine'];
@@ -144,7 +142,6 @@ var resourceRadius = 2*mapRadius/3; // 3*mapRadius/8;
 var maxTreeDensity = min(256 * (192 + 8 * numPlayers) / (mapSize * mapSize), 1); // Has to be tweeked but works ok
 var bushChance = 1/3; // 1 means 50% chance in deepest wood, 0.5 means 25% chance in deepest wood
 
-
 ////////////////
 //
 //  Some general functions
@@ -169,7 +166,6 @@ HeightPlacer.prototype.place = function (constraint) {
     }
     return ret;
 };
-
 
 ////////////////
 // Set height limits and water level by map size
@@ -235,8 +231,6 @@ for (var i=0; i < numPlayers; i++)
 
 	playerStartLocX[i] = x;
 	playerStartLocZ[i] = z;
-
-	// Place starting entities
 
 	rectangularSmoothToHeight({"x": x,"y": z} , 20, 20, playerHeight, 0.8);
 

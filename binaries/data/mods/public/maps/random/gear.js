@@ -2,9 +2,6 @@ RMS.LoadLibrary("rmgen");
 
 TILE_CENTERED_HEIGHT_MAP = true;
 
-//random terrain textures
-var random_terrain = randomizeBiome();
-
 const tMainTerrain = rBiomeT1();
 const tForestFloor1 = rBiomeT2();
 const tForestFloor2 = rBiomeT3();
@@ -49,7 +46,6 @@ const pForest1 = [tForestFloor2 + TERRAIN_SEPARATOR + oTree1, tForestFloor2 + TE
 const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TERRAIN_SEPARATOR + oTree5, tForestFloor1];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
@@ -57,8 +53,6 @@ const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
 
 log(mapSize);
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -272,7 +266,6 @@ for (var m = 0; m < numPlayers*split; m++)
 	createArea(placer, [terrainPainter, elevationPainter], null);
 }
 
-
 var fx = fractionToTiles(0.5);
 var fz = fractionToTiles(0.5);
 ix = round(fx);
@@ -406,7 +399,6 @@ createMines(
 
 RMS.SetProgress(65);
 
-// create decoration
 var planetm = 1;
 
 if (random_terrain == g_BiomeTropic)
@@ -462,6 +454,4 @@ createFood
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
 createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 7, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
 
-
-// Export map data
 ExportMap();

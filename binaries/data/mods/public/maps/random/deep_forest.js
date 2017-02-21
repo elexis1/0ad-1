@@ -41,7 +41,6 @@ var terrainHillBorder = ["temp_highlands", "temp_highlands", "temp_highlands", "
 	"temp_highlands", "temp_highlands", "temp_highlands", "temp_cliff_b", "temp_dirt_gravel_plants",
 	"temp_highlands|gaia/fauna_goat"];
 
-
 // Setup map
 var mapSize = getMapSize();
 var mapRadius = mapSize/2;
@@ -97,12 +96,14 @@ for (var i=0; i < numPlayers; i++)
 
 	playerStartLocX[i] = x;
 	playerStartLocZ[i] = z;
-	// Place starting entities
+
 	placeCivDefaultEntities(x, z, i+1);
+
 	// Place base texture
 	var placer = new ClumpPlacer(2*baseRadius*baseRadius, 2/3, 1/8, 10, x, z);
 	var painter = [new LayeredPainter([terrainBaseBorder, terrainBase, terrainBaseCenter], [baseRadius/4, baseRadius/4]), paintClass(clPlayer)];
 	createArea(placer, painter);
+
 	// Place starting resources
 	var distToSL = 10;
 	var resStartAngle = playerAngle[i] + PI;
@@ -254,9 +255,6 @@ for (var x = 0; x < mapSize; x++)
 		setHeight(x, z, getHeight(x, z) + hVarMiddleHill + hVarHills + 1);
 	}
 }
-
 RMS.SetProgress(95);
 
-
-// Export map data
 ExportMap();

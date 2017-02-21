@@ -30,14 +30,12 @@ const aBush = "actor|props/flora/bush_medit_sm_dry.xml";
 const aRock = "actor|geology/stone_savanna_med.xml";
 
 log("Initializing map...");
-
 InitMap();
 
 var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
 
-// create tile classes
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clForest = createTileClass();
@@ -93,7 +91,6 @@ for (var i = 0; i < numPlayers; i++)
 	addToClass(ix-5, iz, clPlayer);
 	addToClass(ix, iz-5, clPlayer);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -153,7 +150,6 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(20);
 
-// create big patches
 log("Creating big patches...");
 var patches = [tGrass2, tGrass3];
 for (var i = 0; i < patches.length; i++)
@@ -202,7 +198,6 @@ createAreas(
 	scaleByMapSize(1, 3)
 );
 
-
 RMS.SetProgress(55);
 
 var playerConstraint = new AvoidTileClassConstraint(clPlayer, 30);
@@ -223,7 +218,6 @@ for (var i = 0; i < scaleByMapSize(12,30); ++i)
 }
 
 log("Creating metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal);
 createObjectGroups(group, 0,
 	avoidClasses(clPlayer, 20, clMetal, 10, clRock, 8, clWater, 4),
@@ -301,7 +295,6 @@ createObjectGroups(group, 0,
 	scaleByMapSize(4,12), 50
 );
 
-// create berry bush
 log("Creating berry bush...");
 group = new SimpleGroup(
 	[new SimpleObject(oBerryBush, 5,7, 0,4)],
@@ -314,8 +307,6 @@ createObjectGroups(group, 0,
 
 RMS.SetProgress(85);
 
-
-// create straggler trees
 log("Creating straggler trees...");
 var num = scaleByMapSize(70, 500);
 group = new SimpleGroup(
@@ -326,7 +317,6 @@ createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 20, clMetal, 6, clRock, 7, clWater, 1),
 	num
 );
-
 
 // create large grass tufts
 log("Creating large grass tufts...");

@@ -60,7 +60,6 @@ const aRockLarge = "actor|geology/stone_granite_large.xml";
 const aRockMed = "actor|geology/stone_granite_med.xml";
 const aRockSmall = "actor|geology/stone_granite_small.xml";
 
-
 // terrain + entity (for painting)
 const pPalmForest = [tForestFloor+TERRAIN_SEPARATOR+oPalm, tGrass];
 const pPineForest = [tForestFloor+TERRAIN_SEPARATOR+oPine, tGrass];
@@ -133,7 +132,6 @@ for (var i = 0; i < numIslands; ++i)
 	var terrainPainter = new LayeredPainter([tOceanRockDeep, tOceanCoral], [5]);
 	createArea(placer, [terrainPainter, paintClass(clCoral)],avoidClasses(clCoral,0));
 }
-
 
 //create spoke islands
 //put down base resources and animals but do not populate

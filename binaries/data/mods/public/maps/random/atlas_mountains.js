@@ -28,7 +28,6 @@ const oMetalLarge = "gaia/geology_metal_mediterranean_slabs";
 const oWood = "gaia/special_treasure_wood";
 const oFood = "gaia/special_treasure_food_bin";
 
-
 // decorative props
 const aGrass = "actor|props/flora/grass_soft_large_tall.xml";
 const aGrassShort = "actor|props/flora/grass_soft_large.xml";
@@ -39,21 +38,16 @@ const aBushSmall = "actor|props/flora/bush_medit_sm.xml";
 const aCarob = "actor|flora/trees/carob.xml";
 const aAleppoPine = "actor|flora/trees/aleppo_pine.xml";
 
-
-
 // terrain + entity (for painting)
 const pForest1 = [tForestFloor + TERRAIN_SEPARATOR + oCarob, tForestFloor];
 const pForest2 = [tForestFloor + TERRAIN_SEPARATOR + oAleppoPine, tForestFloor];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -115,7 +109,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -172,14 +165,12 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(10);
 
-// create bumps
 createBumps(avoidClasses(clPlayer, 9));
 
 createMountains(tCliff, avoidClasses(clPlayer, 20, clHill, 8), clHill, scaleByMapSize(20, 120));
 
 RMS.SetProgress(25);
 
-// create forests
 createForests(
  [tGrass, tForestFloor, tForestFloor, pForest1, pForest2],
  avoidClasses(clPlayer, 20, clForest, 14, clHill, 1),
@@ -190,7 +181,6 @@ createForests(
 
 RMS.SetProgress(40);
 
-// create dirt patches
 log("Creating dirt patches...");
 createLayeredPatches(
  [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)],
@@ -199,7 +189,6 @@ createLayeredPatches(
  avoidClasses(clForest, 0, clHill, 0, clDirt, 3, clPlayer, 10)
 );
 
-// create grass patches
 log("Creating grass patches...");
 createLayeredPatches(
  [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)],
@@ -211,7 +200,6 @@ createLayeredPatches(
 RMS.SetProgress(50);
 
 log("Creating stone mines...");
-// create stone quarries
 createMines(
  [
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
@@ -221,7 +209,6 @@ createMines(
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 createMines(
  [
   [new SimpleObject(oMetalLarge, 1,1, 0,4)]
@@ -232,7 +219,6 @@ createMines(
 
 RMS.SetProgress(60);
 
-// create decoration
 createDecoration
 (
  [[new SimpleObject(aRockMedium, 1,3, 0,1)],
@@ -330,5 +316,4 @@ setPPContrast(0.45);
 setPPSaturation(0.56);
 setPPBloom(0.1);
 
-// Export map data
 ExportMap();

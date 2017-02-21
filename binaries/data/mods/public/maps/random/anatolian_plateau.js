@@ -34,14 +34,12 @@ const aBushSmall = "actor|props/flora/bush_medit_sm.xml";
 const pForest = [tForestFloor + TERRAIN_SEPARATOR + oPoplar, tForestFloor];
 
 log("Initializing map...");
-
 InitMap();
 
 var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
 
-// create tile classes
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clForest = createTileClass();
@@ -101,7 +99,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -159,7 +156,6 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(20);
 
-// create bumps
 log("Creating bumps...");
 placer = new ChainPlacer(1, floor(scaleByMapSize(4, 6)), floor(scaleByMapSize(2, 5)), 0.5);
 painter = new SmoothElevationPainter(ELEVATION_MODIFY, 2, 2);
@@ -180,7 +176,6 @@ var totalTrees = scaleByMapSize(MIN_TREES, MAX_TREES);
 var numForest = totalTrees * P_FOREST;
 var numStragglers = totalTrees * (1.0 - P_FOREST);
 
-// create forests
 log("Creating forests...");
 var types = [[[tForestFloor, tGrass, pForest], [tForestFloor, pForest]]];	// some variation
 
@@ -202,10 +197,8 @@ for (var i = 0; i < types.length; ++i)
 	);
 }
 
-
 RMS.SetProgress(50);
 
-// create grass patches
 log("Creating grass patches...");
 createLayeredPatches(
  [scaleByMapSize(5, 48), scaleByMapSize(6, 84), scaleByMapSize(8, 128)],
@@ -216,7 +209,6 @@ createLayeredPatches(
  clDirt
 );
 
-// create dirt patches
 log("Creating dirt patches...");
 createLayeredPatches(
  [scaleByMapSize(5, 32), scaleByMapSize(6, 48), scaleByMapSize(7, 80)],
@@ -229,7 +221,6 @@ createLayeredPatches(
 
 RMS.SetProgress(55);
 
-// create big patches
 log("Creating big patches...");
 createLayeredPatches(
  [scaleByMapSize(10, 60), scaleByMapSize(15, 90), scaleByMapSize(20, 120)],
@@ -243,14 +234,13 @@ createLayeredPatches(
 RMS.SetProgress(55);
 
 log("Creating stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clHill, 1),
 	scaleByMapSize(1,4), 100
 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clHill, 1),
@@ -258,7 +248,6 @@ createObjectGroups(group, 0,
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal);
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 20, clMetal, 10, clRock, 5, clHill, 1),
@@ -278,7 +267,6 @@ createObjectGroups(
 	avoidClasses(clForest, 0, clPlayer, 10, clHill, 0),
 	scaleByMapSize(16, 262), 50
 );
-
 
 // create large decorative rocks
 log("Creating large decorative rocks...");
@@ -305,7 +293,6 @@ createObjectGroups(group, 0,
 	6 * numPlayers, 50
 );
 
-// create berry bush
 log("Creating berry bush...");
 group = new SimpleGroup(
 	[new SimpleObject(oBerryBush, 5,7, 0,4)],
@@ -331,8 +318,6 @@ createObjectGroups(group, 0,
 
 RMS.SetProgress(85);
 
-
-// create straggler trees
 log("Creating straggler trees...");
 var types = [oBush, oPoplar];	// some variation
 var num = floor(numStragglers / types.length);

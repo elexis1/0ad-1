@@ -259,7 +259,6 @@ ChainPlacer.prototype.place = function(constraint)
 			}
 	}
 
-
 	return failed > count * this.failFraction ? undefined : retVec;
 };
 

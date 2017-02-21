@@ -1,8 +1,5 @@
 RMS.LoadLibrary("rmgen");
 
-//random terrain textures
-var random_terrain = randomizeBiome();
-
 const tMainTerrain = rBiomeT1();
 const tForestFloor1 = rBiomeT2();
 const tForestFloor2 = rBiomeT3();
@@ -50,14 +47,11 @@ const pForest1 = [tForestFloor2 + TERRAIN_SEPARATOR + oTree1, tForestFloor2 + TE
 const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TERRAIN_SEPARATOR + oTree5, tForestFloor1];
 
 log("Initializing map...");
-
 InitMap();
 
 var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -72,14 +66,8 @@ var clSettlement = createTileClass();
 var clLand = createTileClass();
 
 for (var ix = 0; ix < mapSize; ix++)
-{
 	for (var iz = 0; iz < mapSize; iz++)
-	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
-			placeTerrain(ix, iz, tMainTerrain);
-	}
-}
+		placeTerrain(ix, iz, tMainTerrain);
 
 var fx = fractionToTiles(0.5);
 var fz = fractionToTiles(0.5);
@@ -150,7 +138,6 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand)], null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -308,7 +295,6 @@ for (var g = 0; g < scaleByMapSize(5,30); g++)
 	}
 }
 
-
 for (var i = 0; i < numPlayers; i++)
 {
 	if (i+1 == numPlayers)
@@ -362,16 +348,13 @@ RMS.SetProgress(20);
 paintTerrainBasedOnHeight(3.1, 29, 0, tCliff);
 paintTileClassBasedOnHeight(3.1, 32, 0, clHill2);
 
-// create bumps
 createBumps([avoidClasses(clPlayer, 2), stayClasses(clLand, 2)]);
 
-// create hills
 createHills([tCliff, tCliff, tHill], [avoidClasses(clPlayer, 2, clHill, 8, clHill2, 8), stayClasses(clLand, 5)], clHill, scaleByMapSize(10, 40));
 
 // create hills outside the canyon
 createHills([tCliff, tCliff, tMainTerrain], avoidClasses(clLand, 1, clHill, 1), clHill, scaleByMapSize(20, 150), undefined, undefined, undefined, undefined, 40);
 
-// create forests
 createForests(
  [tMainTerrain, tForestFloor1, tForestFloor2, pForest1, pForest2],
  [avoidClasses(clPlayer, 1, clForest, 15, clHill, 1, clHill2, 0), stayClasses(clLand, 4)],
@@ -382,7 +365,6 @@ createForests(
 
 RMS.SetProgress(50);
 
-// create dirt patches
 log("Creating dirt patches...");
 createLayeredPatches(
  [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)],
@@ -391,7 +373,6 @@ createLayeredPatches(
  [avoidClasses(clForest, 0, clHill, 0, clDirt, 5, clPlayer, 4, clHill2, 0), stayClasses(clLand, 3)]
 );
 
-// create grass patches
 log("Creating grass patches...");
 createPatches(
  [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)],
@@ -400,7 +381,6 @@ createPatches(
 );
 
 log("Creating stone mines...");
-// create stone quarries
 createMines(
  [
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
@@ -410,7 +390,6 @@ createMines(
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 createMines(
  [
   [new SimpleObject(oMetalLarge, 1,1, 0,4)]
@@ -421,7 +400,6 @@ createMines(
 
 RMS.SetProgress(65);
 
-// create decoration
 var planetm = 1;
 
 if (random_terrain == g_BiomeTropic)
@@ -445,7 +423,6 @@ createDecoration
  avoidClasses(clForest, 0, clPlayer, 0, clHill, 0)
 );
 
-// create actor trees
 log("Creating actor trees...");
 group = new SimpleGroup(
 	[new SimpleObject(aTree, 1,1, 0,1)],
@@ -487,12 +464,9 @@ createFood
 
 RMS.SetProgress(85);
 
-
-// create straggler trees
 log("Creating straggler trees...");
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
 createStragglerTrees(types, [avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6, clHill2, 1), stayClasses(clLand, 3)]);
-
 
 // create treasures
 var fx = fractionToTiles(0.5);
@@ -503,5 +477,4 @@ for (var i = 0; i < randInt(3,8); i++)
 for (var i = 0; i < randInt(3,8); i++)
 	placeObject(fx+randFloat(-7,7), fz+randFloat(-7,7), oFood, 0, randFloat(0, TWO_PI));
 
-// Export map data
 ExportMap();

@@ -47,14 +47,11 @@ const aLillies = "actor|props/flora/water_lillies.xml";
 const pForest = [tLush + TERRAIN_SEPARATOR + oDatePalm, tLush + TERRAIN_SEPARATOR + oSDatePalm, tLush];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clForest = createTileClass();
@@ -114,7 +111,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tCityPlaza, tCity], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -183,7 +179,6 @@ for (var i = 0; i < numPlayers; i++)
 	createArea(placer, [painter, elevationPainter, paintClass(clWater)], null);
 }
 
-// create grass patches
 log("Creating grass patches...");
 var sizes = [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)];
 for (var i = 0; i < sizes.length; i++)
@@ -203,7 +198,6 @@ for (var i = 0; i < sizes.length; i++)
 
 RMS.SetProgress(55);
 
-// create dirt patches
 log("Creating dirt patches...");
 var sizes = [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)];
 for (var i = 0; i < sizes.length; i++)
@@ -224,14 +218,13 @@ for (var i = 0; i < sizes.length; i++)
 RMS.SetProgress(60);
 
 log("Creating stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 26, clRock, 10, clWater, 1),
 	2*scaleByMapSize(4,16), 100
 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 26, clRock, 10, clWater, 1),
@@ -239,7 +232,6 @@ createObjectGroups(group, 0,
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal);
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 26, clMetal, 10, clRock, 5, clWater, 1),
@@ -330,7 +322,6 @@ createObjectGroups(group, 0,
 	5*scaleByMapSize(5,20), 50
 );
 
-// Set environment
 setSkySet("sunny");
 setSunColor(0.746, 0.718, 0.539);
 setWaterColor(0, 0.227, 0.843);
@@ -339,5 +330,4 @@ setWaterWaviness(1.0);
 setWaterType("clap");
 setWaterMurkiness(0.5);
 
-// Export map data
 ExportMap();

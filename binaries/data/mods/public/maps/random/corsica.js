@@ -61,14 +61,12 @@ var tForestNicaeLight = [tForestFloor + TERRAIN_SEPARATOR + ePine,tForestFloor +
 var tForestNicaeScarce = [tForestFloor + TERRAIN_SEPARATOR + ePine,tForestFloor + TERRAIN_SEPARATOR + ePine,tForestFloor + TERRAIN_SEPARATOR + eFanPalm, tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor,tForestFloor];
 
 log("Initializing map...");
-
 InitMap();
 
 var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
 
-// create tile classes
 var clCorsica = createTileClass();
 var clSardinia = createTileClass();
 var clCreek = createTileClass();
@@ -95,15 +93,8 @@ var clDune = createTileClass();
 
 // on every pixel of the map, set wet sand
 for (var ix = 0; ix < mapSize; ix++)
-{
 	for (var iz = 0; iz < mapSize; iz++)
-	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
-			placeTerrain(ix, iz, tVeryDeepWater);
-		//addToClass(ix,iz,clWater);
-	}
-}
+		placeTerrain(ix, iz, tVeryDeepWater);
 
 // let's decide if we swap
 var swap = randBool();
@@ -314,7 +305,6 @@ for (var i = 0; i < numPlayers; i++)
 	fx = playerX[i];
 	fz = playerZ[i];
 
-
 	// let's create a nice platform
 	var placer = new ClumpPlacer(PI*radius*radius, 0.95, 0.3, 10, fx,fz);
 	var PlayerArea = createArea(placer, [paintClass(clPlayer)], null);
@@ -326,7 +316,6 @@ for (var i = 0; i < numPlayers; i++)
 	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, getHeight(fx,fz),10);
 	createArea(placer, [painter,paintClass(clSettlement),elevationPainter], null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id, { 'iberWall': false });
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -452,7 +441,6 @@ placer = new ClumpPlacer(120, 0.3, 0.1, 4);
 elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, -5,6);
 createAreas( placer, [elevationPainter],  [avoidClasses(clPlayer,2,clPassage, 2,clCorsica,2,clSardinia,2)],scaleByMapSize(20,100), 5 );
 
-
 log("Repainting");
 var terrTop = createTerrain(tMountainTop);
 var terrMount = createTerrain(tMountain);
@@ -527,13 +515,11 @@ for (var sandx = 0; sandx < mapSize; sandx++) {
 RMS.SetProgress(65);
 
 log("Creating stone mines...");
-// create large stone quarries
 group = new SimpleGroup([new SimpleObject(eStoneMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
 createObjectGroups(group, 0,[stayClasses(clCorsica, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
 createObjectGroups(group, 0,[stayClasses(clSardinia, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
 
 log("Creating metal mines...");
-// create large metal quarries
 group = new SimpleGroup([new SimpleObject(eMetalMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
 createObjectGroups(group, 0,[avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1),stayClasses(clCorsica, 1)],  scaleByMapSize(6,25), 1000  );
 createObjectGroups(group, 0,[avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1),stayClasses(clSardinia, 1)],  scaleByMapSize(6,25), 1000  );
@@ -550,14 +536,12 @@ createObjectGroups(TreeGroup, 0, [avoidClasses(clWater, 1, clForest, 0,clPlayer,
 
 RMS.SetProgress(75);
 
-
 // create small decorative rocks
 log("Creating small decorative rocks...");
 group = new SimpleGroup( [new SimpleObject(aRock, 1,3, 0,1),new SimpleObject(aStandingStone, 0,2, 0,3)], true );
 createObjectGroups( group, 0, avoidClasses(clWater, 0, clForest, 0, clPlayer, 0,clBaseResource, 0, clPassage, 2),
 	scaleByMapSize(16, 262), 50
 );
-
 
 // create large decorative rocks
 log("Creating large decorative rocks...");
@@ -584,8 +568,6 @@ createObjectGroups( group, 0, avoidClasses(clWater, 3,clBaseResource, 0), scaleB
 group = new SimpleGroup( [new SimpleObject(eFish, 1,2, 0,3)] );
 createObjectGroups( group, 0, [avoidClasses(clCreek,3,clShore,3),stayClasses(clWater, 3)], scaleByMapSize(50, 150), 100  );
 
-RMS.SetProgress(90);
-
 RMS.SetProgress(95);
 
 setSkySet(pickRandom(["cumulus", "sunny"]));
@@ -603,11 +585,7 @@ setWaterTint(0.208, 0.659, 0.925);
 setWaterMurkiness(0.72);
 setWaterWaviness(2.0);
 setWaterType("ocean");
-// Export map data
 ExportMap();
-
-
-
 
 // this function will go from point [x1,z1] to point [x2,z2], while following a curve of width (starting-center-starting)
 // it can smooth on the side depending on "smooth", which is the distance of the smooth. Tileclass and Terrain set a tileclass/terrain

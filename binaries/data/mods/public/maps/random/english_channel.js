@@ -55,7 +55,6 @@ const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
 
-// create tile classes
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clForest = createTileClass();
@@ -123,7 +122,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, [painter, paintClass(clPlayer)], null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -142,9 +140,8 @@ for (var i = 0; i < numPlayers; i++)
 	// create metal mine
 	var mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
-	{
 		mAngle = randFloat(0, TWO_PI);
-	}
+
 	var mDist = 12;
 	var mX = round(fx + mDist * cos(mAngle));
 	var mZ = round(fz + mDist * sin(mAngle));
@@ -181,10 +178,13 @@ for (var i = 0; i < numPlayers; i++)
 RMS.SetProgress(10);
 
 log("Creating sea");
+
 var theta = randFloat(0, 1);
 var theta2 = randFloat(0, 1);
+
 var seed = randFloat(2,3);
 var seed2 = randFloat(2,3);
+
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
 	{
@@ -388,7 +388,6 @@ log("Creating straggler trees...");
 var types = [oBeech, oPoplar, oApple];	// some variation
 createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 8, clMetal, 6, clRock, 6));
 
-// Set environment
 setSkySet("cirrus");
 setWaterColor(0.114, 0.192, 0.463);
 setWaterTint(0.255, 0.361, 0.651);

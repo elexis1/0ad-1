@@ -32,7 +32,6 @@ var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
 
-// create tile classes
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clHill2 = createTileClass();
@@ -87,7 +86,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	// create metal mine
@@ -228,7 +226,6 @@ createAreas(
 	scaleByMapSize(2, 8) * numPlayers
 );
 
-
 // calculate desired number of trees for map (based on size)
 var MIN_TREES = 200;
 var MAX_TREES = 1250;
@@ -318,7 +315,7 @@ createObjectGroups(group, 0,
 	scaleByMapSize(4,16), 100
 );
 
-// create small stone quarries
+log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1),
@@ -344,7 +341,6 @@ createObjectGroups(
 	avoidClasses(clForest, 0, clPlayer, 0, clHill, 0),
 	scaleByMapSize(16, 262), 50
 );
-
 
 log("Creating large decorative rocks...");
 group = new SimpleGroup(

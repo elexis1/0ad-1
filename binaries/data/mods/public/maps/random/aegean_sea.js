@@ -49,14 +49,11 @@ const aDecorativeRock = "actor|geology/stone_granite_med.xml";
 const pForest = [tForestFloor, tForestFloor + TERRAIN_SEPARATOR + oCarob, tForestFloor + TERRAIN_SEPARATOR + oDatePalm, tForestFloor + TERRAIN_SEPARATOR + oSDatePalm, tForestFloor];
 
 log("Initializing map...");
-
 InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
-
-// create tile classes
 
 var clPlayer = createTileClass();
 var clForest = createTileClass();
@@ -131,7 +128,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tCityPlaza, tCity], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
@@ -214,22 +210,15 @@ for (var ix = 0; ix < mapSize; ix++)
 		{
 			var h;
 			if (x < (cu + 0.5 + fadeDist - WATER_WIDTH/2))
-			{
 				h = 2 - 5.0 * (1 - ((cu + 0.5 + fadeDist - WATER_WIDTH/2) - x)/fadeDist);
-			}
 			else if (x > (cu2 + 0.5 - fadeDist + WATER_WIDTH/2))
-			{
 				h = 2 - 5.0 * (1 - (x - (cu2 + 0.5 - fadeDist + WATER_WIDTH/2))/fadeDist);
-			}
 			else
-			{
 				h = -3.0;
-			}
 
 			setHeight(ix, iz, h);
-			if (h < 0.7){
+			if (h < 0.7)
 				addToClass(ix, iz, clWater);
-			}
 		}
 	}
 }
@@ -239,10 +228,8 @@ paintTerrainBasedOnHeight(-20, 1, 0, tWater);
 paintTerrainBasedOnHeight(1, 2, 0, tShore);
 
 RMS.SetProgress(40);
-// create bumps
 createBumps(avoidClasses(clWater, 2, clPlayer, 20));
 
-// create forests
 createForests(
  [tForestFloor, tForestFloor, tForestFloor, pForest, pForest],
  avoidClasses(clPlayer, 20, clForest, 17, clWater, 2, clBaseResource, 3),
@@ -257,7 +244,6 @@ if (randInt(1,2) == 1)
 else
 	createMountains(tCliff, avoidClasses(clPlayer, 20, clForest, 1, clHill, 15, clWater, 3), clHill, scaleByMapSize(3, 15));
 
-// create grass patches
 log("Creating grass patches...");
 createLayeredPatches(
  [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)],
@@ -268,7 +254,6 @@ createLayeredPatches(
 
 RMS.SetProgress(55);
 
-// create dirt patches
 log("Creating dirt patches...");
 createLayeredPatches(
  [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)],
@@ -279,7 +264,6 @@ createLayeredPatches(
 
 RMS.SetProgress(60);
 
-//create the undersea bumps
 log("Creating undersea bumps...");
 placer = new ChainPlacer(1, floor(scaleByMapSize(4, 6)), floor(scaleByMapSize(16, 40)), 0.5);
 painter = new SmoothElevationPainter(ELEVATION_SET, -2.5, 3);
@@ -290,7 +274,6 @@ createAreas(
 	scaleByMapSize(10, 50)
 );
 
-// create islands
 log("Creating islands...");
 placer = new ChainPlacer(1, floor(scaleByMapSize(4, 6)), floor(scaleByMapSize(30, 80)), 0.5);
 var terrainPainter = new LayeredPainter(
@@ -321,7 +304,6 @@ createMines(
 );
 
 log("Creating island metal mines...");
-// create island metal quarries
 createMines(
  [
   [new SimpleObject(oMetalLarge, 1,1, 0,4)]
@@ -331,7 +313,6 @@ createMines(
 );
 
 log("Creating stone mines...");
-// create stone quarries
 createMines(
  [
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
@@ -341,7 +322,6 @@ createMines(
 );
 
 log("Creating metal mines...");
-// create large metal quarries
 createMines(
  [
   [new SimpleObject(oMetalLarge, 1,1, 0,4)]
@@ -352,7 +332,6 @@ createMines(
 
 RMS.SetProgress(65);
 
-// create decoration
 createDecoration
 (
  [[new SimpleObject(aDecorativeRock, 1,3, 0,1)],
@@ -409,7 +388,6 @@ createFood
 
 RMS.SetProgress(90);
 
-// create straggler trees
 var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];	// some variation
 createStragglerTrees(types, avoidClasses(clForest, 1, clWater, 2, clPlayer, 12, clMetal, 6, clHill, 1));
 
@@ -417,7 +395,6 @@ log("Creating straggler island trees...");
 g_numStragglerTrees *= 10;
 createStragglerTrees(types, stayClasses(clIsland, 4));
 
-// Set environment
 setSkySet("cumulus");
 setSunColor(0.866667, 0.776471, 0.486275);
 setWaterColor(0, 0.501961, 1);
@@ -434,5 +411,4 @@ setPPContrast(0.62);
 setPPSaturation(0.51);
 setPPBloom(0.12);
 
-// Export map data
 ExportMap();

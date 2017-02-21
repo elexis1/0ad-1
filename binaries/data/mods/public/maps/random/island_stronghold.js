@@ -65,7 +65,6 @@ InitMap();
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 
-// create tile classes
 let clPlayer = createTileClass();
 let clHill = createTileClass();
 let clForest = createTileClass();
@@ -163,7 +162,6 @@ for (let i = 0; i < teams.length; ++i)
 		);
 		createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand)], null);
 
-		// create starting units
 		placeCivDefaultEntities(fx, fz, teams[i][p], { "iberWall": false });
 	}
 
