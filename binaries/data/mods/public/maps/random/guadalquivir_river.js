@@ -218,10 +218,12 @@ for (var ix = 0; ix < mapSize; ix++)
 		// add the rough shape of the water
 		var km = 12/scaleByMapSize(35, 160);
 		var cu = km*rndRiver(theta+z*0.5*(mapSize/64),seed);
-		var zk = z*randFloat(0.995,1.005);
-		var xk = x*randFloat(0.995,1.005);
-		if (-3.0 < getHeight(ix, iz)){
-		if ((xk > cu+((1.0-WATER_WIDTH)/2))&&(xk < cu+((1.0+WATER_WIDTH)/2)))
+		var zk = z * randFloat(0.995, 1.005);
+		var xk = x * randFloat(0.995, 1.005);
+
+		if (-3.0 < getHeight(ix, iz) &&
+		    xk > cu + (1 - WATER_WIDTH) / 2 &&
+		    xk < cu + (1 + WATER_WIDTH) / 2)
 		{
 			if (xk < cu+((1.05-WATER_WIDTH)/2))
 			{
