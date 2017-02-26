@@ -19,6 +19,14 @@
 
 #include "scriptinterface/ScriptInterface.h"
 
+#ifdef WIN32
+#  include <winsock2.h>
+// Undefine conflicting names from winsock2.h and underlying headers
+#  undef GetUserName
+#  undef SendMessage
+#  undef max
+#endif
+
 #include "graphics/Camera.h"
 #include "graphics/FontMetrics.h"
 #include "graphics/GameView.h"
@@ -401,6 +409,15 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	g_Game = new CGame();
 	g_NetClient = new CNetClient(g_Game, false);
 	g_NetClient->SetUserName(playerName);
+
+	// Convert ip string to int64
+	ENetAddress addr;
+	addr.port = serverPort;
+	enet_address_set_host(&addr, serverAddress.c_str());
+	// Send a UDP message from enet host to ip:port
+	LOGWARNING("Sending STUN request to %s:%d", serverAddress.c_str(), serverPort);
+	StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
+
 	if (!g_NetClient->SetupConnection(serverAddress, serverPort, enetClient))
 	{
 		pCxPrivate->pScriptInterface->ReportError("Failed to connect to server");
