@@ -386,7 +386,11 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	CFG_GET_VAL("stun.enabled", stunEnabled);
 	ENetHost* enetClient = NULL;
 	if (stunEnabled) {
-		enetClient = enet_host_create(NULL, 1, 1, 0, 0);
+		ENetAddress hostAddr;
+		hostAddr.host = ENET_HOST_ANY;
+		hostAddr.port = 20595;
+		enetClient = enet_host_create(&hostAddr, 1, 1, 0, 0);
+
 		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpoint(enetClient);
 		g_XmppClient->SendStunEndpointToHost(stunEndpoint, hostJid);
 		// Note: we are sending endpoint and starting to connect right away
