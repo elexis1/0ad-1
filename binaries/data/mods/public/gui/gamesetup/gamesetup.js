@@ -413,7 +413,17 @@ var g_Dropdowns = {
 		"get": () => g_GameAttributes.settings.PlayerData.length,
 		"enabled": () => g_GameAttributes.mapType == "random",
 		"select": (idx) => {
-			selectNumPlayers(idx + 1);
+			let num = idx + 1;
+			let pData = g_GameAttributes.settings.PlayerData;
+
+			g_GameAttributes.settings.PlayerData =
+				num > pData.length ?
+					pData.concat(g_DefaultPlayerData.slice(pData.length, num)) :
+					pData.slice(0, num);
+
+			unassignInvalidPlayers(num);
+			sanitizePlayerData(g_GameAttributes.settings.PlayerData);
+			supplementDefaults();
 		},
 	},
 	"populationCap": {
@@ -1411,26 +1421,6 @@ function unassignInvalidPlayers(maxPlayers)
 		g_PlayerAssignments.local.player = -1;
 
 	updateGUIObjects();
-}
-
-/**
- * Called when the host choses the number of players on a random map.
- */
-function selectNumPlayers(num)
-{
-	if (g_GameAttributes.mapType != "random")
-		return;
-
-	let pData = g_GameAttributes.settings.PlayerData;
-
-	g_GameAttributes.settings.PlayerData =
-		num > pData.length ?
-			pData.concat(g_DefaultPlayerData.slice(pData.length, num)) :
-			pData.slice(0, num);
-
-	unassignInvalidPlayers(num);
-	sanitizePlayerData(g_GameAttributes.settings.PlayerData);
-	supplementDefaults();
 }
 
 function ensureUniquePlayerColors(playerData)
