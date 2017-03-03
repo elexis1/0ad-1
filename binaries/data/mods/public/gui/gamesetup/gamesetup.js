@@ -1044,9 +1044,8 @@ function handleReadyMessage(message)
 
 	if (!g_IsController)
 		return;
-warn("ready")
 	g_PlayerAssignments[message.guid].status = +message.status == 1;
-	//updateGUIObjects();
+	updateGUIObjects();
 }
 
 /**
@@ -1103,7 +1102,7 @@ function handlePlayerAssignmentMessage(message)
 	for (let guid in g_PlayerAssignments)
 		if (!message.newAssignments[guid])
 			onClientLeave(guid);
-warn("ass")
+
 	g_PlayerAssignments = message.newAssignments;
 
 	updateGUIObjects();
