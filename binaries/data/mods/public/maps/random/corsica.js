@@ -91,10 +91,7 @@ var clFood = createTileClass();
 var clSettlement = createTileClass();
 var clDune = createTileClass();
 
-// on every pixel of the map, set wet sand
-for (var ix = 0; ix < mapSize; ix++)
-	for (var iz = 0; iz < mapSize; iz++)
-		placeTerrain(ix, iz, tVeryDeepWater);
+initTerrain(tVeryDeepWater);
 
 // let's decide if we swap
 var swap = randBool();

@@ -67,15 +67,7 @@ var clSettlement = createTileClass();
 var clLand = createTileClass();
 var clWomen = createTileClass();
 
-for (var ix = 0; ix < mapSize; ix++)
-{
-	for (var iz = 0; iz < mapSize; iz++)
-	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
-			placeTerrain(ix, iz, tMainTerrain);
-	}
-}
+initTerrain(tMainTerrain);
 
 var fx = fractionToTiles(0.5);
 var fz = fractionToTiles(0.5);
