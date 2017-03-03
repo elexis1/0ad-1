@@ -1044,7 +1044,7 @@ function handleReadyMessage(message)
 
 	if (!g_IsController)
 		return;
-	g_PlayerAssignments[message.guid].status = +message.status == 1;
+	g_PlayerAssignments[message.guid].status = message.status;
 	updateGUIObjects();
 }
 
