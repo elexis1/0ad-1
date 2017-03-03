@@ -746,7 +746,7 @@ var g_MiscControlArrays = {
 	},
 	"playerName": {
 		"caption": (idx) => {
-			let pData = g_GameAttributes.settings.PlayerData[idx+1];
+			let pData = g_GameAttributes.settings.PlayerData[idx];
 
 			let assignedGUID = Object.keys(g_PlayerAssignments).find(
 				guid => g_PlayerAssignments[guid].player == idx+1);
