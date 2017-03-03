@@ -211,7 +211,7 @@ var g_IsInGuiUpdate;
  * 1 - ready
  * 2 - stay ready
  */
-var g_IsReady;
+var g_IsReady = 0;
 
 /**
  * Ignore duplicate ready commands on init.
