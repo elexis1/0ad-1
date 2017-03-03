@@ -765,13 +765,6 @@ void CNetServerWorker::RemovePlayer(const CStr& guid)
 	SendPlayerAssignments();
 }
 
-void CNetServerWorker::SetPlayerReady(const CStr& guid, const int ready)
-{
-	m_PlayerAssignments[guid].m_Status = ready;
-
-	SendPlayerAssignments();
-}
-
 void CNetServerWorker::ClearAllPlayerReady()
 {
 	for (std::pair<const CStr, PlayerAssignment>& p : m_PlayerAssignments)
@@ -1115,7 +1108,8 @@ bool CNetServerWorker::OnReady(void* context, CFsmEvent* event)
 	message->m_GUID = session->GetGUID();
 
 	server.Broadcast(message, { NSS_PREGAME });
-	server.SetPlayerReady(message->m_GUID, message->m_Status);
+
+	m_PlayerAssignments[message->m_GUID].m_Status = message->m_Status;
 
 	return true;
 }
