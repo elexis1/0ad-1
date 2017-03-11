@@ -65,7 +65,6 @@ var clSettlement = createTileClass();
 var clGrass = createTileClass();
 var clDesert = createTileClass();
 var clPond = createTileClass();
-var clShore = createTileClass();
 var clTreasure = createTileClass();
 
 // randomize player order
@@ -191,7 +190,7 @@ for (var i = 0; i < sizes.length; i++)
 	createAreas(
 		placer,
 		[painter, paintClass(clDirt)],
-		avoidClasses(clForest, 0, clGrass, 5, clPlayer, 0, clWater, 1, clDirt, 5, clShore, 1),
+		avoidClasses(clForest, 0, clGrass, 5, clPlayer, 0, clWater, 1, clDirt, 5),
 		scaleByMapSize(15, 45)
 	);
 }
@@ -210,7 +209,7 @@ for (var i = 0; i < sizes.length; i++)
 	createAreas(
 		placer,
 		[painter, paintClass(clDirt)],
-		avoidClasses(clForest, 0, clDirt, 5, clPlayer, 0, clWater, 1, clGrass, 5, clShore, 1),
+		avoidClasses(clForest, 0, clDirt, 5, clPlayer, 0, clWater, 1, clGrass, 5),
 		scaleByMapSize(15, 45)
 	);
 }
