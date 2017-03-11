@@ -210,7 +210,7 @@ createArea(placer, [painter, elevationPainter], avoidClasses(clPlayer, 8));
 // create the shallows of the main river
 log("Creating the shallows of the main river");
 
-for (var i = 0; i <= randInt(3, scaleByMapSize(4,6)); i++)
+for (let i = 0; i <= randIntInclusive(3, scaleByMapSize(4, 6)); ++i)
 {
 	var cLocation = randFloat(0.15,0.85);
 	passageMaker(floor(fractionToTiles(cLocation)), floor(fractionToTiles(0.35)), floor(fractionToTiles(cLocation)), floor(fractionToTiles(0.65)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
@@ -218,19 +218,14 @@ for (var i = 0; i <= randInt(3, scaleByMapSize(4,6)); i++)
 
 // create tributaries
 log("Creating tributaries");
-
-for (var i = 0; i <= randInt(8, (scaleByMapSize(12,20))); i++)
+for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12,20)); ++i)
 {
-	var cLocation = randFloat(0.05,0.95);
-	var tang = randFloat(PI*0.2, PI*0.8)*((randInt(2)-0.5)*2);
-	if (tang > 0)
-	{
-		var cDistance = 0.05;
-	}
-	else
-	{
-		var cDistance = -0.05;
-	}
+	var cLocation = randFloat(0.05, 0.95);
+
+	let sign = randBool() ? 1 : -1;
+	let tang = sign * PI * randFloat(0.2, 0.8);
+	let cDistance = sign * 0.05;
+
 	var point = getTIPIADBON([fractionToTiles(cLocation), fractionToTiles(0.5 + cDistance)], [fractionToTiles(cLocation), fractionToTiles(0.5 - cDistance)], [-6, -1.5], 0.5, 5, 0.01);
 	if (point !== undefined)
 	{
@@ -432,7 +427,7 @@ group = new SimpleGroup(
 );
 createObjectGroups(group, 0,
 	avoidClasses(clWater, 3, clForest, 0, clPlayer, 15, clHill, 1, clFood, 10),
-	randInt(1, 4) * numPlayers + 2, 50
+	randIntInclusive(1, 4) * numPlayers + 2, 50
 );
 
 // create straggler trees

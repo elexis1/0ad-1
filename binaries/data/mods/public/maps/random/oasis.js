@@ -243,7 +243,8 @@ terrainPainter = new LayeredPainter( [pOasisForestLight,tShoreBlend, tWater, tWa
 var elevationPainter = new SmoothElevationPainter(ELEVATION_SET,  -3,  15 );
 createArea(placer, [terrainPainter, elevationPainter, paintClass(clWater)], null);
 RMS.SetProgress(50);
-if(mapSize > 150 && randInt(0,1)) {
+if (mapSize > 150 && randBool())
+{
 	log ("creating path through");
 	var pAngle = randFloat(0, TWO_PI);
 	var px = round(fx) + round(fractionToTiles(0.13 * cos(pAngle)));

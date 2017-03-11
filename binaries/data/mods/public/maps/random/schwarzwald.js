@@ -230,8 +230,8 @@ for (var i=0; i < numPlayers; i++)
 {
 	playerAngle[i] = (playerAngleStart + i*playerAngleAddAvrg + randFloat(0, playerAngleMaxOff))%(2*PI);
 
-	var x = round(mapCenterX + randFloat(minPlayerRadius, maxPlayerRadius)*cos(playerAngle[i]));
-	var z = round(mapCenterZ + randFloat(minPlayerRadius, maxPlayerRadius)*sin(playerAngle[i]));
+	var x = Math.round(mapCenterX + randFloat(minPlayerRadius, maxPlayerRadius) * Math.cos(playerAngle[i]));
+	var z = Math.round(mapCenterZ + randFloat(minPlayerRadius, maxPlayerRadius) * Math.sin(playerAngle[i]));
 
 	playerStartLocX[i] = x;
 	playerStartLocZ[i] = z;
@@ -434,7 +434,7 @@ for (var x = 0; x < mapSize; x++)
 
 		if (randFloat() < tDensActual && radius < playableMapRadius)
 		{
-			if (tDensActual < bushChance*randFloat()*maxTreeDensity)
+			if (tDensActual < randFloat(0, bushChance * maxTreeDensity))
 			{
 				var placer = new ClumpPlacer(1, 1.0, 1.0, 1, x, z);
 				var painter = [new TerrainPainter(terrainWoodBorder), paintClass(clForest)];

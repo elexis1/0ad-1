@@ -121,7 +121,7 @@ var playerX = new Array(numPlayers);
 var playerZ = new Array(numPlayers);
 var playerAngle = new Array(numPlayers);
 
-var startAngle = randFloat() * 2 * PI;
+var startAngle = randFloat(0, 2*PI);
 for (var i=0; i < numPlayers; i++)
 {
 	playerAngle[i] = startAngle + i*2*PI/numPlayers;
@@ -396,24 +396,9 @@ for (var ix = 0; ix < mapSize; ix++)
 			explorableArea.points.push(pt);
 		}
 
-		if(h > 35)
-		{
-			var rnd = randFloat();
-			if(g_Map.validT(ix, iz) && rnd < 0.1)
-			{
-				var i = randInt(aTrees.length);
-				placeObject(ix+randFloat(), iz+randFloat(), aTrees[i], 0, randFloat(0, TWO_PI));
-			}
-		}
-		else if(h < 15 && hillDecoClass.countMembersInRadius(ix, iz, 1) == 0)
-		{
-			var rnd = randFloat();
-			if(g_Map.validT(ix, iz) && rnd < 0.05)
-			{
-				var i = randInt(aTrees.length);
-				placeObject(ix+randFloat(), iz+randFloat(), aTrees[i], 0, randFloat(0, TWO_PI));
-			}
-		}
+		if (h > 35 && g_Map.validT(ix, iz) && randFloat(0, 1) < 0.1 ||
+		    h < 15 && g_Map.validT(ix, iz) && randFloat(0, 1) < 0.05 && hillDecoClass.countMembersInRadius(ix, iz, 1) == 0)
+			placeObject(ix + randFloat(0, 1), iz + randFloat(0, 1), pickRandom(aTrees), 0, randFloat(0, 2 * PI));
 	}
 }
 
@@ -581,7 +566,7 @@ group = new SimpleGroup(
 );
 createObjectGroups(group, 0,
 	avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 20),
-	randInt(3, 12) * numPlayers + 2, 50
+	randIntInclusive(3, 12) * numPlayers + 2, 50
 );
 
 log("Creating decorative props...");
