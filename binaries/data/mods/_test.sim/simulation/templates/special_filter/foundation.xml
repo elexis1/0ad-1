@@ -8,7 +8,6 @@
     <PopulationBonus>0</PopulationBonus>
   </Cost>
   <Decay merge=""/>
-  <!-- Initialise health to 1 -->
   <Health>
     <Initial>1</Initial>
   </Health>
