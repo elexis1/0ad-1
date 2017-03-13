@@ -730,6 +730,9 @@ function joinSelectedGame()
 	 * (probably an explicit "hostname" param)
 	 */
 	let hostPlayerName = stringifiedTeamListToPlayerData(game.players)[0].Name;
+	let ratingPos = hostPlayerName.indexOf(" (");
+	if (hostPlayerName.indexOf(" (") != -1)
+		hostPlayerName = hostPlayerName.substr(0, ratingPos);
 	let hostJid = hostPlayerName + "@" + g_LobbyServer + "/0ad";
 
 	Engine.PushGuiPage("page_gamesetup_mp.xml", {
