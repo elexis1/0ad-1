@@ -34,6 +34,7 @@
 #endif
 
 #include "lib/external_libraries/enet.h"
+#include "lib/external_libraries/libsdl.h"
 #include "network/StunClient.h"
 #include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
@@ -1433,6 +1434,11 @@ void CNetServerWorker::SendHolePunchingMessage(std::string ipStr, int port) {
 	enet_address_set_host(&addr, ipStr.c_str());
 	// Send a UDP message from enet host to ip:port
 	StunClient::SendStunRequest(m_Host, htonl(addr.host), port);
+	SDL_Delay(1000);
+	StunClient::SendStunRequest(m_Host, htonl(addr.host), port);
+	SDL_Delay(1000);
+	StunClient::SendStunRequest(m_Host, htonl(addr.host), port);
+	SDL_Delay(1000);
 }
 
 

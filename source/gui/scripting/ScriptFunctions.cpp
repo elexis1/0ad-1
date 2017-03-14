@@ -419,6 +419,11 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	// Send a UDP message from enet host to ip:port
 	LOGWARNING("Sending STUN request to %s:%d", serverAddress.c_str(), serverPort);
 	StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
+	SDL_Delay(1000);
+	StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
+	SDL_Delay(1000);
+	StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
+	SDL_Delay(1000);
 
 	if (!g_NetClient->SetupConnection(serverAddress, serverPort, enetClient))
 	{
