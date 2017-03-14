@@ -39,6 +39,7 @@
 #include "i18n/L10n.h"
 #include "i18n/scripting/JSInterface_L10n.h"
 #include "lib/external_libraries/enet.h"
+#include "lib/external_libraries/libsdl.h"
 #include "lib/svn_revision.h"
 #include "lib/sysdep/sysdep.h"
 #include "lib/timer.h"
@@ -404,6 +405,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 		// Note: we are sending endpoint and starting to connect right away
 		// we may actually need to wait for host's response (this needs
 		// to be checked)
+		SDL_Delay(1000);
 	}
 
 	g_Game = new CGame();
