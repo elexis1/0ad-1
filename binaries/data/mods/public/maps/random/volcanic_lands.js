@@ -137,71 +137,7 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(15);
 
-log("Creating volcano");
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.5);
-var ix = round(fx);
-var iz = round(fz);
-var div = scaleByMapSize(1,8);
-var placer = new ClumpPlacer(mapArea * 0.067 / div, 0.7, 0.05, 100, ix, iz);
-var terrainPainter = new LayeredPainter(
-	[tCliff, tCliff],		// terrains
-	[3]								// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	15,				// elevation
-	3				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill)], null);
-
-var placer = new ClumpPlacer(mapArea * 0.05 / div, 0.7, 0.05, 100, ix, iz);
-var terrainPainter = new LayeredPainter(
-	[tCliff, tCliff],		// terrains
-	[3]								// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	25,				// elevation
-	3				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill2)], stayClasses(clHill, 1));
-
-var placer = new ClumpPlacer(mapArea * 0.02 / div, 0.7, 0.05, 100, ix, iz);
-var terrainPainter = new LayeredPainter(
-	[tCliff, tCliff],		// terrains
-	[3]								// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	45,				// elevation
-	3				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill3)], stayClasses(clHill2, 1));
-
-var placer = new ClumpPlacer(mapArea * 0.011 / div, 0.7, 0.05, 100, ix, iz);
-var terrainPainter = new LayeredPainter(
-	[tCliff, tCliff],		// terrains
-	[3]								// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	62,				// elevation
-	3				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill4)], stayClasses(clHill3, 1));
-
-var placer = new ClumpPlacer(mapArea * 0.003 / div, 0.7, 0.05, 100, ix, iz);
-var terrainPainter = new LayeredPainter(
-	[tCliff, tLava1, tLava2, tLava3],		// terrains
-	[1, 1, 1]								// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	42,				// elevation
-	1				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill4)], stayClasses(clHill4, 1));
+var div = createVolcano();
 
 var num = floor(mapArea * 0.03 / 15 / div);
 var tX = round(fx);
