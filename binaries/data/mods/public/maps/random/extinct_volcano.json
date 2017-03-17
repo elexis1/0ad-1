@@ -5,8 +5,12 @@
 		"Description" : "A charred dead land where players start around a smoking volcano.",
 		"BaseTerrain" : "ocean_rock_a",
 		"BaseHeight" : 1,
-		"Keywords": ["new"],
+		"Keywords": ["new", "trigger"],
 		"CircularMap" : true,
-		"Preview" : "volcanic_lands.png"
+		"Preview" : "extinctvolcano.png",
+		"TriggerScripts": [
+			"scripts/TriggerHelper.js",
+			"random/extinct_volcano_triggers.js"
+		]
 	}
 }
