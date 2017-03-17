@@ -198,12 +198,13 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(15);
 
+createBumps(avoidClasses(), 100, 1, 10, 3, 0, 10, 500);
+
 var div = createVolcano();
 
 var num = floor(mapArea * 0.03 / 15 / div);
 var tX = round(fx);
 var tZ = round(fz);
-
 
 RMS.SetProgress(45);
 
@@ -220,7 +221,6 @@ createAreas(
 	avoidClasses(clPlayer, 12, clHill, 15, clWater, 2, clBaseResource, 2),
 	scaleByMapSize(2, 8) * numPlayers
 );
-
 
 // calculate desired number of trees for map (based on size)
 var MIN_TREES = 300;
