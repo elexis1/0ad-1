@@ -17,7 +17,6 @@ const tLava2 = "LavaTest04";
 const tLava3 = "LavaTest03";
 
 // gaia entities
-const oChicken = "gaia/fauna_chicken";
 const oTree = "gaia/flora_tree_dead";
 const oTree2 = "gaia/flora_tree_euro_beech";
 const oTree3 = "gaia/flora_tree_oak";
@@ -109,7 +108,6 @@ for (var i = 0; i < numPlayers; i++)
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
-	// create starting units
 	placeCivDefaultEntities(fx, fz, id);
 
 	// create metal mine
@@ -138,19 +136,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0);
 
-	// create animals
-	for (var j = 0; j < 2; ++j)
-	{
-		var aAngle = randFloat(0, TWO_PI);
-		var aDist = 7;
-		var aX = round(fx + aDist * cos(aAngle));
-		var aZ = round(fz + aDist * sin(aAngle));
-		var group = new SimpleGroup(
-			[new SimpleObject(oChicken, 1,1, 0,2)],
-			true, clBaseResource, aX, aZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultChicken(fx, fz, clBaseResource);
 
 	// create berry bushes
 	var bbAngle = randFloat(0, TWO_PI);
@@ -180,20 +166,8 @@ for (var i = 0; i < numPlayers; i++)
 		if (createObjectGroup(group, 0, avoidClasses(clBaseResource, 2)))
 			break;
 	}
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 RMS.SetProgress(15);
