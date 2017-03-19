@@ -55,9 +55,6 @@ var mapArea = mapSize*mapSize;
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clFood = createTileClass();
-var clHill2 = createTileClass();
-var clHill3 = createTileClass();
-var clHill4 = createTileClass();
 var clForest = createTileClass();
 var clWater = createTileClass();
 var clDirt = createTileClass();
@@ -174,11 +171,7 @@ RMS.SetProgress(15);
 
 createBumps(avoidClasses(), 100, 1, 10, 3, 0, 10, 500);
 
-var div = createVolcano();
-
-var num = floor(mapArea * 0.03 / 15 / div);
-var tX = round(fx);
-var tZ = round(fz);
+createVolcano();
 
 RMS.SetProgress(45);
 

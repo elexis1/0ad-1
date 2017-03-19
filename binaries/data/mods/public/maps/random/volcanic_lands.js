@@ -20,7 +20,6 @@ var oMetalLarge = "gaia/geology_metal_alpine_slabs";
 // decorative props
 var aRockLarge = "actor|geology/stone_granite_med.xml";
 var aRockMedium = "actor|geology/stone_granite_med.xml";
-var aSmoke = "actor|particle/smoke.xml";
 
 var pForestD = [tGrassC + TERRAIN_SEPARATOR + oTree, tGrassC];
 var pForestP = [tGrassB + TERRAIN_SEPARATOR + oTree, tGrassB];
@@ -35,9 +34,6 @@ var mapArea = mapSize*mapSize;
 // create tile classes
 var clPlayer = createTileClass();
 var clHill = createTileClass();
-var clHill2 = createTileClass();
-var clHill3 = createTileClass();
-var clHill4 = createTileClass();
 var clForest = createTileClass();
 var clDirt = createTileClass();
 var clRock = createTileClass();
@@ -134,32 +130,19 @@ for (var i = 0; i < numPlayers; i++)
 			break;
 	}
 }
-
 RMS.SetProgress(15);
 
-var div = createVolcano();
-
-var num = floor(mapArea * 0.03 / 15 / div);
-var tX = round(fx);
-var tZ = round(fz);
-var group = new SimpleGroup(
-	[new SimpleObject(aSmoke, num, num, 0,7)],
-	false, clBaseResource, tX, tZ
-);
-createObjectGroup(group, 0, stayClasses(clHill4,1));
-
+createVolcano();
 RMS.SetProgress(45);
 
 log("Creating hills...");
-placer = new ClumpPlacer(scaleByMapSize(20, 150), 0.2, 0.1, 1);
-terrainPainter = new LayeredPainter(
-	[tCliff, tGrass],		// terrains
-	[2]								// widths
-);
-elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 18, 2);
 createAreas(
-	placer,
-	[terrainPainter, elevationPainter, paintClass(clHill)],
+	new ClumpPlacer(scaleByMapSize(20, 150), 0.2, 0.1, 1),
+	[
+		new LayeredPainter([tCliff, tGrass], [2]),
+		new SmoothElevationPainter(ELEVATION_SET, 18, 2),
+		paintClass(clHill)
+	],
 	avoidClasses(clPlayer, 12, clHill, 15, clBaseResource, 2),
 	scaleByMapSize(2, 8) * numPlayers
 );

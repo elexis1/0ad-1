@@ -803,73 +803,79 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 	}
 }
 
-function createVolcano()
+/**
+ * @param {number} x - horizontal coordinate
+ * @param {number} z - other horizontal coordinate
+ * @param {number} tileClass - which class to paint
+ * @param {number} elevationType - Elevation painter type, ELEVATION_SET = absolute or ELEVATION_MODIFY = relative
+ */
+function createVolcano(fx = 0.5, fz = 0.5, tileClass = clHill, terrainTexture = tCliff, elevationType = ELEVATION_SET, smoke = true)
 {
 	log("Creating volcano");
-	var fx = fractionToTiles(0.5);
-	var fz = fractionToTiles(0.5);
-	var ix = round(fx);
-	var iz = round(fz);
-	var div = scaleByMapSize(1,8);
-	var placer = new ClumpPlacer(mapArea * 0.067 / div, 0.7, 0.05, 100, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tCliff, tCliff],		// terrains
-		[3]								// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		15,				// elevation
-		3				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill)], null);
 
-	var placer = new ClumpPlacer(mapArea * 0.05 / div, 0.7, 0.05, 100, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tCliff, tCliff],		// terrains
-		[3]								// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		25,				// elevation
-		3				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill2)], stayClasses(clHill, 1));
+	let ix = Math.round(fractionToTiles(fx));
+	let iz = Math.round(fractionToTiles(fz));
 
-	var placer = new ClumpPlacer(mapArea * 0.02 / div, 0.7, 0.05, 100, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tCliff, tCliff],		// terrains
-		[3]								// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		45,				// elevation
-		3				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill3)], stayClasses(clHill2, 1));
+	let baseSize = mapArea / scaleByMapSize(1, 8);
 
-	var placer = new ClumpPlacer(mapArea * 0.011 / div, 0.7, 0.05, 100, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tCliff, tCliff],		// terrains
-		[3]								// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		62,				// elevation
-		3				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill4)], stayClasses(clHill3, 1));
+	let coherence = 0.7;
+	let smoothness = 0.05;
+	let failFraction = 100;
+	let steepness = 3;
+	let clLast = createTileClass();
 
-	var placer = new ClumpPlacer(mapArea * 0.003 / div, 0.7, 0.05, 100, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tCliff, tLava1, tLava2, tLava3],		// terrains
-		[1, 1, 1]								// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		42,				// elevation
-		1				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill4)], stayClasses(clHill4, 1));
+	let layerSizes = [
+		{
+			"clumps": 0.067,
+			"elevation": 15,
+			"tileClass": tileClass
+		},
+		{
+			"clumps": 0.05,
+			"elevation": 25,
+			"tileClass": createTileClass()
+		},
+		{
+			"clumps": 0.02,
+			"elevation": 45,
+			"tileClass": createTileClass()
+		},
+		{
+			"clumps": 0.011,
+			"elevation": 62,
+			"tileClass": clLast
+		}
+	];
 
-	return div;
+	for (let i = 0; i < layerSizes.length; ++i)
+		createArea(
+			new ClumpPlacer(baseSize * layerSizes[i].clumps, coherence, smoothness, failFraction, ix, iz),
+			[
+				new LayeredPainter([terrainTexture, terrainTexture], [3]),
+				new SmoothElevationPainter(elevationType, layerSizes[i].elevation, steepness),
+				paintClass(layerSizes[i].tileClass)
+			],
+			i == 0 ? null : stayClasses(layerSizes[i - 1].tileClass, 1));
+
+	// lava
+	createArea(
+		new ClumpPlacer(baseSize * 0.003, coherence, smoothness, failFraction, ix, iz),
+		[
+			new LayeredPainter([terrainTexture, tLava1, tLava2, tLava3], [1, 1, 1]),
+			new SmoothElevationPainter(elevationType, 42, 1),
+			paintClass(clLast)
+		],
+		stayClasses(clLast, 1));
+
+	if (!smoke)
+		return;
+
+	let num = Math.floor(baseSize * 0.002);
+	createObjectGroup(
+		new SimpleGroup(
+			[new SimpleObject("actor|particle/smoke.xml", num, num, 0, 7)],
+			false, createTileClass(), Math.round(fx), Math.round(fz)
+		),
+		0,
+		stayClasses(tileClass, 1));
 }
