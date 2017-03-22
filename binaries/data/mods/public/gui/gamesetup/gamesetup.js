@@ -311,6 +311,7 @@ var g_OptionOrder = {
 			"revealMap",
 			"exploreMap",
 			"disableTreasures",
+			"disableSpies",
 			"lockTeams",
 			"lastManStanding",
 			"enableCheats",
@@ -630,6 +631,17 @@ var g_Checkboxes = {
 		"get": () => g_GameAttributes.settings.DisableTreasures,
 		"set": checked => {
 			g_GameAttributes.settings.DisableTreasures = checked;
+		},
+		"enabled": () => g_GameAttributes.mapType != "scenario",
+	},
+	"disableSpies": {
+		"title": () => translate("Disable Spies"),
+		"tooltip": () => translate("Disable spies during the game."),
+		"default": () => false,
+		"defined": () => g_GameAttributes.settings.DisableSpies !== undefined,
+		"get": () => g_GameAttributes.settings.DisableSpies,
+		"set": checked => {
+			g_GameAttributes.settings.DisableSpies = checked;
 		},
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
