@@ -1109,7 +1109,7 @@ bool CNetServerWorker::OnReady(void* context, CFsmEvent* event)
 
 	server.Broadcast(message, { NSS_PREGAME });
 
-	m_PlayerAssignments[message->m_GUID].m_Status = message->m_Status;
+	server.m_PlayerAssignments[message->m_GUID].m_Status = message->m_Status;
 
 	return true;
 }
