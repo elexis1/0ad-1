@@ -12,13 +12,13 @@
 # Mikola Péter <mikopet@gmail.com>, 2015
 # Stew Den <stewden55@hotmail.com>, 2014
 # Tibor Buzási, 2014
-# Tibor Buzási, 2015-2016
+# Tibor Buzási, 2015-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-09 09:02+0100\n"
-"PO-Revision-Date: 2017-01-09 13:36+0000\n"
-"Last-Translator: Balázs Meskó <meskobalazs@gmail.com>\n"
+"POT-Creation-Date: 2017-03-06 09:29+0100\n"
+"PO-Revision-Date: 2017-03-06 08:55+0000\n"
+"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/wildfire-games/0ad/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -83,34 +83,21 @@ msgstr "%(url)s megnyitása\naz alapértelmezett böngészőben. Kérlek, várj.
 msgid "Opening page"
 msgstr "Nyitólap"
 
-#: gui/common/functions_global_object.js:72
+#: gui/common/functions_global_object.js:69
 #, javascript-format
 msgid "FPS: %(fps)4s"
 msgstr "Képkocka másodpercenként: %(fps)4s"
 
-#. Translation: The "x" means "times", with the mathematical meaning of
-#. multiplication.
-#: gui/common/functions_global_object.js:89
-#, javascript-format
-msgid "%(time)s (%(speed)sx)"
-msgstr "%(time)s (%(speed)sx)"
-
-#: gui/common/functions_global_object.js:106
-#, javascript-format
-msgctxt "ceasefire"
-msgid "Time remaining until ceasefire is over: %(time)s."
-msgstr "Hátralévő idő a tűzszünet végéig: %(time)s."
-
-#: gui/common/functions_utility.js:121
+#: gui/common/functions_utility.js:108
 msgctxt "map selection"
 msgid "Random"
 msgstr "Véletlenszerű"
 
-#: gui/common/functions_utility.js:132
+#: gui/common/functions_utility.js:119
 msgid "mm:ss"
 msgstr "mm:ss"
 
-#: gui/common/functions_utility.js:134
+#: gui/common/functions_utility.js:119
 msgid "HH:mm:ss"
 msgstr "HH:mm:ss"
 
@@ -150,19 +137,19 @@ msgstr "A mentett játék véglegesen törlődik. Biztos vagy benne?"
 msgid "DELETE"
 msgstr "TÖRLÉS"
 
-#: gui/common/functions_utility_loadsave.js:87 gui/common/tooltips.js:212
+#: gui/common/functions_utility_loadsave.js:87 gui/common/tooltips.js:217
 #: gui/options/options.js:279 gui/options/options.js:346
-#: gui/pregame/mainmenu.js:256 gui/replaymenu/replay_actions.js:159
+#: gui/pregame/mainmenu.js:261 gui/replaymenu/replay_actions.js:159
 #: gui/savedgames/load.js:128 gui/savedgames/save.js:65
-#: gui/summary/summary.js:156
+#: gui/summary/summary.js:146
 msgid "No"
 msgstr "Nem"
 
-#: gui/common/functions_utility_loadsave.js:87 gui/common/tooltips.js:212
+#: gui/common/functions_utility_loadsave.js:87 gui/common/tooltips.js:217
 #: gui/options/options.js:279 gui/options/options.js:346
-#: gui/pregame/mainmenu.js:256 gui/replaymenu/replay_actions.js:159
+#: gui/pregame/mainmenu.js:261 gui/replaymenu/replay_actions.js:159
 #: gui/savedgames/load.js:128 gui/savedgames/save.js:65
-#: gui/summary/summary.js:156
+#: gui/summary/summary.js:146
 msgid "Yes"
 msgstr "Igen"
 
@@ -350,7 +337,7 @@ msgstr "Ha egy játékos nyer, akkor a szövetségesei is. Ha csak egy szövets�
 msgid "Ceasefire"
 msgstr "Tűzszünet"
 
-#: gui/common/gamedescription.js:243 gui/pregame/mainmenu.js:86
+#: gui/common/gamedescription.js:243 gui/pregame/mainmenu.js:91
 msgid "disabled"
 msgstr "letiltva"
 
@@ -409,9 +396,9 @@ msgstr "Felfedezett térkép"
 msgid "Cheats"
 msgstr "Csalások"
 
-#: gui/common/gamedescription.js:324 gui/common/tooltips.js:58
-#: gui/common/tooltips.js:105 gui/common/tooltips.js:147
-#: gui/common/tooltips.js:370 gui/common/tooltips.js:646
+#: gui/common/gamedescription.js:324 gui/common/tooltips.js:63
+#: gui/common/tooltips.js:110 gui/common/tooltips.js:152
+#: gui/common/tooltips.js:375 gui/common/tooltips.js:651
 #, javascript-format
 msgid "%(label)s %(details)s"
 msgstr "%(label)s %(details)s"
@@ -426,6 +413,14 @@ msgctxt "gamesetup option"
 msgid "disabled"
 msgstr "letiltva"
 
+#: gui/common/gamedescription.js:345
+msgid "Victorious"
+msgstr "Győzedelmes"
+
+#: gui/common/gamedescription.js:350
+msgid "Defeated"
+msgstr "Legyőzve"
+
 #: gui/common/l10n.js:13
 #, javascript-format
 msgid "%(amount)s %(resourceType)s"
@@ -438,11 +433,11 @@ msgstr "%(previousAmounts)s és %(lastAmount)s"
 
 #. Translation: This comma is used for separating first to penultimate
 #. elements in an enumeration.
-#: gui/common/l10n.js:23 gui/common/network.js:159 gui/common/tooltips.js:118
-#: gui/common/tooltips.js:132 gui/common/tooltips.js:214
-#: gui/common/tooltips.js:243 gui/common/tooltips.js:276
-#: gui/common/tooltips.js:525 gui/common/tooltips.js:559
-#: gui/common/tooltips.js:613 gui/replaymenu/replay_actions.js:89
+#: gui/common/l10n.js:23 gui/common/network.js:160 gui/common/tooltips.js:123
+#: gui/common/tooltips.js:137 gui/common/tooltips.js:219
+#: gui/common/tooltips.js:248 gui/common/tooltips.js:281
+#: gui/common/tooltips.js:530 gui/common/tooltips.js:564
+#: gui/common/tooltips.js:618 gui/replaymenu/replay_actions.js:89
 #: gui/replaymenu/replay_actions.js:90 gui/savedgames/load.js:59
 #: gui/savedgames/load.js:115 gui/savedgames/load.js:118
 msgid ", "
@@ -511,36 +506,40 @@ msgstr "A játékosnév használatban van. Ha szétkapcsolódtál, próbáld meg
 msgid "Server full"
 msgstr "Kiszolgáló tele"
 
-#: gui/common/network.js:76
+#: gui/common/network.js:74
+msgid "Player identifier in use, retry connecting"
+msgstr "Játékos azonosító használatban, újbóli kísérlet a kapcsolódásra"
+
+#: gui/common/network.js:77
 #, javascript-format
 msgid "\\[Invalid value %(id)s]"
 msgstr "\\[érvénytelen érték: %(id)s]"
 
 #. Translation: States the reason why the client disconnected from the server.
-#: gui/common/network.js:88
+#: gui/common/network.js:89
 #, javascript-format
 msgid "Reason: %(reason)s."
 msgstr "Ez okból: %(reason)s."
 
-#: gui/common/network.js:93
+#: gui/common/network.js:94
 msgid "Lost connection to the server."
 msgstr "A szerverkapcsolat megszakadt."
 
-#: gui/common/network.js:94
+#: gui/common/network.js:95
 msgid "Failed to connect to the server."
 msgstr "A kiszolgálóhoz kapcsolódás sikertelen."
 
-#: gui/common/network.js:96
+#: gui/common/network.js:97
 msgid "Disconnected"
 msgstr "Lekapcsolódott"
 
-#: gui/common/network.js:104
+#: gui/common/network.js:105
 msgid "Only the host can kick clients!"
 msgstr "Csak a gazda rúghat ki ügyfeleket!"
 
 #. Translation: Number of currently connected players/observers and their
 #. names
-#: gui/common/network.js:158
+#: gui/common/network.js:159
 #, javascript-format
 msgid "Users (%(num)s): %(users)s"
 msgstr "Felhasználók (%(num)s): %(users)s"
@@ -678,267 +677,266 @@ msgstr "Szúrás"
 msgid "Crush"
 msgstr "Zúzás"
 
-#: gui/common/tooltips.js:59
+#: gui/common/tooltips.js:21
+msgid "Circular Splash Damage"
+msgstr "Kör alakú területi sebzés"
+
+#: gui/common/tooltips.js:22
+msgid "Linear Splash Damage"
+msgstr "Lineáris területi sebzés"
+
+#: gui/common/tooltips.js:64
 msgid "Health:"
 msgstr "Életerő:"
 
-#: gui/common/tooltips.js:68
+#: gui/common/tooltips.js:73
 #, javascript-format
 msgid "%(time)s %(second)s"
 msgid_plural "%(time)s %(second)s"
 msgstr[0] "%(time)s %(second)s"
 msgstr[1] "%(time)s %(second)s"
 
-#: gui/common/tooltips.js:70 gui/common/tooltips.js:239
-#: gui/common/tooltips.js:288 gui/common/tooltips.js:302
-#: gui/common/tooltips.js:557
+#: gui/common/tooltips.js:75 gui/common/tooltips.js:244
+#: gui/common/tooltips.js:293 gui/common/tooltips.js:307
+#: gui/common/tooltips.js:562
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
 
-#: gui/common/tooltips.js:79
+#: gui/common/tooltips.js:84
 #, javascript-format
 msgid "%(arrowcount)s %(arrows)s"
 msgid_plural "%(arrowcount)s %(arrows)s"
 msgstr[0] "%(arrowcount)s %(arrows)s"
 msgstr[1] "%(arrowcount)s %(arrows)s"
 
-#: gui/common/tooltips.js:81
+#: gui/common/tooltips.js:86
 msgid "arrow"
 msgid_plural "arrows"
 msgstr[0] "nyíl"
 msgstr[1] "nyíl"
 
-#: gui/common/tooltips.js:84
+#: gui/common/tooltips.js:89
 #, javascript-format
 msgid "%(arrowString)s / %(timeString)s"
 msgstr "%(arrowString)s / %(timeString)s"
 
-#: gui/common/tooltips.js:95
+#: gui/common/tooltips.js:100
 #, javascript-format
 msgid "%(percentage)s%%"
 msgstr "%(percentage)s%%"
 
-#: gui/common/tooltips.js:106
+#: gui/common/tooltips.js:111
 msgid "Armor:"
 msgstr "Páncél:"
 
-#: gui/common/tooltips.js:109
+#: gui/common/tooltips.js:114
 #, javascript-format
 msgid "%(damage)s %(damageType)s %(armorPercentage)s"
 msgstr "%(damage)s %(damageType)s %(armorPercentage)s"
 
-#: gui/common/tooltips.js:114
+#: gui/common/tooltips.js:119
 #, javascript-format
 msgid "(%(armorPercentage)s)"
 msgstr "(%(armorPercentage)s)"
 
-#: gui/common/tooltips.js:125
+#: gui/common/tooltips.js:130
 msgid "(None)"
 msgstr "(Nincs)"
 
-#: gui/common/tooltips.js:129
+#: gui/common/tooltips.js:134
 #, javascript-format
 msgid "%(damage)s %(damageType)s"
 msgstr "%(damage)s %(damageType)s"
 
-#: gui/common/tooltips.js:151
+#: gui/common/tooltips.js:156
 msgid "Interval:"
 msgstr "Időtartam:"
 
-#: gui/common/tooltips.js:152 gui/common/tooltips.js:555
+#: gui/common/tooltips.js:157 gui/common/tooltips.js:560
 msgid "Rate:"
 msgstr "Sebesség:"
 
-#: gui/common/tooltips.js:159
+#: gui/common/tooltips.js:164
 #, javascript-format
 msgid "%(attackLabel)s %(details)s, %(rate)s"
 msgstr "%(attackLabel)s %(details)s, %(rate)s"
 
-#: gui/common/tooltips.js:175
+#: gui/common/tooltips.js:180
 #, javascript-format
 msgid ""
 "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s "
 "(%(relative)s), %(rate)s"
 msgstr "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s (%(relative)s), %(rate)s"
 
-#: gui/common/tooltips.js:176
+#: gui/common/tooltips.js:181
 #, javascript-format
 msgid ""
 "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s, %(rate)s"
 msgstr "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s, %(rate)s"
 
-#: gui/common/tooltips.js:181 gui/common/tooltips.js:550
+#: gui/common/tooltips.js:186 gui/common/tooltips.js:555
 msgid "Range:"
 msgstr "Hatótáv:"
 
-#: gui/common/tooltips.js:183
+#: gui/common/tooltips.js:188
 #, javascript-format
 msgid "%(range)s %(meters)s"
 msgid_plural "%(range)s %(meters)s"
 msgstr[0] "%(range)s %(meters)s"
 msgstr[1] "%(range)s %(meters)s"
 
-#: gui/common/tooltips.js:185 gui/common/tooltips.js:552
+#: gui/common/tooltips.js:190 gui/common/tooltips.js:557
 msgid "meter"
 msgid_plural "meters"
 msgstr[0] "méter"
 msgstr[1] "méter"
 
-#: gui/common/tooltips.js:207
-#, javascript-format
-msgid "%(attackLabel)s %(damageTypes)s"
-msgstr "%(attackLabel)s %(damageTypes)s"
-
-#: gui/common/tooltips.js:208
-msgid "Splash Damage:"
-msgstr "Loccsanó sebzés:"
-
-#: gui/common/tooltips.js:211
-#, javascript-format
-msgid "Friendly Fire: %(enabled)s"
-msgstr "Baráti tűz: %(enabled)s"
-
-#: gui/common/tooltips.js:227
-#, javascript-format
-msgid "%(label)s: %(garrisonLimit)s"
-msgstr "%(label)s: %(garrisonLimit)s"
-
-#: gui/common/tooltips.js:228
-msgid "Garrison Limit"
-msgstr "Beszállásolási korlát"
-
-#: gui/common/tooltips.js:235
-#, javascript-format
-msgid "%(healRateLabel)s %(value)s %(health)s / %(second)s"
-msgstr "%(healRateLabel)s %(value)s %(health)s / %(second)s"
-
-#: gui/common/tooltips.js:236 gui/common/tooltips.js:544
-msgid "Heal:"
-msgstr "Gyógyulás:"
-
-#: gui/common/tooltips.js:238 gui/common/tooltips.js:287
-#: gui/common/tooltips.js:301
-msgid "Health"
-msgstr "Életerő"
-
-#: gui/common/tooltips.js:262 gui/common/tooltips.js:267
-#: gui/common/tooltips.js:272
+#: gui/common/tooltips.js:212 gui/common/tooltips.js:267
+#: gui/common/tooltips.js:272 gui/common/tooltips.js:277
 #, javascript-format
 msgid "%(label)s: %(value)s"
 msgstr "%(label)s: %(value)s"
 
-#: gui/common/tooltips.js:263
+#: gui/common/tooltips.js:216
+#, javascript-format
+msgid "Friendly Fire: %(enabled)s"
+msgstr "Baráti tűz: %(enabled)s"
+
+#: gui/common/tooltips.js:232
+#, javascript-format
+msgid "%(label)s: %(garrisonLimit)s"
+msgstr "%(label)s: %(garrisonLimit)s"
+
+#: gui/common/tooltips.js:233
+msgid "Garrison Limit"
+msgstr "Beszállásolási korlát"
+
+#: gui/common/tooltips.js:240
+#, javascript-format
+msgid "%(healRateLabel)s %(value)s %(health)s / %(second)s"
+msgstr "%(healRateLabel)s %(value)s %(health)s / %(second)s"
+
+#: gui/common/tooltips.js:241 gui/common/tooltips.js:549
+msgid "Heal:"
+msgstr "Gyógyulás:"
+
+#: gui/common/tooltips.js:243 gui/common/tooltips.js:292
+#: gui/common/tooltips.js:306
+msgid "Health"
+msgstr "Életerő"
+
+#: gui/common/tooltips.js:268
 msgid "Projectile Limit"
 msgstr "Lövedék korlát"
 
-#: gui/common/tooltips.js:268
+#: gui/common/tooltips.js:273
 msgctxt "projectiles"
 msgid "Default"
 msgstr "Alapértelmezett"
 
-#: gui/common/tooltips.js:273
+#: gui/common/tooltips.js:278
 msgctxt "projectiles"
 msgid "Per Unit"
 msgstr "Egységenként"
 
-#: gui/common/tooltips.js:284
+#: gui/common/tooltips.js:289
 #, javascript-format
 msgid "%(repairRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
 msgstr "%(repairRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
 
-#: gui/common/tooltips.js:285
+#: gui/common/tooltips.js:290
 msgid "Repair Rate:"
 msgstr "Javítási sebesség:"
 
-#: gui/common/tooltips.js:289 gui/common/tooltips.js:303
+#: gui/common/tooltips.js:294 gui/common/tooltips.js:308
 #: gui/summary/layout.js:61
 msgid "Worker"
 msgstr "Dolgozó"
 
-#: gui/common/tooltips.js:298
+#: gui/common/tooltips.js:303
 #, javascript-format
 msgid "%(buildRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
 msgstr "%(buildRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
 
-#: gui/common/tooltips.js:299
+#: gui/common/tooltips.js:304
 msgid "Build Rate:"
 msgstr "Építési sebesség:"
 
-#: gui/common/tooltips.js:335 gui/common/tooltips.js:496
+#: gui/common/tooltips.js:340 gui/common/tooltips.js:501
 #, javascript-format
 msgid "%(component)s %(cost)s"
 msgstr "%(component)s %(cost)s"
 
-#: gui/common/tooltips.js:371
+#: gui/common/tooltips.js:376
 msgid "Gather Rates:"
 msgstr "Gyűjtési sebesség:"
 
-#: gui/common/tooltips.js:374
+#: gui/common/tooltips.js:379
 #, javascript-format
 msgid "%(resourceIcon)s %(rate)s"
 msgstr "%(resourceIcon)s %(rate)s"
 
 #. Translation: This string is part of the resources cost string on
 #. the tooltip for wall structures.
-#: gui/common/tooltips.js:423
+#: gui/common/tooltips.js:428
 #, javascript-format
 msgid "%(resourceIcon)s %(minimum)s to %(resourceIcon)s %(maximum)s"
 msgstr "%(resourceIcon)s %(minimum)s - %(resourceIcon)s %(maximum)s"
 
-#: gui/common/tooltips.js:452
+#: gui/common/tooltips.js:457
 #, javascript-format
 msgid "Walls:  %(costs)s"
 msgstr "Fal: %(costs)s"
 
-#: gui/common/tooltips.js:453
+#: gui/common/tooltips.js:458
 #, javascript-format
 msgid "Towers:  %(costs)s"
 msgstr "Tornyok: %(costs)s"
 
-#: gui/common/tooltips.js:467
+#: gui/common/tooltips.js:472
 #, javascript-format
 msgid "Requires %(technology)s"
 msgstr "Szükséges hozzá: %(technology)s"
 
-#: gui/common/tooltips.js:479
+#: gui/common/tooltips.js:484
 #, javascript-format
 msgid "%(label)s %(populationBonus)s"
 msgstr "%(label)s %(populationBonus)s"
 
-#: gui/common/tooltips.js:480
+#: gui/common/tooltips.js:485
 msgid "Population Bonus:"
 msgstr "Népességbónusz:"
 
-#: gui/common/tooltips.js:502
+#: gui/common/tooltips.js:507
 msgid "Insufficient resources:"
 msgstr "Hiányzó nyersanyagok:"
 
-#: gui/common/tooltips.js:518
+#: gui/common/tooltips.js:523
 #, javascript-format
 msgid "%(label)s %(speeds)s"
 msgstr "%(label)s %(speeds)s"
 
-#: gui/common/tooltips.js:519
+#: gui/common/tooltips.js:524
 msgid "Speed:"
 msgstr "Sebesség:"
 
-#: gui/common/tooltips.js:521 gui/common/tooltips.js:526
+#: gui/common/tooltips.js:526 gui/common/tooltips.js:531
 #, javascript-format
 msgid "%(speed)s %(movementType)s"
 msgstr "%(speed)s %(movementType)s"
 
-#: gui/common/tooltips.js:523
+#: gui/common/tooltips.js:528
 msgid "Walk"
 msgstr "Séta"
 
-#: gui/common/tooltips.js:528
+#: gui/common/tooltips.js:533
 msgid "Run"
 msgstr "Futás"
 
-#: gui/common/tooltips.js:543 gui/common/tooltips.js:549
-#: gui/common/tooltips.js:554
+#: gui/common/tooltips.js:548 gui/common/tooltips.js:554
+#: gui/common/tooltips.js:559
 #, javascript-format
 msgid "%(label)s %(val)s %(unit)s"
 msgid_plural "%(label)s %(val)s %(unit)s"
@@ -947,46 +945,46 @@ msgstr[1] "%(label)s %(val)s %(unit)s"
 
 #. Translation: Short for hit points (or health points) that are healed in one
 #. healing action
-#: gui/common/tooltips.js:547
+#: gui/common/tooltips.js:552
 msgid "HP"
 msgid_plural "HP"
 msgstr[0] "ÉP"
 msgstr[1] "ÉP"
 
-#: gui/common/tooltips.js:568
+#: gui/common/tooltips.js:573
 #, javascript-format
 msgid "%(auralabel)s %(aurainfo)s"
 msgstr "%(auralabel)s %(aurainfo)s"
 
-#: gui/common/tooltips.js:569
+#: gui/common/tooltips.js:574
 #, javascript-format
 msgid "%(auraname)s:"
 msgstr "%(auraname)s:"
 
-#: gui/common/tooltips.js:585
+#: gui/common/tooltips.js:590
 #, javascript-format
 msgid "%(specificName)s (%(genericName)s)"
 msgstr "%(specificName)s (%(genericName)s)"
 
 #. Translation: Example: "Epibátēs Athēnaîos [font="sans-bold-16"](Athenian
 #. Marine)[/font]"
-#: gui/common/tooltips.js:597
+#: gui/common/tooltips.js:602
 #, javascript-format
 msgid "%(specificName)s %(fontStart)s(%(genericName)s)%(fontEnd)s"
 msgstr "%(specificName)s %(fontStart)s(%(genericName)s)%(fontEnd)s"
 
-#: gui/common/tooltips.js:612
+#: gui/common/tooltips.js:617
 msgid "Classes:"
 msgstr "Osztályok:"
 
 #. Translation: %(component) will be the icon for the loot type and %(loot)
 #. will be the value.
-#: gui/common/tooltips.js:640
+#: gui/common/tooltips.js:645
 #, javascript-format
 msgid "%(component)s %(loot)s"
 msgstr "%(component)s %(loot)s"
 
-#: gui/common/tooltips.js:647
+#: gui/common/tooltips.js:652
 msgid "Loot:"
 msgstr "Zsákmány:"
 
@@ -1004,7 +1002,7 @@ msgstr "Nincs"
 msgid "<invalid>"
 msgstr "<invalid>"
 
-#: gui/msgbox/msgbox.js:25 gui/pregame/mainmenu.js:157
+#: gui/msgbox/msgbox.js:25 gui/pregame/mainmenu.js:162
 #: gui/splashscreen/splashscreen.xml:(caption):28
 msgid "OK"
 msgstr "OK"
@@ -1024,34 +1022,34 @@ msgstr "Figyelmeztetés"
 msgid "You have unsaved changes, do you want to close this window?"
 msgstr "Mentetlen módosításaid vannak, szeretnéd bezárni ezt az ablakot?"
 
-#: gui/pregame/mainmenu.js:89
+#: gui/pregame/mainmenu.js:94
 msgid "connecting to server"
 msgstr "csatlakozás a kiszolgálóhoz"
 
-#: gui/pregame/mainmenu.js:92
+#: gui/pregame/mainmenu.js:97
 #, javascript-format
 msgid "uploading (%f%%)"
 msgstr "feltöltés (%f%%)"
 
-#: gui/pregame/mainmenu.js:98
+#: gui/pregame/mainmenu.js:103
 msgid "upload succeeded"
 msgstr "feltöltés sikeres"
 
-#: gui/pregame/mainmenu.js:100
+#: gui/pregame/mainmenu.js:105
 #, javascript-format
 msgid "upload failed (%(errorCode)s)"
 msgstr "nem sikerült a feltöltés (%(errorCode)s)"
 
-#: gui/pregame/mainmenu.js:104
+#: gui/pregame/mainmenu.js:109
 #, javascript-format
 msgid "upload failed (%(errorMessage)s)"
 msgstr "nem sikerült a feltöltés (%(errorMessage)s)"
 
-#: gui/pregame/mainmenu.js:106
+#: gui/pregame/mainmenu.js:111
 msgid "unknown"
 msgstr "ismeretlen"
 
-#: gui/pregame/mainmenu.js:146
+#: gui/pregame/mainmenu.js:151
 #, javascript-format
 msgid ""
 "%(startWarning)sWarning:%(endWarning)s You appear to be using non-shader "
@@ -1064,51 +1062,51 @@ msgstr "%(startWarning)sFigyelem:%(endWarning)s Úgy tűnik shader nélküli (fi
 #. warning explains that the user is using “non-shader“ graphics,
 #. and that in the future this will not be supported by the game, so
 #. the user will need a better graphics card.
-#: gui/pregame/mainmenu.js:155
+#: gui/pregame/mainmenu.js:160
 msgid "Please press \"Read More\" for more information or \"OK\" to continue."
 msgstr "Kattints a \"További információk\" lehetőségre vagy az \"OK\"-ra a folytatáshoz."
 
-#: gui/pregame/mainmenu.js:156
+#: gui/pregame/mainmenu.js:161
 msgid "WARNING!"
 msgstr "FIGYELEM!"
 
-#: gui/pregame/mainmenu.js:157
+#: gui/pregame/mainmenu.js:162
 msgid "Read More"
 msgstr "További információk"
 
-#: gui/pregame/mainmenu.js:242
+#: gui/pregame/mainmenu.js:247
 #, javascript-format
 msgid "Build: %(buildDate)s (%(revision)s)"
 msgstr "Verzió: %(buildDate)s (%(revision)s)"
 
-#: gui/pregame/mainmenu.js:254
+#: gui/pregame/mainmenu.js:259
 msgid "Are you sure you want to quit 0 A.D.?"
 msgstr "Biztosan kilépsz a 0 A.D. játékból?"
 
-#: gui/pregame/mainmenu.js:255 gui/summary/summary.js:155
+#: gui/pregame/mainmenu.js:260 gui/summary/summary.js:145
 msgid "Confirmation"
 msgstr "Megerősítés"
 
-#: gui/pregame/mainmenu.js:270
+#: gui/pregame/mainmenu.js:275
 msgid ""
 "The scenario editor is not available or failed to load. See the game logs "
 "for additional information."
 msgstr "A küldetésszerkesztő nem érhető el vagy nem sikerült betölteni. További információkért tekintsd meg a játéknaplókat."
 
-#: gui/pregame/mainmenu.js:271 gui/replaymenu/replay_actions.js:116
+#: gui/pregame/mainmenu.js:276 gui/replaymenu/replay_actions.js:116
 msgid "Error"
 msgstr "Hiba"
 
-#: gui/pregame/mainmenu.js:277
+#: gui/pregame/mainmenu.js:282
 msgid "Launch the multiplayer lobby. \\[DISABLED BY BUILD]"
 msgstr "Többjátékos váró indítása. \\[BUILD ÁLTAL LETILTVA]"
 
-#: gui/pregame/mainmenu.js:282 gui/pregame/mainmenu.xml:(caption):72
+#: gui/pregame/mainmenu.js:287 gui/pregame/mainmenu.xml:(caption):72
 #: gui/pregame/mainmenu.xml:(caption):103
 msgid "Technical Details"
 msgstr "Technikai részletek"
 
-#: gui/pregame/mainmenu.js:287 gui/pregame/mainmenu.xml:(caption):149
+#: gui/pregame/mainmenu.js:292 gui/pregame/mainmenu.xml:(caption):149
 msgid "Manual"
 msgstr "Kézikönyv"
 
@@ -1235,15 +1233,20 @@ msgstr "Pontozott játékok"
 msgid "Unrated games"
 msgstr "Nem pontozott játékok"
 
-#: gui/replaymenu/replay_menu.js:192
+#: gui/replaymenu/replay_menu.js:190
 msgid "Filter replays by typing one or more, partial or complete playernames."
 msgstr "A visszajátszások szűrése egy vagy több részleges vagy teljes játékosnév beírásával."
 
-#: gui/replaymenu/replay_menu.js:303
+#: gui/replaymenu/replay_menu.js:268
+#, javascript-format
+msgid "Players: %(numberOfPlayers)s"
+msgstr "Játékosok: %(numberOfPlayers)s"
+
+#: gui/replaymenu/replay_menu.js:302
 msgid "yyyy-MM-dd HH:mm"
 msgstr "éééé-HH-nn ÓÓ:pp"
 
-#: gui/replaymenu/replay_menu.js:333
+#: gui/replaymenu/replay_menu.js:332
 msgid "yyyy-MM"
 msgstr "éééé-HH"
 
@@ -1301,7 +1304,7 @@ msgstr "%(val1)s to %(val2)s"
 
 #: gui/summary/layout.js:4 gui/summary/layout.js:21 gui/summary/layout.js:58
 #: gui/summary/layout.js:97 gui/summary/layout.js:142
-#: gui/summary/layout.js:172 gui/summary/summary.xml:(caption):104
+#: gui/summary/layout.js:172 gui/summary/summary.xml:(caption):105
 msgid "Player name"
 msgstr "Játékosnév"
 
@@ -1501,52 +1504,44 @@ msgstr "Térképbirtoklás"
 msgid "Team total"
 msgstr "Összes csapat"
 
-#: gui/summary/summary.js:125
-msgid "Victory"
-msgstr "Győzelem"
-
-#: gui/summary/summary.js:130
-msgid "Defeated"
-msgstr "Legyőzve"
-
-#: gui/summary/summary.js:154
+#: gui/summary/summary.js:144
 msgid "Are you sure you want to quit the lobby?"
 msgstr "Biztosan ki akarsz lépni a váróból?"
 
-#: gui/summary/summary.js:205
+#: gui/summary/summary.js:195
 msgid "Current Scores"
 msgstr "Jelenlegi pontok"
 
-#: gui/summary/summary.js:207
+#: gui/summary/summary.js:197
 msgid "Scores at the end of the game."
 msgstr "Pontok a játék végén."
 
-#: gui/summary/summary.js:209
+#: gui/summary/summary.js:199
 msgid "You have been disconnected."
 msgstr "Lekapcsolódtál."
 
-#: gui/summary/summary.js:211
+#: gui/summary/summary.js:201
 msgid "You have left the game."
 msgstr "Elhagytad a játékot."
 
-#: gui/summary/summary.js:213
+#: gui/summary/summary.js:203
 msgid "You have won the battle!"
 msgstr "Megnyerted a csatát!"
 
-#: gui/summary/summary.js:215
+#: gui/summary/summary.js:205
 msgid "You have been defeated..."
 msgstr "Legyőztek..."
 
-#: gui/summary/summary.js:216
+#: gui/summary/summary.js:206
 msgid "You have abandoned the game."
 msgstr "Otthagytad a játékot."
 
-#: gui/summary/summary.js:221
+#: gui/summary/summary.js:211
 #, javascript-format
 msgid "Game time elapsed: %(time)s"
 msgstr "Eltelt játékidő: %(time)s"
 
-#: gui/summary/summary.js:229
+#: gui/summary/summary.js:219
 #, javascript-format
 msgid "%(mapName)s - %(mapType)s"
 msgstr "%(mapName)s - %(mapType)s"
@@ -1560,7 +1555,7 @@ msgid "Civilization Selection"
 msgstr "Civilizáció választása"
 
 #: gui/civinfo/civinfo.xml:(caption):119 gui/credits/credits.xml:(caption):36
-#: gui/options/options.xml:(caption):88
+#: gui/options/options.xml:(caption):101
 #: gui/structree/structree.xml:(caption):124
 msgid "Close"
 msgstr "Bezárás"
@@ -1662,31 +1657,35 @@ msgstr "Hangbeállítások"
 msgid "Lobby Settings"
 msgstr "Váró beállításai"
 
-#: gui/options/options.xml:(caption):73
+#: gui/options/options.xml:(caption):74
+msgid "Chat Notification Settings"
+msgstr "Chat értesítési beállítások"
+
+#: gui/options/options.xml:(caption):86
 msgid "Reset"
 msgstr "Helyreállítás"
 
-#: gui/options/options.xml:(caption):78
+#: gui/options/options.xml:(caption):91
 msgid "Revert"
 msgstr "Visszaállítás"
 
-#: gui/options/options.xml:(caption):83 gui/savedgames/save.xml:(caption):48
+#: gui/options/options.xml:(caption):96 gui/savedgames/save.xml:(caption):48
 msgid "Save"
 msgstr "Mentés"
 
-#: gui/options/options.xml:(tooltip):74
+#: gui/options/options.xml:(tooltip):87
 msgid "Resets user settings to their game default"
 msgstr "Visszaállítja a felhasználói beállításokat a játék alapértékeire"
 
-#: gui/options/options.xml:(tooltip):79
+#: gui/options/options.xml:(tooltip):92
 msgid "Reverts to previous saved settings"
 msgstr "Visszaállítja az előző mentett beállításokra"
 
-#: gui/options/options.xml:(tooltip):84
+#: gui/options/options.xml:(tooltip):97
 msgid "Saves changes"
 msgstr "Menti a változtatásokat"
 
-#: gui/options/options.xml:(tooltip):89
+#: gui/options/options.xml:(tooltip):102
 msgid "Unsaved changes affect this session only"
 msgstr "A mentetlen változtatások csak ezt a munkamenetet érintik"
 
@@ -1951,30 +1950,25 @@ msgstr "Térkép mérete:"
 msgid "Victory:"
 msgstr "Győzelem:"
 
-#: gui/replaymenu/replay_menu.xml:(caption):215
-#: gui/savedgames/load.xml:(caption):50
-msgid "Players:"
-msgstr "Játékosok:"
-
-#: gui/replaymenu/replay_menu.xml:(caption):232
+#: gui/replaymenu/replay_menu.xml:(caption):227
 msgid "Spoiler"
 msgstr "Végkifejlet"
 
-#: gui/replaymenu/replay_menu.xml:(caption):244
+#: gui/replaymenu/replay_menu.xml:(caption):239
 msgid "Main Menu"
 msgstr "Főmenü"
 
-#: gui/replaymenu/replay_menu.xml:(caption):250
+#: gui/replaymenu/replay_menu.xml:(caption):245
 #: gui/savedgames/load.xml:(caption):34 gui/savedgames/save.xml:(caption):43
 msgid "Delete"
 msgstr "Törlés"
 
-#: gui/replaymenu/replay_menu.xml:(caption):256
-#: gui/summary/summary.xml:(caption):22
+#: gui/replaymenu/replay_menu.xml:(caption):251
+#: gui/summary/summary.xml:(caption):23
 msgid "Summary"
 msgstr "Összefoglaló"
 
-#: gui/replaymenu/replay_menu.xml:(caption):262
+#: gui/replaymenu/replay_menu.xml:(caption):257
 msgid "Start Replay"
 msgstr "Visszajátszás kezdése"
 
@@ -2012,6 +2006,10 @@ msgstr "Időtartam"
 msgid "Load"
 msgstr "Betöltés"
 
+#: gui/savedgames/load.xml:(caption):50
+msgid "Players:"
+msgstr "Játékosok:"
+
 #: gui/savedgames/load.xml:(caption):54
 msgid "Played time:"
 msgstr "Játékidő:"
@@ -2044,35 +2042,35 @@ msgstr "Civilizáció:"
 msgid "Trainer Units"
 msgstr "Kiképző egységek"
 
-#: gui/summary/summary.xml:(caption):62
+#: gui/summary/summary.xml:(caption):63
 msgid "Score"
 msgstr "Pont"
 
-#: gui/summary/summary.xml:(caption):69
+#: gui/summary/summary.xml:(caption):70
 msgid "Buildings"
 msgstr "Épületek"
 
-#: gui/summary/summary.xml:(caption):76
+#: gui/summary/summary.xml:(caption):77
 msgid "Units"
 msgstr "Egységek"
 
-#: gui/summary/summary.xml:(caption):83
+#: gui/summary/summary.xml:(caption):84
 msgid "Resources"
 msgstr "Nyersanyagok"
 
-#: gui/summary/summary.xml:(caption):90
+#: gui/summary/summary.xml:(caption):91
 msgid "Market"
 msgstr "Piac"
 
-#: gui/summary/summary.xml:(caption):97 gui/credits/texts/misc.jsonTitle
+#: gui/summary/summary.xml:(caption):98 gui/credits/texts/misc.jsonTitle
 msgid "Miscellaneous"
 msgstr "Egyéb"
 
-#: gui/summary/summary.xml:(caption):156
+#: gui/summary/summary.xml:(caption):157
 msgid "Replay"
 msgstr "Visszajátszás"
 
-#: gui/summary/summary.xml:(caption):161
+#: gui/summary/summary.xml:(caption):162
 msgid "Continue"
 msgstr "Tovább"
 
@@ -2375,8 +2373,8 @@ msgid "Late Observer Joins"
 msgstr "Késő megfigyelő csatlakozások"
 
 #: gui/options/options.jsongeneralSetting[14].tooltip
-msgid "Prevent further observer from joining if the limit is reached"
-msgstr "További megfigyelők csatlakozásának megakadályozása, a korlát elérésekor"
+msgid "Prevent further observers from joining if the limit is reached"
+msgstr "További megfigyelők csatlakozásának megelőzése a limit elérésekor"
 
 #: gui/options/options.jsongeneralSetting[14].label
 msgid "Observer Limit"
@@ -2446,6 +2444,32 @@ msgstr "Értesítő hang lejátszása, ha valaki beírja a beceneved"
 #: gui/options/options.jsonsoundSetting[5].label
 msgid "Nick Notification"
 msgstr "Becenév értesítés"
+
+#: gui/options/options.jsonnotificationSetting[0].tooltip
+msgid "Show a chat notification if you are attacked by another player"
+msgstr "Chat értesítés megjelenítése, ha egy másik játékos megtámadt"
+
+#: gui/options/options.jsonnotificationSetting[0].label
+msgid "Attack"
+msgstr "Támadás"
+
+#: gui/options/options.jsonnotificationSetting[1].tooltip
+msgid ""
+"Show a chat notification if an ally tributes resources to another team "
+"member if teams are locked, and all tributes in observer mode"
+msgstr "Chat értesítés megjelenítése, ha egy szövetséges nyersanyag sarcot fizet egy másik csapattagnak és a csapatok rögzítve vannak, illetve minden sarcfizetést megfigyelő módban"
+
+#: gui/options/options.jsonnotificationSetting[1].label
+msgid "Tribute"
+msgstr "Sarc"
+
+#: gui/options/options.jsonnotificationSetting[2].tooltip
+msgid "Show a chat notification to observers when a player bartered resources"
+msgstr "Chat értesítés megjelenítése, ha egy játékos nyersanyagokkal csereüzletel"
+
+#: gui/options/options.jsonnotificationSetting[2].label
+msgid "Barter"
+msgstr "Cserekereskedelem"
 
 #: gui/options/options.jsongraphicsSetting[0].tooltip
 msgid "Use OpenGL 2.0 shaders (recommended)"

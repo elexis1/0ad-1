@@ -14,9 +14,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-02-03 09:03+0100\n"
-"PO-Revision-Date: 2017-02-22 13:51+0000\n"
-"Last-Translator: Robin Kriebel <kriebel.robin@gmail.com>\n"
+"POT-Creation-Date: 2017-03-03 09:03+0100\n"
+"PO-Revision-Date: 2017-03-11 17:47+0000\n"
+"Last-Translator: Petr Hála <halapetr@selfnet.cz>\n"
 "Language-Team: Czech (http://www.transifex.com/wildfire-games/0ad/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -182,7 +182,7 @@ msgstr "%(_player_)s, pro mě je myslitelná pouze dohoda o neutralitě."
 msgid ""
 "Our previous alliance did not work out, %(_player_)s. I must decline your "
 "offer."
-msgstr ""
+msgstr "Naše předchozí spojenectví nedopadlo dobře, %(_player_)s. Musím tedy tvoji nabídku odmítnout."
 
 #: simulation/ai/petra/chatHelper.js:79
 #, javascript-format
@@ -210,7 +210,7 @@ msgstr ""
 msgid ""
 "I will accept your offer to become allies, %(_player_)s. We will both "
 "benefit from this partnership."
-msgstr ""
+msgstr "Přijmu tvoji nabídku spojenectví %(_player_)s. Toto partnerství nám oběma přinese prospěch."
 
 #: simulation/ai/petra/chatHelper.js:86
 #, javascript-format
@@ -221,7 +221,7 @@ msgstr "Spojenectví mezi námi je skvělý nápad, %(_player_)s."
 #, javascript-format
 msgid ""
 "Let both of our people prosper from a peaceful association, %(_player_)s."
-msgstr ""
+msgstr "Nechť obě naše země prosperují z tohoto míru, %(_player_)s."
 
 #: simulation/ai/petra/chatHelper.js:88
 #, javascript-format
@@ -278,7 +278,7 @@ msgstr ""
 #: simulation/ai/petra/chatHelper.js:104
 #, javascript-format
 msgid "I will not become neutral with you, %(_player_)s."
-msgstr "Neuzavřu s Vámi neutralitu,  %(_player_)s!"
+msgstr "Neuzavřu s vámi neutralitu,  %(_player_)s!"
 
 #: simulation/ai/petra/chatHelper.js:105
 #, javascript-format
@@ -304,7 +304,7 @@ msgstr ""
 msgid ""
 "%(_player_)s, I will accept your neutrality request. May both our "
 "civilizations benefit."
-msgstr "%(_player_)s, přijímám Váš požadavek na neutralitu. Obě naše civilizace z toho mohou čerpat."
+msgstr "%(_player_)s, přijímám váš požadavek na neutralitu. Obě naše civilizace z toho mohou čerpat."
 
 #: simulation/ai/petra/chatHelper.js:115
 #, javascript-format
@@ -933,34 +933,38 @@ msgstr "(Podfuk - Ovládat všechny jednotky)"
 msgid "(Cheat - reveal map)"
 msgstr "(Podvod - odhalit mapu)"
 
-#: simulation/helpers/Commands.js:574
+#: simulation/helpers/Commands.js:570
 msgid "(Cheat - promoted units)"
 msgstr "(Podfuk - povýšení jednotek)"
 
-#: simulation/helpers/Commands.js:688
+#: simulation/helpers/Commands.js:684
 msgid ""
 "Cannot upgrade as distance requirements are not verified or terrain is "
 "obstructed."
 msgstr "Vylepšení nelze uvnitř tohoto odstupu provést, aniž by byla přezkoušena vzdálenost, nebo jsou v území položeny překážky."
 
-#: simulation/helpers/Commands.js:698
+#: simulation/helpers/Commands.js:694
 msgid "Cannot upgrade a garrisoned entity."
 msgstr "Nelze provést vylepšení jednotky obsazené posádkou."
 
-#: simulation/helpers/Commands.js:744
+#: simulation/helpers/Commands.js:740
 #, javascript-format
 msgid "Attack against %(_player_)s requested."
 msgstr "Požadován útok proti %(_player_)s."
 
-#: simulation/helpers/Commands.js:781
+#: simulation/helpers/Commands.js:773
+msgid "There are no bribable units"
+msgstr "Nejsou tu žádné podplatitelné jednotky"
+
+#: simulation/helpers/Commands.js:804
 msgid "Unable to ungarrison unit(s)"
 msgstr "Nelze vyložit jednotky"
 
-#: simulation/helpers/Commands.js:795
+#: simulation/helpers/Commands.js:818
 msgid "Some unit(s) can't go back to work"
 msgstr "Některé jednotky nemohou jít zpět do práce"
 
-#: simulation/helpers/Commands.js:1049
+#: simulation/helpers/Commands.js:1072
 msgid "The building's technology requirements are not met."
 msgstr "Technologické požadavky na postavení budovy nejsou splněny."
 
@@ -1152,8 +1156,8 @@ msgstr "UI Petra"
 msgid ""
 "Petra is the default 0 A.D. AI bot. Please report issues to Wildfire Games (see the link in the main menu).\n"
 "\n"
-"The AI has a bonus/penalty on resource stockpiling (either gathering rate or trade gain) varying from 0.5 for Sandbox to 1.6 for Very Hard (Medium = 1.0). In addition, the Sandbox level does not expand nor attack."
-msgstr "Petra je výchozí počítačový hráč (AI) 0 A.D. Prosím upozorňujte na chyby Wildfire Games (odkaz najdete v hlavní nabídce).\n\nUmělá inteligence má zvýhodnění/znevýhodnění v získávaní zdrojů (rychlost sběru nebo obchodování) začínající od 0,5 u pískoviště do 1,6 pro Velmi těžké (normální = 1,0). V režimu pískoviště se umělá inteligence nerozšiřuje ani neutočí."
+"The AI has a bonus/penalty on resource stockpiling (either gathering rate or trade gain) varying from -50% for Sandbox to +60% for Very Hard (Medium 0%). In addition, the Sandbox level does not expand nor attack."
+msgstr ""
 
 #: simulation/ai/tutorial-ai/data.jsonname
 msgid "Tutorial AI"

@@ -265,7 +265,7 @@ for (let i = 0; i < numIslands; ++i)
 	if (!landAreaLen)
 		break;
 
-	chosenPoint = landAreas[randInt(landAreaLen)];
+	chosenPoint = pickRandom(landAreas);
 
 	// create big islands
 	let placer = new ChainPlacer(floor(scaleByMapSize(4, 8)), floor(scaleByMapSize(8, 14)), floor(scaleByMapSize(25, 60)), 0.07, chosenPoint[0], chosenPoint[1], scaleByMapSize(30, 70));
@@ -308,7 +308,7 @@ for (let i = 0; i < numIslands; ++i)
 	if (!landAreaLen)
 		break;
 
-	chosenPoint = landAreas[randInt(0, landAreaLen)];
+	chosenPoint = pickRandom(landAreas);
 
 	let placer = new ChainPlacer(floor(scaleByMapSize(4, 7)), floor(scaleByMapSize(7, 10)), floor(scaleByMapSize(16, 40)), 0.07, chosenPoint[0], chosenPoint[1], scaleByMapSize(22, 40));
 	let terrainPainter = new LayeredPainter(
@@ -525,20 +525,7 @@ createObjectGroups(group, 0,
 	scaleByMapSize(10, 20), 100
 );
 
-log("Creating grass tufts...");
-let num = (PI * radius * radius) / 250;
-for (let j = 0; j < num; ++j)
-{
-	let gAngle = randFloat(0, TWO_PI);
-	let gDist = radius - (5 + randInt(7));
-	let gX = round(fx + gDist * cos(gAngle));
-	let gZ = round(fz + gDist * sin(gAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(aGrassShort, 2, 5, 0, 1, -PI / 8, PI / 8)],
-		false, clBaseResource, gX, gZ
-	);
-	createObjectGroup(group, 0, [stayClasses(clLand, 5)]);
-}
+placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius, [stayClasses(clLand, 5)]);
 
 log("Creating small grass tufts...");
 let planetm = random_terrain == 7 ? 8 : 1;
@@ -564,8 +551,7 @@ createObjectGroups(group, 0,
 paintTerrainBasedOnHeight(1, 2, 0, tShore);
 paintTerrainBasedOnHeight(getMapBaseHeight(), 1, 3, tWater);
 
-setSkySet(shuffleArray(["cloudless", "cumulus", "overcast"])[0]);
-
+setSkySet(pickRandom(["cloudless", "cumulus", "overcast"]));
 setSunRotation(randFloat(0, TWO_PI));
 setSunElevation(randFloat(PI/5, PI/3));
 setWaterWaviness(2);

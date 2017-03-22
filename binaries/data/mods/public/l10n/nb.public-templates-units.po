@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# Allan Nordhøy <epost@anotheragency.no>, 2016
+# Allan Nordhøy <epost@anotheragency.no>, 2016-2017
 # Bjorn Erik Moen <bjorn@polarblu.com>, 2015
 # Henrik Hovrud <henrik.h@online.no>, 2015
 # Jarl Arntzen <jarl.arntzen@gmail.com>, 2014
@@ -15,9 +15,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-13 09:03+0100\n"
-"PO-Revision-Date: 2017-01-13 08:28+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-18 21:39+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/wildfire-games/0ad/language/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -132,7 +132,7 @@ msgstr "Avstandskavaleri"
 #: simulation/templates/template_unit_mechanical_ship_bireme.xml:49
 #: simulation/templates/template_unit_mechanical_ship_quinquereme.xml:59
 #: simulation/templates/template_unit_mechanical_ship_trireme.xml:49
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:37
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:45
 #: simulation/templates/template_unit_mechanical_siege_onager.xml:44
 #: simulation/templates/template_unit_mechanical_siege_tower.xml:48
 msgid "Ranged"
@@ -420,6 +420,11 @@ msgstr "Handle mellom havner. Stasjoner en megler for økt lønnsomhet (+20% per
 msgid "Trader"
 msgstr "Handelsmann"
 
+#: simulation/templates/template_unit_mechanical_ship_merchant.xml:29
+#: simulation/templates/template_unit_support_trader.xml:15
+msgid "Bribable"
+msgstr "Kan bestikkes"
+
 #: simulation/templates/template_unit_mechanical_ship_quinquereme.xml:57
 msgid "Heavy Warship"
 msgstr "Tungt krigsskip"
@@ -433,11 +438,11 @@ msgstr "Medium Krigsskip"
 msgid "Siege"
 msgstr "Beleiring"
 
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:36
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:44
 msgid "Bolt Shooter"
 msgstr "Ballista"
 
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:37
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:45
 msgid "BoltShooter"
 msgstr "Boltskytter"
 
@@ -650,7 +655,6 @@ msgstr "Pródromos"
 #: simulation/templates/units/maur_infantry_spearman_e.xml:4
 #: simulation/templates/units/maur_infantry_swordsman_e.xml:4
 #: simulation/templates/units/maur_support_healer_e.xml:4
-#: simulation/templates/units/merc_thrace_swordsman.xml:13
 #: simulation/templates/units/pers_cavalry_archer_e.xml:4
 #: simulation/templates/units/pers_cavalry_javelinist_e.xml:4
 #: simulation/templates/units/pers_cavalry_javelinist_e_trireme.xml:4
@@ -774,7 +778,6 @@ msgstr "Peltastḗs Thrâx"
 #: simulation/templates/units/mace_infantry_slinger_b.xml:22
 #: simulation/templates/units/merc_black_cloak.xml:16
 #: simulation/templates/units/merc_thorakites.xml:26
-#: simulation/templates/units/merc_thrace_swordsman.xml:16
 #: simulation/templates/units/merc_thureophoros.xml:17
 #: simulation/templates/units/pers_kardakes_hoplite.xml:15
 #: simulation/templates/units/pers_kardakes_skirmisher.xml:15
@@ -795,11 +798,13 @@ msgstr "Leiesoldat"
 
 #: simulation/templates/units/athen_infantry_marine_archer_b.xml:23
 #: simulation/templates/units/mace_infantry_archer_b.xml:20
+#: simulation/templates/units/ptol_infantry_archer_b.xml:21
 msgid "Cretan Mercenary Archer"
 msgstr "Leiebueskytter fra Kreta"
 
 #: simulation/templates/units/athen_infantry_marine_archer_b.xml:24
 #: simulation/templates/units/mace_infantry_archer_b.xml:21
+#: simulation/templates/units/ptol_infantry_archer_b.xml:22
 msgid "Toxótēs Krētikós"
 msgstr "Toxótēs Krētikós"
 
@@ -923,7 +928,7 @@ msgstr "Delamokludda"
 
 #: simulation/templates/units/brit_hero_boudicca.xml:10
 msgid "Female"
-msgstr ""
+msgstr "Kvinnelig"
 
 #: simulation/templates/units/brit_hero_boudicca.xml:11
 msgid "Boudicca (Chariot)"
@@ -1420,7 +1425,7 @@ msgstr "Phílippos B' ho Makedṓn"
 
 #: simulation/templates/units/mace_hero_pyrrhus.xml:7
 msgid "Pyrrhus of Epirus"
-msgstr "Pyrrhus of Epirus"
+msgstr "Pyrrhos fra Epirus"
 
 #: simulation/templates/units/mace_hero_pyrrhus.xml:8
 msgid "Pyrrhos ton Epeiros"
@@ -1673,16 +1678,6 @@ msgstr "Pansret svermann"
 msgid "Thōrakitēs"
 msgstr "Thōrakitēs"
 
-#: simulation/templates/units/merc_thrace_swordsman.xml:11
-#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:20
-msgid "Thracian Mercenary Swordsman"
-msgstr "Trakisk leiesverdmann"
-
-#: simulation/templates/units/merc_thrace_swordsman.xml:12
-#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:21
-msgid "Rhomphaiaphoros Thrakikós"
-msgstr "Rhomphaiaphoros Thrakikós"
-
 #: simulation/templates/units/merc_thureophoros.xml:12
 msgid "Heavy Skirmisher"
 msgstr "Tung fortropp"
@@ -1713,11 +1708,10 @@ msgstr "Babiruviya Ratha"
 
 #: simulation/templates/units/pers_cavalry_archer_b.xml:15
 msgid "Causes trample damage to enemy units."
-msgstr "Foresårsaker tråkke skader til fiendtlige enheter."
+msgstr "Forårsaker skadevirkning fra nedtråkking til fiendtlige enheter."
 
 #: simulation/templates/units/pers_cavalry_javelinist_b.xml:6
 #: simulation/templates/units/pers_cavalry_javelinist_b_trireme.xml:9
-#: simulation/templates/units/sele_cavalry_javelinist_b.xml:7
 msgid "Median Light Cavalry"
 msgstr "Mediansk lett kavaleri"
 
@@ -1991,11 +1985,11 @@ msgstr "Ptolemy IV \"Han som elsker sin far\""
 msgid "Ptolemaios D' Philopator"
 msgstr "Ptolemaios D' Philopator"
 
-#: simulation/templates/units/ptol_infantry_archer_b.xml:21
+#: simulation/templates/units/ptol_infantry_archer_nubian.xml:6
 msgid "Nubian Mercenary Archer"
 msgstr "Nubisk leiebueskytter"
 
-#: simulation/templates/units/ptol_infantry_archer_b.xml:22
+#: simulation/templates/units/ptol_infantry_archer_nubian.xml:7
 msgid "Kousít Misthophóros Toxótēs"
 msgstr "Kousít Misthophóros Toxótēs"
 
@@ -2116,27 +2110,27 @@ msgstr "Quintus Fabius Maximus"
 msgid "Scipio Africanus"
 msgstr "Scipio Africanus"
 
-#: simulation/templates/units/rome_infantry_javelinist_b.xml:17
+#: simulation/templates/units/rome_infantry_javelinist_b.xml:16
 msgid "Roman Skirmisher"
 msgstr "Romersk fortropp"
 
-#: simulation/templates/units/rome_infantry_javelinist_b.xml:18
+#: simulation/templates/units/rome_infantry_javelinist_b.xml:17
 msgid "Veles"
 msgstr "Veles"
 
-#: simulation/templates/units/rome_infantry_spearman_b.xml:17
+#: simulation/templates/units/rome_infantry_spearman_b.xml:16
 msgid "Veteran Spearman"
 msgstr "Veteranspydbærer"
 
-#: simulation/templates/units/rome_infantry_spearman_b.xml:18
+#: simulation/templates/units/rome_infantry_spearman_b.xml:17
 msgid "Triarius"
 msgstr "Triarius"
 
-#: simulation/templates/units/rome_infantry_swordsman_b.xml:17
+#: simulation/templates/units/rome_infantry_swordsman_b.xml:16
 msgid "Roman Swordsman"
 msgstr "Romersk sverdsoldat"
 
-#: simulation/templates/units/rome_infantry_swordsman_b.xml:18
+#: simulation/templates/units/rome_infantry_swordsman_b.xml:17
 msgid "Hastatus"
 msgstr "Hastatus"
 
@@ -2230,17 +2224,13 @@ msgstr "Dahaehestebueskytter"
 msgid "Hippotoxotès Dahae"
 msgstr "Hippotoxotès Dahae"
 
-#: simulation/templates/units/sele_cavalry_javelinist.xml:7
+#: simulation/templates/units/sele_cavalry_javelinist_b.xml:7
 msgid "Militia Cavalry"
 msgstr "Militskavaleri"
 
-#: simulation/templates/units/sele_cavalry_javelinist.xml:8
+#: simulation/templates/units/sele_cavalry_javelinist_b.xml:8
 msgid "Hippakontistès Politès"
 msgstr "Hippakontistès Politès"
-
-#: simulation/templates/units/sele_cavalry_javelinist_b.xml:8
-msgid "Hippeus Medikos"
-msgstr "Hippeus Medikos"
 
 #: simulation/templates/units/sele_cavalry_spearman_merc_b.xml:14
 msgid "Hippos Hetairike"
@@ -2341,6 +2331,14 @@ msgstr "Thureosmilitsspydmann"
 #: simulation/templates/units/sele_infantry_spearman_b.xml:15
 msgid "Thureophóros Politès"
 msgstr "Thureophóros Politès"
+
+#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:20
+msgid "Thracian Mercenary Swordsman"
+msgstr "Trakisk leiesverdmann"
+
+#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:21
+msgid "Rhomphaiaphoros Thrakikós"
+msgstr "Rhomphaiaphoros Thrakikós"
 
 #: simulation/templates/units/sele_ship_quinquereme.xml:5
 msgid "Pentères"

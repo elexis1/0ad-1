@@ -14,9 +14,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-13 09:03+0100\n"
-"PO-Revision-Date: 2017-02-26 04:11+0000\n"
-"Last-Translator: liulitchi <xingzuo88@qq.com>\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-03 09:41+0000\n"
+"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Chinese (http://www.transifex.com/wildfire-games/0ad/language/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -131,7 +131,7 @@ msgstr "远程骑兵"
 #: simulation/templates/template_unit_mechanical_ship_bireme.xml:49
 #: simulation/templates/template_unit_mechanical_ship_quinquereme.xml:59
 #: simulation/templates/template_unit_mechanical_ship_trireme.xml:49
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:37
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:45
 #: simulation/templates/template_unit_mechanical_siege_onager.xml:44
 #: simulation/templates/template_unit_mechanical_siege_tower.xml:48
 msgid "Ranged"
@@ -419,6 +419,11 @@ msgstr "在码头间进行交易。驻守商人以获得额外的利润(每驻�
 msgid "Trader"
 msgstr "贸易商人"
 
+#: simulation/templates/template_unit_mechanical_ship_merchant.xml:29
+#: simulation/templates/template_unit_support_trader.xml:15
+msgid "Bribable"
+msgstr ""
+
 #: simulation/templates/template_unit_mechanical_ship_quinquereme.xml:57
 msgid "Heavy Warship"
 msgstr "重型战舰"
@@ -432,11 +437,11 @@ msgstr "中型战船"
 msgid "Siege"
 msgstr "攻城武器"
 
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:36
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:44
 msgid "Bolt Shooter"
 msgstr "弩炮"
 
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:37
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:45
 msgid "BoltShooter"
 msgstr ""
 
@@ -649,7 +654,6 @@ msgstr "Pródromos"
 #: simulation/templates/units/maur_infantry_spearman_e.xml:4
 #: simulation/templates/units/maur_infantry_swordsman_e.xml:4
 #: simulation/templates/units/maur_support_healer_e.xml:4
-#: simulation/templates/units/merc_thrace_swordsman.xml:13
 #: simulation/templates/units/pers_cavalry_archer_e.xml:4
 #: simulation/templates/units/pers_cavalry_javelinist_e.xml:4
 #: simulation/templates/units/pers_cavalry_javelinist_e_trireme.xml:4
@@ -773,7 +777,6 @@ msgstr "Peltastḗs Thrâx"
 #: simulation/templates/units/mace_infantry_slinger_b.xml:22
 #: simulation/templates/units/merc_black_cloak.xml:16
 #: simulation/templates/units/merc_thorakites.xml:26
-#: simulation/templates/units/merc_thrace_swordsman.xml:16
 #: simulation/templates/units/merc_thureophoros.xml:17
 #: simulation/templates/units/pers_kardakes_hoplite.xml:15
 #: simulation/templates/units/pers_kardakes_skirmisher.xml:15
@@ -794,11 +797,13 @@ msgstr "雇佣兵"
 
 #: simulation/templates/units/athen_infantry_marine_archer_b.xml:23
 #: simulation/templates/units/mace_infantry_archer_b.xml:20
+#: simulation/templates/units/ptol_infantry_archer_b.xml:21
 msgid "Cretan Mercenary Archer"
 msgstr "克里特弓箭雇佣兵"
 
 #: simulation/templates/units/athen_infantry_marine_archer_b.xml:24
 #: simulation/templates/units/mace_infantry_archer_b.xml:21
+#: simulation/templates/units/ptol_infantry_archer_b.xml:22
 msgid "Toxótēs Krētikós"
 msgstr "Toxótēs Krētikós"
 
@@ -1672,16 +1677,6 @@ msgstr "披甲剑士"
 msgid "Thōrakitēs"
 msgstr "Thōrakitēs"
 
-#: simulation/templates/units/merc_thrace_swordsman.xml:11
-#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:20
-msgid "Thracian Mercenary Swordsman"
-msgstr "色雷斯雇佣剑士"
-
-#: simulation/templates/units/merc_thrace_swordsman.xml:12
-#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:21
-msgid "Rhomphaiaphoros Thrakikós"
-msgstr "Rhomphaiaphoros Thrakikós"
-
 #: simulation/templates/units/merc_thureophoros.xml:12
 msgid "Heavy Skirmisher"
 msgstr "重型散兵"
@@ -1716,7 +1711,6 @@ msgstr "对敌方单位造成践踏伤害。"
 
 #: simulation/templates/units/pers_cavalry_javelinist_b.xml:6
 #: simulation/templates/units/pers_cavalry_javelinist_b_trireme.xml:9
-#: simulation/templates/units/sele_cavalry_javelinist_b.xml:7
 msgid "Median Light Cavalry"
 msgstr "米堤亚轻骑兵"
 
@@ -1990,11 +1984,11 @@ msgstr "托勒密四世 \"笃爱之父\""
 msgid "Ptolemaios D' Philopator"
 msgstr "托勒密四世·菲洛帕托尔"
 
-#: simulation/templates/units/ptol_infantry_archer_b.xml:21
+#: simulation/templates/units/ptol_infantry_archer_nubian.xml:6
 msgid "Nubian Mercenary Archer"
 msgstr "努比亚佣兵弓箭手"
 
-#: simulation/templates/units/ptol_infantry_archer_b.xml:22
+#: simulation/templates/units/ptol_infantry_archer_nubian.xml:7
 msgid "Kousít Misthophóros Toxótēs"
 msgstr "Kousít Misthophóros Toxótēs"
 
@@ -2115,27 +2109,27 @@ msgstr "昆图斯·费边·马克西穆斯"
 msgid "Scipio Africanus"
 msgstr "大西庇阿"
 
-#: simulation/templates/units/rome_infantry_javelinist_b.xml:17
+#: simulation/templates/units/rome_infantry_javelinist_b.xml:16
 msgid "Roman Skirmisher"
 msgstr "罗马散兵"
 
-#: simulation/templates/units/rome_infantry_javelinist_b.xml:18
+#: simulation/templates/units/rome_infantry_javelinist_b.xml:17
 msgid "Veles"
 msgstr "韦莱斯地区"
 
-#: simulation/templates/units/rome_infantry_spearman_b.xml:17
+#: simulation/templates/units/rome_infantry_spearman_b.xml:16
 msgid "Veteran Spearman"
 msgstr "老将枪兵"
 
-#: simulation/templates/units/rome_infantry_spearman_b.xml:18
+#: simulation/templates/units/rome_infantry_spearman_b.xml:17
 msgid "Triarius"
 msgstr "后备兵"
 
-#: simulation/templates/units/rome_infantry_swordsman_b.xml:17
+#: simulation/templates/units/rome_infantry_swordsman_b.xml:16
 msgid "Roman Swordsman"
 msgstr "罗马剑士"
 
-#: simulation/templates/units/rome_infantry_swordsman_b.xml:18
+#: simulation/templates/units/rome_infantry_swordsman_b.xml:17
 msgid "Hastatus"
 msgstr "Hastatus"
 
@@ -2229,17 +2223,13 @@ msgstr "达黑骑兵射手"
 msgid "Hippotoxotès Dahae"
 msgstr "Hippotoxotès Dahae"
 
-#: simulation/templates/units/sele_cavalry_javelinist.xml:7
+#: simulation/templates/units/sele_cavalry_javelinist_b.xml:7
 msgid "Militia Cavalry"
 msgstr "民兵骑兵"
 
-#: simulation/templates/units/sele_cavalry_javelinist.xml:8
+#: simulation/templates/units/sele_cavalry_javelinist_b.xml:8
 msgid "Hippakontistès Politès"
 msgstr "Hippakontistès Politès"
-
-#: simulation/templates/units/sele_cavalry_javelinist_b.xml:8
-msgid "Hippeus Medikos"
-msgstr "Hippeus Medikos"
 
 #: simulation/templates/units/sele_cavalry_spearman_merc_b.xml:14
 msgid "Hippos Hetairike"
@@ -2340,6 +2330,14 @@ msgstr "义勇大圆盾长矛兵"
 #: simulation/templates/units/sele_infantry_spearman_b.xml:15
 msgid "Thureophóros Politès"
 msgstr "Thureophóros Politès"
+
+#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:20
+msgid "Thracian Mercenary Swordsman"
+msgstr "色雷斯雇佣剑士"
+
+#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:21
+msgid "Rhomphaiaphoros Thrakikós"
+msgstr "Rhomphaiaphoros Thrakikós"
 
 #: simulation/templates/units/sele_ship_quinquereme.xml:5
 msgid "Pentères"

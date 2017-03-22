@@ -8,6 +8,7 @@
 # Christof Verhoeven <christof.verhoeven@gmail.com>, 2016
 # Ellen Roels, 2015
 # Johannes Collosus <the_pc_pilot@live.nl>, 2015
+# Mark Martines <mark-martines@hotmail.com>, 2017
 # Max Klaversma <maxklaversma@gmail.com>, 2014
 # niektb <niektb95@gmail.com>, 2014-2016
 # Sander Deryckere, 2014-2016
@@ -16,9 +17,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-02-03 09:03+0100\n"
-"PO-Revision-Date: 2017-02-03 09:37+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-03-03 09:03+0100\n"
+"PO-Revision-Date: 2017-03-07 18:17+0000\n"
+"Last-Translator: Mark Martines <mark-martines@hotmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/wildfire-games/0ad/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -53,43 +54,43 @@ msgstr "Ik heb zojuist een leger gestuurd naar %(_player_)s."
 #: simulation/ai/petra/chatHelper.js:17
 #, javascript-format
 msgid "Let me regroup my army and I will then join you against %(_player_)s."
-msgstr ""
+msgstr "Laat me hergroeperen met mijn leger daarna verenig ik met je tegen %(_player_)s"
 
 #: simulation/ai/petra/chatHelper.js:18
 #, javascript-format
 msgid "I am finishing preparations to attack %(_player_)s."
-msgstr ""
+msgstr "Ik ben mijn voorbereidingen tegen  %(_player_)s aan het afronden"
 
 #: simulation/ai/petra/chatHelper.js:21
 #, javascript-format
 msgid ""
 "Sorry, I do not have enough soldiers currently; but my next attack will "
 "target %(_player_)s."
-msgstr ""
+msgstr "Sorry, ik heb niet genoeg soldaten op het moment; maar mijn volgende aanval zal ik tegen  %(_player_)s inzetten"
 
 #: simulation/ai/petra/chatHelper.js:22
 #, javascript-format
 msgid ""
 "Sorry, I still need to strengthen my army. However, I will attack "
 "%(_player_)s next."
-msgstr ""
+msgstr "Sorry, ik heb tijd nodig om mijn leger sterker te maken maar  %(_player_)s zal het volgende doelwit zijn"
 
 #: simulation/ai/petra/chatHelper.js:25
 #, javascript-format
 msgid ""
 "I cannot help you against %(_player_)s for the time being, I am planning to "
 "attack %(_player_2)s first."
-msgstr ""
+msgstr "Ik kan je niet helpen tegen  %(_player_)s op het moment. Ik ben eerst een aanval tegen  %(_player_2)s aan het plannen"
 
 #: simulation/ai/petra/chatHelper.js:30
 #, javascript-format
 msgid "Here is a gift for you, %(_player_)s. Make good use of it."
-msgstr ""
+msgstr "Hier is een cadeau voor jou,  %(_player_)s maak er goed gebruik van"
 
 #: simulation/ai/petra/chatHelper.js:31
 #, javascript-format
 msgid "I see you are in a bad situation, %(_player_)s. I hope this helps."
-msgstr ""
+msgstr "Ik zie dat je het zwaar hebt,  %(_player_)s ik hoop dat dit helpt"
 
 #: simulation/ai/petra/chatHelper.js:32
 #, javascript-format
@@ -114,7 +115,7 @@ msgstr "Ik zou efficiënter zijn in ons gezamenlijk oorlogsplan als je me wat %(
 #, javascript-format
 msgid ""
 "If you can spare me some %(resource)s, I will be able to strengthen my army."
-msgstr ""
+msgstr "Als je me wat  %(resource)s kan geven, kan ik mijn leger sterker maken"
 
 #: simulation/ai/petra/chatHelper.js:42
 #, javascript-format
@@ -148,7 +149,7 @@ msgstr "%(_player_)s is nu bevriend met jou."
 #: simulation/ai/petra/chatHelper.js:60
 #, javascript-format
 msgid "%(_player_)s and I are now neutral."
-msgstr ""
+msgstr "%(_player_)s en ik zijn nu neutraal"
 
 #: simulation/ai/petra/chatHelper.js:63
 #, javascript-format
@@ -933,34 +934,38 @@ msgstr "(Valsspelen - Bestuur alle eenheden)"
 msgid "(Cheat - reveal map)"
 msgstr "(Valsspelen - Toon de volledige kaart)"
 
-#: simulation/helpers/Commands.js:574
+#: simulation/helpers/Commands.js:570
 msgid "(Cheat - promoted units)"
 msgstr "(Valsspelen - promoveer eenheden)"
 
-#: simulation/helpers/Commands.js:688
+#: simulation/helpers/Commands.js:684
 msgid ""
 "Cannot upgrade as distance requirements are not verified or terrain is "
 "obstructed."
 msgstr "Kan niet upgraden omdat de afstandsvereiste niet geverifieerd is of het terrein belemmerd is."
 
-#: simulation/helpers/Commands.js:698
+#: simulation/helpers/Commands.js:694
 msgid "Cannot upgrade a garrisoned entity."
 msgstr "Kan geen bemande entiteit upgraden."
 
-#: simulation/helpers/Commands.js:744
+#: simulation/helpers/Commands.js:740
 #, javascript-format
 msgid "Attack against %(_player_)s requested."
 msgstr "Aanvraag voor een aanval tegen %(_player_)s."
 
-#: simulation/helpers/Commands.js:781
+#: simulation/helpers/Commands.js:773
+msgid "There are no bribable units"
+msgstr ""
+
+#: simulation/helpers/Commands.js:804
 msgid "Unable to ungarrison unit(s)"
 msgstr "Kan de extra bemanning niet toevoegen."
 
-#: simulation/helpers/Commands.js:795
+#: simulation/helpers/Commands.js:818
 msgid "Some unit(s) can't go back to work"
 msgstr "Sommige eenheden kunnen niet terug aan het werk"
 
-#: simulation/helpers/Commands.js:1049
+#: simulation/helpers/Commands.js:1072
 msgid "The building's technology requirements are not met."
 msgstr "Er is niet voldaan aan de technologie vereisten voor dit gebouw."
 
@@ -1152,8 +1157,8 @@ msgstr "Petra Bot"
 msgid ""
 "Petra is the default 0 A.D. AI bot. Please report issues to Wildfire Games (see the link in the main menu).\n"
 "\n"
-"The AI has a bonus/penalty on resource stockpiling (either gathering rate or trade gain) varying from 0.5 for Sandbox to 1.6 for Very Hard (Medium = 1.0). In addition, the Sandbox level does not expand nor attack."
-msgstr "Petra is de standaard 0 A.D. bot. Geef problemen alsjeblieft door aan Wildfire Games (zie de link in het hoofdmenu).\n\nDe AI heeft een voor- of nadeel op het opslaan van grondstoffen (verzamelsnelheid of handelswinst) die varieert van 0.5 bij Zandbak tot 1.6 bij Heel Moeilijk (Medium = 1.0). Daarnaast breidt ze op Zandbak niveau niet uit en valt ze niet aan."
+"The AI has a bonus/penalty on resource stockpiling (either gathering rate or trade gain) varying from -50% for Sandbox to +60% for Very Hard (Medium 0%). In addition, the Sandbox level does not expand nor attack."
+msgstr ""
 
 #: simulation/ai/tutorial-ai/data.jsonname
 msgid "Tutorial AI"

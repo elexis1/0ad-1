@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-02 09:05+0100\n"
-"PO-Revision-Date: 2017-01-07 13:17+0000\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-05 20:35+0000\n"
 "Last-Translator: pilino1234 <mhilgendrf@aol.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/wildfire-games/0ad/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -789,13 +789,13 @@ msgstr "Palissad Slut"
 msgid "Wooden Wall End"
 msgstr "Trävägg Slut"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr "Palissad Fästning"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr "Vakttorn"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr "Trätorn"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
@@ -981,6 +981,10 @@ msgstr "Markering"
 #: simulation/templates/special/player.xml:56
 msgid "Player"
 msgstr "Spelare"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr "Spion"
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5

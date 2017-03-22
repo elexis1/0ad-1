@@ -13,7 +13,7 @@ function init(data)
 	if (tipTextLoadingArray.length > 0)
 	{
 		// Set tip text
-		let tipTextFilePath = tipTextLoadingArray[getRandom(0, tipTextLoadingArray.length-1)];
+		let tipTextFilePath = pickRandom(tipTextLoadingArray);
 		let tipText = Engine.TranslateLines(Engine.ReadFile(tipTextFilePath));
 
 		if (tipText)
@@ -61,8 +61,8 @@ function init(data)
 	Engine.GetGUIObjectByName("progressbar").caption = 0;
 
 	// Pick a random quote of the day (each line is a separate tip).
-	let quoteArray = Engine.ReadFileLines("gui/text/quotes.txt");
-	Engine.GetGUIObjectByName("quoteText").caption = translate(quoteArray[getRandom(0, quoteArray.length-1)]);
+	let quoteArray = Engine.ReadFileLines("gui/text/quotes.txt").filter(line => line);
+	Engine.GetGUIObjectByName("quoteText").caption = translate(pickRandom(quoteArray));
 }
 
 function displayProgress()

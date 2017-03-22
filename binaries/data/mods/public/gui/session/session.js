@@ -159,7 +159,7 @@ var g_Heroes = [];
 /**
  * Unit classes to be checked for the idle-worker-hotkey.
  */
-var g_WorkerTypes = ["Female", "Trader", "FishingBoat", "CitizenSoldier"];
+var g_WorkerTypes = ["Female+Support", "Trader", "FishingBoat", "CitizenSoldier"];
 /**
  * Unit classes to be checked for the military-only-selection modifier and for the idle-warrior-hotkey.
  */
@@ -387,17 +387,16 @@ function updateHotkeyTooltips()
 			"\n" + (g_IsObserver ?
 				translate("Press %(hotkey)s to open the observer chat.") :
 				translate("Press %(hotkey)s to open the ally chat.")),
-			"teamchat");
+			"teamchat") +
+		colorizeHotkey("\n" + translate("Press %(hotkey)s to open the previously selected private chat."), "privatechat");
 
 	Engine.GetGUIObjectByName("idleWorkerButton").tooltip =
 		colorizeHotkey("%(hotkey)s" + " ", "selection.idleworker") +
 		translate("Find idle worker");
 
-	Engine.GetGUIObjectByName("tradeHelp").tooltip =
-		translate("Select one type of goods as origin of the changes, then use the arrows of the target type of goods to make the changes.") +
-		colorizeHotkey(
-			"\n" + translate("Using %(hotkey)s will put the selected resource to 100%%."),
-			"session.fulltradeswap");
+	Engine.GetGUIObjectByName("tradeHelp").tooltip = colorizeHotkey(
+		translate("Select one type of goods you want to modify by clicking on it (Pressing %(hotkey)s while selecting will also bring its share to 100%%) and then use the arrows of the other types to modify their shares."),
+		"session.fulltradeswap");
 }
 
 function initGUIHeroes(slot)
@@ -523,7 +522,7 @@ function playerFinished(player, won)
 	if (player == Engine.GetPlayerID())
 		reportGame();
 
-	updateDiplomacy();
+	updatePlayerData();
 	updateChatAddressees();
 
 	if (player != g_ViewedPlayer)
@@ -847,6 +846,8 @@ function updateGUIObjects()
 		if (battleState)
 			global.music.setState(global.music.states[battleState]);
 	}
+
+	updateDiplomacy();
 }
 
 function onReplayFinished()
@@ -1257,7 +1258,7 @@ function updateAdditionalHighlight()
 
 function playAmbient()
 {
-	Engine.PlayAmbientSound(g_Ambient[Math.floor(Math.random() * g_Ambient.length)], true);
+	Engine.PlayAmbientSound(pickRandom(g_Ambient), true);
 }
 
 function getBuildString()
@@ -1275,6 +1276,33 @@ function showTimeWarpMessageBox()
 		translate("Note: time warp mode is a developer option, and not intended for use over long periods of time. Using it incorrectly may cause the game to run out of memory or crash."),
 		translate("Time warp mode")
 	);
+}
+
+/**
+ * Adds the ingame time and ceasefire counter to the global FPS and
+ * realtime counters shown in the top right corner.
+ */
+function appendSessionCounters(counters)
+{
+	let simState = GetSimState();
+
+	if (Engine.ConfigDB_GetValue("user", "gui.session.timeelapsedcounter") === "true")
+	{
+		let currentSpeed = Engine.GetSimRate();
+		if (currentSpeed != 1.0)
+			// Translation: The "x" means "times", with the mathematical meaning of multiplication.
+			counters.push(sprintf(translate("%(time)s (%(speed)sx)"), {
+				"time": timeToString(simState.timeElapsed),
+				"speed": Engine.FormatDecimalNumberIntoString(currentSpeed)
+			}));
+		else
+			counters.push(timeToString(simState.timeElapsed));
+	}
+
+	if (simState.ceasefireActive && Engine.ConfigDB_GetValue("user", "gui.session.ceasefirecounter") === "true")
+		counters.push(timeToString(simState.ceasefireTimeRemaining));
+
+	g_ResearchListTop = 4 + 14 * counters.length;
 }
 
 /**

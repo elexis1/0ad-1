@@ -11,11 +11,12 @@
 # Vladislav Belov <vladislavbelovdev@gmail.com>, 2016
 # Woratiklis, 2015-2016
 # Николай Авдеев <nickkolok@mail.ru>, 2016
+# Олег Шевченко <olegrock@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-02 09:05+0100\n"
-"PO-Revision-Date: 2017-01-25 14:34+0000\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-03 12:25+0000\n"
 "Last-Translator: Dmitry Oshkalo <dmitry.oshkalo@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/wildfire-games/0ad/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -791,13 +792,13 @@ msgstr "Край частокола"
 msgid "Wooden Wall End"
 msgstr "Край деревянной стены"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr "Укрепление из частокола"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr "Сторожевая башня"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr "Деревянная башня"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
@@ -983,6 +984,10 @@ msgstr "Указатель"
 #: simulation/templates/special/player.xml:56
 msgid "Player"
 msgstr "Игрок"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr "Шпион"
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5

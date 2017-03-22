@@ -106,6 +106,7 @@ GuiInterface.prototype.GetSimulationState = function()
 			"teamsLocked": cmpPlayer.GetLockTeams(),
 			"cheatsEnabled": cmpPlayer.GetCheatsEnabled(),
 			"disabledTemplates": cmpPlayer.GetDisabledTemplates(),
+			"disabledTechnologies": cmpPlayer.GetDisabledTechnologies(),
 			"hasSharedDropsites": cmpPlayer.HasSharedDropsites(),
 			"hasSharedLos": cmpPlayer.HasSharedLos(),
 			"phase": phase,
@@ -1762,7 +1763,7 @@ GuiInterface.prototype.IdleUnitFilter = function(unit, idleClasses, excludeUnits
 	if(!cmpIdentity)
 		return { "idle": false };
 
-	let bucket = idleClasses.findIndex(elem => cmpIdentity.HasClass(elem));
+	let bucket = idleClasses.findIndex(elem => MatchesClassList(cmpIdentity.GetClassesList(), elem));
 	if (bucket == -1 || excludeUnits.indexOf(unit) > -1)
 		return { "idle": false };
 

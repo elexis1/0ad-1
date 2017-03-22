@@ -16,7 +16,7 @@
     <EjectHealth>0</EjectHealth>
     <EjectClassesOnDestroy datatype="tokens">Female Infantry Dog</EjectClassesOnDestroy>
     <List datatype="tokens">Support Infantry Cavalry Dog</List>
-    <BuffHeal>1</BuffHeal>
+    <BuffHeal>0</BuffHeal>
     <LoadingRange>10</LoadingRange>
     <Pickup>true</Pickup>
   </GarrisonHolder>
@@ -26,7 +26,7 @@
   <Identity>
     <GenericName>Merchantman</GenericName>
     <Tooltip>Trade between docks. Garrison a Trader aboard for additional profit (+20% for each garrisoned). Gather profitable aquatic treasures.</Tooltip>
-    <VisibleClasses datatype="tokens">Trader</VisibleClasses>
+    <VisibleClasses datatype="tokens">Trader Bribable</VisibleClasses>
     <RequiredTechnology>phase_town</RequiredTechnology>
     <Formations disable=""/>
   </Identity>
@@ -63,4 +63,7 @@
   <Vision>
     <Range>50</Range>
   </Vision>
+  <VisionSharing>
+    <Bribable>true</Bribable>
+  </VisionSharing>
 </Entity>

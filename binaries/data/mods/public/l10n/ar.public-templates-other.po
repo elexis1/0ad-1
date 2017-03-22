@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
+# Omar Anwar <omaraglan91@yahoo.com>, 2017
 # صفا الفليج <safaalfulaij@hotmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-02 09:05+0100\n"
-"PO-Revision-Date: 2017-01-18 20:50+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-15 11:14+0000\n"
+"Last-Translator: Omar Anwar <omaraglan91@yahoo.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/wildfire-games/0ad/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -117,11 +118,11 @@ msgstr "كنز يمكن التقاطه بسرعة."
 
 #: simulation/templates/template_structure.xml:60
 msgid "Structure"
-msgstr ""
+msgstr "مبنى"
 
 #: simulation/templates/template_unit.xml:40
 msgid "Unit"
-msgstr ""
+msgstr "وحدة"
 
 #: simulation/templates/campaigns/army_mace_hero_alexander.xml:27
 msgid "Army of Alexander the Great."
@@ -135,7 +136,7 @@ msgstr "جيش الإسكندر الأكبر"
 #: simulation/templates/campaigns/army_mace_standard.xml:21
 #: simulation/templates/campaigns/army_spart_hero_leonidas.xml:29
 msgid "This is what an army would look like on the Strat Map."
-msgstr ""
+msgstr "هذا ما سوف يبدو الجيش عليه فى خريطة مبتدأ."
 
 #: simulation/templates/campaigns/army_mace_standard.xml:19
 msgid "Army of Macedonia"
@@ -156,7 +157,7 @@ msgstr "جيش ليونيداس الأول"
 #: simulation/templates/campaigns/campaign_city_minor_test.xml:25
 #: simulation/templates/campaigns/campaign_city_test.xml:25
 msgid "Market"
-msgstr ""
+msgstr "متجر"
 
 #: simulation/templates/campaigns/campaign_city_minor_test.xml:26
 #: simulation/templates/campaigns/campaign_city_test.xml:26
@@ -165,19 +166,19 @@ msgstr "مستوطنة"
 
 #: simulation/templates/campaigns/campaign_city_minor_test.xml:27
 msgid "Minor Greek Polis"
-msgstr ""
+msgstr "شرطة الاغريق العامة"
 
 #: simulation/templates/campaigns/campaign_city_minor_test.xml:28
 msgid "This is a minor Greek city."
-msgstr ""
+msgstr "هذه مدينة اغريقية صغيرة."
 
 #: simulation/templates/campaigns/campaign_city_test.xml:27
 msgid "Greek Polis"
-msgstr ""
+msgstr "شرطة أغريقية"
 
 #: simulation/templates/campaigns/campaign_city_test.xml:28
 msgid "This is a major Greek city."
-msgstr ""
+msgstr "هذه مدينة إغريقية كبيرة."
 
 #: simulation/templates/campaigns/campaign_religious_test.xml:12
 msgid "Religious Sanctuary"
@@ -201,7 +202,7 @@ msgstr "صندوق"
 
 #: simulation/templates/formations/column_closed.xml:5
 msgid "Forced March"
-msgstr ""
+msgstr "تقدم إجبارى"
 
 #: simulation/templates/formations/column_open.xml:5
 msgid "Column Open"
@@ -213,15 +214,15 @@ msgstr "8 وحدات مطلوبة"
 
 #: simulation/templates/formations/flank.xml:7
 msgid "Flank"
-msgstr ""
+msgstr "جناح"
 
 #: simulation/templates/formations/line_closed.xml:5
 msgid "Close Order"
-msgstr ""
+msgstr "تقارب مغلق"
 
 #: simulation/templates/formations/line_open.xml:5
 msgid "Open Order"
-msgstr ""
+msgstr "تقارب مفتوح"
 
 #: simulation/templates/formations/null.xml:5
 msgid "None"
@@ -229,19 +230,19 @@ msgstr "بلا"
 
 #: simulation/templates/formations/phalanx.xml:6
 msgid "10 hoplite infantry required"
-msgstr ""
+msgstr "10 وحدات مشاة هوبليت مطلوبة"
 
 #: simulation/templates/formations/phalanx.xml:7
 msgid "Phalanx"
-msgstr "السلامية"
+msgstr "كتيبة"
 
 #: simulation/templates/formations/scatter.xml:5
 msgid "Scatter"
-msgstr ""
+msgstr "تبَعثُر"
 
 #: simulation/templates/formations/skirmish.xml:5
 msgid "Only ranged units allowed"
-msgstr "فقط الوحدات المسافيّة مسموحة"
+msgstr "فقط الوحدات السهامية مسموحة"
 
 #: simulation/templates/formations/skirmish.xml:6
 msgid "Skirmish"
@@ -249,7 +250,7 @@ msgstr "مناوش"
 
 #: simulation/templates/formations/syntagma.xml:6
 msgid "16 pike infantry units required"
-msgstr ""
+msgstr "16 وحدة مشاة رماح مطلوبة"
 
 #: simulation/templates/formations/syntagma.xml:8
 msgid "Syntagma"
@@ -261,15 +262,15 @@ msgstr "9 وحدات مشاة مشتبكة مطلوبة"
 
 #: simulation/templates/formations/testudo.xml:7
 msgid "Testudo"
-msgstr ""
+msgstr "الدرع"
 
 #: simulation/templates/formations/wedge.xml:6
 msgid "6 cavalry units required"
-msgstr ""
+msgstr "6 وحدات خيّالة مطلوبة"
 
 #: simulation/templates/formations/wedge.xml:7
 msgid "Wedge"
-msgstr ""
+msgstr "وتد"
 
 #: simulation/templates/gaia/fauna_bear.xml:18
 msgid "Bear"
@@ -277,11 +278,11 @@ msgstr "دب"
 
 #: simulation/templates/gaia/fauna_boar.xml:18
 msgid "Wild Boar"
-msgstr ""
+msgstr "دب بري"
 
 #: simulation/templates/gaia/fauna_boar.xml:19
 msgid "Sus scrofa"
-msgstr ""
+msgstr "خنزير بري"
 
 #: simulation/templates/gaia/fauna_camel.xml:9
 msgid "Camel"
@@ -293,11 +294,11 @@ msgstr "دجاجة"
 
 #: simulation/templates/gaia/fauna_crocodile.xml:18
 msgid "Crocodylus niloticus"
-msgstr ""
+msgstr "تمساح النيل"
 
 #: simulation/templates/gaia/fauna_crocodile.xml:19
 msgid "Nile Crocodile"
-msgstr ""
+msgstr "تمساح النيل"
 
 #: simulation/templates/gaia/fauna_deer.xml:9
 msgid "Deer"
@@ -305,11 +306,11 @@ msgstr "غزال"
 
 #: simulation/templates/gaia/fauna_elephant_african_bush.xml:33
 msgid "African Bush Elephant"
-msgstr ""
+msgstr "فيل الشجيرات الافريقي"
 
 #: simulation/templates/gaia/fauna_elephant_african_infant.xml:15
 msgid "African Elephant (Infant)"
-msgstr ""
+msgstr "الفيل الافريقيي (صغير)"
 
 #: simulation/templates/gaia/fauna_elephant_asian.xml:33
 msgid "Asian Elephant"
@@ -327,27 +328,27 @@ msgstr "سمكة تونا"
 #: simulation/templates/gaia/fauna_fish.xml:6
 #: simulation/templates/gaia/fauna_fish_tuna.xml:6
 msgid "Collect food from this bountiful oceanic resource."
-msgstr ""
+msgstr "أجمع الطعام من هذه المصادر البحرية الوفيرة."
 
 #: simulation/templates/gaia/fauna_fish_tilapia.xml:5
 msgid "Tilapia Fish"
-msgstr ""
+msgstr "سمك بلطي"
 
 #: simulation/templates/gaia/fauna_fish_tilapia.xml:6
 msgid "Collect food from this bountiful riparian resource."
-msgstr ""
+msgstr "أجمع الطعام من هذه الضفه البحرية الوفيرة بالطعام."
 
 #: simulation/templates/gaia/fauna_gazelle.xml:9
 msgid "Gazelle"
-msgstr ""
+msgstr "غزال"
 
 #: simulation/templates/gaia/fauna_giraffe.xml:12
 msgid "Giraffe (Adult)"
-msgstr ""
+msgstr "زرافة (بالغة)"
 
 #: simulation/templates/gaia/fauna_giraffe_infant.xml:9
 msgid "Giraffe (Juvenile)"
-msgstr ""
+msgstr "زرافة (شاب)"
 
 #: simulation/templates/gaia/fauna_goat.xml:15
 msgid "Goat"
@@ -363,27 +364,27 @@ msgstr "أسد"
 
 #: simulation/templates/gaia/fauna_lioness.xml:18
 msgid "Lioness"
-msgstr ""
+msgstr "الاسد"
 
 #: simulation/templates/gaia/fauna_muskox.xml:9
 msgid "Muskox"
-msgstr ""
+msgstr "ثور المسك"
 
 #: simulation/templates/gaia/fauna_peacock.xml:14
 msgid "Peacock"
-msgstr ""
+msgstr "طاووس"
 
 #: simulation/templates/gaia/fauna_peacock.xml:15
 msgid "Pavo cristatus"
-msgstr ""
+msgstr "طاووس هندي"
 
 #: simulation/templates/gaia/fauna_pig.xml:15
 msgid "Pig"
-msgstr ""
+msgstr "خنزير"
 
 #: simulation/templates/gaia/fauna_pig_flaming.xml:18
 msgid "Flaming Pig"
-msgstr ""
+msgstr "خنزير الحرب"
 
 #: simulation/templates/gaia/fauna_pig_flaming.xml:19
 msgid "Sus scrofa domesticus igne"
@@ -395,7 +396,7 @@ msgstr "أرنب"
 
 #: simulation/templates/gaia/fauna_rhino.xml:18
 msgid "Rhinoceros"
-msgstr ""
+msgstr "الكركدن"
 
 #: simulation/templates/gaia/fauna_shark.xml:13
 msgid "Great White"
@@ -415,19 +416,19 @@ msgstr "نمر"
 
 #: simulation/templates/gaia/fauna_walrus.xml:23
 msgid "Walrus"
-msgstr ""
+msgstr "فظ"
 
 #: simulation/templates/gaia/fauna_whale_fin.xml:8
 msgid "Fin Whale"
-msgstr ""
+msgstr "حوت زعنفي"
 
 #: simulation/templates/gaia/fauna_whale_humpback.xml:8
 msgid "Humpback Whale"
-msgstr ""
+msgstr "جمل البحر"
 
 #: simulation/templates/gaia/fauna_wildebeest.xml:9
 msgid "Wildebeest"
-msgstr ""
+msgstr "نو"
 
 #: simulation/templates/gaia/fauna_wolf.xml:18
 msgid "Wolf"
@@ -443,15 +444,15 @@ msgstr "حمار وحش"
 
 #: simulation/templates/gaia/flora_bush_badlands.xml:8
 msgid "Hardy Bush"
-msgstr ""
+msgstr "الشجيرات الكثيفة"
 
 #: simulation/templates/gaia/flora_bush_grapes.xml:4
 msgid "Forage"
-msgstr ""
+msgstr "علف الماشية"
 
 #: simulation/templates/gaia/flora_bush_grapes.xml:5
 msgid "Grapes"
-msgstr ""
+msgstr "عنب"
 
 #: simulation/templates/gaia/flora_bush_grapes.xml:6
 msgid "Gather grapes from these vines for Food."
@@ -463,7 +464,7 @@ msgstr ""
 
 #: simulation/templates/gaia/flora_tree_acacia.xml:4
 msgid "Acacia Tree"
-msgstr ""
+msgstr "الطلح"
 
 #: simulation/templates/gaia/flora_tree_aleppo_pine.xml:4
 msgid "Aleppo Pine Tree"
@@ -475,11 +476,11 @@ msgstr "شجرة تفّاح"
 
 #: simulation/templates/gaia/flora_tree_baobab.xml:8
 msgid "Baobab"
-msgstr ""
+msgstr "شجرة التبلدي"
 
 #: simulation/templates/gaia/flora_tree_carob.xml:4
 msgid "Carob Tree"
-msgstr ""
+msgstr "خروب"
 
 #: simulation/templates/gaia/flora_tree_cretan_date_palm_patch.xml:8
 #: simulation/templates/gaia/flora_tree_cretan_date_palm_short.xml:4
@@ -489,7 +490,7 @@ msgstr ""
 
 #: simulation/templates/gaia/flora_tree_cypress.xml:4
 msgid "Cypress Tree"
-msgstr ""
+msgstr "شجرة السرو"
 
 #: simulation/templates/gaia/flora_tree_date_palm.xml:4
 msgid "Date Palm"
@@ -784,13 +785,13 @@ msgstr "طرف سياج"
 msgid "Wooden Wall End"
 msgstr "طرف سور خشبي"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr ""
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr "برج حراسه"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr ""
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
@@ -976,6 +977,10 @@ msgstr ""
 #: simulation/templates/special/player.xml:56
 msgid "Player"
 msgstr "لاعب"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr ""
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5

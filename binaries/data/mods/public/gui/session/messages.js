@@ -30,6 +30,11 @@ var g_ChatHistory = [];
 var g_ChatTimers = [];
 
 /**
+ * Command to send to the previously selected private chat partner.
+ */
+var g_LastChatAddressee = "";
+
+/**
  * Handle all netmessage types that can occur.
  */
 var g_NetMessageTypes = {
@@ -44,6 +49,9 @@ var g_NetMessageTypes = {
 	},
 	"paused": msg => {
 		setClientPauseState(msg.guid, msg.pause);
+	},
+	"clients-loading": msg => {
+		handleClientsLoadingMessage(msg.guids);
 	},
 	"rejoined": msg => {
 		addChatMessage({
@@ -134,7 +142,7 @@ var g_StatusMessageTypes = {
 		sprintf(translate("Reason: %(reason)s."), {
 			"reason": getDisconnectReason(msg.reason, true)
 		}),
-	"waiting_for_players": msg => translate("Waiting for other players to connect..."),
+	"waiting_for_players": msg => translate("Waiting for players to connect:"),
 	"join_syncing": msg => translate("Synchronising gameplay with other players..."),
 	"active": msg => ""
 };
@@ -330,8 +338,11 @@ var g_NotificationsTypes =
 			"targetPlayer": notification.targetPlayer,
 			"status": notification.status
 		});
-
-		updateDiplomacy();
+		updatePlayerData();
+	},
+	"ceasefire-ended": function(notification, player)
+	{
+		updatePlayerData();
 	},
 	"tribute": function(notification, player)
 	{
@@ -352,6 +363,11 @@ var g_NotificationsTypes =
 			"resourceSold": notification.resourceSold,
 			"resourceBought": notification.resourceBought
 		});
+	},
+	"spy-response": function(notification, player)
+	{
+		if (g_ViewedPlayer == player)
+			setCameraFollow(notification.entity);
 	},
 	"attack": function(notification, player)
 	{
@@ -510,17 +526,6 @@ function handleNotifications()
 }
 
 /**
- * Updates playerdata cache and refresh diplomacy panel.
- */
-function updateDiplomacy()
-{
-	updatePlayerData();
-
-	if (g_IsDiplomacyOpen)
-		openDiplomacy();
-}
-
-/**
  * Displays all active counters (messages showing the remaining time) for wonder-victory, ceasefire etc.
  */
 function updateTimeNotifications()
@@ -583,10 +588,13 @@ function handleNetStatusMessage(message)
 
 	g_IsNetworkedActive = message.status == "active";
 
-	let label = Engine.GetGUIObjectByName("netStatus");
+	let netStatus = Engine.GetGUIObjectByName("netStatus");
 	let statusMessage = g_StatusMessageTypes[message.status](message);
-	label.caption = statusMessage;
-	label.hidden = !statusMessage;
+	netStatus.caption = statusMessage;
+	netStatus.hidden = !statusMessage;
+
+	let loadingClientsText = Engine.GetGUIObjectByName("loadingClientsText");
+	loadingClientsText.hidden = message.status != "waiting_for_players";
 
 	if (message.status == "disconnected")
 	{
@@ -597,6 +605,12 @@ function handleNetStatusMessage(message)
 		g_Disconnected = true;
 		closeOpenDialogs();
 	}
+}
+
+function handleClientsLoadingMessage(guids)
+{
+	let loadingClientsText = Engine.GetGUIObjectByName("loadingClientsText");
+	loadingClientsText.caption = guids.map(guid => colorizePlayernameByGUID(guid)).join(translate(", "));
 }
 
 function handlePlayerAssignmentsMessage(message)
@@ -613,6 +627,7 @@ function handlePlayerAssignmentsMessage(message)
 		onClientJoin(guid);
 	});
 
+	updateGUIObjects();
 	updateChatAddressees();
 	sendLobbyPlayerlistUpdate();
 }
@@ -752,6 +767,10 @@ function submitChatInput()
 	if (chatAddressee.selected > 0 && (text.indexOf("/") != 0 || text.indexOf("/me ") == 0))
 		text = chatAddressee.list_data[chatAddressee.selected] + " " + text;
 
+	let selectedChat = chatAddressee.list_data[chatAddressee.selected]
+	if (selectedChat.startsWith("/msg"))
+		g_LastChatAddressee = selectedChat;
+
 	submitChatDirectly(text);
 }
 
@@ -885,7 +904,7 @@ function formatTributeMessage(msg)
 	if (msg.targetPlayer == Engine.GetPlayerID())
 		message = translate("%(player)s has sent you %(amounts)s.");
 	else if (msg.sourcePlayer == Engine.GetPlayerID())
-		message = translate("You have sent %(player2)s %(amounts)s.")
+		message = translate("You have sent %(player2)s %(amounts)s.");
 	else if (Engine.ConfigDB_GetValue("user", "gui.session.notifications.tribute") == "true" &&
 	        (g_IsObserver || g_GameAttributes.settings.LockTeams &&
 	           g_Players[msg.sourcePlayer].isMutualAlly[Engine.GetPlayerID()] &&

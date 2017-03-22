@@ -10,15 +10,15 @@
 # MasterWord, 2015
 # LOUKAS SKOUROLIAKOS, 2015-2016
 # Markos G. <marx-kolaiti@hotmail.gr>, 2016
-# Vasilis Drosos <basilisd@gmail.com>, 2016
+# Vasilis Drosos <basilisd@gmail.com>, 2016-2017
 # Xenophon Sp <nohponex@gmail.com>, 2015
 # Κωνσταντίνος Φωκιανός <lost-in-illusions@hotmail.com>, 2015
 # Steven Gikas <stevengk123@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-12-30 09:02+0100\n"
-"PO-Revision-Date: 2016-12-30 17:17+0000\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-15 22:45+0000\n"
 "Last-Translator: Vasilis Drosos <basilisd@gmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/wildfire-games/0ad/language/el/)\n"
 "MIME-Version: 1.0\n"
@@ -1810,6 +1810,20 @@ msgstr "Δείτε τι βλέπουν οι σύμμαχοί σας, περιη�
 #: simulation/data/technologies/unlock_shared_los.jsongenericName
 msgid "Cartography"
 msgstr "Χαρτογραφία"
+
+#: simulation/data/technologies/unlock_spies.jsondescription
+msgid ""
+"Merchants' first goal was trading, but they also gathered information about "
+"the countries they crossed."
+msgstr "Ο πρώτος στόχος των έμπορων ήταν η εμπορία, αλλά συγκέντρωναν επίσης και πληροφορίες σχετικά με τις χώρες από όπου πέρασαν."
+
+#: simulation/data/technologies/unlock_spies.jsontooltip
+msgid "Allows to bribe other players' units to share their vision."
+msgstr "Επιτρέπει να δωροδοκήσεις μονάδες άλλου παίχτη για να μοιραστείς αυτό που βλέπουν."
+
+#: simulation/data/technologies/unlock_spies.jsongenericName
+msgid "Espionage"
+msgstr "Κατασκοπία"
 
 #: simulation/data/technologies/upgrade_rank_advanced_cavalry.jsondescription
 #: simulation/data/technologies/upgrade_rank_elite_cavalry.jsondescription

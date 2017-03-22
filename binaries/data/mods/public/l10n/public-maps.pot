@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D. — Empires Ascendant\n"
-"POT-Creation-Date: 2017-02-26 21:12+0100\n"
-"PO-Revision-Date: 2017-02-26 21:12+0100\n"
+"POT-Creation-Date: 2017-03-10 09:03+0100\n"
+"PO-Revision-Date: 2017-03-10 09:03+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -573,6 +573,23 @@ msgstr ""
 msgid "Phoenician Levant"
 msgstr ""
 
+#: maps/random/polar_sea.json:settings.Description
+msgid ""
+"Players start in a cold polar region barren of vegetation. In the sea fish "
+"and whales abound, while the fragile icy land teems with huntable walruses "
+"and deadly wolves. These wolves, made ravenous by the harsh and forbidding "
+"climate, drawn by the scent of prey, have started appearing in terrifying "
+"numbers. A wise and strong ruler will not only achieve victory over his "
+"enemies, but also keep the number of these beasts at bay, lest they "
+"undermine his economy and cause his downfall. [color=\"red\"]Warning: It is "
+"inadvisable to disable treasures, since there is no gatherable wood. Not "
+"recommended for inexperienced players.[/color]"
+msgstr ""
+
+#: maps/random/polar_sea.json:settings.Name
+msgid "Polar Sea"
+msgstr ""
+
 #: maps/random/pompeii.json:settings.Description
 msgid ""
 "Pompeii was an ancient Roman coastal city, in the Campania region of Italy. "
@@ -870,7 +887,6 @@ msgstr ""
 #: maps/scenarios/WallTest.xml:PlayerData[0].Name:27
 #: maps/scenarios/Walls.xml:PlayerData[0].Name:27
 #: maps/scenarios/reservoir.xml:PlayerData[0].Name:27
-#: maps/scenarios/starting_economy_walkthrough.xml:PlayerData[0].Name:39
 #: maps/skirmishes/Acropolis Bay (2).xml:PlayerData[0].Name:39
 #: maps/skirmishes/Alpine_Valleys_(2).xml:PlayerData[0].Name:39
 #: maps/skirmishes/Bactria (2).xml:PlayerData[0].Name:39
@@ -938,7 +954,6 @@ msgstr ""
 #: maps/scenarios/Tropical Island.xml:PlayerData[1].Name:39
 #: maps/scenarios/WallTest.xml:PlayerData[1].Name:27
 #: maps/scenarios/Walls.xml:PlayerData[1].Name:27
-#: maps/scenarios/starting_economy_walkthrough.xml:PlayerData[1].Name:39
 #: maps/skirmishes/Acropolis Bay (2).xml:PlayerData[1].Name:39
 #: maps/skirmishes/Alpine_Valleys_(2).xml:PlayerData[1].Name:39
 #: maps/skirmishes/Bactria (2).xml:PlayerData[1].Name:39
@@ -1914,20 +1929,6 @@ msgstr ""
 
 #: maps/scenarios/shipattacks.xml:Name:27
 msgid "Ships Demo"
-msgstr ""
-
-#: maps/scenarios/starting_economy_walkthrough.xml:Description:39
-msgid ""
-"This map will give a rough guide for starting the game effectively.  Early "
-"in the game the most important thing is to gather resources as fast as "
-"possible so you are able to build enough troops later.\n"
-"\n"
-"Warning: This is very fast at the start, be prepared to run through the "
-"initial bit several times."
-msgstr ""
-
-#: maps/scenarios/starting_economy_walkthrough.xml:Name:39
-msgid "Starting Economy Walkthrough"
 msgstr ""
 
 #: maps/scenarios/temperate map.xml:Name:27

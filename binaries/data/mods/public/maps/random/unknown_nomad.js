@@ -1292,17 +1292,13 @@ for (var i = 0; i < numPlayers; i++)
 	}
 
 	if (!placableArea.length)
-	{
 		for (var mx = 0; mx < mapSize; ++mx)
 			for (var mz = 0; mz < mapSize; ++mz)
 				if (g_Map.getHeight(mx, mz) >= 3 && g_Map.getHeight(mx, mz) <= 3.12)
 					placableArea.push([mx, mz]);
-	}
-	var chosen = floor(Math.random()*placableArea.length);
-	playerX[i] = placableArea[chosen][0];
-	playerZ[i] = placableArea[chosen][1];
-}
 
+	[playerX[i], playerZ[i]] = pickRandom(placableArea);
+}
 
 for (var i = 0; i < numPlayers; ++i)
 {
@@ -1663,20 +1659,7 @@ createObjectGroups(group, 0,
 	planetm * scaleByMapSize(13, 200), 50
 );
 
-rt = randInt(1,6);
-if (rt == 1)
-	setSkySet("cirrus");
-else if (rt == 2)
-	setSkySet("cumulus");
-else if (rt == 3)
-	setSkySet("sunny");
-else if (rt == 4)
-	setSkySet("sunny 1");
-else if (rt == 5)
-	setSkySet("mountainous");
-else if (rt == 6)
-	setSkySet("stratus");
-
+setSkySet(pickRandom(["cirrus", "cumulus", "sunny", "sunny 1", "mountainous", "stratus"]));
 setSunRotation(randFloat(0, TWO_PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 

@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-13 09:03+0100\n"
-"PO-Revision-Date: 2017-01-23 17:24+0000\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-13 19:16+0000\n"
 "Last-Translator: Irriep Nala Novram <allannkorh@yahoo.fr>\n"
 "Language-Team: Breton (http://www.transifex.com/wildfire-games/0ad/language/br/)\n"
 "MIME-Version: 1.0\n"
@@ -126,7 +126,7 @@ msgstr "Marc'heger A-bell"
 #: simulation/templates/template_unit_mechanical_ship_bireme.xml:49
 #: simulation/templates/template_unit_mechanical_ship_quinquereme.xml:59
 #: simulation/templates/template_unit_mechanical_ship_trireme.xml:49
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:37
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:45
 #: simulation/templates/template_unit_mechanical_siege_onager.xml:44
 #: simulation/templates/template_unit_mechanical_siege_tower.xml:48
 msgid "Ranged"
@@ -414,6 +414,11 @@ msgstr "Kenwerzh etre ar porzhioù. Gwarnizon ur vag-kenwerzh a ro dezhañ gouni
 msgid "Trader"
 msgstr "Kenwerzhour"
 
+#: simulation/templates/template_unit_mechanical_ship_merchant.xml:29
+#: simulation/templates/template_unit_support_trader.xml:15
+msgid "Bribable"
+msgstr "Breinaduret"
+
 #: simulation/templates/template_unit_mechanical_ship_quinquereme.xml:57
 msgid "Heavy Warship"
 msgstr "Bag-Brezel Ponner"
@@ -427,11 +432,11 @@ msgstr "Bag-Brezel Krenn"
 msgid "Siege"
 msgstr "Seziz"
 
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:36
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:44
 msgid "Bolt Shooter"
 msgstr "Bangounell"
 
-#: simulation/templates/template_unit_mechanical_siege_ballista.xml:37
+#: simulation/templates/template_unit_mechanical_siege_ballista.xml:45
 msgid "BoltShooter"
 msgstr "Bangouneller"
 
@@ -644,7 +649,6 @@ msgstr "Pródromos"
 #: simulation/templates/units/maur_infantry_spearman_e.xml:4
 #: simulation/templates/units/maur_infantry_swordsman_e.xml:4
 #: simulation/templates/units/maur_support_healer_e.xml:4
-#: simulation/templates/units/merc_thrace_swordsman.xml:13
 #: simulation/templates/units/pers_cavalry_archer_e.xml:4
 #: simulation/templates/units/pers_cavalry_javelinist_e.xml:4
 #: simulation/templates/units/pers_cavalry_javelinist_e_trireme.xml:4
@@ -768,7 +772,6 @@ msgstr "Peltastḗs Thrâx"
 #: simulation/templates/units/mace_infantry_slinger_b.xml:22
 #: simulation/templates/units/merc_black_cloak.xml:16
 #: simulation/templates/units/merc_thorakites.xml:26
-#: simulation/templates/units/merc_thrace_swordsman.xml:16
 #: simulation/templates/units/merc_thureophoros.xml:17
 #: simulation/templates/units/pers_kardakes_hoplite.xml:15
 #: simulation/templates/units/pers_kardakes_skirmisher.xml:15
@@ -789,11 +792,13 @@ msgstr "Goprsoudard"
 
 #: simulation/templates/units/athen_infantry_marine_archer_b.xml:23
 #: simulation/templates/units/mace_infantry_archer_b.xml:20
+#: simulation/templates/units/ptol_infantry_archer_b.xml:21
 msgid "Cretan Mercenary Archer"
 msgstr "Goprsoudard Gwareger Kretan"
 
 #: simulation/templates/units/athen_infantry_marine_archer_b.xml:24
 #: simulation/templates/units/mace_infantry_archer_b.xml:21
+#: simulation/templates/units/ptol_infantry_archer_b.xml:22
 msgid "Toxótēs Krētikós"
 msgstr "Toxótēs Krētikós"
 
@@ -844,7 +849,7 @@ msgstr "Triḗrēs Athēnaía"
 
 #: simulation/templates/units/athen_ship_trireme.xml:6
 msgid "Athenian Trireme"
-msgstr "Trirem Atenian"
+msgstr "Lestr-Teirroeñvek Atenian"
 
 #: simulation/templates/units/athen_support_female_citizen.xml:5
 msgid "Gýnē Athēnaía"
@@ -1187,7 +1192,7 @@ msgstr "Ḥameš-Mašōt"
 #: simulation/templates/units/mace_ship_trireme.xml:5
 #: simulation/templates/units/spart_ship_trireme.xml:5
 msgid "Trireme"
-msgstr "Trirem"
+msgstr "Lestr-Teirroeñvek"
 
 #: simulation/templates/units/cart_ship_trireme.xml:6
 msgid "Tlat-Mašōt"
@@ -1667,16 +1672,6 @@ msgstr "Klezeouer Houarnwisket"
 msgid "Thōrakitēs"
 msgstr "Thōrakitēs"
 
-#: simulation/templates/units/merc_thrace_swordsman.xml:11
-#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:20
-msgid "Thracian Mercenary Swordsman"
-msgstr "Goprsoudard Klezeour Trasian"
-
-#: simulation/templates/units/merc_thrace_swordsman.xml:12
-#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:21
-msgid "Rhomphaiaphoros Thrakikós"
-msgstr "Rhomphaiaphoros Thrakikós"
-
 #: simulation/templates/units/merc_thureophoros.xml:12
 msgid "Heavy Skirmisher"
 msgstr "Tennataer Ponner"
@@ -1711,7 +1706,6 @@ msgstr "Reiñ a ra Freuzioù Bilbas d'an unanennoù enebour."
 
 #: simulation/templates/units/pers_cavalry_javelinist_b.xml:6
 #: simulation/templates/units/pers_cavalry_javelinist_b_trireme.xml:9
-#: simulation/templates/units/sele_cavalry_javelinist_b.xml:7
 msgid "Median Light Cavalry"
 msgstr "Marc'heg Median Skañv"
 
@@ -1865,7 +1859,7 @@ msgstr "Yaunash Nav"
 
 #: simulation/templates/units/pers_ship_trireme.xml:9
 msgid "Phoenician Trireme"
-msgstr "Trirem Fenikianeg"
+msgstr "Lestr-Teirroeñvek Fenikianeg"
 
 #: simulation/templates/units/pers_ship_trireme.xml:10
 msgid "Vazarka Hamaraniyanava"
@@ -1985,11 +1979,11 @@ msgstr "Ptolemy IV Philopator"
 msgid "Ptolemaios D' Philopator"
 msgstr "Ptolemaios D' Philopator"
 
-#: simulation/templates/units/ptol_infantry_archer_b.xml:21
+#: simulation/templates/units/ptol_infantry_archer_nubian.xml:6
 msgid "Nubian Mercenary Archer"
 msgstr "Goprsoudard Gwareger Nubian"
 
-#: simulation/templates/units/ptol_infantry_archer_b.xml:22
+#: simulation/templates/units/ptol_infantry_archer_nubian.xml:7
 msgid "Kousít Misthophóros Toxótēs"
 msgstr "Kousít Misthophóros Toxótēs"
 
@@ -2110,27 +2104,27 @@ msgstr "Quintus Fabius Maximus"
 msgid "Scipio Africanus"
 msgstr "Scipio Africanus"
 
-#: simulation/templates/units/rome_infantry_javelinist_b.xml:17
+#: simulation/templates/units/rome_infantry_javelinist_b.xml:16
 msgid "Roman Skirmisher"
 msgstr "Tennataer Roman"
 
-#: simulation/templates/units/rome_infantry_javelinist_b.xml:18
+#: simulation/templates/units/rome_infantry_javelinist_b.xml:17
 msgid "Veles"
 msgstr "Veles"
 
-#: simulation/templates/units/rome_infantry_spearman_b.xml:17
+#: simulation/templates/units/rome_infantry_spearman_b.xml:16
 msgid "Veteran Spearman"
 msgstr "Goafer-Kozh"
 
-#: simulation/templates/units/rome_infantry_spearman_b.xml:18
+#: simulation/templates/units/rome_infantry_spearman_b.xml:17
 msgid "Triarius"
 msgstr "Triarius"
 
-#: simulation/templates/units/rome_infantry_swordsman_b.xml:17
+#: simulation/templates/units/rome_infantry_swordsman_b.xml:16
 msgid "Roman Swordsman"
 msgstr "Klezeour Roman"
 
-#: simulation/templates/units/rome_infantry_swordsman_b.xml:18
+#: simulation/templates/units/rome_infantry_swordsman_b.xml:17
 msgid "Hastatus"
 msgstr "Hastatus"
 
@@ -2180,7 +2174,7 @@ msgstr "Triremis Romana"
 
 #: simulation/templates/units/rome_ship_trireme.xml:9
 msgid "Roman Trireme"
-msgstr "Trirem Roman"
+msgstr "Lestr-Teirroeñvek Roman"
 
 #: simulation/templates/units/rome_support_female_citizen.xml:6
 msgid "Romana"
@@ -2224,17 +2218,13 @@ msgstr "Gwareger War-Varc'h eus Dahae"
 msgid "Hippotoxotès Dahae"
 msgstr "Hippotoxotès Dahae"
 
-#: simulation/templates/units/sele_cavalry_javelinist.xml:7
+#: simulation/templates/units/sele_cavalry_javelinist_b.xml:7
 msgid "Militia Cavalry"
 msgstr "Marc'heger ar Milis"
 
-#: simulation/templates/units/sele_cavalry_javelinist.xml:8
+#: simulation/templates/units/sele_cavalry_javelinist_b.xml:8
 msgid "Hippakontistès Politès"
 msgstr "Hippakontistès Politès"
-
-#: simulation/templates/units/sele_cavalry_javelinist_b.xml:8
-msgid "Hippeus Medikos"
-msgstr "Hippeus Medikos"
 
 #: simulation/templates/units/sele_cavalry_spearman_merc_b.xml:14
 msgid "Hippos Hetairike"
@@ -2242,7 +2232,7 @@ msgstr "Hippos Hetairike"
 
 #: simulation/templates/units/sele_champion_cavalry.xml:6
 msgid "Seleucid Cataphract"
-msgstr "Seleucid Cataphract"
+msgstr "Katafrakt Seleukid"
 
 #: simulation/templates/units/sele_champion_cavalry.xml:7
 msgid "Seleukidón Kataphraktos"
@@ -2336,6 +2326,14 @@ msgstr "Goafer Milisian Tureos"
 msgid "Thureophóros Politès"
 msgstr "Thureophóros Politès"
 
+#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:20
+msgid "Thracian Mercenary Swordsman"
+msgstr "Goprsoudard Klezeour Trasian"
+
+#: simulation/templates/units/sele_infantry_swordsman_merc_b.xml:21
+msgid "Rhomphaiaphoros Thrakikós"
+msgstr "Rhomphaiaphoros Thrakikós"
+
 #: simulation/templates/units/sele_ship_quinquereme.xml:5
 msgid "Pentères"
 msgstr "Pentères"
@@ -2346,7 +2344,7 @@ msgstr "Seleukidó̱n Triērēs"
 
 #: simulation/templates/units/sele_ship_trireme.xml:6
 msgid "Seleucid Trireme"
-msgstr "Trirem Seleucid"
+msgstr "Lestr-Teirroeñvek Seleukid"
 
 #: simulation/templates/units/sele_support_female_citizen.xml:6
 msgid "Syrías Gýnē"

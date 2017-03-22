@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2017-01-02 09:05+0100\n"
-"PO-Revision-Date: 2017-02-26 17:42+0000\n"
+"POT-Creation-Date: 2017-03-03 09:02+0100\n"
+"PO-Revision-Date: 2017-03-05 17:03+0000\n"
 "Last-Translator: Mielanjel Iraeta <pospolos@gmail.com>\n"
 "Language-Team: Basque (http://www.transifex.com/wildfire-games/0ad/language/eu/)\n"
 "MIME-Version: 1.0\n"
@@ -786,13 +786,13 @@ msgstr "Hesi bukaera"
 msgid "Wooden Wall End"
 msgstr "Egurrezko Paretaren Bukaera"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr "Hesi fortea"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr "Zaintze Dorrea"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr "Zurezko Dorretxea"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
@@ -978,6 +978,10 @@ msgstr "Markagailua"
 #: simulation/templates/special/player.xml:56
 msgid "Player"
 msgstr "Jokalaria"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr "Espioia"
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5
