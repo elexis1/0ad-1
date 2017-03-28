@@ -11,7 +11,7 @@ var waterRiseNotificationTime = [20, 22];
  * Time in minutes when the water level starts to rise.
  * Allow players to build up the economy and military for some time.
  */
-var waterRiseStartTime = [25, 30];
+var waterRiseStartTime = [23, 26];
 
 /**
  * Time in minutes determining how often to increase the water level.
@@ -26,7 +26,7 @@ var waterRiseStartTime = [25, 30];
  *
  * Notice regular and military docks will raise with the water!
  */
-var waterIncreaseTime = [2, 3];
+var waterIncreaseTime = [1.5, 2];
 
 /**
  * How much height to increase each step.
