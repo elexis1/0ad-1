@@ -1,3 +1,8 @@
+//ungatherable trees, initial trees stuck too
+//zoom restriction
+//lakes too small
+//countdown timer for water
+
 // little actor stones
 // volcano dust cloud
 // bush_temple_underbrush
