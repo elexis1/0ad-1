@@ -84,9 +84,12 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		if (!cmpVisualActor)
 			continue;
 
+		let cmpIdentity = Engine.QueryInterface(ent, IID_Identity);
+		if (!cmpIdentity)
+			continue;
+
 		// Animals drown
-		let cmpIdentity = QueryMiragedInterface(ent, IID_Identity);
-		let cmpHealth = QueryMiragedInterface(ent, IID_Health);
+		let cmpHealth = Engine.QueryInterface(ent, IID_Health);
 		if (cmpHealth && cmpIdentity.HasClass("Unit"))
 		{
 			cmpHealth.Kill();
@@ -134,7 +137,7 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		let templateName = cmpTemplateManager.GetCurrentTemplateName(ent);
 		debugTemplates[templateName] = (debugTemplates[templateName] || 0) + 1;
 
-		let cmpHealth = QueryMiragedInterface(ent, IID_Health);
+		let cmpHealth = Engine.QueryInterface(ent, IID_Health);
 		if (cmpHealth)
 			cmpHealth.Kill();
 		else
