@@ -137,6 +137,8 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		let templateName = cmpTemplateManager.GetCurrentTemplateName(ent);
 		debugTemplates[templateName] = (debugTemplates[templateName] || 0) + 1;
 
+		// TODO: make buildings actors instead of deleting them
+
 		let cmpHealth = Engine.QueryInterface(ent, IID_Health);
 		if (cmpHealth)
 			cmpHealth.Kill();
