@@ -328,10 +328,15 @@ var g_DropdownPriority = ["mapType", "mapFilter", "mapSelection"];
 /**
  * Contains the logic of all multiple-choice gamesettings.
  *
- * hidden - If hidden, both the label and dropdown won't be visible.
- * enabled - Only the label will be shown if it's disabled.
+ * Logic
+ * defined - Whether a value for the setting is actually specified.
  * default - Returns the index of the default value (not the value itself).
+ *
+ * GUI
+ * title   - The caption shown in the label.
  * tooltip - A description shown when hovering the option.
+ * hidden  - If hidden, both the label and dropdown won't be visible. (default: false)
+ * enabled - Only the label will be shown if it's disabled. (default: true)
  */
 var g_Dropdowns = {
 	"mapType": {
