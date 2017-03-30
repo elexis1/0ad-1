@@ -68,7 +68,7 @@ const g_MapPath = {
 
 const g_ReadyData = [
 	{
-		"color": "",
+		"color": "white",
 		"chat": translate("* %(username)s is not ready."),
 		"caption": translate("I'm ready"),
 		"tooltip": translate("State that you are ready to play.")
@@ -177,11 +177,6 @@ const g_UnassignedColor = "140 140 140";
  * Highlight observer players in the dropdownlist.
  */
 const g_UnassignedPlayerColor = "170 170 250";
-
-/**
- * Highlight ready players.
- */
-const g_ReadyColor = "green";
 
 /**
  * Whether this is a single- or multiplayer match.
@@ -742,7 +737,8 @@ var g_MiscControls = {
 					translate("Start a new game with the current settings (disabled until all players are ready)"),
 		"enabled": () => !g_IsController ||
 		                 Object.keys(g_PlayerAssignments).every(guid => g_PlayerAssignments[guid].status ||
-		                                                                g_PlayerAssignments[guid].player == -1),
+		                                                                g_PlayerAssignments[guid].player == -1 ||
+		                                                                guid == Engine.GetPlayerGUID() && g_IsController),
 		"hidden": () =>
 			!g_PlayerAssignments[Engine.GetPlayerGUID()] ||
 			g_PlayerAssignments[Engine.GetPlayerGUID()].player == -1 && !g_IsController,
@@ -773,12 +769,18 @@ var g_MiscControlArrays = {
 			let pData = g_GameAttributes.settings.PlayerData[idx];
 
 			let assignedGUID = Object.keys(g_PlayerAssignments).find(
-				guid => g_PlayerAssignments[guid].player == idx+1);
+				guid => g_PlayerAssignments[guid].player == idx + 1);
 
-			let name = translate(pData.Name);
+			let name = pData.Name;
 
-			if (g_IsNetworked && (pData.AI || !assignedGUID || g_PlayerAssignments[assignedGUID].status))
-				name = '[color="' + g_ReadyColor + '"]' +  name + '[/color]';
+			if (pData.AI)
+				name = translate(pData.Name);
+
+			if (g_IsNetworked)
+				name =
+					'[color="' +
+					g_ReadyData[assignedGUID ? g_PlayerAssignments[assignedGUID].status : 2].color +
+					'"]' +  name + '[/color]';
 
 			return name;
 		},
