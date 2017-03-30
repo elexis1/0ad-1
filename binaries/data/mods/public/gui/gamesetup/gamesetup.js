@@ -898,15 +898,7 @@ function initGUIObjects()
 
 	initSPTips();
 
-	if (g_IsController)
-	{
-		// TODO: move to init
-		loadPersistMatchSettings();
-		if (g_IsInGuiUpdate)
-			warn("initGUIObjects() called while in GUI update");
-		updateGameAttributes();
-	}
-
+	loadPersistMatchSettings();
 	updateGUIObjects();
 
 	Engine.GetGUIObjectByName("loadingWindow").hidden = true;
@@ -1276,7 +1268,7 @@ function loadMapData(name)
  */
 function loadPersistMatchSettings()
 {
-	if (Engine.ConfigDB_GetValue("user", "persistmatchsettings") != "true")
+	if (!g_IsController || Engine.ConfigDB_GetValue("user", "persistmatchsettings") != "true")
 		return;
 
 	let settingsFile = g_IsNetworked ? g_MatchSettings_MP : g_MatchSettings_SP;
@@ -1325,7 +1317,7 @@ function loadPersistMatchSettings()
 	Engine.SetRankedGame(g_GameAttributes.settings.RatingEnabled);
 
 	supplementDefaults();
-	updateGUIObjects();
+	updateGameAttributes();
 }
 
 function savePersistMatchSettings()
@@ -2084,7 +2076,6 @@ function sendRegisterGameStanza()
 		"port": g_ServerPort,
 		"mapName": g_GameAttributes.map,
 		"niceMapName": getMapDisplayName(g_GameAttributes.map),
-		// TODO: once persist-matchsettings aren't bugging anymore, this should become g_GameAttributes.settings.Size || 0
 		"mapSize": g_GameAttributes.mapType == "random" ? g_GameAttributes.settings.Size : "Default",
 		"mapType": g_GameAttributes.mapType,
 		"victoryCondition": g_VictoryConditions.Title[g_VictoryConditions.Name.indexOf(g_GameAttributes.settings.GameType)],
