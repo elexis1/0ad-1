@@ -421,12 +421,10 @@ var g_Dropdowns = {
 		"select": (idx) => {
 			let num = idx + 1;
 			let pData = g_GameAttributes.settings.PlayerData;
-
 			g_GameAttributes.settings.PlayerData =
 				num > pData.length ?
 					pData.concat(g_DefaultPlayerData.slice(pData.length, num)) :
 					pData.slice(0, num);
-
 			unassignInvalidPlayers(num);
 			sanitizePlayerData(g_GameAttributes.settings.PlayerData);
 			supplementDefaults();
@@ -1446,8 +1444,6 @@ function unassignInvalidPlayers(maxPlayers)
 	}
 	else if (g_PlayerAssignments.local.player > maxPlayers)
 		g_PlayerAssignments.local.player = -1;
-
-	updateGUIObjects();
 }
 
 function ensureUniquePlayerColors(playerData)
