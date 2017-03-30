@@ -7,7 +7,7 @@ const g_MapTypes = prepareForDropdown(g_Settings && g_Settings.MapTypes);
 const g_PopulationCapacities = prepareForDropdown(g_Settings && g_Settings.PopulationCapacities);
 const g_StartingResources = prepareForDropdown(g_Settings && g_Settings.StartingResources);
 const g_VictoryConditions = prepareForDropdown(g_Settings && g_Settings.VictoryConditions);
-const g_WonderDurations = prepareForDropdown(g_Settings && g_Settings.WonderDurations);
+const g_VictoryDurations = prepareForDropdown(g_Settings && g_Settings.VictoryDurations);
 
 /**
  * Colors to flash when pop limit reached.
@@ -159,7 +159,8 @@ var g_Heroes = [];
 /**
  * Unit classes to be checked for the idle-worker-hotkey.
  */
-var g_WorkerTypes = ["Female+Support", "Trader", "FishingBoat", "CitizenSoldier"];
+var g_WorkerTypes = ["FemaleCitizen", "Trader", "FishingBoat", "CitizenSoldier"];
+
 /**
  * Unit classes to be checked for the military-only-selection modifier and for the idle-warrior-hotkey.
  */
@@ -269,6 +270,8 @@ function init(initData, hotloadData)
 
 	g_CivData = loadCivData();
 	g_CivData.gaia = { "Code": "gaia", "Name": translate("Gaia") };
+
+	g_BarterSell = g_ResourceData.GetCodes()[0];
 
 	initializeMusic(); // before changing the perspective
 
@@ -397,6 +400,13 @@ function updateHotkeyTooltips()
 	Engine.GetGUIObjectByName("tradeHelp").tooltip = colorizeHotkey(
 		translate("Select one type of goods you want to modify by clicking on it (Pressing %(hotkey)s while selecting will also bring its share to 100%%) and then use the arrows of the other types to modify their shares."),
 		"session.fulltradeswap");
+
+	Engine.GetGUIObjectByName("barterHelp").tooltip = sprintf(
+		translate("Start by selecting the resource from the upper row that you wish to sell. Upon each press on one of the lower buttons, %(quantity)s of the upper resource will be sold for the displayed quantity of the lower. Press and hold %(hotkey)s to temporarily multiply all quantities by %(multiplier)s."), {
+			"quantity": g_BarterResourceSellQuantity,
+			"hotkey": colorizeHotkey("%(hotkey)s", "session.massbarter"),
+			"multiplier": g_BarterMultiplier
+		});
 }
 
 function initGUIHeroes(slot)
@@ -831,6 +841,12 @@ function updateGUIObjects()
 	updateBuildingPlacementPreview();
 	updateTimeNotifications();
 	updateIdleWorkerButton();
+
+	if (g_IsTradeOpen)
+	{
+		updateTraderTexts();
+		updateBarterButtons();
+	}
 
 	if (g_ViewedPlayer > 0)
 	{
@@ -1379,7 +1395,7 @@ function reportGame()
 		"total",
 		"Infantry",
 		"Worker",
-		"Female",
+		"FemaleCitizen",
 		"Cavalry",
 		"Champion",
 		"Hero",

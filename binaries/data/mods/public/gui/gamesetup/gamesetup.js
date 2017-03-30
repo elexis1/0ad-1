@@ -9,7 +9,7 @@ const g_MapTypes = prepareForDropdown(g_Settings && g_Settings.MapTypes);
 const g_PopulationCapacities = prepareForDropdown(g_Settings && g_Settings.PopulationCapacities);
 const g_StartingResources = prepareForDropdown(g_Settings && g_Settings.StartingResources);
 const g_VictoryConditions = prepareForDropdown(g_Settings && g_Settings.VictoryConditions);
-const g_WonderDurations = prepareForDropdown(g_Settings && g_Settings.WonderDurations);
+const g_VictoryDurations = prepareForDropdown(g_Settings && g_Settings.VictoryDurations);
 
 /**
  * Highlight the "random" dropdownlist item.
@@ -302,7 +302,7 @@ var g_OptionOrder = {
 		"Dropdown": [
 			"gameSpeed",
 			"victoryCondition",
-			"wonderDuration",
+			"victoryDuration",
 			"populationCap",
 			"startingResources",
 			"ceasefire",
@@ -482,18 +482,20 @@ var g_Dropdowns = {
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 		"autocomplete": true,
 	},
-	"wonderDuration": {
-		"title": () => translate("Wonder Victory"),
-		"tooltip": () => translate("Number of minutes that the player has to keep the wonder in order to win."),
-		"labels": () => g_WonderDurations.Title,
-		"ids": () => g_WonderDurations.Duration,
-		"default": () => g_WonderDurations.Default,
-		"defined": () => g_GameAttributes.settings.WonderDuration !== undefined,
-		"get": () => g_GameAttributes.settings.WonderDuration,
+	"victoryDuration": {
+		"title": () => translate("Victory Duration"),
+		"tooltip": () => translate("Number of minutes until the player has won."),
+		"labels": () => g_VictoryDurations.Title,
+		"ids": () => g_VictoryDurations.Duration,
+		"default": () => g_VictoryDurations.Default,
+		"defined": () => g_GameAttributes.settings.VictoryDuration !== undefined,
+		"get": () => g_GameAttributes.settings.VictoryDuration,
 		"select": (idx) => {
-			g_GameAttributes.settings.WonderDuration = g_WonderDurations.Duration[idx];
+			g_GameAttributes.settings.VictoryDuration = g_VictoryDurations.Duration[idx];
 		},
-		"hidden": () => g_GameAttributes.settings.GameType != "wonder",
+		"hidden": () =>
+			g_GameAttributes.settings.GameType != "wonder" &&
+			g_GameAttributes.settings.GameType != "capture_the_relic",
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"gameSpeed": {
@@ -980,9 +982,6 @@ function saveSPTipsSetting()
 	Engine.ConfigDB_WriteValueToFile("user", "gui.gamesetup.enabletips", enabled, "config/user.cfg");
 }
 
-/**
- * Remove empty space in case of hidden options (like cheats, rating or wonder duration)
- */
 function verticallyDistributeGUIObjects(parent, objectHeight, ignore)
 {
 	let yPos = undefined;
@@ -1009,7 +1008,7 @@ function verticallyDistributeGUIObjects(parent, objectHeight, ignore)
 }
 
 /**
- * Remove empty space in case of hidden options (like cheats, rating or wonder duration)
+ * Remove empty space in case of hidden options (like cheats, rating or victory duration)
  */
 function resizeMoreOptionsWindow()
 {
@@ -1459,7 +1458,7 @@ function selectMap(name)
 
 	if (g_GameAttributes.mapType == "scenario")
 	{
-		delete g_GameAttributes.settings.WonderDuration;
+		delete g_GameAttributes.settings.VictoryDuration;
 		delete g_GameAttributes.settings.LastManStanding;
 	}
 
@@ -1500,6 +1499,7 @@ function updateGUIDropdown(name, idx = undefined)
 
 	let indexHidden = isControlArrayElementHidden(idx);
 	let obj = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
+
 	let selected = indexHidden ? -1 : dropdown.list_data.indexOf(String(obj.get(idx)));
 	let enabled = !indexHidden && (!obj.enabled || obj.enabled(idx));
 	let hidden = indexHidden || obj.hidden && obj.hidden(idx);

@@ -58,7 +58,8 @@ AddMock(SYSTEM_ENTITY, IID_Barter, {
 			"buy": { "food": 150 },
 			"sell": { "food": 25 }
 		};
-	}
+	},
+	PlayerHasMarket: function () { return false; }
 });
 
 AddMock(SYSTEM_ENTITY, IID_EndGameManager, {
@@ -108,6 +109,7 @@ AddMock(100, IID_Player, {
 	IsEnemy: function() { return true; },
 	GetDisabledTemplates: function() { return {}; },
 	GetDisabledTechnologies: function() { return {}; },
+	GetSpyCostMultiplier: function() { return 1; },
 	HasSharedDropsites: function() { return false; },
 	HasSharedLos: function() { return false; },
 });
@@ -193,6 +195,7 @@ AddMock(101, IID_Player, {
 	IsEnemy: function() { return false; },
 	GetDisabledTemplates: function() { return {}; },
 	GetDisabledTechnologies: function() { return {}; },
+	GetSpyCostMultiplier: function() { return 1; },
 	HasSharedDropsites: function() { return false; },
 	HasSharedLos: function() { return false; },
 });
@@ -280,6 +283,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [false, false],
 			isMutualAlly: [false, false],
@@ -293,6 +297,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				resourcesGathered: {
 					food: 100,
@@ -323,6 +328,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [true, true],
 			isMutualAlly: [false, false],
@@ -336,6 +342,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				resourcesGathered: {
 					food: 100,
@@ -394,6 +401,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [false, false],
 			isMutualAlly: [false, false],
@@ -407,6 +415,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				unitsTrained: 10,
 				unitsLost: 9,
@@ -450,6 +459,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [true, true],
 			isMutualAlly: [false, false],
@@ -463,6 +473,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				unitsTrained: 10,
 				unitsLost: 9,
@@ -591,11 +602,9 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetEntityState(-1, 10), {
 TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedEntityState(-1, 10), {
 	armour: null,
 	attack: null,
-	barterMarket: {
-		prices: { "buy": {"food":150}, "sell": {"food":25} },
-	},
 	buildingAI: null,
 	heal: null,
+	isBarterMarket: true,
 	loot: null,
 	obstruction: null,
 	turretParent: null,

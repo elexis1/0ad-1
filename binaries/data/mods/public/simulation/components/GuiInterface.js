@@ -109,6 +109,7 @@ GuiInterface.prototype.GetSimulationState = function()
 			"disabledTechnologies": cmpPlayer.GetDisabledTechnologies(),
 			"hasSharedDropsites": cmpPlayer.HasSharedDropsites(),
 			"hasSharedLos": cmpPlayer.HasSharedLos(),
+			"spyCostMultiplier": cmpPlayer.GetSpyCostMultiplier(),
 			"phase": phase,
 			"isAlly": allies,
 			"isMutualAlly": mutualAllies,
@@ -121,7 +122,8 @@ GuiInterface.prototype.GetSimulationState = function()
 			"researchStarted": cmpTechnologyManager ? cmpTechnologyManager.GetStartedResearch() : null,
 			"researchedTechs": cmpTechnologyManager ? cmpTechnologyManager.GetResearchedTechs() : null,
 			"classCounts": cmpTechnologyManager ? cmpTechnologyManager.GetClassCounts() : null,
-			"typeCountsByClass": cmpTechnologyManager ? cmpTechnologyManager.GetTypeCountsByClass() : null
+			"typeCountsByClass": cmpTechnologyManager ? cmpTechnologyManager.GetTypeCountsByClass() : null,
+			"canBarter": Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter).PlayerHasMarket(playerEnt)
 		});
 	}
 
@@ -150,9 +152,7 @@ GuiInterface.prototype.GetSimulationState = function()
 	ret.gameType = cmpEndGameManager.GetGameType();
 	ret.alliedVictory = cmpEndGameManager.GetAlliedVictory();
 
-	// Add bartering prices
-	let cmpBarter = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter);
-	ret.barterPrices = cmpBarter.GetPrices();
+	ret.barterPrices = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter).GetPrices();
 
 	// Add Resource Codes, untranslated names and AI Analysis
 	ret.resources = {
@@ -424,9 +424,9 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 	let ret = {
 		"armour": null,
 		"attack": null,
-		"barterMarket": null,
 		"buildingAI": null,
 		"heal": null,
+		"isBarterMarket": null,
 		"loot": null,
 		"obstruction": null,
 		"turretParent":null,
@@ -561,10 +561,7 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 		};
 
 	if (!cmpFoundation && cmpIdentity && cmpIdentity.HasClass("BarterMarket"))
-	{
-		let cmpBarter = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter);
-		ret.barterMarket = { "prices": cmpBarter.GetPrices() };
-	}
+		ret.isBarterMarket = true;
 
 	let cmpHeal = Engine.QueryInterface(ent, IID_Heal);
 	if (cmpHeal)
