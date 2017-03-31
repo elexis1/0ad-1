@@ -700,6 +700,8 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.RatingEnabled = Engine.HasXmppClient() ? checked : undefined;
 			Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
+			g_Checkboxes.lockTeams.set(true);
+			g_Checkboxes.enableCheats.set(false);
 		},
 	},
 };
