@@ -96,7 +96,6 @@ void CCinemaManager::Render() const
 	if (!m_DrawPaths)
 		return;
 
-	// draw all paths
 	CmpPtr<ICmpCinemaManager> cmpCinemaManager(g_Game->GetSimulation2()->GetSimContext().GetSystemEntity());
 	if (!cmpCinemaManager)
 		return;

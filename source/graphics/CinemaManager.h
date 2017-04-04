@@ -27,15 +27,9 @@
 #include "graphics/CinemaPath.h"
 #include "ps/CStr.h"
 
-/*
-	desc: contains various functions used for cinematic camera paths
-	See also: CinemaHandler.cpp, CinemaPath.cpp
-*/
-
 /**
  * Class for in game playing of cinematics. Should only be instantiated in CGameView.
  */
-
 class CCinemaManager
 {
 public:

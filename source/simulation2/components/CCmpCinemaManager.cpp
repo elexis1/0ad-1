@@ -49,9 +49,7 @@ public:
 
 	static std::string GetSchema()
 	{
-		return "<a:component type='system'/>"
-			"<empty/>"
-			;
+		return "<a:component type='system'/><empty/>";
 	}
 
 	virtual void Init(const CParamNode& UNUSED(paramNode))
@@ -66,7 +64,6 @@ public:
 
 	virtual void Deinit()
 	{
-		// ...
 	}
 
 	virtual void Serialize(ISerializer& serialize)
