@@ -55,7 +55,7 @@ CCinemaManager::CCinemaManager()
 void CCinemaManager::Update(const float deltaRealTime)
 {
 	CmpPtr<ICmpCinemaManager> cmpCinemaManager(g_Game->GetSimulation2()->GetSimContext().GetSystemEntity());
-	if (!cmpCinemaManager || !g_Game)
+	if (!cmpCinemaManager)
 		return;
 
 	if (g_Game->m_Paused != m_Paused || cmpCinemaManager->IsEnabled() != m_Enabled)
