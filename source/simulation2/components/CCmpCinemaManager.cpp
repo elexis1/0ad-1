@@ -330,7 +330,9 @@ private:
 	// States before playing
 	bool m_MapRevealed;
 
-	fixed m_ElapsedTime, m_TotalTime, m_CurrentPathElapsedTime;
+	fixed m_ElapsedTime;
+	fixed m_TotalTime;
+	fixed m_CurrentPathElapsedTime;
 };
 
 REGISTER_COMPONENT_TYPE(CinemaManager)
