@@ -183,6 +183,5 @@ bool CCinemaManager::IsEnabled() const
 
 bool CCinemaManager::IsPlaying() const
 {
-	CmpPtr<ICmpCinemaManager> cmpCinemaManager(g_Game->GetSimulation2()->GetSimContext().GetSystemEntity());
-	return !cmpCinemaManager && cmpCinemaManager->IsPaused();
+	return IsEnabled() && g_Game && !g_Game->m_Paused;
 }

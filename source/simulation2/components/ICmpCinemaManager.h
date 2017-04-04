@@ -65,7 +65,6 @@ public:
 	virtual const std::list<CCinemaPath>& GetQueue() const = 0;
 
 	virtual bool IsEnabled() const = 0;
-	virtual bool IsPaused() const = 0;
 
 	/**
 	* Sets enable state of the cinema manager (shows/hide gui, show/hide rings, etc)

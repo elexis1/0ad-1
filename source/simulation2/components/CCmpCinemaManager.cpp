@@ -55,7 +55,6 @@ public:
 	virtual void Init(const CParamNode& UNUSED(paramNode))
 	{
 		m_Enabled = false;
-		m_Paused = false;
 		m_MapRevealed = false;
 		m_ElapsedTime = fixed::Zero();
 		m_TotalTime = fixed::Zero();
@@ -276,11 +275,6 @@ public:
 		return m_Enabled;
 	}
 
-	virtual bool IsPaused() const
-	{
-		return m_Paused;
-	}
-
 	virtual void SetEnabled(bool enabled)
 	{
 		if (m_PathQueue.empty() && enabled)
@@ -323,7 +317,6 @@ public:
 
 private:
 	bool m_Enabled;
-	bool m_Paused;
 	std::map<CStrW, CCinemaPath> m_Paths;
 	std::list<CCinemaPath> m_PathQueue;
 
