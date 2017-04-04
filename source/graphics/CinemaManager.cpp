@@ -76,10 +76,6 @@ void CCinemaManager::Update(const float deltaRealTime)
 	if (!m_Enabled || m_Paused)
 		return;
 
-	if (HotkeyIsPressed("leave"))
-	{
-		// TODO: implement skip
-	}
 
 	if (g_Game->GetView())
 		cmpCinemaManager->PlayQueue(deltaRealTime, g_Game->GetView()->GetCamera());
