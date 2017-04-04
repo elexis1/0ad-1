@@ -167,11 +167,12 @@ InReaction CCinemaManager::HandleEvent(const SDL_Event_* ev) const
 	{
 	case SDL_MOUSEBUTTONDOWN:
 	case SDL_MOUSEBUTTONUP:
-		if (m_Enabled && !m_Paused)
+		// Prevent selection of units while the path is playing
+		if (IsPlaying())
 			return IN_HANDLED;
-	default:
-		return IN_PASS;
+		break;
 	}
+	return IN_PASS;
 }
 
 bool CCinemaManager::IsEnabled() const
