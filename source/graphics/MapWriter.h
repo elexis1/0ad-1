@@ -64,7 +64,7 @@ private:
 	// WriteXML: output some other data (entities, etc) in XML format
 	void WriteXML(const VfsPath& pathname, WaterManager* pWaterMan,
 								SkyManager* pSkyMan, CLightEnv* pLightEnv, CCamera* pCamera,
-								CCinemaManager* pCinema, CPostprocManager* pPostproc,
+								CPostprocManager* pPostproc,
 								CSimulation2* pSimulation2);
 };
 

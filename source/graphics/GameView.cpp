@@ -626,11 +626,9 @@ void CGameView::Update(const float deltaRealTime)
 	if (!g_app_has_focus)
 		return;
 
-	if (m->CinemaManager.GetEnabled())
-	{
-		m->CinemaManager.Update(deltaRealTime);
+	m->CinemaManager.Update(deltaRealTime);
+	if (m->CinemaManager.IsEnabled())
 		return;
-	}
 
 	// Calculate mouse movement
 	static int mouse_last_x = 0;
