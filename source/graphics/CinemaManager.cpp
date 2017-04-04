@@ -186,13 +186,3 @@ bool CCinemaManager::IsPlaying() const
 	CmpPtr<ICmpCinemaManager> cmpCinemaManager(g_Game->GetSimulation2()->GetSimContext().GetSystemEntity());
 	return !cmpCinemaManager && cmpCinemaManager->IsPaused();
 }
-
-bool CCinemaManager::GetPathsDrawing() const
-{
-	return m_DrawPaths;
-}
-
-void CCinemaManager::SetPathsDrawing(const bool drawPath)
-{
-	m_DrawPaths = drawPath;
-}
