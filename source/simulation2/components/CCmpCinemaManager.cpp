@@ -283,14 +283,6 @@ public:
 		if (m_Enabled == enabled)
 			return;
 
-		// Overlay visibility
-		if (CRenderer::IsInitialised())
-		{
-			bool silhouettes = false;
-			CFG_GET_VAL("silhouettes", silhouettes);
-			g_Renderer.SetOptionBool(CRenderer::Option::OPT_SILHOUETTES, !enabled && silhouettes);
-		}
-
 		CmpPtr<ICmpRangeManager> cmpRangeManager(GetSimContext().GetSystemEntity());
 		CmpPtr<ICmpTerritoryManager> cmpTerritoryManager(GetSimContext().GetSystemEntity());
 		if (cmpRangeManager)

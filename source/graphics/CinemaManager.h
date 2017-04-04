@@ -43,6 +43,7 @@ public:
 	void DrawBars() const;
 	void DrawPaths() const;
 	void UpdateSessionVisibility() const;
+	void UpdateSilhouettesVisibility() const;
 
 	bool IsPlaying() const;
 	bool IsEnabled() const;

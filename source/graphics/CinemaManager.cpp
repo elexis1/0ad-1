@@ -60,6 +60,7 @@ void CCinemaManager::Update(const float deltaRealTime) const
 		return;
 
 	UpdateSessionVisibility();
+	UpdateSilhouettesVisibility();
 
 	if (IsPlaying())
 		cmpCinemaManager->PlayQueue(deltaRealTime, g_Game->GetView()->GetCamera());
@@ -88,8 +89,15 @@ void CCinemaManager::UpdateSessionVisibility() const
 		sn->SetSetting("hidden", IsPlaying() ? L"true" : L"false");
 }
 
+void CCinemaManager::UpdateSilhouettesVisibility() const
 {
+	if (!CRenderer::IsInitialised())
 		return;
+
+	bool silhouettes = false;
+	CFG_GET_VAL("silhouettes", silhouettes);
+	g_Renderer.SetOptionBool(CRenderer::Option::OPT_SILHOUETTES, !IsEnabled() && silhouettes);
+}
 
 void CCinemaManager::DrawPaths() const
 {
