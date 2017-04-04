@@ -41,6 +41,8 @@ public:
 	 */
 	void Render() const;
 	void DrawBars() const;
+	void DrawPaths() const;
+	void UpdateSessionVisibility() const;
 
 	bool IsPlaying() const;
 	bool IsEnabled() const;
@@ -51,12 +53,10 @@ public:
 	 */
 	void Update(const float deltaRealTime) const;
 
-       InReaction HandleEvent(const SDL_Event_* ev) const;
+	InReaction HandleEvent(const SDL_Event_* ev) const;
 
 private:
 	bool m_DrawPaths;
-	bool m_Enabled;
-	bool m_Paused;
 };
 
 extern InReaction cinema_manager_handler(const SDL_Event_* ev);

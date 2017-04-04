@@ -24,6 +24,7 @@
 #include "graphics/CinemaManager.h"
 #include "graphics/GameView.h"
 #include "gui/CGUI.h"
+#include "gui/GUIutil.h"
 #include "gui/GUIManager.h"
 #include "gui/IGUIObject.h"
 #include "lib/ogl.h"
@@ -48,7 +49,7 @@
 
 
 CCinemaManager::CCinemaManager()
-	: m_DrawPaths(false), m_Paused(false), m_Enabled(false)
+	: m_DrawPaths(false)
 {
 }
 
@@ -58,49 +59,56 @@ void CCinemaManager::Update(const float deltaRealTime) const
 	if (!cmpCinemaManager)
 		return;
 
-	if (g_Game->m_Paused != m_Paused || cmpCinemaManager->IsEnabled() != m_Enabled)
-	{
-		// TODO: Enabling/Disabling does not work if the session GUI page is not the top page.
-		// This can happen in various situations, for example when the player wins/looses the game
-		// while the cinematic is running (a message box is the top page in this case).
+	UpdateSessionVisibility();
 
-		m_Paused = g_Game->m_Paused;
-		m_Enabled = cmpCinemaManager->IsEnabled();
-
-		// Hide session GUI while playing the path
-		IGUIObject *sn = g_GUI->FindObjectByName("sn");
-		if (sn)
-			sn->SetSetting("hidden", m_Enabled && !m_Paused ? L"true" : L"false");
-	}
-
-	if (!m_Enabled || m_Paused)
-		return;
-
-
-	if (g_Game->GetView())
+	if (IsPlaying())
 		cmpCinemaManager->PlayQueue(deltaRealTime, g_Game->GetView()->GetCamera());
 }
 
 void CCinemaManager::Render() const
 {
-	if (IsEnabled())
-	{
-		DrawBars();
-		return;
-	}
+	DrawBars();
+	DrawPaths();
+}
 
+void CCinemaManager::UpdateSessionVisibility() const
+{
+	// TODO: Enabling/Disabling does not work if the session GUI page is not the top page.
+	// This can happen in various situations, for example when the player wins/loses the game
+	// while the cinematic is running (a message box is the top page in this case).
+
+	IGUIObject *sn = g_GUI->FindObjectByName("sn");
+	if (!sn)
+		return;
+
+	bool hidden = false;
+	GUI<bool>::GetSetting(sn, "hidden", hidden);
+
+	if (hidden != IsPlaying())
+		sn->SetSetting("hidden", IsPlaying() ? L"true" : L"false");
+}
+
+{
+		return;
+
+void CCinemaManager::DrawPaths() const
+{
 	if (!m_DrawPaths)
 		return;
 
 	CmpPtr<ICmpCinemaManager> cmpCinemaManager(g_Game->GetSimulation2()->GetSimContext().GetSystemEntity());
 	if (!cmpCinemaManager)
 		return;
+
 	for (const std::pair<CStrW, CCinemaPath>& p : cmpCinemaManager->GetPaths())
 		p.second.Draw();
 }
 
 void CCinemaManager::DrawBars() const
 {
+	if (!IsEnabled())
+		return;
+
 	int height = (float)g_xres / 2.39f;
 	int shift = (g_yres - height) / 2;
 	if (shift <= 0)
