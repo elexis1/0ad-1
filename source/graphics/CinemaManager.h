@@ -49,10 +49,9 @@ public:
 	 * Updates CCinemManager and current path
 	 * @param deltaRealTime Elapsed real time since the last frame.
 	 */
-	void Update(const float deltaRealTime);
+	void Update(const float deltaRealTime) const;
 
-	InReaction HandleEvent(const SDL_Event_* ev);
-
+       InReaction HandleEvent(const SDL_Event_* ev) const;
 	bool GetPathsDrawing() const;
 	void SetPathsDrawing(const bool drawPath);
 

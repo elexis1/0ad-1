@@ -52,7 +52,7 @@ CCinemaManager::CCinemaManager()
 {
 }
 
-void CCinemaManager::Update(const float deltaRealTime)
+void CCinemaManager::Update(const float deltaRealTime) const
 {
 	CmpPtr<ICmpCinemaManager> cmpCinemaManager(g_Game->GetSimulation2()->GetSimContext().GetSystemEntity());
 	if (!cmpCinemaManager)
@@ -161,7 +161,7 @@ InReaction cinema_manager_handler(const SDL_Event_* ev)
 	return pCinemaManager->HandleEvent(ev);
 }
 
-InReaction CCinemaManager::HandleEvent(const SDL_Event_* ev)
+InReaction CCinemaManager::HandleEvent(const SDL_Event_* ev) const
 {
 	switch (ev->ev.type)
 	{
