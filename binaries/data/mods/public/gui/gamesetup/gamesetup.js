@@ -782,10 +782,7 @@ var g_MiscControlArrays = {
 			let assignedGUID = Object.keys(g_PlayerAssignments).find(
 				guid => g_PlayerAssignments[guid].player == idx + 1);
 
-			let name = pData.Name;
-
-			if (pData.AI)
-				name = translate(pData.Name);
+			let name = translate(pData.Name || g_DefaultPlayerData[idx].Name);
 
 			if (g_IsNetworked)
 				name =
@@ -1204,20 +1201,6 @@ function getMapPreview(map)
 		return "nopreview.png";
 
 	return mapData.settings.Preview;
-}
-
-/**
- * Get a playersetting or return the default if it wasn't set.
- */
-function getSetting(settings, defaults, property)
-{
-	if (settings && (property in settings))
-		return settings[property];
-
-	if (defaults && (property in defaults))
-		return defaults[property];
-
-	return undefined;
 }
 
 /**
