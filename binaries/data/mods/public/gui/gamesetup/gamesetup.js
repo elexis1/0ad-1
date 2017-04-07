@@ -913,7 +913,6 @@ function initGUIObjects()
 	initSPTips();
 
 	loadPersistMatchSettings();
-	updateGUIObjects();
 
 	Engine.GetGUIObjectByName("loadingWindow").hidden = true;
 	Engine.GetGUIObjectByName("setupWindow").hidden = false;
@@ -1317,6 +1316,8 @@ function loadPersistMatchSettings()
 	Engine.SetRankedGame(g_GameAttributes.settings.RatingEnabled);
 
 	supplementDefaults();
+
+	g_IsInGuiUpdate = false;
 	updateGameAttributes();
 }
 
