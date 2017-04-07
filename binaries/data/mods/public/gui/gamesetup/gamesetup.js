@@ -284,9 +284,12 @@ var g_LastGameStanza;
 var g_LastViewedAIPlayer = -1;
 
 /**
+ * Order in which the GUI elements will be shown.
  * All valid options are required to appear here.
+ * The ones under "map" are shown in the map selection panel,
+ * the others in the "more options" dialog.
  */
-var g_OptionOrder = {
+var g_OptionOrderGUI = {
 	"map": {
 		"Dropdown": [
 			"mapType",
@@ -323,7 +326,15 @@ var g_OptionOrder = {
 /**
  * These options must be initialized first, in the given order.
  */
-var g_DropdownPriority = ["mapType", "mapFilter", "mapSelection"];
+var g_OptionOrderInit = {
+	"dropdowns": [
+		"mapType",
+		"mapFilter",
+		"mapSelection"
+	],
+	"checkboxes": [
+	]
+};
 
 /**
  * Contains the logic of all multiple-choice gamesettings.
@@ -883,15 +894,19 @@ function supplementDefaults()
  */
 function initGUIObjects()
 {
-	for (let dropdown of g_DropdownPriority)
+	for (let dropdown of g_OptionOrderInit.dropdowns)
 		initDropdown(dropdown);
 
 	for (let dropdown in g_Dropdowns)
-		if (g_DropdownPriority.indexOf(dropdown) == -1)
+		if (g_OptionOrderInit.dropdowns.indexOf(dropdown) == -1)
 			initDropdown(dropdown);
 
-	for (let checkbox in g_Checkboxes)
+	for (let checkbox of g_OptionOrderInit.checkboxes)
 		initCheckbox(checkbox);
+
+	for (let checkbox in g_Checkboxes)
+		if (g_OptionOrderInit.checkboxes.indexOf(checkbox) == -1)
+			initCheckbox(checkbox);
 
 	for (let dropdown in g_DropdownArrays)
 		initDropdownArray(dropdown);
@@ -916,10 +931,10 @@ function initGUIObjects()
  */
 function getGUIObjectNameFromSetting(name)
 {
-	for (let panel in g_OptionOrder)
-		for (let type in g_OptionOrder[panel])
+	for (let panel in g_OptionOrderGUI)
+		for (let type in g_OptionOrderGUI[panel])
 		{
-			let idx = g_OptionOrder[panel][type].indexOf(name);
+			let idx = g_OptionOrderGUI[panel][type].indexOf(name);
 			if (idx != -1)
 				return [panel + "Option" + type, "[" + idx + "]"]
 		}
@@ -1701,7 +1716,7 @@ function updateGUIObjects()
 	updatePlayerAssignmentChoices();
 
 	// Hide exceeding dropdowns and checkboxes
-	for (let panel in g_OptionOrder)
+	for (let panel in g_OptionOrderGUI)
 		for (let child of Engine.GetGUIObjectByName(panel + "Options").children)
 			child.hidden = true;
 
