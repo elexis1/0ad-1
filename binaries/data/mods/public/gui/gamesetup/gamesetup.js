@@ -1675,7 +1675,7 @@ function launchGame()
 		for (let i in g_GameAttributes.settings.PlayerData)
 		{
 			let assignBox = Engine.GetGUIObjectByName("playerAssignment["+i+"]");
-			if (assignBox.list_data[assignBox.selected] == "local")
+			if (assignBox.list_data[assignBox.selected] == "guid:local")
 				playerID = +i+1;
 		}
 
