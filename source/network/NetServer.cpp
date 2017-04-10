@@ -1104,9 +1104,7 @@ bool CNetServerWorker::OnReady(void* context, CFsmEvent* event)
 	CNetServerWorker& server = session->GetServer();
 
 	CReadyMessage* message = (CReadyMessage*)event->GetParamRef();
-
 	message->m_GUID = session->GetGUID();
-
 	server.Broadcast(message, { NSS_PREGAME });
 
 	server.m_PlayerAssignments[message->m_GUID].m_Status = message->m_Status;
