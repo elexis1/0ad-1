@@ -529,7 +529,7 @@ var g_Dropdowns = {
 /**
  * These dropdowns provide a setting that is repeated once for each player.
  */
-var g_DropdownArrays = {
+var g_PlayerDropdowns = {
 	"playerAssignment": {
 		"labels": (idx) => g_PlayerAssignmentChoices.Name || [],
 		"ids": (idx) => g_PlayerAssignmentChoices.Choice || [],
@@ -771,7 +771,7 @@ var g_MiscControls = {
 /**
  * Contains options that are repeated for every player.
  */
-var g_MiscControlArrays = {
+var g_PlayerMiscControls = {
 	"playerBox": {
 		"size": (idx) => ["0", 32 * idx, "100%", 32 * (idx + 1)].join(" "),
 	},
@@ -878,10 +878,10 @@ function supplementDefaults()
 		if (!g_Checkboxes[checkbox].defined())
 			g_Checkboxes[checkbox].set(g_Checkboxes[checkbox].default());
 
-	for (let dropdown in g_DropdownArrays)
+	for (let dropdown in g_PlayerDropdowns)
 		for (let i = 0; i < g_GameAttributes.settings.PlayerData.length; ++i)
-			if (!isControlArrayElementHidden(i) && !g_DropdownArrays[dropdown].defined(i))
-				g_DropdownArrays[dropdown].select(g_DropdownArrays[dropdown].default(i), i);
+			if (!isControlArrayElementHidden(i) && !g_PlayerDropdowns[dropdown].defined(i))
+				g_PlayerDropdowns[dropdown].select(g_PlayerDropdowns[dropdown].default(i), i);
 
 	g_IsSupplementingDefaults = false;
 }
@@ -905,8 +905,8 @@ function initGUIObjects()
 		if (g_OptionOrderInit.checkboxes.indexOf(checkbox) == -1)
 			initCheckbox(checkbox);
 
-	for (let dropdown in g_DropdownArrays)
-		initDropdownArray(dropdown);
+	for (let dropdown in g_PlayerDropdowns)
+		initPlayerDropdowns(dropdown);
 
 	resizeMoreOptionsWindow();
 
@@ -922,7 +922,7 @@ function initGUIObjects()
 }
 
 /**
- * The main options (like map selection) and dropdownArrays have a specific name.
+ * The main options (like map selection) and player arrays have specific names.
  * Options in the "More Options" dialog use a generic name.
  */
 function getGUIObjectNameFromSetting(name)
@@ -943,7 +943,7 @@ function initDropdown(name, idx)
 {
 	let [guiName, guiIdx] = getGUIObjectNameFromSetting(name);
 	let idxName = idx === undefined ? "": "[" + idx + "]";
-	let data = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
+	let data = (idx === undefined ? g_Dropdowns : g_PlayerDropdowns)[name];
 
 	let dropdown = Engine.GetGUIObjectByName(guiName + guiIdx + idxName);
 	dropdown.list = data.labels(idx);
@@ -963,7 +963,7 @@ function initDropdown(name, idx)
 	};
 }
 
-function initDropdownArray(name)
+function initPlayerDropdowns(name)
 {
 	for (let i = 0; i < g_MaxPlayers; ++i)
 		initDropdown(name, i);
@@ -1484,9 +1484,6 @@ function selectMap(name)
 	supplementDefaults();
 }
 
-/**
- * Check can be moved to hidden() once it's not identical for all control-arrays anymore
- */
 function isControlArrayElementHidden(idx)
 {
 	return idx !== undefined && idx >= g_GameAttributes.settings.PlayerData.length;
@@ -1509,7 +1506,7 @@ function updateGUIDropdown(name, idx = undefined)
 	let title = Engine.GetGUIObjectByName(guiName + "Title" + guiIdx + idxName);
 
 	let indexHidden = isControlArrayElementHidden(idx);
-	let obj = (idx === undefined ? g_Dropdowns : g_DropdownArrays)[name];
+	let obj = (idx === undefined ? g_Dropdowns : g_PlayerDropdowns)[name];
 
 	let selected = indexHidden ? -1 : dropdown.list_data.indexOf(String(obj.get(idx)));
 	let enabled = !indexHidden && (!obj.enabled || obj.enabled(idx));
@@ -1533,7 +1530,7 @@ function updateGUIDropdown(name, idx = undefined)
 }
 
 /**
- * Not used for the player assignments, so checkboxArrays are not implemented,
+ * Not used for the player assignments, so playerCheckboxes are not implemented,
  * hence no index.
  */
 function updateGUICheckbox(name)
@@ -1571,7 +1568,7 @@ function updateGUICheckbox(name)
 function updateGUIMiscControl(name, idx)
 {
 	let idxName = idx === undefined ? "": "[" + idx + "]";
-	let obj = (idx === undefined ? g_MiscControls : g_MiscControlArrays)[name];
+	let obj = (idx === undefined ? g_MiscControls : g_PlayerMiscControls)[name];
 
 	let control = Engine.GetGUIObjectByName(name + idxName);
 	if (!control)
@@ -1713,10 +1710,10 @@ function updateGUIObjects()
 
 	for (let i = 0; i < g_MaxPlayers; ++i)
 	{
-		for (let name in g_DropdownArrays)
+		for (let name in g_PlayerDropdowns)
 			updateGUIDropdown(name, i);
 
-		for (let name in g_MiscControlArrays)
+		for (let name in g_PlayerMiscControls)
 			updateGUIMiscControl(name, i);
 	}
 
@@ -1847,7 +1844,7 @@ function updatePlayerAssignmentChoices()
 	}];
 	g_PlayerAssignmentChoices = prepareForDropdown(playerChoices.concat(aiChoices).concat(unassignedSlot))
 
-	initDropdownArray("playerAssignment");
+	initPlayerDropdowns("playerAssignment");
 }
 
 function swapPlayers(guid, newSlot)
@@ -2101,7 +2098,7 @@ function updateAutocompleteEntries()
 		for (let name in control)
 			g_Autocomplete = g_Autocomplete.concat(control[name].title());
 
-	for (let dropdown of [g_Dropdowns, g_DropdownArrays])
+	for (let dropdown of [g_Dropdowns, g_PlayerDropdowns])
 		for (let name in dropdown)
 			if (dropdown[name].autocomplete)
 				g_Autocomplete = g_Autocomplete.concat(dropdown[name].labels());
