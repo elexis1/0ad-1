@@ -1602,7 +1602,7 @@ function launchGame()
 	{
 		let victoryScriptsSelected = g_GameAttributes.settings.VictoryScripts;
 		let gameTypeSelected = g_GameAttributes.settings.GameType;
-		selectMap(pickRandom(Engine.GetGUIObjectByName("mapSelection").list_data.slice(1)));
+		selectMap(pickRandom(g_Dropdowns.mapSelection.ids().slice(1)));
 		g_GameAttributes.settings.VictoryScripts = victoryScriptsSelected;
 		g_GameAttributes.settings.GameType = gameTypeSelected;
 	}
