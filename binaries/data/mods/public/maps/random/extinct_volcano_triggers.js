@@ -67,18 +67,20 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 	cmpWaterManager.SetWaterLevel(newLevel);
 	this.debugLog("Raising water level to " + Math.round(newLevel) + " took " + (new Date().getTime() - time));
 
-	time = new Date().getTime();
-	let debugTemplates = {};
-	let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
-	for (let ent of Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager).GetEntitiesByPlayer(0))
+	if (newLevel < maxWaterLevel)
+		this.DoAfterDelay((debugWaterRise ? 10 : randFloat(...waterIncreaseTime) * 60) * 1000, "RaiseWaterLevelStep", {});
+	else
+		this.debugLog("Water reached final level");
+
+	let actorTemplates = {};
+	let killedTemplates = {};
+
+	let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
+	for (let ent of [...cmpRangeManager.GetEntitiesByPlayer(0), ...cmpRangeManager.GetNonGaiaEntities()])
 	{
 		let cmpPos = Engine.QueryInterface(ent, IID_Position);
 		if (!cmpPos || !cmpPos.IsInWorld() || cmpPos.GetPosition().y >= newLevel)
 			continue;
-
-		let templateName = cmpTemplateManager.GetCurrentTemplateName(ent);
-		if (!templateName)
-			return false;
 
 		let cmpVisualActor = Engine.QueryInterface(ent, IID_Visual);
 		if (!cmpVisualActor)
@@ -88,22 +90,26 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		if (!cmpIdentity)
 			continue;
 
-		// Animals drown
+		let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
+		let templateName = cmpTemplateManager.GetCurrentTemplateName(ent);
+
+		// Animals and units drown
 		let cmpHealth = Engine.QueryInterface(ent, IID_Health);
 		if (cmpHealth && cmpIdentity.HasClass("Unit"))
 		{
 			cmpHealth.Kill();
+			killedTemplates[templateName] = (killedTemplates[templateName] || 0) + 1;
 			continue;
 		}
 
-		// Resources become actors
+		// Resources and buildings become actors
 		// Do not use ChangeEntityTemplate for performance and
 		// because we don't need nor want the effects of MT_EntityRenamed
-		// For example not having the new (unselectable) entity selected
 
 		let pos = cmpPos.GetPosition2D();
 		let height = cmpPos.GetHeightOffset();
 		let rot = cmpPos.GetRotation();
+
 		let template = cmpTemplateManager.GetTemplate(templateName);
 		let actorTemplate = template.VisualActor.Actor;
 		let seed = cmpVisualActor.GetActorSeed();
@@ -118,41 +124,12 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		cmpNewPos.SetXZRotation(rot.x, rot.z);
 		cmpNewPos.SetYRotation(rot.y);
 
-		debugTemplates[actorTemplate] = (debugTemplates[actorTemplate] || 0) + 1;
+		actorTemplates[templateName] = (actorTemplates[templateName] || 0) + 1;
 	}
 
-	this.debugLog("Changing gaia entities to actors took " + (new Date().getTime() - time));
-	this.debugLog("Changed the following entities: " + uneval(debugTemplates));
-
-	// Destroy all player entities below the water
-	// Men only once they are fully submerged (because they don't drown when their ankles get wet)
-	debugTemplates = {};
-	time = new Date().getTime();
-	for (let ent of Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager).GetNonGaiaEntities())
-	{
-		let cmpPos = Engine.QueryInterface(ent, IID_Position);
-		if (!cmpPos || !cmpPos.IsInWorld() || cmpPos.GetPosition().y >= newLevel)
-			continue;
-
-		let templateName = cmpTemplateManager.GetCurrentTemplateName(ent);
-		debugTemplates[templateName] = (debugTemplates[templateName] || 0) + 1;
-
-		// TODO: make buildings actors instead of deleting them
-
-		let cmpHealth = Engine.QueryInterface(ent, IID_Health);
-		if (cmpHealth)
-			cmpHealth.Kill();
-		else
-			Engine.DestroyEntity(ent);
-	}
-
-	this.debugLog("Checking player entities took " + (new Date().getTime() - time));
-	this.debugLog("Destroyed the following player entities: " + uneval(debugTemplates));
-
-	if (newLevel > maxWaterLevel)
-		return;
-
-	this.DoAfterDelay((debugWaterRise ? 10 : randFloat(...waterIncreaseTime) * 60) * 1000, "RaiseWaterLevelStep", {});
+	this.debugLog("Checking entities took " + (new Date().getTime() - time));
+	this.debugLog("Killed: " + uneval(killedTemplates));
+	this.debugLog("Converted to actors: " + uneval(actorTemplates));
 };
 
 

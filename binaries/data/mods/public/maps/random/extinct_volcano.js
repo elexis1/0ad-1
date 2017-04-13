@@ -13,7 +13,6 @@
 // shrub_spikes
 // shrub_tropic_plant_flower
 /*
-tons of lag when rising the water the first time, fix by greater tree min dist
 Cc hills might be higher
 giant maps never ever load
 paint terrain based on height
