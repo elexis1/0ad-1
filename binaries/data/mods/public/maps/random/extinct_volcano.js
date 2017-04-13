@@ -104,7 +104,7 @@ var clBumps = createTileClass();
 
 // randomize player order
 var playerIDs = [];
-for (var i = 0; i < numPlayers; i++)
+for (var i = 0; i < numPlayers; ++i)
 	playerIDs.push(i+1);
 playerIDs = sortPlayers(playerIDs);
 
@@ -114,7 +114,7 @@ var playerZ = new Array(numPlayers);
 var playerAngle = new Array(numPlayers);
 
 var startAngle = randFloat(0, TWO_PI);
-for (var i = 0; i < numPlayers; i++)
+for (let i = 0; i < numPlayers; ++i)
 {
 	playerAngle[i] = startAngle + i*TWO_PI/numPlayers;
 	playerX[i] = 0.5 + 0.35*cos(playerAngle[i]);
@@ -123,18 +123,18 @@ for (var i = 0; i < numPlayers; i++)
 
 var ccMountainHeight = 25;
 
-for (var i = 0; i < numPlayers; i++)
+for (let i = 0; i < numPlayers; ++i)
 {
-	var id = playerIDs[i];
+	let id = playerIDs[i];
 	log("Creating base for player " + id + "...");
 
-	var radius = scaleByMapSize(15,25);
+	let radius = scaleByMapSize(15,25);
 
 	// get the x and z in tiles
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
+	let fx = fractionToTiles(playerX[i]);
+	let fz = fractionToTiles(playerZ[i]);
+	let ix = round(fx);
+	let iz = round(fz);
 
 	// This one consists of many bumps, creating an omnidirectional ramp
 	createMountain(
@@ -151,7 +151,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 
 	// Flatten the initial CC area
-	var hillSize = PI * radius * radius;
+	let hillSize = PI * radius * radius;
 	createArea(
 		new ClumpPlacer(hillSize, 0.95, 0.6, 10, ix, iz),
 		[
@@ -162,24 +162,24 @@ for (var i = 0; i < numPlayers; i++)
 		null);
 
 	// create the city patch
-	var cityRadius = radius/3;
-	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
+	let cityRadius = radius/3;
+	let placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
+	let painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
 	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
 
 	// create metal mine
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 10;
-	var mAngle = bbAngle;
+	let bbAngle = randFloat(0, TWO_PI);
+	let bbDist = 10;
+	let mAngle = bbAngle;
 	while(abs(mAngle - bbAngle) < PI/3)
 		mAngle = randFloat(0, TWO_PI);
 
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	var group = new SimpleGroup(
+	let mDist = 12;
+	let mX = round(fx + mDist * cos(mAngle));
+	let mZ = round(fz + mDist * sin(mAngle));
+	let group = new SimpleGroup(
 		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
 		true, clBaseResource, mX, mZ
 	);
@@ -199,9 +199,9 @@ for (var i = 0; i < numPlayers; i++)
 
 	// create berry bushes
 	mAngle += randFloat(PI/4, PI/2);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * Math.cos(mAngle));
-	var bbZ = round(fz + bbDist * Math.sin(mAngle));
+	bbDist = 12;
+	let bbX = round(fx + bbDist * Math.cos(mAngle));
+	let bbZ = round(fz + bbDist * Math.sin(mAngle));
 	createObjectGroup(
 		new SimpleGroup(
 			[new SimpleObject(oFruitBush, 5, 5, 0, 3)],
@@ -209,14 +209,14 @@ for (var i = 0; i < numPlayers; i++)
 		0);
 
 	// create starting trees
-	var num = Math.floor(hillSize / 60);
-	var tries = 10;
-	for (var x = 0; x < tries; ++x)
+	let num = Math.floor(hillSize / 60);
+	let tries = 10;
+	for (let x = 0; x < tries; ++x)
 	{
-		var tAngle = mAngle + randFloat(PI/3, PI/4);
-		var tDist = randFloat(10, 12);
-		var tX = round(fx + tDist * cos(tAngle));
-		var tZ = round(fz + tDist * sin(tAngle));
+		let tAngle = mAngle + randFloat(PI/3, PI/4);
+		let tDist = randFloat(10, 12);
+		let tX = round(fx + tDist * cos(tAngle));
+		let tZ = round(fz + tDist * sin(tAngle));
 		group = new SimpleGroup(
 			[new SimpleObject(oTree2, num, num, 0, 3)],
 			false, clBaseResource, tX, tZ
@@ -277,7 +277,7 @@ var types = [
 
 var size = numForest / (scaleByMapSize(2,8) * numPlayers);
 var num = floor(size / types.length);
-for (var i = 0; i < types.length; ++i)
+for (let i = 0; i < types.length; ++i)
 	createAreas(
 		new ClumpPlacer(numForest / num, 0.1, 0.1, 1),
 		[
