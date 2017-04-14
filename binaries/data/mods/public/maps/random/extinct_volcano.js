@@ -259,7 +259,7 @@ for (let i = 0; i < types.length; ++i)
 			new LayeredPainter(types[i], [2]),
 			paintClass(clForest)
 		],
-		avoidClasses(clPlayer, 12, clForest, 10, clHill, 0),
+		avoidClasses(clPlayer, 4, clForest, 10, clHill, 0, clWater, 2),
 		num
 	);
 RMS.SetProgress(40);
