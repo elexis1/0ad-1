@@ -1,6 +1,5 @@
 //ungatherable trees, initial trees stuck too
 //zoom restriction
-//lakes too small
 
 // little actor stones
 // bush_temple_underbrush
@@ -220,14 +219,14 @@ RMS.SetProgress(45);
 
 log("Creating lakes...");
 createAreas(
-	new ChainPlacer(1, Math.floor(scaleByMapSize(5, 7)), Math.floor(scaleByMapSize(15, 20)), 0.1),
+	new ChainPlacer(4, 8, Math.floor(scaleByMapSize(10, 14)), 0.1),
 	[
 		new LayeredPainter([tShoreBlend, tShore, tWater], [1,1]),
 		new SmoothElevationPainter(ELEVATION_SET, -4, 3),
 		paintClass(clWater)
 	],
 	avoidClasses(clPlayer, 0, clHill, 2, clWater, 12),
-	Math.round(scaleByMapSize(4, 12))
+	Math.round(scaleByMapSize(8, 12))
 );
 RMS.SetProgress(20);
 
