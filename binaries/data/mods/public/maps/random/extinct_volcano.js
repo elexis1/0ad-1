@@ -116,8 +116,7 @@ for (let i = 0; i < numPlayers; ++i)
 {
 	let id = playerIDs[i];
 	log("Creating base for player " + id + "...");
-
-	let radius = scaleByMapSize(15,25);
+	let radius = scaleByMapSize(15, 25);
 
 	// get the x and z in tiles
 	let fx = fractionToTiles(playerX[i]);
@@ -151,8 +150,8 @@ for (let i = 0; i < numPlayers; ++i)
 		null);
 
 	// create the city patch
-	let cityRadius = radius/3;
-	let placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
+	let cityRadius = radius / 3 ;
+	let placer = new ClumpPlacer(PI * cityRadius * cityRadius, 0.6, 0.3, 10, ix, iz);
 	let painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
