@@ -407,4 +407,9 @@ for (let type of types)
 	);
 RMS.SetProgress(95);
 
+setWaterColor(0.05, 0.15, 0.2);
+setWaterTint(0.05, 0.15, 0.2);
+
+setPPEffect("hdr");
+
 ExportMap();
