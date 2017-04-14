@@ -218,7 +218,7 @@ createAreas(
 );
 RMS.SetProgress(20);
 
-createBumps(avoidClasses(clPlayer, 0, clHill, 0), scaleByMapSize(50, 300), 1, 10, 3, 0, 8, 500);
+createBumps(avoidClasses(clPlayer, 0, clHill, 0), scaleByMapSize(50, 300), 1, 10, 3, 0, scaleByMapSize(4, 10));
 paintTileClassBasedOnHeight(10, 100, 0, clBumps);
 RMS.SetProgress(25);
 
