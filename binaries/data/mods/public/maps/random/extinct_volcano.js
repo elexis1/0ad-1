@@ -236,11 +236,8 @@ createAreas(
 RMS.SetProgress(30);
 
 log("Creating forests...");
-var MIN_TREES = 800;
-var MAX_TREES = 2000;
 var P_FOREST = 0.7;
-
-var totalTrees = scaleByMapSize(MIN_TREES, MAX_TREES);
+var totalTrees = scaleByMapSize(800, 3000);
 var numForest = totalTrees * P_FOREST;
 var numStragglers = totalTrees * (1.0 - P_FOREST);
 var tGrass = ["cliff volcanic light", "ocean_rock_a", "ocean_rock_b"];
@@ -253,7 +250,7 @@ var types = [
 	[[tGrassB, tGrassA, pForestP], [tGrassB, pForestP]]
 ];
 
-var size = numForest / (scaleByMapSize(2,8) * numPlayers);
+var size = numForest / (scaleByMapSize(4, 12) * numPlayers);
 var num = floor(size / types.length);
 for (let i = 0; i < types.length; ++i)
 	createAreas(
