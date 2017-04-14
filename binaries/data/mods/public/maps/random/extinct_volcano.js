@@ -196,7 +196,7 @@ for (let i = 0; i < numPlayers; ++i)
 			[new SimpleObject(oTree2, num, num, 0, 3)],
 			false, clBaseResource, tX, tZ
 		);
-		if (createObjectGroup(group, 0, avoidClasses(clBaseResource, 2)))
+		if (createObjectGroup(group, 0, avoidClasses(clBaseResource, 3)))
 			break;
 	}
 }
