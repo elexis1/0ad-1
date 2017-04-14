@@ -27,7 +27,7 @@ const oTree4 = "gaia/flora_tree_oak_dead";
 const oBush = "gaia/flora_bush_temperate";
 const oFruitBush = "gaia/flora_bush_berry";
 const oRabbit = "gaia/fauna_rabbit";
-const oDeer = "gaia/fauna_deer";
+const oGoat = "gaia/fauna_goat";
 const oBear = "gaia/fauna_bear";
 const oStoneLarge = "gaia/geology_stonemine_temperate_quarry";
 const oStoneSmall = "gaia/geology_stone_temperate";
@@ -347,12 +347,12 @@ RMS.SetProgress(75);
 
 createFood(
 	[
-		[new SimpleObject(oRabbit, 5,7, 0,4)],
-		[new SimpleObject(oDeer, 2,3, 0,2)]
+		[new SimpleObject(oRabbit, 5, 7, 2, 4)],
+		[new SimpleObject(oGoat, 3, 5, 2, 4)]
 	],
 	[
-		3 * numPlayers,
-		3 * numPlayers
+		scaleByMapSize(1, 6) * numPlayers,
+		scaleByMapSize(3, 10) * numPlayers
 	],
 	[avoidClasses(clWater, 1, clForest, 0, clPlayer, 0, clHill, 1, clFood, 20)]
 );
