@@ -266,7 +266,7 @@ RMS.SetProgress(40);
 
 log("Creating hill patches...");
 for (let size of [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)])
-	for (let type of [[tHillMedium1, tHillDark], [tHillDark, tHillVeryDark], [tHillMedium1, tHillVeryDark]]) 
+	for (let type of [[tHillMedium1, tHillDark], [tHillDark, tHillMedium2], [tHillMedium1, tHillMedium2]])
 		createAreas(
 			new ClumpPlacer(size, 0.3, 0.06, 0.5),
 			[
