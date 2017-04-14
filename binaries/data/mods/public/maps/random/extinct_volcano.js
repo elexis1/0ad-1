@@ -291,8 +291,8 @@ log("Creating stone mines...");
 createObjectGroups(
 	new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock),
 	0,
-	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clRock, 10, clHill, 4)],
-	scaleByMapSize(4,16), 100
+	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clMetal, 10, clRock, 15, clHill, 0)],
+	100, 100
 );
 RMS.SetProgress(55);
 
@@ -300,8 +300,8 @@ log("Creating small stone quarries...");
 createObjectGroups(
 	new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock),
 	0,
-	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clRock, 10, clHill, 4)],
-	scaleByMapSize(4,16), 100
+	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clMetal, 10, clRock, 15, clHill, 0)],
+	100, 100
 );
 RMS.SetProgress(60);
 
@@ -309,8 +309,8 @@ log("Creating metal mines...");
 createObjectGroups(
 	new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal),
 	0,
-	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clMetal, 10, clRock, 5, clHill, 4)],
-	scaleByMapSize(4,16), 100
+	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clMetal, 15, clRock, 10, clHill, 0)],
+	100, 100
 );
 RMS.SetProgress(65);
 
