@@ -226,7 +226,7 @@ log("Creating hills...");
 createAreas(
 	new ClumpPlacer(scaleByMapSize(20, 150), 0.2, 0.1, 1),
 	[
-		new LayeredPainter([tHillDark, tHillMedium1, tHillMedium1], [2, 2]),
+		new LayeredPainter([tHillDark, tHillDark, tHillDark], [2, 2]),
 		new SmoothElevationPainter(ELEVATION_SET, 18, 2),
 		paintClass(clHill)
 	],
