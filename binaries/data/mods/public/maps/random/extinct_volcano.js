@@ -167,21 +167,21 @@ for (let i = 0; i < numPlayers; ++i)
 	let mDist = 12;
 	let mX = round(fx + mDist * cos(mAngle));
 	let mZ = round(fz + mDist * sin(mAngle));
-	let group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
+	createObjectGroup(
+		new SimpleGroup(
+			[new SimpleObject(oMetalLarge, 1,1, 0,0)],
+			true, clBaseResource, mX, mZ
+		), 0);
 
 	// create stone mines
 	mAngle += randFloat(PI/4, PI/3);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
+	mX = Math.round(fx + mDist * cos(mAngle));
+	mZ = Math.round(fz + mDist * sin(mAngle));
+	createObjectGroup(
+		new SimpleGroup(
+			[new SimpleObject(oStoneLarge, 1,1, 0,2)],
+			true, clBaseResource, mX, mZ
+		), 0);
 
 	placeDefaultChicken(fx, fz, clBaseResource);
 
@@ -205,7 +205,7 @@ for (let i = 0; i < numPlayers; ++i)
 		let tDist = randFloat(10, 12);
 		let tX = round(fx + tDist * cos(tAngle));
 		let tZ = round(fz + tDist * sin(tAngle));
-		group = new SimpleGroup(
+		let group = new SimpleGroup(
 			[new SimpleObject(oTree2, num, num, 0, 3)],
 			false, clBaseResource, tX, tZ
 		);
@@ -304,9 +304,10 @@ createLayeredPatches(
 RMS.SetProgress(50);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
-createObjectGroups(group, 0,
-		[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clRock, 10, clHill, 4)],
+createObjectGroups(
+	new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock),
+	0,
+	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clRock, 10, clHill, 4)],
 	scaleByMapSize(4,16), 100
 );
 RMS.SetProgress(55);
@@ -321,8 +322,9 @@ createObjectGroups(
 RMS.SetProgress(60);
 
 log("Creating metal mines...");
-group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal);
-createObjectGroups(group, 0,
+createObjectGroups(
+	new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal),
+	0,
 	[stayClasses(clBumps, 1), avoidClasses(clWater, 3, clForest, 1, clPlayer, 0, clMetal, 10, clRock, 5, clHill, 4)],
 	scaleByMapSize(4,16), 100
 );
