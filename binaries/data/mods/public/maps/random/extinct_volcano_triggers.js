@@ -1,4 +1,4 @@
-var debugLog = true;
+var debugLog = false;
 
 var debugWaterRise = false;
 
@@ -98,7 +98,10 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		if (cmpHealth && cmpIdentity.HasClass("Unit"))
 		{
 			cmpHealth.Kill();
-			killedTemplates[templateName] = (killedTemplates[templateName] || 0) + 1;
+
+			if (debugLog)
+				killedTemplates[templateName] = (killedTemplates[templateName] || 0) + 1;
+
 			continue;
 		}
 
@@ -124,7 +127,8 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		cmpNewPos.SetXZRotation(rot.x, rot.z);
 		cmpNewPos.SetYRotation(rot.y);
 
-		actorTemplates[templateName] = (actorTemplates[templateName] || 0) + 1;
+		if (debugLog)
+			actorTemplates[templateName] = (actorTemplates[templateName] || 0) + 1;
 	}
 
 	this.debugLog("Checking entities took " + (new Date().getTime() - time));
