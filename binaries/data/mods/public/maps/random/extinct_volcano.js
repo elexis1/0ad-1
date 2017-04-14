@@ -1,10 +1,8 @@
 //ungatherable trees, initial trees stuck too
 //zoom restriction
 //lakes too small
-//countdown timer for water
 
 // little actor stones
-// volcano dust cloud
 // bush_temple_underbrush
 // grass_field_flowering_tall
 // plant_tropic_large
@@ -12,15 +10,6 @@
 // reeds_pond_lush_b
 // shrub_spikes
 // shrub_tropic_plant_flower
-/*
-Cc hills might be higher
-giant maps never ever load
-paint terrain based on height
-keep ways for ships to travel between players
-mines should be rather on hills
-few supermountains?
-*/
-
 
 RMS.LoadLibrary("rmgen");
 
