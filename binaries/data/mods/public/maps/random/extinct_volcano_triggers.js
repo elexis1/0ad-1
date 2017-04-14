@@ -26,7 +26,7 @@ var waterRiseStartTime = [23, 26];
  *
  * Notice regular and military docks will raise with the water!
  */
-var waterIncreaseTime = [1.5, 2];
+var waterIncreaseTime = [1.25, 1.75];
 
 /**
  * How much height to increase each step.
