@@ -1,15 +1,3 @@
-//ungatherable trees, initial trees stuck too
-//zoom restriction
-
-// little actor stones
-// bush_temple_underbrush
-// grass_field_flowering_tall
-// plant_tropic_large
-// pond_lillies_large
-// reeds_pond_lush_b
-// shrub_spikes
-// shrub_tropic_plant_flower
-
 RMS.LoadLibrary("rmgen");
 
 const tHillDark = "cliff volcanic light";
