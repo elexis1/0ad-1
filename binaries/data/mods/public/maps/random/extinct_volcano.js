@@ -32,6 +32,7 @@ const oBear = "gaia/fauna_bear";
 const oStoneLarge = "gaia/geology_stonemine_temperate_quarry";
 const oStoneSmall = "gaia/geology_stone_temperate";
 const oMetalLarge = "gaia/geology_metal_temperate_slabs";
+const oTower = "other/palisades_rocks_fort";
 
 // decorative props
 const aRockLarge = "actor|geology/stone_granite_med.xml";
@@ -77,6 +78,7 @@ var clRock = createTileClass();
 var clMetal = createTileClass();
 var clBaseResource = createTileClass();
 var clBumps = createTileClass();
+var clTower = createTileClass();
 
 // randomize player order
 var playerIDs = [];
@@ -313,6 +315,16 @@ createObjectGroups(
 	100, 100
 );
 RMS.SetProgress(65);
+
+
+log("Creating towers...");
+createObjectGroups(
+	new SimpleGroup([new SimpleObject(oTower, 1, 1, 0, 4)], true, clTower),
+	0,
+	[avoidClasses(clMetal, 5, clRock, 5, clHill, 0, clTower, 60, clPlayer, 10, clForest, 2), stayClasses(clBumps, 3)],
+	500, 1
+);
+RMS.SetProgress(67);
 
 createDecoration(
 		[
