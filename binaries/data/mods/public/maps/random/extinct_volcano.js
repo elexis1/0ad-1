@@ -150,7 +150,7 @@ for (let i = 0; i < numPlayers; ++i)
 	let bbAngle = randFloat(0, TWO_PI);
 	let bbDist = 10;
 	let mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
+	while (abs(mAngle - bbAngle) < PI/3)
 		mAngle = randFloat(0, TWO_PI);
 
 	let mDist = 12;
