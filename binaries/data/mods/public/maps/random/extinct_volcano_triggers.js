@@ -12,7 +12,7 @@ var debugWaterRise = false;
  * Time in minutes when the water level starts to rise.
  * Allow players to build up the economy and military for some time.
  */
-var waterRiseStartTime = [23, 26];
+var waterRiseStartTime = [22, 26];
 
 /**
  * Duration in minutes for which the notification will be shown that states that the water will rise soon.
@@ -28,11 +28,11 @@ var waterRiseNotificationDuration = 1;
  * At height 37 most hills are barely usable.
  *
  * At min 30 stuff at the ground level should not be gatherable anymore.
- * At min 60 CC should be destroyed.
+ * At min 45 CC should be destroyed.
  *
  * Notice regular and military docks will raise with the water!
  */
-var waterIncreaseTime = [1.25, 1.75];
+var waterIncreaseTime = [0.5, 1];
 
 /**
  * How much height to increase each step.
