@@ -2,16 +2,17 @@ var debugLog = false;
 
 var debugWaterRise = false;
 
-/**
- * Time in minutes when the players will be notified that the water level will rise.
- */
-var waterRiseNotificationTime = [20, 22];
 
 /**
  * Time in minutes when the water level starts to rise.
  * Allow players to build up the economy and military for some time.
  */
 var waterRiseStartTime = [23, 26];
+
+/**
+ * Duration in minutes for which the notification will be shown that states that the water will rise soon.
+ */
+var waterRiseNotificationDuration = 1;
 
 /**
  * Time in minutes determining how often to increase the water level.
@@ -45,9 +46,9 @@ var maxWaterLevel = 70;
 Trigger.prototype.RaisingWaterNotification = function()
 {
 	Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface).AddTimeNotification({
-		"message": markForTranslation("The water keeps rising, we have to evacuate soon!"),
+		"message": markForTranslation("It keeps on raining, we will have to evacuate soon!"),
 		"translateMessage": true
-	});
+	}, waterRiseNotificationDuration * 60 * 1000);
 };
 
 Trigger.prototype.debugLog = function(txt)
@@ -138,7 +139,8 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 
 
 {
+	let waterRiseTime = debugWaterRise ? 0 : randFloat(...waterRiseStartTime);
 	let cmpTrigger = Engine.QueryInterface(SYSTEM_ENTITY, IID_Trigger);
-	cmpTrigger.DoAfterDelay(randFloat(...waterRiseNotificationTime) * 60 * 1000, "RaisingWaterNotification", {});
-	cmpTrigger.DoAfterDelay(debugWaterRise ? 0 : randFloat(...waterRiseStartTime) * 60 * 1000, "RaiseWaterLevelStep", {});
+	cmpTrigger.DoAfterDelay(60 * 1000 * (waterRiseTime - waterRiseNotificationDuration), "RaisingWaterNotification", {});
+	cmpTrigger.DoAfterDelay(60 * 1000 * waterRiseTime, "RaiseWaterLevelStep", {});
 }
