@@ -1,7 +1,12 @@
+/**
+ * Whether to log the water levels and which units became killed or transformed to visual actors.
+ */
 var debugLog = false;
 
+/**
+ * Whether to rise the water to the maximum level in a minute or two.
+ */
 var debugWaterRise = false;
-
 
 /**
  * Time in minutes when the water level starts to rise.
