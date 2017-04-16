@@ -237,7 +237,7 @@ RMS.SetProgress(30);
 
 log("Creating forests...");
 var P_FOREST = 0.7;
-var totalTrees = scaleByMapSize(800, 3000);
+var totalTrees = scaleByMapSize(1200, 3000);
 var numForest = totalTrees * P_FOREST;
 var numStragglers = totalTrees * (1.0 - P_FOREST);
 var tGrass = ["cliff volcanic light", "ocean_rock_a", "ocean_rock_b"];
