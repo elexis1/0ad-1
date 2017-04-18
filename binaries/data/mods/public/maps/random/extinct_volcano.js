@@ -419,8 +419,9 @@ for (let type of types)
 	);
 RMS.SetProgress(95);
 
-setWaterColor(0.05, 0.15, 0.2);
-setWaterTint(0.05, 0.15, 0.2);
+setWaterColor(0.035, 0.047, 0.05);
+setWaterTint(0.058, 0.05, 0.035);
+setWaterMurkiness(0.9);
 
 setPPEffect("hdr");
 

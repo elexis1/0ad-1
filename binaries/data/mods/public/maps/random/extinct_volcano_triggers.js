@@ -6,7 +6,7 @@ var debugLog = false;
 /**
  * Whether to rise the water to the maximum level in a minute or two.
  */
-var debugWaterRise = false;
+var debugWaterRise = true;
 
 /**
  * Time in minutes when the water level starts to rise.
