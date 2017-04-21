@@ -1230,7 +1230,7 @@ function reloadMapList()
 	{
 		let file = g_GameAttributes.mapPath + mapFile;
 		let mapData = loadMapData(file);
-		let filterID = g_MapFilters.id.find(filter => filter == g_GameAttributes.mapFilter);
+		let filterID = g_MapFilters.id.findIndex(id => id == g_GameAttributes.mapFilter);
 		let mapFilter = g_MapFilters.filter[filterID] || undefined;
 
 		if (!mapData.settings || mapFilter && !mapFilter(mapData.settings.Keywords || []))
