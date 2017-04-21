@@ -372,7 +372,6 @@ var g_Dropdowns = {
 				};
 
 			reloadMapList();
-			supplementDefaults();
 		},
 		"autocomplete": true,
 	},
@@ -388,7 +387,6 @@ var g_Dropdowns = {
 			g_GameAttributes.mapFilter = g_MapFilters.id[idx];
 			delete g_GameAttributes.map;
 			reloadMapList();
-			supplementDefaults();
 		},
 		"autocomplete": true,
 	},
@@ -402,7 +400,6 @@ var g_Dropdowns = {
 		"get": () => g_GameAttributes.map,
 		"select": (idx) => {
 			selectMap(g_MapList.file[idx]);
-			supplementDefaults();
 		},
 		"autocomplete": true,
 	},
@@ -438,7 +435,6 @@ var g_Dropdowns = {
 					pData.slice(0, num);
 			unassignInvalidPlayers(num);
 			sanitizePlayerData(g_GameAttributes.settings.PlayerData);
-			supplementDefaults();
 		},
 	},
 	"populationCap": {
@@ -959,6 +955,8 @@ function initDropdown(name, idx)
 			return;
 
 		data.select(this.selected, idx);
+
+		supplementDefaults();
 		updateGameAttributes();
 	};
 }
@@ -983,6 +981,8 @@ function initCheckbox(name)
 			return;
 
 		obj.set(this.checked);
+
+		supplementDefaults();
 		updateGameAttributes();
 	};
 }
