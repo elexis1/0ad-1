@@ -1,7 +1,6 @@
 const g_MatchSettings_SP = "config/matchsettings.json";
 const g_MatchSettings_MP = "config/matchsettings.mp.json";
 
-const g_PlayerArray = Array(g_MaxPlayers).fill(0).map((v, i) => i + 1); // 1, 2, ..., MaxPlayers
 const g_Ceasefire = prepareForDropdown(g_Settings && g_Settings.Ceasefire);
 const g_GameSpeeds = prepareForDropdown(g_Settings && g_Settings.GameSpeeds.filter(speed => !speed.ReplayOnly));
 const g_MapSizes = prepareForDropdown(g_Settings && g_Settings.MapSizes);
@@ -16,7 +15,9 @@ const g_VictoryDurations = prepareForDropdown(g_Settings && g_Settings.VictoryDu
  */
 const g_ColorRandom = "orange";
 
-const g_TeamsArray = prepareForDropdown([{
+const g_NumPlayersList = Array(g_MaxPlayers).fill(0).map((v, i) => i + 1); // 1, 2, ..., MaxPlayers
+
+const g_PlayerTeamList = prepareForDropdown([{
 		"label": translateWithContext("team", "None"),
 		"id": -1
 	}].concat(
@@ -33,7 +34,7 @@ const g_TeamsArray = prepareForDropdown([{
  */
 const g_CivData = loadCivData();
 
-const g_CivList = g_CivData && prepareForDropdown([{
+const g_PlayerCivList = g_CivData && prepareForDropdown([{
 		"name": '[color="' + g_ColorRandom + '"]' + translateWithContext("civilization", "Random") + '[/color]',
 		"code": "random"
 	}].concat(
@@ -49,7 +50,7 @@ const g_CivList = g_CivData && prepareForDropdown([{
 /**
  * All selectable playercolors except gaia.
  */
-const g_PlayerColors = g_Settings && g_Settings.PlayerDefaults.slice(1).map(pData => pData.Color);
+const g_PlayerColorPickerList = g_Settings && g_Settings.PlayerDefaults.slice(1).map(pData => pData.Color);
 
 /**
  * Directory containing all maps of the given type.
@@ -119,7 +120,7 @@ var g_FormatChatMessage = {
 	"clientlist": (msg, user) => getUsernameList(),
 };
 
-var g_MapFilters = prepareForDropdown([
+var g_MapFilterList = prepareForDropdown([
 	{
 		"id": "default",
 		"name": translateWithContext("map filter", "Default"),
@@ -236,7 +237,7 @@ var g_GameStarted = false;
  * Selectable options (player, AI, unassigned) in the player assignment dropdowns and
  * their colorized, textual representation.
  */
-var g_PlayerAssignmentChoices = [];
+var g_PlayerAssignmentList = [];
 
 /**
  * Remembers which clients are assigned to which player slots and whether they are ready.
@@ -260,7 +261,7 @@ var g_ChatMessages = [];
  * Filename and translated title of all maps, given the currently selected
  * maptype and filter. Sorted by title, shown in the dropdown.
  */
-var g_MapList = [];
+var g_MapSelectionList = [];
 
 /**
  * Cache containing the mapsettings. Just-in-time loading.
@@ -378,13 +379,13 @@ var g_Dropdowns = {
 	"mapFilter": {
 		"title": () => translate("Map Filter"),
 		"tooltip": () => translate("Select a map filter."),
-		"labels": () => g_MapFilters.name,
-		"ids": () => g_MapFilters.id,
-		"default": () => g_MapFilters.Default,
+		"labels": () => g_MapFilterList.name,
+		"ids": () => g_MapFilterList.id,
+		"default": () => g_MapFilterList.Default,
 		"defined": () => g_GameAttributes.mapFilter !== undefined,
 		"get": () => g_GameAttributes.mapFilter,
 		"select": (idx) => {
-			g_GameAttributes.mapFilter = g_MapFilters.id[idx];
+			g_GameAttributes.mapFilter = g_MapFilterList.id[idx];
 			delete g_GameAttributes.map;
 			reloadMapList();
 		},
@@ -393,13 +394,13 @@ var g_Dropdowns = {
 	"mapSelection": {
 		"title": () => translate("Select Map"),
 		"tooltip": () => translate("Select a map to play on."),
-		"labels": () => g_MapList.name,
-		"ids": () => g_MapList.file,
+		"labels": () => g_MapSelectionList.name,
+		"ids": () => g_MapSelectionList.file,
 		"default": () => 0,
 		"defined": () => g_GameAttributes.map !== undefined,
 		"get": () => g_GameAttributes.map,
 		"select": (idx) => {
-			selectMap(g_MapList.file[idx]);
+			selectMap(g_MapSelectionList.file[idx]);
 		},
 		"autocomplete": true,
 	},
@@ -420,8 +421,8 @@ var g_Dropdowns = {
 	"numPlayers": {
 		"title": () => translate("Number of Players"),
 		"tooltip": () => translate("Select number of players."),
-		"labels": () => g_PlayerArray,
-		"ids": () => g_PlayerArray,
+		"labels": () => g_NumPlayersList,
+		"ids": () => g_NumPlayersList,
 		"default": () => g_MaxPlayers - 1,
 		"defined": () => g_GameAttributes.settings.PlayerData !== undefined,
 		"get": () => g_GameAttributes.settings.PlayerData.length,
@@ -527,8 +528,8 @@ var g_Dropdowns = {
  */
 var g_PlayerDropdowns = {
 	"playerAssignment": {
-		"labels": (idx) => g_PlayerAssignmentChoices.Name || [],
-		"ids": (idx) => g_PlayerAssignmentChoices.Choice || [],
+		"labels": (idx) => g_PlayerAssignmentList.Name || [],
+		"ids": (idx) => g_PlayerAssignmentList.Choice || [],
 		"default": (idx) => "ai:petra",
 		"defined": (idx) => idx < g_GameAttributes.settings.PlayerData.length,
 		"get": (idx) => {
@@ -544,7 +545,7 @@ var g_PlayerDropdowns = {
 		},
 		"select": (selectedIdx, idx) => {
 
-			let choice = g_PlayerAssignmentChoices.Choice[selectedIdx];
+			let choice = g_PlayerAssignmentList.Choice[selectedIdx];
 			if (choice == "unassigned" || choice.startsWith("ai:"))
 			{
 				if (g_IsNetworked)
@@ -560,8 +561,8 @@ var g_PlayerDropdowns = {
 		"autocomplete": true,
 	},
 	"playerTeam": {
-		"labels": (idx) => g_TeamsArray.label,
-		"ids": (idx) => g_TeamsArray.id,
+		"labels": (idx) => g_PlayerTeamList.label,
+		"ids": (idx) => g_PlayerTeamList.id,
 		"default": (idx) => 0,
 		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Team !== undefined,
 		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Team,
@@ -571,18 +572,18 @@ var g_PlayerDropdowns = {
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"playerCiv": {
-		"labels": (idx) => g_CivList.name,
-		"ids": (idx) => g_CivList.code,
+		"labels": (idx) => g_PlayerCivList.name,
+		"ids": (idx) => g_PlayerCivList.code,
 		"default": (idx) => 0,
 		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Civ !== undefined,
 		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Civ,
-		"select": (selectedIdx, idx) => g_GameAttributes.settings.PlayerData[idx].Civ = g_CivList.code[selectedIdx],
+		"select": (selectedIdx, idx) => g_GameAttributes.settings.PlayerData[idx].Civ = g_PlayerCivList.code[selectedIdx],
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 		"autocomplete": true,
 	},
 	"playerColorPicker": {
-		"labels": (idx) => g_PlayerColors.map(color => ' ' + '[color="' + rgbToGuiColor(color) + '"]■[/color]'),
-		"ids": (idx) => g_PlayerColors.map((color, index) => index),
+		"labels": (idx) => g_PlayerColorPickerList.map(color => ' ' + '[color="' + rgbToGuiColor(color) + '"]■[/color]'),
+		"ids": (idx) => g_PlayerColorPickerList.map((color, index) => index),
 		"default": (idx) => idx,
 		"defined": (idx) => g_GameAttributes.settings.PlayerData[idx].Color !== undefined,
 		"get": (idx) => g_GameAttributes.settings.PlayerData[idx].Color,
@@ -590,11 +591,11 @@ var g_PlayerDropdowns = {
 			let playerData = g_GameAttributes.settings.PlayerData;
 
 			// If someone else has that color, give that player the old color
-			let pData = playerData.find(pData => sameColor(g_PlayerColors[selectedIdx], pData.Color));
+			let pData = playerData.find(pData => sameColor(g_PlayerColorPickerList[selectedIdx], pData.Color));
 			if (pData)
 				pData.Color = playerData[idx].Color;
 
-			playerData[idx].Color = g_PlayerColors[selectedIdx];
+			playerData[idx].Color = g_PlayerColorPickerList[selectedIdx];
 			ensureUniquePlayerColors(playerData);
 		},
 		"enabled": () => g_GameAttributes.mapType != "scenario",
@@ -1231,8 +1232,8 @@ function reloadMapList()
 	{
 		let file = g_GameAttributes.mapPath + mapFile;
 		let mapData = loadMapData(file);
-		let filterID = g_MapFilters.id.findIndex(id => id == g_GameAttributes.mapFilter);
-		let mapFilter = g_MapFilters.filter[filterID] || undefined;
+		let filterID = g_MapFilterList.id.findIndex(id => id == g_GameAttributes.mapFilter);
+		let mapFilter = g_MapFilterList.filter[filterID] || undefined;
 
 		if (!mapData.settings || mapFilter && !mapFilter(mapData.settings.Keywords || []))
 			continue;
@@ -1243,7 +1244,7 @@ function reloadMapList()
 		});
 	}
 
-	g_MapList = prepareForDropdown(mapList.sort(sortNameIgnoreCase));
+	g_MapSelectionList = prepareForDropdown(mapList.sort(sortNameIgnoreCase));
 	initDropdown("mapSelection")
 }
 
@@ -1334,7 +1335,7 @@ function sanitizePlayerData(playerData)
 		playerData.shift();
 
 	playerData.forEach((pData, index) => {
-		pData.Color = pData.Color || g_PlayerColors[index];
+		pData.Color = pData.Color || g_PlayerColorPickerList[index];
 		pData.Civ = pData.Civ || "random";
 
 		if (!("Team" in pData))
@@ -1352,9 +1353,9 @@ function sanitizePlayerData(playerData)
 	if (g_GameAttributes.mapType != "scenario")
 	{
 		playerData.forEach((pData, index) => {
-			let colorDistances = g_PlayerColors.map(color => colorDistance(color, pData.Color));
+			let colorDistances = g_PlayerColorPickerList.map(color => colorDistance(color, pData.Color));
 			let smallestDistance = colorDistances.find(distance => colorDistances.every(distance2 => (distance2 >= distance)));
-			pData.Color = g_PlayerColors.find(color => colorDistance(color, pData.Color) == smallestDistance);
+			pData.Color = g_PlayerColorPickerList.find(color => colorDistance(color, pData.Color) == smallestDistance);
 		});
 	}
 
@@ -1444,7 +1445,7 @@ function ensureUniquePlayerColors(playerData)
 	for (let i = playerData.length - 1; i >= 0; --i)
 		// If someone else has that color, assign an unused color
 		if (playerData.some((pData, j) => i != j && sameColor(playerData[i].Color, pData.Color)))
-			playerData[i].Color = g_PlayerColors.find(color => playerData.every(pData => !sameColor(color, pData.Color)));
+			playerData[i].Color = g_PlayerColorPickerList.find(color => playerData.every(pData => !sameColor(color, pData.Color)));
 }
 
 function selectMap(name)
@@ -1842,7 +1843,7 @@ function updatePlayerAssignmentChoices()
 		"Choice": "unassigned",
 		"Name": "[color=\""+ g_UnassignedColor + "\"]" + translate("Unassigned") + "[/color]",
 	}];
-	g_PlayerAssignmentChoices = prepareForDropdown(playerChoices.concat(aiChoices).concat(unassignedSlot))
+	g_PlayerAssignmentList = prepareForDropdown(playerChoices.concat(aiChoices).concat(unassignedSlot))
 
 	initPlayerDropdowns("playerAssignment");
 }
