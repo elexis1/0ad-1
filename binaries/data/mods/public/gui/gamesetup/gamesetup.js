@@ -198,7 +198,7 @@ var g_ServerPort;
  * States whether the GUI is currently updated in response to network messages instead of user input
  * and therefore shouldn't send further messages to the network.
  */
-var g_IsInGuiUpdate;
+var g_IsInGuiUpdate = false;
 
 /**
  * Don't supplement defaults while supplementing defaults, nor try to read defaults before they are initialized.
@@ -909,6 +909,7 @@ function initGUIObjects()
 	initSPTips();
 
 	loadPersistMatchSettings();
+	updateGameAttributes();
 
 	Engine.GetGUIObjectByName("loadingWindow").hidden = true;
 	Engine.GetGUIObjectByName("setupWindow").hidden = false;
@@ -1318,7 +1319,6 @@ function loadPersistMatchSettings()
 	supplementDefaults();
 
 	g_IsInGuiUpdate = false;
-	updateGameAttributes();
 }
 
 function savePersistMatchSettings()
