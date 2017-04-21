@@ -202,11 +202,6 @@ var g_ServerPort;
 var g_IsInGuiUpdate = false;
 
 /**
- * Don't supplement defaults while supplementing defaults, nor try to read defaults before they are initialized.
- */
-var g_IsSupplementingDefaults;
-
-/**
  * Whether the current player is ready to start the game.
  * 0 - not ready
  * 1 - ready
@@ -862,11 +857,6 @@ function initDefaults()
  */
 function supplementDefaults()
 {
-	if (g_IsSupplementingDefaults)
-		return;
-
-	g_IsSupplementingDefaults = true;
-
 	for (let dropdown in g_Dropdowns)
 		if (!g_Dropdowns[dropdown].defined())
 			g_Dropdowns[dropdown].select(g_Dropdowns[dropdown].default());
@@ -879,8 +869,6 @@ function supplementDefaults()
 		for (let i = 0; i < g_GameAttributes.settings.PlayerData.length; ++i)
 			if (!isControlArrayElementHidden(i) && !g_PlayerDropdowns[dropdown].defined(i))
 				g_PlayerDropdowns[dropdown].select(g_PlayerDropdowns[dropdown].default(i), i);
-
-	g_IsSupplementingDefaults = false;
 }
 
 /**
@@ -1495,9 +1483,6 @@ function isControlArrayElementHidden(idx)
  */
 function updateGUIDropdown(name, idx = undefined)
 {
-	if (g_IsSupplementingDefaults)
-		return;
-
 	let [guiName, guiIdx] = getGUIObjectNameFromSetting(name);
 	let idxName = idx === undefined ? "": "[" + idx + "]";
 
@@ -1536,9 +1521,6 @@ function updateGUIDropdown(name, idx = undefined)
  */
 function updateGUICheckbox(name)
 {
-	if (g_IsSupplementingDefaults)
-		return;
-
 	let obj = g_Checkboxes[name];
 
 	let checked = obj.get();
