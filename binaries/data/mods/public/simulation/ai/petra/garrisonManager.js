@@ -71,7 +71,7 @@ m.GarrisonManager.prototype.update = function(gameState, events)
 
 			let ent = gameState.getEntityById(list[j]);
 			if (!ent)	// unit must have been killed while garrisoning
-				list.splice(j--, 1);    
+				list.splice(j--, 1);
 			else if (holder.garrisoned().indexOf(list[j]) !== -1)   // unit is garrisoned
 			{
 				this.leaveGarrison(ent);
@@ -79,15 +79,7 @@ m.GarrisonManager.prototype.update = function(gameState, events)
 			}
 			else
 			{
-				let ok = false;
-				for (let order of ent.unitAIOrderData())
-				{
-					if (!order.target || order.target != id)
-						continue;
-					ok = true;
-					break;
-				}
-				if (ok)
+				if (ent.unitAIOrderData().some(order => order.target && order.target == id))
 					continue;
 				if (ent.getMetadata(PlayerID, "garrisonHolder") == id)
 				{
@@ -155,19 +147,19 @@ m.GarrisonManager.prototype.update = function(gameState, events)
 		}
 	}
 
-	// Warning new garrison orders (as in the following lines) should be done after having updated the holders 
+	// Warning new garrison orders (as in the following lines) should be done after having updated the holders
 	// (or TODO we should add a test that the garrison order is from a previous turn when updating)
 	for (let [id, gmin] of this.decayingStructures.entries())
 	{
 		let ent = gameState.getEntityById(id);
 		if (!ent || ent.owner() !== PlayerID)
-			this.decayingStructures.delete(id);		
+			this.decayingStructures.delete(id);
 		else if (this.numberOfGarrisonedUnits(ent) < gmin)
 			gameState.ai.HQ.defenseManager.garrisonRangedUnitsInside(gameState, ent, {"min": gmin, "type": "decay"});
 	}
 };
 
-// TODO should add the units garrisoned inside garrisoned units
+/** TODO should add the units garrisoned inside garrisoned units */
 m.GarrisonManager.prototype.numberOfGarrisonedUnits = function(holder)
 {
 	if (!this.holders.has(holder.id()))
@@ -176,7 +168,7 @@ m.GarrisonManager.prototype.numberOfGarrisonedUnits = function(holder)
 	return holder.garrisoned().length + this.holders.get(holder.id()).length;
 };
 
-// This is just a pre-garrison state, while the entity walk to the garrison holder
+/** This is just a pre-garrison state, while the entity walk to the garrison holder */
 m.GarrisonManager.prototype.garrison = function(gameState, ent, holder, type)
 {
 	if (this.numberOfGarrisonedUnits(holder) >= holder.garrisonMax())
@@ -202,8 +194,12 @@ m.GarrisonManager.prototype.garrison = function(gameState, ent, holder, type)
 	ent.garrison(holder);
 };
 
-// This is the end of the pre-garrison state, either because the entity is really garrisoned
-// or because it has changed its order (i.e. because the garrisonHolder was destroyed).
+/**
+ This is the end of the pre-garrison state, either because the entity is really garrisoned
+ or because it has changed its order (i.e. because the garrisonHolder was destroyed)
+ This function is for internal use inside garrisonManager. From outside, you should also update
+ the holder and then using cancelGarrison should be the preferred solution
+ */
 m.GarrisonManager.prototype.leaveGarrison = function(ent)
 {
 	ent.setMetadata(PlayerID, "subrole", undefined);
@@ -212,6 +208,20 @@ m.GarrisonManager.prototype.leaveGarrison = function(ent)
 	else
 		ent.setMetadata(PlayerID, "plan", undefined);
 	ent.setMetadata(PlayerID, "garrisonHolder", undefined);
+};
+
+/** Cancel a pre-garrison state */
+m.GarrisonManager.prototype.cancelGarrison = function(ent)
+{
+	ent.stopMoving();
+	this.leaveGarrison(ent);
+	let holderId = ent.getMetadata(PlayerID, "garrisonHolder");
+	if (!holderId || !this.holders.has(holderId))
+		return;
+	let list = this.holders.get(holderId);
+	let index = list.indexOf(ent.id());
+	if (index !== -1)
+		list.splice(index, 1);
 };
 
 m.GarrisonManager.prototype.keepGarrisoned = function(ent, holder, enemiesAround)
@@ -223,15 +233,16 @@ m.GarrisonManager.prototype.keepGarrisoned = function(ent, holder, enemiesAround
 	case 'trade':		// trader garrisoned in ship
 		return true;
 	case 'protection':	// hurt unit for healing or infantry for defense
-		if (ent.needsHeal() && holder.buffHeal())
-			return true;
-		if (enemiesAround && (ent.hasClass("Support") || MatchesClassList(holder.getGarrisonArrowClasses(), ent.classes())))
-			return true;
-		return false;
+		return ent.needsHeal() && holder.buffHeal() ||
+		       enemiesAround && (ent.hasClass("Support") ||
+			       MatchesClassList(ent.classes(), holder.getGarrisonArrowClasses()) ||
+			       MatchesClassList(ent.classes(), "Siege+!Melee"));
 	case 'decay':
 		return this.decayingStructures.has(holder.id());
+	case 'emergency': // f.e. hero in regicide mode
+		return enemiesAround;
 	default:
-		if (ent.getMetadata(PlayerID, "onBoard") === "onBoard")  // transport is not (yet ?) managed by garrisonManager 
+		if (ent.getMetadata(PlayerID, "onBoard") === "onBoard")  // transport is not (yet ?) managed by garrisonManager
 			return true;
 		API3.warn("unknown type in garrisonManager " + ent.getMetadata(PlayerID, "garrisonType") +
 			  " for " + ent.id() + " inside " + holder.id());

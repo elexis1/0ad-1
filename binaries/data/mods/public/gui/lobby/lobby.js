@@ -118,6 +118,11 @@ var g_SelectedGameIP = "";
 var g_SelectedGamePort = "";
 
 /**
+ * Whether the current user has been kicked or banned.
+ */
+var g_Kicked = false;
+
+/**
  * Notifications sent by XmppClient.cpp
  */
 var g_NetMessageTypes = {
@@ -128,22 +133,24 @@ var g_NetMessageTypes = {
 		"connected": msg => {
 		},
 		"disconnected": msg => {
+
 			updateGameList();
 			updateLeaderboard();
 			updatePlayerList();
-			Engine.GetGUIObjectByName("hostButton").enabled = false;
 
-			addChatMessage({
-				"from": "system",
-				"text": translate("Disconnected.") + msg.text,
-				"color": g_SystemColor
-			});
+			for (let button of ["host", "leaderboard", "userprofile"])
+				Engine.GetGUIObjectByName(button + "Button").enabled = false;
+
+			if (!g_Kicked)
+				addChatMessage({
+					"from": "system",
+					"text": translate("Disconnected.") + " " + msg.text
+				});
 		},
 		"error": msg => {
 			addChatMessage({
 				"from": "system",
-				"text": msg.text,
-				"color": g_SystemColor
+				"text": msg.text
 			});
 		}
 	},
@@ -167,6 +174,9 @@ var g_NetMessageTypes = {
 				}),
 				"isSpecial": true
 			});
+
+			if (msg.text == g_Username)
+				Engine.DisconnectXmppClient();
 		},
 		"presence": msg => {
 		},
@@ -178,6 +188,12 @@ var g_NetMessageTypes = {
 				}),
 				"isSpecial": true
 			});
+		},
+		"kicked": msg => {
+			handleKick(false, msg.text, msg.data || "");
+		},
+		"banned": msg => {
+			handleKick(true, msg.text, msg.data || "");
 		},
 		"room-message": msg => {
 			addChatMessage({
@@ -224,7 +240,6 @@ function init(attribs)
 	initGameFilters();
 
 	Engine.LobbySetPlayerPresence("available");
-	Engine.SendGetGameList();
 
 	// When rejoining the lobby after a game, we don't need to process presence changes
 	Engine.LobbyClearPresenceUpdates();
@@ -306,6 +321,46 @@ function filterGame(game)
 	return false;
 }
 
+function handleKick(banned, nick, reason)
+{
+	let kickString = nick == g_Username ?
+		banned ?
+			translate("You have been banned from the lobby!") :
+			translate("You have been kicked from the lobby!") :
+		banned ?
+			translate("%(nick)s has been banned from the lobby.") :
+			translate("%(nick)s has been kicked from the lobby.");
+
+	if (reason)
+		reason = sprintf(translateWithContext("lobby kick", "Reason: %(reason)s"), {
+			"reason": reason
+		});
+
+	if (nick != g_Username)
+	{
+		addChatMessage({
+			"text": "/special " + sprintf(kickString, { "nick": nick }) + " " + reason,
+			"isSpecial": true
+		});
+		return;
+	}
+
+	addChatMessage({
+		"from": "system",
+		"text": kickString + " " + reason,
+	});
+
+	g_Kicked = true;
+
+	Engine.DisconnectXmppClient();
+
+	messageBox(
+		400, 250,
+		kickString + "\n" + reason,
+		banned ? translate("BANNED") : translate("KICKED")
+	);
+}
+
 /**
  * Update the subject GUI object.
  *
@@ -338,23 +393,34 @@ function updatePlayerList()
 	if (playersBox.selected > -1)
 		g_SelectedPlayer = playersBox.list[playersBox.selected];
 
+	let buddyStatusList = [];
 	let playerList = [];
 	let presenceList = [];
 	let nickList = [];
 	let ratingList = [];
 
-	let cleanPlayerList = Engine.GetPlayerList().sort((a, b) => {
+	let cleanPlayerList = Engine.GetPlayerList().map(player => {
+		player.isBuddy = g_Buddies.indexOf(player.name) != -1;
+		return player;
+	}).sort((a, b) => {
 		let sortA, sortB;
+		let statusOrder = Object.keys(g_PlayerStatuses);
+		let statusA = statusOrder.indexOf(a.presence) + a.name.toLowerCase();
+		let statusB = statusOrder.indexOf(b.presence) + b.name.toLowerCase();
+
 		switch (sortBy)
 		{
+		case 'buddy':
+			sortA = (a.isBuddy ? 1 : 2) + statusA;
+			sortB = (b.isBuddy ? 1 : 2) + statusB;
+			break;
 		case 'rating':
 			sortA = +a.rating;
 			sortB = +b.rating;
 			break;
 		case 'status':
-			let statusOrder = Object.keys(g_PlayerStatuses);
-			sortA = statusOrder.indexOf(a.presence);
-			sortB = statusOrder.indexOf(b.presence);
+			sortA = statusA;
+			sortB = statusB;
 			break;
 		case 'name':
 		default:
@@ -383,12 +449,14 @@ function updatePlayerList()
 		let coloredPresence = '[color="' + statusColor + '"]' + g_PlayerStatuses[presence].status + "[/color]";
 		let coloredRating = '[color="' + statusColor + '"]' + rating + "[/color]";
 
+		buddyStatusList.push(player.isBuddy ? '[color="' + statusColor + '"]' + g_BuddySymbol + '[/color]' : "");
 		playerList.push(coloredName);
 		presenceList.push(coloredPresence);
 		ratingList.push(coloredRating);
 		nickList.push(player.name);
 	}
 
+	playersBox.list_buddy = buddyStatusList;
 	playersBox.list_name = playerList;
 	playersBox.list_status = presenceList;
 	playersBox.list_rating = ratingList;
@@ -397,6 +465,72 @@ function updatePlayerList()
 	// To reduce rating-server load, only send the GUI event if the selection actually changed
 	if (playersBox.selected != playersBox.list.indexOf(g_SelectedPlayer))
 		playersBox.selected = playersBox.list.indexOf(g_SelectedPlayer);
+}
+
+/**
+* Toggle buddy state for a player in playerlist within the user config
+*/
+function toggleBuddy()
+{
+	let playerList = Engine.GetGUIObjectByName("playersBox");
+	let name = playerList.list[playerList.selected];
+
+	if (!name || name == g_Username || name.indexOf(g_BuddyListDelimiter) != -1)
+		return;
+
+	let index = g_Buddies.indexOf(name);
+	if (index != -1)
+		g_Buddies.splice(index, 1);
+	else
+		g_Buddies.push(name);
+
+	let buddies = g_Buddies.filter(nick => nick).join(g_BuddyListDelimiter);
+	Engine.ConfigDB_CreateValue("user", "lobby.buddies", buddies);
+	Engine.ConfigDB_WriteValueToFile("user", "lobby.buddies", buddies, "config/user.cfg");
+
+	updatePlayerList();
+	updateGameList();
+}
+
+/**
+ * Select the game listing the selected player when toggling the full games filter.
+ */
+function selectGameFromSelectedPlayername()
+{
+	let playerList = Engine.GetGUIObjectByName("playersBox");
+	if (playerList.selected >= 0)
+		selectGameFromPlayername(playerList.list[playerList.selected]);
+}
+
+/**
+ * Select the game where the given player is currently playing, observing or offline.
+ * Selects in that order to account for players that occur in multiple games.
+ */
+function selectGameFromPlayername(playerName)
+{
+	let gameList = Engine.GetGUIObjectByName("gamesBox");
+	let foundAsObserver = false;
+
+	for (let i = 0; i < g_GameList.length; ++i)
+		for (let player of stringifiedTeamListToPlayerData(g_GameList[i].players))
+		{
+			let nick = removeRatingFromNick(player.Name);
+			if (playerName != nick)
+				continue;
+
+			if (player.Team == "observer")
+			{
+				foundAsObserver = true;
+				gameList.selected = i;
+			}
+			else if (!player.Offline)
+			{
+				gameList.selected = i;
+				return;
+			}
+			else if (!foundAsObserver)
+				gameList.selected = i;
+		}
 }
 
 /**
@@ -413,7 +547,11 @@ function displayProfile(caller)
 	if (caller == "leaderboard")
 		playerList = Engine.GetGUIObjectByName("leaderboardBox");
 	else if (caller == "lobbylist")
+	{
 		playerList = Engine.GetGUIObjectByName("playersBox");
+		if (playerList.selected != -1)
+			selectGameFromPlayername(playerList.list[playerList.selected]);
+	}
 	else if (caller == "fetch")
 	{
 		Engine.SendGetProfile(Engine.GetGUIObjectByName("fetchInput").caption);
@@ -447,10 +585,7 @@ function updateProfile()
 {
 	let attributes = Engine.GetProfile()[0];
 
-	let user = sprintf(translate("%(nick)s (%(rating)s)"), {
-		"nick": attributes.player,
-		"rating": attributes.rating
-	});
+	let user = colorPlayerName(attributes.player, attributes.rating);
 
 	if (!Engine.GetGUIObjectByName("profileFetch").hidden)
 	{
@@ -459,7 +594,13 @@ function updateProfile()
 		Engine.GetGUIObjectByName("profileErrorText").hidden = profileFound;
 
 		if (!profileFound)
+		{
+			Engine.GetGUIObjectByName("profileErrorText").caption = sprintf(
+				translate("Player \"%(nick)s\" not found."),
+				{ "nick": attributes.player }
+			);
 			return;
+		}
 
 		Engine.GetGUIObjectByName("profileUsernameText").caption = user;
 		Engine.GetGUIObjectByName("profileRankText").caption = attributes.rank;
@@ -538,7 +679,18 @@ function updateGameList()
 		g_SelectedGamePort = g_GameList[gamesBox.selected].port;
 	}
 
-	g_GameList = Engine.GetGameList().filter(game => !filterGame(game)).sort((a, b) => {
+	g_GameList = Engine.GetGameList().map(game => {
+		game.hasBuddies = 0;
+		for (let player of stringifiedTeamListToPlayerData(game.players))
+		{
+			let nick = removeRatingFromNick(player.Name);
+
+			// Sort games with playing buddies above games with spectating buddies
+			if (game.hasBuddies < 2 && g_Buddies.indexOf(nick) != -1)
+				game.hasBuddies = player.Team == "observer" ? 1 : 2;
+		}
+		return game;
+	}).filter(game => !filterGame(game)).sort((a, b) => {
 		let sortA, sortB;
 		switch (sortBy)
 		{
@@ -548,14 +700,17 @@ function updateGameList()
 			sortA = a[sortBy];
 			sortB = b[sortBy];
 			break;
+		case 'buddy':
+			sortA = String(b.hasBuddies) + g_GameStatusOrder.indexOf(a.state) + a.name.toLowerCase();
+			sortB = String(a.hasBuddies) + g_GameStatusOrder.indexOf(b.state) + b.name.toLowerCase();
+			break;
 		case 'mapName':
 			sortA = translate(a.niceMapName);
 			sortB = translate(b.niceMapName);
 			break;
 		case 'nPlayers':
-			// Compare playercount ratio
-			sortA = a.nbp * b.maxnbp;
-			sortB = b.nbp * a.maxnbp;
+			sortA = a.maxnbp;
+			sortB = b.maxnbp;
 			break;
 		case 'status':
 		default:
@@ -568,6 +723,7 @@ function updateGameList()
 		return 0;
 	});
 
+	let list_buddy = [];
 	let list_name = [];
 	let list_mapName = [];
 	let list_mapSize = [];
@@ -586,6 +742,7 @@ function updateGameList()
 		if (game.ip == g_SelectedGameIP && game.port == g_SelectedGamePort)
 			selectedGameIndex = +i;
 
+		list_buddy.push(game.hasBuddies ? '[color="' + g_GameColors[game.state] + '"]' + g_BuddySymbol + '[/color]' : "");
 		list_name.push('[color="' + g_GameColors[game.state] + '"]' + gameName);
 		list_mapName.push(translateMapTitle(game.niceMapName));
 		list_mapSize.push(translateMapSize(game.mapSize));
@@ -595,6 +752,7 @@ function updateGameList()
 		list_data.push(i);
 	}
 
+	gamesBox.list_buddy = list_buddy;
 	gamesBox.list_name = list_name;
 	gamesBox.list_mapName = list_mapName;
 	gamesBox.list_mapSize = list_mapSize;
@@ -638,7 +796,7 @@ function updateGameSelection()
 		sgGameStartTime.caption = sprintf(
 			// Translation: %(time)s is the hour and minute here.
 			translate("Game started at %(time)s"), {
-				"time": Engine.FormatMillisecondsIntoDateString(+game.startTime*1000, translate("HH:mm"))
+				"time": Engine.FormatMillisecondsIntoDateStringLocal(+game.startTime*1000, translate("HH:mm"))
 			});
 
 	sgNbPlayers.caption = sprintf(
@@ -684,8 +842,7 @@ function joinButton()
 	else
 		messageBox(
 			400, 200,
-			translate("The game has already started.") + "\n" +
-				translate("Do you want to join as observer?"),
+			translate("The game has already started. Do you want to join as observer?"),
 			translate("Confirmation"),
 			[translate("No"), translate("Yes")],
 			[null, joinSelectedGame]
@@ -818,7 +975,8 @@ function handleSpecialCommand(text)
 	if (text[0] != '/')
 		return false;
 
-	let [cmd, nick] = ircSplit(text);
+	let [cmd, args] = ircSplit(text);
+	let [nick, reason] = ircSplit("/" + args);
 
 	switch (cmd)
 	{
@@ -829,11 +987,10 @@ function handleSpecialCommand(text)
 		Engine.LobbySetPlayerPresence("available");
 		break;
 	case "kick":
-		// TODO: Split reason from nick and pass it too
-		Engine.LobbyKick(nick, "");
+		Engine.LobbyKick(nick, reason);
 		break;
 	case "ban":
-		Engine.LobbyBan(nick, "");
+		Engine.LobbyBan(nick, reason);
 		break;
 	case "quit":
 		returnToMainMenu();
@@ -892,7 +1049,6 @@ function addChatMessage(msg)
 	Engine.GetGUIObjectByName("chatText").caption = g_ChatMessages.join("\n");
 }
 
-
 /**
  * Splits given input into command and argument.
  */
@@ -915,11 +1071,7 @@ function ircSplit(string)
 function ircFormat(msg)
 {
 	let formattedMessage = "";
-
-	let coloredFrom = !msg.from ? "" :
-		msg.color ?
-			'[color="' + msg.color + '"]' + msg.from + "[/color]" :
-			colorPlayerName(msg.from);
+	let coloredFrom = msg.from && colorPlayerName(msg.from);
 
 	// Handle commands allowed past handleSpecialCommand.
 	if (msg.text[0] == '/')
@@ -1023,7 +1175,7 @@ function ircFormat(msg)
 	// Translation: Time as shown in the multiplayer lobby (when you enable it in the options page).
 	// For a list of symbols that you can use, see:
 	// https://sites.google.com/site/icuprojectuserguide/formatparse/datetime?pli=1#TOC-Date-Field-Symbol-Table
-	let timeString = Engine.FormatMillisecondsIntoDateString(time.getTime(), translate("HH:mm"));
+	let timeString = Engine.FormatMillisecondsIntoDateStringLocal(time.getTime(), translate("HH:mm"));
 
 	// Translation: Time prefix as shown in the multiplayer lobby (when you enable it in the options page).
 	let timePrefixString = sprintf(translate("\\[%(time)s]"), {
@@ -1127,6 +1279,9 @@ function checkSpamMonitor()
  */
 function getPlayerColor(playername)
 {
+	if (playername == "system")
+		return g_SystemColor;
+
 	// Generate a probably-unique hash for the player name and use that to create a color.
 	let hash = 0;
 	for (let i in playername)
@@ -1144,11 +1299,17 @@ function getPlayerColor(playername)
  * Returns the given playername wrapped in an appropriate color-tag.
  *
  *  @param {string} playername
+ *  @param {string} rating
  */
-function colorPlayerName(playername)
+function colorPlayerName(playername, rating)
 {
 	return '[color="' + getPlayerColor(playername.replace(g_ModeratorPrefix, "")) + '"]' +
-		playername + '[/color]';
+		(rating ? sprintf(
+			translate("%(nick)s (%(rating)s)"), {
+				"nick": playername,
+				"rating": rating
+			}) :
+		playername) + '[/color]';
 }
 
 function senderFont(text)

@@ -218,7 +218,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	var hillSize = PI * radius * radius;
+
 	// create starting trees
 	var num = 2;
 	var tAngle = randFloat(-PI/3, 4*PI/3);
@@ -231,20 +231,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aBush1, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aBush1, clBaseResource, radius);
 }
 
 RMS.SetProgress(40);
@@ -262,7 +249,7 @@ createForests(
 RMS.SetProgress(50);
 
 // create hills
-if (randInt(1,2) == 1)
+if (randBool())
 	createHills([tGrass, tCliff, tHill], avoidClasses(clPlayer, 20, clForest, 1, clHill, 15, clWater, 3), clHill, scaleByMapSize(3, 15));
 else
 	createMountains(tCliff, avoidClasses(clPlayer, 20, clForest, 1, clHill, 15, clWater, 3), clHill, scaleByMapSize(3, 15));
@@ -371,7 +358,7 @@ RMS.SetProgress(90);
 // create straggler trees
 log("Creating straggler trees...");
 var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];	// some variation
-createStragglerTrees(types, avoidClasses(clForest, 0, clWater, 2, clPlayer, 8, clMetal, 1, clHill, 1));
+createStragglerTrees(types, avoidClasses(clForest, 1, clWater, 2, clPlayer, 8, clMetal, 6, clHill, 1));
 
 // Set environment
 setSkySet("sunny");

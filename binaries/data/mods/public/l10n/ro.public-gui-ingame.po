@@ -8,9 +8,9 @@
 # Dumitru Ursu <dima@ceata.org>, 2014
 # Gabriel-Ciprian Stanciu <stanciu.gabriel.ciprian@gmail.com>, 2014
 # Lucian Lupescu <l.lupescu@yahoo.com>, 2014
-# bogdomania <mintoi.bogdan@gmail.com>, 2014-2016
+# Bogdan Mințoi <mintoi.bogdan@gmail.com>, 2014-2016
 # nokzor25 <darkex_gamer@hotmail.com>, 2014
-# nyquist <nyquist@vaspun.eu>, 2013
+# nyquist <inactive+nyquist@transifex.com>, 2013
 # popescu sorin <dinamic6661@yahoo.com>, 2014
 # Ramm <info@rammbase.com>, 2014
 # Raul Malea <raul.malea@gmail.com>, 2014
@@ -20,9 +20,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:00+0200\n"
-"PO-Revision-Date: 2016-10-25 08:07+0000\n"
-"Last-Translator: bogdomania <mintoi.bogdan@gmail.com>\n"
+"POT-Creation-Date: 2017-04-10 09:05+0200\n"
+"PO-Revision-Date: 2017-04-10 09:07+0000\n"
+"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Romanian (http://www.transifex.com/wildfire-games/0ad/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,7 +30,7 @@ msgstr ""
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
-#: gui/session/input.js:146
+#: gui/session/input.js:147
 #, javascript-format
 msgid "Basic range: %(range)s meter"
 msgid_plural "Basic range: %(range)s meters"
@@ -38,7 +38,7 @@ msgstr[0] "Raza de acțiune de bază: %(range)s metru"
 msgstr[1] "Raza de acțiune de bază: %(range)s metri"
 msgstr[2] "Raza de acțiune de bază: %(range)s metri"
 
-#: gui/session/input.js:147
+#: gui/session/input.js:148
 #, javascript-format
 msgid "Average bonus range: %(range)s meter"
 msgid_plural "Average bonus range: %(range)s meters"
@@ -46,121 +46,143 @@ msgstr[0] "Raza de acțiune medie bonus: %(range)s metri"
 msgstr[1] "Raza de acțiune medie bonus: %(range)s metri"
 msgstr[2] "Raza de acțiune medie bonus: %(range)s metri"
 
-#: gui/session/input.js:720
+#: gui/session/input.js:705
 msgid "Cannot build wall here!"
 msgstr "Nu puteți construi un zid aici!"
 
-#: gui/session/menu.js:115
+#: gui/session/menu.js:132
 msgid "Are you sure you want to resign?"
 msgstr "Sigur doriți să renunțați?"
 
-#: gui/session/menu.js:116 gui/session/menu.js:148 gui/session/menu.js:159
+#: gui/session/menu.js:133 gui/session/menu.js:165 gui/session/menu.js:176
 msgid "Confirmation"
 msgstr "Confirmare"
 
-#: gui/session/menu.js:117 gui/session/menu.js:149 gui/session/menu.js:182
-#: gui/session/session.js:702 gui/session/dialogs/yes_no.xml:(caption):24
+#: gui/session/menu.js:134 gui/session/menu.js:166 gui/session/menu.js:199
+#: gui/session/session.js:821 gui/session/dialogs/yes_no.xml:(caption):24
 msgid "No"
 msgstr "Nu"
 
-#: gui/session/menu.js:117 gui/session/menu.js:149 gui/session/menu.js:182
-#: gui/session/session.js:702 gui/session/dialogs/yes_no.xml:(caption):19
+#: gui/session/menu.js:134 gui/session/menu.js:166 gui/session/menu.js:199
+#: gui/session/session.js:821 gui/session/dialogs/yes_no.xml:(caption):19
 msgid "Yes"
 msgstr "Da"
 
-#: gui/session/menu.js:129
+#: gui/session/menu.js:146
 msgid ""
 "Are you sure you want to quit? Leaving will disconnect all other players."
 msgstr "Sunteți sigur că doriți să ieșiți? Dacă ieșiți ceilalți jucători vor fi deconectați"
 
-#: gui/session/menu.js:133 gui/session/menu.js:137
+#: gui/session/menu.js:150 gui/session/menu.js:154
 msgid "Are you sure you want to quit?"
 msgstr "Sunteți sigur că doriți să renunțați?"
 
-#: gui/session/menu.js:158
+#: gui/session/menu.js:175
 msgid "Do you want to resign or will you return soon?"
 msgstr "Vă veți întoarce în curând sau doriți să renunțați?"
 
-#: gui/session/menu.js:160
+#: gui/session/menu.js:177
 msgid "I will return"
 msgstr "Mă voi întoarce"
 
-#: gui/session/menu.js:160
+#: gui/session/menu.js:177
 msgid "I resign"
 msgstr "Renunț"
 
-#: gui/session/menu.js:180
+#: gui/session/menu.js:197
 msgid "Destroy everything currently selected?"
 msgstr "Să distrug tot ce este selectat momentan?"
 
-#: gui/session/menu.js:181
+#: gui/session/menu.js:198
 msgid "Delete"
 msgstr "Șterge"
 
-#: gui/session/menu.js:277
+#: gui/session/menu.js:307
 #, javascript-format
 msgid "%(time)s %(message)s"
 msgstr "%(time)s %(message)s"
 
-#: gui/session/menu.js:343
+#: gui/session/menu.js:387
+#, javascript-format
+msgctxt "ceasefire"
+msgid "Time remaining until ceasefire is over: %(time)s."
+msgstr ""
+
+#: gui/session/menu.js:411
 msgctxt "team"
 msgid "None"
 msgstr "Nimic"
 
-#: gui/session/menu.js:347 gui/session/messages.js:148
+#: gui/session/menu.js:415 gui/session/messages.js:166
 #: gui/session/diplomacy_window.xml:(tooltip):28
 msgid "Ally"
 msgstr "Aliat"
 
-#: gui/session/menu.js:348 gui/session/diplomacy_window.xml:(tooltip):32
+#: gui/session/menu.js:416 gui/session/diplomacy_window.xml:(tooltip):32
 msgid "Neutral"
 msgstr "Neutru"
 
-#: gui/session/menu.js:348 gui/session/messages.js:149
+#: gui/session/menu.js:416 gui/session/messages.js:167
 #: gui/session/diplomacy_window.xml:(tooltip):36
 msgid "Enemy"
 msgstr "Inamic"
 
-#: gui/session/menu.js:360
+#: gui/session/menu.js:428
 msgid "x"
 msgstr "x"
 
-#: gui/session/menu.js:426
+#: gui/session/menu.js:506
 msgid "Request your allies to attack this enemy"
 msgstr "Cere aliațiilor tăi să atace acest inamic"
 
-#: gui/session/menu.js:546
+#: gui/session/menu.js:522
+msgid ""
+"Bribe a random unit from this player and share its vision during a limited "
+"period."
+msgstr ""
+
+#: gui/session/menu.js:716
+#, javascript-format
+msgid "Buy %(resource)s"
+msgstr "Cumpără %(resource)s"
+
+#: gui/session/menu.js:717
+#, javascript-format
+msgid "Sell %(resource)s"
+msgstr "Vinde %(resource)s"
+
+#: gui/session/menu.js:822
 #, javascript-format
 msgid "%(openingTradingString)s, and %(garrisonedString)s."
 msgstr "%(openingTradingString)s, și %(garrisonedString)s."
 
-#: gui/session/menu.js:547
+#: gui/session/menu.js:823
 #, javascript-format
 msgid ""
 "%(openingTradingString)s, %(garrisonedString)s, and %(inactiveString)s."
 msgstr "%(openingTradingString)s, %(garrisonedString)s, si  %(inactiveString)s."
 
-#: gui/session/menu.js:550 gui/session/menu.js:621
+#: gui/session/menu.js:826 gui/session/menu.js:897
 #, javascript-format
 msgid "%(openingTradingString)s."
 msgstr "%(openingTradingString)s."
 
-#: gui/session/menu.js:551 gui/session/menu.js:620
+#: gui/session/menu.js:827 gui/session/menu.js:896
 #, javascript-format
 msgid "%(openingTradingString)s, and %(inactiveString)s."
 msgstr "%(openingTradingString)s, și %(inactiveString)s."
 
-#: gui/session/menu.js:556
+#: gui/session/menu.js:832
 #, javascript-format
 msgid "%(openingGarrisonedString)s."
 msgstr "%(openingGarrisonedString)s."
 
-#: gui/session/menu.js:557
+#: gui/session/menu.js:833
 #, javascript-format
 msgid "%(openingGarrisonedString)s, and %(inactiveString)s."
 msgstr "%(openingGarrisonedString)s, și %(inactiveString)s."
 
-#: gui/session/menu.js:560 gui/session/menu.js:624
+#: gui/session/menu.js:836 gui/session/menu.js:900
 #, javascript-format
 msgid "There is %(inactiveString)s."
 msgid_plural "There are %(inactiveString)s."
@@ -168,11 +190,11 @@ msgstr[0] "Există %(inactiveString)s."
 msgstr[1] "Există %(inactiveString)s."
 msgstr[2] "Există %(inactiveString)s."
 
-#: gui/session/menu.js:561
+#: gui/session/menu.js:837
 msgid "There are no land traders."
 msgstr "Nu există comercianți de teren."
 
-#: gui/session/menu.js:569
+#: gui/session/menu.js:845
 #, javascript-format
 msgid "There is %(numberTrading)s land trader trading"
 msgid_plural "There are %(numberTrading)s land traders trading"
@@ -180,7 +202,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/menu.js:578
+#: gui/session/menu.js:854
 #, javascript-format
 msgid "%(numberOfLandTraders)s inactive"
 msgid_plural "%(numberOfLandTraders)s inactive"
@@ -188,7 +210,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/menu.js:583
+#: gui/session/menu.js:859
 #, javascript-format
 msgid "%(numberOfLandTraders)s land trader inactive"
 msgid_plural "%(numberOfLandTraders)s land traders inactive"
@@ -196,7 +218,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/menu.js:592
+#: gui/session/menu.js:868
 #, javascript-format
 msgid "%(numberGarrisoned)s garrisoned on a trading merchant ship"
 msgid_plural "%(numberGarrisoned)s garrisoned on a trading merchant ship"
@@ -204,7 +226,7 @@ msgstr[0] "%(numberGarrisoned)s încartiruiți pe o navă comercială de negoț"
 msgstr[1] "%(numberGarrisoned)s încartiruiți pe o navă comercială de negoț"
 msgstr[2] "%(numberGarrisoned)s încartiruiți pe o navă comercială de negoț"
 
-#: gui/session/menu.js:597
+#: gui/session/menu.js:873
 #, javascript-format
 msgid ""
 "There is %(numberGarrisoned)s land trader garrisoned on a trading merchant "
@@ -216,11 +238,11 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/menu.js:625
+#: gui/session/menu.js:901
 msgid "There are no merchant ships."
 msgstr "Nu există nave de comerț."
 
-#: gui/session/menu.js:632
+#: gui/session/menu.js:908
 #, javascript-format
 msgid "There is %(numberTrading)s merchant ship trading"
 msgid_plural "There are %(numberTrading)s merchant ships trading"
@@ -228,7 +250,7 @@ msgstr[0] "Există %(numberTrading)s nava comercială care face negoț"
 msgstr[1] "Există %(numberTrading)s nave comerciale care fac negoț"
 msgstr[2] "Există %(numberTrading)s nave comerciale care fac negoț"
 
-#: gui/session/menu.js:641
+#: gui/session/menu.js:917
 #, javascript-format
 msgid "%(numberOfShipTraders)s inactive"
 msgid_plural "%(numberOfShipTraders)s inactive"
@@ -236,7 +258,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/menu.js:646
+#: gui/session/menu.js:922
 #, javascript-format
 msgid "%(numberOfShipTraders)s merchant ship inactive"
 msgid_plural "%(numberOfShipTraders)s merchant ships inactive"
@@ -244,317 +266,327 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/menu.js:822
+#: gui/session/menu.js:1098
 msgid "Resume"
 msgstr "Reia"
 
-#: gui/session/menu.js:822 gui/session/menu.xml:(caption):75
+#: gui/session/menu.js:1098 gui/session/menu.xml:(caption):74
 msgid "Pause"
 msgstr "Pauză"
 
-#: gui/session/menu.js:826
+#: gui/session/menu.js:1102
 #, javascript-format
 msgid "Paused by %(players)s"
 msgstr ""
 
-#: gui/session/menu.js:827
+#: gui/session/menu.js:1103 gui/session/messages.js:613
+#: gui/session/selection_panels.js:807
 msgid ", "
 msgstr ", "
 
-#: gui/session/menu.js:840 gui/session/menu.xml:(caption):17
+#: gui/session/menu.js:1116 gui/session/menu.xml:(caption):17
 msgid "Manual"
 msgstr "Manual"
 
-#: gui/session/menu.js:856
+#: gui/session/menu.js:1132
 msgid "The Developer Overlay was closed."
 msgstr "Stratul de dezvoltator a fost închis."
 
-#: gui/session/menu.js:857
+#: gui/session/menu.js:1133
 msgid "The Developer Overlay was opened."
 msgstr "Stratul de dezvoltator a fost deschis."
 
-#: gui/session/menu.js:880
+#: gui/session/menu.js:1156
 #, javascript-format
 msgid ""
 "Tribute %(resourceAmount)s %(resourceType)s to %(playerName)s. Shift-click "
 "to tribute %(greaterAmount)s."
 msgstr ""
 
-#: gui/session/messages.js:83
+#. Translation: A player that left the game joins again
+#: gui/session/messages.js:94
 #, javascript-format
 msgid "%(player)s is starting to rejoin the game."
 msgstr ""
 
-#: gui/session/messages.js:87
+#. Translation: A player joins the game for the first time
+#: gui/session/messages.js:96
+#, javascript-format
+msgid "%(player)s is starting to join the game."
+msgstr ""
+
+#: gui/session/messages.js:100
 #, javascript-format
 msgid "%(player)s has left the game."
 msgstr "%(player)s a părăsit jocul."
 
-#: gui/session/messages.js:91
+#. Translation: A player that left the game joins again
+#: gui/session/messages.js:107
 #, javascript-format
 msgid "%(player)s has rejoined the game."
 msgstr ""
 
-#: gui/session/messages.js:97
+#. Translation: A player joins the game for the first time
+#: gui/session/messages.js:109
+#, javascript-format
+msgid "%(player)s has joined the game."
+msgstr ""
+
+#: gui/session/messages.js:115
 #, javascript-format
 msgid "%(username)s has been banned"
 msgstr "%(username)s a avut accesul restricționat"
 
-#: gui/session/messages.js:98
+#: gui/session/messages.js:116
 #, javascript-format
 msgid "%(username)s has been kicked"
 msgstr "%(username)s a fost înlăturat"
 
-#: gui/session/messages.js:120
+#: gui/session/messages.js:138
 msgid "Connection to the server has been authenticated."
 msgstr ""
 
-#: gui/session/messages.js:121
+#: gui/session/messages.js:139
 msgid "Connected to the server."
 msgstr "Conectat la server."
 
-#: gui/session/messages.js:122
+#: gui/session/messages.js:140
 msgid "Connection to the server has been lost."
 msgstr "Conexiunea cu serverul a fost întreruptă."
 
 #. Translation: States the reason why the client disconnected from the server.
-#: gui/session/messages.js:124
+#: gui/session/messages.js:142
 #, javascript-format
 msgid "Reason: %(reason)s."
 msgstr "Motiv: %(reason)s."
 
-#: gui/session/messages.js:127
-msgid "Waiting for other players to connect..."
-msgstr "Se așteaptă alți jucători..."
+#: gui/session/messages.js:145
+msgid "Waiting for players to connect:"
+msgstr ""
 
-#: gui/session/messages.js:128
+#: gui/session/messages.js:146
 msgid "Synchronising gameplay with other players..."
 msgstr "Se sincronizează desfășurarea jocului cu alți jucători..."
 
-#: gui/session/messages.js:137
+#: gui/session/messages.js:155
 #, javascript-format
 msgid "(%(context)s) %(userTag)s %(message)s"
 msgstr "(%(context)s) %(userTag)s %(message)s"
 
-#: gui/session/messages.js:138
+#: gui/session/messages.js:156
 #, javascript-format
 msgid "%(userTag)s %(message)s"
 msgstr "%(userTag)s %(message)s"
 
-#: gui/session/messages.js:141
+#: gui/session/messages.js:159
 #, javascript-format
 msgid "(%(context)s) * %(user)s %(message)s"
 msgstr "(%(context)s) * %(user)s %(message)s"
 
-#: gui/session/messages.js:142
+#: gui/session/messages.js:160
 #, javascript-format
 msgid "* %(user)s %(message)s"
 msgstr "* %(user)s %(message)s"
 
-#: gui/session/messages.js:147 gui/session/diplomacy_window.xml:(caption):21
+#: gui/session/messages.js:165 gui/session/diplomacy_window.xml:(caption):21
 msgid "Team"
 msgstr "Echipa"
 
-#: gui/session/messages.js:150 gui/session/session.js:277
+#: gui/session/messages.js:168 gui/session/session.js:298
 msgid "Observer"
 msgstr "Observator"
 
-#: gui/session/messages.js:151
+#: gui/session/messages.js:169
 msgid "Private"
 msgstr "Privat"
 
-#: gui/session/messages.js:187
+#: gui/session/messages.js:205
 msgctxt "chat history filter"
 msgid "Chat and notifications"
 msgstr ""
 
-#: gui/session/messages.js:192
+#: gui/session/messages.js:210
 msgctxt "chat history filter"
 msgid "Chat messages"
 msgstr ""
 
-#: gui/session/messages.js:197
+#: gui/session/messages.js:215
 msgctxt "chat history filter"
 msgid "Players chat"
 msgstr ""
 
-#: gui/session/messages.js:204
+#: gui/session/messages.js:222
 msgctxt "chat history filter"
 msgid "Ally chat"
 msgstr ""
 
-#: gui/session/messages.js:211
+#: gui/session/messages.js:229
 msgctxt "chat history filter"
 msgid "Enemy chat"
 msgstr ""
 
-#: gui/session/messages.js:218
+#: gui/session/messages.js:236
 msgctxt "chat history filter"
 msgid "Observer chat"
 msgstr ""
 
-#: gui/session/messages.js:225
+#: gui/session/messages.js:243
 msgctxt "chat history filter"
 msgid "Private chat"
 msgstr ""
 
-#: gui/session/messages.js:231
+#: gui/session/messages.js:249
 msgid "You have won!"
 msgstr "Ai câștigat!"
 
-#: gui/session/messages.js:232
+#: gui/session/messages.js:250
 msgid "You have been defeated!"
 msgstr "Ai fost înfrânt!"
 
-#: gui/session/messages.js:240
+#: gui/session/messages.js:258
 #, javascript-format
 msgid "You are now allied with %(player)s."
 msgstr "De acum sunteți aliat cu %(player)s."
 
-#: gui/session/messages.js:241
+#: gui/session/messages.js:259
 #, javascript-format
 msgid "You are now at war with %(player)s."
 msgstr "De acum sunteți în război cu %(player)s."
 
-#: gui/session/messages.js:242
+#: gui/session/messages.js:260
 #, javascript-format
 msgid "You are now neutral with %(player)s."
 msgstr "De acum sunteți neutru cu %(player)s."
 
-#: gui/session/messages.js:245
+#: gui/session/messages.js:263
 #, javascript-format
 msgid "%(player)s is now allied with you."
 msgstr "%(player)s este de acum aliat cu dumneavoastră."
 
-#: gui/session/messages.js:246
+#: gui/session/messages.js:264
 #, javascript-format
 msgid "%(player)s is now at war with you."
 msgstr "%(player)s este de acum în război cu dumneavoastră."
 
-#: gui/session/messages.js:247
+#: gui/session/messages.js:265
 #, javascript-format
 msgid "%(player)s is now neutral with you."
 msgstr "%(player)s este de acum neutru cu dumneavoastră."
 
-#: gui/session/messages.js:250
+#: gui/session/messages.js:268
 #, javascript-format
 msgid "%(player)s is now allied with %(player2)s."
 msgstr ""
 
-#: gui/session/messages.js:251
+#: gui/session/messages.js:269
 #, javascript-format
 msgid "%(player)s is now at war with %(player2)s."
 msgstr ""
 
-#: gui/session/messages.js:252
+#: gui/session/messages.js:270
 #, javascript-format
 msgid "%(player)s is now neutral with %(player2)s."
 msgstr ""
 
-#: gui/session/messages.js:657
+#: gui/session/messages.js:675
 msgctxt "chat addressee"
 msgid "Everyone"
 msgstr "Toți"
 
-#: gui/session/messages.js:665
+#: gui/session/messages.js:683
 msgctxt "chat addressee"
 msgid "Allies"
 msgstr "Alliați"
 
-#: gui/session/messages.js:669
+#: gui/session/messages.js:687
 msgctxt "chat addressee"
 msgid "Enemies"
 msgstr "Inamici"
 
-#: gui/session/messages.js:675
+#: gui/session/messages.js:693
 msgctxt "chat addressee"
 msgid "Observers"
 msgstr "Observatori"
 
-#: gui/session/messages.js:704 gui/session/selection_details.js:80
+#: gui/session/messages.js:722 gui/session/selection_details.js:82
 #, javascript-format
 msgid "\\[OFFLINE] %(player)s"
 msgstr ""
 
-#: gui/session/messages.js:781
+#: gui/session/messages.js:803
 #, javascript-format
 msgid "\\[%(time)s]"
 msgstr "\\[%(time)s]"
 
-#: gui/session/messages.js:782
+#: gui/session/messages.js:804
 msgid "HH:mm"
 msgstr "HH:mm"
 
-#: gui/session/messages.js:826
+#: gui/session/messages.js:848
 msgid "Unknown Player"
 msgstr "Jucător necunoscut"
 
-#: gui/session/messages.js:833
+#: gui/session/messages.js:865
 #, javascript-format
 msgid "%(player)s has resigned."
 msgstr ""
 
-#: gui/session/messages.js:834
+#: gui/session/messages.js:866
 #, javascript-format
 msgid "%(player)s has been defeated."
 msgstr "%(player)s a fost învins."
 
-#: gui/session/messages.js:841
+#: gui/session/messages.js:873
 #, javascript-format
 msgid "%(player)s has won."
 msgstr "%(player)s a câștigat."
 
-#: gui/session/messages.js:870
-#, javascript-format
-msgid "%(player)s has sent %(player2)s %(amounts)s."
-msgstr ""
-
-#: gui/session/messages.js:872
+#: gui/session/messages.js:905
 #, javascript-format
 msgid "%(player)s has sent you %(amounts)s."
 msgstr "%(player)s ți-a trimis %(amounts)s."
 
-#: gui/session/messages.js:892
+#: gui/session/messages.js:907
+#, javascript-format
+msgid "You have sent %(player2)s %(amounts)s."
+msgstr ""
+
+#: gui/session/messages.js:912
+#, javascript-format
+msgid "%(player)s has sent %(player2)s %(amounts)s."
+msgstr ""
+
+#: gui/session/messages.js:932
 #, javascript-format
 msgid "%(player)s bartered %(amountsBought)s for %(amountsSold)s."
 msgstr ""
 
-#: gui/session/messages.js:905
+#: gui/session/messages.js:945
 #, javascript-format
 msgid "Your livestock has been attacked by %(attacker)s!"
 msgstr ""
 
-#: gui/session/messages.js:906
+#: gui/session/messages.js:946
 #, javascript-format
 msgid "You have been attacked by %(attacker)s!"
 msgstr "Ați fost atacat de %(attacker)s!"
 
-#: gui/session/messages.js:957
+#: gui/session/messages.js:997
 #, javascript-format
 msgid "<%(user)s>"
 msgstr "<%(user)s>"
 
-#: gui/session/selection_details.js:52 gui/session/selection_details.js:363
-#: gui/session/selection_details.js:395 gui/session/session.js:834
-#, javascript-format
-msgid "%(label)s %(current)s / %(max)s"
-msgstr ""
-
-#: gui/session/selection_details.js:53 gui/session/selection_details.js:364
-msgid "Hitpoints:"
-msgstr ""
-
-#: gui/session/selection_details.js:69
+#: gui/session/selection_details.js:71
 #, javascript-format
 msgid "%(genericName)s — Packed"
 msgstr ""
 
-#: gui/session/selection_details.js:85
+#: gui/session/selection_details.js:87
 #, javascript-format
 msgid "%(rank)s Rank"
 msgstr "%(rank)s Grad"
 
-#: gui/session/selection_details.js:112
+#: gui/session/selection_details.js:114
 #, javascript-format
 msgid "This foundation will be completed in %(seconds)s second."
 msgid_plural "This foundation will be completed in %(seconds)s seconds."
@@ -562,53 +594,53 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/selection_details.js:117
+#: gui/session/selection_details.js:119
 #, javascript-format
 msgid "%(hitpoints)s / %(maxHitpoints)s"
 msgstr "%(hitpoints)s / %(maxHitpoints)s"
 
-#: gui/session/selection_details.js:147
+#: gui/session/selection_details.js:149
 #, javascript-format
 msgid "%(capturePoints)s / %(maxCapturePoints)s"
 msgstr ""
 
-#: gui/session/selection_details.js:163
+#: gui/session/selection_details.js:165
 #, javascript-format
 msgid "%(experience)s %(current)s / %(required)s"
 msgstr "%(experience)s %(current)s / %(required)s"
 
-#: gui/session/selection_details.js:164 gui/session/selection_details.js:170
+#: gui/session/selection_details.js:166 gui/session/selection_details.js:172
 msgid "Experience:"
 msgstr "Experienţă:"
 
-#: gui/session/selection_details.js:169
+#: gui/session/selection_details.js:171
 #, javascript-format
 msgid "%(experience)s %(current)s"
 msgstr "%(experience)s %(current)s"
 
-#: gui/session/selection_details.js:179
+#: gui/session/selection_details.js:181
 msgid "∞"
 msgstr "∞"
 
-#: gui/session/selection_details.js:180 gui/session/selection_details.js:211
-#: gui/session/selection_details.js:258
+#: gui/session/selection_details.js:182 gui/session/selection_details.js:214
+#: gui/session/selection_details.js:263
 #, javascript-format
 msgid "%(amount)s / %(max)s"
 msgstr "%(amount)s / %(max)s"
 
-#: gui/session/selection_details.js:193
+#: gui/session/selection_details.js:194
 #, javascript-format
 msgid "%(resource)s:"
 msgstr "%(resource)s:"
 
-#: gui/session/selection_details.js:226 gui/session/unit_actions.js:569
-#: gui/session/unit_actions.js:578 gui/session/unit_actions.js:592
-#: gui/session/unit_actions.js:910
+#: gui/session/selection_details.js:229 gui/session/unit_actions.js:574
+#: gui/session/unit_actions.js:583 gui/session/unit_actions.js:597
+#: gui/session/unit_actions.js:915
 #, javascript-format
 msgid "Gain: %(gain)s"
 msgstr ""
 
-#: gui/session/selection_details.js:240
+#: gui/session/selection_details.js:245
 #, javascript-format
 msgid ""
 "Number of builders.\n"
@@ -620,46 +652,63 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/selection_details.js:243 gui/session/selection_details.js:251
+#: gui/session/selection_details.js:248 gui/session/selection_details.js:256
 msgid "Number of builders."
 msgstr "Numărul constructorilor."
 
-#: gui/session/selection_details.js:262
+#: gui/session/selection_details.js:267
 msgid "Current/max gatherers"
 msgstr ""
 
-#: gui/session/selection_details.js:274
+#: gui/session/selection_details.js:279
 #, javascript-format
 msgid "(%(genericName)s)"
 msgstr "(%(genericName)s)"
 
-#: gui/session/selection_details.js:396
+#: gui/session/selection_details.js:405
 #: gui/session/selection_panels_middle/single_details_area.xml:(tooltip):26
 msgid "Capture points:"
 msgstr "Puncte de captură:"
 
-#: gui/session/selection_details.js:407
+#: gui/session/selection_details.js:413
 #, javascript-format
 msgid "%(label)s %(details)s\n"
 msgstr ""
 
-#: gui/session/selection_details.js:408
+#: gui/session/selection_details.js:414
 msgid "Carrying:"
 msgstr ""
 
-#: gui/session/selection_details.js:410 gui/session/selection_details.js:418
+#: gui/session/selection_details.js:417 gui/session/selection_details.js:426
 #, javascript-format
 msgid "%(type)s %(amount)s"
 msgstr ""
 
-#: gui/session/selection_details.js:415
+#: gui/session/selection_details.js:422
 #, javascript-format
 msgid "%(label)s %(details)s"
 msgstr ""
 
-#: gui/session/selection_details.js:416
+#: gui/session/selection_details.js:423
 msgid "Loot:"
 msgstr ""
+
+#. Translation: Used in the trading gain tooltip
+#: gui/session/selection_details.js:498
+#, javascript-format
+msgid "%(gain)s (%(player)s)"
+msgstr ""
+
+#. Translation: Used in the trading gain tooltip to concatenate profits of
+#. different players
+#: gui/session/selection_details.js:522
+msgid "+"
+msgstr "+"
+
+#: gui/session/selection_details.js:529
+msgctxt "Separation mark in an enumeration"
+msgid ", "
+msgstr ", "
 
 #: gui/session/selection_panels.js:78
 msgid "Raise an alert!"
@@ -673,445 +722,433 @@ msgstr "Mărește nivelul alertei pentru a proteja mai multe unitați"
 msgid "End of alert."
 msgstr "Încheie alertă."
 
-#: gui/session/selection_panels.js:140
-#, javascript-format
-msgid "Buy %(resource)s"
-msgstr "Cumpără %(resource)s"
-
-#: gui/session/selection_panels.js:141
-#, javascript-format
-msgid "Sell %(resource)s"
-msgstr "Vinde %(resource)s"
-
-#: gui/session/selection_panels.js:350 gui/session/selection_panels.js:1064
-#: gui/session/selection_panels.js:1159
-#, javascript-format
-msgid "Requires %(technology)s"
-msgstr "Necesită %(technology)s"
-
-#: gui/session/selection_panels.js:468
+#: gui/session/selection_panels.js:409
 #, javascript-format
 msgid "Unload %(name)s"
 msgstr "Descarcă %(name)s"
 
-#: gui/session/selection_panels.js:470
+#: gui/session/selection_panels.js:411
 msgid "Single-click to unload 1. Shift-click to unload all of this type."
 msgstr ""
 
-#: gui/session/selection_panels.js:473
+#: gui/session/selection_panels.js:414 gui/session/selection_panels.js:919
 #, javascript-format
 msgid "Player: %(playername)s"
 msgstr "Jucător: %(playername)s"
 
-#: gui/session/selection_panels.js:508
+#: gui/session/selection_panels.js:449
 msgid "Lock Gate"
 msgstr "Blochează poarta"
 
-#: gui/session/selection_panels.js:514
+#: gui/session/selection_panels.js:455
 msgid "Unlock Gate"
 msgstr "Deblochează poarta"
 
-#: gui/session/selection_panels.js:587
+#: gui/session/selection_panels.js:528
 msgid "Pack"
 msgstr "Împachetează"
 
-#: gui/session/selection_panels.js:595
+#: gui/session/selection_panels.js:536
 msgid "Unpack"
 msgstr "Despachetează"
 
-#: gui/session/selection_panels.js:603
+#: gui/session/selection_panels.js:544
 msgid "Cancel Packing"
 msgstr "Anulează împachetarea"
 
-#: gui/session/selection_panels.js:611
+#: gui/session/selection_panels.js:552
 msgid "Cancel Unpacking"
 msgstr "Anulează dezpachetarea"
 
-#: gui/session/selection_panels.js:694
+#: gui/session/selection_panels.js:635
 msgid "Insufficient population capacity:"
 msgstr ""
 
-#: gui/session/selection_panels.js:695
+#: gui/session/selection_panels.js:636
 #, javascript-format
 msgid "%(population)s %(neededSlots)s"
 msgstr ""
 
-#: gui/session/selection_panels.js:836
+#: gui/session/selection_panels.js:800
 #, javascript-format
-msgid "Remaining: %(number)s to build."
-msgid_plural "Remaining: %(number)s to build."
+msgid "%(number)s entity of class %(class)s"
+msgid_plural "%(number)s entities of class %(class)s"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: gui/session/selection_panels.js:1145
+#: gui/session/selection_panels.js:806
+#, javascript-format
+msgid "Remaining: %(entityCounts)s"
+msgstr ""
+
+#: gui/session/selection_panels.js:1118
 #, javascript-format
 msgid "Upgrade into a %(name)s. %(tooltip)s"
 msgstr ""
 
-#: gui/session/selection_panels.js:1150
+#: gui/session/selection_panels.js:1123
 #, javascript-format
 msgid "Upgrade into a %(name)s."
 msgstr ""
 
-#: gui/session/selection_panels.js:1169
+#: gui/session/selection_panels.js:1139
 msgid "Cancel Upgrading"
 msgstr "Anulează actualizarea"
 
-#: gui/session/selection_panels.js:1174
+#: gui/session/selection_panels.js:1144
 msgid "Cannot upgrade when the entity is already upgrading."
-msgstr ""
-
-#: gui/session/selection_panels_helpers.js:33
-msgctxt "stance"
-msgid "Violent"
-msgstr "Violent"
-
-#: gui/session/selection_panels_helpers.js:35
-msgctxt "stance"
-msgid "Aggressive"
-msgstr "Agresiv"
-
-#: gui/session/selection_panels_helpers.js:37
-msgctxt "stance"
-msgid "Defensive"
-msgstr "Defensiv"
-
-#: gui/session/selection_panels_helpers.js:39
-msgctxt "stance"
-msgid "Passive"
-msgstr "Pasiv"
-
-#: gui/session/selection_panels_helpers.js:41
-msgctxt "stance"
-msgid "Standground"
 msgstr ""
 
 #: gui/session/selection_panels_helpers.js:53
 msgctxt "stance"
+msgid "Violent"
+msgstr "Violent"
+
+#: gui/session/selection_panels_helpers.js:55
+msgctxt "stance"
+msgid "Aggressive"
+msgstr "Agresiv"
+
+#: gui/session/selection_panels_helpers.js:57
+msgctxt "stance"
+msgid "Defensive"
+msgstr "Defensiv"
+
+#: gui/session/selection_panels_helpers.js:59
+msgctxt "stance"
+msgid "Passive"
+msgstr "Pasiv"
+
+#: gui/session/selection_panels_helpers.js:61
+msgctxt "stance"
+msgid "Standground"
+msgstr ""
+
+#: gui/session/selection_panels_helpers.js:73
+msgctxt "stance"
 msgid "Attack nearby opponents, focus on attackers and chase while visible"
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:55
+#: gui/session/selection_panels_helpers.js:75
 msgctxt "stance"
 msgid "Attack nearby opponents"
 msgstr "Atacă oponenți din apropiere"
 
-#: gui/session/selection_panels_helpers.js:57
+#: gui/session/selection_panels_helpers.js:77
 msgctxt "stance"
 msgid ""
 "Attack nearby opponents, chase a short distance and return to the original "
 "location"
 msgstr "Atacă oponenți din apropiere, urmărește o distanță scurtă si întoarcete la locația originală"
 
-#: gui/session/selection_panels_helpers.js:59
+#: gui/session/selection_panels_helpers.js:79
 msgctxt "stance"
 msgid "Flee if attacked"
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:61
+#: gui/session/selection_panels_helpers.js:81
 msgctxt "stance"
 msgid "Attack opponents in range, but don't move"
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:75
+#: gui/session/selection_panels_helpers.js:95
 #, javascript-format
 msgid "Current Count: %(count)s, Limit: %(limit)s."
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:89
+#: gui/session/selection_panels_helpers.js:109
 #, javascript-format
 msgid "%(changer)s enlarges the limit with %(change)s."
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:90
+#: gui/session/selection_panels_helpers.js:110
 #, javascript-format
 msgid "%(changer)s lessens the limit with %(change)s."
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:123
+#: gui/session/selection_panels_helpers.js:143
 #, javascript-format
 msgid "%(buildings)s*%(batchSize)s"
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:139
+#: gui/session/selection_panels_helpers.js:159
 #, javascript-format
 msgid "%(action)s to train %(number)s (%(fullBatch)s + %(remainderBatch)s)."
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:141
+#: gui/session/selection_panels_helpers.js:161
 #, javascript-format
 msgid "%(action)s to train %(number)s (%(fullBatch)s)."
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:144
+#: gui/session/selection_panels_helpers.js:164
 #, javascript-format
 msgid "%(action)s to train %(number)s."
 msgstr ""
 
-#: gui/session/selection_panels_helpers.js:147
+#: gui/session/selection_panels_helpers.js:167
 msgid "Shift-click"
 msgstr "Shift-click"
 
-#: gui/session/session.js:261
+#: gui/session/session.js:277
 msgid "Gaia"
 msgstr "Gaia"
 
-#: gui/session/session.js:322
+#: gui/session/session.js:391
 msgctxt "chat input"
 msgid "Type the message to send."
 msgstr ""
 
-#: gui/session/session.js:324
+#: gui/session/session.js:393
 #, javascript-format
 msgid "Press %(hotkey)s to open the public chat."
 msgstr ""
 
-#: gui/session/session.js:327
+#: gui/session/session.js:396
 #, javascript-format
 msgid "Press %(hotkey)s to open the observer chat."
 msgstr ""
 
-#: gui/session/session.js:328
+#: gui/session/session.js:397
 #, javascript-format
 msgid "Press %(hotkey)s to open the ally chat."
 msgstr ""
 
-#: gui/session/session.js:333
+#: gui/session/session.js:399
+#, javascript-format
+msgid "Press %(hotkey)s to open the previously selected private chat."
+msgstr ""
+
+#: gui/session/session.js:403
 msgid "Find idle worker"
 msgstr "Găsește muncitor inactiv"
 
-#: gui/session/session.js:336
-msgid ""
-"Select one type of goods as origin of the changes, then use the arrows of "
-"the target type of goods to make the changes."
-msgstr ""
-
-#: gui/session/session.js:338
+#: gui/session/session.js:406
 #, javascript-format
-msgid "Using %(hotkey)s will put the selected resource to 100%%."
+msgid ""
+"Select one type of goods you want to modify by clicking on it (Pressing "
+"%(hotkey)s while selecting will also bring its share to 100%%) and then use "
+"the arrows of the other types to modify their shares."
 msgstr ""
 
-#: gui/session/session.js:480
+#: gui/session/session.js:410
+#, javascript-format
+msgid ""
+"Start by selecting the resource from the upper row that you wish to sell. "
+"Upon each press on one of the lower buttons, %(quantity)s of the upper "
+"resource will be sold for the displayed quantity of the lower. Press and "
+"hold %(hotkey)s to temporarily multiply all quantities by %(multiplier)s."
+msgstr ""
+
+#: gui/session/session.js:574
 #, javascript-format
 msgid "%(civ)s - Structure Tree"
 msgstr ""
 
-#: gui/session/session.js:691
+#: gui/session/session.js:813
 msgid "Do you want to quit?"
 msgstr "Doriți să renunțați?"
 
-#: gui/session/session.js:694
-msgid "Leaving will disconnect all other players."
-msgstr ""
-
-#: gui/session/session.js:700
+#: gui/session/session.js:819
 msgid "VICTORIOUS!"
 msgstr "VICTORIOS!"
 
-#: gui/session/session.js:701
+#: gui/session/session.js:820
 msgid "DEFEATED!"
 msgstr "ÎNFRÂNT!"
 
-#: gui/session/session.js:753
+#: gui/session/session.js:821
+msgid "Ok"
+msgstr ""
+
+#: gui/session/session.js:880
 msgctxt "replayFinished"
 msgid "The replay has finished. Do you want to quit?"
 msgstr "Reluarea s-a terminat. Doriți să abandonați?"
 
-#: gui/session/session.js:754
+#: gui/session/session.js:881
 msgctxt "replayFinished"
 msgid "Confirmation"
 msgstr "Confirmare"
 
-#: gui/session/session.js:755
+#: gui/session/session.js:882
 msgctxt "replayFinished"
 msgid "No"
 msgstr "Nu"
 
-#: gui/session/session.js:755
+#: gui/session/session.js:882
 msgctxt "replayFinished"
 msgid "Yes"
 msgstr "Da"
 
-#: gui/session/session.js:835
-#: gui/session/selection_panels_middle/single_details_area.xml:(tooltip):12
-msgid "Health:"
-msgstr "Sănătate:"
-
-#: gui/session/session.js:970
+#: gui/session/session.js:1107
 #, javascript-format
 msgid "%(playername)s: %(statValue)s"
 msgstr ""
 
-#: gui/session/session.js:973
+#: gui/session/session.js:1110
 #, javascript-format
 msgid "%(popCount)s/%(popLimit)s/%(popMax)s"
 msgstr ""
 
-#: gui/session/session.js:991
+#: gui/session/session.js:1136
 #, javascript-format
 msgid "%(popCount)s/%(popLimit)s"
 msgstr ""
 
-#: gui/session/session.js:992
+#: gui/session/session.js:1137
 msgid "Population (current / limit)"
 msgstr "Populație (curentă / limită)"
 
-#: gui/session/session.js:993
+#: gui/session/session.js:1138
 #, javascript-format
 msgid "Maximum population: %(popCap)s"
 msgstr ""
 
-#: gui/session/session.js:1145
+#: gui/session/session.js:1290
 #, javascript-format
 msgid "Build: %(buildDate)s (%(revision)s)"
 msgstr "Build: %(buildDate)s (%(revision)s)"
 
-#: gui/session/session.js:1155
+#: gui/session/session.js:1300
 msgid ""
 "Note: time warp mode is a developer option, and not intended for use over "
 "long periods of time. Using it incorrectly may cause the game to run out of "
 "memory or crash."
 msgstr ""
 
-#: gui/session/session.js:1156
+#: gui/session/session.js:1301
 msgid "Time warp mode"
 msgstr ""
 
-#: gui/session/unit_actions.js:567
+#. Translation: The "x" means "times", with the mathematical meaning of
+#. multiplication.
+#: gui/session/session.js:1318
+#, javascript-format
+msgid "%(time)s (%(speed)sx)"
+msgstr ""
+
+#: gui/session/unit_actions.js:572
 msgid "Origin trade market."
 msgstr ""
 
-#: gui/session/unit_actions.js:573
+#: gui/session/unit_actions.js:578
 msgid "Right-click on another market to set it as a destination trade market."
 msgstr ""
 
-#: gui/session/unit_actions.js:577
+#: gui/session/unit_actions.js:582
 msgid "Destination trade market."
 msgstr ""
 
-#: gui/session/unit_actions.js:584
+#: gui/session/unit_actions.js:589
 msgid "Right-click to set as origin trade market"
 msgstr ""
 
-#: gui/session/unit_actions.js:591
+#: gui/session/unit_actions.js:596
 msgid "Right-click to set as destination trade market."
 msgstr ""
 
-#: gui/session/unit_actions.js:645 gui/session/unit_actions.js:860
+#: gui/session/unit_actions.js:650 gui/session/unit_actions.js:865
 #, javascript-format
 msgid "Current garrison: %(garrisoned)s/%(capacity)s"
 msgstr ""
 
-#: gui/session/unit_actions.js:907
+#: gui/session/unit_actions.js:912
 msgid "Right-click to establish a default route for new traders."
 msgstr ""
 
-#: gui/session/unit_actions.js:911
+#: gui/session/unit_actions.js:916
 #, javascript-format
 msgid "Expected gain: %(gain)s"
 msgstr ""
 
-#: gui/session/unit_actions.js:1044 gui/session/unit_actions.js:1346
+#: gui/session/unit_actions.js:1049 gui/session/unit_actions.js:1351
 msgid "Unload All."
 msgstr ""
 
-#: gui/session/unit_actions.js:1066
+#: gui/session/unit_actions.js:1071
 msgid "Destroy the selected units or buildings."
 msgstr "Distruge unitățile sau clădirile selectate."
 
-#: gui/session/unit_actions.js:1068
+#: gui/session/unit_actions.js:1073
 #, javascript-format
 msgid "Use %(hotkey)s to avoid the confirmation dialog."
 msgstr ""
 
-#: gui/session/unit_actions.js:1100
+#: gui/session/unit_actions.js:1105
 msgid "Abort the current order."
 msgstr "Anulează ordinul curent."
 
-#: gui/session/unit_actions.js:1120
+#: gui/session/unit_actions.js:1125
 msgid "Order the selected units to garrison in a building or unit."
 msgstr ""
 
-#: gui/session/unit_actions.js:1142
+#: gui/session/unit_actions.js:1147
 msgid "Unload"
 msgstr "Descarcă"
 
-#: gui/session/unit_actions.js:1160
+#: gui/session/unit_actions.js:1165
 msgid "Order the selected units to repair a building or mechanical unit."
 msgstr ""
 
-#: gui/session/unit_actions.js:1179
+#: gui/session/unit_actions.js:1184
 msgid "Focus on Rally Point."
 msgstr ""
 
-#: gui/session/unit_actions.js:1204
+#: gui/session/unit_actions.js:1209
 msgid "Back to Work"
 msgstr "Înapoi la lucru"
 
-#: gui/session/unit_actions.js:1223
+#: gui/session/unit_actions.js:1228
 msgid "Order the selected units to guard a building or unit."
 msgstr ""
 
-#: gui/session/unit_actions.js:1241
+#: gui/session/unit_actions.js:1246
 msgid "Remove guard"
 msgstr "Înlătură garda"
 
-#: gui/session/unit_actions.js:1258
-msgid "Select trading goods"
-msgstr "Selectează bunuri de negoț"
+#: gui/session/unit_actions.js:1263
+#: gui/session/top_panel/button_trade.xml:(tooltip):9
+msgid "Barter & Trade"
+msgstr ""
 
-#: gui/session/unit_actions.js:1275
+#: gui/session/unit_actions.js:1280
 msgid "Patrol"
 msgstr ""
 
-#: gui/session/unit_actions.js:1276
+#: gui/session/unit_actions.js:1281
 msgid "Attack all encountered enemy units while avoiding buildings."
 msgstr ""
 
-#: gui/session/unit_actions.js:1299
+#: gui/session/unit_actions.js:1304
 msgid "Press to prevent allies from using this dropsite"
 msgstr ""
 
-#: gui/session/unit_actions.js:1304
+#: gui/session/unit_actions.js:1309
 msgid "Press to allow allies to use this dropsite"
 msgstr ""
 
-#: gui/session/unit_actions.js:1367
+#: gui/session/unit_actions.js:1372
 msgid "You are allowed to use this dropsite"
 msgstr ""
 
-#: gui/session/unit_actions.js:1372
+#: gui/session/unit_actions.js:1377
 msgid "The use of this dropsite is prohibited"
 msgstr ""
 
-#: gui/session/unit_actions.js:1432
+#: gui/session/unit_actions.js:1443
 msgid "The entity has to be killed before it can be gathered from"
 msgstr ""
 
-#: gui/session/unit_actions.js:1435
+#: gui/session/unit_actions.js:1446
 msgid ""
 "You cannot destroy this entity as you own less than half the capture points"
 msgstr ""
 
-#: gui/session/unit_actions.js:1438
+#: gui/session/unit_actions.js:1449
 msgid "This entity is undeletable"
 msgstr "Această entitate nu poate si ștearsă"
-
-#: gui/session/utility_functions.js:85 gui/session/utility_functions.js:87
-msgid "+"
-msgstr "+"
-
-#: gui/session/utility_functions.js:89 gui/session/utility_functions.js:95
-#: gui/session/utility_functions.js:101
-#, javascript-format
-msgid "%(gain)s (%(player)s)"
-msgstr ""
-
-#: gui/session/utility_functions.js:95 gui/session/utility_functions.js:101
-msgctxt "Separation mark in an enumeration"
-msgid ", "
-msgstr ", "
 
 #: gui/session/chat_window.xml:(caption):16
 msgctxt "chat input"
@@ -1238,7 +1275,7 @@ msgstr "Tribut"
 
 #: gui/session/diplomacy_window.xml:(caption):80
 #: gui/session/objectives_window.xml:(caption):44
-#: gui/session/trade_window.xml:(caption):46
+#: gui/session/trade_window.xml:(caption):109
 msgid "Close"
 msgstr "Închide"
 
@@ -1258,11 +1295,11 @@ msgstr "Sumar"
 msgid "Options"
 msgstr "Opțiuni"
 
-#: gui/session/menu.xml:(caption):87
+#: gui/session/menu.xml:(caption):85
 msgid "Resign"
 msgstr "Demisionează"
 
-#: gui/session/menu.xml:(caption):98 gui/session/session.xml:(caption):158
+#: gui/session/menu.xml:(caption):96 gui/session/session.xml:(caption):158
 msgid "Exit"
 msgstr "Ieşire"
 
@@ -1293,12 +1330,31 @@ msgid "Choose player to view"
 msgstr "Alege un jucător de urmărit"
 
 #: gui/session/trade_window.xml:(caption):9
-#: gui/session/top_panel/button_trade.xml:(tooltip):10
+msgid "Barter & Trade Goods"
+msgstr ""
+
+#: gui/session/trade_window.xml:(caption):17
+msgid "Barter"
+msgstr ""
+
+#: gui/session/trade_window.xml:(caption):24
+msgid "Sell:"
+msgstr ""
+
+#: gui/session/trade_window.xml:(caption):28
+msgid "Buy:"
+msgstr ""
+
+#: gui/session/trade_window.xml:(caption):32
+msgid "No Markets Available"
+msgstr ""
+
+#: gui/session/trade_window.xml:(caption):67
 msgid "Trade"
 msgstr "Schimb"
 
-#: gui/session/trade_window.xml:(caption):15
-msgid "Trading goods selection:"
+#: gui/session/trade_window.xml:(caption):75
+msgid "Goods:"
 msgstr ""
 
 #: gui/session/dialogs/yes_no.xml:(caption):11
@@ -1309,18 +1365,18 @@ msgstr "Întrebare"
 msgid "Yes or no?"
 msgstr "Da sau nu?"
 
-#: gui/session/selection_panels_left/barter_panel.xml:(tooltip):7
-msgid "Exchange resources:"
-msgstr "Schimbă resurse:"
-
-#: gui/session/selection_panels_left/garrison_panel.xml:(tooltip):13
-#: gui/session/selection_panels_middle/multiple_details_area.xml:(tooltip):29
+#: gui/session/selection_panels_left/garrison_panel.xml:(tooltip):14
+#: gui/session/selection_panels_middle/multiple_details_area.xml:(tooltip):30
 msgid "Hitpoints"
 msgstr ""
 
-#: gui/session/selection_panels_middle/multiple_details_area.xml:(tooltip):38
+#: gui/session/selection_panels_middle/multiple_details_area.xml:(tooltip):39
 msgid "Capture points"
 msgstr ""
+
+#: gui/session/selection_panels_middle/single_details_area.xml:(tooltip):12
+msgid "Health:"
+msgstr "Sănătate:"
 
 #: gui/session/selection_panels_middle/single_details_area.xml:(tooltip):54
 msgid "Attack and Armor"

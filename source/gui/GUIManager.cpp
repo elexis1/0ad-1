@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 #include "ps/CLogger.h"
 #include "ps/Profile.h"
 #include "ps/XML/Xeromyces.h"
+#include "ps/GameSetup/Config.h"
 #include "scriptinterface/ScriptInterface.h"
 #include "scriptinterface/ScriptRuntime.h"
 
@@ -97,6 +98,8 @@ void CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::St
 	m_PageStack.back().name = pageName;
 	m_PageStack.back().initData = initData;
 	LoadPage(m_PageStack.back());
+
+	ResetCursor();
 }
 
 void CGUIManager::PopPage()
@@ -299,6 +302,11 @@ Status CGUIManager::ReloadAllPages()
 	return INFO::OK;
 }
 
+void CGUIManager::ResetCursor()
+{
+	g_CursorName = g_DefaultCursor;
+}
+
 std::string CGUIManager::GetSavedGameData()
 {
 	shared_ptr<ScriptInterface> scriptInterface = top()->GetScriptInterface();
@@ -311,7 +319,7 @@ std::string CGUIManager::GetSavedGameData()
 	return scriptInterface->StringifyJSON(&data, false);
 }
 
-void CGUIManager::RestoreSavedGameData(std::string jsonData)
+void CGUIManager::RestoreSavedGameData(const std::string& jsonData)
 {
 	shared_ptr<ScriptInterface> scriptInterface = top()->GetScriptInterface();
 	JSContext* cx = scriptInterface->GetContext();
@@ -339,7 +347,7 @@ InReaction CGUIManager::HandleEvent(const SDL_Event_* ev)
 		JSContext* cx = top()->GetScriptInterface()->GetContext();
 		JSAutoRequest rq(cx);
 		JS::RootedValue global(cx, top()->GetGlobalObject());
-		if (top()->GetScriptInterface()->CallFunction(global, "handleInputBeforeGui", *ev, top()->FindObjectUnderMouse(), handled))
+		if (top()->GetScriptInterface()->CallFunction(global, "handleInputBeforeGui", handled, *ev, top()->FindObjectUnderMouse()))
 			if (handled)
 				return IN_HANDLED;
 	}
@@ -358,7 +366,7 @@ InReaction CGUIManager::HandleEvent(const SDL_Event_* ev)
 		JS::RootedValue global(cx, top()->GetGlobalObject());
 
 		PROFILE("handleInputAfterGui");
-		if (top()->GetScriptInterface()->CallFunction(global, "handleInputAfterGui", *ev, handled))
+		if (top()->GetScriptInterface()->CallFunction(global, "handleInputAfterGui", handled, *ev))
 			if (handled)
 				return IN_HANDLED;
 	}

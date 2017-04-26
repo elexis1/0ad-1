@@ -3,23 +3,32 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# Alberto Díaz <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016-2017
+# Albert, 2016
 # Ghenadi Avricenco <gplushentr@gmx.us>, 2014
 # Luis Torrecilla <l_torrecilla@yahoo.es>, 2016
-# Swyter <Swyterzone@gmail.com>, 2014-2016
+# Swyter <Swyterzone@gmail.com>, 2014-2017
 # vega93 <arkadas_llisa@hotmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-10-11 17:20+0000\n"
-"Last-Translator: Alberto Díaz <albertodiaztormo@gmail.com>\n"
+"POT-Creation-Date: 2017-03-31 09:22+0200\n"
+"PO-Revision-Date: 2017-03-31 14:40+0000\n"
+"Last-Translator: Swyter <Swyterzone@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/wildfire-games/0ad/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: simulation/data/technologies/advanced_unit_bonus.jsontooltip
+msgid ""
+"Units promoted to the advanced class gain a lot of quality: 20% extra "
+"health, 1 extra armour level of every type, 20% extra attack for melee "
+"units, 4m extra range and 5% better precision for ranged units, faster "
+"movement speeds and extra heal speed and range for healers."
+msgstr "Las unidades ascendidas a la clase avanzada obtienen mucha calidad: un 20% de salud extra, 1 nivel extra de armadura de cada tipo, un 20% de ataque extra para unidades de melé, 4 metros de alcance extra y un 5% más de precisión para unidades de distancia, mayor velocidad de movimiento y mayor velocidad de curación y alcance para los sanadores."
 
 #: simulation/data/technologies/armor_cav_01.jsondescription
 #: simulation/data/technologies/armor_cav_chamfron.jsondescription
@@ -67,7 +76,7 @@ msgstr "Chaflán protector"
 #: simulation/data/technologies/health_walls_geometric_masonry.jsonrequirementsTooltip
 #: simulation/data/technologies/melee_inf_sidearms.jsonrequirementsTooltip
 #: simulation/data/technologies/pop_civic_01.jsonrequirementsTooltip
-#: simulation/data/technologies/pop_house_02.jsonrequirementsTooltip
+#: simulation/data/technologies/pop_house_01.jsonrequirementsTooltip
 #: simulation/data/technologies/ranged_inf_irregulars.jsonrequirementsTooltip
 #: simulation/data/technologies/speed_cavalry_01.jsonrequirementsTooltip
 #: simulation/data/technologies/trade_commercial_treaty.jsonrequirementsTooltip
@@ -138,6 +147,7 @@ msgstr "Armadura metálica para caballos."
 #: simulation/data/technologies/health_regen_units.jsonrequirementsTooltip
 #: simulation/data/technologies/melee_inf_spearheads.jsonrequirementsTooltip
 #: simulation/data/technologies/pop_civic_02.jsonrequirementsTooltip
+#: simulation/data/technologies/pop_house_02.jsonrequirementsTooltip
 #: simulation/data/technologies/pop_wonder.jsonrequirementsTooltip
 #: simulation/data/technologies/ranged_inf_skirmishers.jsonrequirementsTooltip
 #: simulation/data/technologies/siege_armor.jsonrequirementsTooltip
@@ -454,7 +464,6 @@ msgstr "Cascos de navío reforzados"
 #: simulation/data/technologies/gather_fishing_net.jsonrequirementsTooltip
 #: simulation/data/technologies/gather_lumbering_ironaxes.jsonrequirementsTooltip
 #: simulation/data/technologies/health_females_01.jsonrequirementsTooltip
-#: simulation/data/technologies/pop_house_01.jsonrequirementsTooltip
 #: simulation/data/technologies/mauryans/special_archery_tradition.jsonrequirementsTooltip
 #: simulation/data/technologies/persians/special_archery_tradition.jsonrequirementsTooltip
 msgid "Unlocked in Village Phase."
@@ -666,8 +675,9 @@ msgid "The will to fight is crucial to victory."
 msgstr "El deseo de lucha es crucial para alcanzar la victoria."
 
 #: simulation/data/technologies/attack_soldiers_will.jsontooltip
-msgid "Inspire your troops with higher pay. All soldiers +25% attack."
-msgstr "Inspira a tus tropas con una generosa subida de sueldo. Proporciona +25% de ataque a todos los soldados."
+msgid ""
+"Inspire your troops with higher pay. All land and naval army +25% attack."
+msgstr "Inspira a tus tropas con una generosa subida de sueldo. Proporciona +25% de ataque a todas las unidades navales y terrestres."
 
 #: simulation/data/technologies/attack_soldiers_will.jsongenericName
 msgid "Will to fight"
@@ -802,6 +812,14 @@ msgstr "Tasa de disminución del territorio -50% para los puestos de avanzada."
 #: simulation/data/technologies/decay_outpost.jsongenericName
 msgid "Stone Foundations"
 msgstr "Cimientos de piedra"
+
+#: simulation/data/technologies/elite_unit_bonus.jsontooltip
+msgid ""
+"Units trained to the elite class gain a lot of quality: 20% extra health, 1 "
+"extra armour level of every type, 20% extra attack for melee units, extra "
+"range and better precision for ranged units, faster movement speeds and "
+"extra heal speed and range for healers."
+msgstr "Las unidades ascendidas a la clase de élite obtienen mucha calidad: un 20% de salud extra, 1 nivel extra de armadura de cada tipo, un 20% de ataque extra para unidades de melé, alcance extra y mayor precisión para unidades de distancia, mayor velocidad de movimiento y mayor velocidad de curación y alcance para los sanadores."
 
 #: simulation/data/technologies/gather_animals_stockbreeding.jsondescription
 msgid "Breeding livestock for food."
@@ -1589,6 +1607,18 @@ msgstr "Entrena a tus caballos para que sean más rápidos."
 msgid "Cavalry Speed Training"
 msgstr "Entrenamiento de velocidad para caballerías"
 
+#: simulation/data/technologies/spy_counter.jsondescription
+msgid "Recruit a network of informants to watch over your people."
+msgstr "Recluta una red de informadores con la que vigilar a tu gente"
+
+#: simulation/data/technologies/spy_counter.jsontooltip
+msgid "Make your units 50% more expensive to bribe."
+msgstr "Haz que tus tropas sean un 50% más difíciles de sobornar."
+
+#: simulation/data/technologies/spy_counter.jsongenericName
+msgid "Counter Espionage"
+msgstr "Contraespionaje"
+
 #: simulation/data/technologies/trade_commercial_treaty.jsondescription
 msgid "Improve the international trading profit."
 msgstr "Mejora las ganancias por comercio exterior."
@@ -1788,6 +1818,20 @@ msgstr "Ve lo mismo que tus aliados, comparte el conocimiento geográfico y otro
 msgid "Cartography"
 msgstr "Cartografía"
 
+#: simulation/data/technologies/unlock_spies.jsondescription
+msgid ""
+"Merchants' first goal was trading, but they also gathered information about "
+"the countries they crossed."
+msgstr "El primer objetivo de los comerciantes fue el comercio, pero también recogían información sobre los países que cruzaban."
+
+#: simulation/data/technologies/unlock_spies.jsontooltip
+msgid "Allows to bribe other players' units to share their vision."
+msgstr "Permite sobornar a las unidades de otros jugadores para compartir su visión."
+
+#: simulation/data/technologies/unlock_spies.jsongenericName
+msgid "Espionage"
+msgstr "Espionaje"
+
 #: simulation/data/technologies/upgrade_rank_advanced_cavalry.jsondescription
 #: simulation/data/technologies/upgrade_rank_elite_cavalry.jsondescription
 msgid "Promote all of your citizen-soldier cavalrymen to Advanced rank."
@@ -1873,10 +1917,14 @@ msgstr "Palomas mensajeras"
 msgid ""
 "Carthaginians built their city walls in three concentric circuits. These "
 "walls were never breached. Even when the city was taken by the Romans, it "
-"was via the city's harbor, not by storming its walls. Consequently, "
+"was via the city's harbor, not by storming its walls."
+msgstr "Los cartagineses construían sus murallas de la ciudad formando tres círculos concéntricos. Tan fuertes eran sus defensas que los romanos prefirieron tomar la ciudad a través del puerto a asaltar sus muros."
+
+#: simulation/data/technologies/carthaginians/civbonus_triple_walls.jsontooltip
+msgid ""
 "Carthaginian walls, gates, and wall towers have 3x the health of a standard "
 "wall, but also cost twice as much and take twice as long to build."
-msgstr "Los cartagineses construian sus murallas de la ciudad formando tres circulos concéntricos. Esas muralla nunca fueron violadas. Aun cuando la ciudad fue tomada por los romanos, fue a través de puerto de la ciudad, y no por el asalto de sus muros. En consecuencia, los muros de Cartago, con puertas y torres de pared tienen 3x de resistencia frenta a una pared estándar, pero también cuestan el doble y el doble de tiempo para construir."
+msgstr "Los muros, puertas y torres cartagineses tienen el triple de resistencia, pero también cuestan dos veces más y tardan dos veces más en construirse."
 
 #: simulation/data/technologies/carthaginians/civbonus_triple_walls.jsongenericName
 msgid "Triple Walls"
@@ -2185,11 +2233,14 @@ msgid "Elite Italiote Mercenaries"
 msgstr "Mercenarios de élite Italiotas"
 
 #: simulation/data/technologies/celts/civbonus_celts_wooden_struct.jsondescription
+msgid "Celtic structures were mostly made of wood with rubble foundations."
+msgstr "Las estructuras celtas se solían construir con madera sobre cimientos de escombros."
+
+#: simulation/data/technologies/celts/civbonus_celts_wooden_struct.jsontooltip
 msgid ""
-"Celtic structures were mostly made of wood with rubble foundations. "
-"Consequently, their structures have less health than other cultures do, but "
-"they also construct faster."
-msgstr "Las estructuras celtas se construían principalmente en madera, con cimientos de piedra. Y por ello, sus estructuras son más débiles que las de las otras civilizaciones, pero al mismo tiempo son más rápidas de construir."
+"Celtic buildings have 20% less health, but are also 20% cheaper and faster "
+"to construct."
+msgstr "Los edificios celtas tienen un 20% menos de resistencia, pero también son un 20% más baratos y rápidos de construir."
 
 #: simulation/data/technologies/celts/civbonus_celts_wooden_struct.jsongenericName
 msgid "Wooden Construction"
@@ -2217,13 +2268,15 @@ msgstr "Doratismós"
 msgid "The Greeks used stone construction from early Mycenaean times."
 msgstr "Los griegos usaron construcciones de piedra desde la temprana era micénica."
 
+#: simulation/data/technologies/hellenes/civbonus_hellenic_architecture.jsontooltip
+msgid ""
+"All structures have 10% more health and capture points, but also take 10% "
+"longer to build."
+msgstr "Todas las estructuras tienen un 10% más de resistencia y puntos de captura, pero también tardan un 10% más en construirse."
+
 #: simulation/data/technologies/hellenes/civbonus_hellenic_architecture.jsongenericName
 msgid "Hellenic Architecture"
 msgstr "Arquitectura helena"
-
-#: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsongenericName
-msgid "Underdogs"
-msgstr "Oprimidos"
 
 #: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsondescription
 msgid ""
@@ -2232,6 +2285,14 @@ msgid ""
 "quantity, they made up with quality. It was said that Sparta did not need "
 "strong city walls, for its men were its walls."
 msgstr "Los espartanos no contaban con el ejército más grande del mundo, pero contaban con el mejor ejército de su época. Lo que no tenían de cantidad lo compensaban con su calidad. Antiguamente se decía que Esparta no necesitaba grandes y protectoras murallas, ya que sus hombres eran sus muros."
+
+#: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsontooltip
+msgid "Spartans have 10% less maximum population"
+msgstr "Los espartanos tienen un 10% menos de población máxima"
+
+#: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsongenericName
+msgid "Underdogs"
+msgstr "Oprimidos"
 
 #: simulation/data/technologies/hellenes/spartans_agoge.jsondescription
 msgid ""
@@ -2259,7 +2320,7 @@ msgstr "Los trirremes atenienses pueden reclutar Marinos y Arqueros Mercenarios 
 
 #: simulation/data/technologies/hellenes/special_iphicratean_reforms.jsongenericName
 msgid "Iphicratean Reforms"
-msgstr "Reformas Ificrátidas"
+msgstr "Reformas ificrátidas"
 
 #: simulation/data/technologies/hellenes/special_long_walls.jsondescription
 msgid ""
@@ -2286,6 +2347,10 @@ msgid ""
 "chariots, and 30,000 cavalry, making it arguably the largest army of its "
 "time."
 msgstr "El Imperio Maurya abarcaba decenas de reinos anteriormente independientes sobre una superficie de 5.000.000 kilómetros cuadrados, con una población cercana a los 60 millones de personas. Los reyes de Maurya se proclaman como Emperador de emperadores y comandan un ejército permanente de 600000 infantes, 9000 elefantes, 8000 carros y 30000 caballeros, por lo que es sin duda el mayor ejército de su tiempo."
+
+#: simulation/data/technologies/mauryans/civbonus_maur_popcap.jsontooltip
+msgid "Mauryans have a 10% higher maximum population limit."
+msgstr "El límite de población de los maurianos se incrementa un 10%."
 
 #: simulation/data/technologies/mauryans/civbonus_maur_popcap.jsongenericName
 msgid "Emperor of Emperors"
@@ -2316,17 +2381,16 @@ msgstr "Tradición arquera"
 #: simulation/data/technologies/mauryans/wooden_walls.jsondescription
 msgid ""
 "The Mauryans built their city walls out of wood, an abundant natural "
-"resource in India. Consequently, Mauryan city walls have -20% health and "
-"-20% build time."
-msgstr "Los Maurya construyeron sus paredes de la ciudad en madera, un recurso natural abundante en la India. En consecuencia, las paredes de la ciudad Maurya tienen un tiempo de construcción de -20% y -20% de salud."
+"resource in India."
+msgstr "Los maurianos construían las murallas de la ciudad de madera, un recurso natural abundante en la India."
+
+#: simulation/data/technologies/mauryans/wooden_walls.jsontooltip
+msgid "Mauryan city walls have 20% less health and 20% less build time."
+msgstr "Los muros de ciudad maurianos pierden 20% de resistencia pero reducen su tiempo de construcción un 20%."
 
 #: simulation/data/technologies/mauryans/wooden_walls.jsongenericName
 msgid "Wooden Walls"
 msgstr "Muros de madera"
-
-#: simulation/data/technologies/persians/civbonus_pers_popcap.jsongenericName
-msgid "Great King's Levy"
-msgstr "Leva del gran rey"
 
 #: simulation/data/technologies/persians/civbonus_pers_popcap.jsondescription
 msgid ""
@@ -2337,6 +2401,14 @@ msgid ""
 "hand, close combat fighters. Also, with the exception of the elite "
 "regiments, the Persian infantry was not a standing professional force."
 msgstr "Los persas pudieron y llevaron a cabo reclutamientos forzosos de un gran número de infantería durante la guerra debido al gran tamaño del imperio Arqueménida y a la forma en la que se instituyó. En general, la infantería persa estaba bien entrenada y luchaba con gran tenacidad, aunque se veía en desventaja en los combates cuerpo a cuerpo. Cabe destacar que con la excepción de los regimientos de élite, la infantería persa no se consideraba una fuerza profesional ni permanente."
+
+#: simulation/data/technologies/persians/civbonus_pers_popcap.jsontooltip
+msgid "Persians have a 10% higher maximum population limit."
+msgstr "El límite de población de los persas se incrementa un 10%."
+
+#: simulation/data/technologies/persians/civbonus_pers_popcap.jsongenericName
+msgid "Great King's Levy"
+msgstr "Leva del gran rey"
 
 #: simulation/data/technologies/persians/immortals.jsondescription
 msgid ""
@@ -2469,8 +2541,7 @@ msgid ""
 msgstr "Comenzando con Alejandro, los monarcas helenos fundaron numerosas ciudades a lo largo y ancho de sus imperios, donde la cultura y el arte griego se mezclaron con las costumbres locales para conformar la variopinta civilización helena."
 
 #: simulation/data/technologies/successors/special_hellenistic_metropolis.jsontooltip
-msgid ""
-"Civic centers +100% health and capture points and double default arrows."
+msgid "Civic centers +100% health and capture points, double default arrows."
 msgstr "Los centros urbanos ganan un +100% más de salud y puntos de captura, doblando el número de flechas por defecto."
 
 #: simulation/data/technologies/successors/special_hellenistic_metropolis.jsongenericName

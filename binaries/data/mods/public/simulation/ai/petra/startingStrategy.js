@@ -13,6 +13,7 @@ m.HQ.prototype.gameAnalysis = function(gameState)
 	this.attackManager.init(gameState);
 	this.navalManager.init(gameState);
 	this.tradeManager.init(gameState);
+	this.diplomacyManager.init(gameState);
 
 	// Make a list of buildable structures from the config file
 	this.structureAnalysis(gameState);
@@ -86,7 +87,7 @@ m.HQ.prototype.assignStartingEntities = function(gameState)
 		if (sea > 1 && !this.navalRegions[sea])
 			this.navalRegions[sea] = true;
 
-		// if garrisoned units inside, ungarrison them except if a ship in which case we will make a transport 
+		// if garrisoned units inside, ungarrison them except if a ship in which case we will make a transport
 		// when a construction will start (see createTransportIfNeeded)
 		if (ent.isGarrisonHolder() && ent.garrisoned().length && !ent.hasClass("Ship"))
 			for (let id of ent.garrisoned())
@@ -148,7 +149,7 @@ m.HQ.prototype.regionAnalysis = function(gameState)
 	}
 	if (!landIndex)
 	{
-		let civ = gameState.civ();
+		let civ = gameState.getPlayerCiv();
 		for (let ent of gameState.getOwnEntities().values())
 		{
 			if (!ent.position() || (!ent.hasClass("Unit") && !ent.trainableEntities(civ)))
@@ -174,7 +175,7 @@ m.HQ.prototype.regionAnalysis = function(gameState)
 	let totalSize = passabilityMap.width * passabilityMap.width;
 	let minLandSize = Math.floor(0.1*totalSize);
 	let minWaterSize = Math.floor(0.2*totalSize);
-	let cellArea = passabilityMap.cellSize * passabilityMap.cellSize;  
+	let cellArea = passabilityMap.cellSize * passabilityMap.cellSize;
 	for (let i = 0; i < accessibility.regionSize.length; ++i)
 	{
 		if (landIndex && i == landIndex)
@@ -183,7 +184,7 @@ m.HQ.prototype.regionAnalysis = function(gameState)
 		{
 			if (landIndex)
 			{
-				let sea = this.getSeaIndex(gameState, landIndex, i);
+				let sea = this.getSeaBetweenIndices(gameState, landIndex, i);
 				if (sea && (accessibility.regionSize[i] > minLandSize || accessibility.regionSize[sea] > minWaterSize))
 				{
 					this.navalMap = true;
@@ -267,7 +268,7 @@ m.HQ.prototype.buildFirstBase = function(gameState)
 		goal = "dock";
 	}
 
-	// We first choose as startingPoint the point where we have the more units  
+	// We first choose as startingPoint the point where we have the more units
 	let startingPoint = [];
 	for (let ent of gameState.getOwnUnits().values())
 	{
@@ -511,7 +512,7 @@ m.HQ.prototype.configFirstBase = function(gameState)
 			// same thing if our pop exceed the allowed one, as we will need several houses
 			let numWorkers = gameState.getOwnUnits().filter(API3.Filters.byClass("Worker")).length;
 			if ((numWorkers > 12 && newDP.quality > 60) ||
-				(gameState.getPopulation() > gameState.getPopulationLimit() + 20))
+				gameState.getPopulation() > gameState.getPopulationLimit() + 20)
 			{
 				let cost = new API3.Resources(gameState.getTemplate(template).cost());
 				gameState.ai.queueManager.setAccounts(gameState, cost, "dropsites");

@@ -180,7 +180,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	var hillSize = PI * radius * radius;
+
 	// create starting trees
 	var num = 2;
 	var tAngle = randFloat(0, TWO_PI);
@@ -193,20 +193,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 RMS.SetProgress(20);
@@ -367,7 +354,7 @@ for (var i = 0; i < numPlayers; i++)
 	createArea(placer, painter, null);
 }
 
-if (randInt(1,2) == 1)
+if (randBool())
 	createHills([tMainTerrain, tCliff, tHill], avoidClasses(clPlayer, 20, clHill, 15, clWater, 2), clHill, scaleByMapSize(1, 4) * numPlayers);
 else
 	createMountains(tCliff, avoidClasses(clPlayer, 20, clHill, 15, clWater, 2), clHill, scaleByMapSize(1, 4) * numPlayers);
@@ -473,7 +460,7 @@ createFood
 
 // create straggler trees
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 7, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1));
+createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 7, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
 
 
 // Export map data

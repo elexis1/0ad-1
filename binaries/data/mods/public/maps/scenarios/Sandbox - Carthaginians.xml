@@ -21,8 +21,6 @@
 				<Waviness>4.0</Waviness>
 				<Murkiness>0.800781</Murkiness>
 				<Tint r="0.392157" g="0.47451" b="0.654902"/>
-				<ReflectionTint r="0.501961" g="1" b="1"/>
-				<ReflectionTintStrength>0.298828</ReflectionTintStrength>
 			</WaterBody>
 		</Water>
 		<Postproc>
@@ -172,7 +170,7 @@
 			<Orientation y="2.35621"/>
 		</Entity>
 		<Entity uid="28">
-			<Template>structures/cart_wall</Template>
+			<Template>structures/cart_wall_medium</Template>
 			<Player>1</Player>
 			<Position x="132.6556" z="366.40653"/>
 			<Orientation y="2.17183"/>

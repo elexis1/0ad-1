@@ -24,6 +24,7 @@ Engine.LoadComponentScript("interfaces/RallyPoint.js");
 Engine.LoadComponentScript("interfaces/Repairable.js");
 Engine.LoadComponentScript("interfaces/ResourceDropsite.js");
 Engine.LoadComponentScript("interfaces/ResourceGatherer.js");
+Engine.LoadComponentScript("interfaces/ResourceTrickle.js");
 Engine.LoadComponentScript("interfaces/ResourceSupply.js");
 Engine.LoadComponentScript("interfaces/TechnologyManager.js");
 Engine.LoadComponentScript("interfaces/Trader.js");
@@ -34,6 +35,21 @@ Engine.LoadComponentScript("interfaces/Upgrade.js");
 Engine.LoadComponentScript("interfaces/BuildingAI.js");
 Engine.LoadComponentScript("GuiInterface.js");
 
+Resources = {
+	"GetCodes": () => ["food", "metal", "stone", "wood"],
+	"GetNames": () => ({
+		"food": "Food",
+		"metal": "Metal",
+		"stone": "Stone",
+		"wood": "Wood"
+	}),
+	"GetResource": resource => ({
+		"aiAnalysisInfluenceGroup":
+			resource == "food" ? "ignore" :
+			resource == "wood" ? "abundant" : "sparse"
+	}),
+};
+
 var cmp = ConstructComponent(SYSTEM_ENTITY, "GuiInterface");
 
 
@@ -43,11 +59,13 @@ AddMock(SYSTEM_ENTITY, IID_Barter, {
 			"buy": { "food": 150 },
 			"sell": { "food": 25 }
 		};
-	}
+	},
+	PlayerHasMarket: function () { return false; }
 });
 
 AddMock(SYSTEM_ENTITY, IID_EndGameManager, {
-	GetGameType: function() { return "conquest"; }
+	GetGameType: function() { return "conquest"; },
+	GetAlliedVictory: function() { return false; }
 });
 
 AddMock(SYSTEM_ENTITY, IID_PlayerManager, {
@@ -79,7 +97,7 @@ AddMock(100, IID_Player, {
 	GetPopulationLimit: function() { return 20; },
 	GetMaxPopulation: function() { return 200; },
 	GetResourceCounts: function() { return { food: 100 }; },
-	GetHeroes: function() { return []; },
+	GetPanelEntities: function() { return []; },
 	IsTrainingBlocked: function() { return false; },
 	GetState: function() { return "active"; },
 	GetTeam: function() { return -1; },
@@ -91,6 +109,8 @@ AddMock(100, IID_Player, {
 	IsNeutral: function() { return false; },
 	IsEnemy: function() { return true; },
 	GetDisabledTemplates: function() { return {}; },
+	GetDisabledTechnologies: function() { return {}; },
+	GetSpyCostMultiplier: function() { return 1; },
 	HasSharedDropsites: function() { return false; },
 	HasSharedLos: function() { return false; },
 });
@@ -104,7 +124,7 @@ AddMock(100, IID_EntityLimits, {
 AddMock(100, IID_TechnologyManager, {
 	IsTechnologyResearched: function(tech) { if (tech == "phase_village") return true; else return false; },
 	GetQueuedResearch: function() { return {}; },
-	GetStartedResearch: function() { return {}; },
+	GetStartedTechs: function() { return {}; },
 	GetResearchedTechs: function() { return {}; },
 	GetClassCounts: function() { return {}; },
 	GetTypeCountsByClass: function() { return {}; },
@@ -112,19 +132,19 @@ AddMock(100, IID_TechnologyManager, {
 });
 
 AddMock(100, IID_StatisticsTracker, {
-	GetBasicStatistics: function() { 
+	GetBasicStatistics: function() {
 		return {
 			"resourcesGathered": {
-				"food": 100,	
-				"wood": 0,	
-				"metal": 0,	
+				"food": 100,
+				"wood": 0,
+				"metal": 0,
 				"stone": 0,
-				"vegetarianFood": 0, 
+				"vegetarianFood": 0,
 			},
 			"percentMapExplored": 10
 		};
 	},
-	GetStatistics: function() { 
+	GetStatistics: function() {
 		return {
 			"unitsTrained": 10,
 			"unitsLost": 9,
@@ -133,11 +153,11 @@ AddMock(100, IID_StatisticsTracker, {
 			"buildingsLost": 4,
 			"civCentresBuilt": 1,
 			"resourcesGathered": {
-				"food": 100,	
-				"wood": 0,	
-				"metal": 0,	
+				"food": 100,
+				"wood": 0,
+				"metal": 0,
 				"stone": 0,
-				"vegetarianFood": 0, 
+				"vegetarianFood": 0,
 			},
 			"treasuresCollected": 0,
 			"lootCollected": 0,
@@ -163,7 +183,7 @@ AddMock(101, IID_Player, {
 	GetPopulationLimit: function() { return 30; },
 	GetMaxPopulation: function() { return 300; },
 	GetResourceCounts: function() { return { food: 200 }; },
-	GetHeroes: function() { return []; },
+	GetPanelEntities: function() { return []; },
 	IsTrainingBlocked: function() { return false; },
 	GetState: function() { return "active"; },
 	GetTeam: function() { return -1; },
@@ -175,6 +195,8 @@ AddMock(101, IID_Player, {
 	IsNeutral: function() { return false; },
 	IsEnemy: function() { return false; },
 	GetDisabledTemplates: function() { return {}; },
+	GetDisabledTechnologies: function() { return {}; },
+	GetSpyCostMultiplier: function() { return 1; },
 	HasSharedDropsites: function() { return false; },
 	HasSharedLos: function() { return false; },
 });
@@ -188,7 +210,7 @@ AddMock(101, IID_EntityLimits, {
 AddMock(101, IID_TechnologyManager, {
 		IsTechnologyResearched: function(tech) { if (tech == "phase_village") return true; else return false; },
 		GetQueuedResearch: function() { return {}; },
-		GetStartedResearch: function() { return {}; },
+		GetStartedTechs: function() { return {}; },
 		GetResearchedTechs: function() { return {}; },
 		GetClassCounts: function() { return {}; },
 		GetTypeCountsByClass: function() { return {}; },
@@ -196,19 +218,19 @@ AddMock(101, IID_TechnologyManager, {
 });
 
 AddMock(101, IID_StatisticsTracker, {
-	GetBasicStatistics: function() { 
+	GetBasicStatistics: function() {
 		return {
 			"resourcesGathered": {
-				"food": 100,	
-				"wood": 0,	
-				"metal": 0,	
+				"food": 100,
+				"wood": 0,
+				"metal": 0,
 				"stone": 0,
-				"vegetarianFood": 0, 
+				"vegetarianFood": 0,
 			},
 			"percentMapExplored": 10
 		};
 	},
-	GetStatistics: function() { 
+	GetStatistics: function() {
 		return {
 			"unitsTrained": 10,
 			"unitsLost": 9,
@@ -217,11 +239,11 @@ AddMock(101, IID_StatisticsTracker, {
 			"buildingsLost": 4,
 			"civCentresBuilt": 1,
 			"resourcesGathered": {
-				"food": 100,	
-				"wood": 0,	
-				"metal": 0,	
+				"food": 100,
+				"wood": 0,
+				"metal": 0,
 				"stone": 0,
-				"vegetarianFood": 0, 
+				"vegetarianFood": 0,
 			},
 			"treasuresCollected": 0,
 			"lootCollected": 0,
@@ -251,7 +273,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			popCount: 10,
 			popLimit: 20,
 			popMax: 200,
-			heroes: [],
+			panelEntities: [],
 			resourceCounts: { food: 100 },
 			trainingBlocked: false,
 			state: "active",
@@ -259,8 +281,10 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			teamsLocked: false,
 			cheatsEnabled: false,
 			disabledTemplates: {},
+			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [false, false],
 			isMutualAlly: [false, false],
@@ -274,13 +298,14 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				resourcesGathered: {
 					food: 100,
 					wood: 0,
 					metal: 0,
 					stone: 0,
-					vegetarianFood: 0, 
+					vegetarianFood: 0,
 				},
 				percentMapExplored: 10
 			},
@@ -293,7 +318,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			popCount: 40,
 			popLimit: 30,
 			popMax: 300,
-			heroes: [],
+			panelEntities: [],
 			resourceCounts: { food: 200 },
 			trainingBlocked: false,
 			state: "active",
@@ -301,8 +326,10 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			teamsLocked: false,
 			cheatsEnabled: false,
 			disabledTemplates: {},
+			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [true, true],
 			isMutualAlly: [false, false],
@@ -316,13 +343,14 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				resourcesGathered: {
 					food: 100,
 					wood: 0,
 					metal: 0,
 					stone: 0,
-					vegetarianFood: 0, 
+					vegetarianFood: 0,
 				},
 				percentMapExplored: 10
 			},
@@ -331,7 +359,26 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetSimulationState(), {
 	circularMap: false,
 	timeElapsed: 0,
 	gameType: "conquest",
-	barterPrices: {buy: {food: 150}, sell: {food: 25}}
+	alliedVictory: false,
+	"barterPrices": {
+		"buy": { "food": 150 },
+		"sell": { "food": 25 }
+	},
+	"resources": {
+		"codes": ["food", "metal", "stone", "wood"],
+		"names": {
+			"food": "Food",
+			"metal": "Metal",
+			"stone": "Stone",
+			"wood": "Wood",
+		},
+		"aiInfluenceGroups": {
+			"food": "ignore",
+			"metal": "sparse",
+			"stone": "sparse",
+			"wood": "abundant",
+		}
+	},
 });
 
 TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
@@ -344,7 +391,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			popCount: 10,
 			popLimit: 20,
 			popMax: 200,
-			heroes: [],
+			panelEntities: [],
 			resourceCounts: { food: 100 },
 			trainingBlocked: false,
 			state: "active",
@@ -352,8 +399,10 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			teamsLocked: false,
 			cheatsEnabled: false,
 			disabledTemplates: {},
+			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [false, false],
 			isMutualAlly: [false, false],
@@ -367,6 +416,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				unitsTrained: 10,
 				unitsLost: 9,
@@ -379,7 +429,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 					wood: 0,
 					metal: 0,
 					stone: 0,
-					vegetarianFood: 0, 
+					vegetarianFood: 0,
 				},
 				treasuresCollected: 0,
 				lootCollected: 0,
@@ -399,7 +449,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			popCount: 40,
 			popLimit: 30,
 			popMax: 300,
-			heroes: [],
+			panelEntities: [],
 			resourceCounts: { food: 200 },
 			trainingBlocked: false,
 			state: "active",
@@ -407,8 +457,10 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			teamsLocked: false,
 			cheatsEnabled: false,
 			disabledTemplates: {},
+			disabledTechnologies: {},
 			hasSharedDropsites: false,
 			hasSharedLos: false,
+			spyCostMultiplier: 1,
 			phase: "village",
 			isAlly: [true, true],
 			isMutualAlly: [false, false],
@@ -422,6 +474,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 			researchedTechs: {},
 			classCounts: {},
 			typeCountsByClass: {},
+			canBarter: false,
 			statistics: {
 				unitsTrained: 10,
 				unitsLost: 9,
@@ -434,7 +487,7 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 					wood: 0,
 					metal: 0,
 					stone: 0,
-					vegetarianFood: 0, 
+					vegetarianFood: 0,
 				},
 				treasuresCollected: 0,
 				lootCollected: 0,
@@ -450,7 +503,26 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedSimulationState(), {
 	circularMap: false,
 	timeElapsed: 0,
 	gameType: "conquest",
-	barterPrices: {buy: {food: 150}, sell: {food: 25}}
+	alliedVictory: false,
+	"barterPrices": {
+		"buy": { "food": 150 },
+		"sell": { "food": 25 }
+	},
+	"resources": {
+		"codes": ["food", "metal", "stone", "wood"],
+		"names": {
+			"food": "Food",
+			"metal": "Metal",
+			"stone": "Stone",
+			"wood": "Wood",
+		},
+		"aiInfluenceGroups": {
+			"food": "ignore",
+			"metal": "sparse",
+			"stone": "sparse",
+			"wood": "abundant",
+		}
+	},
 });
 
 
@@ -487,6 +559,16 @@ AddMock(10, IID_Position, {
 	IsInWorld: function() {
 		return true;
 	},
+});
+
+AddMock(10, IID_ResourceTrickle, {
+	"GetTimer": () => 1250,
+	"GetRates": () => ({
+		"food": 2,
+		"wood": 3,
+		"stone": 5,
+		"metal": 9
+	})
 });
 
 // Note: property order matters when using TS_ASSERT_UNEVAL_EQUALS,
@@ -531,11 +613,9 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetEntityState(-1, 10), {
 TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedEntityState(-1, 10), {
 	armour: null,
 	attack: null,
-	barterMarket: {
-		prices: { "buy": {"food":150}, "sell": {"food":25} },
-	},
 	buildingAI: null,
 	heal: null,
+	isBarterMarket: true,
 	loot: null,
 	obstruction: null,
 	turretParent: null,
@@ -545,5 +625,14 @@ TS_ASSERT_UNEVAL_EQUALS(cmp.GetExtendedEntityState(-1, 10), {
 	resourceDropsite: null,
 	resourceGatherRates: null,
 	resourceSupply: null,
+	resourceTrickle: {
+		"interval": 1250,
+		"rates": {
+			"food": 2,
+			"wood": 3,
+			"stone": 5,
+			"metal": 9
+		}
+	},
 	speed: null,
 });

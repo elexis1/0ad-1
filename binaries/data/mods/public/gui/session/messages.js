@@ -30,6 +30,11 @@ var g_ChatHistory = [];
 var g_ChatTimers = [];
 
 /**
+ * Command to send to the previously selected private chat partner.
+ */
+var g_LastChatAddressee = "";
+
+/**
  * Handle all netmessage types that can occur.
  */
 var g_NetMessageTypes = {
@@ -44,6 +49,9 @@ var g_NetMessageTypes = {
 	},
 	"paused": msg => {
 		setClientPauseState(msg.guid, msg.pause);
+	},
+	"clients-loading": msg => {
+		handleClientsLoadingMessage(msg.guids);
 	},
 	"rejoined": msg => {
 		addChatMessage({
@@ -80,17 +88,27 @@ var g_NetMessageTypes = {
 var g_FormatChatMessage = {
 	"system": msg => msg.text,
 	"connect": msg =>
-		sprintf(translate("%(player)s is starting to rejoin the game."), {
-			"player": colorizePlayernameByGUID(msg.guid)
-		}),
+		sprintf(
+			g_PlayerAssignments[msg.guid].player != -1 ?
+				// Translation: A player that left the game joins again
+				translate("%(player)s is starting to rejoin the game.") :
+				// Translation: A player joins the game for the first time
+				translate("%(player)s is starting to join the game."),
+			{ "player": colorizePlayernameByGUID(msg.guid) }
+		),
 	"disconnect": msg =>
 		sprintf(translate("%(player)s has left the game."), {
 			"player": colorizePlayernameByGUID(msg.guid)
 		}),
 	"rejoined": msg =>
-		sprintf(translate("%(player)s has rejoined the game."), {
-			"player": colorizePlayernameByGUID(msg.guid)
-		}),
+		sprintf(
+			g_PlayerAssignments[msg.guid].player != -1 ?
+				// Translation: A player that left the game joins again
+				translate("%(player)s has rejoined the game.") :
+				// Translation: A player joins the game for the first time
+				translate("%(player)s has joined the game."),
+			{ "player": colorizePlayernameByGUID(msg.guid) }
+		),
 	"kicked": msg =>
 		sprintf(
 			msg.banned ?
@@ -110,7 +128,8 @@ var g_FormatChatMessage = {
 	"diplomacy": msg => formatDiplomacyMessage(msg),
 	"tribute": msg => formatTributeMessage(msg),
 	"barter": msg => formatBarterMessage(msg),
-	"attack": msg => formatAttackMessage(msg)
+	"attack": msg => formatAttackMessage(msg),
+	"phase": msg => formatPhaseMessage(msg)
 };
 
 /**
@@ -124,7 +143,7 @@ var g_StatusMessageTypes = {
 		sprintf(translate("Reason: %(reason)s."), {
 			"reason": getDisconnectReason(msg.reason, true)
 		}),
-	"waiting_for_players": msg => translate("Waiting for other players to connect..."),
+	"waiting_for_players": msg => translate("Waiting for players to connect:"),
 	"join_syncing": msg => translate("Synchronising gameplay with other players..."),
 	"active": msg => ""
 };
@@ -286,14 +305,7 @@ var g_NotificationsTypes =
 		{
 			message.translateParameters = notification.translateParameters;
 			message.parameters = notification.parameters;
-			// special case for formatting of player names which are transmitted as _player_num
-			for (let param in message.parameters)
-			{
-				if (!param.startsWith("_player_"))
-					continue;
-
-				message.parameters[param] = colorizePlayernameByID(message.parameters[param]);
-			}
+			colorizePlayernameParameters(notification.parameters);
 		}
 
 		addChatMessage(message);
@@ -327,12 +339,11 @@ var g_NotificationsTypes =
 			"targetPlayer": notification.targetPlayer,
 			"status": notification.status
 		});
-
-		updateDiplomacy();
+		updatePlayerData();
 	},
-	"quit": function(notification, player)
+	"ceasefire-ended": function(notification, player)
 	{
-		Engine.Exit();
+		updatePlayerData();
 	},
 	"tribute": function(notification, player)
 	{
@@ -354,6 +365,11 @@ var g_NotificationsTypes =
 			"resourceBought": notification.resourceBought
 		});
 	},
+	"spy-response": function(notification, player)
+	{
+		if (g_ViewedPlayer == player)
+			setCameraFollow(notification.entity);
+	},
 	"attack": function(notification, player)
 	{
 		if (player != g_ViewedPlayer)
@@ -369,7 +385,7 @@ var g_NotificationsTypes =
 				g_Selection.addList([notification.target]);
 		}
 
-		if (Engine.ConfigDB_GetValue("user", "gui.session.attacknotificationmessage") !== "true")
+		if (Engine.ConfigDB_GetValue("user", "gui.session.notifications.attack") !== "true")
 			return;
 
 		addChatMessage({
@@ -377,6 +393,15 @@ var g_NotificationsTypes =
 			"player": player,
 			"attacker": notification.attacker,
 			"targetIsDomesticAnimal": notification.targetIsDomesticAnimal
+		});
+	},
+	"phase": function(notification, player)
+	{
+		addChatMessage({
+			"type": "phase",
+			"player": player,
+			"phaseName": notification.phaseName,
+			"phaseState": notification.phaseState
 		});
 	},
 	"dialog": function(notification, player)
@@ -511,17 +536,6 @@ function handleNotifications()
 }
 
 /**
- * Updates playerdata cache and refresh diplomacy panel.
- */
-function updateDiplomacy()
-{
-	g_Players = getPlayerData(g_Players);
-
-	if (g_IsDiplomacyOpen)
-		openDiplomacy();
-}
-
-/**
  * Displays all active counters (messages showing the remaining time) for wonder-victory, ceasefire etc.
  */
 function updateTimeNotifications()
@@ -539,6 +553,8 @@ function updateTimeNotifications()
 			translateObjectKeys(parameters, n.translateParameters);
 
 		parameters.time = timeToString(n.endTime - g_SimState.timeElapsed);
+
+		colorizePlayernameParameters(parameters);
 
 		notificationText += sprintf(message, parameters) + "\n";
 	}
@@ -582,10 +598,13 @@ function handleNetStatusMessage(message)
 
 	g_IsNetworkedActive = message.status == "active";
 
-	let label = Engine.GetGUIObjectByName("netStatus");
+	let netStatus = Engine.GetGUIObjectByName("netStatus");
 	let statusMessage = g_StatusMessageTypes[message.status](message);
-	label.caption = statusMessage;
-	label.hidden = !statusMessage;
+	netStatus.caption = statusMessage;
+	netStatus.hidden = !statusMessage;
+
+	let loadingClientsText = Engine.GetGUIObjectByName("loadingClientsText");
+	loadingClientsText.hidden = message.status != "waiting_for_players";
 
 	if (message.status == "disconnected")
 	{
@@ -596,6 +615,12 @@ function handleNetStatusMessage(message)
 		g_Disconnected = true;
 		closeOpenDialogs();
 	}
+}
+
+function handleClientsLoadingMessage(guids)
+{
+	let loadingClientsText = Engine.GetGUIObjectByName("loadingClientsText");
+	loadingClientsText.caption = guids.map(guid => colorizePlayernameByGUID(guid)).join(translate(", "));
 }
 
 function handlePlayerAssignmentsMessage(message)
@@ -612,6 +637,7 @@ function handlePlayerAssignmentsMessage(message)
 		onClientJoin(guid);
 	});
 
+	updateGUIObjects();
 	updateChatAddressees();
 	sendLobbyPlayerlistUpdate();
 }
@@ -682,7 +708,7 @@ function updateChatAddressees()
 	let guids = sortGUIDsByPlayerID();
 	for (let guid of guids)
 	{
-		if (guid == Engine.GetPlayerGUID() || guid == "local")
+		if (guid == Engine.GetPlayerGUID())
 			continue;
 
 		let playerID = g_PlayerAssignments[guid].player;
@@ -751,6 +777,10 @@ function submitChatInput()
 	if (chatAddressee.selected > 0 && (text.indexOf("/") != 0 || text.indexOf("/me ") == 0))
 		text = chatAddressee.list_data[chatAddressee.selected] + " " + text;
 
+	let selectedChat = chatAddressee.list_data[chatAddressee.selected]
+	if (selectedChat.startsWith("/msg"))
+		g_LastChatAddressee = selectedChat;
+
 	submitChatDirectly(text);
 }
 
@@ -781,7 +811,7 @@ function addChatMessage(msg)
 	let historical = {
 		"txt": formatted,
 		"timePrefix": sprintf(translate("\\[%(time)s]"), {
-			"time": Engine.FormatMillisecondsIntoDateString(new Date().getTime(), translate("HH:mm"))
+			"time": Engine.FormatMillisecondsIntoDateStringLocal(new Date().getTime(), translate("HH:mm"))
 		}),
 		"filter": {}
 	};
@@ -828,6 +858,16 @@ function colorizePlayernameHelper(username, playerID)
 	return '[color="' + playerColor + '"]' + (username || translate("Unknown Player")) + "[/color]";
 }
 
+/**
+ * Insert the colorized playername to chat messages sent by the AI and time notifications.
+ */
+function colorizePlayernameParameters(parameters)
+{
+	for (let param in parameters)
+		if (param.startsWith("_player_"))
+			parameters[param] = colorizePlayernameByID(parameters[param]);
+}
+
 function formatDefeatMessage(msg)
 {
 	return sprintf(
@@ -864,14 +904,22 @@ function formatDiplomacyMessage(msg)
 	});
 }
 
+/**
+ * Optionally show all tributes sent in observer mode and tributes sent between allied players.
+ * Otherwise, only show tributes sent directly to us, and tributes that we send.
+ */
 function formatTributeMessage(msg)
 {
-	// Check observer first, since we also want to see if the selected player in the developer-overlay has sent tributes
 	let message = "";
-	if (g_IsObserver)
-		message = translate("%(player)s has sent %(player2)s %(amounts)s.");
-	else if (msg.targetPlayer == Engine.GetPlayerID())
+	if (msg.targetPlayer == Engine.GetPlayerID())
 		message = translate("%(player)s has sent you %(amounts)s.");
+	else if (msg.sourcePlayer == Engine.GetPlayerID())
+		message = translate("You have sent %(player2)s %(amounts)s.");
+	else if (Engine.ConfigDB_GetValue("user", "gui.session.notifications.tribute") == "true" &&
+	        (g_IsObserver || g_GameAttributes.settings.LockTeams &&
+	           g_Players[msg.sourcePlayer].isMutualAlly[Engine.GetPlayerID()] &&
+	           g_Players[msg.targetPlayer].isMutualAlly[Engine.GetPlayerID()]))
+			message = translate("%(player)s has sent %(player2)s %(amounts)s.");
 
 	return sprintf(message, {
 		"player": colorizePlayernameByID(msg.sourcePlayer),
@@ -882,7 +930,7 @@ function formatTributeMessage(msg)
 
 function formatBarterMessage(msg)
 {
-	if (!g_IsObserver)
+	if (!g_IsObserver || Engine.ConfigDB_GetValue("user", "gui.session.notifications.barter") != "true")
 		return "";
 
 	let amountsSold = {};
@@ -909,6 +957,29 @@ function formatAttackMessage(msg)
 
 	return sprintf(message, {
 		"attacker": colorizePlayernameByID(msg.attacker)
+	});
+}
+
+function formatPhaseMessage(msg)
+{
+	let notifyPhase = Engine.ConfigDB_GetValue("user", "gui.session.notifications.phase");
+	if (notifyPhase == 0 || msg.player != g_ViewedPlayer && !g_IsObserver && !g_Players[msg.player].isMutualAlly[g_ViewedPlayer])
+		return "";
+
+	let message = "";
+	if (notifyPhase == 2)
+	{
+		if (msg.phaseState == "started")
+			message = translate("%(player)s is advancing to the %(phaseName)s.");
+		else if (msg.phaseState == "aborted")
+			message = translate("The %(phaseName)s of %(player)s has been aborted.");
+	}
+	if (msg.phaseState == "completed")
+		message = translate("%(player)s has reached the %(phaseName)s.");
+
+	return sprintf(message, {
+		"player": colorizePlayernameByID(msg.player),
+		"phaseName": getEntityNames(GetTechnologyData(msg.phaseName, g_Players[msg.player].civ))
 	});
 }
 
@@ -943,7 +1014,7 @@ function formatChatCommand(msg)
 	{
 		msg.text = escapeText(msg.text);
 
-		let userName = g_PlayerAssignments[Engine.GetPlayerGUID() || "local"].name;
+		let userName = g_PlayerAssignments[Engine.GetPlayerGUID()].name;
 
 		if (userName != g_PlayerAssignments[msg.guid].name)
 			notifyUser(userName, msg.text);
@@ -980,7 +1051,7 @@ function parseChatAddressee(msg)
 	// Chat messages sent by the simulation (AI) come with the playerID.
 	let senderID = msg.player ? msg.player : (g_PlayerAssignments[msg.guid] || msg).player;
 
-	let isSender = msg.guid && msg.guid != "local" ?
+	let isSender = msg.guid ?
 		msg.guid == Engine.GetPlayerGUID() :
 		senderID == Engine.GetPlayerID();
 

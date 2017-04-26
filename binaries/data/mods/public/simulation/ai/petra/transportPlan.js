@@ -18,7 +18,7 @@ var PETRA = function(m)
  *           = "onBoard" when garrisoned in a ship
  *           = undefined otherwise
  *   endPos  = position of destination
- * 
+ *
  *   metadata for ships
  *   transporter = this.ID
  */
@@ -49,7 +49,7 @@ m.TransportPlan = function(gameState, units, startIndex, endIndex, endPos, ship)
 	}
 	else
 	{
-		this.sea = gameState.ai.HQ.getSeaIndex(gameState, startIndex, endIndex);
+		this.sea = gameState.ai.HQ.getSeaBetweenIndices(gameState, startIndex, endIndex);
 		if (!this.sea)
 		{
 			this.failed = true;
@@ -81,7 +81,7 @@ m.TransportPlan.prototype.init = function(gameState)
 	this.units = gameState.getOwnUnits().filter(API3.Filters.byMetadata(PlayerID, "transport", this.ID));
 	this.ships = gameState.ai.HQ.navalManager.ships.filter(API3.Filters.byMetadata(PlayerID, "transporter", this.ID));
 	this.transportShips = gameState.ai.HQ.navalManager.transportShips.filter(API3.Filters.byMetadata(PlayerID, "transporter", this.ID));
-	
+
 	this.units.registerUpdates();
 	this.ships.registerUpdates();
 	this.transportShips.registerUpdates();
@@ -290,7 +290,7 @@ m.TransportPlan.prototype.onBoarding = function(gameState)
 						self.boardingPos[shipId] = self.getBoardingPos(gameState, ship, self.startIndex, self.sea, undefined, false);
 					}
 					ship.move(self.boardingPos[shipId][0], self.boardingPos[shipId][1]);
-					ship.setMetadata(PlayerID, "timeGarrison", time);				
+					ship.setMetadata(PlayerID, "timeGarrison", time);
 				}
 				else if (time - ent.getMetadata(PlayerID, "timeGarrison") > 2)
 				{
@@ -585,7 +585,7 @@ m.TransportPlan.prototype.resetUnit = function(gameState, ent)
 	ent.setMetadata(PlayerID, "onBoard", undefined);
 	ent.setMetadata(PlayerID, "endPos", undefined);
 	// if from an army or attack, remove it
-	if (ent.getMetadata(PlayerID, "plan") >= 0)
+	if (ent.getMetadata(PlayerID, "plan") !== undefined && ent.getMetadata(PlayerID, "plan") >= 0)
 	{
 		let attackPlan = gameState.ai.HQ.attackManager.getPlan(ent.getMetadata(PlayerID, "plan"));
 		if (attackPlan)

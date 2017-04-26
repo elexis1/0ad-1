@@ -1,7 +1,7 @@
 RMS.LoadLibrary("rmgen");
 
 TILE_CENTERED_HEIGHT_MAP = true;
-var random_terrain = randInt(1,3);
+var random_terrain = randIntInclusive(1, 3);
 if (random_terrain == 1)
 {
 	setFogThickness(0.26);
@@ -242,7 +242,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	var hillSize = PI * radius * radius;
+
 	// create starting trees
 	var num = 2;
 	var tAngle = randFloat(-PI/3, 4*PI/3);
@@ -255,20 +255,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 RMS.SetProgress(20);
@@ -363,7 +350,7 @@ else
 createBumps(avoidClasses(clWater, 2, clPlayer, 10));
 
 // create hills
-if (randInt(1,2) == 1)
+if (randBool())
 	createHills([tPrimary, tCliff, tPrimary], avoidClasses(clPlayer, 20, clHill, 15, clWater, 0), clHill, scaleByMapSize(1, 4) * numPlayers);
 else
 	createMountains(tCliff, avoidClasses(clPlayer, 20, clHill, 15, clWater, 0), clHill, scaleByMapSize(1, 4) * numPlayers);
@@ -466,7 +453,7 @@ createFood
   [new SimpleObject(oBerryBush, 5,7, 0,4)]
  ],
  [
-  randInt(1, 4) * numPlayers + 2
+  randIntInclusive(1, 4) * numPlayers + 2
  ],
  avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 10)
 );
@@ -491,7 +478,7 @@ RMS.SetProgress(85);
 // create straggler trees
 log("Creating straggler trees...");
 var types = [oPine];
-createStragglerTrees(types, avoidClasses(clWater, 3, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1));
+createStragglerTrees(types, avoidClasses(clWater, 3, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
 
 setSkySet("stormy");
 setSunRotation(randFloat(0, TWO_PI));

@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -809,11 +809,24 @@ void XmppClient::handleMUCParticipantPresence(glooxwrapper::MUCRoom*, const gloo
 			m_PlayerMap[newNick][0] = presenceString;
 			m_PlayerMap[newNick][2] = roleString;
 			CreateGUIMessage("chat", "nick", nick, participant.newNick.to_string());
+			DbgXMPP(nick << " is now known as " << participant.newNick.to_string());
+		}
+		else if (participant.flags & gloox::UserKicked)
+		{
+			DbgXMPP(nick << " was kicked. Reason: " << participant.reason.to_string());
+			CreateGUIMessage("chat", "kicked", nick, participant.reason.to_string());
+		}
+		else if (participant.flags & gloox::UserBanned)
+		{
+			DbgXMPP(nick << " was banned. Reason: " << participant.reason.to_string());
+			CreateGUIMessage("chat", "banned", nick, participant.reason.to_string());
 		}
 		else
+		{
+			DbgXMPP(nick << " left the room (flags " << flags << participant.flags << ")");
 			CreateGUIMessage("chat", "leave", nick);
+		}
 
-		DbgXMPP(nick << " left the room");
 		m_PlayerMap.erase(nick);
 	}
 	else
@@ -1047,7 +1060,7 @@ std::string XmppClient::StanzaErrorToString(gloox::StanzaError err) const
 /**
  * Convert a gloox connection error enum to string
  * Keep in sync with Gloox documentation
- * 
+ *
  * @param err Error to be converted
  * @return Converted error string
  */
@@ -1086,7 +1099,7 @@ std::string XmppClient::ConnectionErrorToString(gloox::ConnectionError err) cons
 /**
  * Convert a gloox registration result enum to string
  * Keep in sync with Gloox documentation
- * 
+ *
  * @param err Enum to be converted
  * @return Converted string
  */
@@ -1106,7 +1119,7 @@ std::string XmppClient::RegistrationResultToString(gloox::RegistrationResult res
 	DEBUG_CASE(RegistrationUnexpectedRequest, "This client is unregistered with the server");
 	DEBUG_CASE(RegistrationNotAllowed, "Server does not permit password changes");
 	default:
-		return g_L10n.Translate("Unknown error");
+		return "";
 	}
 #undef DEBUG_CASE
 #undef CASE

@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -66,18 +66,18 @@ void CCmpPathfinder::Init(const CParamNode& UNUSED(paramNode))
 
     // Previously all move commands during a turn were
     // queued up and processed asynchronously at the start
-    // of the next turn.  Now we are processing queued up 
+    // of the next turn.  Now we are processing queued up
     // events several times duing the turn.  This improves
     // responsiveness and units move more smoothly especially.
-    // when in formation.  There is still a call at the 
-    // beginning of a turn to process all outstanding moves - 
-    // this will handle any moves above the MaxSameTurnMoves 
-    // threshold.  
+    // when in formation.  There is still a call at the
+    // beginning of a turn to process all outstanding moves -
+    // this will handle any moves above the MaxSameTurnMoves
+    // threshold.
     //
-    // TODO - The moves processed at the beginning of the 
-    // turn do not count against the maximum moves per turn 
-    // currently.  The thinking is that this will eventually 
-    // happen in another thread.  Either way this probably 
+    // TODO - The moves processed at the beginning of the
+    // turn do not count against the maximum moves per turn
+    // currently.  The thinking is that this will eventually
+    // happen in another thread.  Either way this probably
     // will require some adjustment and rethinking.
 	const CParamNode pathingSettings = externalParamNode.GetChild("Pathfinder");
 	m_MaxSameTurnMoves = (u16)pathingSettings.GetChild("MaxSameTurnMoves").ToInt();
@@ -203,15 +203,16 @@ void CCmpPathfinder::SetAtlasOverlay(bool enable, pass_class_t passClass)
 		SAFE_DELETE(m_AtlasOverlay);
 }
 
-pass_class_t CCmpPathfinder::GetPassabilityClass(const std::string& name)
+pass_class_t CCmpPathfinder::GetPassabilityClass(const std::string& name) const
 {
-	if (m_PassClassMasks.find(name) == m_PassClassMasks.end())
+	std::map<std::string, pass_class_t>::const_iterator it = m_PassClassMasks.find(name);
+	if (it == m_PassClassMasks.end())
 	{
 		LOGERROR("Invalid passability class name '%s'", name.c_str());
 		return 0;
 	}
 
-	return m_PassClassMasks[name];
+	return it->second;
 }
 
 void CCmpPathfinder::GetPassabilityClasses(std::map<std::string, pass_class_t>& passClasses) const
@@ -221,7 +222,7 @@ void CCmpPathfinder::GetPassabilityClasses(std::map<std::string, pass_class_t>& 
 
 void CCmpPathfinder::GetPassabilityClasses(std::map<std::string, pass_class_t>& nonPathfindingPassClasses, std::map<std::string, pass_class_t>& pathfindingPassClasses) const
 {
-	for (auto& pair : m_PassClassMasks)
+	for (const std::pair<std::string, pass_class_t>& pair : m_PassClassMasks)
 	{
 		if ((GetPassabilityFromMask(pair.second)->m_Obstructions == PathfinderPassability::PATHFINDING))
 			pathfindingPassClasses[pair.first] = pair.second;
@@ -469,11 +470,10 @@ void CCmpPathfinder::UpdateGrid()
 	{
 		m_MapSize = terrainSize;
 		m_Grid = new Grid<NavcellData>(m_MapSize * Pathfinding::NAVCELLS_PER_TILE, m_MapSize * Pathfinding::NAVCELLS_PER_TILE);
+		SAFE_DELETE(m_TerrainOnlyGrid);
 		m_TerrainOnlyGrid = new Grid<NavcellData>(m_MapSize * Pathfinding::NAVCELLS_PER_TILE, m_MapSize * Pathfinding::NAVCELLS_PER_TILE);
 
-		m_ObstructionsDirty.dirty = true;
-		m_ObstructionsDirty.globallyDirty = true;
-		m_ObstructionsDirty.globalRecompute = true;
+		m_ObstructionsDirty = { true, true, true, Grid<u8>(m_MapSize * Pathfinding::NAVCELLS_PER_TILE, m_MapSize * Pathfinding::NAVCELLS_PER_TILE) };
 
 		m_TerrainDirty = true;
 	}
@@ -508,8 +508,8 @@ void CCmpPathfinder::UpdateGrid()
 		ENSURE(m_Grid->m_W == m_ObstructionsDirty.dirtinessGrid.m_W && m_Grid->m_H == m_ObstructionsDirty.dirtinessGrid.m_H);
 		ENSURE(m_Grid->m_W == m_TerrainOnlyGrid->m_W && m_Grid->m_H == m_TerrainOnlyGrid->m_H);
 
-		for (u16 i = 0; i < m_ObstructionsDirty.dirtinessGrid.m_W; ++i)
-			for (u16 j = 0; j < m_ObstructionsDirty.dirtinessGrid.m_H; ++j)
+		for (u16 j = 0; j < m_ObstructionsDirty.dirtinessGrid.m_H; ++j)
+			for (u16 i = 0; i < m_ObstructionsDirty.dirtinessGrid.m_W; ++i)
 				if (m_ObstructionsDirty.dirtinessGrid.get(i, j) == 1)
 					m_Grid->set(i, j, m_TerrainOnlyGrid->get(i, j));
 	}
@@ -651,7 +651,7 @@ void CCmpPathfinder::TerrainUpdateHelper(bool expandPassability)
 	// Expand the impassability grid, for any class with non-zero clearance,
 	// so that we can stop units getting too close to impassable navcells.
 	// Note: It's not possible to perform this expansion once for all passabilities
-	// with the same clearance, because the impassable cells are not necessarily the 
+	// with the same clearance, because the impassable cells are not necessarily the
 	// same for all these passabilities.
 	for (PathfinderPassability& passability : m_PassClasses)
 	{
@@ -760,7 +760,7 @@ void CCmpPathfinder::ProcessSameTurnMoves()
 
 		m_SameTurnMovesCount = (u16)(m_SameTurnMovesCount + moveCount);
 	}
-	
+
 	if (!m_AsyncShortPathRequests.empty())
 	{
 		// Figure out how many moves we can do now
@@ -793,7 +793,7 @@ void CCmpPathfinder::ProcessSameTurnMoves()
 
 bool CCmpPathfinder::CheckMovement(const IObstructionTestFilter& filter,
 	entity_pos_t x0, entity_pos_t z0, entity_pos_t x1, entity_pos_t z1, entity_pos_t r,
-	pass_class_t passClass)
+	pass_class_t passClass) const
 {
 	PROFILE2_IFSPIKE("Check Movement", 0.001);
 
@@ -810,7 +810,7 @@ bool CCmpPathfinder::CheckMovement(const IObstructionTestFilter& filter,
 }
 
 ICmpObstruction::EFoundationCheck CCmpPathfinder::CheckUnitPlacement(const IObstructionTestFilter& filter,
-	entity_pos_t x, entity_pos_t z, entity_pos_t r,	pass_class_t passClass, bool UNUSED(onlyCenterPoint))
+	entity_pos_t x, entity_pos_t z, entity_pos_t r,	pass_class_t passClass, bool UNUSED(onlyCenterPoint)) const
 {
 	// Check unit obstruction
 	CmpPtr<ICmpObstructionManager> cmpObstructionManager(GetSystemEntity());
@@ -836,7 +836,7 @@ ICmpObstruction::EFoundationCheck CCmpPathfinder::CheckUnitPlacement(const IObst
 
 ICmpObstruction::EFoundationCheck CCmpPathfinder::CheckBuildingPlacement(const IObstructionTestFilter& filter,
 	entity_pos_t x, entity_pos_t z, entity_pos_t a, entity_pos_t w,
-	entity_pos_t h, entity_id_t id, pass_class_t passClass)
+	entity_pos_t h, entity_id_t id, pass_class_t passClass) const
 {
 	return CCmpPathfinder::CheckBuildingPlacement(filter, x, z, a, w, h, id, passClass, false);
 }
@@ -844,7 +844,7 @@ ICmpObstruction::EFoundationCheck CCmpPathfinder::CheckBuildingPlacement(const I
 
 ICmpObstruction::EFoundationCheck CCmpPathfinder::CheckBuildingPlacement(const IObstructionTestFilter& filter,
 	entity_pos_t x, entity_pos_t z, entity_pos_t a, entity_pos_t w,
-	entity_pos_t h, entity_id_t id, pass_class_t passClass, bool UNUSED(onlyCenterPoint))
+	entity_pos_t h, entity_id_t id, pass_class_t passClass, bool UNUSED(onlyCenterPoint)) const
 {
 	// Check unit obstruction
 	CmpPtr<ICmpObstructionManager> cmpObstructionManager(GetSystemEntity());

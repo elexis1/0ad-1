@@ -71,15 +71,15 @@ public:
 		STATUS_CLOSED = 2
 	};
 
-	bool IsUnexplored() { return GetStatus() == STATUS_UNEXPLORED; }
-	bool IsOpen() { return GetStatus() == STATUS_OPEN; }
-	bool IsClosed() { return GetStatus() == STATUS_CLOSED; }
+	bool IsUnexplored() const { return GetStatus() == STATUS_UNEXPLORED; }
+	bool IsOpen() const { return GetStatus() == STATUS_OPEN; }
+	bool IsClosed() const { return GetStatus() == STATUS_CLOSED; }
 	void SetStatusOpen() { SetStatus(STATUS_OPEN); }
 	void SetStatusClosed() { SetStatus(STATUS_CLOSED); }
 
 	// Get pi,pj coords of predecessor to this tile on best path, given i,j coords of this tile
-	inline int GetPredI(int i) { return i + GetPredDI(); }
-	inline int GetPredJ(int j) { return j + GetPredDJ(); }
+	inline int GetPredI(int i) const { return i + GetPredDI(); }
+	inline int GetPredJ(int j) const { return j + GetPredDJ(); }
 
 	inline PathCost GetCost() const { return g; }
 	inline void SetCost(PathCost cost) { g = cost; }
@@ -184,7 +184,7 @@ public:
 	}
 
 	void Reload(Grid<NavcellData>* passabilityGrid,
-		const std::map<std::string, pass_class_t>& nonPathfindingPassClassMasks, 
+		const std::map<std::string, pass_class_t>& nonPathfindingPassClassMasks,
 		const std::map<std::string, pass_class_t>& pathfindingPassClassMasks)
 	{
 		m_Grid = passabilityGrid;
@@ -218,7 +218,7 @@ public:
 	 * The waypoints correspond to the centers of horizontally/vertically adjacent tiles
 	 * along the path.
 	 */
-	void ComputePath(entity_pos_t x0, entity_pos_t z0, const PathGoal& origGoal, 
+	void ComputePath(entity_pos_t x0, entity_pos_t z0, const PathGoal& origGoal,
 		pass_class_t passClass, WaypointPath& path)
 	{
 		if (!m_Grid)
@@ -236,7 +236,7 @@ public:
 	 * The waypoints correspond to the centers of horizontally/vertically adjacent tiles
 	 * along the path.
 	 */
-	void ComputePath(entity_pos_t x0, entity_pos_t z0, const PathGoal& origGoal, 
+	void ComputePath(entity_pos_t x0, entity_pos_t z0, const PathGoal& origGoal,
 		pass_class_t passClass, std::vector<CircularRegion> excludedRegions, WaypointPath& path);
 
 	Grid<u16> GetConnectivityGrid(pass_class_t passClass)
@@ -244,7 +244,7 @@ public:
 		return m_PathfinderHier.GetConnectivityGrid(passClass);
 	}
 
-	void GetDebugData(u32& steps, double& time, Grid<u8>& grid)
+	void GetDebugData(u32& steps, double& time, Grid<u8>& grid) const
 	{
 		GetDebugDataJPS(steps, time, grid);
 	}
@@ -280,7 +280,7 @@ private:
 	 * TODO: cleanup documentation
 	 */
 	void ComputeJPSPath(entity_pos_t x0, entity_pos_t z0, const PathGoal& origGoal, pass_class_t passClass, WaypointPath& path);
-	void GetDebugDataJPS(u32& steps, double& time, Grid<u8>& grid);
+	void GetDebugDataJPS(u32& steps, double& time, Grid<u8>& grid) const;
 
 	// Helper functions for ComputePath
 

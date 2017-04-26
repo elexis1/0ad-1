@@ -21,6 +21,8 @@ m.GameState.prototype.init = function(SharedScript, state, player) {
 	this.playerData = SharedScript.playersData[this.player];
 	this.barterPrices = SharedScript.barterPrices;
 	this.gameType = SharedScript.gameType;
+	this.alliedVictory = SharedScript.alliedVictory;
+	this.ceasefireActive = SharedScript.ceasefireActive;
 
 	// get the list of possible phases for this civ:
 	// we assume all of them are researchable from the civil centre
@@ -28,13 +30,13 @@ m.GameState.prototype.init = function(SharedScript, state, player) {
 	let cctemplate = this.getTemplate(this.applyCiv("structures/{civ}_civil_centre"));
 	if (!cctemplate)
 		return;
-	let techs = cctemplate.researchableTechs(this.civ());
+	let techs = cctemplate.researchableTechs(this.getPlayerCiv());
 	for (let i = 0; i < this.phases.length; ++i)
 	{
 		let k = techs.indexOf(this.phases[i].name);
 		if (k !== -1)
 		{
-			this.phases[i].requirements = (this.getTemplate(techs[k]))._template.requirements;
+			this.phases[i].requirements = DeriveTechnologyRequirements(this.getTemplate(techs[k])._template, this.getPlayerCiv());
 			continue;
 		}
 		for (let tech of techs)
@@ -43,7 +45,7 @@ m.GameState.prototype.init = function(SharedScript, state, player) {
 			if (template.replaces && template.replaces.indexOf(this.phases[i].name) != -1)
 			{
 				this.phases[i].name = tech;
-				this.phases[i].requirements = template.requirements;
+				this.phases[i].requirements = DeriveTechnologyRequirements(template, this.getPlayerCiv());
 				break;
 			}
 		}
@@ -55,6 +57,7 @@ m.GameState.prototype.update = function(SharedScript)
 	this.timeElapsed = SharedScript.timeElapsed;
 	this.playerData = SharedScript.playersData[this.player];
 	this.barterPrices = SharedScript.barterPrices;
+	this.ceasefireActive = SharedScript.ceasefireActive;
 };
 
 m.GameState.prototype.updatingCollection = function(id, filter, collection)
@@ -82,7 +85,7 @@ m.GameState.prototype.updatingGlobalCollection = function(id, filter, collection
 
 	let newCollection = collection !== undefined ? collection.filter(filter) : this.entities.filter(filter);
 	newCollection.registerUpdates();
-	this.EntCollecNames.set(id, newCollection);	
+	this.EntCollecNames.set(id, newCollection);
 	return newCollection;
 };
 
@@ -117,6 +120,16 @@ m.GameState.prototype.getGameType = function()
 	return this.gameType;
 };
 
+m.GameState.prototype.getAlliedVictory = function()
+{
+	return this.alliedVictory;
+};
+
+m.GameState.prototype.isCeasefireActive = function()
+{
+	return this.ceasefireActive;
+};
+
 m.GameState.prototype.getTemplate = function(type)
 {
 	if (this.techTemplates[type] !== undefined)
@@ -133,9 +146,9 @@ m.GameState.prototype.applyCiv = function(str)
 	return str.replace(/\{civ\}/g, this.playerData.civ);
 };
 
-m.GameState.prototype.civ = function()
+m.GameState.prototype.getPlayerCiv = function(player)
 {
-	return this.playerData.civ;
+	return player !== undefined ? this.sharedScript.playersData[player].civ : this.playerData.civ;
 };
 
 m.GameState.prototype.currentPhase = function()
@@ -156,20 +169,23 @@ m.GameState.prototype.cityPhase = function()
 	return this.phases[2].name;
 };
 
-m.GameState.prototype.getPhaseRequirements = function(i)
+m.GameState.prototype.getPhaseEntityRequirements = function(i)
 {
-	if (!this.phases[i-1].requirements)
-		return undefined;
-	let requirements = this.phases[i-1].requirements;
-	if (requirements.number)
-		return requirements;
-	else if (requirements.all)
+	let entityReqs = [];
+
+	for (let requirement of this.phases[i-1].requirements)
 	{
-		for (let req of requirements.all)
-			if (req.number)
-				return req;
+		if (!requirement.entities)
+			continue;
+		for (let entity of requirement.entities)
+			if (entity.check == "count")
+				entityReqs.push({
+					"class": entity.class,
+					"count": entity.number
+				});
 	}
-	return undefined;
+
+	return entityReqs;
 };
 
 m.GameState.prototype.isResearched = function(template)
@@ -187,6 +203,9 @@ m.GameState.prototype.isResearching = function(template)
 /** this is an "in-absolute" check that doesn't check if we have a building to research from. */
 m.GameState.prototype.canResearch = function(techTemplateName, noRequirementCheck)
 {
+	if (this.playerData.disabledTechnologies[techTemplateName])
+		return false;
+
 	let template = this.getTemplate(techTemplateName);
 	if (!template)
 		return false;
@@ -199,14 +218,6 @@ m.GameState.prototype.canResearch = function(techTemplateName, noRequirementChec
 
 	if (noRequirementCheck === true)
 		return true;
-	
-	// not already researched, check if we can.
-	// basically a copy of the function in technologyManager since we can't use it.
-	// Checks the requirements for a technology to see if it can be researched at the current time
-		
-	// The technology which this technology supersedes is required
-	if (template.supersedes() && !this.playerData.researchedTechs[template.supersedes()])
-		return false;
 
 	// if this is a pair, we must check that the pair tech is not being researched
 	if (template.pair())
@@ -218,39 +229,52 @@ m.GameState.prototype.canResearch = function(techTemplateName, noRequirementChec
 			return false;
 	}
 
-	return this.checkTechRequirements(template.requirements());
+	return this.checkTechRequirements(template.requirements(this.playerData.civ));
 };
 
 /**
- * Private function for checking a set of requirements is met
- * basically copies TechnologyManager
+ * Private function for checking a set of requirements is met.
+ * Basically copies TechnologyManager, but compares against
+ * variables only available within the AI
  */
 m.GameState.prototype.checkTechRequirements = function(reqs)
 {
-	// If there are no requirements then all requirements are met
 	if (!reqs)
+		return false;
+
+	if (!reqs.length)
 		return true;
-	
-	if (reqs.all)
-		return reqs.all.every(r => this.checkTechRequirements(r));
-	if (reqs.any)
-		return reqs.any.some(r => this.checkTechRequirements(r));
-	if (reqs.civ)
-		return this.playerData.civ == reqs.civ;
-	if (reqs.notciv)
-		return this.playerData.civ != reqs.notciv;
-	if (reqs.tech)
-		return this.playerData.researchedTechs[reqs.tech] !== undefined && this.playerData.researchedTechs[reqs.tech];
-	if (reqs.class && reqs.numberOfTypes)
-		return this.playerData.typeCountsByClass[reqs.class] && 
-			Object.keys(this.playerData.typeCountsByClass[reqs.class]).length >= reqs.numberOfTypes;
-	if (reqs.class && reqs.number)
-		return this.playerData.classCounts[reqs.class] &&
-			this.playerData.classCounts[reqs.class] >= reqs.number;
-	
-	// The technologies requirements are not a recognised format
-	error("Bad requirements " + uneval(reqs));
-	return false;
+
+	function doesEntitySpecPass(entity)
+	{
+		switch (entity.check)
+		{
+		case "count":
+			if (!this.playerData.classCounts[entity.class] || this.playerData.classCounts[entity.class] < entity.number)
+				return false;
+			break;
+
+		case "variants":
+			if (!this.playerData.typeCountsByClass[entity.class] || Object.keys(this.playerData.typeCountsByClass[entity.class]).length < entity.number)
+				return false;
+			break;
+		}
+		return true;
+	}
+
+	return reqs.some(req => {
+		return Object.keys(req).every(type => {
+			switch (type)
+			{
+			case "techs":
+				return req[type].every(tech => !!this.playerData.researchedTechs[tech]);
+
+			case "entities":
+				return req[type].every(doesEntitySpecPass, this);
+			}
+			return false;
+		});
+	});
 };
 
 m.GameState.prototype.getMap = function()
@@ -291,9 +315,33 @@ m.GameState.prototype.getPlayerID = function()
 m.GameState.prototype.hasAllies = function()
 {
 	for (let i in this.playerData.isAlly)
-		if (this.playerData.isAlly[i] && +i !== this.player)
+		if (this.playerData.isAlly[i] && +i !== this.player &&
+		    this.sharedScript.playersData[i].state !== "defeated")
 			return true;
 	return false;
+};
+
+m.GameState.prototype.hasEnemies = function()
+{
+	for (let i in this.playerData.isEnemy)
+		if (this.playerData.isEnemy[i] && +i !== 0 &&
+		    this.sharedScript.playersData[i].state !== "defeated")
+			return true;
+	return false;
+};
+
+m.GameState.prototype.hasNeutrals = function()
+{
+	for (let i in this.playerData.isNeutral)
+		if (this.playerData.isNeutral[i] &&
+		    this.sharedScript.playersData[i].state !== "defeated")
+			return true;
+	return false;
+};
+
+m.GameState.prototype.isPlayerNeutral = function(id)
+{
+	return this.playerData.isNeutral[id];
 };
 
 m.GameState.prototype.isPlayerAlly = function(id)
@@ -347,6 +395,16 @@ m.GameState.prototype.getExclusiveAllies = function()
 	return ret;
 };
 
+m.GameState.prototype.getMutualAllies = function()
+{
+	let ret = [];
+	for (let i in this.playerData.isMutualAlly)
+		if (this.playerData.isMutualAlly[i] &&
+		    this.sharedScript.playersData[i].isMutualAlly[this.player])
+			ret.push(+i);
+	return ret;
+};
+
 m.GameState.prototype.isEntityAlly = function(ent)
 {
 	if (!ent)
@@ -367,7 +425,7 @@ m.GameState.prototype.isEntityEnemy = function(ent)
 		return false;
 	return this.playerData.isEnemy[ent.owner()];
 };
- 
+
 m.GameState.prototype.isEntityOwn = function(ent)
 {
 	if (!ent)
@@ -383,9 +441,12 @@ m.GameState.prototype.getEntityById = function(id)
 	return undefined;
 };
 
-m.GameState.prototype.getEntities = function()
+m.GameState.prototype.getEntities = function(id)
 {
-	return this.entities;
+	if (id === undefined)
+		return this.entities;
+
+	return this.updatingGlobalCollection("" + id + "-entities", m.Filters.byOwner(id));
 };
 
 m.GameState.prototype.getStructures = function()
@@ -433,12 +494,9 @@ m.GameState.prototype.getNeutralStructures = function()
 	return this.getStructures().filter(m.Filters.byOwners(this.getNeutrals()));
 };
 
-m.GameState.prototype.getEnemyEntities = function(enemyID)
+m.GameState.prototype.getEnemyEntities = function()
 {
-	if (enemyID === undefined)
-		return this.entities.filter(m.Filters.byOwners(this.getEnemies()));
-
-	return this.updatingGlobalCollection("" + enemyID + "-entities", m.Filters.byOwner(enemyID));
+	return this.entities.filter(m.Filters.byOwners(this.getEnemies()));
 };
 
 m.GameState.prototype.getEnemyStructures = function(enemyID)
@@ -446,7 +504,7 @@ m.GameState.prototype.getEnemyStructures = function(enemyID)
 	if (enemyID === undefined)
 		return this.updatingCollection("enemy-structures", m.Filters.byClass("Structure"), this.getEnemyEntities());
 
-	return this.updatingGlobalCollection("" + enemyID + "-structures", m.Filters.byClass("Structure"), this.getEnemyEntities(enemyID));
+	return this.updatingGlobalCollection("" + enemyID + "-structures", m.Filters.byClass("Structure"), this.getEntities(enemyID));
 };
 
 m.GameState.prototype.resetEnemyStructures = function()
@@ -459,7 +517,7 @@ m.GameState.prototype.getEnemyUnits = function(enemyID)
 	if (enemyID === undefined)
 		return this.getEnemyEntities().filter(m.Filters.byClass("Unit"));
 
-	return this.updatingGlobalCollection("" + enemyID + "-units", m.Filters.byClass("Unit"), this.getEnemyEntities(enemyID));
+	return this.updatingGlobalCollection("" + enemyID + "-units", m.Filters.byClass("Unit"), this.getEntities(enemyID));
 };
 
 /** if maintain is true, this will be stored. Otherwise it's one-shot. */
@@ -644,7 +702,7 @@ m.GameState.prototype.findTrainableUnits = function(classes, anticlasses)
 		let template = this.getTemplate(trainable);
 		if (!template || !template.available(this))
 			continue;
-		
+
 		let okay = true;
 		for (let clas of classes)
 		{
@@ -681,17 +739,18 @@ m.GameState.prototype.findTrainableUnits = function(classes, anticlasses)
  * If there are pairs, both techs are returned.
  */
 m.GameState.prototype.findAvailableTech = function()
-{	
+{
 	let allResearchable = [];
 	let civ = this.playerData.civ;
-	this.getOwnEntities().forEach(function(ent) {
+	for (let ent of this.getOwnEntities().values())
+	{
 		let searchable = ent.researchableTechs(civ);
 		if (!searchable)
-			return;
+			continue;
 		for (let tech of searchable)
-			if (allResearchable.indexOf(tech) === -1)
+			if (!this.playerData.disabledTechnologies[tech] && allResearchable.indexOf(tech) === -1)
 				allResearchable.push(tech);
-	});
+	}
 
 	let ret = [];
 	for (let tech of allResearchable)
@@ -717,7 +776,7 @@ m.GameState.prototype.findAvailableTech = function()
  * Return true if we have a building able to train that template
  */
 m.GameState.prototype.hasTrainer = function(template)
-{	
+{
 	let civ = this.playerData.civ;
 	for (let ent of this.getOwnTrainingFacilities().values())
 	{
@@ -732,7 +791,7 @@ m.GameState.prototype.hasTrainer = function(template)
  * Find buildings able to train that template.
  */
 m.GameState.prototype.findTrainers = function(template)
-{	
+{
 	let civ = this.playerData.civ;
 	return this.getOwnTrainingFacilities().filter(function(ent) {
 		let trainable = ent.trainableEntities(civ);

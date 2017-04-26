@@ -341,7 +341,7 @@ createFood
   [new SimpleObject(oBerryBush, 5,7, 0,4)]
  ],
  [
-  randInt(1, 4) * numPlayers + 2
+  randIntInclusive(1, 4) * numPlayers + 2
  ],
  avoidClasses(clWater, 2, clForest, 0, clPlayer, 6, clHill, 1, clFood, 10)
 );
@@ -350,7 +350,7 @@ RMS.SetProgress(90);
 
 log("Creating straggler trees...");
 var types = [oOak, oBeech, oPine];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 1, clRock, 1));
+createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6));
 RMS.SetProgress(95);
 
 setSkySet("sunny");

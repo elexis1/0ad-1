@@ -104,7 +104,8 @@ m.TradeManager.prototype.trainMoreTraders = function(gameState, queues)
 	if (!gameState.getTemplate(template))
 	{
 		if (this.Config.debug > 0)
-			API3.warn("Petra error: trying to train " + template + " for civ " + gameState.civ() + " but no template found.");
+			API3.warn("Petra error: trying to train " + template + " for civ " +
+			          gameState.getPlayerCiv() + " but no template found.");
 		return;
 	}
 	queues.trader.addPlan(new m.TrainingPlan(gameState, template, metadata, 1, 1));
@@ -156,7 +157,7 @@ m.TradeManager.prototype.setTradingGoods = function(gameState)
 	let tradingGoods = {};
 	for (let res in gameState.ai.HQ.wantedRates)
 		tradingGoods[res] = 0;
-	// first, try to anticipate future needs 
+	// first, try to anticipate future needs
 	let stocks = gameState.ai.HQ.getTotalResourceLevel(gameState);
 	let mostNeeded = gameState.ai.HQ.pickMostNeededResources(gameState);
 	let remaining = 100;
@@ -247,7 +248,7 @@ m.TradeManager.prototype.performBarter = function(gameState)
 				else if (available[sell] > 1000)
 					barterRateMin = 10;
 			}
-			else 
+			else
 			{
 				barterRateMin = 70;
 				if (available[sell] > 1000)
@@ -331,13 +332,13 @@ m.TradeManager.prototype.checkEvents = function(gameState, events)
 		}
 	}
 
-	// if one market is destroyed, we should look for a better route
+	// if one market (or market-foundation) is destroyed, we should look for a better route
 	for (let evt of events.Destroy)
 	{
 		if (!evt.entityObj)
 			continue;
 		let ent = evt.entityObj;
-		if (!ent || ent.foundationProgress() !== undefined || !ent.hasClass("Market") || !gameState.isPlayerAlly(ent.owner()))
+		if (!ent || !ent.hasClass("Market") || !gameState.isPlayerAlly(ent.owner()))
 			continue;
 		this.routeProspection = true;
 		gameState.ai.HQ.restartBuild(gameState, "structures/{civ}_market");
@@ -372,12 +373,21 @@ m.TradeManager.prototype.checkEvents = function(gameState, events)
 		return true;
 	}
 
+	// or if diplomacy changed
+	if (events.DiplomacyChanged.length)
+	{
+		this.routeProspection = true;
+		gameState.ai.HQ.restartBuild(gameState, "structures/{civ}_market");
+		gameState.ai.HQ.restartBuild(gameState, "structures/{civ}_dock");
+		return true;
+	}
+
 	return false;
 };
 
 /**
  * fills the best trade route in this.tradeRoute and the best potential route in this.potentialTradeRoute
- * If an index is given, it returns the best route with this index or the best land route if index is a land index 
+ * If an index is given, it returns the best route with this index or the best land route if index is a land index
  */
 m.TradeManager.prototype.checkRoutes = function(gameState, accessIndex)
 {
@@ -403,16 +413,16 @@ m.TradeManager.prototype.checkRoutes = function(gameState, accessIndex)
 	{
 		if (!m1.position())
 			continue;
-		let access1 = gameState.ai.accessibility.getAccessValue(m1.position());
-		let sea1 = m1.hasClass("NavalMarket") ? gameState.ai.HQ.navalManager.getDockIndex(gameState, m1, true) : undefined;
+		let access1 = m.getLandAccess(gameState, m1);
+		let sea1 = m1.hasClass("NavalMarket") ? m.getSeaAccess(gameState, m1) : undefined;
 		for (let m2 of market2)
 		{
 			if (m1.id() === m2.id())
 				continue;
 			if (!m2.position())
 				continue;
-			let access2 = gameState.ai.accessibility.getAccessValue(m2.position());
-			let sea2 = m2.hasClass("NavalMarket") ? gameState.ai.HQ.navalManager.getDockIndex(gameState, m2, true) : undefined;
+			let access2 = m.getLandAccess(gameState, m2);
+			let sea2 = m2.hasClass("NavalMarket") ? m.getSeaAccess(gameState, m2) : undefined;
 			let land = access1 == access2 ? access1 : undefined;
 			let sea = (sea1 && sea1 == sea2) ? sea1 : undefined;
 			if (!land && !sea)

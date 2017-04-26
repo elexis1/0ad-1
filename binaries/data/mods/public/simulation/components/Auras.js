@@ -11,8 +11,7 @@ Auras.prototype.Init = function()
 	let cmpDataTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_DataTemplateManager);
 	this.auras = {};
 	this.affectedPlayers = {};
-	let auraNames = this.GetAuraNames();
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames())
 	{
 		this.affectedPlayers[name] = [];
 		this.auras[name] = cmpDataTemplateManager.GetAuraTemplate(name);
@@ -32,9 +31,8 @@ Auras.prototype.GetModifierIdentifier = function(name)
 
 Auras.prototype.GetDescriptions = function()
 {
-	let auraNames = this.GetAuraNames();
 	var ret = {};
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames())
 	{
 		let aura = this.auras[name];
 		if (aura.auraName)
@@ -60,11 +58,9 @@ Auras.prototype.GetAffectedEntities = function(name)
 
 Auras.prototype.GetRange = function(name)
 {
-	if (!this.IsRangeAura(name))
-		return undefined;
-	if (this.IsGlobalAura(name))
-		return -1; // -1 is infinite range
-	return +this.auras[name].radius;
+	if (this.IsRangeAura(name))
+		return +this.auras[name].radius;
+	return undefined;
 };
 
 Auras.prototype.GetClasses = function(name)
@@ -90,7 +86,7 @@ Auras.prototype.CalculateAffectedPlayers = function(name)
 	var cmpPlayer = Engine.QueryInterface(this.entity, IID_Player);
 	if (!cmpPlayer)
 		cmpPlayer = QueryOwnerInterface(this.entity);
-	if (!cmpPlayer)
+	if (!cmpPlayer || cmpPlayer.GetState() == "defeated")
 		return;
 
 	var numPlayers = Engine.QueryInterface(SYSTEM_ENTITY, IID_PlayerManager).GetNumPlayers();
@@ -154,13 +150,17 @@ Auras.prototype.IsGarrisonedUnitsAura = function(name)
 
 Auras.prototype.IsRangeAura = function(name)
 {
-	// A global aura is also treated as a range aura with infinite range.
-	return ["range", "global"].indexOf(this.GetType(name)) != -1;
+	return this.GetType(name) == "range";
 };
 
 Auras.prototype.IsGlobalAura = function(name)
 {
-	return this.GetType(name) == "global";
+	return this.GetType(name) == "global" || this.GetType(name) == "player";
+};
+
+Auras.prototype.IsPlayerAura = function(name)
+{
+	return this.GetType(name) == "player";
 };
 
 /**
@@ -204,6 +204,23 @@ Auras.prototype.Clean = function()
 		if (!affectedPlayers.length)
 			continue;
 
+		if (this.IsGlobalAura(name))
+		{
+			for (let player of affectedPlayers)
+			{
+				this.ApplyTemplateBonus(name, affectedPlayers);
+				if (this.IsPlayerAura(name))
+				{
+					let cmpPlayerManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_PlayerManager);
+					let playerEnts = affectedPlayers.map(player => cmpPlayerManager.GetPlayerByID(player));
+					this.ApplyBonus(name, playerEnts);
+				}
+				else
+					this.ApplyBonus(name, cmpRangeManager.GetEntitiesByPlayer(player));
+			}
+			continue;
+		}
+
 		if (!this.IsRangeAura(name))
 		{
 			this.ApplyBonus(name, targetUnitsClone[name]);
@@ -219,18 +236,6 @@ Auras.prototype.Clean = function()
 		    cmpRangeManager.GetEntityFlagMask("normal")
 		);
 		cmpRangeManager.EnableActiveQuery(this[name].rangeQuery);
-
-		if (this.IsGlobalAura(name))
-		{
-			this.ApplyTemplateBonus(name, affectedPlayers);
-
-			// Add self to your own query for consistency with templates.
-			this.OnRangeUpdate({
-				"tag": this[name].rangeQuery,
-				"added": [this.entity],
-				"removed": []
-			});
-		}
 	}
 };
 
@@ -245,8 +250,7 @@ Auras.prototype.GiveMembersWithValidClass = function(auraName, entityList)
 
 Auras.prototype.OnRangeUpdate = function(msg)
 {
-	var auraNames = this.GetAuraNames().filter(n => this[n] && msg.tag == this[n].rangeQuery);
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames().filter(n => this[n] && msg.tag == this[n].rangeQuery))
 	{
 		this.ApplyBonus(name, msg.added);
 		this.RemoveBonus(name, msg.removed);
@@ -255,25 +259,36 @@ Auras.prototype.OnRangeUpdate = function(msg)
 
 Auras.prototype.OnGarrisonedUnitsChanged = function(msg)
 {
-	var auraNames = this.GetAuraNames().filter(n => this.IsGarrisonedUnitsAura(n));
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames().filter(n => this.IsGarrisonedUnitsAura(n)))
 	{
 		this.ApplyBonus(name, msg.added);
 		this.RemoveBonus(name, msg.removed);
 	}
 };
 
+Auras.prototype.RegisterGlobalOwnershipChanged = function(msg)
+{
+	for (let name of this.GetAuraNames().filter(n => this.IsGlobalAura(n)))
+	{
+		let affectedPlayers = this.GetAffectedPlayers(name);
+		let wasApplied = affectedPlayers.indexOf(msg.from) != -1;
+		let willBeApplied = affectedPlayers.indexOf(msg.to) != -1;
+		if (wasApplied && !willBeApplied)
+			this.RemoveBonus(name, [msg.entity]);
+		if (willBeApplied && !wasApplied)
+			this.ApplyBonus(name, [msg.entity]);
+	}
+};
+
 Auras.prototype.ApplyFormationBonus = function(memberList)
 {
-	var auraNames = this.GetAuraNames().filter(n => this.IsFormationAura(n));
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames().filter(n => this.IsFormationAura(n)))
 		this.ApplyBonus(name, memberList);
 };
 
 Auras.prototype.ApplyGarrisonBonus = function(structure)
 {
-	var auraNames = this.GetAuraNames().filter(n => this.IsGarrisonAura(n));
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames().filter(n => this.IsGarrisonAura(n)))
 		this.ApplyBonus(name, [structure]);
 };
 
@@ -288,6 +303,8 @@ Auras.prototype.ApplyTemplateBonus = function(name, players)
 	var cmpAuraManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_AuraManager);
 	var classes = this.GetClasses(name);
 
+	cmpAuraManager.RegisterGlobalAuraSource(this.entity);
+
 	for (let mod of modifications)
 		for (let player of players)
 			cmpAuraManager.ApplyTemplateBonus(mod.value, player, classes, mod, this.GetModifierIdentifier(name));
@@ -295,15 +312,13 @@ Auras.prototype.ApplyTemplateBonus = function(name, players)
 
 Auras.prototype.RemoveFormationBonus = function(memberList)
 {
-	var auraNames = this.GetAuraNames().filter(n => this.IsFormationAura(n));
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames().filter(n => this.IsFormationAura(n)))
 		this.RemoveBonus(name, memberList);
 };
 
 Auras.prototype.RemoveGarrisonBonus = function(structure)
 {
-	var auraNames = this.GetAuraNames().filter(n => this.IsGarrisonAura(n));
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames().filter(n => this.IsGarrisonAura(n)))
 		this.RemoveBonus(name, [structure]);
 };
 
@@ -314,8 +329,10 @@ Auras.prototype.RemoveTemplateBonus = function(name)
 	if (!this.IsGlobalAura(name))
 		return;
 
-	var modifications = this.GetModifications(name);
 	var cmpAuraManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_AuraManager);
+	cmpAuraManager.UnregisterGlobalAuraSource(this.entity);
+
+	var modifications = this.GetModifications(name);
 	var classes = this.GetClasses(name);
 	var players = this.GetAffectedPlayers(name);
 
@@ -400,8 +417,7 @@ Auras.prototype.OnGlobalResearchFinished = function(msg)
 	var cmpPlayer = Engine.QueryInterface(this.entity, IID_Player);
 	if ((!cmpPlayer || cmpPlayer.GetPlayerID() != msg.player) && !IsOwnedByPlayer(msg.player, this.entity))
 		return;
-	let auraNames = this.GetAuraNames();
-	for (let name of auraNames)
+	for (let name of this.GetAuraNames())
 	{
 		let requiredTech = this.auras[name].requiredTechnology;
 		if (requiredTech && requiredTech == msg.tech)
@@ -410,6 +426,11 @@ Auras.prototype.OnGlobalResearchFinished = function(msg)
 			return;
 		}
 	}
+};
+
+Auras.prototype.OnPlayerDefeated = function(msg)
+{
+	this.Clean();
 };
 
 Engine.RegisterComponentType(IID_Auras, "Auras", Auras);

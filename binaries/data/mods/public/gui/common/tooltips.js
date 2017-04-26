@@ -1,23 +1,43 @@
-const g_TooltipTextFormats = {
+var g_TooltipTextFormats = {
 	"unit": ['[font="sans-10"][color="orange"]', '[/color][/font]'],
 	"header": ['[font="sans-bold-13"]', '[/font]'],
 	"body": ['[font="sans-13"]', '[/font]'],
 	"comma": ['[font="sans-12"]', '[/font]']
 };
 
-const g_AttackTypes = {
+var g_AttackTypes = {
 	"Melee": translate("Melee Attack:"),
 	"Ranged": translate("Ranged Attack:"),
 	"Capture": translate("Capture Attack:")
 };
 
-const g_DamageTypes = {
+var g_DamageTypes = {
 	"hack": translate("Hack"),
 	"pierce": translate("Pierce"),
 	"crush": translate("Crush"),
 };
 
-function costIcon(resource)
+var g_SplashDamageTypes = {
+	"Circular": translate("Circular Splash Damage"),
+	"Linear": translate("Linear Splash Damage")
+};
+
+var g_RangeTooltipString = {
+	"relative": {
+		// Translation: For example: Ranged Attack: 12.0 Pierce, Range: 2 to 10 (+2) meters, Interval: 3 arrows / 2 seconds
+		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"),
+		// Translation: For example: Ranged Attack: 12.0 Pierce, Range: 10 (+2) meters, Interval: 3 arrows / 2 seconds
+		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"),
+	},
+	"non-relative": {
+		// Translation: For example: Ranged Attack: 12.0 Pierce, Range: 2 to 10 meters, Interval: 3 arrows / 2 seconds
+		"minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s %(rangeUnit)s, %(rate)s"),
+		// Translation: For example: Ranged Attack: 12.0 Pierce, Range: 10 meters, Interval: 3 arrows / 2 seconds
+		"no-minRange": translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s %(rangeUnit)s, %(rate)s"),
+	}
+};
+
+function resourceIcon(resource)
 {
 	return '[icon="icon_' + resource + '"]';
 }
@@ -42,6 +62,14 @@ function commaFont(text)
 	return g_TooltipTextFormats.comma[0] + text + g_TooltipTextFormats.comma[1];
 }
 
+function getSecondsString(seconds)
+{
+	return sprintf(translatePlural("%(time)s %(second)s", "%(time)s %(second)s", seconds), {
+		"time": seconds,
+		"second": unitFont(translatePlural("second", "seconds", seconds))
+	});
+}
+
 function getEntityTooltip(template)
 {
 	if (!template.tooltip)
@@ -61,14 +89,22 @@ function getHealthTooltip(template)
 	});
 }
 
+function getCurrentHealthTooltip(entState, label)
+{
+	if (!entState.maxHitpoints)
+		return "";
+
+	return sprintf(translate("%(healthLabel)s %(current)s / %(max)s"), {
+		"healthLabel": headerFont(label || translate("Health:")),
+		"current": Math.round(entState.hitpoints),
+		"max": Math.round(entState.maxHitpoints)
+	});
+}
+
 function attackRateDetails(template, type)
 {
 	// Either one arrow shot by UnitAI,
-	let time = template.attack[type].repeatTime / 1000;
-	let timeString = sprintf(translatePlural("%(time)s %(second)s", "%(time)s %(second)s", time), {
-		"time": time,
-		"second": unitFont(translatePlural("second", "seconds", time))
-	});
+	let timeString = getSecondsString(template.attack[type].repeatTime / 1000);
 
 	// or multiple arrows shot by BuildingAI
 	if (!template.buildingAI || type != "Ranged")
@@ -132,13 +168,12 @@ function damageTypesToText(dmg)
 		})).join(commaFont(translate(", ")));
 }
 
-// TODO: should also show minRange
 function getAttackTooltip(template)
 {
 	if (!template.attack)
 		return "";
 
-	let attacks = [];
+	let tooltips = [];
 	for (let type in template.attack)
 	{
 		if (type == "Slaughter")
@@ -156,7 +191,7 @@ function getAttackTooltip(template)
 		let attackLabel = headerFont(g_AttackTypes[type]);
 		if (type == "Capture" || type != "Ranged")
 		{
-			attacks.push(sprintf(translate("%(attackLabel)s %(details)s, %(rate)s"), {
+			tooltips.push(sprintf(translate("%(attackLabel)s %(details)s, %(rate)s"), {
 				"attackLabel": attackLabel,
 				"details":
 					type == "Capture" ?
@@ -167,28 +202,27 @@ function getAttackTooltip(template)
 			continue;
 		}
 
+		let minRange = Math.round(template.attack[type].minRange);
+		let maxRange = Math.round(template.attack[type].maxRange);
 		let realRange = template.attack[type].elevationAdaptedRange;
-		let range = Math.round(template.attack[type].maxRange);
-		let relativeRange = realRange ? Math.round(realRange - range) : 0;
+		let relativeRange = realRange ? Math.round(realRange - maxRange) : 0;
 
-		let rangeString = relativeRange ?
-			translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s (%(relative)s), %(rate)s") :
-			translate("%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s, %(rate)s");
-
-		attacks.push(sprintf(rangeString, {
+		tooltips.push(sprintf(g_RangeTooltipString[relativeRange ? "relative" : "non-relative"][minRange ? "minRange" : "no-minRange"], {
 			"attackLabel": attackLabel,
 			"damageTypes": damageTypesToText(template.attack[type]),
-			"rangeLabel": translate("Range:"),
-			"rangeString": sprintf(
-				translatePlural("%(range)s %(meters)s", "%(range)s %(meters)s", range), {
-					"range": range,
-					"meters": unitFont(translatePlural("meter", "meters", range))
-				}),
+			"rangeLabel": headerFont(translate("Range:")),
+			"minRange": minRange,
+			"maxRange": maxRange,
+			"relativeRange": relativeRange > 0 ? sprintf(translate("+%(number)s"), { "number": relativeRange }) : relativeRange,
+			"rangeUnit":
+				unitFont(minRange || relativeRange ?
+					// Translation: For example "0.5 to 1 meters", "1 (+1) meters" or "1 to 2 (+3) meters"
+					translate("meters") :
+					translatePlural("meter", "meters", maxRange)),
 			"rate": rate,
-			"relative": relativeRange > 0 ? "+" + relativeRange : relativeRange,
 		}));
 	}
-	return attacks.join("\n");
+	return tooltips.join("\n");
 }
 
 function getSplashDamageTooltip(template)
@@ -204,9 +238,9 @@ function getSplashDamageTooltip(template)
 			continue;
 
 		tooltips.push([
-			sprintf(translate("%(attackLabel)s %(damageTypes)s"), {
-				"attackLabel": headerFont(translate("Splash Damage:")),
-				"damageTypes": damageTypesToText(splash)
+			sprintf(translate("%(label)s: %(value)s"), {
+				"label": headerFont(g_SplashDamageTypes[splash.shape]),
+				"value": damageTypesToText(splash)
 			}),
 			sprintf(translate("Friendly Fire: %(enabled)s"), {
 				"enabled": splash.friendlyFire ? translate("Yes") : translate("No")
@@ -333,7 +367,7 @@ function getEntityCostComponentsTooltipString(template, trainNum, entity)
 		// Population bonus is shown in the tooltip
 		if (type != "populationBonus" && totalCosts[type])
 			costs.push(sprintf(translate("%(component)s %(cost)s"), {
-				"component": costIcon(type),
+				"component": resourceIcon(type),
 				"cost": totalCosts[type]
 			}));
 
@@ -342,18 +376,64 @@ function getEntityCostComponentsTooltipString(template, trainNum, entity)
 
 function getGatherTooltip(template)
 {
-	if (!template.gather)
+	if (!template.resourceGatherRates)
+		return "";
+
+	// Average the resource rates (TODO: distinguish between subtypes)
+	let rates = {};
+	for (let resource of g_ResourceData.GetResources())
+	{
+		let types = [resource.code];
+		for (let subtype in resource.subtypes)
+			// We ignore ruins as those are not that common and skew the results
+			if (subtype !== "ruins")
+				types.push(resource.code + "." + subtype);
+
+		let [rate, count] = types.reduce((sum, t) => {
+				let r = template.resourceGatherRates[t];
+				return [sum[0] + (r > 0 ? r : 0), sum[1] + (r > 0 ? 1 : 0)];
+			}, [0, 0]);
+
+		if (rate > 0)
+			rates[resource.code] = +(rate / count).toFixed(1);
+	}
+
+	if (!Object.keys(rates).length)
 		return "";
 
 	return sprintf(translate("%(label)s %(details)s"), {
 		"label": headerFont(translate("Gather Rates:")),
 		"details":
-			Object.keys(template.gather).map(
+			Object.keys(rates).map(
 				type => sprintf(translate("%(resourceIcon)s %(rate)s"), {
-					"resourceIcon": costIcon(type),
-					"rate": template.gather[type]
+					"resourceIcon": resourceIcon(type),
+					"rate": rates[type]
 				})
 			).join("  ")
+	});
+}
+
+function getResourceTrickleTooltip(template)
+{
+	if (!template.resourceTrickle)
+		return "";
+
+	let resCodes = Object.keys(template.resourceTrickle.rates).filter(res => template.resourceTrickle.rates[res]);
+	if (!resCodes.length)
+		return "";
+
+	return sprintf(translate("%(label)s %(details)s"), {
+		"label": headerFont(translate("Resource Trickle:")),
+		"details": sprintf(translate("%(resources)s / %(time)s"), {
+			"resources":
+				resCodes.map(
+					res => sprintf(translate("%(resourceIcon)s %(rate)s"), {
+						"resourceIcon": resourceIcon(res),
+						"rate": template.resourceTrickle.rates[res]
+					})
+				).join("  "),
+			"time": getSecondsString(template.resourceTrickle.interval / 1000)
+		})
 	});
 }
 
@@ -399,7 +479,7 @@ function getWallPieceTooltip(wallTypes)
 			// Translation: This string is part of the resources cost string on
 			// the tooltip for wall structures.
 			out.push(sprintf(translate("%(resourceIcon)s %(minimum)s to %(resourceIcon)s %(maximum)s"), {
-				"resourceIcon": costIcon(resource),
+				"resourceIcon": resourceIcon(resource),
 				"minimum": Math.min.apply(Math, resourceCount[resource]),
 				"maximum": Math.max.apply(Math, resourceCount[resource])
 			}));
@@ -437,6 +517,16 @@ function getEntityCostTooltip(template, trainNum, entity)
 	return "";
 }
 
+function getRequiredTechnologyTooltip(technologyEnabled, requiredTechnology, civ)
+{
+	if (technologyEnabled)
+		return "";
+
+	return sprintf(translate("Requires %(technology)s"), {
+		"technology": getEntityNames(GetTechnologyData(requiredTechnology, civ))
+	});
+}
+
 /**
  * Returns the population bonus information to display in the specified entity's construction button tooltip.
  */
@@ -462,7 +552,7 @@ function getNeededResourcesTooltip(resources)
 	let formatted = [];
 	for (let resource in resources)
 		formatted.push(sprintf(translate("%(component)s %(cost)s"), {
-			"component": '[font="sans-12"]' + costIcon(resource) + '[/font]',
+			"component": '[font="sans-12"]' + resourceIcon(resource) + '[/font]',
 			"cost": resources[resource]
 		}));
 
@@ -593,7 +683,7 @@ function getLootTooltip(template)
 			template.trader && template.trader.goods
 		);
 
-	const lootTypes = ["xp", "food", "wood", "stone", "metal"];
+	const lootTypes = g_ResourceData.GetCodes().concat(["xp"]);
 	let lootLabels = [];
 	for (let type of lootTypes)
 	{
@@ -606,10 +696,13 @@ function getLootTooltip(template)
 
 		// Translation: %(component) will be the icon for the loot type and %(loot) will be the value.
 		lootLabels.push(sprintf(translate("%(component)s %(loot)s"), {
-			"component": costIcon(type),
+			"component": resourceIcon(type),
 			"loot": loot
 		}));
 	}
+
+	if (!lootLabels.length)
+		return "";
 
 	return sprintf(translate("%(label)s %(details)s"), {
 		"label": headerFont(translate("Loot:")),

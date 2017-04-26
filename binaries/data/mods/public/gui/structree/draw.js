@@ -15,6 +15,7 @@ var g_TooltipFunctions = [
 	getSpeedTooltip,
 	getGatherTooltip,
 	getPopulationBonusTooltip,
+	getResourceTrickleTooltip,
 	getLootTooltip
 ];
 
@@ -97,9 +98,9 @@ function draw()
 				if (stru.production.technology[prod_pha])
 					for (let prod of stru.production.technology[prod_pha])
 					{
-						prod = clone(depath(prod).slice(0,5) == "phase" ?
+						prod = clone(basename(prod).startsWith("phase") ?
 							g_ParsedData.phases[prod] :
-							g_ParsedData.techs[prod]);
+							g_ParsedData.techs[g_SelectedCiv][prod]);
 
 						for (let res in stru.techCostMultiplier)
 							if (prod.cost[res])
@@ -116,7 +117,7 @@ function draw()
 				if (p>c)
 					c = p;
 
-				hideRemaining("phase["+i+"]_struct["+s+"]_row["+r+"]_prod[", p, "]");
+				hideRemaining("phase["+i+"]_struct["+s+"]_row["+r+"]", p);
 			}
 
 			let size = thisEle.size;
@@ -136,13 +137,14 @@ function draw()
 				phaEle.size = size;
 			}
 			++r;
-			hideRemaining("phase["+i+"]_struct["+s+"]_row[", r, "]");
+			hideRemaining("phase["+i+"]_struct["+s+"]_rows", r);
 			++s;
 			prodBarWidth += eleWidth + defMargin;
 		}
-		hideRemaining("phase["+i+"]_struct[", s, "]");
-		let offset = getPositionOffset(i);
 
+		hideRemaining("phase["+i+"]", s);
+
+		let offset = getPositionOffset(i);
 		// Resize phase bars
 		for (let j = 1; j < phaseList.length - i; ++j)
 		{
@@ -182,7 +184,7 @@ function draw()
 					prod = g_ParsedData.units[prod];
 					break;
 				case "techs":
-					prod = clone(g_ParsedData.techs[prod]);
+					prod = clone(g_ParsedData.techs[g_SelectedCiv][prod]);
 					for (let res in trainer.techCostMultiplier)
 						if (prod.cost[res])
 							prod.cost[res] *= trainer.techCostMultiplier[res];
@@ -195,7 +197,7 @@ function draw()
 				++p;
 			}
 		}
-		hideRemaining("trainer["+t+"]_prod[", p, "]");
+		hideRemaining("trainer["+t+"]_row", p);
 
 		let size = thisEle.size;
 		size.right = size.left + Math.max(p*24, defWidth) + 4;
@@ -209,7 +211,7 @@ function draw()
 		phaEle.size = size;
 		++t;
 	}
-	hideRemaining("trainer[", t, "]");
+	hideRemaining("trainers", t);
 
 	let size = Engine.GetGUIObjectByName("display_tree").size;
 	size.right = t > 0 ? -124 : -4;
@@ -251,18 +253,6 @@ function getPositionOffset(idx)
 	return size;
 }
 
-function hideRemaining(prefix, idx, suffix)
-{
-	let obj = Engine.GetGUIObjectByName(prefix + idx + suffix);
-	while (obj)
-	{
-		obj.hidden = true;
-		++idx;
-		obj = Engine.GetGUIObjectByName(prefix + idx + suffix);
-	}
-}
-
-
 /**
  * Positions certain elements that only need to be positioned once
  * (as <repeat> does not reposition automatically).
@@ -285,21 +275,17 @@ function predraw()
 
 		// Set phase icon
 		let phaseIcon = Engine.GetGUIObjectByName("phase["+i+"]_phase");
-		phaseIcon.sprite = "stretched:session/portraits/"+g_ParsedData.phases[pha].icon;
 		phaseIcon.size = "16 32+"+offset+" 48+16 48+32+"+offset;
 
-		// Set initial prod bar size and icon
+		// Set initial prod bar size
 		let j = 1;
 		for (; j < phaseList.length - i; ++j)
 		{
 			let prodBar = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]");
 			prodBar.size = "40 1+"+(24*j)+"+98+"+offset+" 0 1+"+(24*j)+"+98+"+offset+"+22";
-
-			let prodBarIcon = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]_icon");
-			prodBarIcon.sprite = "stretched:session/portraits/"+g_ParsedData.phases[phaseList[i+j]].icon;
 		}
 		// Hide remaining prod bars
-		hideRemaining("phase["+i+"]_bar[", j-1, "]");
+		hideRemaining("phase["+i+"]_bars", j-1);
 
 		let s = 0;
 		let ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
@@ -350,8 +336,8 @@ function predraw()
 		g_DrawLimits[pha].structQuant = s;
 		++i;
 	}
-	hideRemaining("phase[", i, "]");
-	hideRemaining("phase[", i, "]_bar");
+	hideRemaining("phase_rows", i);
+	hideRemaining("phase_ident", i);
 
 	let t = 0;
 	let ele = Engine.GetGUIObjectByName("trainer["+t+"]");
@@ -401,4 +387,25 @@ function predraw()
 function assembleTooltip(template)
 {
 	return g_TooltipFunctions.map(func => func(template)).filter(tip => tip).join("\n");
+}
+
+function drawPhaseIcons()
+{
+	for (let i = 0; i < g_ParsedData.phaseList.length; ++i)
+	{
+		drawPhaseIcon("phase["+i+"]_phase", i);
+
+		for (let j = 1; j < g_ParsedData.phaseList.length - i; ++j)
+			drawPhaseIcon("phase["+i+"]_bar["+(j-1)+"]_icon", j+i);
+	}
+}
+
+function drawPhaseIcon(guiObjectName, phaseIndex)
+{
+	let phaseName = g_ParsedData.phaseList[phaseIndex];
+	let prodPhaseTemplate = g_ParsedData.phases[phaseName + "_" + g_SelectedCiv] || g_ParsedData.phases[phaseName];
+
+	let phaseIcon = Engine.GetGUIObjectByName(guiObjectName);
+	phaseIcon.sprite = "stretched:session/portraits/" + prodPhaseTemplate.icon;
+	phaseIcon.tooltip = getEntityNamesFormatted(prodPhaseTemplate);
 }

@@ -45,6 +45,7 @@ public:
 	virtual CSimulation2* GetSimulation2() { return NULL; }
 	virtual entity_id_t GetEntityId(AtlasMessage::ObjectID obj) { return (entity_id_t)obj; }
 	virtual bool WantsHighFramerate() { return false; }
+	virtual void SetEnabled(bool UNUSED(enabled)) {}
 
 	virtual void SetParam(const std::wstring& name, bool value);
 	virtual void SetParam(const std::wstring& name, int value);
@@ -112,7 +113,7 @@ private:
 		u8 r, g, b, a;
 		float x, y;
 	} SBandboxVertex;
-	
+
 	std::vector<SBandboxVertex> m_BandboxArray;
 };
 
@@ -121,7 +122,7 @@ private:
 class ActorViewer;
 
 /**
- * Actor Viewer window in Atlas. Dedicated view for examining a single actor/entity and its variations, 
+ * Actor Viewer window in Atlas. Dedicated view for examining a single actor/entity and its variations,
  * animations, etc. in more detail.
  */
 class AtlasViewActor : public AtlasView
@@ -136,6 +137,7 @@ public:
 	virtual CSimulation2* GetSimulation2();
 	virtual entity_id_t GetEntityId(AtlasMessage::ObjectID obj);
 	virtual bool WantsHighFramerate();
+	virtual void SetEnabled(bool enabled);
 
 	virtual void SetParam(const std::wstring& name, bool value);
 	virtual void SetParam(const std::wstring& name, int value);

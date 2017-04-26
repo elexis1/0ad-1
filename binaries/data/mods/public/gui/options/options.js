@@ -8,7 +8,7 @@ function init(data)
 	g_Controls = {};
 
 	var options = Engine.ReadJSONFile("gui/options/options.json");
-	for (let category of Object.keys(options))
+	for (let category in options)
 	{
 		let lastSize;
 		for (let i = 0; i < options[category].length; ++i)
@@ -21,6 +21,7 @@ function init(data)
 			let config = option.parameters.config;
 			g_Controls[config] = {
 				"control": setupControl(option, i, category),
+				"label": label,
 				"type": option.type,
 				"dependencies": option.dependencies || undefined,
 				"parameters": option.parameters
@@ -83,7 +84,7 @@ function setupControl(option, i, category)
 		let checked;
 		let keyRenderer;
 
-		for (let param of Object.keys(option.parameters))
+		for (let param in option.parameters)
 		{
 			switch (param)
 			{
@@ -139,7 +140,7 @@ function setupControl(option, i, category)
 		let minval;
 		let maxval;
 
-		for (let param of Object.keys(option.parameters))
+		for (let param in option.parameters)
 		{
 			switch (param)
 			{
@@ -191,7 +192,7 @@ function setupControl(option, i, category)
 		control = Engine.GetGUIObjectByName(category + "Dropdown[" + i + "]");
 		control.onSelectionChange = function(){};  // just the time to setup the value
 
-		for (let param of Object.keys(option.parameters))
+		for (let param in option.parameters)
 		{
 			switch (param)
 			{
@@ -247,7 +248,10 @@ function updateOptionPanel()
 			continue;
 
 		for (let dependency of control.dependencies)
+		{
 			g_Controls[dependency].control.enabled = control.control.checked;
+			g_Controls[dependency].label.enabled = control.control.checked;
+		}
 	}
 
 	// And main buttons

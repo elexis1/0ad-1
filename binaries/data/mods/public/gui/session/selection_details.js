@@ -12,11 +12,13 @@ function layoutSelectionMultiple()
 
 function getResourceTypeDisplayName(resourceType)
 {
-	let resourceCode = resourceType.generic;
-	if (resourceCode == "treasure")
-		return getLocalizedResourceName(resourceType.specific, "firstWord");
-	else
-		return getLocalizedResourceName(resourceCode, "firstWord");
+	return getLocalizedResourceName(
+		g_ResourceData.GetNames()[
+			resourceType.generic == "treasure" ?
+				resourceType.specific :
+				resourceType.generic
+		],
+		"firstWord");
 }
 
 // Updates the health bar of garrisoned units
@@ -49,10 +51,10 @@ function updateGarrisonHealthBar(entState, selection)
 		let healthSize = healthBarGarrison.size;
 		healthSize.rtop = 100-100*Math.max(0, Math.min(1, totalGarrisonHealth / maxGarrisonHealth));
 		healthBarGarrison.size = healthSize;
-		healthGarrison.tooltip = sprintf(translate("%(label)s %(current)s / %(max)s"), {
-			"label": "[font=\"sans-bold-13\"]" + translate("Hitpoints:") + "[/font]",
-			"current": Math.ceil(totalGarrisonHealth),
-			"max": Math.ceil(maxGarrisonHealth)
+
+		healthGarrison.tooltip = getCurrentHealthTooltip({
+			"hitpoints": totalGarrisonHealth,
+			"maxHitpoints": maxGarrisonHealth
 		});
 	}
 }
@@ -182,15 +184,16 @@ function displaySingle(entState)
 				"max": entState.resourceSupply.max
 			});
 
-		let resourceType = getResourceTypeDisplayName(entState.resourceSupply.type);
-
 		let unitResourceBar = Engine.GetGUIObjectByName("resourceBar");
 		let resourceSize = unitResourceBar.size;
 
 		resourceSize.rright = entState.resourceSupply.isInfinite ? 100 :
 						100 * Math.max(0, Math.min(1, +entState.resourceSupply.amount / +entState.resourceSupply.max));
 		unitResourceBar.size = resourceSize;
-		Engine.GetGUIObjectByName("resourceLabel").caption = sprintf(translate("%(resource)s:"), { "resource": resourceType });
+
+		Engine.GetGUIObjectByName("resourceLabel").caption = sprintf(translate("%(resource)s:"), {
+			"resource": getResourceTypeDisplayName(entState.resourceSupply.type)
+		});
 		Engine.GetGUIObjectByName("resourceStats").caption = resources;
 
 		if (entState.hitpoints)
@@ -223,7 +226,9 @@ function displaySingle(entState)
 		if (entState.trader.goods.amount.market2Gain)
 			totalGain += entState.trader.goods.amount.market2Gain;
 		Engine.GetGUIObjectByName("resourceCarryingText").caption = totalGain;
-		Engine.GetGUIObjectByName("resourceCarryingIcon").tooltip = sprintf(translate("Gain: %(gain)s"), { "gain": getTradingTooltip(entState.trader.goods.amount) });
+		Engine.GetGUIObjectByName("resourceCarryingIcon").tooltip = sprintf(translate("Gain: %(gain)s"), {
+			"gain": getTradingTooltip(entState.trader.goods.amount)
+		});
 	}
 	// And for number of workers
 	else if (entState.foundation && entState.visibility == "visible")
@@ -287,11 +292,13 @@ function displaySingle(entState)
 		getSplashDamageTooltip,
 		getHealerTooltip,
 		getArmorTooltip,
+		getGatherTooltip,
 		getRepairRateTooltip,
 		getBuildRateTooltip,
 		getSpeedTooltip,
 		getGarrisonTooltip,
 		getProjectilesTooltip,
+		getResourceTrickleTooltip,
 		getLootTooltip
 	].map(func => func(entState)).filter(tip => tip).join("\n");
 
@@ -360,10 +367,9 @@ function displayMultiple(entStates)
 		healthSize.rtop = 100-100*Math.max(0, Math.min(1, averageHealth / maxHealth));
 		unitHealthBar.size = healthSize;
 
-		Engine.GetGUIObjectByName("healthMultiple").tooltip = sprintf(translate("%(label)s %(current)s / %(max)s"), {
-			"label": "[font=\"sans-bold-13\"]" + translate("Hitpoints:") + "[/font]",
-			"current": Math.ceil(averageHealth),
-			"max": Math.ceil(maxHealth)
+		Engine.GetGUIObjectByName("healthMultiple").tooltip = getCurrentHealthTooltip({
+			"hitpoints": averageHealth,
+			"maxHitpoints": maxHealth
 		});
 	}
 
@@ -392,11 +398,11 @@ function displayMultiple(entStates)
 		// last handle the owner's points, to keep those points on the bottom for clarity
 		setCaptureBarPart(playerID, size);
 
-		Engine.GetGUIObjectByName("captureMultiple").tooltip = sprintf(translate("%(label)s %(current)s / %(max)s"), {
-			"label": "[font=\"sans-bold-13\"]" + translate("Capture points:") + "[/font]",
-			"current": Math.ceil(capturePoints[playerID]),
-			"max": Math.ceil(maxCapturePoints)
-		});
+		Engine.GetGUIObjectByName("captureMultiple").tooltip = getCurrentHealthTooltip({
+				"hitpoints": capturePoints[playerID],
+				"maxHitpoints": maxCapturePoints
+			},
+			translate("Capture points:"));
 	}
 
 	let numberOfUnits = Engine.GetGUIObjectByName("numberOfUnits");
@@ -406,17 +412,19 @@ function displayMultiple(entStates)
 	if (Object.keys(totalCarrying).length)
 		numberOfUnits.tooltip = sprintf(translate("%(label)s %(details)s\n"), {
 			"label": headerFont(translate("Carrying:")),
-			"details": bodyFont(RESOURCES.filter(res => !!totalCarrying[res]).map(
+			"details": bodyFont(Object.keys(totalCarrying).filter(
+				res => totalCarrying[res] != 0).map(
 				res => sprintf(translate("%(type)s %(amount)s"),
-					{ "type": costIcon(res), "amount": totalCarrying[res] })).join("  "))
+					{ "type": resourceIcon(res), "amount": totalCarrying[res] })).join("  "))
 		});
 
 	if (Object.keys(totalLoot).length)
 		numberOfUnits.tooltip += sprintf(translate("%(label)s %(details)s"), {
 			"label": headerFont(translate("Loot:")),
-			"details": bodyFont(Object.keys(totalLoot).map(
+			"details": bodyFont(Object.keys(totalLoot).filter(
+				res => totalLoot[res] != 0).map(
 				res => sprintf(translate("%(type)s %(amount)s"),
-					{ "type": costIcon(res), "amount": totalLoot[res] })).join("  "))
+					{ "type": resourceIcon(res), "amount": totalLoot[res] })).join("  "))
 		});
 
 	// Unhide Details Area
@@ -468,4 +476,58 @@ function updateSelectionDetails()
 	// Show health bar for garrisoned units if the garrison panel is visible
 	if (Engine.GetGUIObjectByName("unitGarrisonPanel") && !Engine.GetGUIObjectByName("unitGarrisonPanel").hidden)
 		updateGarrisonHealthBar(entStates[0], g_Selection.toList());
+}
+
+function getRankIconSprite(entState)
+{
+	if (entState.identity.rank == "Elite")
+		return "stretched:session/icons/rank3.png";
+
+	if (entState.identity.rank == "Advanced")
+		return "stretched:session/icons/rank2.png";
+
+	if (entState.identity.classes.indexOf("CitizenSoldier") != -1)
+		return "stretched:session/icons/rank1.png";
+
+	return "";
+}
+
+function tradingGainString(gain, owner)
+{
+	// Translation: Used in the trading gain tooltip
+	return sprintf(translate("%(gain)s (%(player)s)"), {
+		"gain": gain,
+		"player": GetSimState().players[owner].name
+	});
+}
+
+/**
+ * Returns a message with the details of the trade gain.
+ */
+function getTradingTooltip(gain)
+{
+	if (!gain)
+		return "";
+
+	let markets = [
+		{ "gain": gain.market1Gain, "owner": gain.market1Owner },
+		{ "gain": gain.market2Gain, "owner": gain.market2Owner }
+	];
+
+	let primaryGain = gain.traderGain;
+
+	for (let market of markets)
+		if (market.gain && market.owner == gain.traderOwner)
+			// Translation: Used in the trading gain tooltip to concatenate profits of different players
+			primaryGain += translate("+") + market.gain;
+
+	let tooltip = tradingGainString(primaryGain, gain.traderOwner);
+
+	for (let market of markets)
+		if (market.gain && market.owner != gain.traderOwner)
+			tooltip +=
+				translateWithContext("Separation mark in an enumeration", ", ") +
+				tradingGainString(market.gain, market.owner);
+
+	return tooltip;
 }

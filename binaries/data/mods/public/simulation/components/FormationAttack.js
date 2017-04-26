@@ -25,7 +25,7 @@ FormationAttack.prototype.GetRange = function(target)
 		return result;
 	}
 	var members = cmpFormation.GetMembers();
-	for each (var ent in members)
+	for (var ent of members)
 	{
 		var cmpAttack = Engine.QueryInterface(ent, IID_Attack);
 		if (!cmpAttack)
@@ -35,7 +35,7 @@ FormationAttack.prototype.GetRange = function(target)
 		if (!type)
 			continue;
 
-		// if the formation can attack, take the minimum max range (so units are certainly in range), 
+		// if the formation can attack, take the minimum max range (so units are certainly in range),
 		// If the formation can't attack, take the maximum max range as the point where the formation will be disbanded
 		// Always take the minimum min range (to not get impossible situations)
 		var range = cmpAttack.GetRange(type);

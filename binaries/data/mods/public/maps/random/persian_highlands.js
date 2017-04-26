@@ -1,8 +1,8 @@
 RMS.LoadLibrary("rmgen");
 
 const tCity = "desert_city_tile_pers_dirt";
-var random_season = randInt(0,1);
-if (random_season) //summer
+
+if (randBool()) // summer
 {
 	var tDirtMain = ["desert_dirt_persia_1", "desert_dirt_persia_2", "grass_field_dry"];
 	var tLakebed1 = ["desert_lakebed_dry_b", "desert_lakebed_dry"];
@@ -27,6 +27,8 @@ else //spring
 	var tRocks = "desert_plants_a";
 	var tGrass = "desert_dirt_persia_rocky";
 	var tHill = "desert_cliff_persia_base";
+
+	setTerrainAmbientColor(0.329412, 0.419608, 0.501961);
 }
 
 // gaia entities
@@ -241,8 +243,8 @@ for (var i = 0; i < numHills; ++i)
 		floor(scaleByMapSize(6, 12)),
 		floor(scaleByMapSize(4, 10)),
 		avoidClasses(clPlayer, 7, clCP, 5, clHill, floor(scaleByMapSize(18, 25))),
-		randInt(mapSize),
-		randInt(mapSize),
+		randIntExclusive(0, mapSize),
+		randIntExclusive(0, mapSize),
 		tCliff,
 		clHill,
 		14
@@ -393,7 +395,7 @@ group = new SimpleGroup(
 );
 createObjectGroups(group, 0,
 	avoidClasses(clForest, 0, clPlayer, 20, clHill, 1, clFood, 10, clCP, 2),
-	randInt(1, 4) * numPlayers + 2, 50
+	randIntInclusive(1, 4) * numPlayers + 2, 50
 );
 
 // create camels
@@ -421,13 +423,10 @@ for (var i = 0; i < types.length; ++i)
 		true, clForest
 	);
 	createObjectGroups(group, 0,
-		avoidClasses(clForest, 1, clHill, 1, clPlayer, 1, clMetal, 1, clRock, 1, clCP, 2),
+		avoidClasses(clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6, clCP, 2),
 		num
 	);
 }
-
-if (!random_season)
-	setTerrainAmbientColor(0.329412, 0.419608, 0.501961);
 
 setSunColor(1.0, 0.796, 0.374);
 setSunElevation(PI / 6);

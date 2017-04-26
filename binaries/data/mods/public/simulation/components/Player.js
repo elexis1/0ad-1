@@ -6,7 +6,15 @@ Player.prototype.Schema =
 	"</element>" +
 	"<element name='SharedDropsitesTech' a:help='Allies will share dropsites when this technology is researched. Leave empty to never share dropsites.'>" +
 		"<text/>" +
+	"</element>" +
+	"<element name='SpyCostMultiplier'>" +
+		"<ref name='nonNegativeDecimal'/>" +
 	"</element>";
+
+/**
+ * Which units will be shown with special icons at the top.
+ */
+var panelEntityClasses = "Hero Relic";
 
 Player.prototype.Init = function()
 {
@@ -18,18 +26,8 @@ Player.prototype.Init = function()
 	this.popBonuses = 0; // sum of population bonuses of player's entities
 	this.maxPop = 300; // maximum population
 	this.trainingBlocked = false; // indicates whether any training queue is currently blocked
-	this.resourceCount = {
-		"food": 300,
-		"wood": 300,
-		"metal": 300,
-		"stone": 300
-	};
-	// goods for next trade-route and its proba in % (the sum of probas must be 100)
-	this.tradingGoods = [
-		{ "goods":  "wood", "proba": 30 },
-		{ "goods": "stone", "proba": 35 },
-		{ "goods": "metal", "proba": 35 },
-	];
+	this.resourceCount = {};
+	this.tradingGoods = []; // goods for next trade-route and its proba in % (the sum of probas must be 100)
 	this.team = -1;	// team number of the player, players on the same team will always have ally diplomatic status - also this is useful for team emblems, scoring, etc.
 	this.teamsLocked = false;
 	this.state = "active"; // game state - one of "active", "defeated", "won"
@@ -43,16 +41,27 @@ Player.prototype.Init = function()
 	this.tradeRateMultiplier = 1;
 	this.cheatsEnabled = false;
 	this.cheatTimeMultiplier = 1;
-	this.heroes = [];
-	this.resourceNames = {
-		"food": markForTranslation("Food"),
-		"wood": markForTranslation("Wood"),
-		"metal": markForTranslation("Metal"),
-		"stone": markForTranslation("Stone"),
-	};
+	this.panelEntities = [];
+	this.resourceNames = {};
 	this.disabledTemplates = {};
 	this.disabledTechnologies = {};
 	this.startingTechnologies = [];
+	this.spyCostMultiplier = +this.template.SpyCostMultiplier;
+
+	// Initial resources and trading goods probability in steps of 5
+	let resCodes = Resources.GetCodes();
+	let quotient = Math.floor(20 / resCodes.length);
+	let remainder = 20 % resCodes.length;
+	for (let i in resCodes)
+	{
+		let res = resCodes[i];
+		this.resourceCount[res] = 300;
+		this.resourceNames[res] = Resources.GetResource(res).name;
+		this.tradingGoods.push({
+			"goods":  res,
+			"proba": 5 * (quotient + (+i < remainder ? 1 : 0))
+		});
+	}
 };
 
 Player.prototype.SetPlayerID = function(id)
@@ -175,9 +184,14 @@ Player.prototype.GetTradeRateMultiplier = function()
 	return this.tradeRateMultiplier;
 };
 
-Player.prototype.GetHeroes = function()
+Player.prototype.GetSpyCostMultiplier = function()
 {
-	return this.heroes;
+	return this.spyCostMultiplier;
+};
+
+Player.prototype.GetPanelEntities = function()
+{
+	return this.panelEntities;
 };
 
 Player.prototype.IsTrainingBlocked = function()
@@ -197,14 +211,8 @@ Player.prototype.UnBlockTraining = function()
 
 Player.prototype.SetResourceCounts = function(resources)
 {
-	if (resources.food !== undefined)
-		this.resourceCount.food = resources.food;
-	if (resources.wood !== undefined)
-		this.resourceCount.wood = resources.wood;
-	if (resources.stone !== undefined)
-		this.resourceCount.stone = resources.stone;
-	if (resources.metal !== undefined)
-		this.resourceCount.metal = resources.metal;
+	for (let res in resources)
+		this.resourceCount[res] = resources[res];
 };
 
 Player.prototype.GetResourceCounts = function()
@@ -228,9 +236,7 @@ Player.prototype.AddResource = function(type, amount)
 Player.prototype.AddResources = function(amounts)
 {
 	for (var type in amounts)
-	{
 		this.resourceCount[type] += +amounts[type];
-	}
 };
 
 Player.prototype.GetNeededResources = function(amounts)
@@ -295,7 +301,6 @@ Player.prototype.SubtractResourcesOrNotify = function(amounts)
 		return false;
 	}
 
-	// Subtract the resources
 	for (var type in amounts)
 		this.resourceCount[type] -= amounts[type];
 
@@ -317,7 +322,7 @@ Player.prototype.TrySubtractResources = function(amounts)
 
 Player.prototype.GetNextTradingGoods = function()
 {
-	var value = 100*Math.random();
+	var value = randFloat(0, 100);
 	var last = this.tradingGoods.length - 1;
 	var sumProba = 0;
 	for (var i = 0; i < last; ++i)
@@ -340,18 +345,30 @@ Player.prototype.GetTradingGoods = function()
 
 Player.prototype.SetTradingGoods = function(tradingGoods)
 {
-	var sumProba = 0;
-	for (var resource in tradingGoods)
-		sumProba += tradingGoods[resource];
-	if (sumProba != 100)	// consistency check
+	let resCodes = Resources.GetCodes();
+	let sumProba = 0;
+	for (let resource in tradingGoods)
 	{
-		error("Player.js SetTradingGoods: " + uneval(tradingGoods));
-		tradingGoods = { "food": 20, "wood":20, "stone":30, "metal":30 };
+		if (resCodes.indexOf(resource) == -1)
+		{
+			error("Invalid trading goods: " + uneval(tradingGoods));
+			return;
+		}
+		sumProba += tradingGoods[resource];
+	}
+
+	if (sumProba != 100)
+	{
+		error("Invalid trading goods: " + uneval(tradingGoods));
+		return;
 	}
 
 	this.tradingGoods = [];
-	for (var resource in tradingGoods)
-		this.tradingGoods.push( {"goods": resource, "proba": tradingGoods[resource]} );
+	for (let resource in tradingGoods)
+		this.tradingGoods.push({
+			"goods": resource,
+			"proba": tradingGoods[resource]
+		});
 };
 
 Player.prototype.GetState = function()
@@ -691,12 +708,11 @@ Player.prototype.OnGlobalOwnershipChanged = function(msg)
 		if (cmpCost)
 			this.popUsed -= cmpCost.GetPopCost();
 
-		if (cmpIdentity && cmpIdentity.HasClass("Hero"))
+		if (cmpIdentity && MatchesClassList(cmpIdentity.GetClassesList(), panelEntityClasses))
 		{
-			//Remove from Heroes list
-			var index = this.heroes.indexOf(msg.entity);
+			let index = this.panelEntities.indexOf(msg.entity);
 			if (index >= 0)
-				this.heroes.splice(index, 1);
+				this.panelEntities.splice(index, 1);
 		}
 	}
 	if (msg.to == this.playerID)
@@ -704,8 +720,8 @@ Player.prototype.OnGlobalOwnershipChanged = function(msg)
 		if (cmpCost)
 			this.popUsed += cmpCost.GetPopCost();
 
-		if (cmpIdentity && cmpIdentity.HasClass("Hero"))
-			this.heroes.push(msg.entity);
+		if (cmpIdentity && MatchesClassList(cmpIdentity.GetClassesList(), panelEntityClasses))
+			this.panelEntities.push(msg.entity);
 	}
 };
 
@@ -720,6 +736,13 @@ Player.prototype.OnResearchFinished = function(msg)
 Player.prototype.OnDiplomacyChanged = function()
 {
 	this.UpdateSharedLos();
+};
+
+Player.prototype.OnValueModification = function(msg)
+{
+	if (msg.component != "Player" || msg.valueNames.indexOf("Player/SpyCostMultiplier") === -1)
+		return;
+	this.spyCostMultiplier = ApplyValueModificationsToPlayer("Player/SpyCostMultiplier", +this.template.SpyCostMultiplier, this.entity, this.playerID);
 };
 
 Player.prototype.SetCheatsEnabled = function(flag)

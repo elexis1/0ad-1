@@ -1,4 +1,4 @@
-/* Copyright (c) 2010 Wildfire Games
+/* Copyright (c) 2017 Wildfire Games
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -7,10 +7,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -303,7 +303,7 @@ static Status s3tc_decompress(Tex* t)
 // DDS file format
 //-----------------------------------------------------------------------------
 
-// bit values and structure definitions taken from 
+// bit values and structure definitions taken from
 // http://msdn.microsoft.com/en-us/library/ee417785(VS.85).aspx
 
 #pragma pack(push, 1)
@@ -604,7 +604,7 @@ size_t TexCodecDds::hdr_size(const u8* UNUSED(file)) const
 }
 
 
-Status TexCodecDds::decode(rpU8 data, size_t UNUSED(size), Tex* RESTRICT t) const
+Status TexCodecDds::decode(u8* RESTRICT data, size_t UNUSED(size), Tex* RESTRICT t) const
 {
 	const DDS_HEADER* sd = (const DDS_HEADER*)(data+4);
 	RETURN_STATUS_IF_ERR(decode_sd(sd, t->m_Width, t->m_Height, t->m_Bpp, t->m_Flags));

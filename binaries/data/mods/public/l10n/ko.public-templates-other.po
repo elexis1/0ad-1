@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# aksidion kreimben <aksidionkreimben@gmail.com>, 2016
+# Aksidion Kreimben <aksidionkreimben@gmail.com>, 2016
 # Kevin Min <gr326887@graded.br>, 2015
 # YongNam Kim <darkgem11@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-09-30 08:24+0000\n"
+"POT-Creation-Date: 2017-04-03 09:02+0200\n"
+"PO-Revision-Date: 2017-04-03 08:39+0000\n"
 "Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Korean (http://www.transifex.com/wildfire-games/0ad/language/ko/)\n"
 "MIME-Version: 1.0\n"
@@ -117,7 +117,7 @@ msgstr "보물"
 msgid "A treasure that can be quickly gathered."
 msgstr "빨리 채취할 수 있는 보물"
 
-#: simulation/templates/template_structure.xml:55
+#: simulation/templates/template_structure.xml:60
 msgid "Structure"
 msgstr "구조물"
 
@@ -202,8 +202,8 @@ msgid "Box"
 msgstr "박스"
 
 #: simulation/templates/formations/column_closed.xml:5
-msgid "Column Closed"
-msgstr "기둥이 닫혔습니다."
+msgid "Forced March"
+msgstr ""
 
 #: simulation/templates/formations/column_open.xml:5
 msgid "Column Open"
@@ -218,20 +218,20 @@ msgid "Flank"
 msgstr "측면"
 
 #: simulation/templates/formations/line_closed.xml:5
-msgid "Line Closed"
-msgstr "라인이 닫혔습니다."
+msgid "Close Order"
+msgstr ""
 
 #: simulation/templates/formations/line_open.xml:5
-msgid "Line Open"
-msgstr "라인이 열렸습니다."
+msgid "Open Order"
+msgstr ""
 
 #: simulation/templates/formations/null.xml:5
 msgid "None"
 msgstr "없음"
 
 #: simulation/templates/formations/phalanx.xml:6
-msgid "10 melee infantry units required"
-msgstr "10명의 근접 보병 유닛이 필요합니다."
+msgid "10 hoplite infantry required"
+msgstr ""
 
 #: simulation/templates/formations/phalanx.xml:7
 msgid "Phalanx"
@@ -250,10 +250,10 @@ msgid "Skirmish"
 msgstr "접전지역"
 
 #: simulation/templates/formations/syntagma.xml:6
-msgid "9 pike infantry units required"
-msgstr "9개의 단창 보병 유닛이 필요함"
+msgid "16 pike infantry units required"
+msgstr ""
 
-#: simulation/templates/formations/syntagma.xml:7
+#: simulation/templates/formations/syntagma.xml:8
 msgid "Syntagma"
 msgstr "구성"
 
@@ -266,8 +266,8 @@ msgid "Testudo"
 msgstr "바다거북이"
 
 #: simulation/templates/formations/wedge.xml:6
-msgid "3 cavalry units required"
-msgstr "3개의 기병 유닛이 필요함"
+msgid "6 cavalry units required"
+msgstr ""
 
 #: simulation/templates/formations/wedge.xml:7
 msgid "Wedge"
@@ -278,8 +278,12 @@ msgid "Bear"
 msgstr "곰"
 
 #: simulation/templates/gaia/fauna_boar.xml:18
-msgid "Boar"
-msgstr "멧돼지"
+msgid "Wild Boar"
+msgstr ""
+
+#: simulation/templates/gaia/fauna_boar.xml:19
+msgid "Sus scrofa"
+msgstr ""
 
 #: simulation/templates/gaia/fauna_camel.xml:9
 msgid "Camel"
@@ -301,19 +305,23 @@ msgstr "악어"
 msgid "Deer"
 msgstr "사슴"
 
-#: simulation/templates/gaia/fauna_elephant_african_bush.xml:33
+#: simulation/templates/gaia/fauna_elephant_african_bush.xml:11
 msgid "African Bush Elephant"
 msgstr "아프리카 초원 코끼리"
+
+#: simulation/templates/gaia/fauna_elephant_african_infant.xml:14
+msgid "Elephant"
+msgstr ""
 
 #: simulation/templates/gaia/fauna_elephant_african_infant.xml:15
 msgid "African Elephant (Infant)"
 msgstr "아프리카 새끼 코끼리"
 
-#: simulation/templates/gaia/fauna_elephant_asian.xml:33
+#: simulation/templates/gaia/fauna_elephant_asian.xml:11
 msgid "Asian Elephant"
 msgstr "아시아 코끼리"
 
-#: simulation/templates/gaia/fauna_elephant_north_african.xml:33
+#: simulation/templates/gaia/fauna_elephant_north_african.xml:11
 msgid "North African Elephant"
 msgstr "북아프리카 코끼리"
 
@@ -367,13 +375,25 @@ msgstr "암사자"
 msgid "Muskox"
 msgstr "사향소"
 
-#: simulation/templates/gaia/fauna_peacock.xml:12
+#: simulation/templates/gaia/fauna_peacock.xml:14
 msgid "Peacock"
 msgstr "공작새"
+
+#: simulation/templates/gaia/fauna_peacock.xml:15
+msgid "Pavo cristatus"
+msgstr ""
 
 #: simulation/templates/gaia/fauna_pig.xml:15
 msgid "Pig"
 msgstr "돼지"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:18
+msgid "Flaming Pig"
+msgstr ""
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:19
+msgid "Sus scrofa domesticus igne"
+msgstr ""
 
 #: simulation/templates/gaia/fauna_rabbit.xml:9
 msgid "Rabbit"
@@ -399,7 +419,7 @@ msgstr "양"
 msgid "Tiger"
 msgstr "호랑이"
 
-#: simulation/templates/gaia/fauna_walrus.xml:23
+#: simulation/templates/gaia/fauna_walrus.xml:24
 msgid "Walrus"
 msgstr "바다코끼리"
 
@@ -415,11 +435,11 @@ msgstr "혹등 고래"
 msgid "Wildebeest"
 msgstr "암소같은 영양"
 
-#: simulation/templates/gaia/fauna_wolf.xml:18
+#: simulation/templates/gaia/fauna_wolf.xml:4
 msgid "Wolf"
 msgstr "늑대"
 
-#: simulation/templates/gaia/fauna_wolf_snow.xml:18
+#: simulation/templates/gaia/fauna_wolf_snow.xml:4
 msgid "Snow Wolf"
 msgstr "눈 늑대"
 
@@ -770,12 +790,12 @@ msgstr "방어벽의 끝"
 msgid "Wooden Wall End"
 msgstr "목재 방벽의 끝"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr "방어벽 요새"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
 msgstr ""
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
@@ -879,6 +899,18 @@ msgstr "열주(가로수)"
 msgid "Corinthian Colonnade"
 msgstr "코린트식 열주(가로수)"
 
+#: simulation/templates/other/special_catafalque.xml:22
+msgid "Catafalque"
+msgstr ""
+
+#: simulation/templates/other/special_catafalque.xml:24
+msgid "A catafalque that holds the remains of a great leader."
+msgstr ""
+
+#: simulation/templates/other/special_catafalque.xml:25
+msgid "Relic"
+msgstr ""
+
 #: simulation/templates/other/special_treasure_shipwreck.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_ram_bow.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_sail_boat.xml:10
@@ -942,6 +974,61 @@ msgstr "미완성된 그리스 사원"
 msgid "This temple is unfinished and has fallen to ruin."
 msgstr "이 사원은 미완성 되었고, 유적으로 변했습니다."
 
+#: simulation/templates/other/catafalque/athen_catafalque.xml:6
+msgid "Solon"
+msgstr ""
+
+#: simulation/templates/other/catafalque/brit_catafalque.xml:6
+msgid "Cassivellaunus"
+msgstr ""
+
+#: simulation/templates/other/catafalque/cart_catafalque.xml:6
+msgid "Hasdrubal (Quartermaster)"
+msgstr ""
+
+#: simulation/templates/other/catafalque/gaul_catafalque.xml:6
+msgid "Ambiorix"
+msgstr ""
+
+#: simulation/templates/other/catafalque/iber_catafalque.xml:6
+msgid "Mandonius"
+msgstr ""
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:6
+msgid "Philip V"
+msgstr ""
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:7
+msgid ""
+"Financial Reorganization: Allied with Rome, Philip reorganized the country's"
+" internal affairs and finances, leaving as a legacy reopened mines and a new"
+" currency. Gain a slow trickle of metal."
+msgstr ""
+
+#: simulation/templates/other/catafalque/maur_catafalque.xml:6
+msgid "Bindusara"
+msgstr ""
+
+#: simulation/templates/other/catafalque/pers_catafalque.xml:6
+msgid "Artaxerxes II"
+msgstr ""
+
+#: simulation/templates/other/catafalque/ptol_catafalque.xml:6
+msgid "Ptolemy III Euergetes (Benefactor)"
+msgstr ""
+
+#: simulation/templates/other/catafalque/rome_catafalque.xml:6
+msgid "Lucius Junius Brutus"
+msgstr ""
+
+#: simulation/templates/other/catafalque/sele_catafalque.xml:6
+msgid "Antiochus I Soter (Savior)"
+msgstr ""
+
+#: simulation/templates/other/catafalque/spart_catafalque.xml:6
+msgid "Lycurgus"
+msgstr ""
+
 #: simulation/templates/skirmish/structures/default_house_10.xml:5
 msgid ""
 "Changes in a 10-pop house for civilisations with those houses, is deleted "
@@ -959,9 +1046,13 @@ msgstr "인구수를 5명으로 만드는 것은 다른 문명에서는 삭제�
 msgid "Marker"
 msgstr "채점자"
 
-#: simulation/templates/special/player.xml:56
+#: simulation/templates/special/player.xml:57
 msgid "Player"
 msgstr "선수"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr ""
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5

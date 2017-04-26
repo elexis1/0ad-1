@@ -16,8 +16,6 @@ function ApplyValueModificationsToEntity(tech_type, current_value, entity)
 function ApplyValueModificationsToPlayer(tech_type, current_value, playerEntity, playerID)
 {
 	let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
-	if (!cmpTemplateManager)
-		return current_value;
 	let entityTemplateName = cmpTemplateManager.GetCurrentTemplateName(playerEntity);
 	let entityTemplate = cmpTemplateManager.GetTemplate(entityTemplateName);
 	return ApplyValueModificationsToTemplate(tech_type, current_value, playerID, entityTemplate);
@@ -30,7 +28,7 @@ function ApplyValueModificationsToTemplate(tech_type, current_value, playerID, t
 	if (cmpTechnologyManager)
 		value = cmpTechnologyManager.ApplyModificationsTemplate(tech_type, current_value, template);
 
-	let cmpAuraManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_AuraManager); 
+	let cmpAuraManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_AuraManager);
 	if (!cmpAuraManager)
 		return value;
 	return cmpAuraManager.ApplyTemplateModifications(tech_type, value, playerID, template);

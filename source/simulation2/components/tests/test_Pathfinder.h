@@ -37,7 +37,7 @@ public:
 		g_VFS = CreateVfs(20 * MiB);
 		g_VFS->Mount(L"", DataDir()/"mods"/"mod", VFS_MOUNT_MUST_EXIST);
 		g_VFS->Mount(L"", DataDir()/"mods"/"public", VFS_MOUNT_MUST_EXIST, 1); // ignore directory-not-found errors
-		g_VFS->Mount(L"cache/", DataDir() / "cache");
+		TS_ASSERT_OK(g_VFS->Mount(L"cache", DataDir()/"_testcache"));
 
 		CXeromyces::Startup();
 
@@ -52,6 +52,7 @@ public:
 		delete &g_TexMan;
 		CXeromyces::Terminate();
 		g_VFS.reset();
+		DeleteDirectory(DataDir()/"_testcache");
 	}
 
 	void test_namespace()
@@ -75,7 +76,7 @@ public:
 
 		LDR_BeginRegistering();
 		mapReader->LoadMap(L"maps/skirmishes/Median Oasis (2).pmp",
-			sim2.GetScriptInterface().GetJSRuntime(), JS::UndefinedHandleValue, 
+			sim2.GetScriptInterface().GetJSRuntime(), JS::UndefinedHandleValue,
 			&terrain, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 			&sim2, &sim2.GetSimContext(), -1, false);
 		LDR_EndRegistering();
@@ -185,8 +186,8 @@ public:
 		CMapReader* mapReader = new CMapReader(); // it'll call "delete this" itself
 
 		LDR_BeginRegistering();
-		mapReader->LoadMap(L"maps/scenarios/Peloponnese.pmp", 
-			sim2.GetScriptInterface().GetJSRuntime(), JS::UndefinedHandleValue, 
+		mapReader->LoadMap(L"maps/scenarios/Peloponnese.pmp",
+			sim2.GetScriptInterface().GetJSRuntime(), JS::UndefinedHandleValue,
 			&terrain, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 			&sim2, &sim2.GetSimContext(), -1, false);
 		LDR_EndRegistering();

@@ -763,16 +763,6 @@ else if (md == 4) //central river
 				}
 			}
 		}
-	if (mdd2 == 1)
-	{
-		if (mdd1 == 1)
-		{
-			passageMaker(floor(fractionToTiles(0.2)), floor(fractionToTiles(0.25)), floor(fractionToTiles(0.8)), floor(fractionToTiles(0.25)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-			passageMaker(floor(fractionToTiles(0.2)), floor(fractionToTiles(0.75)), floor(fractionToTiles(0.8)), floor(fractionToTiles(0.75)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-		}
-			passageMaker(floor(fractionToTiles(0.25)), floor(fractionToTiles(0.2)), floor(fractionToTiles(0.25)), floor(fractionToTiles(0.8)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-			passageMaker(floor(fractionToTiles(0.75)), floor(fractionToTiles(0.2)), floor(fractionToTiles(0.75)), floor(fractionToTiles(0.8)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-		}
 	}
 }
 //********************************************************************************************************
@@ -1731,20 +1721,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 for (var i = 0; i < numPlayers; i++)
@@ -1989,7 +1966,7 @@ for (var i = 0; i < types.length; ++i)
 		true, clForest
 	);
 	createObjectGroups(group, 0,
-		[avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 0, clMetal, 1, clRock, 1), stayClasses(clLand, 4)],
+		[avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 0, clMetal, 6, clRock, 6), stayClasses(clLand, 4)],
 		num
 	);
 }
@@ -2042,20 +2019,7 @@ createObjectGroups(group, 0,
 	planetm * scaleByMapSize(13, 200), 50
 );
 
-random_terrain = randInt(1,6);
-if (random_terrain == 1)
-	setSkySet("cirrus");
-else if (random_terrain == 2)
-	setSkySet("cumulus");
-else if (random_terrain == 3)
-	setSkySet("sunny");
-else if (random_terrain == 4)
-	setSkySet("sunny 1");
-else if (random_terrain == 5)
-	setSkySet("mountainous");
-else if (random_terrain == 6)
-	setSkySet("stratus");
-
+setSkySet(pickRandom(["cirrus", "cumulus", "sunny", "sunny 1", "mountainous", "stratus"]));
 setSunRotation(randFloat(0, TWO_PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 

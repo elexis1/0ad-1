@@ -87,8 +87,6 @@ function loadReplays(replaySelectionData)
 	for (let replay of g_Replays)
 	{
 		let nonAIPlayers = 0;
-		// Use time saved in file, otherwise file mod date
-		replay.timestamp = replay.attribs.timestamp ? +replay.attribs.timestamp : +replay.filemod_timestamp-replay.duration;
 
 		// Check replay for compatibility
 		replay.isCompatible = isReplayCompatible(replay);
@@ -214,12 +212,12 @@ function displayReplayList()
 		let works = replay.isCompatible;
 		return {
 			"directories": replay.directory,
-			"months": greyout(getReplayDateTime(replay), works),
-			"popCaps": greyout(translatePopulationCapacity(replay.attribs.settings.PopulationCap), works),
-			"mapNames": greyout(getReplayMapName(replay), works),
-			"mapSizes": greyout(translateMapSize(replay.attribs.settings.Size), works),
-			"durations": greyout(getReplayDuration(replay), works),
-			"playerNames": greyout(getReplayPlayernames(replay), works)
+			"months": compatibilityColor(getReplayDateTime(replay), works),
+			"popCaps": compatibilityColor(translatePopulationCapacity(replay.attribs.settings.PopulationCap), works),
+			"mapNames": compatibilityColor(getReplayMapName(replay), works),
+			"mapSizes": compatibilityColor(translateMapSize(replay.attribs.settings.Size), works),
+			"durations": compatibilityColor(getReplayDuration(replay), works),
+			"playerNames": compatibilityColor(getReplayPlayernames(replay), works)
 		};
 	});
 
@@ -267,7 +265,8 @@ function displayReplayDetails()
 	Engine.GetGUIObjectByName("sgMapSize").caption = translateMapSize(replay.attribs.settings.Size);
 	Engine.GetGUIObjectByName("sgMapType").caption = translateMapType(replay.attribs.settings.mapType);
 	Engine.GetGUIObjectByName("sgVictory").caption = translateVictoryCondition(replay.attribs.settings.GameType);
-	Engine.GetGUIObjectByName("sgNbPlayers").caption = replay.attribs.settings.PlayerData.length;
+	Engine.GetGUIObjectByName("sgNbPlayers").caption = sprintf(translate("Players: %(numberOfPlayers)s"),
+		{ "numberOfPlayers": replay.attribs.settings.PlayerData.length });
 
 	let metadata = Engine.GetReplayMetadata(replay.directory);
 	Engine.GetGUIObjectByName("sgPlayersNames").caption =
@@ -288,19 +287,11 @@ function displayReplayDetails()
 }
 
 /**
- * Adds grey font if replay is not compatible.
- */
-function greyout(text, isCompatible)
-{
-	return isCompatible ? text : '[color="96 96 96"]' + text + '[/color]';
-}
-
-/**
  * Returns a human-readable version of the replay date.
  */
 function getReplayDateTime(replay)
 {
-	return Engine.FormatMillisecondsIntoDateString(replay.timestamp * 1000, translate("yyyy-MM-dd HH:mm"));
+	return Engine.FormatMillisecondsIntoDateStringLocal(replay.attribs.timestamp * 1000, translate("yyyy-MM-dd HH:mm"));
 }
 
 /**
@@ -330,7 +321,7 @@ function getReplayMapName(replay)
  */
 function getReplayMonth(replay)
 {
-	return Engine.FormatMillisecondsIntoDateString(replay.timestamp * 1000, translate("yyyy-MM"));
+	return Engine.FormatMillisecondsIntoDateStringLocal(replay.attribs.timestamp * 1000, translate("yyyy-MM"));
 }
 
 /**

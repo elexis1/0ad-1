@@ -1,10 +1,7 @@
 RMS.LoadLibrary("rmgen");
 
-//set up the random terrain
-var random_var = randInt(1,2);
-
-//late spring
-if (random_var == 1)
+// late spring
+if (randBool())
 {
 	setFogThickness(0.26);
 	setFogFactor(0.4);
@@ -218,20 +215,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 RMS.SetProgress(20);
@@ -264,7 +248,7 @@ for (var i = 0; i < numLakes; ++i)
 	if (!lakeAreaLen)
 		break;
 
-	chosenPoint = lakeAreas[randInt(lakeAreaLen)];
+	chosenPoint = pickRandom(lakeAreas);
 
 	placer = new ChainPlacer(1, floor(scaleByMapSize(4, 8)), floor(scaleByMapSize(40, 180)), 0.7, chosenPoint[0], chosenPoint[1]);
 	var terrainPainter = new LayeredPainter(
@@ -391,7 +375,7 @@ createFood
   [new SimpleObject(oBerryBush, 5,7, 0,4)]
  ],
  [
-  randInt(1, 4) * numPlayers + 2
+  randIntInclusive(1, 4) * numPlayers + 2
  ],
  avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 10)
 );
@@ -412,17 +396,9 @@ RMS.SetProgress(85);
 
 // create straggler trees
 var types = [oPine];
-createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 3, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1));
+createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 3, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
 
-random_var = randInt(1,3);
-
-if (random_var==1)
-	setSkySet("cirrus");
-else if (random_var ==2)
-	setSkySet("cumulus");
-else if (random_var ==3)
-	setSkySet("sunny");
-
+setSkySet(pickRandom(["cirrus", "cumulus", "sunny"]));
 setSunRotation(randFloat(0, TWO_PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 setWaterColor(0.0, 0.047, 0.286);				// dark majestic blue

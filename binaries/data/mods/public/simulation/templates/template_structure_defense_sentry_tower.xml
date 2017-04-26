@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Entity parent="template_structure_defense_defense_tower">
+  <Armour>
+    <Hack op="add">-5.0</Hack>
+    <Pierce op="add">-5.0</Pierce>
+    <Crush op="add">-2.0</Crush>
+  </Armour>
+  <Attack>
+    <Ranged>
+      <Hack>0.0</Hack>
+      <Pierce>6.0</Pierce>
+      <Crush>0.0</Crush>
+      <MaxRange>66.0</MaxRange>
+      <MinRange>4.0</MinRange>
+      <ElevationBonus>9.0</ElevationBonus>
+    </Ranged>
+  </Attack>
+  <Capturable>
+    <CapturePoints>800</CapturePoints>
+  </Capturable>
+  <Cost>
+    <BuildTime>40</BuildTime>
+    <Resources>
+      <wood>100</wood>
+      <stone>0</stone>
+    </Resources>
+  </Cost>
+  <Footprint>
+    <Square width="9.5" depth="8.5"/>
+    <Height>9.0</Height>
+  </Footprint>
+  <GarrisonHolder>
+    <Max>3</Max>
+  </GarrisonHolder>
+  <Health>
+    <Max>250</Max>
+  </Health>
+  <Identity>
+    <SpecificName>Sentry Tower</SpecificName>
+    <GenericName>Sentry Tower</GenericName>
+    <Icon>structures/sentry_tower.png</Icon>
+    <VisibleClasses datatype="tokens">Village -Town SentryTower</VisibleClasses>
+    <RequiredTechnology>phase_village</RequiredTechnology>
+  </Identity>
+  <Loot>
+    <wood>20</wood>
+    <stone>0</stone>
+  </Loot>
+  <Obstruction>
+    <Static width="9.0" depth="7.5"/>
+  </Obstruction>
+  <ProductionQueue>
+    <Technologies datatype="tokens">
+      -attack_tower_crenellations
+      -attack_tower_range
+      -attack_tower_murderholes
+      -attack_tower_defense
+    </Technologies>
+  </ProductionQueue>
+  <StatusBars>
+    <HeightOffset>18.0</HeightOffset>
+  </StatusBars>
+  <TerritoryInfluence>
+    <Radius op="mul">0.5</Radius>
+  </TerritoryInfluence>
+  <Upgrade>
+    <Tower>
+      <Entity>structures/{civ}_defense_tower</Entity>
+      <Tooltip>Reinforce with stone and upgrade to a defense tower.</Tooltip>
+      <RequiredTechnology>phase_town</RequiredTechnology>
+      <Cost>
+        <wood>50</wood>
+        <stone>100</stone>
+      </Cost>
+      <Time>100</Time>
+    </Tower>
+  </Upgrade>
+  <VisualActor>
+    <Actor>props/special/palisade_rocks_fort.xml</Actor>
+  </VisualActor>
+</Entity>

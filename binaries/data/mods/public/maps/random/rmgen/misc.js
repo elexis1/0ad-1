@@ -228,6 +228,28 @@ function placeDefaultChicken(playerX, playerZ, tileClass, constraint = undefined
 				break;
 		}
 }
+
+/**
+ * Typically used for placing grass tufts around the civic centers.
+ */
+function placeDefaultDecoratives(playerX, playerZ, template, tileclass, radius, constraint = undefined)
+{
+	for (let i = 0; i < PI * radius * radius / 250; ++i)
+	{
+		let angle = randFloat(0, 2 * PI);
+		let dist = radius - randIntInclusive(5, 11);
+
+		createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(template, 2, 5, 0, 1, -PI/8, PI/8)],
+				false,
+				tileclass,
+				Math.round(playerX + dist * Math.cos(angle)),
+				Math.round(playerZ + dist * Math.sin(angle))
+			), 0, constraint);
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // paintTerrainBasedOnHeight
 //
@@ -612,13 +634,10 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 	for (var i = 0; i < numCircles; ++i)
 	{
 		var badPoint = false;
-		var point = edges[randInt(edges.length)];
-		var cx = point[0], cz = point[1];
+		var [cx, cz] = pickRandom(edges);
 
 		if (queueEmpty)
-		{
-			var radius = randInt(minRadius, maxRadius);
-		}
+			var radius = randIntInclusive(minRadius, maxRadius);
 		else
 		{
 			var radius = q.pop();
@@ -766,7 +785,7 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 				dz = iz - cz;
 				distance2 = dx * dx + dz * dz;
 
-				var newHeight = round((Math.sin(PI*(2*((radius - sqrt(distance2))/radius)/3 - 1/6)) + 0.5) * 2 / 3 *clumpHeight) + randInt(0,2);
+				var newHeight = Math.round((Math.sin(PI * (2 * ((radius - Math.sqrt(distance2)) / radius) / 3 - 1/6)) + 0.5) * 2/3 * clumpHeight) + randIntInclusive(0, 2);
 
 				if (dx * dx + dz * dz <= radius2)
 				{

@@ -1,4 +1,4 @@
-/* Copyright (C) 2009 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -29,6 +29,8 @@
 #include "maths/MathUtil.h"
 #include "maths/Quaternion.h"
 #include "lib/res/graphics/ogl_tex.h"
+#include "simulation2/Simulation2.h"
+#include "simulation2/components/ICmpCinemaManager.h"
 
 
 namespace AtlasMessage {
@@ -53,7 +55,7 @@ CCinemaData ConstructCinemaData(const sCinemaPath& path)
 	data.m_Switch = path.change;
 	//data.m_Mode = path.mode;
 	//data.m_Style = path.style;
-	
+
 	return data;
 }
 sCinemaSplineNode ConstructCinemaNode(const SplineData& data)
@@ -62,31 +64,34 @@ sCinemaSplineNode ConstructCinemaNode(const SplineData& data)
 	node.px = data.Position.X.ToFloat();
 	node.py = data.Position.Y.ToFloat();
 	node.pz = data.Position.Z.ToFloat();
-	
+
 	node.rx = data.Rotation.X.ToFloat();
 	node.ry = data.Rotation.Y.ToFloat();
 	node.rz = data.Rotation.Z.ToFloat();
 	node.t = data.Distance.ToFloat();
-	
+
 	return node;
 }
 
 std::vector<sCinemaPath> GetCurrentPaths()
 {
-	const std::map<CStrW, CCinemaPath>& paths = g_Game->GetView()->GetCinema()->GetAllPaths();
 	std::vector<sCinemaPath> atlasPaths;
+	CmpPtr<ICmpCinemaManager> cmpCinemaManager(*g_Game->GetSimulation2(), SYSTEM_ENTITY);
+	if (!cmpCinemaManager)
+		return atlasPaths;
+	const std::map<CStrW, CCinemaPath>& paths = cmpCinemaManager->GetPaths();
 
 	for ( std::map<CStrW, CCinemaPath>::const_iterator it=paths.begin(); it!=paths.end(); ++it  )
 	{
-		sCinemaPath path = ConstructCinemaPath(&it->second);	
+		sCinemaPath path = ConstructCinemaPath(&it->second);
 		path.name = it->first;
-		
+
 		const std::vector<SplineData>& nodes = it->second.GetAllNodes();
 		std::vector<sCinemaSplineNode> atlasNodes;
-			
+
 		for ( size_t i=0; i<nodes.size(); ++i )
 			atlasNodes.push_back( ConstructCinemaNode(nodes[i]) );
-		
+
 		if ( !atlasNodes.empty() )
 		{
 			float back = atlasNodes.back().t;
@@ -107,7 +112,7 @@ std::vector<sCinemaPath> GetCurrentPaths()
 void SetCurrentPaths(const std::vector<sCinemaPath>& atlasPaths)
 {
 	std::map<CStrW, CCinemaPath> paths;
-	
+
 	for ( std::vector<sCinemaPath>::const_iterator it=atlasPaths.begin(); it!=atlasPaths.end(); ++it )
 	{
 		CStrW pathName(*it->name);
@@ -118,16 +123,18 @@ void SetCurrentPaths(const std::vector<sCinemaPath>& atlasPaths)
 		const std::vector<sCinemaSplineNode> nodes = *atlasPath.nodes;
 		TNSpline spline;
 		CCinemaData data = ConstructCinemaData(atlasPath);
-	
+
  		for ( size_t j=0; j<nodes.size(); ++j )
-		{	
-			spline.AddNode(CFixedVector3D(fixed::FromFloat(nodes[j].px), fixed::FromFloat(nodes[j].py), fixed::FromFloat(nodes[j].pz)), 
+		{
+			spline.AddNode(CFixedVector3D(fixed::FromFloat(nodes[j].px), fixed::FromFloat(nodes[j].py), fixed::FromFloat(nodes[j].pz)),
 				CFixedVector3D(fixed::FromFloat(nodes[j].rx), fixed::FromFloat(nodes[j].ry), fixed::FromFloat(nodes[j].rz)), fixed::FromFloat(nodes[j].t));
 		}
 		paths[pathName] = CCinemaPath(data, spline, TNSpline());
 	}
 
-	g_Game->GetView()->GetCinema()->SetAllPaths(paths);
+	CmpPtr<ICmpCinemaManager> cmpCinemaManager(*g_Game->GetSimulation2(), SYSTEM_ENTITY);
+	if (cmpCinemaManager)
+		cmpCinemaManager->SetPaths(paths);
 }
 QUERYHANDLER(GetCameraInfo)
 {
@@ -137,11 +144,11 @@ QUERYHANDLER(GetCameraInfo)
 	CQuaternion quatRot = cam->GetRotation();
 	quatRot.Normalize();
 	CVector3D rotation = quatRot.ToEulerAngles();
-	rotation.X = RADTODEG(rotation.X); 
+	rotation.X = RADTODEG(rotation.X);
 	rotation.Y = RADTODEG(rotation.Y);
 	rotation.Z = RADTODEG(rotation.Z);
 	CVector3D translation = cam->GetTranslation();
-	
+
 	info.pX = translation.X;
 	info.pY = translation.Y;
 	info.pZ = translation.Z;
@@ -153,12 +160,13 @@ QUERYHANDLER(GetCameraInfo)
 
 MESSAGEHANDLER(CinemaEvent)
 {
-	CCinemaManager* manager = g_Game->GetView()->GetCinema();
-	
+	CmpPtr<ICmpCinemaManager> cmpCinemaManager(*g_Game->GetSimulation2(), SYSTEM_ENTITY);
+	if (!cmpCinemaManager)
+		return;
+
 	if (msg->mode == eCinemaEventMode::SMOOTH)
 	{
-		manager->ClearQueue();
-		manager->AddPathToQueue(*msg->path);
+		cmpCinemaManager->AddCinemaPathToQueue(*msg->path);
 	}
 	else if ( msg->mode == eCinemaEventMode::RESET )
 	{
@@ -167,7 +175,72 @@ MESSAGEHANDLER(CinemaEvent)
 	else
 		ENSURE(false);
 }
-			
+
+BEGIN_COMMAND(AddCinemaPath)
+{
+	void Do()
+	{
+		CmpPtr<ICmpCinemaManager> cmpCinemaManager(*g_Game->GetSimulation2(), SYSTEM_ENTITY);
+		if (!cmpCinemaManager)
+			return;
+
+		CCinemaData pathData;
+		pathData.m_Name = *msg->pathName;
+		pathData.m_Timescale = fixed::FromInt(1);
+		pathData.m_Orientation = L"target";
+		pathData.m_Mode = L"ease_inout";
+		pathData.m_Style = L"default";
+
+		CVector3D focus = g_Game->GetView()->GetCamera()->GetFocus();
+		CFixedVector3D target(
+			fixed::FromFloat(focus.X),
+			fixed::FromFloat(focus.Y),
+			fixed::FromFloat(focus.Z)
+		);
+
+		CVector3D camera = g_Game->GetView()->GetCamera()->GetOrientation().GetTranslation();
+		CFixedVector3D position(
+			fixed::FromFloat(camera.X),
+			fixed::FromFloat(camera.Y),
+			fixed::FromFloat(camera.Z)
+		);
+
+		TNSpline positionSpline;
+		positionSpline.AddNode(position, CFixedVector3D(), fixed::FromInt(0));
+
+		TNSpline targetSpline;
+		targetSpline.AddNode(target, CFixedVector3D(), fixed::FromInt(0));
+
+		cmpCinemaManager->AddPath(CCinemaPath(pathData, positionSpline, targetSpline));
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(AddCinemaPath)
+
+BEGIN_COMMAND(DeleteCinemaPath)
+{
+	void Do()
+	{
+		CmpPtr<ICmpCinemaManager> cmpCinemaManager(*g_Game->GetSimulation2(), SYSTEM_ENTITY);
+		if (!cmpCinemaManager)
+			return;
+
+		cmpCinemaManager->DeletePath(*msg->pathName);
+	}
+	void Redo()
+	{
+	}
+	void Undo()
+	{
+	}
+};
+END_COMMAND(DeleteCinemaPath)
+
 BEGIN_COMMAND(SetCinemaPaths)
 {
 	std::vector<sCinemaPath> m_oldPaths, m_newPaths;
@@ -187,6 +260,24 @@ BEGIN_COMMAND(SetCinemaPaths)
 	}
 };
 END_COMMAND(SetCinemaPaths)
+
+BEGIN_COMMAND(SetCinemaPathsDrawing)
+{
+	void Do()
+	{
+		if (g_Game && g_Game->GetView() && g_Game->GetView()->GetCinema())
+			g_Game->GetView()->GetCinema()->SetPathsDrawing(msg->drawPaths);
+	}
+
+	void Redo()
+	{
+	}
+
+	void Undo()
+	{
+	}
+};
+END_COMMAND(SetCinemaPathsDrawing)
 
 QUERYHANDLER(GetCinemaPaths)
 {

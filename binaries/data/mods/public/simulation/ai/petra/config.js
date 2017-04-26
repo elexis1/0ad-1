@@ -19,7 +19,7 @@ m.Config = function(difficulty)
 		"popForBarracks1" : 25,
 		"popForBarracks2" : 95,
 		"popForBlacksmith" : 65,
-		"numWoodenTowers" : 1
+		"numSentryTowers" : 1
 	};
 	this.Economy = {
 		"popForTown" : 40,	// How many units we want before aging to town.
@@ -81,6 +81,7 @@ m.Config = function(difficulty)
 		"villager": 30,      // should be slightly lower than the citizen soldier one to not get all the food
 		"citizenSoldier": 60,
 		"trader": 50,
+		"healer": 20,
 		"ships": 70,
 		"house": 350,
 		"dropsites": 200,
@@ -103,7 +104,26 @@ m.Config = function(difficulty)
 		"defensive": 0.5
 	};
 
-	this.resources = ["food", "wood", "stone", "metal"];
+	// See m.QueueManager.prototype.wantedGatherRates()
+	this.queues =
+	{
+		"firstTurn": {
+			"food": 10,
+			"wood": 10,
+			"default": 0
+		},
+		"short": {
+			"food": 200,
+			"wood": 200,
+			"default": 100
+		},
+		"medium": {
+			"default": 0
+		},
+		"long": {
+			"default": 0
+		}
+	};
 };
 
 m.Config.prototype.setConfig = function(gameState)
@@ -111,15 +131,17 @@ m.Config.prototype.setConfig = function(gameState)
 	// initialize personality traits
 	if (this.difficulty > 1)
 	{
-		this.personality.aggressive = Math.random();
-		this.personality.cooperative = Math.random();
-		this.personality.defensive = Math.random();
+		this.personality.aggressive = randFloat(0, 1);
+		this.personality.cooperative = randFloat(0, 1);
+		this.personality.defensive = randFloat(0, 1);
 	}
 	else
 	{
 		this.personality.aggressive = 0.1;
 		this.personality.cooperative = 0.9;
 	}
+	if (gameState.getAlliedVictory())
+		this.personality.cooperative = Math.min(1, this.personality.cooperative + 0.15);
 
 	// changing settings based on difficulty or personality
 	if (this.difficulty < 2)
@@ -127,27 +149,27 @@ m.Config.prototype.setConfig = function(gameState)
 		this.Economy.cityPhase = 240000;
 		this.Economy.supportRatio = 0.5;
 		this.Economy.provisionFields = 1;
-		this.Military.numWoodenTowers = this.personality.defensive > 0.66 ? 1 : 0;
+		this.Military.numSentryTowers = this.personality.defensive > 0.66 ? 1 : 0;
 	}
 	else if (this.difficulty < 3)
 	{
 		this.Economy.cityPhase = 1800;
 		this.Economy.supportRatio = 0.4;
 		this.Economy.provisionFields = 1;
-		this.Military.numWoodenTowers = this.personality.defensive > 0.66 ? 1 : 0;
+		this.Military.numSentryTowers = this.personality.defensive > 0.66 ? 1 : 0;
 	}
 	else
 	{
 		this.Military.towerLapseTime += Math.round(20*(this.personality.defensive - 0.5));
 		this.Military.fortressLapseTime += Math.round(60*(this.personality.defensive - 0.5));
 		if (this.difficulty == 3)
-			this.Military.numWoodenTowers = 1;
+			this.Military.numSentryTowers = 1;
 		else
-			this.Military.numWoodenTowers = 2;
+			this.Military.numSentryTowers = 2;
 		if (this.personality.defensive > 0.66)
-			++this.Military.numWoodenTowers;
+			++this.Military.numSentryTowers;
 		else if (this.personality.defensive < 0.33)
-			--this.Military.numWoodenTowers;
+			--this.Military.numSentryTowers;
 
 		if (this.personality.aggressive > 0.7)
 		{
@@ -155,6 +177,7 @@ m.Config.prototype.setConfig = function(gameState)
 			this.Economy.popForTown = 55;
 			this.Economy.popForMarket = 60;
 			this.priorities.defenseBuilding = 60;
+			this.priorities.healer = 10;
 		}
 	}
 

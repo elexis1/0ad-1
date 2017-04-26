@@ -180,7 +180,14 @@ for (var ix = 0; ix < mapSize; ix++)
 log("Creating shores...");
 for (var i = 0; i < scaleByMapSize(20,120); i++)
 {
-	placer = new ChainPlacer(1, floor(scaleByMapSize(4, 6)), floor(scaleByMapSize(16, 30)), 1, floor(randFloat(0.1,0.9)*mapSize), floor(randFloat(0.67,0.74)*mapSize));
+	placer = new ChainPlacer(
+		1,
+		Math.floor(scaleByMapSize(4, 6)),
+		Math.floor(scaleByMapSize(16, 30)),
+		1,
+		randIntExclusive(0.1 * mapSize, 0.9 * mapSize),
+		randIntExclusive(0.67 * mapSize, 0.74 * mapSize));
+
 	var terrainPainter = new LayeredPainter(
 		[tSnowA, tSnowA],		// terrains
 		[2]								// widths
@@ -287,7 +294,7 @@ log("Creating iceberg...");
 // create iceberg
 group = new SimpleGroup([new SimpleObject(aIceberg, 0,2, 0,4)], true, clRock);
 createObjectGroups(group, 0,
-	[avoidClasses(clRock, 4), stayClasses(clWater, 4)],
+	[avoidClasses(clRock, 6), stayClasses(clWater, 4)],
 	scaleByMapSize(4,16), 100
 );
 
@@ -363,7 +370,7 @@ for (var i = 0; i < types.length; ++i)
 		true, clForest
 	);
 	createObjectGroups(group, 0,
-		avoidClasses(clWater, 5, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1),
+		avoidClasses(clWater, 5, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6),
 		num
 	);
 }

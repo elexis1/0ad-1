@@ -1,4 +1,4 @@
-/* Copyright (C) 2012 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -43,14 +43,14 @@ public:
 		CStrIntern m_LineTexture;
 		CStrIntern m_LineTextureMask;
 		float m_LineThickness;
-		
+
 		SOverlayDescriptor() : m_LineThickness(0) { }
 	};
 
 	/**
 	 * Returns true if the entity is only selectable in Atlas editor, e.g. a decorative visual actor.
 	 */
-	virtual bool IsEditorOnly() = 0;
+	virtual bool IsEditorOnly() const = 0;
 
 	/**
 	 * Set the selection highlight state.
@@ -82,7 +82,7 @@ public:
 
 	DECLARE_INTERFACE_TYPE(Selectable)
 
-	// TODO: this is slightly ugly design; it would be nice to change the component system to support per-component-type data 
+	// TODO: this is slightly ugly design; it would be nice to change the component system to support per-component-type data
 	// and methods, where we can keep settings like these. Note that any such data store would need to be per-component-manager
 	// and not entirely global, to support multiple simulation instances.
 	static bool ms_EnableDebugOverlays; // ms for member static

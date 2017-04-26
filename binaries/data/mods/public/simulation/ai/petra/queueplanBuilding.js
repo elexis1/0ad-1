@@ -145,7 +145,7 @@ m.ConstructionPlan.prototype.findGoodPosition = function(gameState)
 			if (pos)
 				return { "x": pos[0], "z": pos[1], "angle": 3*Math.PI/4, "base": pos[2] };
 
-			if (template.hasClass("DefenseTower") || gameState.civ() === "mace" || gameState.civ() === "maur" ||
+			if (template.hasClass("DefenseTower") || gameState.getPlayerCiv() === "mace" || gameState.getPlayerCiv() === "maur" ||
 				gameState.countEntitiesByType(gameState.applyCiv("structures/{civ}_fortress"), true) > 0 ||
 				gameState.countEntitiesByType(gameState.applyCiv("structures/{civ}_army_camp"), true) > 0)
 				return false;
@@ -238,7 +238,7 @@ m.ConstructionPlan.prototype.findGoodPosition = function(gameState)
 			{
 				let value = placement.map[j] - gameState.sharedScript.resourceMaps.wood.map[j]/3;
 				placement.map[j] = value >= 0 ? value : 0;
-				if (gameState.ai.HQ.borderMap.map[j] > 0)
+				if (gameState.ai.HQ.borderMap.map[j] & m.fullBorder_Mask)
 					placement.map[j] /= 2;	// we need space around farmstead, so disfavor map border
 			}
 		}
@@ -256,9 +256,9 @@ m.ConstructionPlan.prototype.findGoodPosition = function(gameState)
 		{
 			if (gameState.ai.HQ.basesMap.map[j] != base)
 				placement.map[j] = 0;
-			else if (favorBorder && gameState.ai.HQ.borderMap.map[j] > 0)
+			else if (favorBorder && gameState.ai.HQ.borderMap.map[j] & m.border_Mask)
 				placement.map[j] += 50;
-			else if (disfavorBorder && gameState.ai.HQ.borderMap.map[j] === 0 && placement.map[j] > 0)
+			else if (disfavorBorder && !(gameState.ai.HQ.borderMap.map[j] & m.fullBorder_Mask) && placement.map[j] > 0)
 				placement.map[j] += 10;
 
 			if (placement.map[j] > 0)
@@ -276,9 +276,9 @@ m.ConstructionPlan.prototype.findGoodPosition = function(gameState)
 		{
 			if (gameState.ai.HQ.basesMap.map[j] === 0)
 				placement.map[j] = 0;
-			else if (favorBorder && gameState.ai.HQ.borderMap.map[j] > 0)
+			else if (favorBorder && gameState.ai.HQ.borderMap.map[j] & m.border_Mask)
 				placement.map[j] += 50;
-			else if (disfavorBorder && gameState.ai.HQ.borderMap.map[j] === 0 && placement.map[j] > 0)
+			else if (disfavorBorder && !(gameState.ai.HQ.borderMap.map[j] & m.fullBorder_Mask) && placement.map[j] > 0)
 				placement.map[j] += 10;
 
 			if (preferredBase && gameState.ai.HQ.basesMap.map[j] == this.metadata.preferredBase)
@@ -294,7 +294,7 @@ m.ConstructionPlan.prototype.findGoodPosition = function(gameState)
 		}
 	}
 
-	// Find the best non-obstructed:	
+	// Find the best non-obstructed:
 	// Find target building's approximate obstruction radius, and expand by a bit to make sure we're not too close,
 	// this allows room for units to walk between buildings.
 	// note: not for houses and dropsites who ought to be closer to either each other or a resource.
@@ -435,7 +435,7 @@ m.ConstructionPlan.prototype.findDockPosition = function(gameState)
 			dist += 0.6 * (maxRes - res);
 
 		// Add a penalty if on the map border as ship movement will be difficult
-		if (gameState.ai.HQ.borderMap.map[j] > 0)
+		if (gameState.ai.HQ.borderMap.map[j] & m.fullBorder_Mask)
 			dist += 2;
 		// do a pre-selection, supposing we will have the best possible water
 		if (bestIdx !== undefined && dist > bestVal + maxWater)
@@ -468,7 +468,7 @@ m.ConstructionPlan.prototype.findDockPosition = function(gameState)
 	if (bestVal < 0)
 		return false;
 
-	// if no good place with enough water around and still in first phase, wait for expansion at the next phase 
+	// if no good place with enough water around and still in first phase, wait for expansion at the next phase
 	if (!this.metadata.proximity && bestWater < 10 && gameState.currentPhase() == 1)
 		return false;
 
@@ -517,7 +517,7 @@ m.ConstructionPlan.prototype.getDockAngle = function(gameState, x, z, size)
 			let angle = (i/numPoints)*2*Math.PI;
 			pos = [x - (1+dist)*size*Math.sin(angle), z + (1+dist)*size*Math.cos(angle)];
 			pos = gameState.ai.accessibility.gamePosToMapPos(pos);
-			if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width || 
+			if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width ||
 			    pos[1] < 0 || pos[1] >= gameState.ai.accessibility.height)
 				continue;
 			let j = pos[0] + pos[1]*gameState.ai.accessibility.width;
@@ -595,21 +595,21 @@ m.ConstructionPlan.prototype.checkDockPlacement = function(gameState, x, z, half
 	for (let i = 1; i < 5; ++i)
 	{
 		pos = gameState.ai.accessibility.gamePosToMapPos([x + sz + i*(sp+sw), z + cz + i*(cp-cw)]);
-		if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width || 
+		if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width ||
 		    pos[1] < 0 || pos[1] >= gameState.ai.accessibility.height)
 			break;
 		j = pos[0] + pos[1]*gameState.ai.accessibility.width;
 		if (gameState.ai.accessibility.landPassMap[j] > 1 || gameState.ai.accessibility.navalPassMap[j] < 2)
 			break;
 		pos = gameState.ai.accessibility.gamePosToMapPos([x + sz + i*sp, z + cz + i*cp]);
-		if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width || 
+		if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width ||
 		    pos[1] < 0 || pos[1] >= gameState.ai.accessibility.height)
 			break;
 		j = pos[0] + pos[1]*gameState.ai.accessibility.width;
 		if (gameState.ai.accessibility.landPassMap[j] > 1 || gameState.ai.accessibility.navalPassMap[j] < 2)
 			break;
 		pos = gameState.ai.accessibility.gamePosToMapPos([x + sz + i*(sp-sw), z + cz + i*(cp+cw)]);
-		if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width || 
+		if (pos[0] < 0 || pos[0] >= gameState.ai.accessibility.width ||
 		    pos[1] < 0 || pos[1] >= gameState.ai.accessibility.height)
 			break;
 		j = pos[0] + pos[1]*gameState.ai.accessibility.width;
@@ -669,8 +669,10 @@ m.ConstructionPlan.prototype.isDockLocation = function(gameState, j, dimension, 
  */
 m.ConstructionPlan.prototype.getFrontierProximity = function(gameState, j)
 {
+	let alliedVictory = gameState.getAlliedVictory();
 	let territoryMap = gameState.ai.HQ.territoryMap;
-	if (gameState.isPlayerAlly(territoryMap.getOwnerIndex(j)))
+	let territoryOwner = territoryMap.getOwnerIndex(j);
+	if (territoryOwner === PlayerID || alliedVictory && gameState.isPlayerAlly(territoryOwner))
 		return 0;
 
 	let borderMap = gameState.ai.HQ.borderMap;
@@ -689,9 +691,10 @@ m.ConstructionPlan.prototype.getFrontierProximity = function(gameState, j)
 			let jz = iz + Math.round(i*step*a[1]);
 			if (jz < 0 || jz >= width)
 				continue;
-			if (borderMap.map[jx+width*jz] > 1)
+			if (borderMap.map[jx+width*jz] & m.outside_Mask)
 				continue;
-			if (gameState.isPlayerAlly(territoryMap.getOwnerIndex(jx+width*jz)))
+			territoryOwner = territoryMap.getOwnerIndex(jx+width*jz);
+			if (alliedVictory && gameState.isPlayerAlly(territoryOwner) || territoryOwner === PlayerID)
 			{
 				best = Math.min(best, i);
 				break;

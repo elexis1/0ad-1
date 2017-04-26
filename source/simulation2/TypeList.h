@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ MESSAGE(PathResult)
 MESSAGE(ValueModification)
 MESSAGE(TemplateModification)
 MESSAGE(VisionRangeChanged)
+MESSAGE(VisionSharingChanged)
 MESSAGE(MinimapPing)
 MESSAGE(CinemaPathEnded)
 MESSAGE(CinemaQueueEnded)
@@ -91,7 +92,7 @@ COMPONENT(FoggingScripted)
 
 // Note: The VisualActor component relies on this component being initialized before itself, in order to support using
 // an entity's footprint shape for the selection boxes. This dependency is not strictly necessary, but it does avoid
-// some extra plumbing code to set up on-demand initialization. If you find yourself forced to break this dependency, 
+// some extra plumbing code to set up on-demand initialization. If you find yourself forced to break this dependency,
 // see VisualActor's Init method for a description of how you can avoid it.
 INTERFACE(Footprint)
 COMPONENT(Footprint)

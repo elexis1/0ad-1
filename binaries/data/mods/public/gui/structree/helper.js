@@ -1,6 +1,12 @@
+const g_TechnologyPath = "simulation/data/technologies/";
+const g_AuraPath = "simulation/data/auras/";
+
 var g_TemplateData = {};
 var g_TechnologyData = {};
 var g_AuraData = {};
+
+// Must be defined after g_TechnologyData object is declared.
+const g_AutoResearchTechList = findAllAutoResearchedTechs();
 
 function loadTemplate(templateName)
 {
@@ -24,9 +30,8 @@ function loadTechData(templateName)
 {
 	if (!(templateName in g_TechnologyData))
 	{
-		var filename = "simulation/data/technologies/" + templateName + ".json";
-		var data = Engine.ReadJSONFile(filename);
-		translateObjectKeys(data, ["genericName", "tooltip"]);
+		let data = Engine.ReadJSONFile(g_TechnologyPath + templateName + ".json");
+		translateObjectKeys(data, ["genericName", "tooltip", "description"]);
 
 		g_TechnologyData[templateName] = data;
 	}
@@ -38,8 +43,7 @@ function loadAuraData(templateName)
 {
 	if (!(templateName in g_AuraData))
 	{
-		let filename = "simulation/data/auras/" + templateName + ".json";
-		let data = Engine.ReadJSONFile(filename);
+		let data = Engine.ReadJSONFile(g_AuraPath + templateName + ".json");
 		translateObjectKeys(data, ["auraName", "auraDescription"]);
 
 		g_AuraData[templateName] = data;
@@ -48,53 +52,30 @@ function loadAuraData(templateName)
 	return g_AuraData[templateName];
 }
 
-/**
- * Fetch a value from an entity's template
- *
- * @param templateName The template to retreive the value from
- * @param keypath The path to the value to be fetched. "Identity/GenericName"
- *                is equivalent to {"Identity":{"GenericName":"FOOBAR"}}
- *
- * @return The content requested at the key-path defined, or a blank array if
- *           not found
- */
-function fetchValue(templateName, keypath)
+function findAllAutoResearchedTechs()
 {
-	var keys = keypath.split("/");
-	var template = loadTemplate(templateName);
+	let techList = [];
 
-	let k;
-	for (k = 0; k < keys.length - 1; ++k)
+	for (let filename of Engine.BuildDirEntList(g_TechnologyPath, "*.json", true))
 	{
-		if (template[keys[k]] === undefined)
-			return [];
+		// -5 to strip off the file extension
+		let templateName = filename.slice(g_TechnologyPath.length, -5);
+		let data = loadTechData(templateName);
 
-		template = template[keys[k]];
+		if (data && data.autoResearch)
+			techList.push(templateName);
 	}
 
-	if (template[keys[k]] === undefined)
-		return [];
-
-	return template[keys[k]];
+	return techList;
 }
 
-/**
- * Fetch tokens from an entity's template
- * @return An array containing all tokens if found, else an empty array
- * @see fetchValue
- */
-function fetchTokens(templateName, keypath)
+function deriveModifications(techList)
 {
-	var val = fetchValue(templateName, keypath);
-	if (!("_string" in val))
-		return [];
+	let techData = [];
+	for (let techName of techList)
+		techData.push(GetTechnologyBasicDataHelper(loadTechData(techName), g_SelectedCiv));
 
-	return val._string.split(" ");
-}
-
-function depath(path)
-{
-	return path.slice(path.lastIndexOf("/") + 1);
+	return DeriveModificationsFromTechnologies(techData);
 }
 
 /**
@@ -105,5 +86,70 @@ function depath(path)
 function GetTemplateData(templateName)
 {
 	var template = loadTemplate(templateName);
-	return GetTemplateDataHelper(template, null, g_AuraData);
+	return GetTemplateDataHelper(template, null, g_AuraData, g_ResourceData, g_CurrentModifiers);
+}
+
+/**
+ * Determines and returns the phase in which a given technology can be
+ * first researched. Works recursively through the given tech's
+ * pre-requisite and superseded techs if necessary.
+ *
+ * @param {string} techName - The Technology's name
+ * @return The name of the phase the technology belongs to, or false if
+ *         the current civ can't research this tech
+ */
+function GetPhaseOfTechnology(techName)
+{
+	let phaseIdx = -1;
+
+	if (basename(techName).startsWith("phase"))
+	{
+		phaseIdx = g_ParsedData.phaseList.indexOf(GetActualPhase(techName));
+		if (phaseIdx > 0)
+			return g_ParsedData.phaseList[phaseIdx - 1];
+	}
+
+	if (!g_ParsedData.techs[g_SelectedCiv][techName])
+	{
+		let techData = loadTechnology(techName);
+		g_ParsedData.techs[g_SelectedCiv][techName] = techData;
+		warn("The \"" + techData.name.generic + "\" technology is not researchable in any structure buildable by the " +
+			g_SelectedCiv + " civilisation, but is required by something that this civ can research, train or build!");
+	}
+
+	let techReqs = g_ParsedData.techs[g_SelectedCiv][techName].reqs;
+	if (!techReqs)
+		return false;
+
+	for (let option of techReqs)
+		if (option.techs)
+			for (let tech of option.techs)
+			{
+				if (basename(tech).startsWith("phase"))
+					return tech;
+				if (basename(tech).startsWith("pair"))
+					continue;
+				phaseIdx = Math.max(phaseIdx, g_ParsedData.phaseList.indexOf(GetPhaseOfTechnology(tech)));
+			}
+	return g_ParsedData.phaseList[phaseIdx] || false;
+}
+
+function GetActualPhase(phaseName)
+{
+	if (g_ParsedData.phases[phaseName])
+		return g_ParsedData.phases[phaseName].actualPhase;
+
+	warn("Unrecognised phase (" + techName + ")");
+	return g_ParsedData.phaseList[0];
+}
+
+function GetPhaseOfTemplate(template)
+{
+	if (!template.requiredTechnology)
+		return g_ParsedData.phaseList[0];
+
+	if (basename(template.requiredTechnology).startsWith("phase"))
+		return GetActualPhase(template.requiredTechnology);
+
+	return GetPhaseOfTechnology(template.requiredTechnology);
 }

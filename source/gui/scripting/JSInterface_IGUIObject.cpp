@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -284,17 +284,15 @@ bool JSI_IGUIObject::getProperty(JSContext* cx, JS::HandleObject obj, JS::Handle
 		{
 			CGUIList value;
 			GUI<CGUIList>::GetSetting(e, propName, value);
+			ScriptInterface::ToJSVal(cx, vp, value.m_Items);
+			break;
+		}
 
-			JS::RootedObject obj(cx, JS_NewArrayObject(cx, JS::HandleValueArray::empty()));
-			vp.setObject(*obj);
-
-			for (u32 i = 0; i < value.m_Items.size(); ++i)
-			{
-				JS::RootedValue val(cx);
-				ScriptInterface::ToJSVal(cx, &val, value.m_Items[i].GetOriginalString());
-				JS_SetElement(cx, obj, i, val);
-			}
-
+		case GUIST_CGUISeries:
+		{
+			CGUISeries value;
+			GUI<CGUISeries>::GetSetting(e, propName, value);
+			ScriptInterface::ToJSVal(cx, vp, value.m_Series);
 			break;
 		}
 
@@ -556,35 +554,27 @@ bool JSI_IGUIObject::setProperty(JSContext* cx, JS::HandleObject obj, JS::Handle
 
 	case GUIST_CGUIList:
 	{
-		u32 length;
-		if (!vp.isObject() || !JS_GetArrayLength(cx, vpObj, &length))
+		CGUIList list;
+		if (ScriptInterface::FromJSVal(cx, vp, list.m_Items))
+			GUI<CGUIList>::SetSetting(e, propName, list);
+		else
 		{
-			JS_ReportError(cx, "List only accepts a GUIList object");
+			JS_ReportError(cx, "Failed to get list '%s'", propName.c_str());
 			return false;
 		}
+		break;
+	}
 
-		CGUIList list;
-
-		for (u32 i = 0; i < length; ++i)
+	case GUIST_CGUISeries:
+	{
+		CGUISeries series;
+		if (ScriptInterface::FromJSVal(cx, vp, series.m_Series))
+			GUI<CGUISeries>::SetSetting(e, propName, series);
+		else
 		{
-			JS::RootedValue element(cx);
-			if (!JS_GetElement(cx, vpObj, i, &element))
-			{
-				JS_ReportError(cx, "Failed to get list element");
-				return false;
-			}
-
-			std::wstring value;
-			if (!ScriptInterface::FromJSVal(cx, element, value))
-				return false;
-
-			CGUIString str;
-			str.SetValue(value);
-
-			list.m_Items.push_back(str);
+			JS_ReportError(cx, "Invalid value for chart series '%s'", propName.c_str());
+			return false;
 		}
-
-		GUI<CGUIList>::SetSetting(e, propName, list);
 		break;
 	}
 

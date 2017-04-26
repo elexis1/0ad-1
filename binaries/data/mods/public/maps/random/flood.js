@@ -206,20 +206,7 @@ for (let i = 0; i < numPlayers; ++i)
 			break;
 	}
 
-	// Create grass tufts
-	num = (PI * radius * radius) / 250;
-	for (let j = 0; j < num; ++j)
-	{
-		let gAngle = randFloat(0, TWO_PI);
-		let gDist = radius - (5 + randInt(7));
-		let gX = round(fx + gDist * cos(gAngle));
-		let gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2, 5, 0, 1, -PI/8, PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 RMS.SetProgress(40);
@@ -237,13 +224,19 @@ elevationPainter = new SmoothElevationPainter(
 );
 createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill)], avoidClasses(clPlayer, 40));
 
-let randMountains = 20 + randInt(15);
-for (let m = 0; m < randMountains; ++m)
+for (let m = 0; m < randIntInclusive(20, 34); ++m)
 {
-	let randX = randInt(mapSize);
-	let randY = randInt(mapSize);
-	let placer = new ChainPlacer(floor(scaleByMapSize(7, 7)), floor(scaleByMapSize(15, 15)), floor(scaleByMapSize(15, 20)), 1, randX, randY, 0, [floor(mapSize * 0.01)]);
-	let elevRand = 6 + randInt(15);
+	let placer = new ChainPlacer(
+		Math.floor(scaleByMapSize(7, 7)),
+		Math.floor(scaleByMapSize(15, 15)),
+		Math.floor(scaleByMapSize(15, 20)),
+		1,
+		randIntExclusive(0, mapSize),
+		randIntExclusive(0, mapSize),
+		0,
+		[Math.floor(mapSize * 0.01)]);
+
+	let elevRand = randIntInclusive(6, 20);
 	let terrainPainter = new LayeredPainter(
 		[tDirt, tHill],        // terrains
 		[floor(elevRand / 3), 40]       // widths
@@ -256,13 +249,19 @@ for (let m = 0; m < randMountains; ++m)
 	createArea(placer, [terrainPainter, elevationPainter, paintClass(clHill)], [avoidClasses(clBaseResource, 2, clPlayer, 40), stayClasses(clHill, 6)]);
 }
 
-randMountains = 8 + randInt(10);
-for (let m = 0; m < randMountains; ++m)
+for (let m = 0; m < randIntInclusive(8, 17); ++m)
 {
-	let randX = randInt(mapSize);
-	let randY = randInt(mapSize);
-	let placer = new ChainPlacer(floor(scaleByMapSize(5, 5)), floor(scaleByMapSize(8, 8)), floor(scaleByMapSize(15, 20)), 1, randX, randY, 0, [floor(mapSize * 0.01)]);
-	let elevRand = 15 + randInt(15);
+	let placer = new ChainPlacer(
+		Math.floor(scaleByMapSize(5, 5)),
+		Math.floor(scaleByMapSize(8, 8)),
+		Math.floor(scaleByMapSize(15, 20)),
+		1,
+		randIntExclusive(0, mapSize),
+		randIntExclusive(0, mapSize),
+		0,
+		[Math.floor(mapSize * 0.01)]);
+
+	let elevRand = randIntInclusive(15, 29);
 	let terrainPainter = new LayeredPainter(
 		[tCliff, tForestFloor2],        // terrains
 		[floor(elevRand / 3), 40]       // widths
@@ -304,7 +303,7 @@ createObjectGroups(group, 0,
 
 createForests(
 	[tMainTerrain, tForestFloor1, tForestFloor2, pForest1, pForest2],
-	[avoidClasses(clPlayer, 25, clForest, 10, clBaseResource, 3, clMetal, 3, clRock, 3, clMountain, 2), stayClasses(clHill, 6)],
+	[avoidClasses(clPlayer, 25, clForest, 10, clBaseResource, 3, clMetal, 6, clRock, 3, clMountain, 2), stayClasses(clHill, 6)],
 	clForest,
 	0.7,
 	random_terrain
@@ -312,7 +311,7 @@ createForests(
 
 log("Creating straggeler trees...");
 let types = [oTree1, oTree2, oTree4, oTree3];
-createStragglerTrees(types, [avoidClasses(clBaseResource, 2, clMetal, 3, clRock, 3, clMountain, 2, clPlayer, 25), stayClasses(clHill, 6)]);
+createStragglerTrees(types, [avoidClasses(clBaseResource, 2, clMetal, 6, clRock, 3, clMountain, 2, clPlayer, 25), stayClasses(clHill, 6)]);
 
 RMS.SetProgress(65);
 
@@ -360,7 +359,7 @@ createFood(
 		[new SimpleObject(oSecondaryHuntableAnimal, 2, 3, 0, 2)]
 	],
 	[3 * numPlayers, 3 * numPlayers],
-	[avoidClasses(clForest, 0, clPlayer, 20, clMountain, 1, clFood, 4, clRock, 4, clMetal, 4), stayClasses(clHill, 2)]
+	[avoidClasses(clForest, 0, clPlayer, 20, clMountain, 1, clFood, 4, clRock, 6, clMetal, 6), stayClasses(clHill, 2)]
 );
 
 RMS.SetProgress(75);
@@ -370,13 +369,13 @@ createFood(
 		[new SimpleObject(oFruitBush, 5, 7, 0, 4)]
 	],
 	[3 * numPlayers],
-	[avoidClasses(clForest, 0, clPlayer, 15, clMountain, 1, clFood, 4, clRock, 4, clMetal, 4), stayClasses(clHill, 2)]
+	[avoidClasses(clForest, 0, clPlayer, 15, clMountain, 1, clFood, 4, clRock, 6, clMetal, 6), stayClasses(clHill, 2)]
 );
 
 RMS.SetProgress(85);
 
 log("Creating more straggeler trees...");
-createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 7, clMountain, 1, clPlayer, 30, clMetal, 3, clRock, 3));
+createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 7, clMountain, 1, clPlayer, 30, clMetal, 6, clRock, 3));
 
 log("Creating decoration...");
 let planetm = random_terrain == g_BiomeTropic ? 8 : 1;
@@ -408,21 +407,6 @@ createForests(
 	random_terrain
 );
 
-log("Creating grass tufts...");
-let num = (PI * radius * radius) / 250;
-for (let j = 0; j < num; ++j)
-{
-	let gAngle = randFloat(0, TWO_PI);
-	let gDist = radius - (5 + randInt(7));
-	let gX = round(fx + gDist * cos(gAngle));
-	let gZ = round(fz + gDist * sin(gAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(aGrassShort, 2, 5, 0, 1, -PI / 8, PI / 8)],
-		false, clBaseResource, gX, gZ
-	);
-	createObjectGroup(group, 0, [avoidClasses(clMountain, 2, clPlayer, 2, clDirt, 0), stayClasses(clHill, 8)]);
-}
-
 log("Creating small grass tufts...");
 group = new SimpleGroup(
 	[new SimpleObject(aGrassShort, 1, 2, 0, 1, -PI / 8, PI / 8)]
@@ -432,7 +416,7 @@ createObjectGroups(group, 0,
 	planetm * scaleByMapSize(13, 200)
 );
 
-setSkySet(shuffleArray(["cloudless", "cumulus", "overcast"])[0]);
+setSkySet(pickRandom(["cloudless", "cumulus", "overcast"]));
 setWaterMurkiness(0.4);
 
 ExportMap();

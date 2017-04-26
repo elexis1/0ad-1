@@ -177,20 +177,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 log("Creating islands...");
@@ -204,7 +191,7 @@ createAreas(
 	placer,
 	[terrainPainter, elevationPainter, paintClass(clLand)],
 	null,
-	scaleByMapSize(1, 5)*randInt(5,10)
+	scaleByMapSize(1, 5) * randIntInclusive(5, 10)
 );
 
 paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
@@ -227,7 +214,7 @@ for (var i = 0; i < numPlayers; i++)
 
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);
 
-if (randInt(1,2) == 1)
+if (randBool())
 	createHills([tMainTerrain, tCliff, tHill], [avoidClasses(clPlayer, 2, clHill, 15), stayClasses(clLand, 0)], clHill, scaleByMapSize(1, 4) * numPlayers);
 else
 	createMountains(tCliff, [avoidClasses(clPlayer, 2, clHill, 15), stayClasses(clLand, 0)], clHill, scaleByMapSize(1, 4) * numPlayers);
@@ -341,7 +328,7 @@ RMS.SetProgress(85);
 
 log("Creating straggler trees...");
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
-createStragglerTrees(types, [avoidClasses(clForest, 7, clHill, 1, clPlayer, 3, clMetal, 1, clRock, 1), stayClasses(clLand, 7)]);
+createStragglerTrees(types, [avoidClasses(clForest, 7, clHill, 1, clPlayer, 3, clMetal, 6, clRock, 6), stayClasses(clLand, 7)]);
 setWaterWaviness(4.0);
 setWaterType("ocean");
 

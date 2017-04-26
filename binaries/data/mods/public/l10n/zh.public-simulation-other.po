@@ -7,12 +7,14 @@
 # helinb <1696060289@qq.com>, 2015
 # Kelvin Cooper <Zhu-Zhe-Yong@live.com>, 2016
 # loms126 <loms126@126.com>, 2014
+# loms126 <loms126@126.com>, 2014
+# Siwei Chen <chensiwei@tsinghua.edu.cn>, 2016
 # 玉堂白鹤 <yjwork@qq.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-09-30 08:28+0000\n"
+"POT-Creation-Date: 2017-03-27 09:03+0200\n"
+"PO-Revision-Date: 2017-03-27 09:50+0000\n"
 "Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Chinese (http://www.transifex.com/wildfire-games/0ad/language/zh/)\n"
 "MIME-Version: 1.0\n"
@@ -21,133 +23,308 @@ msgstr ""
 "Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: simulation/ai/common-api/shared.js:203
-msgctxt "withinSentence"
-msgid "Food"
-msgstr "食物"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: simulation/ai/common-api/shared.js:205
-msgctxt "withinSentence"
-msgid "Wood"
-msgstr "木材"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: simulation/ai/common-api/shared.js:207
-msgctxt "withinSentence"
-msgid "Metal"
-msgstr "金属"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: simulation/ai/common-api/shared.js:209
-msgctxt "withinSentence"
-msgid "Stone"
-msgstr "矿石"
-
-#: simulation/ai/petra/chatHelper.js:9
+#: simulation/ai/petra/chatHelper.js:6
 #, javascript-format
 msgid ""
 "I am starting a massive military campaign against %(_player_)s, come and "
 "join me."
 msgstr "我正在对 %(_player_)s 发动大规模军事战役，来加入我吧。"
 
-#: simulation/ai/petra/chatHelper.js:11
+#: simulation/ai/petra/chatHelper.js:7
+#, javascript-format
+msgid ""
+"I have set up a huge army to crush %(_player_)s. Join me and you will have "
+"your share of the loot."
+msgstr "我已组织大军，准备打垮 %(_player_)s ，和我一起进攻，去分享战利品吧。"
+
+#: simulation/ai/petra/chatHelper.js:10
 #, javascript-format
 msgid "I am launching an attack against %(_player_)s."
 msgstr "我正在攻击  %(_player_)s。"
 
-#: simulation/ai/petra/chatHelper.js:13
+#: simulation/ai/petra/chatHelper.js:11
 #, javascript-format
 msgid "I have just sent an army against %(_player_)s."
 msgstr "我已经命令军队对抗  %(_player_)s。"
 
+#: simulation/ai/petra/chatHelper.js:17
+#, javascript-format
+msgid "Let me regroup my army and I will then join you against %(_player_)s."
+msgstr "让我重整军队，和你一起对抗 %(_player_)s 。"
+
+#: simulation/ai/petra/chatHelper.js:18
+#, javascript-format
+msgid "I am finishing preparations to attack %(_player_)s."
+msgstr "我准备去攻打 %(_player_)s 。"
+
+#: simulation/ai/petra/chatHelper.js:21
+#, javascript-format
+msgid ""
+"Sorry, I do not have enough soldiers currently; but my next attack will "
+"target %(_player_)s."
+msgstr "抱歉，现在我们军备不足，下次我将着手对付 %(_player_)s 。"
+
+#: simulation/ai/petra/chatHelper.js:22
+#, javascript-format
+msgid ""
+"Sorry, I still need to strengthen my army. However, I will attack "
+"%(_player_)s next."
+msgstr "抱歉，我仍在加紧军备。不过，将来我会准备攻击 %(_player_)s 。"
+
+#: simulation/ai/petra/chatHelper.js:25
+#, javascript-format
+msgid ""
+"I cannot help you against %(_player_)s for the time being, I am planning to "
+"attack %(_player_2)s first."
+msgstr "现时我无帮你对抗 %(_player_)s ，我正准备攻打 %(_player_2)s 。 "
+
+#: simulation/ai/petra/chatHelper.js:30
+#, javascript-format
+msgid "Here is a gift for you, %(_player_)s. Make good use of it."
+msgstr "礼物送你， %(_player_)s ，好好利用。"
+
 #: simulation/ai/petra/chatHelper.js:31
 #, javascript-format
-msgid "Let me regroup my army and I am with you against %(_player_)s."
-msgstr "让我重新组织我的军队，然后我会和你一起对抗 %(_player_)s。"
+msgid "I see you are in a bad situation, %(_player_)s. I hope this helps."
+msgstr "听说你们情况不妙，  %(_player_)s ，希望对你有所帮助。"
 
-#: simulation/ai/petra/chatHelper.js:33
-#, javascript-format
-msgid "I am doing the final preparation and I will attack %(_player_)s."
-msgstr "我正在做最后的准备，然后我将会攻击 %(_player_)s。"
-
-#: simulation/ai/petra/chatHelper.js:38
+#: simulation/ai/petra/chatHelper.js:32
 #, javascript-format
 msgid ""
-"I cannot help you against %(_player_)s for the time being, as I have another"
-" attack foreseen against %(_player_2)s."
-msgstr "我无法在这个时间点帮助你对抗 %(_player_)s , 因为我已经有对 %(_player_2)s 的攻击计画了。"
+"I can help you this time, %(_player_)s, but you should manage your resources"
+" more carefully in the future."
+msgstr "这次我可以帮你， %(_player_)s，希望将来你会合理调配。"
 
-#: simulation/ai/petra/chatHelper.js:40
-#, javascript-format
-msgid ""
-"Sorry, I do not have enough soldiers currently, but my next attack will "
-"target %(_player_)s."
-msgstr "抱歉，目前我没有足够的士兵，但我的下一个攻击目标是 %(_player_)s。"
-
-#: simulation/ai/petra/chatHelper.js:63
-#, javascript-format
-msgid "Here is a gift for %(_player_)s, make a good use of it."
-msgstr "这是给 %(_player_)s 的一份礼物，请好好的利用它。"
-
-#: simulation/ai/petra/chatHelper.js:65
-#, javascript-format
-msgid "I see you are in a bad situation %(_player_)s, I hope this will help."
-msgstr "我发现您正处于一个不太好的状况 %(_player_)s, 希望这个能有所帮助。"
-
-#: simulation/ai/petra/chatHelper.js:67
-#, javascript-format
-msgid ""
-"I can help you this time %(_player_)s, but try to assemble more resources in"
-" the future."
-msgstr "%(_player_)s，这次我可以帮助你，但是以后请为我分配更多资源。"
-
-#: simulation/ai/petra/chatHelper.js:83
+#: simulation/ai/petra/chatHelper.js:36
 #, javascript-format
 msgid "I am in need of %(resource)s, can you help? I will make it up to you."
 msgstr "我需要 %(resource)s ,  您可以帮忙吗？我会归功于您的。"
 
-#: simulation/ai/petra/chatHelper.js:85
+#: simulation/ai/petra/chatHelper.js:37
 #, javascript-format
 msgid ""
 "I would participate more efficiently in our common war effort if you could "
 "provide me some %(resource)s."
 msgstr "如果您能提供给我一些 %(resource)s, 我将会更积极参与我们的共同战争行动。"
 
-#: simulation/ai/petra/chatHelper.js:87
+#: simulation/ai/petra/chatHelper.js:38
 #, javascript-format
 msgid ""
-"If you have some %(resource)s excess, that would help me strengthen my army."
-msgstr "如果你有多余的 %(resource)s，那么就可以帮助强化我的军队。"
+"If you can spare me some %(resource)s, I will be able to strengthen my army."
+msgstr "如果你能给我一些 %(resource)s ，我将更好地组织军队。"
 
-#: simulation/ai/petra/chatHelper.js:103
+#: simulation/ai/petra/chatHelper.js:42
 #, javascript-format
 msgid ""
 "I have set up a new route with %(_player_)s. Trading will be profitable for "
 "all of us."
 msgstr "我已经与 %(_player_)s 设定了一条新的路线。这交易对我们来说都有利可图。"
 
-#: simulation/ai/petra/chatHelper.js:105
+#: simulation/ai/petra/chatHelper.js:43
 #, javascript-format
 msgid ""
 "A new trade route is set up with %(_player_)s. Take your share of the "
 "profits."
-msgstr ""
+msgstr "与玩家 %(_player_)s 的一条新贸易路线已建成，分享你们的收益吧。"
 
-#: simulation/ai/petra/chatHelper.js:120
+#: simulation/ai/petra/chatHelper.js:48
 #, javascript-format
 msgid "I am advancing to the %(phase)s."
 msgstr "我正在进阶到 %(phase)s。"
 
-#: simulation/ai/petra/chatHelper.js:122
+#: simulation/ai/petra/chatHelper.js:51
 #, javascript-format
 msgid "I have reached the %(phase)s."
 msgstr "我已经到达 %(phase)s。"
+
+#: simulation/ai/petra/chatHelper.js:57
+#, javascript-format
+msgid "%(_player_)s and I are now allies."
+msgstr "玩家 %(_player_)s 现在是我的盟友。"
+
+#: simulation/ai/petra/chatHelper.js:60
+#, javascript-format
+msgid "%(_player_)s and I are now neutral."
+msgstr "我和 %(_player_)s 互相中立。"
+
+#: simulation/ai/petra/chatHelper.js:63
+#, javascript-format
+msgid "%(_player_)s and I are now enemies."
+msgstr "玩家 %(_player_)s 现在是我的敌人。"
+
+#: simulation/ai/petra/chatHelper.js:70
+#, javascript-format
+msgid "I cannot accept your offer to become allies, %(_player_)s."
+msgstr "对不起，%(_player_)s ，无法接受你的结盟提议。"
+
+#: simulation/ai/petra/chatHelper.js:73
+#, javascript-format
+msgid ""
+"I will not be your ally, %(_player_)s. However, I will consider a neutrality"
+" pact."
+msgstr "不能和你结盟， %(_player_)s ， 不过，我会保持中立。"
+
+#: simulation/ai/petra/chatHelper.js:74
+#, javascript-format
+msgid ""
+"I reject your request for alliance, %(_player_)s, but we could become "
+"neutral."
+msgstr "我拒绝你的结盟提议，%(_player_)s ，不过我们互相中立。"
+
+#: simulation/ai/petra/chatHelper.js:75
+#, javascript-format
+msgid "%(_player_)s, only a neutrality agreement is conceivable to me."
+msgstr "%(_player_)s ， 只有中立态度符合我。"
+
+#: simulation/ai/petra/chatHelper.js:78
+#, javascript-format
+msgid ""
+"Our previous alliance did not work out, %(_player_)s. I must decline your "
+"offer."
+msgstr "我们先前的盟约并未奏效， %(_player_)s ，在此拒绝你的提议。"
+
+#: simulation/ai/petra/chatHelper.js:79
+#, javascript-format
+msgid "I won’t ally you again, %(_player_)s!"
+msgstr "我不想再和你结盟，%(_player_)s 。"
+
+#: simulation/ai/petra/chatHelper.js:80
+#, javascript-format
+msgid "No more alliances between us, %(_player_)s!"
+msgstr "我们不再是盟友了，再见%(_player_)s。"
+
+#: simulation/ai/petra/chatHelper.js:81
+#, javascript-format
+msgid "Your request for peace means nothing to me anymore, %(_player_)s!"
+msgstr "你的和平提议不值一提，%(_player_)s 。"
+
+#: simulation/ai/petra/chatHelper.js:82
+#, javascript-format
+msgid ""
+"My answer to your repeated peace proposal will remain war, %(_player_)s!"
+msgstr "%(_player_)s ，对你不断的提出的和平提议，我们的回复是 拒绝。"
+
+#: simulation/ai/petra/chatHelper.js:85
+#, javascript-format
+msgid ""
+"I will accept your offer to become allies, %(_player_)s. We will both "
+"benefit from this partnership."
+msgstr "%(_player_)s ，我们接受你的结盟请求，这会使我们双边关系互利共赢。"
+
+#: simulation/ai/petra/chatHelper.js:86
+#, javascript-format
+msgid "An alliance between us is a good idea, %(_player_)s."
+msgstr "%(_player_)s ， 我们结为盟友，真是再明智不过了。"
+
+#: simulation/ai/petra/chatHelper.js:87
+#, javascript-format
+msgid ""
+"Let both of our people prosper from a peaceful association, %(_player_)s."
+msgstr "让这项和平协议促使我们共同繁荣。"
+
+#: simulation/ai/petra/chatHelper.js:88
+#, javascript-format
+msgid "We have found common ground, %(_player)s. I accept the alliance."
+msgstr "我们有了共同看法，%(_player_)s ，接受你的盟约。"
+
+#: simulation/ai/petra/chatHelper.js:89
+#, javascript-format
+msgid "%(_player_)s, consider us allies from now on."
+msgstr "%(_player_)s ，从今往后我们就是盟友了。"
+
+#: simulation/ai/petra/chatHelper.js:92
+#, javascript-format
+msgid ""
+"I will ally with you, %(_player_)s, but only if you send me a tribute of "
+"%(_amount_)s %(_resource_)s."
+msgstr "我可以和你结盟，%(_player_)s ，要是你能给我 %(_amount_)s %(_resource_)s 的话。"
+
+#: simulation/ai/petra/chatHelper.js:93
+#, javascript-format
+msgid ""
+"%(_player_)s, you must send me a tribute of %(_amount_)s %(_resource_)s "
+"before I accept an alliance with you."
+msgstr "%(_player_)s ， 你若能给我%(_amount_)s %(_resource_)s，可以考虑接受你的盟约。"
+
+#: simulation/ai/petra/chatHelper.js:94
+#, javascript-format
+msgid ""
+"Unless you send me %(_amount_)s %(_resource_)s, an alliance won’t be formed,"
+" %(_player_)s,"
+msgstr "%(_player_)s ，除非你进贡 %(_amount_)s %(_resource_)s ，否则盟约不会生效。"
+
+#: simulation/ai/petra/chatHelper.js:97
+#, javascript-format
+msgid ""
+"%(_player_)s, my offer still stands. I will ally with you only if you send "
+"me a tribute of %(_amount_)s %(_resource_)s."
+msgstr "%(_player_)s， 我们的态度不变，如果你能进贡 %(_amount_)s %(_resource_)s， 我们将与你结盟。"
+
+#: simulation/ai/petra/chatHelper.js:98
+#, javascript-format
+msgid ""
+"I’m still waiting for %(_amount_)s %(_resource_)s before accepting your "
+"alliance, %(_player_)s."
+msgstr " %(_player_)s， 在接受盟约前，我仍然期待着 %(_amount_)s %(_resource_)s 。"
+
+#: simulation/ai/petra/chatHelper.js:99 simulation/ai/petra/chatHelper.js:120
+#, javascript-format
+msgid ""
+"%(_player_)s, if you do not send me part of the %(_amount_)s %(_resource_)s "
+"tribute soon, I will break off our negotiations."
+msgstr "%(_player_)s， 如果你不给我们 %(_amount_)s %(_resource_)s 的话，我们将拒绝谈判。"
+
+#: simulation/ai/petra/chatHelper.js:104
+#, javascript-format
+msgid "I will not become neutral with you, %(_player_)s."
+msgstr "%(_player_)s，我们不接受中立。"
+
+#: simulation/ai/petra/chatHelper.js:105
+#, javascript-format
+msgid "%(_player_)s, I must decline your request for a neutrality pact."
+msgstr "%(_player_)s ，我必须拒绝你的中立条约。"
+
+#: simulation/ai/petra/chatHelper.js:108
+#, javascript-format
+msgid ""
+"Our previous neutrality agreement ended in failure, %(_player_)s; I will not"
+" consider another one."
+msgstr "%(_player_)s，我们先前的中立条约还未失效，不必另外续签。"
+
+#: simulation/ai/petra/chatHelper.js:111
+#, javascript-format
+msgid ""
+"I welcome your request for peace between our civilizations, %(_player_)s. I "
+"will accept."
+msgstr "%(_player_)s，热切欢迎你的和平提议，我们表示接受。"
+
+#: simulation/ai/petra/chatHelper.js:112
+#, javascript-format
+msgid ""
+"%(_player_)s, I will accept your neutrality request. May both our "
+"civilizations benefit."
+msgstr "%(_player_)s，我将接受你的中立请求，愿我们两国互利共赢。"
+
+#: simulation/ai/petra/chatHelper.js:115
+#, javascript-format
+msgid ""
+"If you send me a tribute of %(_amount_)s %(_resource_)s, I will accept your "
+"neutrality request, %(_player_)s."
+msgstr "%(_player_)s，你要是能进贡%(_amount_)s %(_resource_)s ，我将接受你的中立请求。"
+
+#: simulation/ai/petra/chatHelper.js:116
+#, javascript-format
+msgid ""
+"%(_player_)s, if you send me %(_amount_)s %(_resource_)s, I will accept a "
+"neutrality pact."
+msgstr "%(_player_)s ,要是给我 %(_amount_)s %(_resource_)s，我能接受中立条款。 "
+
+#: simulation/ai/petra/chatHelper.js:119
+#, javascript-format
+msgid ""
+"%(_player_)s, I will not accept your neutrality request unless you tribute "
+"me %(_amount_)s %(_resource_)s soon."
+msgstr "%(_player_)s，我不接受你的中立请求，除非你能进贡 %(_amount_)s %(_resource_)s 。 "
 
 #: simulation/ai/tutorial-ai/economic_walkthrough.js:3
 msgid ""
@@ -685,7 +862,7 @@ msgstr "您可以在 %(time)s 内攻击"
 msgid "You can attack now!"
 msgstr "您现在可以攻击了！"
 
-#: simulation/components/EndGameManager.js:114
+#: simulation/components/EndGameManager.js:117
 msgid "Last remaining player wins."
 msgstr "最后剩下的玩家获胜。"
 
@@ -704,42 +881,26 @@ msgstr "%(category)s  已达到最大训练数 %(limit)s"
 msgid "%(category)s limit of %(limit)s reached"
 msgstr "%(category)s  已达到最高限制 %(limit)s "
 
-#: simulation/components/Player.js:48
-msgid "Food"
-msgstr "食物"
-
-#: simulation/components/Player.js:49
-msgid "Wood"
-msgstr "木材"
-
-#: simulation/components/Player.js:50
-msgid "Metal"
-msgstr "金矿"
-
-#: simulation/components/Player.js:51
-msgid "Stone"
-msgstr "石头"
-
-#: simulation/components/Player.js:271
+#: simulation/components/Player.js:263
 #, javascript-format
 msgid "Insufficient resources - %(resourceAmount1)s %(resourceType1)s"
 msgstr "资源不足 - %(resourceAmount1)s %(resourceType1)s"
 
-#: simulation/components/Player.js:273
+#: simulation/components/Player.js:265
 #, javascript-format
 msgid ""
 "Insufficient resources - %(resourceAmount1)s %(resourceType1)s, "
 "%(resourceAmount2)s %(resourceType2)s"
 msgstr "资源不足 - %(resourceAmount1)s %(resourceType1)s, %(resourceAmount2)s %(resourceType2)s"
 
-#: simulation/components/Player.js:275
+#: simulation/components/Player.js:267
 #, javascript-format
 msgid ""
 "Insufficient resources - %(resourceAmount1)s %(resourceType1)s, "
 "%(resourceAmount2)s %(resourceType2)s, %(resourceAmount3)s %(resourceType3)s"
 msgstr "资源不足 - %(resourceAmount1)s %(resourceType1)s, %(resourceAmount2)s %(resourceType2)s, %(resourceAmount3)s %(resourceType3)s"
 
-#: simulation/components/Player.js:277
+#: simulation/components/Player.js:269
 #, javascript-format
 msgid ""
 "Insufficient resources - %(resourceAmount1)s %(resourceType1)s, "
@@ -747,11 +908,11 @@ msgid ""
 "%(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 msgstr "资源不足 - %(resourceAmount1)s %(resourceType1)s, %(resourceAmount2)s %(resourceType2)s, %(resourceAmount3)s %(resourceType3)s, %(resourceAmount4)s %(resourceType4)s"
 
-#: simulation/components/ProductionQueue.js:400
+#: simulation/components/ProductionQueue.js:395
 msgid "The production queue is full."
 msgstr "生产队列已满。"
 
-#: simulation/components/ProductionQueue.js:777
+#: simulation/components/ProductionQueue.js:772
 msgid "Can't find free space to spawn trained units"
 msgstr "无法找到可用空间来部署受训单位"
 
@@ -759,38 +920,46 @@ msgstr "无法找到可用空间来部署受训单位"
 msgid "You need to select a building that trains units."
 msgstr "您需要选择用于训练单位的建筑。"
 
-#: simulation/helpers/Commands.js:128
+#: simulation/helpers/Commands.js:121
 msgid "(Cheat - control all units)"
 msgstr "(作弊 - 控制所有单位)"
 
-#: simulation/helpers/Commands.js:575
+#: simulation/helpers/Commands.js:133
+msgid "(Cheat - reveal map)"
+msgstr "(作弊——显示全部地图)"
+
+#: simulation/helpers/Commands.js:570
 msgid "(Cheat - promoted units)"
 msgstr "(作弊 - 已晋升单位)"
 
-#: simulation/helpers/Commands.js:685
+#: simulation/helpers/Commands.js:684
 msgid ""
 "Cannot upgrade as distance requirements are not verified or terrain is "
 "obstructed."
 msgstr "因距离需求未获得验证，或地势被阻断而无法升级。"
 
-#: simulation/helpers/Commands.js:695
+#: simulation/helpers/Commands.js:694
 msgid "Cannot upgrade a garrisoned entity."
 msgstr "无法升级已驻守的独立存在的实体。"
 
-#: simulation/helpers/Commands.js:741
+#: simulation/helpers/Commands.js:740
 #, javascript-format
 msgid "Attack against %(_player_)s requested."
 msgstr "已请求向 %(_player_)s 发动攻击。"
 
-#: simulation/helpers/Commands.js:778
+#: simulation/helpers/Commands.js:773
+msgid "There are no bribable units"
+msgstr ""
+
+#: simulation/helpers/Commands.js:804
 msgid "Unable to ungarrison unit(s)"
 msgstr "无法撤离单位"
 
-#: simulation/helpers/Commands.js:792
+#: simulation/helpers/Commands.js:818
 msgid "Some unit(s) can't go back to work"
 msgstr "某些单位无法返回工作岗位"
 
-#: simulation/helpers/Commands.js:1047
+#: simulation/helpers/Commands.js:1072
 msgid "The building's technology requirements are not met."
 msgstr "该建筑的科技要求不满足。"
 
@@ -874,9 +1043,19 @@ msgstr "快速 (10x)"
 msgid "Fast Forward (20x)"
 msgstr "快速 (20x)"
 
+#: simulation/data/settings/victory_conditions/capture_the_relic.jsonData.Description
+msgid ""
+"Capture all relics spread across the map and keep them for a certain time to"
+" win the game."
+msgstr ""
+
+#: simulation/data/settings/victory_conditions/capture_the_relic.jsonData.Title
+msgid "Capture The Relic"
+msgstr ""
+
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Description
 msgid "Defeat all opponents to win."
-msgstr ""
+msgstr "打败所有对手获取胜利。"
 
 #: simulation/data/settings/victory_conditions/conquest.jsonData.Title
 msgid "Conquest"
@@ -884,7 +1063,7 @@ msgstr "征服单位"
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Description
 msgid "Destroy all enemy structures to win."
-msgstr ""
+msgstr "摧毁所有敌方建筑获取胜利。"
 
 #: simulation/data/settings/victory_conditions/conquest_structures.jsonData.Title
 msgid "Conquest Structures"
@@ -892,7 +1071,7 @@ msgstr "征服建筑物"
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Description
 msgid "Kill all enemy units to win."
-msgstr ""
+msgstr "杀死所有敌方单位获取胜利。"
 
 #: simulation/data/settings/victory_conditions/conquest_units.jsonData.Title
 msgid "Conquest Units"
@@ -900,7 +1079,7 @@ msgstr "征服单位"
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Description
 msgid "Defeat opponents by killing their hero."
-msgstr ""
+msgstr "通过杀死对手的英雄来打败他们。"
 
 #: simulation/data/settings/victory_conditions/regicide.jsonData.Title
 msgid "Regicide"
@@ -910,7 +1089,7 @@ msgstr "弑君者"
 msgid ""
 "Be the first to build or capture a wonder and keep it for a certain time to "
 "win the game."
-msgstr ""
+msgstr "第一个保持占有（建造或占领）世界奇观一段时间的玩家取得游戏的胜利。"
 
 #: simulation/data/settings/victory_conditions/wonder.jsonData.Title
 msgid "Wonder"
@@ -947,7 +1126,6 @@ msgid "Deathmatch"
 msgstr "死亡竞赛"
 
 #: simulation/data/settings/map_sizes.jsonData[0].Name
-#: simulation/data/settings/map_sizes.jsonData[0].LongName
 msgid "Tiny"
 msgstr "极小"
 
@@ -955,44 +1133,23 @@ msgstr "极小"
 msgid "Small"
 msgstr "小型"
 
-#: simulation/data/settings/map_sizes.jsonData[1].LongName
-msgid "Small (2 players)"
-msgstr "小型(2 个玩家)"
-
 #: simulation/data/settings/map_sizes.jsonData[2].Name
 msgid "Medium"
 msgstr "中等"
-
-#: simulation/data/settings/map_sizes.jsonData[2].LongName
-msgid "Medium (3 players)"
-msgstr "中型 (3个玩家)"
 
 #: simulation/data/settings/map_sizes.jsonData[3].Name
 msgid "Normal"
 msgstr "一般"
 
-#: simulation/data/settings/map_sizes.jsonData[3].LongName
-msgid "Normal (4 players)"
-msgstr "一般 (4个玩家)"
-
 #: simulation/data/settings/map_sizes.jsonData[4].Name
 msgid "Large"
 msgstr "大型"
-
-#: simulation/data/settings/map_sizes.jsonData[4].LongName
-msgid "Large (6 players)"
-msgstr "大型(6个玩家)"
 
 #: simulation/data/settings/map_sizes.jsonData[5].Name
 msgid "Very Large"
 msgstr "极大型"
 
-#: simulation/data/settings/map_sizes.jsonData[5].LongName
-msgid "Very Large (8 players)"
-msgstr "极大型 (8个玩家)"
-
 #: simulation/data/settings/map_sizes.jsonData[6].Name
-#: simulation/data/settings/map_sizes.jsonData[6].LongName
 msgid "Giant"
 msgstr "巨大型"
 
@@ -1004,8 +1161,8 @@ msgstr "Petra Bot"
 msgid ""
 "Petra is the default 0 A.D. AI bot. Please report issues to Wildfire Games (see the link in the main menu).\n"
 "\n"
-"The AI has a bonus/penalty on resource stockpiling (either gathering rate or trade gain) varying from 0.5 for Sandbox to 1.6 for Very Hard (Medium = 1.0). In addition, the Sandbox level does not expand nor attack."
-msgstr "佩特拉是默认的 0 A.D. AI 机器人。请向 Wildfire Games 报告问题(请参阅主菜单中的链接)。\n\n在资源囤积方面(采集速度或交易速度)，AI 会有不同的奖励/惩罚，从 0.5 (沙盒)到 1.6 (极难)不等(中等难度下为 1.0)。此外，沙盒级别下的 AI 不会扩张领地也不会发动攻击。"
+"The AI has a bonus/penalty on resource stockpiling (either gathering rate or trade gain) varying from -50% for Sandbox to +60% for Very Hard (Medium 0%). In addition, the Sandbox level does not expand nor attack."
+msgstr ""
 
 #: simulation/ai/tutorial-ai/data.jsonname
 msgid "Tutorial AI"

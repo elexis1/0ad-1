@@ -6,7 +6,7 @@
 # A L <De_Sade@web.de>, 2016
 # Aldicek <aldicek@ewt-net.de>, 2014
 # Alex Mayr <alxmy@gmx.net>, 2015
-# Wuzzy <almikes@aol.com>, 2016
+# Wuzzy <almikes@aol.com>, 2016-2017
 # Almin <GermannenMarkus@googlemail.com>, 2013
 # Ankomias, 2014
 # Artur Epp, 2014
@@ -17,6 +17,7 @@
 # David Lucks, 2015
 # endoriel <endoriel_tx@i130.de>, 2014
 # Enrico <TheEyeGer@web.de>, 2013
+# Fabian Gref <fabian.gref@gmail.com>, 2017
 # Fesa <ventessa@gmail.com>, 2013
 # Hedaja <christian.pietzsch@gmail.com>, 2014
 # hunzel <nurmaguggen@hotmail.com>, 2014
@@ -34,12 +35,12 @@
 # pointhi, 2014
 # raymond_de, 2014
 # Raymond Vetter, 2014
-# Raymond Vetter, 2014
+# Raymond Vetter, 2014,2016
 # santa41116, 2014
 # sdos77, 2014
 # Sebastian Goebel <sashacrazyhuhn@web.de>, 2013
 # sshmedom <sshmedom@gmail.com>, 2014
-# stefanniedermann <stefan.niedermann@googlemail.com>, 2014
+# Stefan Niedermann, 2014
 # Stefan Rohrbacher <stefan.rohrbacher@hotmail.com>, 2014
 # Tagaris <inactive+Tagaris@transifex.com>, 2014
 # Talani <malte.kreutzfeld@gmail.com>, 2014
@@ -56,8 +57,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:00+0200\n"
-"PO-Revision-Date: 2016-10-08 16:06+0000\n"
+"POT-Creation-Date: 2016-11-28 09:00+0100\n"
+"PO-Revision-Date: 2017-04-11 12:23+0000\n"
 "Last-Translator: Wuzzy <almikes@aol.com>\n"
 "Language-Team: German (http://www.transifex.com/wildfire-games/0ad/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -545,7 +546,7 @@ msgid ""
 "slaughtered as they could not withdraw to safety. Boudicca herself escaped, "
 "and then slew her daughters, and then herself, to avoid further shame at "
 "Roman hands."
-msgstr "Ammianus Marcellinus beschrieb, wie schwer es für eine Gruppe Fremder sei, mit einem Kelten zurechtzukommen, der seine Frau zur Hilfe rie. Sie sei stärker als er und ließe Schläge und Tritte mit einer Kraft hageln, die einem Katapult nicht unähnlich sei. Boudicca, Königin der Icener, wird als sehr große und Angst einflößende Erscheinung und ihre Stimme als barsch beschrieben. Ihr fiel eine Mäne aus rotem Haar über die Schultern. Sie trug eine vielfarbige Tunika, über der ein dicker Umhang mit einer Brosche befestigt war. Anfangs war Boudicca zusammen mit ihrem Mann Prasutagus, dem König der Icener, mit Rom verbündet. Prasutagus war nach einem kurzen Aufstand ein wichtiger Alliierter Roms, selbst bei seinen Feinden respektiert wegen seines Weitblicks, und ihm war es erlaubt sein Königreich frei zu regieren, wie es die Tradition gebot, bis auf eine Ausnahme. Als er spürte, dass er bald sterben würde, beschloss Prasutagus mit seiner Frau und seinen Untergebenen, dass seine Töchter seine Herrschaft erben sollten, unter Boudiccas Vormundschaft bis sie erwachsen waren, und der Kaiser Roms sollte die Oberherrschaft haben, Steuern erheben und militärische Unterstützung fordern, falls nötig. So ziemlich die gleiche Situation wie vorher. Es bestand jedoch das Problem, dass Rom keine weiblichen Erben akzeptierte, und feststellte, dass nach Prasutagus nur der Kaiser Roms einen Anspruch auf den Thron habe. Weiter sagte Rom, ein abhängiges Königreich sei nur während des Lebens des ursprünglichen Königs frei, wie es in Galatien der Fall war. Formell übernahm Rom die Herrschaft, und begann sofort, mit einem Hinweis auf Schulden Prasutagus, die nicht zurückgezahlt waren, hohe Steuern zu erheben. Boudiccas Beschwerden über diese Behandlung und die Ignoranz gegenüber dem letzten Willen ihres Mannes wurde mit Brutalität begegnet; römische Soldaten peitschten sie aus und missbrauchten ihre Töchter, die zu diesem Zeitpunkt nur Kinder waren. Boudicca und ihre Angestellten waren aufgebracht wegen der Schande, die ihrer Königin und deren Kinder angetan worden war. Während der römische Gouverneur von Britanien mit den Druiden in Cambria, dem heutigen Wales, beschäftigt war, sammelte Boudicca Gleichgesinnte von außerhalb des icenischen Stammes um sich. Die Icener waren nicht die einzigen, die mit der römischen Herrschaft unzufrieden waren. Boudicca und ihre Armee verwüsteten drei Städte, schlugen eine römische Legion in die Flucht und riefen Erinnerungen an Arminius wach, einen Deutschen, der die Römer schon früher von seinem Land gejagt hatte und ihre eigenen Vorfahren, die Cäsar beinahe ein Jahrhundert früher davongejagt hatten. Boudicca wurde durch einen schweren taktischen Fehler in der Schlacht von Watling Street besiegt, in der ihre Streitmacht abgeschlachtet wurde, da sie sich nicht zurückziehen konnte. Die geschlagene Heerführerin konnte fliehen und töte ihre Töchter und danach sich selbst, um weiterer Schande durch römische Hände zu entgehen."
+msgstr "Ammianus Marcellinus beschrieb, wie schwer es für eine Gruppe Fremder sei, mit einem Kelten zurechtzukommen, der seine Frau zur Hilfe rief. Sie sei stärker als er und ließe Schläge und Tritte auf die Angreifer mit einer Kraft hageln, die einem Katapult glich. Boudicca, die Königin der Icener, wird als sehr große und furchterregende Erscheinung beschrieben; ihre Stimme war sehr barsch und eine Mähne aus rotem Haar fiel über ihre Schultern. Sie trug eine bunte Tunika, über der ein dicker Umhang mit einer Brosche befestigt war. Anfangs war Boudicca zusammen mit ihrem Mann Prasutagus, dem König der Icener, mit Rom verbündet. Prasutagus war nach einem kurzen Aufstand ein wichtiger verbündeter Roms, der selbst von seinen ehemaligen Feinden, den jetzt mit ihm verbündeten Römern, wegen seines Weitblicks respektiert wurde. Ihm war es wie es die Tradition gebot erlaubt sein Königreich bis auf eine Ausnahme frei zu regieren. Als er spürte, dass er bald sterben würde, beschloss Prasutagus mit seiner Frau und seinen Untergebenen ein Testament; Seine Töchter sollten seine Herrschaft erben und, bis diese erwachsen waren, unter Boudiccas Vormundschaft stehen. Der Kaiser Roms sollte die Oberhoheit haben Steuern zu erheben und, falls nötig, militärische Unterstützung zu fordern. Annähernd die gleiche Situation wie unter seiner Herrschaft. Das Problem war, dass Rom keine weiblichen Erben anerkannte, und behauptete, dass nach Prasutagus' Tod nur der römische Kaiser einen gültigen Anspruch auf den icenischen Thron habe. Weiter bemerkte Rom, dass es eine reguläre römische Praxis war, dass ein abhängiges Königreich nur während des Lebens des ursprünglichen Königs frei war, so wie es in Galatien zutraf. Das Römische Reich annektierte das Königreich und begann sofort hohe Steuern erheben, mit der Begründung, dass Prasutagus in seiner Lebenszeit etliche Anleihen aufgenommen hatte, die nicht beglichen wurden. Boudiccas Beschwerden über diese Behandlung und die Ignoranz gegenüber dem letzten Willen ihres Mannes wurde mit Brutalität begegnet; römische Soldaten peitschten sie aus und missbrauchten ihre Töchter, die zu diesem Zeitpunkt nur Kinder waren. Boudicca und ihre Untertanen waren aufgebracht wegen der Schande, die ihrer Königin und deren Kinder angetan worden war. Während der römische Gouverneur von Britannien mit den Druiden in Cambria, dem heutigen Wales, beschäftigt war, sammelte Boudicca Gleichgesinnte von außerhalb des icenischen Stammes um sich. Die Icener waren nicht die einzigen, die mit der römischen Herrschaft unzufrieden waren. Boudicca und ihre Armee verwüsteten drei Städte, schlugen eine römische Legion in die Flucht und riefen Erinnerungen an Arminius wach, einen Germanen, der die Römer schon früher von seinem Land gejagt hatte und ihre eigenen Vorfahren, die Cäsar beinahe ein Jahrhundert früher davongejagt hatten. Boudicca wurde durch einen schweren taktischen Fehler in der Schlacht von Watling Street besiegt, in der viele ihrer Streitmacht abgeschlachtet wurden, da sie sich nicht zurückziehen konnten. Boudicca selbst flüchtete, tötete ihre Töchter und dann sich selbst, um weiterer Schande durch römische Hände zu entgehen."
 
 #: simulation/data/civs/brit.jsonFactions[0].Description
 msgid "The Celts of the British Isles."
@@ -562,10 +563,10 @@ msgstr "Die Briten waren dafür bekannt, Kriegshunde zu züchten."
 #: simulation/data/civs/brit.jsonHistory
 msgid ""
 "The Britons were the Celtic tribes of the British Isles. Using chariots, "
-"longswordsmen and powerful melee soldiers, they staged fearesome revolts "
+"longswordsmen and powerful melee soldiers, they staged fearsome revolts "
 "against Rome to protect their customs and interests. Also, they built "
 "thousands of unique structures such as hill forts, crannogs and brochs."
-msgstr "Die Britonen waren die keltischen Stämme auf den britischen Inseln. Mit ihren Streitwagen, Langschwertkämpfern und starken Nahkämpfern starteten sie furchterregende Revolten gegen Rom, um ihre Bräuche und Interessen zu verteidigen. Außerdem bauten sie tausende einzigartige Gebäude wie Burgwälle, Crannogs und Brochs."
+msgstr "Die Briten waren der keltische Stamm auf den Britischen Inseln. Mit ihren Streitwagen, Langschwertkämpfern und starken Nahkampfsoldaten inszenierten sie furchterregende Aufstände gegen Rom um ihre Gewohnheiten und Interessen zu verteidigen. Außerdem bauten sie tausende einzigartige Gebäude wie Burgwälle, Crannogs und Brochs."
 
 #: simulation/data/civs/cart.jsonName
 msgid "Carthaginians"
@@ -1889,7 +1890,7 @@ msgstr "Erlaubt das Einfangen von Gaia-Elefanten und -Kamelen, um deren Ausbildu
 
 #: simulation/data/civs/ptol.jsonTeamBonuses[0].Description
 msgid "All allies automatically gain a slow trickle of food income."
-msgstr "Alle Verbündeten bekommen automatisch einen kleinen stetigen Zuwachs an Nahrung."
+msgstr "Alle Verbündeten bekommen automatisch einen langsamen stetigen Zufluss an Nahrung."
 
 #: simulation/data/civs/ptol.jsonTeamBonuses[0].Name
 msgid "Breadbasket of the Mediterranean"

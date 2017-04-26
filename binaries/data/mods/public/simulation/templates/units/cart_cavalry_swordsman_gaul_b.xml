@@ -2,8 +2,8 @@
 <Entity parent="template_unit_cavalry_melee_swordsman">
   <Cost>
     <Resources>
-      <food>75</food>
-      <metal>35</metal>
+      <food op="add">-25</food>
+      <metal op="add">25</metal>
     </Resources>
   </Cost>
   <Identity>
@@ -19,12 +19,6 @@
   <Promotion>
     <Entity>units/cart_cavalry_swordsman_gaul_a</Entity>
   </Promotion>
-  <UnitMotion>
-    <WalkSpeed>15.5</WalkSpeed>
-    <Run>
-      <Speed>24.0</Speed>
-    </Run>
-  </UnitMotion>
   <VisualActor>
     <Actor>units/celts/cavalry_swordsman_b.xml</Actor>
   </VisualActor>

@@ -29,10 +29,7 @@ Upgrade.prototype.Schema =
 					"<element name='Cost' a:help='Resource cost to upgrade this unit'>" +
 						"<oneOrMore>" +
 							"<choice>" +
-								"<element name='food'><data type='nonNegativeInteger'/></element>" +
-								"<element name='wood'><data type='nonNegativeInteger'/></element>" +
-								"<element name='stone'><data type='nonNegativeInteger'/></element>" +
-								"<element name='metal'><data type='nonNegativeInteger'/></element>" +
+								Resources.BuildSchema("nonNegativeInteger") +
 							"</choice>" +
 						"</oneOrMore>" +
 					"</element>" +
@@ -58,6 +55,7 @@ Upgrade.prototype.Init = function()
 	this.completed = false;
 	this.elapsedTime = 0;
 	this.timer = undefined;
+	this.expendedResources = {};
 
 	this.upgradeTemplates = {};
 
@@ -90,17 +88,28 @@ Upgrade.prototype.ChangeUpgradedEntityCount = function(amount)
 	let cmpTempMan = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
 	let template = cmpTempMan.GetTemplate(this.upgrading);
 
-	let category;
+	let categoryTo;
 	if (template.TrainingRestrictions)
-		category = template.TrainingRestrictions.Category;
+		categoryTo = template.TrainingRestrictions.Category;
 	else if (template.BuildRestrictions)
-		category = template.BuildRestrictions.Category;
+		categoryTo = template.BuildRestrictions.Category;
 
-	if (!category)
+	if (!categoryTo)
+		return;
+
+	let categoryFrom;
+	let cmpTrainingRestrictions = Engine.QueryInterface(this.entity, IID_TrainingRestrictions);
+	let cmpBuildRestrictions = Engine.QueryInterface(this.entity, IID_BuildRestrictions);
+	if (cmpTrainingRestrictions)
+		categoryFrom = cmpTrainingRestrictions.GetCategory();
+	else if (cmpBuildRestrictions)
+		categoryFrom = cmpBuildRestrictions.GetCategory();
+	
+	if (categoryTo == categoryFrom)
 		return;
 
 	let cmpEntityLimits = QueryPlayerIDInterface(this.owner, IID_EntityLimits);
-	cmpEntityLimits.ChangeCount(category, amount);
+	cmpEntityLimits.ChangeCount(categoryTo, amount);
 };
 
 Upgrade.prototype.CanUpgradeTo = function(template)
@@ -117,29 +126,19 @@ Upgrade.prototype.GetUpgrades = function()
 	for (let option in this.template)
 	{
 		let choice = this.template[option];
-		let entType = choice.Entity;
-		if (cmpIdentity)
-			entType = entType.replace(/\{civ\}/g, cmpIdentity.GetCiv());
+		let templateName = cmpIdentity ? choice.Entity.replace(/\{civ\}/g, cmpIdentity.GetCiv()) : choice.Entity
 
-		let hasCosts;
 		let cost = {};
 		if (choice.Cost)
-		{
-			hasCosts = true;
-			for (let type in choice.Cost)
-				cost[type] = ApplyValueModificationsToTemplate("Upgrade/Cost/"+type, +choice.Cost[type], this.owner, entType);
-		}
+			cost = this.GetResourceCosts(templateName);
 		if (choice.Time)
-		{
-			hasCosts = true;
-			let cmpPlayer = QueryPlayerIDInterface(this.owner, IID_Player);
-			cost.time = ApplyValueModificationsToTemplate("Upgrade/Time", +choice.Time, this.owner, entType) *
-				cmpPlayer.GetCheatTimeMultiplier();
-		}
+			cost.time = this.GetUpgradeTime(templateName);
+
+		let hasCost = choice.Cost || choice.Time;
 		ret.push({
-			"entity": entType,
+			"entity": templateName,
 			"icon": choice.Icon || undefined,
-			"cost": hasCosts ? cost : undefined,
+			"cost": hasCost ? cost : undefined,
 			"tooltip": choice.Tooltip || undefined,
 			"requiredTechnology": this.GetRequiredTechnology(option),
 		});
@@ -203,6 +202,9 @@ Upgrade.prototype.GetResourceCosts = function(template)
 	if (!this.upgradeTemplates[template])
 		return undefined;
 
+	if (this.IsUpgrading() && template == this.GetUpgradingTo())
+		return clone(this.expendedResources);
+
 	let choice = this.upgradeTemplates[template];
 	if (!this.template[choice].Cost)
 		return {};
@@ -221,8 +223,12 @@ Upgrade.prototype.Upgrade = function(template)
 
 	let cmpPlayer = QueryOwnerInterface(this.entity, IID_Player);
 
-	if (!cmpPlayer.TrySubtractResources(this.GetResourceCosts(template)))
+	this.expendedResources = this.GetResourceCosts(template);
+	if (!cmpPlayer.TrySubtractResources(this.expendedResources))
+	{
+		this.expendedResources = {};
 		return false;
+	}
 
 	this.upgrading = template;
 
@@ -247,8 +253,9 @@ Upgrade.prototype.CancelUpgrade = function(owner)
 
 	let cmpPlayer = QueryPlayerIDInterface(owner, IID_Player);
 	if (cmpPlayer)
-		cmpPlayer.AddResources(this.GetResourceCosts(this.upgrading));
+		cmpPlayer.AddResources(this.expendedResources);
 
+	this.expendedResources = {};
 	this.ChangeUpgradedEntityCount(-1);
 
 	this.upgrading = false;
@@ -301,6 +308,7 @@ Upgrade.prototype.UpgradeProgress = function(data, lateness)
 
 	this.completed = true;
 	this.ChangeUpgradedEntityCount(-1);
+	this.expendedResources = {};
 
 	let newEntity = ChangeEntityTemplate(this.entity, this.upgrading);
 

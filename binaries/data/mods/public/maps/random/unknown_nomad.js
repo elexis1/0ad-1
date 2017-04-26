@@ -542,16 +542,6 @@ else if (md == 4) //central river
 				}
 			}
 		}
-	if (mdd2 == 1)
-	{
-		if (mdd1 == 1)
-		{
-			passageMaker(fractionToTiles(0.2), fractionToTiles(0.25), fractionToTiles(0.8), fractionToTiles(0.25), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-			passageMaker(fractionToTiles(0.2), fractionToTiles(0.75), fractionToTiles(0.8), fractionToTiles(0.75), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-		}
-			passageMaker(fractionToTiles(0.25), fractionToTiles(0.2), fractionToTiles(0.25), fractionToTiles(0.8), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-			passageMaker(fractionToTiles(0.75), fractionToTiles(0.2), fractionToTiles(0.75), fractionToTiles(0.8), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-		}
 	}
 }
 //********************************************************************************************************
@@ -1302,17 +1292,13 @@ for (var i = 0; i < numPlayers; i++)
 	}
 
 	if (!placableArea.length)
-	{
 		for (var mx = 0; mx < mapSize; ++mx)
 			for (var mz = 0; mz < mapSize; ++mz)
 				if (g_Map.getHeight(mx, mz) >= 3 && g_Map.getHeight(mx, mz) <= 3.12)
 					placableArea.push([mx, mz]);
-	}
-	var chosen = floor(Math.random()*placableArea.length);
-	playerX[i] = placableArea[chosen][0];
-	playerZ[i] = placableArea[chosen][1];
-}
 
+	[playerX[i], playerZ[i]] = pickRandom(placableArea);
+}
 
 for (var i = 0; i < numPlayers; ++i)
 {
@@ -1619,7 +1605,7 @@ for (var i = 0; i < types.length; ++i)
 		true, clForest
 	);
 	createObjectGroups(group, 0,
-		[avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 0, clMetal, 1, clRock, 1), stayClasses(clLand, 4)],
+		[avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 0, clMetal, 6, clRock, 6), stayClasses(clLand, 4)],
 		num
 	);
 }
@@ -1673,20 +1659,7 @@ createObjectGroups(group, 0,
 	planetm * scaleByMapSize(13, 200), 50
 );
 
-rt = randInt(1,6);
-if (rt == 1)
-	setSkySet("cirrus");
-else if (rt == 2)
-	setSkySet("cumulus");
-else if (rt == 3)
-	setSkySet("sunny");
-else if (rt == 4)
-	setSkySet("sunny 1");
-else if (rt == 5)
-	setSkySet("mountainous");
-else if (rt == 6)
-	setSkySet("stratus");
-
+setSkySet(pickRandom(["cirrus", "cumulus", "sunny", "sunny 1", "mountainous", "stratus"]));
 setSunRotation(randFloat(0, TWO_PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 

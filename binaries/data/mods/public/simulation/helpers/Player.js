@@ -113,13 +113,19 @@ function LoadPlayerSettings(settings, newPlayers)
 		if (getSetting(playerData, playerDefaults, i, "DisabledTechnologies") !== undefined)
 			cmpPlayer.SetDisabledTechnologies(getSetting(playerData, playerDefaults, i, "DisabledTechnologies"));
 
-		let disabledTemplates = []; 
+		let disabledTemplates = [];
 		if (settings.DisabledTemplates !== undefined)
 			disabledTemplates = settings.DisabledTemplates;
 		if (getSetting(playerData, playerDefaults, i, "DisabledTemplates") !== undefined)
 			disabledTemplates = disabledTemplates.concat(getSetting(playerData, playerDefaults, i, "DisabledTemplates"));
 		if (disabledTemplates.length)
 			cmpPlayer.SetDisabledTemplates(disabledTemplates);
+
+		if (settings.DisableSpies)
+		{
+			cmpPlayer.AddDisabledTechnology("unlock_spies");
+			cmpPlayer.AddDisabledTemplate("special/spy");
+		}
 
 		// If diplomacy explicitly defined, use that; otherwise use teams
 		if (getSetting(playerData, playerDefaults, i, "Diplomacy") !== undefined)

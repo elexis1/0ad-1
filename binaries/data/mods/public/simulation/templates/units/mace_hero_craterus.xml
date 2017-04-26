@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Entity parent="template_unit_hero_infantry_swordsman">
+  <Auras datatype="tokens">mace_hero_craterus</Auras>
   <Identity>
     <Civ>mace</Civ>
     <Lang>greek</Lang>
     <GenericName>Crateros</GenericName>
     <SpecificName>Kraterós</SpecificName>
-    <Tooltip>Trusted general under Alexander the Great.</Tooltip>
+    <History>Trusted general under Alexander the Great.</History>
     <Icon>units/mace_hero_craterus.png</Icon>
   </Identity>
   <VisualActor>

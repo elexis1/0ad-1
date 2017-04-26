@@ -74,7 +74,7 @@ var clWater = createTileClass();
 var clCliff = createTileClass();
 var clForest = createTileClass();
 var clMetal = createTileClass();
-var clStone = createTileClass();
+var clRock = createTileClass();
 var clFood = createTileClass();
 var clPlayer = createTileClass();
 var clBaseResource = createTileClass();
@@ -299,7 +299,7 @@ for (var ix = 0; ix < mapSize; ix++)
 			var forestNoise = (noise6.get(x,z) + 0.5*noise7.get(x,z)) / 1.5 * pn - 0.59;
 
 			// Thin out trees a bit
-			if (forestNoise > 0 && randFloat() < 0.5)
+			if (forestNoise > 0 && randBool())
 			{
 				if (minH < 11 && minH >= 4)
 				{
@@ -333,14 +333,14 @@ for (var ix = 0; ix < mapSize; ix++)
 			else if (grassNoise < 0.34)
 			{
 				t = (diffH > 1.2) ? tGrassCliff : tGrassDry;
-				if (diffH < 0.5 && randFloat() < 0.02)
+				if (diffH < 0.5 && randBool(0.02))
 					placeObject(ix+randFloat(), iz+randFloat(), aGrassDry, 0, randFloat(0, TWO_PI));
 			}
 			else if (grassNoise > 0.61)
 			{
 				t = (diffH > 1.2 ? tGrassRock : tGrassShrubs);
 			}
-			else if (diffH < 0.5 && randFloat() < 0.02)
+			else if (diffH < 0.5 && randBool(0.02))
 				placeObject(ix+randFloat(), iz+randFloat(), aGrass, 0, randFloat(0, TWO_PI));
 		}
 
@@ -411,8 +411,6 @@ for (var i = 1; i <= numPlayers; i++)
 	);
 	createObjectGroup(group, 0);
 
-	var radius = scaleByMapSize(15,25);
-	var hillSize = PI * radius * radius;
 	// create starting trees
 	var num = 5;
 	var tAngle = randFloat(-PI/3, 4*PI/3);
@@ -450,16 +448,16 @@ createObjectGroups(group, 0,
 RMS.SetProgress(50);
 
 log("Creating large stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clStone);
+group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroups(group, 0,
-	avoidClasses(clWater, 1, clForest, 4, clPlayer, 40, clStone, 40, clMetal, 10, clCliff, 3),
+	avoidClasses(clWater, 1, clForest, 4, clPlayer, 40, clRock, 60, clMetal, 10, clCliff, 3),
 	scaleByMapSize(4,16), 100
 );
 
 log("Creating small stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clStone);
+group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroups(group, 0,
-	avoidClasses(clForest, 4, clWater, 1, clPlayer, 40, clStone, 30, clMetal, 10, clCliff, 3),
+	avoidClasses(clForest, 4, clWater, 1, clPlayer, 40, clRock, 30, clMetal, 10, clCliff, 3),
 	scaleByMapSize(4,16), 100
 );
 log("Creating metal mines...");
@@ -475,7 +473,7 @@ for (let tree of [oCarob, oBeech, oLombardyPoplar, oLombardyPoplar, oPine])
 {
 	group = new SimpleGroup([new SimpleObject(tree, 1,1, 0,1)], true, clForest);
 	createObjectGroups(group, 0,
-		avoidClasses(clWater, 5, clCliff, 4, clForest, 2, clPlayer, 15, clMetal, 4, clStone, 4),
+		avoidClasses(clWater, 5, clCliff, 4, clForest, 2, clPlayer, 15, clMetal, 6, clRock, 6),
 		scaleByMapSize(2, 38), 50
 	);
 }
@@ -487,7 +485,7 @@ group = new SimpleGroup(
 	true
 );
 createObjectGroups(group, 0,
-	avoidClasses(clWater, 5, clCliff, 4, clForest, 2, clPlayer, 15, clMetal, 4, clStone, 4),
+	avoidClasses(clWater, 5, clCliff, 4, clForest, 2, clPlayer, 15, clMetal, 6, clRock, 6),
 	scaleByMapSize(5, 75), 50
 );
 RMS.SetProgress(80);
@@ -495,7 +493,7 @@ RMS.SetProgress(80);
 log("Creating sheep...");
 group = new SimpleGroup([new SimpleObject(oSheep, 2,4, 0,2)], true, clFood);
 createObjectGroups(group, 0,
-	avoidClasses(clWater, 5, clForest, 2, clCliff, 1, clPlayer, 20, clMetal, 4, clStone, 4, clFood, 8),
+	avoidClasses(clWater, 5, clForest, 2, clCliff, 1, clPlayer, 20, clMetal, 6, clRock, 6, clFood, 8),
 	3 * numPlayers, 50
 );
 RMS.SetProgress(85);
@@ -503,20 +501,26 @@ RMS.SetProgress(85);
 log("Creating fish...");
 var num = scaleByMapSize(4, 16);
 var offsetX = mapSize * WATER_WIDTH/2;
-for (var i = 0; i < num; ++i)
-{
-	var cX = round(offsetX + offsetX/2 * randFloat(-1, 1));
-	var cY = round((i + 0.5) * mapSize/num);
-	group = new SimpleGroup([new SimpleObject(oFish, 1,1, 0,1)], true, clFood, cX, cY);
-	createObjectGroup(group, 0);
-}
-for (var i = 0; i < num; ++i)
-{
-	var cX = round(mapSize - offsetX + offsetX/2 * randFloat(-1, 1));
-	var cY = round((i + 0.5) * mapSize/num);
-	group = new SimpleGroup([new SimpleObject(oFish, 1,1, 0,1)], true, clFood, cX, cY);
-	createObjectGroup(group, 0);
-}
+for (let i = 0; i < num; ++i)
+	createObjectGroup(
+		new SimpleGroup(
+			[new SimpleObject(oFish, 1, 1, 0, 1)],
+			true,
+			clFood,
+			randIntInclusive(offsetX / 2, offsetX * 3/2),
+			Math.round((i + 0.5) * mapSize / num)),
+		0);
+
+for (let i = 0; i < num; ++i)
+	createObjectGroup(
+		new SimpleGroup(
+			[new SimpleObject(oFish, 1, 1, 0, 1)],
+			true,
+			clFood,
+			randIntInclusive(mapSize - offsetX * 3/2, mapSize - offsetX / 2),
+			Math.round((i + 0.5) * mapSize / num)),
+		0);
+
 RMS.SetProgress(90);
 
 log("Creating deer...");
@@ -525,7 +529,7 @@ group = new SimpleGroup(
 	true, clFood
 );
 createObjectGroups(group, 0,
-	avoidClasses(clWater, 5, clForest, 2, clCliff, 1, clPlayer, 20, clMetal, 4, clStone, 4, clFood, 8),
+	avoidClasses(clWater, 5, clForest, 2, clCliff, 1, clPlayer, 20, clMetal, 6, clRock, 6, clFood, 8),
 	3 * numPlayers, 50
 );
 RMS.SetProgress(95);
@@ -533,7 +537,7 @@ RMS.SetProgress(95);
 log("Creating berry bushes...");
 group = new SimpleGroup([new SimpleObject(oBerryBush, 5,7, 0,3)], true, clFood);
 createObjectGroups(group, 0,
-	avoidClasses(clWater, 5, clForest, 2, clCliff, 1, clPlayer, 20, clMetal, 4, clStone, 4, clFood, 8),
+	avoidClasses(clWater, 5, clForest, 2, clCliff, 1, clPlayer, 20, clMetal, 6, clRock, 6, clFood, 8),
 	1.5 * numPlayers, 100
 );
 

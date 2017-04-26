@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -170,10 +170,9 @@ public:
 	void KickPlayer(const CStrW& playerName, const bool ban);
 
 	/**
-	 * Send a message to all clients who have completed the full connection process
-	 * (i.e. are in the pre-game or in-game states).
+	 * Send a message to all clients who match one of the given states.
 	 */
-	bool Broadcast(const CNetMessage* message);
+	bool Broadcast(const CNetMessage* message, const std::vector<NetServerSessionState>& targetStates);
 
 private:
 	friend class CNetServer;
@@ -232,7 +231,6 @@ private:
 
 	void AddPlayer(const CStr& guid, const CStrW& name);
 	void RemovePlayer(const CStr& guid);
-	void SetPlayerReady(const CStr& guid, const int ready);
 	void SendPlayerAssignments();
 	void ClearAllPlayerReady();
 
@@ -258,7 +256,13 @@ private:
 	static bool OnDisconnect(void* context, CFsmEvent* event);
 	static bool OnClientPaused(void* context, CFsmEvent* event);
 
-	void CheckGameLoadStatus(CNetServerSession* changedSession);
+	/**
+	 * Checks if all clients have finished loading.
+	 * If so informs the clients about that and change the server state.
+	 *
+	 * Returns if all clients finished loading.
+	 */
+	bool CheckGameLoadStatus(CNetServerSession* changedSession);
 
 	void ConstructPlayerAssignmentMessage(CPlayerAssignmentMessage& message);
 

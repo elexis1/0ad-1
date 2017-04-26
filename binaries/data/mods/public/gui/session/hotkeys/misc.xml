@@ -5,15 +5,23 @@
 	</object>
 
 	<object hotkey="chat">
-		<action on="Press">openChat(false);</action>
+		<action on="Press">openChat();</action>
 	</object>
 
 	<object hotkey="teamchat">
-		<action on="Press">openChat(true);</action>
+		<action on="Press">openChat(g_IsObserver ? "/observers" : "/allies");</action>
 	</object>
 
-	<object hotkey="menu.toggle">
+	<object hotkey="privatechat">
+		<action on="Press">openChat(g_LastChatAddressee);</action>
+	</object>
+
+	<object hotkey="session.gui.menu.toggle">
 		<action on="Press">toggleMenu();</action>
+	</object>
+
+	<object hotkey="session.gui.barter.toggle">
+		<action on="Press">toggleTrade();</action>
 	</object>
 
 	<object hotkey="silhouettes">
@@ -60,6 +68,23 @@
 
 	<object hotkey="session.backtowork">
 		<action on="Press">backToWork();</action>
+	</object>
+
+	<object hotkey="session.batchtrain">
+		<action on="Press">updateSelectionDetails();</action>
+		<action on="Release">updateSelectionDetails();</action>
+	</object>
+
+	<object hotkey="session.massbarter">
+		<action on="Press">
+			updateSelectionDetails();
+			updateBarterButtons();
+		</action>
+
+		<action on="Release">
+			updateSelectionDetails();
+			updateBarterButtons();
+		</action>
 	</object>
 
 	<!-- Find idle warrior - TODO: Potentially move this to own UI button? -->

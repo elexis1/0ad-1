@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Thadah D. Denyse <juchuf@gmail.com>, 2015-2016
+# Mielanjel Iraeta <pospolos@gmail.com>, 2017
 # Osoitz <oelkoro@gmail.com>, 2015
 # Thadah D. Denyse <juchuf@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-15 09:00+0200\n"
-"PO-Revision-Date: 2016-10-25 11:47+0000\n"
-"Last-Translator: Thadah D. Denyse <juchuf@gmail.com>\n"
+"POT-Creation-Date: 2017-03-03 09:01+0100\n"
+"PO-Revision-Date: 2017-03-04 18:04+0000\n"
+"Last-Translator: Mielanjel Iraeta <pospolos@gmail.com>\n"
 "Language-Team: Basque (http://www.transifex.com/wildfire-games/0ad/language/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,186 +20,220 @@ msgstr ""
 "Language: eu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gui/lobby/lobby.js:54
+#: gui/lobby/lobby.js:49
 msgid "Online"
 msgstr "Linean"
 
-#: gui/lobby/lobby.js:55
+#: gui/lobby/lobby.js:50
 msgid "Away"
 msgstr "Kanpoan"
 
-#: gui/lobby/lobby.js:56
+#: gui/lobby/lobby.js:51
 msgid "Busy"
 msgstr "Lanean"
 
-#: gui/lobby/lobby.js:57
+#: gui/lobby/lobby.js:52
 msgid "Offline"
 msgstr "Deskonektatua"
 
-#: gui/lobby/lobby.js:58
+#: gui/lobby/lobby.js:53
 msgctxt "lobby presence"
 msgid "Unknown"
 msgstr "Ezezaguna"
 
-#: gui/lobby/lobby.js:132
+#: gui/lobby/lobby.js:136
 msgid "Disconnected."
 msgstr "Deskonektatuta."
 
-#: gui/lobby/lobby.js:150
+#: gui/lobby/lobby.js:152
 #, javascript-format
 msgid "%(nick)s has joined."
 msgstr "%(nick)s batu da."
 
-#: gui/lobby/lobby.js:159
+#: gui/lobby/lobby.js:161
 #, javascript-format
 msgid "%(nick)s has left."
 msgstr "%(nick)s joan da."
 
-#: gui/lobby/lobby.js:169
+#: gui/lobby/lobby.js:174
 #, javascript-format
 msgid "%(oldnick)s is now known as %(newnick)s."
 msgstr "%(oldnick)s orain %(newnick)s bezala ezagutzen da."
 
-#: gui/lobby/lobby.js:238
+#: gui/lobby/lobby.js:217
+msgid "You have been banned from the lobby!"
+msgstr "Debekatua izan zara jokalari anitzen gelan!"
+
+#: gui/lobby/lobby.js:218
+msgid "You have been kicked from the lobby!"
+msgstr "Bota zaituzte jokalari anitzen gelatik!"
+
+#: gui/lobby/lobby.js:220
+#, javascript-format
+msgid "%(nick)s has been banned from the lobby."
+msgstr "%(nick)s debekatua izan zara jokalari anitzen gelan."
+
+#: gui/lobby/lobby.js:221
+#, javascript-format
+msgid "%(nick)s has been kicked from the lobby."
+msgstr "%(nick)s bota zaituzte jokalari anitzen gelatik!"
+
+#: gui/lobby/lobby.js:224
+#, javascript-format
+msgctxt "lobby kick"
+msgid "Reason: %(reason)s"
+msgstr "Zergatia: %(reason)s"
+
+#: gui/lobby/lobby.js:249
+msgid "BANNED"
+msgstr "SARRERA DEBEKATURIK"
+
+#: gui/lobby/lobby.js:249
+msgid "KICKED"
+msgstr "KANPORATUA"
+
+#: gui/lobby/lobby.js:291
 msgctxt "map size"
 msgid "Any"
 msgstr "Edozein"
 
-#: gui/lobby/lobby.js:243
+#: gui/lobby/lobby.js:296
 msgctxt "player number"
 msgid "Any"
 msgstr "Edozein"
 
-#: gui/lobby/lobby.js:247
+#: gui/lobby/lobby.js:300
 msgctxt "map"
 msgid "Any"
 msgstr "Edozein"
 
-#: gui/lobby/lobby.js:426
+#: gui/lobby/lobby.js:479
 msgid "Moderator"
 msgstr "Moderatzailea"
 
-#: gui/lobby/lobby.js:426
+#: gui/lobby/lobby.js:479
 msgid "Player"
 msgstr "Jokalaria"
 
-#: gui/lobby/lobby.js:427 gui/lobby/lobby.js:428 gui/lobby/lobby.js:429
-#: gui/lobby/lobby.js:430 gui/lobby/lobby.js:431 gui/lobby/lobby.js:432
+#: gui/lobby/lobby.js:480 gui/lobby/lobby.js:481 gui/lobby/lobby.js:482
+#: gui/lobby/lobby.js:483 gui/lobby/lobby.js:484 gui/lobby/lobby.js:485
 msgid "N/A"
 msgstr "E/E"
 
-#: gui/lobby/lobby.js:442
+#: gui/lobby/lobby.js:506
 #, javascript-format
-msgid "%(nick)s (%(rating)s)"
-msgstr "%(nick)s (%(rating)s)"
+msgid "Player \"%(nick)s\" not found."
+msgstr "\"%(nick)s\" jokalaria ez da aurkitu."
 
-#: gui/lobby/lobby.js:631
+#. Translation: %(time)s is the hour and minute here.
+#: gui/lobby/lobby.js:687
 #, javascript-format
 msgid "Game started at %(time)s"
 msgstr "Partida %(time)s-(e)tan hasita"
 
-#: gui/lobby/lobby.js:632 gui/lobby/lobby.js:994
+#: gui/lobby/lobby.js:688 gui/lobby/lobby.js:1044
 msgid "HH:mm"
 msgstr "HH:mm"
 
-#: gui/lobby/lobby.js:636
+#: gui/lobby/lobby.js:692
 #, javascript-format
 msgid "Players: %(current)s/%(total)s"
 msgstr "Jokalariak: %(current)s/%(total)s"
 
-#: gui/lobby/lobby.js:678
-msgid "The game has already started."
-msgstr "Jokoa jadanik hasita dago."
+#: gui/lobby/lobby.js:734
+msgid "The game has already started. Do you want to join as observer?"
+msgstr "Partida dagoeneko hasi da, ikuskatzaile bezala sartu nahi duzu?"
 
-#: gui/lobby/lobby.js:679
-msgid "Do you want to join as observer?"
-msgstr "Ikuskatzaile bezala sartu nahi zara?"
-
-#: gui/lobby/lobby.js:680
+#: gui/lobby/lobby.js:735
 msgid "Confirmation"
 msgstr "Konfirmazioa"
 
-#: gui/lobby/lobby.js:681
+#: gui/lobby/lobby.js:736
 msgid "No"
 msgstr "Ez"
 
-#: gui/lobby/lobby.js:681
+#: gui/lobby/lobby.js:736
 msgid "Yes"
 msgstr "Bai"
 
-#: gui/lobby/lobby.js:700
+#: gui/lobby/lobby.js:755
 #, javascript-format
 msgid "This game's address '%(ip)s' does not appear to be valid."
-msgstr ""
+msgstr "'%(ip)s' ez dirudi helbide baliagarria denik."
 
-#: gui/lobby/lobby.js:819
+#: gui/lobby/lobby.js:874
 #, javascript-format
 msgid "We're sorry, the '%(cmd)s' command is not supported."
-msgstr ""
+msgstr "'%(cmd)s' agintea ez da jasaten."
 
 #. Translation: IRC message prefix when the sender uses the /me command.
-#: gui/lobby/lobby.js:901
+#: gui/lobby/lobby.js:951
 #, javascript-format
 msgid "* %(sender)s"
 msgstr "* %(sender)s"
 
 #. Translation: IRC message issued using the ‘/me’ command.
-#: gui/lobby/lobby.js:906
+#: gui/lobby/lobby.js:956
 #, javascript-format
 msgid "%(sender)s %(action)s"
 msgstr "%(sender)s %(action)s"
 
 #. Translation: IRC message prefix.
-#: gui/lobby/lobby.js:915 gui/lobby/lobby.js:936 gui/lobby/lobby.js:962
+#: gui/lobby/lobby.js:965 gui/lobby/lobby.js:986 gui/lobby/lobby.js:1012
 #, javascript-format
 msgid "<%(sender)s>"
 msgstr "<%(sender)s>"
 
 #. Translation: IRC message.
-#: gui/lobby/lobby.js:920 gui/lobby/lobby.js:941 gui/lobby/lobby.js:967
+#: gui/lobby/lobby.js:970 gui/lobby/lobby.js:991 gui/lobby/lobby.js:1017
 #, javascript-format
 msgid "%(sender)s %(message)s"
 msgstr "%(sender)s %(message)s"
 
 #. Translation: IRC system message.
-#: gui/lobby/lobby.js:930
+#: gui/lobby/lobby.js:980
 #, javascript-format
 msgid "== %(message)s"
 msgstr "== %(message)s"
 
-#: gui/lobby/lobby.js:956
+#: gui/lobby/lobby.js:1006
 #, javascript-format
 msgctxt "lobby private message"
 msgid "(%(private)s) <%(sender)s>"
 msgstr "(%(private)s) <%(sender)s>"
 
-#: gui/lobby/lobby.js:958
+#: gui/lobby/lobby.js:1008
 msgid "Private"
 msgstr "Pribatua"
 
 #. Translation: Time prefix as shown in the multiplayer lobby (when you enable
 #. it in the options page).
-#: gui/lobby/lobby.js:997
+#: gui/lobby/lobby.js:1047
 #, javascript-format
 msgid "\\[%(time)s]"
 msgstr "\\[%(time)s]"
 
 #. Translation: IRC message format when there is a time prefix.
-#: gui/lobby/lobby.js:1002
+#: gui/lobby/lobby.js:1052
 #, javascript-format
 msgid "%(time)s %(message)s"
 msgstr "%(time)s %(message)s"
 
-#: gui/lobby/lobby.js:1063
+#: gui/lobby/lobby.js:1113
 msgid "Please do not spam. You have been blocked for thirty seconds."
 msgstr "Mesedez ez ezazu spam-ik egin. 30 segundu blokeatua izan zara."
 
-#: gui/lobby/lobby.js:1130
+#: gui/lobby/lobby.js:1174
+#, javascript-format
+msgid "%(nick)s (%(rating)s)"
+msgstr "%(nick)s (%(rating)s)"
+
+#: gui/lobby/lobby.js:1189
 msgctxt "Used for an undefined winning rate"
 msgid "-"
 msgstr "-"
 
-#: gui/lobby/lobby.js:1132
+#: gui/lobby/lobby.js:1191
 #, javascript-format
 msgid "%(percentage)s%%"
 msgstr "%%%(percentage)s"
@@ -217,7 +252,7 @@ msgstr "Mesedez sartu zure erabiltzaile izena"
 
 #: gui/lobby/prelobby.js:98
 msgid "Usernames can't contain \\[, ], unicode, whitespace, or commas"
-msgstr ""
+msgstr "Erabiltzaile izenek ezin dute \\[, ], kode bakarreko sinboloak, hutsuneak edota komarik izan bere barnean."
 
 #: gui/lobby/prelobby.js:104
 msgid "Please enter your password"
@@ -241,141 +276,147 @@ msgstr "Mesedez irakurri Zerbitzuaren Baldintzak"
 
 #: gui/lobby/prelobby.js:141
 msgid "Please agree to the Terms of Service and Terms of Use"
-msgstr ""
+msgstr "Erabilera baldintza eta zerbitzuekin ados egon behar duzu."
 
-#: gui/lobby/prelobby.js:171
+#: gui/lobby/prelobby.js:166
+msgid ""
+"Unknown error. This usually occurs because the same IP address is not "
+"allowed to register more than one account within one hour."
+msgstr "Akats ezezaguna. Gehienetan hau gertatzen da ez delako IP helbidea onartzen ordu batean kontu bat baino gehiago irekitzeko."
+
+#: gui/lobby/prelobby.js:172
 msgid "Registered"
 msgstr "Erregistratuta"
 
-#: gui/lobby/prelobby.js:233
+#: gui/lobby/prelobby.js:234
 msgid "Register"
 msgstr "Erregistratu"
 
-#: gui/lobby/prelobby.js:239 gui/lobby/prelobby.xml:(caption):109
+#: gui/lobby/prelobby.js:240 gui/lobby/prelobby.xml:(caption):109
 msgid "Connect"
 msgstr "Konektatu"
 
-#: gui/lobby/prelobby.js:249 gui/lobby/prelobby.xml:(caption):78
+#: gui/lobby/prelobby.js:250 gui/lobby/prelobby.xml:(caption):78
 msgid "Terms of Service"
 msgstr "Zerbitzuaren Baldintzak"
 
-#: gui/lobby/prelobby.js:258 gui/lobby/prelobby.xml:(caption):83
+#: gui/lobby/prelobby.js:259 gui/lobby/prelobby.xml:(caption):83
 msgid "Terms of Use"
 msgstr "Erabilera baldintzak"
 
-#: gui/lobby/lobby.xml:(caption):17 gui/lobby/prelobby.xml:(caption):18
+#: gui/lobby/lobby.xml:(caption):18 gui/lobby/prelobby.xml:(caption):18
 msgid "Multiplayer Lobby"
 msgstr "Multiplayer gela"
 
-#: gui/lobby/lobby.xml:(caption):51 gui/lobby/lobby.xml:(caption):303
+#: gui/lobby/lobby.xml:(caption):63 gui/lobby/lobby.xml:(caption):325
 msgid "Current Rank:"
-msgstr ""
+msgstr "Oraingo Barrutia:"
 
-#: gui/lobby/lobby.xml:(caption):55 gui/lobby/lobby.xml:(caption):307
+#: gui/lobby/lobby.xml:(caption):67 gui/lobby/lobby.xml:(caption):329
 msgid "Highest Rating:"
-msgstr ""
+msgstr "Puntuazio Altuena:"
 
-#: gui/lobby/lobby.xml:(caption):59 gui/lobby/lobby.xml:(caption):311
+#: gui/lobby/lobby.xml:(caption):71 gui/lobby/lobby.xml:(caption):333
 msgid "Total Games:"
 msgstr "Partidak guztira:"
 
-#: gui/lobby/lobby.xml:(caption):63 gui/lobby/lobby.xml:(caption):315
+#: gui/lobby/lobby.xml:(caption):75 gui/lobby/lobby.xml:(caption):337
 msgid "Wins:"
 msgstr "Garaipenak:"
 
-#: gui/lobby/lobby.xml:(caption):67 gui/lobby/lobby.xml:(caption):319
+#: gui/lobby/lobby.xml:(caption):79 gui/lobby/lobby.xml:(caption):341
 msgid "Losses:"
 msgstr "Porrotak:"
 
-#: gui/lobby/lobby.xml:(caption):71 gui/lobby/lobby.xml:(caption):323
+#: gui/lobby/lobby.xml:(caption):83 gui/lobby/lobby.xml:(caption):345
 msgid "Win Rate:"
 msgstr "Garaipen erratioa:"
 
-#: gui/lobby/lobby.xml:(caption):80 gui/lobby/lobby.xml:(caption):251
+#: gui/lobby/lobby.xml:(caption):92 gui/lobby/lobby.xml:(caption):273
 msgid "Leaderboard"
-msgstr ""
+msgstr "Sailkapena"
 
-#: gui/lobby/lobby.xml:(caption):89 gui/lobby/lobby.xml:(caption):286
+#: gui/lobby/lobby.xml:(caption):101 gui/lobby/lobby.xml:(caption):308
 msgid "User Profile Lookup"
-msgstr ""
+msgstr "Erabiltzaile Bilaketa"
 
-#: gui/lobby/lobby.xml:(caption):118
+#: gui/lobby/lobby.xml:(caption):130
 msgid "Map Type:"
 msgstr "Mapa Mota:"
 
-#: gui/lobby/lobby.xml:(caption):130
+#: gui/lobby/lobby.xml:(caption):142
 msgid "Map Size:"
 msgstr "Maparen tamaina:"
 
 #. Join the game currently selected in the list.
-#: gui/lobby/lobby.xml:(caption):155
+#: gui/lobby/lobby.xml:(caption):167
 msgid "Join Game"
 msgstr "Batu partida batera"
 
-#: gui/lobby/lobby.xml:(caption):161
+#: gui/lobby/lobby.xml:(caption):173
 msgid "Host Game"
 msgstr "Ostatatu partida bat"
 
-#: gui/lobby/lobby.xml:(caption):168
+#: gui/lobby/lobby.xml:(caption):180
 msgid "Main Menu"
 msgstr "Menu nagusia"
 
-#: gui/lobby/lobby.xml:(caption):223
+#: gui/lobby/lobby.xml:(caption):245
 msgid "Show full games"
-msgstr ""
+msgstr "Partida denak erakutsi"
 
-#: gui/lobby/lobby.xml:(caption):271 gui/lobby/lobby.xml:(caption):333
+#: gui/lobby/lobby.xml:(caption):293 gui/lobby/lobby.xml:(caption):355
 msgid "Back"
 msgstr "Atzera"
 
-#: gui/lobby/lobby.xml:(caption):279
+#: gui/lobby/lobby.xml:(caption):301
 msgid "Update"
 msgstr "Eguneratu"
 
-#: gui/lobby/lobby.xml:(caption):289
+#: gui/lobby/lobby.xml:(caption):311
 msgid "Enter username:"
 msgstr "Sartu erabiltzailea:"
 
-#: gui/lobby/lobby.xml:(caption):295
+#: gui/lobby/lobby.xml:(caption):317
 msgid "View Profile"
 msgstr "Ikusi profila"
 
-#: gui/lobby/lobby.xml:(caption):328
-msgid "Player not found."
-msgstr "Ez da jokalaria aurkitu."
+#: gui/lobby/lobby.xml:(caption):350
+msgid "Please enter a player name."
+msgstr "Jokalari izen bat sartu."
 
-#: gui/lobby/lobby.xml:(heading):28
+#: gui/lobby/lobby.xml:(heading):40
 msgid "Status"
 msgstr "Egoera"
 
-#: gui/lobby/lobby.xml:(heading):31 gui/lobby/lobby.xml:(heading):180
-#: gui/lobby/lobby.xml:(heading):261
+#: gui/lobby/lobby.xml:(heading):43 gui/lobby/lobby.xml:(heading):203
+#: gui/lobby/lobby.xml:(heading):283
 msgid "Name"
 msgstr "Izena"
 
-#: gui/lobby/lobby.xml:(heading):34 gui/lobby/lobby.xml:(heading):264
+#: gui/lobby/lobby.xml:(heading):46 gui/lobby/lobby.xml:(heading):286
 msgid "Rating"
-msgstr ""
+msgstr "Puntuazioa"
 
-#: gui/lobby/lobby.xml:(heading):184
+#: gui/lobby/lobby.xml:(heading):206
 msgid "Map Name"
 msgstr "Maparen Izena"
 
-#: gui/lobby/lobby.xml:(heading):187
+#: gui/lobby/lobby.xml:(heading):209
 msgctxt "map"
 msgid "Size"
 msgstr "Tamaina"
 
-#: gui/lobby/lobby.xml:(heading):190
+#: gui/lobby/lobby.xml:(heading):212
 msgctxt "map"
 msgid "Type"
 msgstr "Mota"
 
-#: gui/lobby/lobby.xml:(heading):193
+#: gui/lobby/lobby.xml:(heading):215
 msgid "Players"
 msgstr "Jokalariak"
 
-#: gui/lobby/lobby.xml:(heading):258
+#: gui/lobby/lobby.xml:(heading):280
 msgid "Rank"
 msgstr "Maila"
 
@@ -389,7 +430,7 @@ msgstr "Hasi saioa badagoen kontu batekin"
 
 #: gui/lobby/prelobby.xml:(caption):33
 msgid "Connect to the game lobby"
-msgstr ""
+msgstr "Jokalari anitzen gelarekin konektatu"
 
 #: gui/lobby/prelobby.xml:(caption):36 gui/lobby/prelobby.xml:(caption):63
 msgid "Login:"
@@ -409,7 +450,7 @@ msgstr "Pasahitza berriro:"
 
 #: gui/lobby/prelobby.xml:(caption):88
 msgid "I have read and agree to the Terms of Service and Terms of Use:"
-msgstr ""
+msgstr "Erabilera baldintza eta zerbitzuak irakurri ditut eta ados nago."
 
 #: gui/lobby/prelobby.xml:(caption):97
 msgid "Cancel"
@@ -417,7 +458,7 @@ msgstr "Utzi"
 
 #: gui/lobby/Terms_of_Service.txt:1
 msgid "0 A.D. Empires Ascendant Multiplayer Lobby Terms of Service"
-msgstr ""
+msgstr "«0 A.D. Empires Ascendant»en Jokalari Anitzen Gelako Zerbitzu Baldintzak"
 
 #: gui/lobby/Terms_of_Service.txt:2 gui/lobby/Terms_of_Use.txt:2
 msgid "Definitions:"
@@ -427,25 +468,25 @@ msgstr "Definizioak:"
 msgid ""
 " * The \"service\" is the 0 A.D. Empires Ascendant Multiplayer Lobby "
 "provided by Wildfire Games (WFG)."
-msgstr ""
+msgstr "\"Zerbitzua\" «0 A.D. Empires Ascendant»en Jokalari Anitzen Gela da, Wildfire Games (WFG) emana."
 
 #: gui/lobby/Terms_of_Service.txt:4 gui/lobby/Terms_of_Use.txt:4
 msgid " * \"You\" are the user of the service."
-msgstr ""
+msgstr "* «Zu» zerbitzuaren erabiltzailea zara."
 
 #: gui/lobby/Terms_of_Service.txt:5
 msgid " * \"We\" are the collective of all Wildfire Games (WFG) team members."
-msgstr ""
+msgstr "* «Gu» gara, Wildfire Games (WFG) taldea osatzen dugun bazkide guztien kolektiboa."
 
 #: gui/lobby/Terms_of_Service.txt:6
 msgid ""
 " * \"Rating\" refers to the process of analyzing various user statistics for"
 " the purpose of generating a single comprehensive score."
-msgstr ""
+msgstr "* «Puntuazioa» zenbaki bakar batean batuko dituen sailkapena sortzeko erabiltzen den estatistikak aztertzeko prozesuari dagokio."
 
 #: gui/lobby/Terms_of_Service.txt:7
 msgid " * \"Moderate\" refers to the process of enforcing usage policies."
-msgstr ""
+msgstr "* «Moderatu» erabiltze politikak ezartzeko prozesuari dagokio."
 
 #: gui/lobby/Terms_of_Service.txt:8
 msgid "By using the service you agree to:"
@@ -459,51 +500,51 @@ msgstr "1. Erabilera politika guztiei men egitea."
 msgid ""
 " 2. Allow user identifiable statistics to be gathered for the purposes of "
 "rating, user profiles, and community statistics."
-msgstr ""
+msgstr "2. Jokalaria puntuatu ahal izateko hau ezagutzeko bilduko ditugun estatistikak onartzen ditugu, baita ere erabiltzaile profilak eta komunitateko beste estatistikak sortzea."
 
 #: gui/lobby/Terms_of_Service.txt:11 gui/lobby/Terms_of_Use.txt:18
 msgid "We also reserve the right to:"
-msgstr ""
+msgstr "Hau egiteko eskubidea ere badugu:"
 
 #: gui/lobby/Terms_of_Service.txt:12
 msgid " 1. Moderate the service."
-msgstr ""
+msgstr "1. Zerbitzua moderatu."
 
 #: gui/lobby/Terms_of_Service.txt:13
 msgid " 2. Appoint others to moderate the service."
-msgstr ""
+msgstr "2. Beste batzuk izendatu zerbitzua moderatzeko."
 
 #: gui/lobby/Terms_of_Service.txt:14
 msgid ""
 " 3. Discontinue or interrupt service at any time with or without prior "
 "announcement."
-msgstr ""
+msgstr "3. Zerbitzua ezeztatu edo bertan behera utzi edozein momentuan abisatu gabe."
 
 #: gui/lobby/Terms_of_Service.txt:15
 msgid " 4. Change the service at any time with or without announcement."
-msgstr ""
+msgstr "4. Zerbitzua aldatu edozein momentutan, aurreko abisuarekin edo gabe."
 
 #: gui/lobby/Terms_of_Service.txt:16
 msgid ""
 " 5. Delete any and all service data at any time with or without "
 "announcement."
-msgstr ""
+msgstr "5. Zerbitzuko datu guztien edo batzuen ezabatzea edozein momentutan, aurreko abisuarekin edo gabe."
 
 #: gui/lobby/Terms_of_Service.txt:17
 msgid ""
 " 6. Collect any or all user identifiable statistics at any time without "
 "consent for:"
-msgstr ""
+msgstr "6. Erabiltzailea ezagutarazteko edozein motatako estatistikak bildu edozein garaitan honetarako:"
 
 #: gui/lobby/Terms_of_Service.txt:18
 msgid ""
 "  a. Private analysis by Wildfire Games (WFG) team members and their "
 "affiliates."
-msgstr ""
+msgstr "a. Wildfire Games (WFG)en taldeko bazkideen eta bere afiliatuen barneko azterketa."
 
 #: gui/lobby/Terms_of_Service.txt:19
 msgid "  b. Anonymized public release by Wildfire Games (WFG) team members."
-msgstr ""
+msgstr "b. Wildfire Games (WFG)en taldekideek ezkutuko datuen argitaratzea."
 
 #: gui/lobby/Terms_of_Service.txt:20
 msgid ""
@@ -511,33 +552,33 @@ msgid ""
 "user of the service is given adequate notice of the change (the definition "
 "of adequate notice will be determined at the time by a panel of Wildfire "
 "Games (WFG) team members)."
-msgstr ""
+msgstr "7. Agiri hau edozein era edota momentutan eguneratu, zerbitzuaren erabiltzailea aldaketaz ohartua izatearen baldintzapean (oharpen egokiaren ezaugarriak Wildfire Games (WFG)en taldekoek ezarriko dituzte)."
 
 #: gui/lobby/Terms_of_Use.txt:1
 msgid "0 A.D. Empires Ascendant Multiplayer Lobby Terms of Use"
-msgstr ""
+msgstr "0 A.D. Empires Ascendanten Jokalari Anitzen Gelako Erabilera Baldintzak"
 
 #: gui/lobby/Terms_of_Use.txt:5
 msgid ""
 " * \"Impersonate\" refers to the action in which you attempt to exploit "
 "another's identity for your own purposes."
-msgstr ""
+msgstr "* «Inpertsonatu» norberaren mesederako beste baten nortasuna erabiltzen saiatzeari dagokio."
 
 #: gui/lobby/Terms_of_Use.txt:6
 msgid ""
 " * \"Spam\" refers to irrelevant or inappropriate messages sent to a large "
 "number of recipients."
-msgstr ""
+msgstr "* «Spam» jasotzaile askori mezu garrantzi gabeko eta desegokiak bidaltzeari dagokio."
 
 #: gui/lobby/Terms_of_Use.txt:7
 msgid " * \"Rating\" refers to the per-user comprehensive score."
-msgstr ""
+msgstr "* «Puntuazioa» erabiltzaile bakoitzaren kalifikazio osoari dagokio."
 
 #: gui/lobby/Terms_of_Use.txt:8
 msgid ""
 " * \"Ranked games\" refers to games in which rating changing statistics are "
 "tracked."
-msgstr ""
+msgstr "* «Joko puntuagarriak» puntuazioa aldatuko duen estatistikak gordeko diren partidei dagokio."
 
 #: gui/lobby/Terms_of_Use.txt:9
 msgid "You agree to:"
@@ -547,26 +588,26 @@ msgstr "Honakoa betetzea onartzen duzu:"
 msgid ""
 " 1. Only create one account per unique user on the service unless authorized"
 " by a Wildfire Games (WFG) team member."
-msgstr ""
+msgstr "1. Zerbitzuko erabiltzaile fisiko bakoitzeko kontu bakarra sortu, Wildfire Games (WFG) taldeko kideren batek baimendutakoak salbu."
 
 #: gui/lobby/Terms_of_Use.txt:11
 msgid ""
 " 2. Not post profane statements, rude humor, pornographic content, or "
 "discriminatory comments on the service."
-msgstr ""
+msgstr "2. Ez publikatu baieztapen zikinik, umore zakarrik, eduki pornografikorik, edo zerbitzuari buruzko iruzkin baztertzailerik."
 
 #: gui/lobby/Terms_of_Use.txt:12
 msgid " 3. Not purposefully demean the worth of others using the service."
-msgstr ""
+msgstr "3. Zerbitzua erabiltzen duten besteak gutxiestea edota gehiegikeriak egitea saihestu."
 
 #: gui/lobby/Terms_of_Use.txt:13
 msgid ""
 " 4. Not use the service to promote specific goods, services, or products."
-msgstr ""
+msgstr "4. Ez erabili zerbitzua ondasun, zerbitzu edo produktu zehatzak iragartzeko."
 
 #: gui/lobby/Terms_of_Use.txt:14
 msgid " 5. Not impersonate other users of the service."
-msgstr ""
+msgstr "5. Ez hartu zerbitzuko beste erabiltzaile baten nortasuna."
 
 #: gui/lobby/Terms_of_Use.txt:15
 msgid " 6. Not spam the service."
@@ -578,13 +619,13 @@ msgid ""
 "any of the statistics which impact it. (Examples of this are, but are not "
 "limited to: cheating in ranked games, reverse engineering the service, and "
 "taking advantage of other users of the service.)"
-msgstr ""
+msgstr "7. Ez saiatu zerbitzuko inongo erabiltzailearen puntaketa artifizialki aldatzen, ezta berau alda dezakeen estatistikak ere. (Adibidez: joko puntuagarrietan amarruak erabili, zerbitzuari alderantzizko ingeniaritza egin, eta zerbitzuko beste erabiltzaileez baliatu). "
 
 #: gui/lobby/Terms_of_Use.txt:17
 msgid ""
 " 8. Allow yourself to be removed from the service if at any time a moderator"
 " determines your behavior is not consistent with these rules."
-msgstr ""
+msgstr "8. Moderatzaileren batek noizbait zure portaera zerbitzuaren arau hauei iskin egiten diela baderitzo zu zerbitzutik botatzeko baimena dauka."
 
 #: gui/lobby/Terms_of_Use.txt:19
 msgid ""
@@ -592,4 +633,4 @@ msgid ""
 "user of the service is given adequate notice of the change (the definition "
 "of adequate notice will be determined at the time by a panel of Wildfire "
 "Games (WFG) team members)."
-msgstr ""
+msgstr "1. Agiri hau edozein era edota momentutan eguneratu, zerbitzuaren erabiltzailea aldaketaz ohartua izatearen baldintzapean (oharpen egokiaren ezaugarriak Wildfire Games (WFG)en taldekoek ezarriko dituzte)."

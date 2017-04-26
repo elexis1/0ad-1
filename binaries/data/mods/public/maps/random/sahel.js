@@ -29,28 +29,6 @@ const oMetalLarge = "gaia/geology_metal_savanna_slabs";
 const aBush = "actor|props/flora/bush_medit_sm_dry.xml";
 const aRock = "actor|geology/stone_savanna_med.xml";
 
-const PI12 = PI / 6;
-
-function placeStoneMineFormation(x, z)
-{
-	var placer = new ChainPlacer(1, 2, 2, 1, x, z, undefined, [5]);
-	var painter = new TerrainPainter(tDirt4);
-	createArea(placer, painter, null);
-
-	var bbAngle = randFloat(0, TWO_PI);
-	const bbDist = 2.5;
-
-	for (var i = 0; i < 8; ++i)
-	{
-		var bbX = round(x + (bbDist + randFloat(0,1)) * cos(bbAngle));
-		var bbZ = round(z + (bbDist + randFloat(0,1)) * sin(bbAngle));
-
-		placeObject(bbX, bbZ, oStoneSmall, 0, randFloat(0, TWO_PI));
-
-		bbAngle += PI12;
-	}
-}
-
 log("Initializing map...");
 
 InitMap();
@@ -150,7 +128,7 @@ for (var i = 0; i < numPlayers; i++)
 	mAngle += randFloat(PI/8, PI/4);
 	mX = round(fx + mDist * cos(mAngle));
 	mZ = round(fz + mDist * sin(mAngle));
-	placeStoneMineFormation(mX, mZ);
+	createStoneMineFormation(mX, mZ, tDirt4);
 	addToClass(mX, mZ, clPlayer);
 	// create the city patch
 	var cityRadius = radius/3;
@@ -235,11 +213,11 @@ log("Creating stone mines...");
 // create stone mines
 for (var i = 0; i < scaleByMapSize(12,30); ++i)
 {
-	var mX = randInt(mapSize);
-	var mZ = randInt(mapSize);
+	var mX = randIntExclusive(0, mapSize);
+	var mZ = randIntExclusive(0, mapSize);
 	if (playerConstraint.allows(mX, mZ) && minesConstraint.allows(mX, mZ) && waterConstraint.allows(mX, mZ))
 	{
-		placeStoneMineFormation(mX, mZ);
+		createStoneMineFormation(mX, mZ, tDirt4);
 		addToClass(mX, mZ, clRock);
 	}
 }
@@ -330,8 +308,8 @@ group = new SimpleGroup(
 	true, clFood
 );
 createObjectGroups(group, 0,
-	avoidClasses(clWater, 3, clPlayer, 20, clFood, 12, clRock, 7, clMetal, 2),
-	randInt(1, 4) * numPlayers + 2, 50
+	avoidClasses(clWater, 3, clPlayer, 20, clFood, 12, clRock, 7, clMetal, 6),
+	randIntInclusive(1, 4) * numPlayers + 2, 50
 );
 
 RMS.SetProgress(85);
@@ -345,7 +323,7 @@ group = new SimpleGroup(
 	true, clForest
 );
 createObjectGroups(group, 0,
-	avoidClasses(clForest, 1, clPlayer, 20, clMetal, 1, clRock, 7, clWater, 1),
+	avoidClasses(clForest, 1, clPlayer, 20, clMetal, 6, clRock, 7, clWater, 1),
 	num
 );
 

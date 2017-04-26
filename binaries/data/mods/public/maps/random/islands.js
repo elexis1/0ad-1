@@ -182,20 +182,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 
 	//create docks
 	var dockLocation = getTIPIADBON([ix, iz], [mapSize / 2, mapSize / 2], [-3 , 2.6], 0.5, 3);
@@ -223,7 +210,7 @@ for (var i = 0; i < numIslands; ++i)
 	if (!landAreaLen)
 		break;
 
-	chosenPoint = landAreas[randInt(landAreaLen)];
+	chosenPoint = pickRandom(landAreas);
 
 	// create big islands
 	placer = new ChainPlacer(floor(scaleByMapSize(4, 8)), floor(scaleByMapSize(8, 14)), floor(scaleByMapSize(25, 60)), 0.07, chosenPoint[0], chosenPoint[1], scaleByMapSize(30,70));
@@ -263,7 +250,7 @@ for (var i = 0; i < numIslands; ++i)
 	if (!landAreaLen)
 		break;
 
-	chosenPoint = landAreas[randInt(0, landAreaLen)];
+	chosenPoint = pickRandom(landAreas);
 
 	placer = new ChainPlacer(floor(scaleByMapSize(4, 7)), floor(scaleByMapSize(7, 10)), floor(scaleByMapSize(16, 40)), 0.07, chosenPoint[0], chosenPoint[1], scaleByMapSize(22,40));
 	terrainPainter = new LayeredPainter(
@@ -505,7 +492,7 @@ group = new SimpleGroup(
 );
 createObjectGroups(group, 0,
 	[avoidClasses(clForest, 0, clPlayer, 8, clHill, 1, clFood, 20), stayClasses(clLand, 5)],
-	randInt(1, 4) * numPlayers + 2, 50
+	randIntInclusive(1, 4) * numPlayers + 2, 50
 );
 
 // create fish
@@ -533,7 +520,7 @@ for (var i = 0; i < types.length; ++i)
 		true, clForest
 	);
 	createObjectGroups(group, 0,
-		[avoidClasses(clForest, 1, clHill, 1, clPlayer, 0, clMetal, 1, clRock, 1), stayClasses(clLand, 6)],
+		[avoidClasses(clForest, 1, clHill, 1, clPlayer, 0, clMetal, 6, clRock, 6), stayClasses(clLand, 6)],
 		num
 	);
 }
@@ -576,14 +563,7 @@ createObjectGroups(group, 0,
 	planetm * scaleByMapSize(13, 200), 50
 );
 
-random_terrain = randInt(1,3);
-if (random_terrain == 1)
-	setSkySet("cirrus");
-else if (random_terrain == 2)
-	setSkySet("cumulus");
-else if (random_terrain == 3)
-	setSkySet("sunny");
-
+setSkySet(pickRandom(["cirrus", "cumulus", "sunny"]));
 setSunRotation(randFloat(0, TWO_PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 setWaterWaviness(2);

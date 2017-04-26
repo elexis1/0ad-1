@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# GunChleoc, 2014-2016
+# GunChleoc, 2014-2017
 # GunChleoc, 2014
 # GunChleoc, 2014-2016
 # Michael Bauer, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:00+0200\n"
-"PO-Revision-Date: 2016-09-30 08:57+0000\n"
+"POT-Creation-Date: 2016-11-28 09:00+0100\n"
+"PO-Revision-Date: 2017-03-27 11:33+0000\n"
 "Last-Translator: GunChleoc\n"
 "Language-Team: Gaelic, Scottish (http://www.transifex.com/wildfire-games/0ad/language/gd/)\n"
 "MIME-Version: 1.0\n"
@@ -516,7 +516,7 @@ msgstr "Bhiodh na Breatannaich cliùiteach airson nan con-cogaidh aca."
 #: simulation/data/civs/brit.jsonHistory
 msgid ""
 "The Britons were the Celtic tribes of the British Isles. Using chariots, "
-"longswordsmen and powerful melee soldiers, they staged fearesome revolts "
+"longswordsmen and powerful melee soldiers, they staged fearsome revolts "
 "against Rome to protect their customs and interests. Also, they built "
 "thousands of unique structures such as hill forts, crannogs and brochs."
 msgstr "’S e treubhan Ceilteach nan eileanan Breatannach a bh’ anns na Breatannaich. Chleachd iad feunan, claidheamhan mòra agus saighdearan dlùtha cumhachdach gus aramach eagalach a dhèanamh an aghaidh na Ròimhe ach an dìonadh iad an dualchas agus an leas aca. Thog iad mìltean de thogalaichean àraid mar dhùin-chnuic, crannagan agus bruighean."
@@ -652,7 +652,7 @@ msgid ""
 "Nobody knew better than the Carthaginians where in the ancient world they "
 "were going and going to go; their merchant traders had missions to "
 "everywhere."
-msgstr "Cha bhiodh duine san t-saoghal àrsaidh cho eòlach air càite an rachadh iad ’s dè rinneadh iad ann ’s a bhiodh na Cartagaich; bhiodh iad a’ cur an luchd-mhalairt aca air feadh an àite."
+msgstr "Cha bhiodh duine san t-saoghal àrsaidh cho eòlach air càite an rachadh iad ’s dè rinneadh iad ann ’s a bhiodh na Cartagaich; chuireadh iad na marsantan aca air feadh an àite."
 
 #: simulation/data/civs/cart.jsonFactions[0].Technologies[1].Description
 msgid "Civic Centers, Temples, and Houses -25% build time."
@@ -854,7 +854,7 @@ msgid ""
 " Marcellus, would be a fitting offering to the gods. He charged the Gaul, "
 "pierced his bright breastplate and cast him to the ground. It was an easy "
 "task to kill Britomartos and strip him of his armor."
-msgstr ""
+msgstr "Nuair a thachradh feachdan nan Ceilteach ri nàmhaid is mus tòisicheadh am blàr, rachadh ceannard nan Ceilteach dhan t-sreath toisich gus dùbhlan a thoirt air gaisgeach as dàna an nàmhad ach an dèanadh iad còmhrag-dhithis. Tha an sgeul air mar a mharbh Marcus Claudius Marcellus ceannard cinnidh Ghallaich ann an Clastidium (222 RC) ’na shamhla air tachartas dhen leithid. Nuair a bha e a’ dol air aghaidh, thachair Marcellus ri feachd nan Gallach Insubrach agus nan Gaesatae ann an Clastidium. Chaidh feachd muinntir na Gaille air aghaidh le gairmean geilteachaidh mar a bu dual dhaibh agus dh’aithnich rìgh Britomartos Marcellus air suaicheantasan a rangachd ’s ghabh e air ag èigheachd dùbhlain ’s a’ crathadh na slèigh aige. ’S e sàr-ghaisgeach àrd le sgeadachadh dhathan loinnreach air a chuid aodaich agus armachd ghleansach òir ’s airgid a bh’ ann am Britomartos. Shaoil Marcellus gur e ìobairt iomchaidh dha na diathan a bhiodh san armachd sin. Rinn e cruinn-leum air a’ Ghallach, shàth e a lùireach loinnreach agus thilg e dhan làr e. ’S ann gun robh e furasta dha an uairsin Britomartos a mharbhadh agus an armachd aige a thoirt uaithe."
 
 #: simulation/data/civs/gaul.jsonFactions[0].Heroes[1].History
 msgid ""
@@ -877,7 +877,7 @@ msgid ""
 "and Bran are often muddled with the earlier brothers Belinus and Brennus "
 "(the sons of Dunvallo Molmutius) who contended for power in northern Britain"
 " in around 390 B.C., and were regarded as gods in old Celtic tradition."
-msgstr ""
+msgstr "Is Brennus an t-ainm a chuir eachdraichean nan Ròmanach air ceannard cliùiteach na Gaille a ghabh an Ròimh ri linn Camillus. Tha Geoffrey of Monmouth, a chlèirich a sgrìobh “Historia Regum Britanniae” (Eachdraidh rìghrean na Breatainn), ag innse dhuinn gun do lunn Brennus ’s a bhràthair Belinus air a’ Ghall agus gun do chreach iad an Ròimh ann an 390 RC, feuch an dearbhadh e gun do cheannsaich na Breatannaich an Ròimh a bha ’na phrìomh-shìobhaltas an t-saoghail mus do cheannsaich an Ròimh fhèin na Breatannaich. Tha tùsan aosmhor a tha nas sine na leabhar Geoffrey ag innse dhuinn co-dhiù gun deach an Ròimh a chreachadh dha-rìribh ach ann an 387 seach 390 agus gun deach an creach a stiùireadh le duine air a bha Brennos (Brennus sa Laideann) ach ’s e Senones Gallach a bh’ ann e fhèin ’s a shluagh seach Breatannaich. Tha an sgeulachd seo a’ sealltainn nan dòighean deasachaidh aig Geoffrey dhuinn: rinn e atharrachadh air Brennus/Brennos fìrinneach, chruthaich e a bhràthair Belinus, rinn e iasad air briseadh a-steach nan Gallach ach dh’fhàg e na tachartasan a-mach a chuireadh coltas lag no gòrach air na Ceiltich. Mar sin, tha e an dà chuid a chur ris an fhìrinn agus a’ falach fiosrachadh. Mar a tha am faoinsgeul mun tùs Tròidheach, chan eil an sgeulachd mu chreach na Ròimhe gur tur mas fhìor ach ’s e atharrachadh cruthachail a th’ ann air an fhiosrachadh a bha ri làimh dha le rud no dhà air a chur ris mar a bha feum air. Ri linn an co-cheangal eachdraidheil aca, thèid Beli is Bran a chuir troimh-chèile leis na bràithrean Belinus is Brennus (mic Dunvallo Molmutius) nas aosmhoire a rinn strì airson na cumhachd taobh tuath Breatainn mu 390 RC agus bhiodhte a’ beachdachadh orrasan mar dhiathan ann an dualchas nan seann-Cheilteach."
 
 #: simulation/data/civs/gaul.jsonFactions[0].Heroes[2].History
 msgid ""
@@ -1091,14 +1091,14 @@ msgid ""
 "Defensive Aura - Gives all Iberian units and buildings within vision range "
 "of the monument a 10-15% attack boost. Build Limit: Only 5 may be built per "
 "map."
-msgstr "Aura dìonach - Bheir e ionnsaigh de 10-15% a bharrachd do na h-uile aonad no togalach Ibèireach am broinn astar lèirsinne na carraigh. Cuingeachadh togail: 5 air a’ mapa gu lèir."
+msgstr "Aura dìonach - Bheir e ionnsaigh de 10-15% a bharrachd do na h-uile aonad no togalach Ibèireach am broinn astar lèirsinne na cloiche-cuimhne. Cuingeachadh togail: 5 air a’ mapa gu lèir."
 
 #: simulation/data/civs/iber.jsonStructures[0].History
 msgid ""
 "'Revered Monument' The Iberians were a religious people who built small "
 "monuments to their various gods. These monuments could also serve as family "
 "tombs."
-msgstr "“Carragh urramach” - ’S e sluagh cràbhach a bhiodh sna h-Ibèirich a thogadh carraighean beaga do na diathan aca. Dh’fhaodadh na carraighean seo a bhith ’nan uaighean teaghlaich cuideachd."
+msgstr "“Clach-chuimhne urramach” - ’S e sluagh cràbhach a bhiodh sna h-Ibèirich a thogadh clachan-cuimhne beaga do na diathan aca. Dh’fhaodadh na clachan seo a bhith ’nan uaighean teaghlaich cuideachd."
 
 #: simulation/data/civs/iber.jsonHistory
 msgid ""
@@ -1147,7 +1147,7 @@ msgstr "Siontagma"
 msgid ""
 "Based upon the Theban Oblique Order phalanx, the Syntagma was the formation "
 "that proved invincible against the armies of Hellas and the East."
-msgstr ""
+msgstr "Stèidhichte air falangas claon Thìba, b’ e cumadh a bhiodh do-cheannsachadh an aghaidh feachdan Hellas agus na h-Oirthire a bh’ anns an t-siontagma."
 
 #: simulation/data/civs/mace.jsonCivBonuses[2].History
 msgid ""
@@ -1170,7 +1170,7 @@ msgid ""
 " currency the Diadochi in particular frequently depicted themselves as the "
 "rightful successor to Alexander the Great, attempting to legitimize their "
 "rule."
-msgstr ""
+msgstr "Rinneadh na Masadonaich agus na Diadochi buinn às àirde càileachd. Riochdaicheadh gu h-àraidh na Diadochi iad fhèin air an airgeadra aca mar shliochd Alasdair Mhòir feuch am beachdaichte orra mar rìghrean dligheil."
 
 #: simulation/data/civs/mace.jsonAINames[0]
 #: simulation/data/civs/mace.jsonFactions[0].Heroes[1].Name
@@ -1292,7 +1292,7 @@ msgid ""
 " Greek world. Greatly enlarged the size of Macedonia by conquering much of "
 "Thrace and subduing the Greeks. Murdered in Aegae while planning a campaign "
 "against Persia."
-msgstr ""
+msgstr "B’ e rìgh na Masadoine (359-336 RC) a bh’ ann agus rinn e ath-leasachadh farsaing air cùisean airgid ’s an fheachd gus am biodh e nas cumhachdaiche na rìoghachd sam bith eile ann an saoghal nan Greugach. Chuir e gu mòr ri ranntair na Masadoine on a cheannsaich e cnap mòr dhe Thràicea ’s na Greugaich. Chaidh a mhurt ann an Aegae fhad ’s a bha e ag ullachadh iomairt an aghaidh nam Pearsach."
 
 #: simulation/data/civs/mace.jsonFactions[0].Heroes[0].Name
 msgid "Philip II of Macedon"
@@ -1804,7 +1804,7 @@ msgstr "Na Ptolamaich"
 msgid ""
 "The Ptolemies receive the Mercenary Camp, a barracks that is constructed in "
 "neutral territory and trains mercenary soldiers."
-msgstr "Gheibh na Ptolamaich an campa shaighdearan-duaise, seo taighean-feachd a thogar air ranntair neo-phàirteach agus a nì trèanadh air saighdearan-duaise."
+msgstr "Gheibh na Ptolamaich an campa shaighdearan-duaise, seo taigh-feachd a thogar air ranntair neo-phàirteach agus a nì trèanadh air saighdearan-duaise."
 
 #: simulation/data/civs/ptol.jsonCivBonuses[0].Name
 msgid "Mercenary Army"
@@ -1952,7 +1952,7 @@ msgid ""
 "The Ptolemaic Egyptians receive 3 additional farming technologies above and "
 "beyond the maximum number of farming technologies usually available to a "
 "faction."
-msgstr ""
+msgstr "Gheibh na h-Èipheitich Ptolamach cothrom air 3 teicneolasan àiteachas a bharrachd air uiread nan teicneolasan àiteachais a gheibh a’ mhòrchuid a shìobhaltasan."
 
 #: simulation/data/civs/ptol.jsonFactions[0].Technologies[2].History
 msgid ""
@@ -2687,7 +2687,7 @@ msgid ""
 "Because Brasidas has sponsored their citizenship in return for service, "
 "Helot Skirmishers fight longer and harder for Sparta while within range of "
 "him."
-msgstr ""
+msgstr "On a thug Brasidas saoranachd dhaibh mar dhuais air an seirbheis, nì streupairean Heileotais sabaid nas fhaide ’s nas cruaidhe às leth Sparta fhad ’s a bhios iad faisg air."
 
 #: simulation/data/civs/spart.jsonFactions[0].Heroes[2].History
 msgid ""
@@ -2718,7 +2718,7 @@ msgstr "Trèanaich curaidhean is Homoioi is rannsaich teicneolasan co-cheangailt
 msgid ""
 "The Syssition was the Mess Hall for full-blooded Spartiates. Every Spartan "
 "peer, even kings, belonged to one."
-msgstr ""
+msgstr "’S e seòmar-comaidh nan Spartach fuileach a bh’ anns an t-Syssítion. Bhiodh gach morair Spartach ’s eadhon na rìghrean ’nam ball ann am fear dhiubh."
 
 #: simulation/data/civs/spart.jsonHistory
 msgid ""

@@ -69,8 +69,8 @@ function createMountains(terrain, constraint, tileclass, count, maxHeight, minRa
 			maxRadius,
 			numCircles,
 			constraint,
-			randInt(mapSize),
-			randInt(mapSize),
+			randIntExclusive(0, mapSize),
+			randIntExclusive(0, mapSize),
 			terrain,
 			tileclass,
 			14
@@ -195,6 +195,27 @@ function createMines(mines, constraint, tileclass, count)
 	}
 }
 
+/**
+ * Places 8 stone mines in a small circular shape.
+ */
+function createStoneMineFormation(x, z, tileclass)
+{
+	var placer = new ChainPlacer(1, 2, 2, 1, x, z, undefined, [5]);
+	var painter = new TerrainPainter(tileclass);
+	createArea(placer, painter, null);
+
+	var bbAngle = randFloat(0, TWO_PI);
+	const bbDist = 2.5;
+
+	for (var i = 0; i < 8; ++i)
+	{
+		var bbX = round(x + (bbDist + randFloat(0,1)) * cos(bbAngle));
+		var bbZ = round(z + (bbDist + randFloat(0,1)) * sin(bbAngle));
+		placeObject(bbX, bbZ, oStoneSmall, 0, randFloat(0, TWO_PI));
+		bbAngle += PI / 6;
+	}
+}
+
 function createDecoration(objects, counts, constraint)
 {
 	log("Creating decoration...");
@@ -238,14 +259,14 @@ function createStragglerTrees(types, constraint, tileclass)
 
 	constraint = constraint !== undefined ?
 		constraint :
-		avoidClasses(clForest, 8, clHill, 1, clPlayer, 12, clMetal, 1, clRock, 1);
+		avoidClasses(clForest, 8, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6);
 
 	tileclass = tileclass !== undefined ? tileclass : clForest;
 
 	var num = floor(g_numStragglerTrees / types.length);
 	for (var i = 0; i < types.length; ++i)
 	{
-		group = new SimpleGroup(
+		let group = new SimpleGroup(
 			[new SimpleObject(types[i], 1,1, 0,3)],
 			true, tileclass
 		);

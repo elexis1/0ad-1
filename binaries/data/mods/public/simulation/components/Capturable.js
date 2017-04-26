@@ -13,7 +13,7 @@ Capturable.prototype.Schema =
 
 Capturable.prototype.Init = function()
 {
-	// Cache this value 
+	// Cache this value
 	this.maxCp = +this.template.CapturePoints;
 	this.cp = [];
 };
@@ -270,6 +270,11 @@ Capturable.prototype.OnTerritoryDecayChanged = function(msg)
 {
 	if (msg.to)
 		this.CheckTimer();
+};
+
+Capturable.prototype.OnDiplomacyChanged = function(msg)
+{
+	this.CheckTimer();
 };
 
 Capturable.prototype.OnOwnershipChanged = function(msg)

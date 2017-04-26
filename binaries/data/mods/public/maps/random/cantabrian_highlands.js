@@ -185,20 +185,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 RMS.SetProgress(10);
 
@@ -334,7 +321,7 @@ createFood
   [new SimpleObject(oBerryBush, 5,7, 0,4)]
  ],
  [
-  randInt(1, 4) * numPlayers + 2
+  randIntInclusive(1, 4) * numPlayers + 2
  ],
  avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 10)
 );
@@ -342,7 +329,7 @@ RMS.SetProgress(85);
 
 log("Creating metal mines...");
 var types = [oOak, oOakLarge, oPine, oApple];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 1, clRock, 1));
+createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6));
 RMS.SetProgress(90);
 
 setSkySet("cirrus");

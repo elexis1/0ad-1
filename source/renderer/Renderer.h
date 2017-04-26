@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 Wildfire Games.
+/* Copyright (C) 2016 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -137,7 +137,7 @@ public:
 	struct Options {
 		bool m_NoVBO;
 		bool m_Shadows;
-		
+
 		bool m_WaterUgly;
 		bool m_WaterFancyEffects;
 		bool m_WaterRealDepth;
@@ -318,9 +318,9 @@ public:
 	CFontManager& GetFontManager();
 
 	CShaderDefines GetSystemShaderDefines() { return m_SystemShaderDefines; }
-	
+
 	CTimeManager& GetTimeManager();
-	
+
 	CPostprocManager& GetPostprocManager();
 
 	/**
@@ -331,6 +331,11 @@ public:
 	const Caps& GetCapabilities() const { return m_Caps; }
 
 	static void RegisterScriptFunctions(ScriptInterface& scriptInterface);
+
+	/**
+	 * Resets the render state to default, that was before a game started
+	 */
+	void ResetState();
 
 protected:
 	friend struct CRendererInternals;

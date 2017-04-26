@@ -97,11 +97,9 @@ m.Technology.prototype.researchTime = function()
 	return this._template.researchTime;
 };
 
-m.Technology.prototype.requirements = function()
+m.Technology.prototype.requirements = function(civ)
 {
-	if (!this._template.requirements)
-		return undefined;
-	return this._template.requirements;
+	return DeriveTechnologyRequirements(this._template, civ);
 };
 
 m.Technology.prototype.autoResearch = function()
@@ -136,7 +134,7 @@ m.Technology.prototype.isAffected = function(classes)
 {
 	if (!this._template.affects)
 		return false;
-	
+
 	for (let affect of this._template.affects)
 	{
 		let reqClasses = affect.split(" ");

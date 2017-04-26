@@ -515,7 +515,6 @@ UnitAI.prototype.UnitFsmSpec = {
 	},
 
 	"Order.Patrol": function(msg) {
-		// Let players move captured domestic animals around
 		if (this.IsAnimal() || this.IsTurret())
 		{
 			this.FinishOrder();
@@ -1115,7 +1114,7 @@ UnitAI.prototype.UnitFsmSpec = {
 				if (!this.patrolStartPosOrder)
 				{
 					this.patrolStartPosOrder = cmpPosition.GetPosition();
-					this.patrolStartPosOrder.targetClasses = { "attack": ["Unit"] };
+					this.patrolStartPosOrder.targetClasses = this.order.data.targetClasses;
 				}
 
 				this.StartTimer(0, 1000);
@@ -1645,7 +1644,7 @@ UnitAI.prototype.UnitFsmSpec = {
 				if (!this.patrolStartPosOrder)
 				{
 					this.patrolStartPosOrder = cmpPosition.GetPosition();
-					this.patrolStartPosOrder.targetClasses = { "attack": ["Unit"] };
+					this.patrolStartPosOrder.targetClasses = this.order.data.targetClasses;
 				}
 
 				this.StartTimer(0, 1000);
@@ -3230,7 +3229,7 @@ UnitAI.prototype.UnitFsmSpec = {
 				this.SelectAnimation("walk", false, this.GetWalkSpeed());
 				this.MoveRandomly(+this.template.RoamDistance);
 				// Set a random timer to switch to feeding state
-				this.StartTimer(RandomInt(+this.template.RoamTimeMin, +this.template.RoamTimeMax));
+				this.StartTimer(randIntInclusive(+this.template.RoamTimeMin, +this.template.RoamTimeMax));
 				this.SetFacePointAfterMove(false);
 			},
 
@@ -3275,7 +3274,7 @@ UnitAI.prototype.UnitFsmSpec = {
 				// Stop and eat for a while
 				this.SelectAnimation("feeding");
 				this.StopMoving();
-				this.StartTimer(RandomInt(+this.template.FeedTimeMin, +this.template.FeedTimeMax));
+				this.StartTimer(randIntInclusive(+this.template.FeedTimeMin, +this.template.FeedTimeMax));
 			},
 
 			"leave": function() {
@@ -3468,14 +3467,20 @@ UnitAI.prototype.OnCreate = function()
 
 UnitAI.prototype.OnDiplomacyChanged = function(msg)
 {
-	var cmpOwnership = Engine.QueryInterface(this.entity, IID_Ownership);
+	let cmpOwnership = Engine.QueryInterface(this.entity, IID_Ownership);
 	if (cmpOwnership && cmpOwnership.GetOwner() == msg.player)
 		this.SetupRangeQueries();
+
+	if (this.isGuardOf && !IsOwnedByMutualAllyOfEntity(this.entity, this.isGuardOf))
+		this.RemoveGuard();
 };
 
 UnitAI.prototype.OnOwnershipChanged = function(msg)
 {
 	this.SetupRangeQueries();
+
+	if (this.isGuardOf && (msg.to == -1 || !IsOwnedByMutualAllyOfEntity(this.entity, this.isGuardOf)))
+		this.RemoveGuard();
 
 	// If the unit isn't being created or dying, reset stance and clear orders
 	if (msg.to != -1 && msg.from != -1)
@@ -4038,9 +4043,6 @@ UnitAI.prototype.OnGlobalEntityRenamed = function(msg)
 	}
 	if (changed)
 		Engine.PostMessage(this.entity, MT_UnitAIOrderDataChanged, { "to": this.GetOrderData() });
-
-	if (this.isGuardOf && this.isGuardOf == msg.entity)
-		this.isGuardOf = msg.newentity;
 };
 
 UnitAI.prototype.OnAttacked = function(msg)
@@ -4995,14 +4997,14 @@ UnitAI.prototype.AddGuard = function(target)
 
 UnitAI.prototype.RemoveGuard = function()
 {
-	if (this.isGuardOf)
-	{
-		var cmpGuard = Engine.QueryInterface(this.isGuardOf, IID_Guard);
-		if (cmpGuard)
-			cmpGuard.RemoveGuard(this.entity);
-		this.guardRange = undefined;
-		this.isGuardOf = undefined;
-	}
+	if (!this.isGuardOf)
+		return;
+
+	let cmpGuard = Engine.QueryInterface(this.isGuardOf, IID_Guard);
+	if (cmpGuard)
+		cmpGuard.RemoveGuard(this.entity);
+	this.guardRange = undefined;
+	this.isGuardOf = undefined;
 
 	if (!this.order)
 		return;
@@ -5010,10 +5012,9 @@ UnitAI.prototype.RemoveGuard = function()
 	if (this.order.type == "Guard")
 		this.UnitFsm.ProcessMessage(this, {"type": "RemoveGuard"});
 	else
-		for (var i = 1; i < this.orderQueue.length; ++i)
+		for (let i = 1; i < this.orderQueue.length; ++i)
 			if (this.orderQueue[i].type == "Guard")
 				this.orderQueue.splice(i, 1);
-
 	Engine.PostMessage(this.entity, MT_UnitAIOrderDataChanged, { "to": this.GetOrderData() });
 };
 
@@ -5355,15 +5356,14 @@ UnitAI.prototype.PerformTradeAndMoveToNextMarket = function(currentMarket)
 	}
 
 	let cmpTrader = Engine.QueryInterface(this.entity, IID_Trader);
-	cmpTrader.PerformTrade(currentMarket);
+	let nextMarket = cmpTrader.PerformTrade(currentMarket);
 	let amount = cmpTrader.GetGoods().amount;
-	if (!amount || !amount.traderGain)
+	if (!nextMarket || !amount || !amount.traderGain)
 	{
 		this.StopTrading();
 		return;
 	}
 
-	let nextMarket = cmpTrader.markets[cmpTrader.index];
 	this.order.data.target = nextMarket;
 
 	if (this.order.data.route && this.order.data.route.length)
@@ -5525,7 +5525,7 @@ UnitAI.prototype.FindWalkAndFightTargets = function()
 	{
 		var cmpUnitAI;
 		var cmpFormation = Engine.QueryInterface(this.entity, IID_Formation);
-		for each (var ent in cmpFormation.members)
+		for (var ent of cmpFormation.members)
 		{
 			if (!(cmpUnitAI = Engine.QueryInterface(ent, IID_UnitAI)))
 				continue;
@@ -5581,7 +5581,7 @@ UnitAI.prototype.FindWalkAndFightTargets = function()
 	// healers on a walk-and-fight order should heal injured units
 	if (this.IsHealer())
 		return this.FindNewHealTargets();
-	
+
 	return false;
 };
 
@@ -5993,8 +5993,8 @@ UnitAI.prototype.MoveRandomly = function(distance)
 
 	// Randomly adjust the range's center a bit, so we tend to prefer
 	// moving in random directions (if there's nothing in the way)
-	var tx = pos.x + (2*Math.random()-1)*jitter;
-	var tz = pos.z + (2*Math.random()-1)*jitter;
+	var tx = pos.x + randFloat(-1, 1) * jitter;
+	var tz = pos.z + randFloat(-1, 1) * jitter;
 
 	var cmpMotion = Engine.QueryInterface(this.entity, IID_UnitMotion);
 	cmpMotion.MoveToPointRange(tx, tz, distance, distance);

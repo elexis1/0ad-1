@@ -29,6 +29,7 @@
     </Technologies>
   </ProductionQueue>
   <VisualActor>
+    <FoundationActor>structures/carthaginians/fndn_fortress.xml</FoundationActor>
     <Actor>structures/carthaginians/fortress.xml</Actor>
   </VisualActor>
 </Entity>

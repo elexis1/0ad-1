@@ -163,7 +163,7 @@ for (var i = 0; i < numPlayers; i++)
 	var tX = round(fx + tDist * cos(tAngle));
 	var tZ = round(fz + tDist * sin(tAngle));
 	group = new SimpleGroup(
-		[new SimpleObject([oPalm, oTamarix][randInt(0,1)], num, num, 0,5)],
+		[new SimpleObject(pickRandom([oPalm, oTamarix]), num, num, 0,5)],
 		false, clBaseResource, tX, tZ
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
@@ -369,7 +369,7 @@ for (var i = 0; i < types.length; ++i)
 		true, clForest
 	);
 	createObjectGroups(group, 0,
-		avoidClasses(clForest, 1, clHill, 1, clPlayer, 1, clMetal, 1, clRock, 1),
+		avoidClasses(clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6),
 		num
 	);
 }
@@ -385,7 +385,7 @@ for (var i = 0; i < types.length; ++i)
 		true, clForest
 	);
 	createObjectGroups(group, 0,
-		[avoidClasses(clForest, 1, clHill, 1, clPlayer, 1, clMetal, 1, clRock, 1), stayClasses(clGrass, 3)],
+		[avoidClasses(clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6), stayClasses(clGrass, 3)],
 		num
 	);
 }

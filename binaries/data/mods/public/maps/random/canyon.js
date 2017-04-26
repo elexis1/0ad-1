@@ -203,20 +203,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 
 	// create the city patch
 	var cityRadius = radius/2;
@@ -232,11 +219,17 @@ createArea(placer, [painter, paintClass(clHill)], null);
 
 for (var i = 0; i < scaleByMapSize(9,16); i++)
 {
-	var ix = randInt(1, mapSize - 1);
-	var iz = randInt(1, mapSize - 1);
-	var ix2 = randInt(1, mapSize - 1);
-	var iz2 = randInt(1, mapSize - 1);
-	var placer = new PathPlacer(ix, iz, ix2, iz2, scaleByMapSize(11,16), 0.4, 3*(scaleByMapSize(1,4)), 0.1, 0);
+	var placer = new PathPlacer(
+		randIntExclusive(1, mapSize),
+		randIntExclusive(1, mapSize),
+		randIntExclusive(1, mapSize),
+		randIntExclusive(1, mapSize),
+		scaleByMapSize(11,16),
+		0.4,
+		3 * scaleByMapSize(1,4),
+		0.1,
+		0);
+
 	var terrainPainter = new LayeredPainter(
 		[tMainTerrain, tMainTerrain],		// terrains
 		[3]		// widths
@@ -251,8 +244,8 @@ for (var i = 0; i < scaleByMapSize(9,16); i++)
 
 for (var g = 0; g < scaleByMapSize(5,30); g++)
 {
-	var tx = randInt(1, mapSize - 1);
-	var tz = randInt(1, mapSize - 1);
+	var tx = randIntInclusive(1, mapSize - 1);
+	var tz = randIntInclusive(1, mapSize - 1);
 
 	placer = new ClumpPlacer(mapArea * 0.01 * lSize, 0.7, 0.1, 10, tx, tz);
 	terrainPainter = new LayeredPainter(
@@ -504,17 +497,17 @@ RMS.SetProgress(85);
 // create straggler trees
 log("Creating straggler trees...");
 var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
-createStragglerTrees(types, [avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, clMetal, 1, clRock, 1, clHill2, 1), stayClasses(clLand, 3)]);
+createStragglerTrees(types, [avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6, clHill2, 1), stayClasses(clLand, 3)]);
 
 
 // create treasures
 var fx = fractionToTiles(0.5);
 var fz = fractionToTiles(0.5);
-for (var i = 0; i < randInt(3,8); i++)
-	placeObject(fx+randFloat(-7,7), fz+randFloat(-7,7), oWood, 0, randFloat(0, TWO_PI));
+for (let i = 0; i < randIntInclusive(3, 8); ++i)
+	placeObject(fx + randFloat(-7, 7), fz + randFloat(-7, 7), oWood, 0, randFloat(0, 2 * PI));
 
-for (var i = 0; i < randInt(3,8); i++)
-	placeObject(fx+randFloat(-7,7), fz+randFloat(-7,7), oFood, 0, randFloat(0, TWO_PI));
+for (let i = 0; i < randIntInclusive(3, 8); ++i)
+	placeObject(fx + randFloat(-7, 7), fz + randFloat(-7, 7), oFood, 0, randFloat(0, 2 * PI));
 
 // Export map data
 ExportMap();

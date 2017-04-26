@@ -45,6 +45,11 @@
   <Fogging/>
   <Guard/>
   <Health>
+    <DamageVariants>
+      <lightdamage>0.85</lightdamage>
+      <mediumdamage>0.65</mediumdamage>
+      <heavydamage>0.35</heavydamage>
+    </DamageVariants>
     <DeathType>corpse</DeathType>
     <RegenRate>0</RegenRate>
     <IdleRegenRate>0</IdleRegenRate>
@@ -135,6 +140,9 @@
   <Vision>
     <Range>40</Range>
   </Vision>
+  <VisionSharing>
+    <Bribable>false</Bribable>
+  </VisionSharing>
   <VisualActor>
     <ConstructionPreview/>
     <SilhouetteDisplay>false</SilhouetteDisplay>

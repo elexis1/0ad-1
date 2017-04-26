@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ ObjectSidebar::ObjectSidebar(
 	objectType->SetSelection(0);
 	m_MainSizer->Add(objectType, wxSizerFlags().Expand());
 	m_MainSizer->AddSpacer(3);
-	
+
 	// ------------------------------------------------------------------------------------------
 
 	p->m_ObjectListBox = new wxListBox(this, ID_SelectObject, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SINGLE|wxLB_HSCROLL);
@@ -483,7 +483,7 @@ ObjectBottomBar::ObjectBottomBar(
 	SetSizer(mainSizer);
 }
 
-static wxControl* CreateTemplateNameObject(wxWindow* parent, const std::string templateName, int counterTemplate)
+static wxControl* CreateTemplateNameObject(wxWindow* parent, const std::string& templateName, int counterTemplate)
 {
 	wxString idTemplate(wxString::FromUTF8(templateName.c_str()));
 	if (counterTemplate > 1)

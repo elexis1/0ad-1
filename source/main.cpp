@@ -158,7 +158,7 @@ static void PumpEvents()
 {
 	JSContext* cx = g_GUI->GetScriptInterface()->GetContext();
 	JSAutoRequest rq(cx);
-	
+
 	PROFILE3("dispatch events");
 
 	SDL_Event_ ev;
@@ -273,7 +273,7 @@ static void Frame()
 	bool need_update = true;
 
 	// If we are not running a multiplayer game, disable updates when the game is
-	// minimized or out of focus and relinquish the CPU a bit, in order to make 
+	// minimized or out of focus and relinquish the CPU a bit, in order to make
 	// debugging easier.
 	if(g_PauseOnFocusLoss && !g_NetClient && !g_app_has_focus)
 	{
@@ -284,7 +284,7 @@ static void Frame()
 	}
 
 	// Throttling: limit update and render frequency to the minimum to 50 FPS
-	// in the "inactive" state, so that other windows get enough CPU time, 
+	// in the "inactive" state, so that other windows get enough CPU time,
 	// (and it's always nice for power+thermal management).
 	// TODO: when the game performance is high enough, implementing a limit for
 	// in-game framerate might be sensible.
@@ -423,12 +423,14 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		return;
 	}
 
-	const bool isReplay = args.Has("replay");
 	const bool isVisualReplay = args.Has("replay-visual");
-	const std::string replayFile = isReplay ? args.Get("replay") : (isVisualReplay ? args.Get("replay-visual") : "");
+	const bool isNonVisualReplay = args.Has("replay");
 
-	// Ensure the replay file exists
-	if (isReplay || isVisualReplay)
+	const CStr replayFile =
+		isVisualReplay ? args.Get("replay-visual") :
+		isNonVisualReplay ? args.Get("replay") : "";
+
+	if (isVisualReplay || isNonVisualReplay)
 	{
 		if (!FileExists(OsPath(replayFile)))
 		{
@@ -453,8 +455,7 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		return;
 	}
 
-	// run non-visual simulation replay if requested
-	if (isReplay)
+	if (isNonVisualReplay)
 	{
 		if (!args.Has("mod"))
 		{
@@ -471,7 +472,10 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		{
 			CReplayPlayer replay;
 			replay.Load(replayFile);
-			replay.Replay(args.Has("serializationtest"), args.Has("ooslog"));
+			replay.Replay(
+				args.Has("serializationtest"),
+				args.Has("rejointest") ? args.Get("rejointest").ToInt() : -1,
+				args.Has("ooslog"));
 		}
 
 		g_VFS.reset();

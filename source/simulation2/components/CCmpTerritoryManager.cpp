@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -256,7 +256,7 @@ public:
 		m_TriggerEvent = true;
 	}
 
-	virtual bool NeedUpdate(size_t* dirtyID)
+	virtual bool NeedUpdate(size_t* dirtyID) const
 	{
 		if (*dirtyID != m_DirtyID)
 		{
@@ -444,7 +444,7 @@ void CCmpTerritoryManager::CalculateTerritories()
 		u8 owner = (u8)pair.first;
 		const std::vector<entity_id_t>& ents = pair.second;
 		// With 2^16 entities, we're safe against overflows as the weight is also limited to 2^16
-		ENSURE(ents.size() < 1 << 16); 
+		ENSURE(ents.size() < 1 << 16);
 		// Compute the influence map of the current entity, then add it to the player grid
 		for (entity_id_t ent : ents)
 		{
@@ -662,7 +662,7 @@ void CCmpTerritoryManager::RenderSubmit(SceneCollector& collector)
 
 	for (size_t i = 0; i < m_BoundaryLines.size(); ++i)
 		collector.Submit(&m_BoundaryLines[i].overlay);
-	
+
 	for (size_t i = 0; i < m_DebugBoundaryLineNodes.size(); ++i)
 		collector.Submit(&m_DebugBoundaryLineNodes[i]);
 
@@ -765,13 +765,17 @@ void CCmpTerritoryManager::SetTerritoryBlinking(entity_pos_t x, entity_pos_t z, 
 
 bool CCmpTerritoryManager::IsTerritoryBlinking(entity_pos_t x, entity_pos_t z)
 {
+	CalculateTerritories();
+	if (!m_Territories)
+		return false;
+
 	u16 i, j;
 	NearestTerritoryTile(x, z, i, j, m_Territories->m_W, m_Territories->m_H);
 	return (m_Territories->get(i, j) & TERRITORY_BLINKING_MASK) != 0;
 }
 
 TerritoryOverlay::TerritoryOverlay(CCmpTerritoryManager& manager) :
-	TerrainTextureOverlay((float)Pathfinding::NAVCELLS_PER_TILE / ICmpTerritoryManager::NAVCELLS_PER_TERRITORY_TILE), 
+	TerrainTextureOverlay((float)Pathfinding::NAVCELLS_PER_TILE / ICmpTerritoryManager::NAVCELLS_PER_TERRITORY_TILE),
 	m_TerritoryManager(manager)
 { }
 

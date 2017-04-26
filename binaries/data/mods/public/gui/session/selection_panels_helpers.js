@@ -1,28 +1,48 @@
-const BARTER_RESOURCE_AMOUNT_TO_SELL = 100;
-const BARTER_BUNCH_MULTIPLIER = 5;
-const BARTER_RESOURCES = ["food", "wood", "stone", "metal"];
-const BARTER_ACTIONS = ["Sell", "Buy"];
 const GATE_ACTIONS = ["lock", "unlock"];
 
-// upgrade constants
 const UPGRADING_NOT_STARTED = -2;
 const UPGRADING_CHOSEN_OTHER = -1;
-
-// ==============================================
-// BARTER HELPERS
-// Resources to sell on barter panel
-var g_BarterSell = "food";
 
 function canMoveSelectionIntoFormation(formationTemplate)
 {
 	if (!(formationTemplate in g_canMoveIntoFormation))
-	{
 		g_canMoveIntoFormation[formationTemplate] = Engine.GuiInterfaceCall("CanMoveEntsIntoFormation", {
 			"ents": g_Selection.toList(),
 			"formationTemplate": formationTemplate
 		});
-	}
+
 	return g_canMoveIntoFormation[formationTemplate];
+}
+
+function hasSameRestrictionCategory(templateName1, templateName2)
+{
+	let template1 = GetTemplateData(templateName1);
+	let template2 = GetTemplateData(templateName2);
+
+	if (template1.trainingRestrictions && template2.trainingRestrictions)
+		return template1.trainingRestrictions.category == template2.trainingRestrictions.category;
+
+	if (template1.buildRestrictions && template2.buildRestrictions)
+		return template1.buildRestrictions.category == template2.buildRestrictions.category;
+
+	return false;
+}
+
+function getPlayerHighlightColor(player)
+{
+	return "color:" + rgbToGuiColor(g_Players[player].color) + " 160";
+}
+
+/**
+ * Returns a "color:255 0 0 Alpha" string based on how many resources are needed.
+ */
+function resourcesToAlphaMask(neededResources)
+{
+	let totalCost = 0;
+	for (let resource in neededResources)
+		totalCost += +neededResources[resource];
+
+	return "color:255 0 0 " + Math.min(125, Math.round(+totalCost / 10) + 50);
 }
 
 function getStanceDisplayName(name)
@@ -150,5 +170,3 @@ function formatBatchTrainingString(buildingsCountToTrainFullBatch, fullBatchSize
 		"remainderBatch": remainderBatch
 	}) + "[/font]";
 }
-
-

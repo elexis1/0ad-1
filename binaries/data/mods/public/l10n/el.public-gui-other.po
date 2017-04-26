@@ -3,20 +3,23 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
+# Adrian Pappas <pappasadrian@gmail.com>, 2017
 # Tasos Grv. <tasosgr4@gmail.com>, 2016
 # Armando Stylianakis <armandos.styl@gmail.com>, 2016
 # LOUKAS SKOUROLIAKOS, 2015
 # malvanos <malvanos@gmail.com>, 2014-2015
-# Marinus Savoritias <savoritias@gmail.com>, 2015-2016
+# Marinus Savoritias <msavorritias@gmail.com>, 2015-2016
 # Nicolas Auvray <na.itms76@gmail.com>, 2014
 # Savvas Nesseris <nesseris@yahoo.com>, 2016
 # Sotiris K <sotok42@gmail.com>, 2015
+# Vasilis Drosos <basilisd@gmail.com>, 2016-2017
+# Steven Gikas <stevengk123@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:00+0200\n"
-"PO-Revision-Date: 2016-09-30 09:22+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-04-10 09:06+0200\n"
+"PO-Revision-Date: 2017-04-10 21:47+0000\n"
+"Last-Translator: Vasilis Drosos <basilisd@gmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/wildfire-games/0ad/language/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,12 +66,12 @@ msgstr "Ιστορία των %(civilization)s"
 #: gui/common/color.js:154
 #, javascript-format
 msgid "Press %(hotkey)s to autocomplete playernames."
-msgstr ""
+msgstr "Πάτα %(hotkey)s για να ολοκληρώσεις αυτόματα τα ονόματα των παικτών."
 
 #: gui/common/color.js:157
 msgctxt "hotkey"
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: gui/common/functions_global_object.js:57
 #, javascript-format
@@ -81,626 +84,470 @@ msgstr "Ανοιγμα  %(url)s\nστον προκαθορισμένο εξυπ�
 msgid "Opening page"
 msgstr "Αρχική σελίδα"
 
-#: gui/common/functions_global_object.js:72
+#: gui/common/functions_global_object.js:69
 #, javascript-format
 msgid "FPS: %(fps)4s"
 msgstr "FPS: %(fps)4s"
 
-#. Translation: The "x" means "times", with the mathematical meaning of
-#. multiplication.
-#: gui/common/functions_global_object.js:89
-#, javascript-format
-msgid "%(time)s (%(speed)sx)"
-msgstr "%(time)s (%(speed)sx)"
-
-#: gui/common/functions_global_object.js:106
-#, javascript-format
-msgctxt "ceasefire"
-msgid "Time remaining until ceasefire is over: %(time)s."
-msgstr "Ο χρόνος που απομένει για τη λήξη της εκεχειρίας: %(time)s."
-
-#: gui/common/functions_utility.js:121
+#: gui/common/functions_utility.js:108
 msgctxt "map selection"
 msgid "Random"
-msgstr ""
+msgstr "Τυχαίος"
 
-#: gui/common/functions_utility.js:132
+#: gui/common/functions_utility.js:119
 msgid "mm:ss"
-msgstr "λλ:δδ"
+msgstr "mm:ss"
 
-#: gui/common/functions_utility.js:134
+#: gui/common/functions_utility.js:119
 msgid "HH:mm:ss"
-msgstr "ΩΩ:λλ:δδ"
+msgstr "HH:mm:ss"
 
-#: gui/common/functions_utility_error.js:22
+#: gui/common/functions_utility_error.js:12
 msgid "Loading Aborted"
 msgstr "Φόρτωση Εγκαταλείφθηκε"
 
-#: gui/common/functions_utility_loadsave.js:8
+#: gui/common/functions_utility_loadsave.js:15
 msgid "yyyy-MM-dd HH:mm:ss"
-msgstr "εεεε-ΜΜ-ηη ΩΩ:λλ:δδ"
+msgstr "yyyy-MM-dd HH:mm:ss"
 
-#: gui/common/functions_utility_loadsave.js:9
-#, javascript-format
-msgid "\\[%(date)s]"
-msgstr "\\[%(date)s]"
-
-#: gui/common/functions_utility_loadsave.js:21
+#: gui/common/functions_utility_loadsave.js:23
 #, javascript-format
 msgid "%(dateString)s %(map)s - %(description)s"
 msgstr "%(dateString)s %(map)s - %(description)s"
 
-#: gui/common/functions_utility_loadsave.js:22
+#: gui/common/functions_utility_loadsave.js:24
 #, javascript-format
 msgid "%(dateString)s %(map)s"
 msgstr "%(dateString)s %(map)s"
 
-#: gui/common/functions_utility_loadsave.js:82
+#: gui/common/functions_utility_loadsave.js:85 gui/savedgames/save.js:63
 #, javascript-format
-msgid "Delete the selected entry using %(hotkey)s."
-msgstr ""
+msgid "\"%(label)s\""
+msgstr "\"%(label)s\""
 
 #: gui/common/functions_utility_loadsave.js:87
+msgid "Saved game will be permanently deleted, are you sure?"
+msgstr "Το σοσμένο παιχνίδι θα διαγραφεί μόνιμα, είστε σύγουρος;"
+
+#: gui/common/functions_utility_loadsave.js:88
+msgid "DELETE"
+msgstr "ΔΙΑΓΡΑΦΗ"
+
+#: gui/common/functions_utility_loadsave.js:89 gui/common/tooltips.js:246
+#: gui/options/options.js:279 gui/options/options.js:346
+#: gui/pregame/mainmenu.js:262 gui/replaymenu/replay_actions.js:159
+#: gui/savedgames/load.js:187 gui/savedgames/save.js:66
+#: gui/summary/summary.js:146
+msgid "No"
+msgstr "Όχι"
+
+#: gui/common/functions_utility_loadsave.js:89 gui/common/tooltips.js:246
+#: gui/options/options.js:279 gui/options/options.js:346
+#: gui/pregame/mainmenu.js:262 gui/replaymenu/replay_actions.js:159
+#: gui/savedgames/load.js:187 gui/savedgames/save.js:66
+#: gui/summary/summary.js:146
+msgid "Yes"
+msgstr "Ναι"
+
+#: gui/common/functions_utility_loadsave.js:106
+#, javascript-format
+msgid "Delete the selected entry using %(hotkey)s."
+msgstr "Διαγραφή της επιλεγμένης καταχώρισης χρησιμοποιώντας το πλήκτρο %(hotkey)s."
+
+#: gui/common/functions_utility_loadsave.js:111
 #, javascript-format
 msgid "Hold %(hotkey)s to delete without confirmation."
-msgstr ""
+msgstr "Κράτα πατημένο το πλήκτρο %(hotkey)s για διαγράφη χωρίς επιβαιβέωση."
 
 #: gui/common/gamedescription.js:13
 msgid "A randomly selected map."
 msgstr "Ένας τυχαία επιλεγμένος χάρτης."
 
-#: gui/common/gamedescription.js:20 gui/common/gamedescription.js:280
+#: gui/common/gamedescription.js:20 gui/common/gamedescription.js:291
 msgid "Sorry, no description available."
 msgstr "Δυστυχώς, δεν υπάρχει περιγραφή."
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:71
+#: gui/common/gamedescription.js:70
 #, javascript-format
 msgid "%(playerName)s (%(civ)s, %(AIdifficulty)s %(AIname)s)"
-msgstr ""
+msgstr "%(playerName)s (%(civ)s, %(AIdifficulty)s %(AIname)s)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:74
+#: gui/common/gamedescription.js:73
 #, javascript-format
 msgid "%(playerName)s (%(civ)s, %(AIdifficulty)s %(AIname)s, %(state)s)"
-msgstr ""
+msgstr "%(playerName)s (%(civ)s, %(AIdifficulty)s %(AIname)s, %(state)s)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:80
+#: gui/common/gamedescription.js:79
 #, javascript-format
 msgid "%(playerName)s (%(AIdifficulty)s %(AIname)s)"
-msgstr ""
+msgstr "%(playerName)s (%(AIdifficulty)s %(AIname)s)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:83
+#: gui/common/gamedescription.js:82
 #, javascript-format
 msgid "%(playerName)s (%(AIdifficulty)s %(AIname)s, %(state)s)"
-msgstr ""
+msgstr "%(playerName)s (%(AIdifficulty)s %(AIname)s, %(state)s)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:93
+#: gui/common/gamedescription.js:92
 #, javascript-format
 msgid "%(playerName)s (OFFLINE)"
-msgstr ""
+msgstr "%(playerName)s (ΕΚΤΟΣ ΣΥΝΔΕΣΗΣ)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:96
+#: gui/common/gamedescription.js:95
 #, javascript-format
 msgid "%(playerName)s (OFFLINE, %(state)s)"
-msgstr ""
+msgstr "%(playerName)s (ΕΚΤΟΣ ΣΥΝΔΕΣΗΣ, %(state)s)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:103
+#: gui/common/gamedescription.js:102
 #, javascript-format
 msgid "%(playerName)s (%(civ)s)"
-msgstr ""
+msgstr "%(playerName)s (%(civ)s)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:106
+#: gui/common/gamedescription.js:105
 #, javascript-format
 msgid "%(playerName)s (%(civ)s, %(state)s)"
-msgstr ""
+msgstr "%(playerName)s (%(civ)s, %(state)s)"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:110
+#: gui/common/gamedescription.js:109
 #, javascript-format
 msgid "%(playerName)s"
-msgstr ""
+msgstr "%(playerName)s"
 
 #. Translation: Describe a player in a selected game, f.e. in the replay- or
 #. savegame menu
-#: gui/common/gamedescription.js:113
+#: gui/common/gamedescription.js:112
 #, javascript-format
 msgid "%(playerName)s (%(state)s)"
-msgstr ""
+msgstr "%(playerName)s (%(state)s)"
 
-#: gui/common/gamedescription.js:131
+#: gui/common/gamedescription.js:130
 msgid "Unknown Civilization"
 msgstr "Άγνωστος Πολιτισμός"
 
-#: gui/common/gamedescription.js:138
+#: gui/common/gamedescription.js:137
 msgctxt "playerstate"
 msgid "defeated"
-msgstr ""
+msgstr "ηττήθηκε"
 
-#: gui/common/gamedescription.js:139
+#: gui/common/gamedescription.js:138
 msgctxt "playerstate"
 msgid "won"
-msgstr ""
+msgstr "νίκη"
+
+#: gui/common/gamedescription.js:160
+msgid "No Team"
+msgstr "Χωρίς Ομάδα"
 
 #: gui/common/gamedescription.js:161
-msgid "No Team"
-msgstr ""
-
-#: gui/common/gamedescription.js:162
 #, javascript-format
 msgid "Team %(team)s"
-msgstr ""
+msgstr "Ομάδα %(team)s"
 
 #. Translation: Describe players of one team in a selected game, f.e. in the
 #. replay- or savegame menu or lobby
-#: gui/common/gamedescription.js:165 gui/common/gamedescription.js:172
+#: gui/common/gamedescription.js:164 gui/common/gamedescription.js:171
 #, javascript-format
 msgid ""
 "%(team)s:\n"
 "%(playerDescriptions)s"
-msgstr ""
+msgstr "%(team)s:\n%(playerDescriptions)s"
 
-#: gui/common/gamedescription.js:173
+#: gui/common/gamedescription.js:172
 msgid "Observer"
 msgid_plural "Observers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Παρατηρητής"
+msgstr[1] "Παρατηρητές"
 
-#: gui/common/gamedescription.js:195
+#: gui/common/gamedescription.js:194
 #, javascript-format
 msgctxt "victory condition"
 msgid "Wonder (%(min)s minute)"
 msgid_plural "Wonder (%(min)s minutes)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Θαύμα ( %(min)s λεπτό)"
+msgstr[1] "Θαύμα (%(min)s λεπτά)"
 
-#: gui/common/gamedescription.js:212
+#: gui/common/gamedescription.js:205
+#, javascript-format
+msgctxt "victory condition"
+msgid "Capture The Relic (%(min)s minute)"
+msgid_plural "Capture The Relic (%(min)s minutes)"
+msgstr[0] "Αρπαγή του Ιερού Λειψάνου (%(min)s λεπτό)"
+msgstr[1] "Αρπαγή του Ιερού Λειψάνου (%(min)s λεπτά)"
+
+#: gui/common/gamedescription.js:223
 msgid "Rated game"
-msgstr ""
+msgstr "Βαθμολογημένο παιχνίδι"
 
-#: gui/common/gamedescription.js:213
+#: gui/common/gamedescription.js:224
 msgid ""
 "When the winner of this match is determined, the lobby score will be "
 "adapted."
-msgstr ""
-
-#: gui/common/gamedescription.js:218
-msgid "Locked Teams"
-msgstr ""
-
-#: gui/common/gamedescription.js:219
-msgid "Players can't change the initial teams."
-msgstr ""
-
-#: gui/common/gamedescription.js:223
-msgid "Diplomacy"
-msgstr ""
-
-#: gui/common/gamedescription.js:224
-msgid "Players can make alliances and declare war on allies."
-msgstr ""
+msgstr "Όταν καθοριστεί ο νικητής αυτού του αγώνα, η βαθμολογία του λόμπι θα αναπροσαρμοστεί."
 
 #: gui/common/gamedescription.js:229
-msgid "Last Man Standing"
-msgstr ""
+msgid "Locked Teams"
+msgstr "Κλειδωμένες Ομάδες"
 
 #: gui/common/gamedescription.js:230
+msgid "Players can't change the initial teams."
+msgstr "Οι παίκτες δεν μπορούν να αλλάξουν τις αρχικές ομάδες."
+
+#: gui/common/gamedescription.js:234
+msgid "Diplomacy"
+msgstr "Διπλωματία"
+
+#: gui/common/gamedescription.js:235
+msgid "Players can make alliances and declare war on allies."
+msgstr "Οι παίχτες μπορούν να κάνουν συμμαχίες και να κηρύξουν πόλεμο στους συμμάχους."
+
+#: gui/common/gamedescription.js:240
+msgid "Last Man Standing"
+msgstr "Ο Τελευταίος Επιζών"
+
+#: gui/common/gamedescription.js:241
 msgid ""
 "Only one player can win the game. If the remaining players are allies, the "
 "game continues until only one remains."
-msgstr ""
+msgstr "Μόνο ένας παίχτης μπορεί να κερδίσει το παιχνίδι. Αν οι εναπομείναντες παίχτες είναι σύμμαχοι, το παιχνίδι συνεχίζεται μέχρι να μείνει μόνο ένας."
 
-#: gui/common/gamedescription.js:234
+#: gui/common/gamedescription.js:245
 msgid "Allied Victory"
-msgstr ""
+msgstr "Συμμαχική Νίκη"
 
-#: gui/common/gamedescription.js:235
+#: gui/common/gamedescription.js:246
 msgid ""
 "If one player wins, his or her allies win too. If one group of allies "
 "remains, they win."
-msgstr ""
+msgstr "Αν ένας παίχτης κερδίσει, αυτός ή οι σύμμαχοί του κερδίζουν επίσης. Αν εναπομείνει μία ομάδα συμμάχων, κερδίζουν."
 
-#: gui/common/gamedescription.js:241
+#: gui/common/gamedescription.js:252
 msgid "Ceasefire"
-msgstr ""
+msgstr "Παύση Πυρός"
 
-#: gui/common/gamedescription.js:244 gui/pregame/mainmenu.js:86
+#: gui/common/gamedescription.js:255 gui/pregame/mainmenu.js:91
 msgid "disabled"
 msgstr "απενεργοπ."
 
-#: gui/common/gamedescription.js:245
+#: gui/common/gamedescription.js:256
 msgid "For the first minute, enemies will stay neutral."
 msgid_plural "For the first %(min)s minutes, enemies will stay neutral."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Για το πρώτο λεπτό, οι εχθροί παραμένουν ουδέτεροι."
+msgstr[1] "Για τα πρώτα %(min)s λεπτά, οι εχθροί παραμένουν ουδέτεροι."
 
-#: gui/common/gamedescription.js:253
+#: gui/common/gamedescription.js:264
 msgid "Map Name"
-msgstr ""
+msgstr "Όνομα Χάρτη"
 
-#: gui/common/gamedescription.js:258
+#: gui/common/gamedescription.js:269
 msgid "Map Type"
-msgstr ""
+msgstr "Τύπος Χάρτη"
 
-#: gui/common/gamedescription.js:267
+#: gui/common/gamedescription.js:278
 msgid "Map Size"
-msgstr ""
+msgstr "Μέγεθος Χάρτη"
 
-#: gui/common/gamedescription.js:274
+#: gui/common/gamedescription.js:285
 msgid "Map Description"
-msgstr ""
+msgstr "Περιγραφή Χάρτη"
 
-#: gui/common/gamedescription.js:277
+#: gui/common/gamedescription.js:288
 msgid "Randomly selects a map from the list"
-msgstr ""
-
-#: gui/common/gamedescription.js:286
-msgid "Starting Resources"
-msgstr ""
-
-#: gui/common/gamedescription.js:287
-#, javascript-format
-msgid "%(startingResourcesTitle)s (%(amount)s)"
-msgstr ""
+msgstr "Επιλέγει έναν τυχαίο χάρτη από τη λίστα"
 
 #: gui/common/gamedescription.js:297
+msgid "Starting Resources"
+msgstr "Πόροι Κατά Την Έναρξη"
+
+#: gui/common/gamedescription.js:298
+#, javascript-format
+msgid "%(startingResourcesTitle)s (%(amount)s)"
+msgstr "%(startingResourcesTitle)s (%(amount)s)"
+
+#: gui/common/gamedescription.js:308
 msgid "Population Limit"
-msgstr ""
+msgstr "Όριο Πληθυσμού"
 
-#: gui/common/gamedescription.js:305
+#: gui/common/gamedescription.js:316
 msgid "Disable Treasure"
-msgstr ""
+msgstr "Απενεργοποίηση Θησαυρών"
 
-#: gui/common/gamedescription.js:310
+#: gui/common/gamedescription.js:321
 msgid "Revealed Map"
-msgstr ""
+msgstr "Αποκαλυμμένος Χάρτης"
 
-#: gui/common/gamedescription.js:315
+#: gui/common/gamedescription.js:326
 msgid "Explored Map"
-msgstr ""
+msgstr "Εξερευνημένος Χάρτης"
 
-#: gui/common/gamedescription.js:320
+#: gui/common/gamedescription.js:331
 msgid "Cheats"
-msgstr ""
+msgstr "Ζαβολιές"
 
-#: gui/common/gamedescription.js:325 gui/common/tooltips.js:58
-#: gui/common/tooltips.js:105 gui/common/tooltips.js:147
-#: gui/common/tooltips.js:347 gui/common/tooltips.js:613
+#: gui/common/gamedescription.js:336 gui/common/tooltips.js:86
+#: gui/common/tooltips.js:141 gui/common/tooltips.js:182
+#: gui/common/tooltips.js:404 gui/common/tooltips.js:425
+#: gui/common/tooltips.js:707
 #, javascript-format
 msgid "%(label)s %(details)s"
 msgstr "%(label)s %(details)s"
 
-#: gui/common/gamedescription.js:328
+#: gui/common/gamedescription.js:339
 msgctxt "gamesetup option"
 msgid "enabled"
-msgstr ""
+msgstr "ενεργοποιήθηκε"
 
-#: gui/common/gamedescription.js:329
+#: gui/common/gamedescription.js:340
 msgctxt "gamesetup option"
 msgid "disabled"
-msgstr ""
+msgstr "απενεργοποιήθηκε"
 
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:4
-msgctxt "firstWord"
-msgid "Food"
-msgstr "Τροφή"
+#: gui/common/gamedescription.js:357
+msgid "Victorious"
+msgstr "Νικηφόρος"
 
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:6
-msgctxt "firstWord"
-msgid "Meat"
-msgstr "Κρέας"
+#: gui/common/gamedescription.js:362
+msgid "Defeated"
+msgstr "Ηττήθηκε"
 
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:8
-msgctxt "firstWord"
-msgid "Metal"
-msgstr "Μέταλλο"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:10
-msgctxt "firstWord"
-msgid "Ore"
-msgstr "Μετάλλευμα"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:12
-msgctxt "firstWord"
-msgid "Rock"
-msgstr "Βράχος"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:14
-msgctxt "firstWord"
-msgid "Ruins"
-msgstr "Ερείπια"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:16
-msgctxt "firstWord"
-msgid "Stone"
-msgstr "Πέτρα"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:18
-msgctxt "firstWord"
-msgid "Treasure"
-msgstr "Θησαυρός"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:20
-msgctxt "firstWord"
-msgid "Tree"
-msgstr "Δέντρο"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:22
-msgctxt "firstWord"
-msgid "Wood"
-msgstr "Ξυλεία"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:24
-msgctxt "firstWord"
-msgid "Fruit"
-msgstr "Φρούτα"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:26
-msgctxt "firstWord"
-msgid "Grain"
-msgstr "Σιτηρά"
-
-#. Translation: Word as used at the beginning of a sentence or as a single-
-#. word sentence.
-#: gui/common/l10n.js:28
-msgctxt "firstWord"
-msgid "Fish"
-msgstr "Ψάρια"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:32
-msgctxt "withinSentence"
-msgid "Food"
-msgstr "Τροφή"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:34
-msgctxt "withinSentence"
-msgid "Meat"
-msgstr "Κρέας"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:36
-msgctxt "withinSentence"
-msgid "Metal"
-msgstr "Μέταλλο"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:38
-msgctxt "withinSentence"
-msgid "Ore"
-msgstr "Μετάλλευμα"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:40
-msgctxt "withinSentence"
-msgid "Rock"
-msgstr "Βράχος"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:42
-msgctxt "withinSentence"
-msgid "Ruins"
-msgstr "Ερείπια"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:44
-msgctxt "withinSentence"
-msgid "Stone"
-msgstr "Πέτρα"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:46
-msgctxt "withinSentence"
-msgid "Treasure"
-msgstr "Θησαυρός"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:48
-msgctxt "withinSentence"
-msgid "Tree"
-msgstr "Δέντρο"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:50
-msgctxt "withinSentence"
-msgid "Wood"
-msgstr "Ξυλεία"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:52
-msgctxt "withinSentence"
-msgid "Fruit"
-msgstr "Φρούτα"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:54
-msgctxt "withinSentence"
-msgid "Grain"
-msgstr "Σιτηρά"
-
-#. Translation: Word as used in the middle of a sentence (which may require
-#. using lowercase for your language).
-#: gui/common/l10n.js:56
-msgctxt "withinSentence"
-msgid "Fish"
-msgstr "Ψάρια"
-
-#: gui/common/l10n.js:82
+#: gui/common/l10n.js:13
 #, javascript-format
 msgid "%(amount)s %(resourceType)s"
-msgstr ""
+msgstr "%(amount)s %(resourceType)s"
 
-#: gui/common/l10n.js:90
+#: gui/common/l10n.js:21
 #, javascript-format
 msgid "%(previousAmounts)s and %(lastAmount)s"
-msgstr ""
+msgstr "%(previousAmounts)s και %(lastAmount)s"
 
 #. Translation: This comma is used for separating first to penultimate
 #. elements in an enumeration.
-#: gui/common/l10n.js:92 gui/common/network.js:141 gui/common/tooltips.js:118
-#: gui/common/tooltips.js:132 gui/common/tooltips.js:214
-#: gui/common/tooltips.js:243 gui/common/tooltips.js:276
-#: gui/common/tooltips.js:492 gui/common/tooltips.js:526
-#: gui/common/tooltips.js:580 gui/replaymenu/replay_actions.js:89
-#: gui/replaymenu/replay_actions.js:90 gui/savedgames/load.js:63
-#: gui/savedgames/load.js:119 gui/savedgames/load.js:122
+#: gui/common/l10n.js:23 gui/common/network.js:162 gui/common/tooltips.js:154
+#: gui/common/tooltips.js:168 gui/common/tooltips.js:248
+#: gui/common/tooltips.js:277 gui/common/tooltips.js:310
+#: gui/common/tooltips.js:583 gui/common/tooltips.js:617
+#: gui/common/tooltips.js:671 gui/replaymenu/replay_actions.js:89
+#: gui/replaymenu/replay_actions.js:90 gui/savedgames/load.js:118
+#: gui/savedgames/load.js:174 gui/savedgames/load.js:177
 msgid ", "
 msgstr ", "
 
 #: gui/common/network.js:17
 #, javascript-format
 msgid "Losing connection to server (%(seconds)ss)"
-msgstr ""
+msgstr "Χάθηκε η σύνδεση με τον εξυπηρετητή (%(seconds)s δευτ.)"
 
 #: gui/common/network.js:22
 #, javascript-format
 msgid "%(player)s losing connection (%(seconds)ss)"
-msgstr ""
+msgstr "Χαθηκε η σύνδεση με τον παίχτη %(player)s για (%(seconds)s δευτ.)"
 
 #: gui/common/network.js:28
 #, javascript-format
 msgid "Bad connection to server (%(milliseconds)sms)"
-msgstr ""
+msgstr "Κακή σύνδεση με τον εξυπηρετητή (%(milliseconds)s εκ. δευτ.)"
 
 #: gui/common/network.js:33
 #, javascript-format
 msgid "Bad connection to %(player)s (%(milliseconds)sms)"
-msgstr ""
+msgstr "Κακή σύνδεση με τον παίχτη %(player)s (%(milliseconds)s εκ. δευτ.)"
 
-#: gui/common/network.js:62
+#: gui/common/network.js:66
 msgctxt "network disconnect"
 msgid "Unknown reason"
-msgstr ""
+msgstr "Άγνωστη αιτία"
 
-#: gui/common/network.js:63
+#: gui/common/network.js:67
 msgid ""
 "This is often caused by UDP port 20595 not being forwarded on the host side,"
 " by a firewall, or anti-virus software"
-msgstr ""
+msgstr "Αυτό προκαλείται συχνά από τη UDP θύρα 20595  που δεν προωθείται από την πλευρά του εξυπηρετητή, από ένα τείχος προστασίας ή από το λογισμικό αντιικών."
 
-#: gui/common/network.js:64
+#: gui/common/network.js:68
 msgid "The host has ended the game"
-msgstr ""
+msgstr "Ο εξυπηρετητής τελείωσε το παιχνίδι"
 
-#: gui/common/network.js:65
+#: gui/common/network.js:69
 msgid "Incorrect network protocol version"
 msgstr "Λάθος έκδοση δικτυακού πρωτοκόλλου"
 
-#: gui/common/network.js:66
+#: gui/common/network.js:70
 msgid "Game is loading, please try again later"
-msgstr ""
+msgstr "Το παιχνίδι φορτώνει, δοκιμάστε ξανά αργότερα"
 
-#: gui/common/network.js:67
+#: gui/common/network.js:71
 msgid "Game has already started, no observers allowed"
 msgstr "Το παιχνίδι είδη έχει αρχίσει. Οι παρατηρητές δεν επιτρέπονται"
 
-#: gui/common/network.js:68
+#: gui/common/network.js:72
 msgid "You have been kicked"
 msgstr "Σας έδιωξαν από το παιχνίδι."
 
-#: gui/common/network.js:69
+#: gui/common/network.js:73
 msgid "You have been banned"
 msgstr "Σας απαγορεύτηκε η πρόσβαση "
 
-#: gui/common/network.js:70
+#: gui/common/network.js:74
 msgid "Playername in use. If you were disconnected, retry in few seconds"
-msgstr ""
+msgstr "Το όνομα χρήστη χρησιμοποιείτε. Αν αποσυνδέθηκες, δοκίμασε σε μερικά δευτερόλεπτα"
 
-#: gui/common/network.js:71
+#: gui/common/network.js:75
 msgid "Server full"
 msgstr "Ο διακομιστής είναι γεμάτος"
 
-#: gui/common/network.js:74
+#: gui/common/network.js:76
+msgid "Player identifier in use, retry connecting"
+msgstr "Το αναγνωριστικό του παίχτη χρησιμοποιείτε, δοκίμασε πάλι να συνδεθείς."
+
+#: gui/common/network.js:79
 #, javascript-format
 msgid "\\[Invalid value %(id)s]"
-msgstr ""
+msgstr "\\[Μη έγκυρη τιμή %(id)s]"
 
 #. Translation: States the reason why the client disconnected from the server.
-#: gui/common/network.js:86
+#: gui/common/network.js:91
 #, javascript-format
 msgid "Reason: %(reason)s."
 msgstr "Αιτία: %(reason)s."
 
-#: gui/common/network.js:91
+#: gui/common/network.js:96
 msgid "Lost connection to the server."
 msgstr "Χάθηκε η σύνδεση με τον εξυπηρετητή (server)."
 
-#: gui/common/network.js:92
+#: gui/common/network.js:97
 msgid "Failed to connect to the server."
-msgstr ""
+msgstr "Αποτυχία σύνδεσης με τον εξυπηρετητή."
 
-#: gui/common/network.js:94
+#: gui/common/network.js:99
 msgid "Disconnected"
 msgstr "Αποσυνδεθήκατε"
 
-#: gui/common/network.js:105
-#, javascript-format
-msgid "Could not ban %(name)s."
-msgstr ""
-
-#: gui/common/network.js:105
-#, javascript-format
-msgid "Could not kick %(name)s."
-msgstr ""
+#: gui/common/network.js:107
+msgid "Only the host can kick clients!"
+msgstr "Μόνο ο εξυπηρετητής μπορεί να διώξει παίχτες!"
 
 #. Translation: Number of currently connected players/observers and their
 #. names
-#: gui/common/network.js:140
+#: gui/common/network.js:161
 #, javascript-format
 msgid "Users (%(num)s): %(users)s"
-msgstr ""
+msgstr "Χρήστες (%(num)s): %(users)s"
 
 #: gui/common/settings.js:108
 msgctxt "aiDiff"
@@ -734,11 +581,11 @@ msgstr "Πολύ δύσκολο"
 
 #: gui/common/settings.js:151
 #, javascript-format
-msgctxt "wonder victory"
+msgctxt "victory duration"
 msgid "%(min)s minute"
 msgid_plural "%(min)s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(min)s λεπτό"
+msgstr[1] "%(min)s λεπτά"
 
 #: gui/common/settings.js:173
 msgctxt "ceasefire"
@@ -771,11 +618,11 @@ msgstr "Σενάριο"
 #: gui/common/settings.js:228
 msgctxt "victory condition"
 msgid "None"
-msgstr ""
+msgstr "Καμία"
 
 #: gui/common/settings.js:229
 msgid "Endless game."
-msgstr ""
+msgstr "Ατελείωτο παιχνίδι."
 
 #: gui/common/settings.js:270
 msgid "Unlimited"
@@ -784,17 +631,17 @@ msgstr "Απεριόριστο"
 #: gui/common/settings.js:318
 msgctxt "AI name"
 msgid "Unknown"
-msgstr ""
+msgstr "Άγνωστο"
 
 #: gui/common/settings.js:329
 msgctxt "AI difficulty"
 msgid "Unknown"
-msgstr ""
+msgstr "Άγνωστο"
 
 #: gui/common/settings.js:341
 msgctxt "map type"
 msgid "Unknown"
-msgstr ""
+msgstr "Άγνωστος"
 
 #: gui/common/settings.js:353
 msgctxt "map size"
@@ -804,12 +651,12 @@ msgstr "Προεπιλεγμένες "
 #: gui/common/settings.js:365
 msgctxt "population capacity"
 msgid "Unknown"
-msgstr ""
+msgstr "Άγνωστο"
 
 #: gui/common/settings.js:377
 msgctxt "victory condition"
 msgid "Unknown"
-msgstr ""
+msgstr "Άγνωστη"
 
 #: gui/common/tooltips.js:9
 msgid "Melee Attack:"
@@ -835,333 +682,362 @@ msgstr "Τρύπημα"
 msgid "Crush"
 msgstr "Συντριβή"
 
-#: gui/common/tooltips.js:59
-msgid "Health:"
-msgstr "Υγεία:"
+#: gui/common/tooltips.js:21
+msgid "Circular Splash Damage"
+msgstr "Κυκλική Ζημιά Σε Περιοχή"
 
-#: gui/common/tooltips.js:68
+#: gui/common/tooltips.js:22
+msgid "Linear Splash Damage"
+msgstr "Ευθεία Ζημιά Σε Περιοχή"
+
+#. Translation: For example: Ranged Attack: 12.0 Pierce, Range: 2 to 10 (+2)
+#. meters, Interval: 3 arrows / 2 seconds
+#: gui/common/tooltips.js:28
+#, javascript-format
+msgid ""
+"%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s"
+" (%(relativeRange)s) %(rangeUnit)s, %(rate)s"
+msgstr "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s μέχρι %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"
+
+#. Translation: For example: Ranged Attack: 12.0 Pierce, Range: 10 (+2)
+#. meters, Interval: 3 arrows / 2 seconds
+#: gui/common/tooltips.js:30
+#, javascript-format
+msgid ""
+"%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s "
+"(%(relativeRange)s) %(rangeUnit)s, %(rate)s"
+msgstr "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s (%(relativeRange)s) %(rangeUnit)s, %(rate)s"
+
+#. Translation: For example: Ranged Attack: 12.0 Pierce, Range: 2 to 10
+#. meters, Interval: 3 arrows / 2 seconds
+#: gui/common/tooltips.js:34
+#, javascript-format
+msgid ""
+"%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s to %(maxRange)s"
+" %(rangeUnit)s, %(rate)s"
+msgstr "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(minRange)s μέχρι %(maxRange)s %(rangeUnit)s, %(rate)s"
+
+#. Translation: For example: Ranged Attack: 12.0 Pierce, Range: 10 meters,
+#. Interval: 3 arrows / 2 seconds
+#: gui/common/tooltips.js:36
+#, javascript-format
+msgid ""
+"%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s %(rangeUnit)s, "
+"%(rate)s"
+msgstr "%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(maxRange)s %(rangeUnit)s, %(rate)s"
+
+#: gui/common/tooltips.js:67
 #, javascript-format
 msgid "%(time)s %(second)s"
 msgid_plural "%(time)s %(second)s"
 msgstr[0] "%(time)s %(second)s"
 msgstr[1] "%(time)s %(second)s"
 
-#: gui/common/tooltips.js:70 gui/common/tooltips.js:239
-#: gui/common/tooltips.js:288 gui/common/tooltips.js:302
-#: gui/common/tooltips.js:524
+#: gui/common/tooltips.js:69 gui/common/tooltips.js:273
+#: gui/common/tooltips.js:322 gui/common/tooltips.js:336
+#: gui/common/tooltips.js:615
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτα"
 msgstr[1] "δευτερόλεπτα"
 
-#: gui/common/tooltips.js:79
+#: gui/common/tooltips.js:87 gui/common/tooltips.js:98
+msgid "Health:"
+msgstr "Υγεία:"
+
+#: gui/common/tooltips.js:97
+#, javascript-format
+msgid "%(healthLabel)s %(current)s / %(max)s"
+msgstr "%(healthLabel)s %(current)s / %(max)s"
+
+#: gui/common/tooltips.js:115
 #, javascript-format
 msgid "%(arrowcount)s %(arrows)s"
 msgid_plural "%(arrowcount)s %(arrows)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(arrowcount)s %(arrows)s"
+msgstr[1] "%(arrowcount)s %(arrows)s"
 
-#: gui/common/tooltips.js:81
+#: gui/common/tooltips.js:117
 msgid "arrow"
 msgid_plural "arrows"
 msgstr[0] "βέλη"
 msgstr[1] "βέλη"
 
-#: gui/common/tooltips.js:84
+#: gui/common/tooltips.js:120
 #, javascript-format
 msgid "%(arrowString)s / %(timeString)s"
 msgstr "%(arrowString)s / %(timeString)s"
 
-#: gui/common/tooltips.js:95
+#: gui/common/tooltips.js:131
 #, javascript-format
 msgid "%(percentage)s%%"
-msgstr ""
+msgstr "%(percentage)s%%"
 
-#: gui/common/tooltips.js:106
+#: gui/common/tooltips.js:142
 msgid "Armor:"
 msgstr "Πανοπλία:"
 
-#: gui/common/tooltips.js:109
+#: gui/common/tooltips.js:145
 #, javascript-format
 msgid "%(damage)s %(damageType)s %(armorPercentage)s"
 msgstr "%(damage)s %(damageType)s %(armorPercentage)s"
 
-#: gui/common/tooltips.js:114
+#: gui/common/tooltips.js:150
 #, javascript-format
 msgid "(%(armorPercentage)s)"
 msgstr "(%(armorPercentage)s)"
 
-#: gui/common/tooltips.js:125
+#: gui/common/tooltips.js:161
 msgid "(None)"
 msgstr "(Καμία)"
 
-#: gui/common/tooltips.js:129
+#: gui/common/tooltips.js:165
 #, javascript-format
 msgid "%(damage)s %(damageType)s"
 msgstr "%(damage)s %(damageType)s"
 
-#: gui/common/tooltips.js:151
+#: gui/common/tooltips.js:186
 msgid "Interval:"
 msgstr "Διάστημα:"
 
-#: gui/common/tooltips.js:152 gui/common/tooltips.js:522
+#: gui/common/tooltips.js:187 gui/common/tooltips.js:613
 msgid "Rate:"
 msgstr "Βαθμός:"
 
-#: gui/common/tooltips.js:159
+#: gui/common/tooltips.js:194
 #, javascript-format
 msgid "%(attackLabel)s %(details)s, %(rate)s"
 msgstr "%(attackLabel)s %(details)s, %(rate)s"
 
-#: gui/common/tooltips.js:175
-#, javascript-format
-msgid ""
-"%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s "
-"(%(relative)s), %(rate)s"
-msgstr ""
-
-#: gui/common/tooltips.js:176
-#, javascript-format
-msgid ""
-"%(attackLabel)s %(damageTypes)s, %(rangeLabel)s %(rangeString)s, %(rate)s"
-msgstr ""
-
-#: gui/common/tooltips.js:181 gui/common/tooltips.js:517
+#: gui/common/tooltips.js:213 gui/common/tooltips.js:608
 msgid "Range:"
 msgstr "Απόσταση:"
 
-#: gui/common/tooltips.js:183
+#: gui/common/tooltips.js:216
 #, javascript-format
-msgid "%(range)s %(meters)s"
-msgid_plural "%(range)s %(meters)s"
-msgstr[0] ""
-msgstr[1] ""
+msgid "+%(number)s"
+msgstr "+%(number)s"
 
-#: gui/common/tooltips.js:185 gui/common/tooltips.js:519
+#. Translation: For example "0.5 to 1 meters", "1 (+1) meters" or "1 to 2 (+3)
+#. meters"
+#: gui/common/tooltips.js:220
+msgid "meters"
+msgstr "μέτρα"
+
+#: gui/common/tooltips.js:221 gui/common/tooltips.js:610
 msgid "meter"
 msgid_plural "meters"
 msgstr[0] "μέτρα"
 msgstr[1] "μέτρα"
 
-#: gui/common/tooltips.js:207
+#: gui/common/tooltips.js:241 gui/common/tooltips.js:296
+#: gui/common/tooltips.js:301 gui/common/tooltips.js:306
 #, javascript-format
-msgid "%(attackLabel)s %(damageTypes)s"
-msgstr ""
+msgid "%(label)s: %(value)s"
+msgstr "%(label)s: %(value)s"
 
-#: gui/common/tooltips.js:208
-msgid "Splash Damage:"
-msgstr ""
-
-#: gui/common/tooltips.js:211
+#: gui/common/tooltips.js:245
 #, javascript-format
 msgid "Friendly Fire: %(enabled)s"
-msgstr ""
+msgstr "Φίλια Πυρά: %(enabled)s"
 
-#: gui/common/tooltips.js:212 gui/options/options.js:275
-#: gui/options/options.js:342 gui/pregame/mainmenu.js:256
-#: gui/replaymenu/replay_actions.js:159 gui/savedgames/load.js:132
-#: gui/savedgames/load.js:181 gui/savedgames/save.js:63
-#: gui/savedgames/save.js:94 gui/summary/summary.js:156
-msgid "Yes"
-msgstr "Ναι"
-
-#: gui/common/tooltips.js:212 gui/options/options.js:275
-#: gui/options/options.js:342 gui/pregame/mainmenu.js:256
-#: gui/replaymenu/replay_actions.js:159 gui/savedgames/load.js:132
-#: gui/savedgames/load.js:181 gui/savedgames/save.js:63
-#: gui/savedgames/save.js:94 gui/summary/summary.js:156
-msgid "No"
-msgstr "Όχι"
-
-#: gui/common/tooltips.js:227
+#: gui/common/tooltips.js:261
 #, javascript-format
 msgid "%(label)s: %(garrisonLimit)s"
-msgstr ""
+msgstr "%(label)s: %(garrisonLimit)s"
 
-#: gui/common/tooltips.js:228
+#: gui/common/tooltips.js:262
 msgid "Garrison Limit"
-msgstr ""
+msgstr "Όρια Οχύρωσης"
 
-#: gui/common/tooltips.js:235
+#: gui/common/tooltips.js:269
 #, javascript-format
 msgid "%(healRateLabel)s %(value)s %(health)s / %(second)s"
-msgstr ""
+msgstr "%(healRateLabel)s %(value)s %(health)s / %(second)s"
 
-#: gui/common/tooltips.js:236 gui/common/tooltips.js:511
+#: gui/common/tooltips.js:270 gui/common/tooltips.js:602
 msgid "Heal:"
 msgstr "Θεραπεύω"
 
-#: gui/common/tooltips.js:238 gui/common/tooltips.js:287
-#: gui/common/tooltips.js:301
+#: gui/common/tooltips.js:272 gui/common/tooltips.js:321
+#: gui/common/tooltips.js:335
 msgid "Health"
-msgstr ""
+msgstr "Υγεία"
 
-#: gui/common/tooltips.js:262 gui/common/tooltips.js:267
-#: gui/common/tooltips.js:272
-#, javascript-format
-msgid "%(label)s: %(value)s"
-msgstr ""
-
-#: gui/common/tooltips.js:263
+#: gui/common/tooltips.js:297
 msgid "Projectile Limit"
-msgstr ""
+msgstr "Όριο Βλήματος"
 
-#: gui/common/tooltips.js:268
+#: gui/common/tooltips.js:302
 msgctxt "projectiles"
 msgid "Default"
-msgstr ""
+msgstr "Προεπιλογή"
 
-#: gui/common/tooltips.js:273
+#: gui/common/tooltips.js:307
 msgctxt "projectiles"
 msgid "Per Unit"
-msgstr ""
+msgstr "Ανά Μονάδα"
 
-#: gui/common/tooltips.js:284
+#: gui/common/tooltips.js:318
 #, javascript-format
 msgid "%(repairRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
-msgstr ""
+msgstr "%(repairRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
 
-#: gui/common/tooltips.js:285
+#: gui/common/tooltips.js:319
 msgid "Repair Rate:"
 msgstr "Συντελεστής Επιδιόρθωσης:"
 
-#: gui/common/tooltips.js:289 gui/common/tooltips.js:303
+#: gui/common/tooltips.js:323 gui/common/tooltips.js:337
 #: gui/summary/layout.js:61
 msgid "Worker"
 msgstr "Εργάτης"
 
-#: gui/common/tooltips.js:298
+#: gui/common/tooltips.js:332
 #, javascript-format
 msgid "%(buildRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
-msgstr ""
+msgstr "%(buildRateLabel)s %(value)s %(health)s / %(second)s / %(worker)s"
 
-#: gui/common/tooltips.js:299
+#: gui/common/tooltips.js:333
 msgid "Build Rate:"
 msgstr "Συντελεστής Χτισίματος:"
 
-#: gui/common/tooltips.js:335 gui/common/tooltips.js:463
+#: gui/common/tooltips.js:369 gui/common/tooltips.js:554
 #, javascript-format
 msgid "%(component)s %(cost)s"
 msgstr "%(component)s %(cost)s"
 
-#: gui/common/tooltips.js:348
+#: gui/common/tooltips.js:405
 msgid "Gather Rates:"
-msgstr ""
+msgstr "Συντελεστής Συγκομιδής:"
 
-#: gui/common/tooltips.js:351
+#: gui/common/tooltips.js:408 gui/common/tooltips.js:430
 #, javascript-format
 msgid "%(resourceIcon)s %(rate)s"
 msgstr "%(resourceIcon)s %(rate)s"
 
+#: gui/common/tooltips.js:426
+msgid "Resource Trickle:"
+msgstr "Διάχυση Πόρων:"
+
+#: gui/common/tooltips.js:427
+#, javascript-format
+msgid "%(resources)s / %(time)s"
+msgstr "%(resources)s / %(time)s"
+
 #. Translation: This string is part of the resources cost string on
 #. the tooltip for wall structures.
-#: gui/common/tooltips.js:400
+#: gui/common/tooltips.js:481
 #, javascript-format
 msgid "%(resourceIcon)s %(minimum)s to %(resourceIcon)s %(maximum)s"
 msgstr "%(resourceIcon)s %(minimum)s μέχρι %(resourceIcon)s %(maximum)s"
 
-#: gui/common/tooltips.js:429
+#: gui/common/tooltips.js:510
 #, javascript-format
 msgid "Walls:  %(costs)s"
 msgstr "Τείχη:  %(costs)s"
 
-#: gui/common/tooltips.js:430
+#: gui/common/tooltips.js:511
 #, javascript-format
 msgid "Towers:  %(costs)s"
 msgstr "Πύργοι: %(costs)s"
 
-#: gui/common/tooltips.js:446
+#: gui/common/tooltips.js:525
+#, javascript-format
+msgid "Requires %(technology)s"
+msgstr "Απαιτείται η τεχνολογία %(technology)s"
+
+#: gui/common/tooltips.js:537
 #, javascript-format
 msgid "%(label)s %(populationBonus)s"
 msgstr "%(label)s %(populationBonus)s"
 
-#: gui/common/tooltips.js:447
+#: gui/common/tooltips.js:538
 msgid "Population Bonus:"
 msgstr "Πληθυσμιακό Όφελος:"
 
-#: gui/common/tooltips.js:469
+#: gui/common/tooltips.js:560
 msgid "Insufficient resources:"
 msgstr "Μη επαρκείς πόροι"
 
-#: gui/common/tooltips.js:485
+#: gui/common/tooltips.js:576
 #, javascript-format
 msgid "%(label)s %(speeds)s"
 msgstr "%(label)s %(speeds)s"
 
-#: gui/common/tooltips.js:486
+#: gui/common/tooltips.js:577
 msgid "Speed:"
 msgstr "Ταχύτητα:"
 
-#: gui/common/tooltips.js:488 gui/common/tooltips.js:493
+#: gui/common/tooltips.js:579 gui/common/tooltips.js:584
 #, javascript-format
 msgid "%(speed)s %(movementType)s"
 msgstr "%(speed)s %(movementType)s"
 
-#: gui/common/tooltips.js:490
+#: gui/common/tooltips.js:581
 msgid "Walk"
 msgstr "Περπάτα"
 
-#: gui/common/tooltips.js:495
+#: gui/common/tooltips.js:586
 msgid "Run"
 msgstr "Τρέξε"
 
-#: gui/common/tooltips.js:510 gui/common/tooltips.js:516
-#: gui/common/tooltips.js:521
+#: gui/common/tooltips.js:601 gui/common/tooltips.js:607
+#: gui/common/tooltips.js:612
 #, javascript-format
 msgid "%(label)s %(val)s %(unit)s"
 msgid_plural "%(label)s %(val)s %(unit)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(label)s %(val)s %(unit)s"
+msgstr[1] "%(label)s %(val)s %(unit)s"
 
 #. Translation: Short for hit points (or health points) that are healed in one
 #. healing action
-#: gui/common/tooltips.js:514
+#: gui/common/tooltips.js:605
 msgid "HP"
 msgid_plural "HP"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Αντοχή"
+msgstr[1] "Αντοχή"
 
-#: gui/common/tooltips.js:535
+#: gui/common/tooltips.js:626
 #, javascript-format
 msgid "%(auralabel)s %(aurainfo)s"
-msgstr ""
+msgstr "%(auralabel)s %(aurainfo)s"
 
-#: gui/common/tooltips.js:536
+#: gui/common/tooltips.js:627
 #, javascript-format
 msgid "%(auraname)s:"
 msgstr "%(auraname)s:"
 
-#: gui/common/tooltips.js:552
+#: gui/common/tooltips.js:643
 #, javascript-format
 msgid "%(specificName)s (%(genericName)s)"
 msgstr "%(specificName)s (%(genericName)s)"
 
 #. Translation: Example: "Epibátēs Athēnaîos [font="sans-bold-16"](Athenian
 #. Marine)[/font]"
-#: gui/common/tooltips.js:564
+#: gui/common/tooltips.js:655
 #, javascript-format
 msgid "%(specificName)s %(fontStart)s(%(genericName)s)%(fontEnd)s"
-msgstr ""
+msgstr "%(specificName)s %(fontStart)s(%(genericName)s)%(fontEnd)s"
 
-#: gui/common/tooltips.js:579
+#: gui/common/tooltips.js:670
 msgid "Classes:"
 msgstr "Τάξεις:"
 
 #. Translation: %(component) will be the icon for the loot type and %(loot)
 #. will be the value.
-#: gui/common/tooltips.js:607
+#: gui/common/tooltips.js:698
 #, javascript-format
 msgid "%(component)s %(loot)s"
-msgstr ""
+msgstr "%(component)s %(loot)s"
 
-#: gui/common/tooltips.js:614
+#: gui/common/tooltips.js:708
 msgid "Loot:"
-msgstr ""
+msgstr "Λάφυρα:"
 
 #: gui/credits/credits.js:69
 #, javascript-format
 msgid "%(nick)s - %(name)s"
-msgstr ""
+msgstr "%(nick)s - %(name)s"
 
 #: gui/locale/locale_advanced.js:22 gui/locale/locale_advanced.js:77
 msgctxt "localeCountry"
@@ -1172,182 +1048,195 @@ msgstr "Καμία"
 msgid "<invalid>"
 msgstr "<invalid>"
 
-#: gui/msgbox/msgbox.js:25 gui/pregame/mainmenu.js:157
+#: gui/msgbox/msgbox.js:25 gui/pregame/mainmenu.js:163
 #: gui/splashscreen/splashscreen.xml:(caption):28
 msgid "OK"
 msgstr "ΟΚ"
 
-#: gui/options/options.js:273
+#: gui/options/options.js:277
 msgid ""
 "Resetting the options will erase your saved settings. Do you want to "
 "continue?"
-msgstr ""
+msgstr "Επαναφέροντας τις ρυθμίσεις θα διαγραφούν οι αποθηκευμένες ρυθμίσεις. Να συνεχιστεί;"
 
-#: gui/options/options.js:274 gui/options/options.js:341
-#: gui/savedgames/load.js:131
+#: gui/options/options.js:278 gui/options/options.js:345
+#: gui/savedgames/load.js:186
 msgid "Warning"
 msgstr "Προειδοποίηση"
 
-#: gui/options/options.js:340
+#: gui/options/options.js:344
 msgid "You have unsaved changes, do you want to close this window?"
 msgstr "Δεν έχετε αποθηκεύσει όλες τις αλλαγές, θέλετε να κλείσετε αυτό το παράθυρο;"
 
-#: gui/pregame/mainmenu.js:89
+#: gui/pregame/mainmenu.js:94
 msgid "connecting to server"
 msgstr "σύνδεση με διακομιστή"
 
-#: gui/pregame/mainmenu.js:92
+#: gui/pregame/mainmenu.js:97
 #, javascript-format
 msgid "uploading (%f%%)"
 msgstr "αποστολή (%f%%)"
 
-#: gui/pregame/mainmenu.js:98
+#: gui/pregame/mainmenu.js:103
 msgid "upload succeeded"
 msgstr "αποστολή επιτυχής"
 
-#: gui/pregame/mainmenu.js:100
+#: gui/pregame/mainmenu.js:105
 #, javascript-format
 msgid "upload failed (%(errorCode)s)"
-msgstr ""
+msgstr "το ανέβασμα απέτυχε (%(errorCode)s)"
 
-#: gui/pregame/mainmenu.js:104
+#: gui/pregame/mainmenu.js:109
 #, javascript-format
 msgid "upload failed (%(errorMessage)s)"
-msgstr ""
+msgstr "το ανέβασμα απέτυχε (%(errorMessage)s)"
 
-#: gui/pregame/mainmenu.js:106
+#: gui/pregame/mainmenu.js:111
 msgid "unknown"
 msgstr "άγνωστο"
 
-#: gui/pregame/mainmenu.js:146
+#: gui/pregame/mainmenu.js:126
+msgid "Thank you for helping improve 0 A.D.!"
+msgstr "Σας ευχαριστούμε για τη συμβολή σας στη βελτίωση του 0 A.D.!"
+
+#: gui/pregame/mainmenu.js:127
+msgid "Anonymous feedback is currently enabled."
+msgstr "Η αποστολή ανώνυμων πληροφοριών είναι προς το παρόν ενεργοποιημένη."
+
+#: gui/pregame/mainmenu.js:128
+#, javascript-format
+msgid "Status: %(status)s."
+msgstr "Κατάσταση: %(status)s."
+
+#: gui/pregame/mainmenu.js:152
 #, javascript-format
 msgid ""
 "%(startWarning)sWarning:%(endWarning)s You appear to be using non-shader "
 "(fixed function) graphics. This option will be removed in a future 0 A.D. "
 "release, to allow for more advanced graphics features. We advise upgrading "
 "your graphics card to a more recent, shader-compatible model."
-msgstr ""
+msgstr "%(startWarning)sΠροειδοποίηση:%(endWarning)s Φαίνεται ότι το σύστημα απεικόνισης της κάρτας γραφικών σας δεν χρησιμοποιεί shaders (είναι τύπου \"fixed function\"). Αυτή η επιλογή θα καταργηθεί σε κάποια μελλοντική έκδοση του 0 A.D., προκειμένου να είναι δυνατή η χρήση πιο σύνθετων δυνατοτήτων γραφικών. Σας συνιστούμε να αναβαθμίσετε την κάρτα γραφικών σας σε κάποιο πιο σύγχρονο μοντέλο, συμβατό με shaders."
 
 #. Translation: This is the second paragraph of a warning. The
 #. warning explains that the user is using “non-shader“ graphics,
 #. and that in the future this will not be supported by the game, so
 #. the user will need a better graphics card.
-#: gui/pregame/mainmenu.js:155
+#: gui/pregame/mainmenu.js:161
 msgid "Please press \"Read More\" for more information or \"OK\" to continue."
 msgstr "Πατήστε \"Περισσότερα\" για περισσότερες πληροφορίες ή \"OK\" για να συνεχίσετε."
 
-#: gui/pregame/mainmenu.js:156
+#: gui/pregame/mainmenu.js:162
 msgid "WARNING!"
 msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ!"
 
-#: gui/pregame/mainmenu.js:157
+#: gui/pregame/mainmenu.js:163
 msgid "Read More"
 msgstr "Διαβάστε περισσότερα"
 
-#: gui/pregame/mainmenu.js:242
+#: gui/pregame/mainmenu.js:248
 #, javascript-format
 msgid "Build: %(buildDate)s (%(revision)s)"
 msgstr "Έκδοση: %(buildDate)s (%(revision)s)"
 
-#: gui/pregame/mainmenu.js:254
+#: gui/pregame/mainmenu.js:260
 msgid "Are you sure you want to quit 0 A.D.?"
 msgstr "Θέλετε σίγουρα να αποχωρήσετε από το 0 A.D.;"
 
-#: gui/pregame/mainmenu.js:255 gui/summary/summary.js:155
+#: gui/pregame/mainmenu.js:261 gui/summary/summary.js:145
 msgid "Confirmation"
 msgstr "Επιβεβαίωση"
 
-#: gui/pregame/mainmenu.js:270
+#: gui/pregame/mainmenu.js:276
 msgid ""
 "The scenario editor is not available or failed to load. See the game logs "
 "for additional information."
 msgstr "Ο Επεξεργαστής Σεναρίων δεν είναι διαθέσιμος ή η φόρτωσή του απέτυχε.Κοιτάξτε τις εγγραφές παιχνιδιού για περισσότερες πληροφορίες."
 
-#: gui/pregame/mainmenu.js:271 gui/replaymenu/replay_actions.js:116
+#: gui/pregame/mainmenu.js:277 gui/replaymenu/replay_actions.js:116
 msgid "Error"
 msgstr "Σφάλμα"
 
-#: gui/pregame/mainmenu.js:277
+#: gui/pregame/mainmenu.js:283
 msgid "Launch the multiplayer lobby. \\[DISABLED BY BUILD]"
 msgstr "Εκκίνηση του λόμπι πολλαπλών παικτών. \\[DISABLED BY BUILD]"
 
-#: gui/pregame/mainmenu.js:282 gui/pregame/mainmenu.xml:(caption):72
-#: gui/pregame/mainmenu.xml:(caption):103
+#: gui/pregame/mainmenu.js:288 gui/pregame/mainmenu.xml:(caption):72
+#: gui/pregame/mainmenu.xml:(caption):94
 msgid "Technical Details"
 msgstr "Τεχνικές λεπτομέριες"
 
-#: gui/pregame/mainmenu.js:287 gui/pregame/mainmenu.xml:(caption):149
+#: gui/pregame/mainmenu.js:293 gui/pregame/mainmenu.xml:(caption):140
 msgid "Manual"
 msgstr "Εγχειρίδιο χρήσης"
 
 #: gui/replaymenu/replay_actions.js:88
 msgid "You don't have the same mods active as the replay does."
-msgstr ""
+msgstr "Δεν είναι ενεργά τα ίδια mod με αυτά της επανάληψης."
 
-#: gui/replaymenu/replay_actions.js:89 gui/savedgames/load.js:118
+#: gui/replaymenu/replay_actions.js:89 gui/savedgames/load.js:173
 #, javascript-format
 msgid "Required: %(mods)s"
-msgstr ""
+msgstr "Απαιτείται: %(mods)s"
 
-#: gui/replaymenu/replay_actions.js:90 gui/savedgames/load.js:121
+#: gui/replaymenu/replay_actions.js:90 gui/savedgames/load.js:176
 #, javascript-format
 msgid "Active: %(mods)s"
-msgstr ""
+msgstr "Ενεργοποίηση: %(mods)s"
 
 #: gui/replaymenu/replay_actions.js:94
 msgid "This replay is not compatible with your version of the game!"
-msgstr ""
+msgstr "Αυτή η επανάληψη δεν είναι συμβατή με την έκδοση του παιχνιδιού!"
 
 #: gui/replaymenu/replay_actions.js:95
 #, javascript-format
 msgid "Your version: %(version)s"
-msgstr ""
+msgstr "Τρέχων έκδοση: %(version)s"
 
 #: gui/replaymenu/replay_actions.js:96
 #, javascript-format
 msgid "Required version: %(version)s"
-msgstr ""
+msgstr "Απαιτείται η έκδοση: %(version)s"
 
 #: gui/replaymenu/replay_actions.js:99
 msgid "Incompatible replay"
-msgstr ""
+msgstr "Ασυμβίβαστη επανάληψη"
 
 #: gui/replaymenu/replay_actions.js:116
 msgid "No summary data available."
-msgstr ""
+msgstr "Δεν υπάρχουν διαθέσιμα συνοπτικά δεδομένα."
 
 #: gui/replaymenu/replay_actions.js:157
 msgid "Are you sure you want to delete this replay permanently?"
-msgstr ""
+msgstr "Θέλετε να σβήσετε αυτή την επανάληψη μόνιμα;"
 
 #: gui/replaymenu/replay_actions.js:158
 msgid "Delete replay"
-msgstr ""
+msgstr "Διαγραφή επανάληψης"
 
 #: gui/replaymenu/replay_filters.js:50
 msgctxt "datetime"
 msgid "Any"
-msgstr ""
+msgstr "Οποιαδήποτε"
 
 #: gui/replaymenu/replay_filters.js:66
 msgctxt "map size"
 msgid "Any"
-msgstr ""
+msgstr "Οποιοδήποτε"
 
 #: gui/replaymenu/replay_filters.js:82
 msgctxt "map name"
 msgid "Any"
-msgstr ""
+msgstr "Οποιοδήποτε"
 
 #: gui/replaymenu/replay_filters.js:98
 msgctxt "population capacity"
 msgid "Any"
-msgstr ""
+msgstr "Οποιοδήποτε"
 
 #: gui/replaymenu/replay_filters.js:117
 msgctxt "duration"
 msgid "Any"
-msgstr ""
+msgstr "Οποιαδήποτε"
 
 #. Translation: Shorter duration than max minutes.
 #: gui/replaymenu/replay_filters.js:121
@@ -1355,8 +1244,8 @@ msgstr ""
 msgctxt "duration filter"
 msgid "< %(max)s min"
 msgid_plural "< %(max)s min"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "< %(max)s λεπτό"
+msgstr[1] "< %(max)s λεπτά"
 
 #. Translation: Longer duration than min minutes.
 #: gui/replaymenu/replay_filters.js:125
@@ -1364,126 +1253,117 @@ msgstr[1] ""
 msgctxt "duration filter"
 msgid "> %(min)s min"
 msgid_plural "> %(min)s min"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "> %(min)s λεπτό"
+msgstr[1] "> %(min)s λεπτά"
 
 #. Translation: Duration between min and max minutes.
 #: gui/replaymenu/replay_filters.js:128
 #, javascript-format
 msgctxt "duration filter"
 msgid "%(min)s - %(max)s min"
-msgstr ""
+msgstr "%(min)s - %(max)s λεπτά"
 
 #: gui/replaymenu/replay_filters.js:142
 msgid "Single- and multiplayer"
-msgstr ""
+msgstr "Παιχνίδι ενός και πολλών παιχτών"
 
-#: gui/replaymenu/replay_filters.js:142 gui/pregame/mainmenu.xml:(caption):467
+#: gui/replaymenu/replay_filters.js:142 gui/pregame/mainmenu.xml:(caption):458
 msgid "Single Player"
 msgstr "Παιχνίδι για έναν παίκτη"
 
-#: gui/replaymenu/replay_filters.js:142 gui/pregame/mainmenu.xml:(caption):482
+#: gui/replaymenu/replay_filters.js:142 gui/pregame/mainmenu.xml:(caption):473
 msgid "Multiplayer"
 msgstr "Παιχνίδι για πολλούς παίκτες"
 
 #: gui/replaymenu/replay_filters.js:155
 msgctxt "victory condition"
 msgid "Any gametype"
-msgstr ""
+msgstr "Οποιοσδήποτε τύπος παιχνιδιού"
 
 #: gui/replaymenu/replay_filters.js:168
 msgid "Rated and unrated games"
-msgstr ""
+msgstr "Βαθμολογημένα και αβαθμολόγητα παιχνίδια"
 
 #: gui/replaymenu/replay_filters.js:168
 msgid "Rated games"
-msgstr ""
+msgstr "Βαθμολογημένα παιχνίδια"
 
 #: gui/replaymenu/replay_filters.js:168
 msgid "Unrated games"
-msgstr ""
+msgstr "Αβαθμολόγητα παιχνίδια"
 
-#: gui/replaymenu/replay_menu.js:192
+#: gui/replaymenu/replay_menu.js:190
 msgid "Filter replays by typing one or more, partial or complete playernames."
-msgstr ""
+msgstr "Φιλτράρετε τις επαναλήψεις πληκτρολογώντας ένα ή περισσότερα, μερικά ή πλήρη ονόματα παιχτών."
 
-#: gui/replaymenu/replay_menu.js:303
+#: gui/replaymenu/replay_menu.js:268
+#, javascript-format
+msgid "Players: %(numberOfPlayers)s"
+msgstr "Παίχτης: %(numberOfPlayers)s"
+
+#: gui/replaymenu/replay_menu.js:294
 msgid "yyyy-MM-dd HH:mm"
-msgstr "εεεε-ΜΜ-ηη ΩΩ:λλ:δδ"
+msgstr "yyyy-MM-dd HH:mm"
 
-#: gui/replaymenu/replay_menu.js:333
+#: gui/replaymenu/replay_menu.js:324
 msgid "yyyy-MM"
-msgstr "εεεε-ΜΜ"
+msgstr "yyyy-MM"
 
-#: gui/savedgames/load.js:15 gui/savedgames/save.js:28
-msgid "No saved games found"
-msgstr "Δεν βρέθηκαν αποθηκευμένα παιχνίδια"
-
-#: gui/savedgames/load.js:63
+#: gui/savedgames/load.js:118
 #, javascript-format
 msgid "Mods: %(mods)s"
-msgstr ""
+msgstr "Mods: %(mods)s"
 
-#: gui/savedgames/load.js:93
+#: gui/savedgames/load.js:148
 msgid "This saved game may not be compatible:"
 msgstr "Αυτό το αποθηκευμένο παιχνίδι ίσως να μήν είναι συμβατό:"
 
-#: gui/savedgames/load.js:98
+#: gui/savedgames/load.js:153
 #, javascript-format
 msgid ""
 "It needs 0 A.D. version %(requiredVersion)s, while you are running version "
 "%(currentVersion)s."
-msgstr ""
+msgstr "Χρειάζεται η έκδοση %(requiredVersion)s του 0 A.D., ενώ τρέχει η έκδοση %(currentVersion)s."
 
-#: gui/savedgames/load.js:103
+#: gui/savedgames/load.js:158
 msgid "It needs an older version of 0 A.D."
-msgstr ""
+msgstr "Χρειάζεται μία παλαιότερη έκδοση του 0 A.D."
 
-#: gui/savedgames/load.js:107
+#: gui/savedgames/load.js:162
 #, javascript-format
 msgid ""
 "It needs 0 A.D. savegame version %(requiredVersion)s, while you have "
 "savegame version %(currentVersion)s."
-msgstr ""
+msgstr "Χρειάζεται η έκδοση για το σωσμένο παιχνίδι %(requiredVersion)s του 0 A.D., ενώ έχει σωθεί στην έκδοση %(currentVersion)s."
 
-#: gui/savedgames/load.js:117
+#: gui/savedgames/load.js:172
 msgid "The savegame needs a different set of mods:"
-msgstr ""
+msgstr "Το σωσμένο παιχνίδι χρειάζεται ένα διαφορετικό σύνολο από mods:"
 
-#: gui/savedgames/load.js:126
+#: gui/savedgames/load.js:181
 msgid "Do you still want to proceed?"
 msgstr "Θέλετε ακόμα να συνεχίσετε?"
 
-#: gui/savedgames/load.js:177 gui/savedgames/save.js:60
-#: gui/savedgames/save.js:91
-#, javascript-format
-msgid "\"%(label)s\""
-msgstr "\"%(label)s\""
+#: gui/savedgames/save.js:30
+msgid "No saved games found"
+msgstr "Δεν βρέθηκαν αποθηκευμένα παιχνίδια"
 
-#: gui/savedgames/load.js:179 gui/savedgames/save.js:92
-msgid "Saved game will be permanently deleted, are you sure?"
-msgstr ""
-
-#: gui/savedgames/load.js:180 gui/savedgames/save.js:93
-msgid "DELETE"
-msgstr "ΔΙΑΓΡΑΦΗ"
-
-#: gui/savedgames/save.js:61
+#: gui/savedgames/save.js:64
 msgid "Saved game will be permanently overwritten, are you sure?"
-msgstr ""
+msgstr "Το σωσμένο παιχνίδι θα αντικατασταθεί μόνιμα, είστε σίγουρος;"
 
-#: gui/savedgames/save.js:62
+#: gui/savedgames/save.js:65
 msgid "OVERWRITE SAVE"
-msgstr ""
+msgstr "ΑΝΤΙΚΑΤΑΣΤΑΣΗ ΣΩΣΜΕΝΟΥ ΠΑΙΧΝΙΔΙΟΥ"
 
-#: gui/structree/load.js:171
+#: gui/structree/load.js:114
 #, javascript-format
 msgid "%(val1)s to %(val2)s"
 msgstr "%(val1)s σε %(val2)s"
 
 #: gui/summary/layout.js:4 gui/summary/layout.js:21 gui/summary/layout.js:58
-#: gui/summary/layout.js:97 gui/summary/layout.js:140
-#: gui/summary/layout.js:161 gui/summary/summary.xml:(caption):104
+#: gui/summary/layout.js:97 gui/summary/layout.js:142
+#: gui/summary/layout.js:172 gui/summary/summary.xml:(caption):105
 msgid "Player name"
 msgstr "Όνομα παίκτη"
 
@@ -1503,7 +1383,7 @@ msgstr "Βαθμολογία εξερεύνησης"
 msgid "Total score"
 msgstr "Συνολική Βαθμολογία"
 
-#: gui/summary/layout.js:22 gui/summary/layout.js:59 gui/summary/layout.js:102
+#: gui/summary/layout.js:22 gui/summary/layout.js:59 gui/summary/layout.js:103
 msgid "Total"
 msgstr "Ολικό"
 
@@ -1540,23 +1420,23 @@ msgstr "Θαύματα"
 msgid ""
 "Buildings Statistics (%(constructed)s / %(destroyed)s / %(captured)s / "
 "%(lost)s)"
-msgstr ""
+msgstr "Στατιστικά Κτιρίων (%(constructed)s / %(destroyed)s / %(captured)s / %(lost)s)"
 
 #: gui/summary/layout.js:35
 msgid "Constructed"
-msgstr ""
+msgstr "Κατασκευάστηκαν"
 
 #: gui/summary/layout.js:36
 msgid "Destroyed"
-msgstr ""
+msgstr "Καταστράφηκαν"
 
 #: gui/summary/layout.js:37 gui/summary/layout.js:75
 msgid "Captured"
-msgstr ""
+msgstr "Καταλήφθηκαν"
 
 #: gui/summary/layout.js:38 gui/summary/layout.js:76
 msgid "Lost"
-msgstr ""
+msgstr "Χάθηκαν"
 
 #: gui/summary/layout.js:60
 msgid "Infantry"
@@ -1572,7 +1452,7 @@ msgstr "Πρωταθλητής"
 
 #: gui/summary/layout.js:65
 msgid "Siege"
-msgstr ""
+msgstr "Πολιορκήθηκαν "
 
 #: gui/summary/layout.js:66
 msgid "Navy"
@@ -1585,176 +1465,142 @@ msgstr "Εμπόροι"
 #: gui/summary/layout.js:71
 #, javascript-format
 msgid "Units Statistics (%(trained)s / %(killed)s / %(captured)s / %(lost)s)"
-msgstr ""
+msgstr "Στατιστικά Μονάδων (%(trained)s / %(killed)s / %(captured)s / %(lost)s)"
 
 #: gui/summary/layout.js:73
 msgid "Trained"
-msgstr ""
+msgstr "Εκπαιδεύτηκαν"
 
 #: gui/summary/layout.js:74
 msgid "Killed"
-msgstr ""
+msgstr "Φονεύθηκαν"
 
-#: gui/summary/layout.js:98
-msgid "Food"
-msgstr "Τροφή"
-
-#: gui/summary/layout.js:99
-msgid "Wood"
-msgstr "Ξυλεία"
-
-#: gui/summary/layout.js:100
-msgid "Stone"
-msgstr "Πέτρα"
-
-#: gui/summary/layout.js:101
-msgid "Metal"
-msgstr "Μέταλλο"
-
-#: gui/summary/layout.js:104
+#: gui/summary/layout.js:105
 #, javascript-format
 msgid ""
 "Tributes \n"
 "(%(sent)s / %(received)s)"
-msgstr ""
-
-#: gui/summary/layout.js:106
-msgid "Sent"
-msgstr ""
+msgstr "Αφιερώματα\n(%(sent)s / %(received)s)"
 
 #: gui/summary/layout.js:107
-msgid "Received"
-msgstr ""
+msgid "Sent"
+msgstr "Στάλθηκαν"
 
-#: gui/summary/layout.js:112
+#: gui/summary/layout.js:108
+msgid "Received"
+msgstr "Ελήφθησαν"
+
+#: gui/summary/layout.js:113
 msgid "Treasures collected"
 msgstr "Θησαυροί που έχουν συλλεχθεί"
 
-#: gui/summary/layout.js:113
+#: gui/summary/layout.js:114
 msgid "Loot"
 msgstr "Λεηλασία"
 
-#: gui/summary/layout.js:117
+#: gui/summary/layout.js:118
 #, javascript-format
 msgid "Resource Statistics (%(gathered)s / %(used)s)"
-msgstr ""
-
-#: gui/summary/layout.js:119
-msgid "Gathered"
-msgstr ""
+msgstr "Στατιστικά Πώρων (%(gathered)s / %(used)s)"
 
 #: gui/summary/layout.js:120
+msgid "Gathered"
+msgstr "Συγκομιδή"
+
+#: gui/summary/layout.js:121
 msgid "Used"
-msgstr ""
+msgstr "Χρησιμοποιήθηκαν"
 
-#: gui/summary/layout.js:141
-msgid "Food exchanged"
-msgstr ""
+#. Translation: use %(resourceWithinSentence)s if needed
+#: gui/summary/layout.js:147
+#, javascript-format
+msgid "%(resourceFirstWord)s exchanged"
+msgstr "%(resourceFirstWord)s ανταλλάχθηκαν"
 
-#: gui/summary/layout.js:142
-msgid "Wood exchanged"
-msgstr "Ανταλλαχθηκε Ξύλο."
-
-#: gui/summary/layout.js:143
-msgid "Stone exchanged"
-msgstr "Ανταλλαχθηκε Πέτρα."
-
-#: gui/summary/layout.js:144
-msgid "Metal exchanged"
-msgstr "Ανταλλαχθηκε Μέταλλο"
-
-#: gui/summary/layout.js:145
+#: gui/summary/layout.js:155
 msgid "Barter efficiency"
-msgstr ""
+msgstr "Αποτελεσματικότητα ανταλλαγών"
 
-#: gui/summary/layout.js:146
+#: gui/summary/layout.js:156
 msgid "Trade income"
 msgstr "Εμπορικό κέρδος"
 
-#: gui/summary/layout.js:162
+#: gui/summary/layout.js:173
 msgid ""
 "Vegetarian\n"
 "ratio"
-msgstr ""
+msgstr "Χορτοφάγος\nαναλογία"
 
-#: gui/summary/layout.js:163
+#: gui/summary/layout.js:174
 msgid "Feminization"
-msgstr ""
+msgstr "Θηλυκοποίηση"
 
-#: gui/summary/layout.js:164
+#: gui/summary/layout.js:175
 msgid ""
 "Kill / Death\n"
 "ratio"
 msgstr "Kill / Death\nαναλογία"
 
-#: gui/summary/layout.js:165
+#: gui/summary/layout.js:176
 msgid ""
 "Map\n"
 "exploration"
 msgstr "Εξερεύνηση\nΧάρτη"
 
-#: gui/summary/layout.js:166
+#: gui/summary/layout.js:177
 msgid "At peak"
 msgstr "Στην κορυφή "
 
-#: gui/summary/layout.js:167
+#: gui/summary/layout.js:178
 msgid "At finish"
 msgstr "Στο τέλος"
 
-#: gui/summary/layout.js:170
+#: gui/summary/layout.js:181
 msgid "Map control"
-msgstr ""
+msgstr "Έλεγχος χάρτη"
 
-#: gui/summary/layout.js:315
+#: gui/summary/layout.js:326
 msgid "Team total"
-msgstr ""
+msgstr "Σύνολο ομάδας"
 
-#: gui/summary/summary.js:125
-msgid "Victory"
-msgstr ""
-
-#: gui/summary/summary.js:130
-msgid "Defeated"
-msgstr ""
-
-#: gui/summary/summary.js:154
+#: gui/summary/summary.js:144
 msgid "Are you sure you want to quit the lobby?"
-msgstr ""
+msgstr "Θέλετε σίγουρα να βγείτε από το λόμπι;"
+
+#: gui/summary/summary.js:195
+msgid "Current Scores"
+msgstr "Τρέχων Βαθμολογία"
+
+#: gui/summary/summary.js:197
+msgid "Scores at the end of the game."
+msgstr "Βαθμολογίες με τη λήξη του παιχνιδιού."
+
+#: gui/summary/summary.js:199
+msgid "You have been disconnected."
+msgstr "Αποσυνδεθήκατε."
+
+#: gui/summary/summary.js:201
+msgid "You have left the game."
+msgstr "Αποχώρησες από το παιχνίδι."
+
+#: gui/summary/summary.js:203
+msgid "You have won the battle!"
+msgstr "Κερδίσατε τη μάχη!"
 
 #: gui/summary/summary.js:205
-msgid "Current Scores"
-msgstr ""
+msgid "You have been defeated..."
+msgstr "Ηττηθήκατε..."
 
-#: gui/summary/summary.js:207
-msgid "Scores at the end of the game."
-msgstr ""
-
-#: gui/summary/summary.js:209
-msgid "You have been disconnected."
-msgstr ""
+#: gui/summary/summary.js:206
+msgid "You have abandoned the game."
+msgstr "Εγκαταλείψατε το παιχνίδι."
 
 #: gui/summary/summary.js:211
-msgid "You have left the game."
-msgstr ""
-
-#: gui/summary/summary.js:213
-msgid "You have won the battle!"
-msgstr ""
-
-#: gui/summary/summary.js:215
-msgid "You have been defeated..."
-msgstr ""
-
-#: gui/summary/summary.js:216
-msgid "You have abandoned the game."
-msgstr ""
-
-#: gui/summary/summary.js:221
 #, javascript-format
 msgid "Game time elapsed: %(time)s"
-msgstr ""
+msgstr "Χρόνος παιχνιδιού που έχει παρέλθει: %(time)s"
 
-#: gui/summary/summary.js:229
+#: gui/summary/summary.js:219
 #, javascript-format
 msgid "%(mapName)s - %(mapType)s"
 msgstr "%(mapName)s - %(mapType)s"
@@ -1768,18 +1614,18 @@ msgid "Civilization Selection"
 msgstr "Επιλογή Πολιτισμού"
 
 #: gui/civinfo/civinfo.xml:(caption):119 gui/credits/credits.xml:(caption):36
-#: gui/options/options.xml:(caption):88
-#: gui/structree/structree.xml:(caption):120
+#: gui/options/options.xml:(caption):101
+#: gui/structree/structree.xml:(caption):124
 msgid "Close"
 msgstr "Κλείσιμο"
 
 #: gui/credits/credits.xml:(caption):18
 msgid "0 A.D. Credits"
-msgstr ""
+msgstr "Συντελεστές του 0 A.D."
 
 #: gui/locale/locale.xml:(caption):14
 #: gui/locale/locale_advanced.xml:(caption):14
-#: gui/pregame/mainmenu.xml:(caption):339
+#: gui/pregame/mainmenu.xml:(caption):330
 msgid "Language"
 msgstr "Γλώσσα"
 
@@ -1798,7 +1644,7 @@ msgstr "Περιοχή:"
 
 #: gui/locale/locale.xml:(caption):36
 #: gui/locale/locale_advanced.xml:(caption):65
-#: gui/savedgames/load.xml:(caption):29 gui/savedgames/save.xml:(caption):38
+#: gui/savedgames/load.xml:(caption):61 gui/savedgames/save.xml:(caption):38
 msgid "Cancel"
 msgstr "Ακύρωση"
 
@@ -1821,19 +1667,19 @@ msgstr "Σενάριο:"
 
 #: gui/locale/locale_advanced.xml:(caption):41
 msgid "Variant (unused):"
-msgstr ""
+msgstr "Παραλλαγές (αχρησιμοποίητες):"
 
 #: gui/locale/locale_advanced.xml:(caption):48
 msgid "Keywords (unused):"
-msgstr ""
+msgstr "Λέξεις-κλειδιά (αχρησιμοποίητες):"
 
 #: gui/locale/locale_advanced.xml:(caption):55
 msgid "Resulting locale:"
-msgstr ""
+msgstr "Αποτελέσματα μετάφρασης:"
 
 #: gui/locale/locale_advanced.xml:(caption):60
 msgid "Dictionary files used:"
-msgstr ""
+msgstr "Αρχεία λεξικού που χρησιμοποιήθηκαν:"
 
 #: gui/locale/locale_advanced.xml:(caption):70
 msgid "Auto detect"
@@ -1843,7 +1689,7 @@ msgstr "Αυτόματος εντοπισμός"
 msgid ""
 "Optional four-letter script code part following the language code (as listed"
 " in ISO 15924)"
-msgstr ""
+msgstr "Προαιρετικά ο τετραψήφιος κώδικας σεναρίου ακολουθεί τον κώδικα γλώσσας (όπως αναφέρεται στο πρότυπο ISO 15924)"
 
 #: gui/locale/locale_advanced.xml:(tooltip):44
 #: gui/locale/locale_advanced.xml:(tooltip):51
@@ -1870,33 +1716,37 @@ msgstr "Ρυθμίσεις Ήχου"
 msgid "Lobby Settings"
 msgstr "Ρυθμίσεις Λόμπι"
 
-#: gui/options/options.xml:(caption):73
+#: gui/options/options.xml:(caption):74
+msgid "Chat Notification Settings"
+msgstr "Ρυθμίσεις Ειδοποιήσεων Συνομιλίας"
+
+#: gui/options/options.xml:(caption):86
 msgid "Reset"
-msgstr ""
+msgstr "Επαναφορά"
 
-#: gui/options/options.xml:(caption):78
+#: gui/options/options.xml:(caption):91
 msgid "Revert"
-msgstr ""
+msgstr "Επαναφορά"
 
-#: gui/options/options.xml:(caption):83 gui/savedgames/save.xml:(caption):48
+#: gui/options/options.xml:(caption):96 gui/savedgames/save.xml:(caption):48
 msgid "Save"
 msgstr "Αποθήκευση"
 
-#: gui/options/options.xml:(tooltip):74
+#: gui/options/options.xml:(tooltip):87
 msgid "Resets user settings to their game default"
-msgstr ""
+msgstr "Επαναφορά τον ρυθμίσεων του χρήστη στις προεπιλογές του παιχνιδιού"
 
-#: gui/options/options.xml:(tooltip):79
+#: gui/options/options.xml:(tooltip):92
 msgid "Reverts to previous saved settings"
-msgstr ""
+msgstr "Επαναφορά στις προηγούμενες αποθηκευμένες ρυθμίσεις"
 
-#: gui/options/options.xml:(tooltip):84
+#: gui/options/options.xml:(tooltip):97
 msgid "Saves changes"
-msgstr ""
+msgstr "Αποθήκευση αλλαγών"
 
-#: gui/options/options.xml:(tooltip):89
+#: gui/options/options.xml:(tooltip):102
 msgid "Unsaved changes affect this session only"
-msgstr ""
+msgstr "Οι μη αποθηκευμένες αλλαγές επηρεάζουν αυτή τη συνεδρία μόνο"
 
 #: gui/pregame/mainmenu.xml:62
 msgid "Help improve 0 A.D.!"
@@ -1908,23 +1758,11 @@ msgid ""
 " and improve performance and compatibility."
 msgstr "Μπορείτε να μας στέλνετε αυτόματα ανώνυμες πληροφορίες που θα μας βοηθήσουν στη διόρθωση των σφαλμάτων κώδικα, καθώς και στη βελτίωση της απόδοσης και της συμβατότητας του παιχνιδιού."
 
-#: gui/pregame/mainmenu.xml:90
-msgid "Thank you for helping improve 0 A.D.!"
-msgstr "Σας ευχαριστούμε για τη συμβολή σας στη βελτίωση του 0 A.D.!"
-
-#: gui/pregame/mainmenu.xml:92
-msgid "Anonymous feedback is currently enabled."
-msgstr "Η αποστολή ανώνυμων πληροφοριών είναι προς το παρόν ενεργοποιημένη."
-
-#: gui/pregame/mainmenu.xml:94
-msgid "Status: $status."
-msgstr "Κατάσταση: $status."
-
-#: gui/pregame/mainmenu.xml:535
+#: gui/pregame/mainmenu.xml:526
 msgid "Alpha XXI: Ulysses"
-msgstr ""
+msgstr "Άλφα XXI: Οδυσσέας"
 
-#: gui/pregame/mainmenu.xml:537
+#: gui/pregame/mainmenu.xml:528
 msgid ""
 "WARNING: This is an early development version of the game. Many features "
 "have not been added yet."
@@ -1934,295 +1772,314 @@ msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Το παιχνίδι βρίσκεται α�
 msgid "Enable Feedback"
 msgstr "Ενεργοποίηση Ανάδρασης"
 
-#: gui/pregame/mainmenu.xml:(caption):99
+#: gui/pregame/mainmenu.xml:(caption):90
 msgid "Disable Feedback"
 msgstr "Απενεργοποίηση αποστολής πληροφοριών"
 
-#: gui/pregame/mainmenu.xml:(caption):166
+#: gui/pregame/mainmenu.xml:(caption):157
 #: gui/structree/structree.xml:(caption):18
 msgid "Structure Tree"
 msgstr "Δέντρο κατασκευής"
 
-#: gui/pregame/mainmenu.xml:(caption):183
+#: gui/pregame/mainmenu.xml:(caption):174
 msgid "History"
 msgstr "Ιστορία"
 
-#: gui/pregame/mainmenu.xml:(caption):208
+#: gui/pregame/mainmenu.xml:(caption):199
 msgid "Matches"
 msgstr "Αναμετρήσεις"
 
-#: gui/pregame/mainmenu.xml:(caption):222
+#: gui/pregame/mainmenu.xml:(caption):213
 msgid "Campaigns"
 msgstr "Εκστρατείες"
 
-#: gui/pregame/mainmenu.xml:(caption):239 gui/savedgames/load.xml:(caption):20
+#: gui/pregame/mainmenu.xml:(caption):230 gui/savedgames/load.xml:(caption):20
 msgid "Load Game"
 msgstr "Φόρτωση παιχνιδιού"
 
 #. Join a game by specifying the host's IP address.
-#: gui/pregame/mainmenu.xml:(caption):262
+#: gui/pregame/mainmenu.xml:(caption):253
 msgid "Join Game"
 msgstr "Συμμετοχή στο παιχνίδι"
 
-#: gui/pregame/mainmenu.xml:(caption):277
+#: gui/pregame/mainmenu.xml:(caption):268
 msgid "Host Game"
 msgstr "Φιλοξενία παιχνιδιού"
 
-#: gui/pregame/mainmenu.xml:(caption):292
+#: gui/pregame/mainmenu.xml:(caption):283
 msgid "Game Lobby"
 msgstr "Λόμπι Παιχνιδιού"
 
-#: gui/pregame/mainmenu.xml:(caption):322
+#: gui/pregame/mainmenu.xml:(caption):313
 msgid "Options"
 msgstr "Επιλογές"
 
-#: gui/pregame/mainmenu.xml:(caption):355
+#: gui/pregame/mainmenu.xml:(caption):346
 msgid "Replays"
-msgstr ""
+msgstr "Επαναλήψεις"
 
-#: gui/pregame/mainmenu.xml:(caption):369
+#: gui/pregame/mainmenu.xml:(caption):360
 msgid "Scenario Editor"
 msgstr "Επεξεργαστής Σεναρίων"
 
-#: gui/pregame/mainmenu.xml:(caption):382
+#: gui/pregame/mainmenu.xml:(caption):373
 msgid "Welcome Screen"
 msgstr "Οθόνη Καλωσορίσματος"
 
-#: gui/pregame/mainmenu.xml:(caption):397
+#: gui/pregame/mainmenu.xml:(caption):388
 msgid "Mod Selection"
-msgstr ""
+msgstr "Επιλογή Mod"
 
-#: gui/pregame/mainmenu.xml:(caption):452
+#: gui/pregame/mainmenu.xml:(caption):443
 msgid "Learn To Play"
 msgstr "Μάθετε πώς παίζεται"
 
-#: gui/pregame/mainmenu.xml:(caption):497
+#: gui/pregame/mainmenu.xml:(caption):488
 msgid "Tools & Options"
 msgstr "Εργαλεία & Επιλογές"
 
-#: gui/pregame/mainmenu.xml:(caption):512
+#: gui/pregame/mainmenu.xml:(caption):503
 msgid "Exit"
 msgstr "Έξοδος"
 
-#: gui/pregame/mainmenu.xml:(caption):547
+#: gui/pregame/mainmenu.xml:(caption):538
 msgid "Website"
 msgstr "Ιστοσελίδα"
 
-#: gui/pregame/mainmenu.xml:(caption):559
+#: gui/pregame/mainmenu.xml:(caption):550
 msgid "Chat"
 msgstr "Συνομιλία"
 
-#: gui/pregame/mainmenu.xml:(caption):571
+#: gui/pregame/mainmenu.xml:(caption):562
 msgid "Report a Bug"
 msgstr "Αναφορά σφαλμάτων"
 
-#: gui/pregame/mainmenu.xml:(caption):583
+#: gui/pregame/mainmenu.xml:(caption):574
 msgid "Translate the game"
-msgstr ""
+msgstr "Μετάφραση παιχνιδιού"
 
-#: gui/pregame/mainmenu.xml:(caption):595
+#: gui/pregame/mainmenu.xml:(caption):586
 msgid "Credits"
-msgstr ""
+msgstr "Συντελεστές"
 
-#: gui/pregame/mainmenu.xml:(caption):624
+#: gui/pregame/mainmenu.xml:(caption):615
 msgid "WILDFIRE GAMES"
 msgstr "WILDFIRE GAMES"
 
-#: gui/pregame/mainmenu.xml:(tooltip):150
+#: gui/pregame/mainmenu.xml:(tooltip):141
 msgid "Open the 0 A.D. Game Manual."
 msgstr "Ανοόξτε το εγχειρίδιο χρήσης του 0 A.D."
 
-#: gui/pregame/mainmenu.xml:(tooltip):167
+#: gui/pregame/mainmenu.xml:(tooltip):158
 msgid "View the structure tree of civilizations featured in 0 A.D."
-msgstr ""
+msgstr "Εμφανίζει την δενδροδομή τον πολιτισμών που εμπεριέχονται στο 0 A.D."
 
-#: gui/pregame/mainmenu.xml:(tooltip):184
+#: gui/pregame/mainmenu.xml:(tooltip):175
 msgid "Learn about the many civilizations featured in 0 A.D."
 msgstr "Μάθετε για τους διάφορους πολιτισμούς που εμφανίζονται στο 0 A.D."
 
-#: gui/pregame/mainmenu.xml:(tooltip):209
+#: gui/pregame/mainmenu.xml:(tooltip):200
 msgid "Click here to start a new single player game."
 msgstr "Κλικ εδώ για να αρχίσετε ένα νέο παιχνίδι για έναν παίκτη."
 
-#: gui/pregame/mainmenu.xml:(tooltip):223
+#: gui/pregame/mainmenu.xml:(tooltip):214
 msgid ""
 "Relive history through historical military campaigns. \\[NOT YET "
 "IMPLEMENTED]"
-msgstr ""
+msgstr "Αναβιώστε την Ιστορία μέσω ιστορικών πολεμικών εκστρατειών. \\[ΔΕΝ ΕΧΕΙ ΥΛΟΠΟΙΗΘΕΙ ΑΚΟΜΑ]"
 
-#: gui/pregame/mainmenu.xml:(tooltip):240
+#: gui/pregame/mainmenu.xml:(tooltip):231
 msgid "Click here to load a saved game."
 msgstr "Κλικ εδώ για φόρτωση ενός αποθηκευμένου παιχνιδιού."
 
-#: gui/pregame/mainmenu.xml:(tooltip):263
+#: gui/pregame/mainmenu.xml:(tooltip):254
 msgid "Joining an existing multiplayer game."
 msgstr "Συμμετοχή σε υπάρχον παιχνίδι για πολλούς παίκτες."
 
-#: gui/pregame/mainmenu.xml:(tooltip):278
+#: gui/pregame/mainmenu.xml:(tooltip):269
 msgid "Host a multiplayer game.\\n\\nRequires UDP port 20595 to be open."
 msgstr "Φιλοξενήστε ένα παιχνίδι για πολλούς παίκτες (multiplayer).\\n\\nΑπαιτείται να είναι ανοιχτή η θύρα UDP 20595."
 
-#: gui/pregame/mainmenu.xml:(tooltip):293
+#: gui/pregame/mainmenu.xml:(tooltip):284
 msgid "Launch the multiplayer lobby."
 msgstr "Εκκίνηση του λόμπι πολλαπλών παικτών."
 
-#: gui/pregame/mainmenu.xml:(tooltip):323
+#: gui/pregame/mainmenu.xml:(tooltip):314
 msgid "Adjust game settings."
 msgstr "Προσαρμόστε τις ρυθμίσεις του παιχνιδιού."
 
-#: gui/pregame/mainmenu.xml:(tooltip):340
+#: gui/pregame/mainmenu.xml:(tooltip):331
 msgid "Choose the language of the game."
 msgstr "Επιλογή της γλώσσας του παιχνιδιού."
 
-#: gui/pregame/mainmenu.xml:(tooltip):356
+#: gui/pregame/mainmenu.xml:(tooltip):347
 msgid "Playback previous games."
-msgstr ""
+msgstr "Αναπαραγωγή προηγούμενων παιχνιδιών."
 
-#: gui/pregame/mainmenu.xml:(tooltip):370
+#: gui/pregame/mainmenu.xml:(tooltip):361
 msgid ""
 "Open the Atlas Scenario Editor in a new window. You can run this more "
 "reliably by starting the game with the command-line argument \"-editor\"."
 msgstr "Ανοίξτε τον επεξεργαστή σεναρίων \"Atlas Scenario Editor\" σε νέο παράθυρο. Για πιο αξιόπιστη λειτουργία του, εκκινήστε το παιχνίδι από γραμμή εντολών, με το όρισμα \"-editor\"."
 
-#: gui/pregame/mainmenu.xml:(tooltip):383
+#: gui/pregame/mainmenu.xml:(tooltip):374
 msgid "Show the Welcome Screen. Useful if you hid it by mistake."
-msgstr ""
+msgstr "Εμφάνιση της Οθόνης Υποδοχής. Χρήσιμο αν αποκρύφθηκε κατά λάθος."
 
-#: gui/pregame/mainmenu.xml:(tooltip):398
+#: gui/pregame/mainmenu.xml:(tooltip):389
 msgid "Select mods to use."
-msgstr ""
+msgstr "Επιλογή mods προς χρήση."
 
-#: gui/pregame/mainmenu.xml:(tooltip):453
+#: gui/pregame/mainmenu.xml:(tooltip):444
 msgid ""
 "Learn how to play, discover the technology trees, and the history behind the"
 " civilizations"
-msgstr ""
+msgstr "Μάθετε πως να παίζεται, ανακαλύψτε τις δομές της τεχνολογίας και την ιστορία πίσω από τους πολιτισμούς"
 
-#: gui/pregame/mainmenu.xml:(tooltip):468
+#: gui/pregame/mainmenu.xml:(tooltip):459
 msgid "Challenge the computer player to a single player match."
 msgstr "Προκαλέστε τον υπολογιστή σε μια αναμέτρηση για έναν παίκτη (single player)."
 
-#: gui/pregame/mainmenu.xml:(tooltip):483
+#: gui/pregame/mainmenu.xml:(tooltip):474
 msgid "Fight against one or more human players in a multiplayer game."
 msgstr "Πολεμήστε εναντίον ενός ή περισσότερων παικτών, σε ένα παιχνίδι για πολλούς παίκτες (multiplayer)."
 
-#: gui/pregame/mainmenu.xml:(tooltip):498
+#: gui/pregame/mainmenu.xml:(tooltip):489
 msgid "Game options and scenario design tools."
 msgstr "Επιλογές παιχνιδιού και εργαλεία σχεδίασης σεναρίων."
 
-#: gui/pregame/mainmenu.xml:(tooltip):513
+#: gui/pregame/mainmenu.xml:(tooltip):504
 msgid "Exits the game."
 msgstr "Βγαίνει από το παιχνίδι"
 
-#: gui/pregame/mainmenu.xml:(tooltip):548
+#: gui/pregame/mainmenu.xml:(tooltip):539
 msgid "Click to open play0ad.com in your web browser."
 msgstr "Κάντε κλικ για άνοιγμα του play0ad.com στο πρόγραμμα περιήγησης web που χρησιμοποιείτε."
 
-#: gui/pregame/mainmenu.xml:(tooltip):560
+#: gui/pregame/mainmenu.xml:(tooltip):551
 msgid ""
 "Click to open the 0 A.D. IRC chat in your browser. (#0ad on "
 "webchat.quakenet.org)"
 msgstr "Κάντε κλικ για να ανοίξετε τη συνομιλία μέσω IRC του 0 A.D., μέσα από το πρόγραμμα περιήγησης που χρησιμοποιείτε. (#0ad στο διακομιστή webchat.quakenet.org)"
 
-#: gui/pregame/mainmenu.xml:(tooltip):572
+#: gui/pregame/mainmenu.xml:(tooltip):563
 msgid "Click to visit 0 A.D. Trac to report a bug, crash, or error."
-msgstr ""
+msgstr "Κάντε κλικ για να επισκεφτείτε το σύστημα Καταγραφής του 0 A.D. για αναφορά κάποιου σφάλματος στον κώδικα (bug), κάποιου αιφνίδιου τερματισμού λειτουργίας ή κάποιου άλλου σφάλματος. "
 
-#: gui/pregame/mainmenu.xml:(tooltip):584
+#: gui/pregame/mainmenu.xml:(tooltip):575
 msgid "Click to open the 0 A.D. translate page in your browser."
 msgstr "Κλικάρετε για να ανοίξετε την σελίδα μετάφρασης του  0 A.D. στον εξυπηρετητή σας."
 
-#: gui/pregame/mainmenu.xml:(tooltip):596
+#: gui/pregame/mainmenu.xml:(tooltip):587
 msgid "Click to see the 0 A.D. credits."
-msgstr ""
+msgstr "Κάνε κλικ για να δεις τους συντελεστές του 0 A.D."
 
 #: gui/replaymenu/replay_menu.xml:(caption):28
 msgid "Replay Games"
-msgstr ""
+msgstr "Επανάληψη Παιχνιδιού"
 
 #: gui/replaymenu/replay_menu.xml:(caption):123
 msgid "Filter compatible replays"
-msgstr ""
+msgstr "Φίλτρο συμβατών επαναλήψεων"
 
 #: gui/replaymenu/replay_menu.xml:(caption):164
-#: gui/savedgames/load.xml:(caption):58
+#: gui/savedgames/load.xml:(caption):101
 msgid "Map Type:"
-msgstr ""
+msgstr "Τύπος Χάρτη:"
 
 #: gui/replaymenu/replay_menu.xml:(caption):179
-#: gui/savedgames/load.xml:(caption):62
+#: gui/savedgames/load.xml:(caption):105
 msgid "Map Size:"
-msgstr ""
+msgstr "Μέγεθος Χάρτη:"
 
 #: gui/replaymenu/replay_menu.xml:(caption):194
-#: gui/savedgames/load.xml:(caption):66
+#: gui/savedgames/load.xml:(caption):109
 msgid "Victory:"
-msgstr ""
+msgstr "Νίκη:"
 
-#: gui/replaymenu/replay_menu.xml:(caption):215
-#: gui/savedgames/load.xml:(caption):50
-msgid "Players:"
-msgstr ""
-
-#: gui/replaymenu/replay_menu.xml:(caption):232
+#: gui/replaymenu/replay_menu.xml:(caption):227
 msgid "Spoiler"
-msgstr ""
+msgstr "Σπόιλερ"
 
-#: gui/replaymenu/replay_menu.xml:(caption):244
+#: gui/replaymenu/replay_menu.xml:(caption):239
 msgid "Main Menu"
-msgstr ""
+msgstr "Κεντρικό Μενού"
 
-#: gui/replaymenu/replay_menu.xml:(caption):250
-#: gui/savedgames/load.xml:(caption):34 gui/savedgames/save.xml:(caption):43
+#: gui/replaymenu/replay_menu.xml:(caption):245
+#: gui/savedgames/load.xml:(caption):66 gui/savedgames/save.xml:(caption):43
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: gui/replaymenu/replay_menu.xml:(caption):256
-#: gui/summary/summary.xml:(caption):22
+#: gui/replaymenu/replay_menu.xml:(caption):251
+#: gui/summary/summary.xml:(caption):23
 msgid "Summary"
 msgstr "Σύνοψη"
 
-#: gui/replaymenu/replay_menu.xml:(caption):262
+#: gui/replaymenu/replay_menu.xml:(caption):257
 msgid "Start Replay"
-msgstr ""
+msgstr "Εκκίνηση Επανάληψης"
 
 #: gui/replaymenu/replay_menu.xml:(heading):86
+#: gui/savedgames/load.xml:(heading):40
 msgctxt "replay"
 msgid "Date / Time"
-msgstr ""
+msgstr "Ημέρα / Ώρα"
 
 #: gui/replaymenu/replay_menu.xml:(heading):90
 msgctxt "replay"
 msgid "Players"
-msgstr ""
+msgstr "Παίκτες"
 
 #: gui/replaymenu/replay_menu.xml:(heading):94
+#: gui/savedgames/load.xml:(heading):48
 msgctxt "replay"
 msgid "Map Name"
-msgstr ""
+msgstr "Όνομα Χάρτη"
 
 #: gui/replaymenu/replay_menu.xml:(heading):98
 msgctxt "replay"
 msgid "Size"
-msgstr ""
+msgstr "Μέγεθος"
 
 #: gui/replaymenu/replay_menu.xml:(heading):102
 msgctxt "replay"
 msgid "Population"
-msgstr ""
+msgstr "Πληθυσμός"
 
 #: gui/replaymenu/replay_menu.xml:(heading):106
 msgctxt "replay"
 msgid "Duration"
-msgstr ""
+msgstr "Διάρκεια"
 
-#: gui/savedgames/load.xml:(caption):39
+#: gui/savedgames/load.xml:(heading):44
+msgctxt "replay"
+msgid "Map Type"
+msgstr "Τύπος Χάρτη"
+
+#: gui/savedgames/load.xml:(heading):52
+msgctxt "replay"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: gui/savedgames/load.xml:(caption):57
+msgid "No saved games found."
+msgstr "Δεν βρέθηκαν αποθηκευμένα παιχνίδια."
+
+#: gui/savedgames/load.xml:(caption):71
 msgid "Load"
 msgstr "Φόρτωση"
 
-#: gui/savedgames/load.xml:(caption):54
+#: gui/savedgames/load.xml:(caption):83
+msgid "Filter compatible saved games"
+msgstr "Φίλτρο συμβατών αποθηκευμένων παιχνιδιών"
+
+#: gui/savedgames/load.xml:(caption):93
+msgid "Players:"
+msgstr "Παίκτες:"
+
+#: gui/savedgames/load.xml:(caption):97
 msgid "Played time:"
-msgstr ""
+msgstr "Διάρκεια παιχνιδιού:"
 
 #: gui/savedgames/save.xml:(caption):16
 msgid "Save Game"
@@ -2248,239 +2105,239 @@ msgstr "Γνωστά ζητήματα (ιστός)"
 msgid "Civilization:"
 msgstr "Πολιτισμός:"
 
-#: gui/structree/structree.xml:(caption):93
+#: gui/structree/structree.xml:(caption):97
 msgid "Trainer Units"
-msgstr ""
+msgstr "Εκπαιδευτής Μονάδων"
 
-#: gui/summary/summary.xml:(caption):62
+#: gui/summary/summary.xml:(caption):63
 msgid "Score"
 msgstr "Βαθμολογία"
 
-#: gui/summary/summary.xml:(caption):69
+#: gui/summary/summary.xml:(caption):70
 msgid "Buildings"
 msgstr "Κτίρια"
 
-#: gui/summary/summary.xml:(caption):76
+#: gui/summary/summary.xml:(caption):77
 msgid "Units"
 msgstr "Μονάδες"
 
-#: gui/summary/summary.xml:(caption):83
+#: gui/summary/summary.xml:(caption):84
 msgid "Resources"
 msgstr "Πόροι"
 
-#: gui/summary/summary.xml:(caption):90
+#: gui/summary/summary.xml:(caption):91
 msgid "Market"
 msgstr "Αγορά"
 
-#: gui/summary/summary.xml:(caption):97 gui/credits/texts/misc.jsonTitle
+#: gui/summary/summary.xml:(caption):98 gui/credits/texts/misc.jsonTitle
 msgid "Miscellaneous"
 msgstr "Διάφορα"
 
-#: gui/summary/summary.xml:(caption):156
+#: gui/summary/summary.xml:(caption):157
 msgid "Replay"
-msgstr ""
+msgstr "Επανάληψη"
 
-#: gui/summary/summary.xml:(caption):161
+#: gui/summary/summary.xml:(caption):162
 msgid "Continue"
 msgstr "Συνέχεια"
 
 #: gui/credits/texts/art.jsonContent[0].Content[0].Subtitle
 msgid "Art lead"
-msgstr ""
+msgstr "Καλλιτεχνική επιμέλεια"
 
 #: gui/credits/texts/art.jsonContent[0].Content[1].Subtitle
 msgid "Sound Manager"
-msgstr ""
+msgstr "Υπεύθυνος Ήχου"
 
 #: gui/credits/texts/art.jsonContent[0].Content[2].Subtitle
 msgid "Composer"
-msgstr ""
+msgstr "Μουσικοσυνθέτης"
 
 #: gui/credits/texts/art.jsonContent[0].Title
 msgid "Artistic managers"
-msgstr ""
+msgstr "Καλλιτεχνικοί διαχειριστές"
 
 #: gui/credits/texts/art.jsonContent[1].Title
 msgid "Map Making"
-msgstr ""
+msgstr "Επιμέλεια Χαρτών"
 
 #: gui/credits/texts/art.jsonContent[2].Title
 msgid "Random Map Scripts"
-msgstr ""
+msgstr "Τυχαίες Δέσμες Ενεργειών για τους Χάρτες"
 
 #: gui/credits/texts/art.jsonContent[3].Title
 msgid "2D Art"
-msgstr ""
+msgstr "Καλλιτέχνης δισδιάστατων"
 
 #: gui/credits/texts/art.jsonContent[4].Title
 msgid "3D Art"
-msgstr ""
+msgstr "Καλλιτέχνης τρισδιάστατων"
 
 #: gui/credits/texts/art.jsonContent[5].Content[1].Subtitle
 msgid "Additional music, percussion, djembe, sampling"
-msgstr ""
+msgstr "Πρόσθετη μουσική, κρουστά, αφρικάνικα κρουστά, δειγματοληψία"
 
 #: gui/credits/texts/art.jsonContent[5].Content[2].Subtitle
 msgid "Additional music"
-msgstr ""
+msgstr "Πρόσθετη μουσική"
 
 #: gui/credits/texts/art.jsonContent[5].Content[3].Subtitle
 msgid "Flute"
-msgstr ""
+msgstr "Φλάουτο"
 
 #: gui/credits/texts/art.jsonContent[5].Content[4].Subtitle
 msgid "Djembe"
-msgstr ""
+msgstr "Αφρικάνικα Κρουστά"
 
 #: gui/credits/texts/art.jsonContent[5].Content[5].Subtitle
 msgid "Frame drum, darbuka, riq, toms"
-msgstr ""
+msgstr "Τύμπανο, τουμπελέκι, ντέφι, ταμ - ταμ"
 
 #: gui/credits/texts/art.jsonContent[5].Content[6].Subtitle
 msgid "Didgeridoo"
-msgstr ""
+msgstr "Ντιτζεριντού"
 
 #: gui/credits/texts/art.jsonContent[5].Content[7].Subtitle
 msgid "Trumpet"
-msgstr ""
+msgstr "Τρομπέτα"
 
 #: gui/credits/texts/art.jsonContent[5].Content[8].Subtitle
 msgid "Celtic harp"
-msgstr ""
+msgstr "Κέλτικη άρπα"
 
 #: gui/credits/texts/art.jsonContent[5].Content[9].Subtitle
 msgid "Tin whistles"
-msgstr ""
+msgstr " Ιρλανδικές φλογέρες"
 
 #: gui/credits/texts/art.jsonContent[5].Content[10].Subtitle
 msgid "Viola, violin"
-msgstr ""
+msgstr "Βιόλα, βιολί"
 
 #: gui/credits/texts/art.jsonContent[5].Title
 msgid "Music"
-msgstr ""
+msgstr "Μουσική"
 
 #: gui/credits/texts/art.jsonContent[6].Title
 msgid "Sound"
-msgstr ""
+msgstr "Ήχος"
 
 #: gui/credits/texts/art.jsonContent[7].Content[0].Subtitle
 msgid "Greek"
-msgstr ""
+msgstr "Ελληνικά"
 
 #: gui/credits/texts/art.jsonContent[7].Content[1].Subtitle
 msgid "Latin"
-msgstr ""
+msgstr "Λατινικά"
 
 #: gui/credits/texts/art.jsonContent[7].Title
 msgid "Voices"
-msgstr ""
+msgstr "Φωνές"
 
 #: gui/credits/texts/art.jsonTitle
 msgid "Art"
-msgstr ""
+msgstr "Καλλιτέχνες"
 
 #: gui/credits/texts/donators.jsonContent[0].Title
 msgid "Pledgie Drive 1"
-msgstr ""
+msgstr "Οδηγοί για Pledgie 1"
 
 #: gui/credits/texts/donators.jsonContent[1].Title
 msgid "Pledgie Drive 2"
-msgstr ""
+msgstr "Οδηγοί για Pledgie 2"
 
 #: gui/credits/texts/donators.jsonContent[2].Title
 msgid ""
 "Indiegogo 2013 campaign\n"
 "More than 1000 donators (!), including:"
-msgstr ""
+msgstr "Εκστρατεία Indiegogo 2013\nΠεριλαμβάνει περισσότερους από 1000 δωρητές(!):"
 
 #: gui/credits/texts/donators.jsonTitle
 msgid "Donors"
-msgstr ""
+msgstr "Δωρητές"
 
 #: gui/credits/texts/misc.jsonContent[0].Content[0].Subtitle
 msgid "Head"
-msgstr ""
+msgstr "Αρχηγός"
 
 #: gui/credits/texts/misc.jsonContent[0].Title
 msgid "History References"
-msgstr ""
+msgstr "Ιστορικό Αναφορών"
 
 #: gui/credits/texts/misc.jsonContent[1].Title
 msgid "Community and Management"
-msgstr ""
+msgstr "Κοινότητα και Διαχείριση"
 
 #: gui/credits/texts/programming.jsonContent[0].Title
 msgid "Programming managers"
-msgstr ""
+msgstr "Διαχειριστές προγραμματισμού"
 
 #: gui/credits/texts/programming.jsonContent[1].Subtitle
 msgid "Special thanks to"
-msgstr ""
+msgstr "Ειδικές ευχαριστίες σε"
 
 #: gui/credits/texts/programming.jsonTitle
 msgid "Programming"
-msgstr ""
+msgstr "Προγραμματισμός"
 
 #: gui/credits/texts/special.jsonContent[0].Title
 msgid "In Memoriam"
-msgstr ""
+msgstr "Στη Μνήμη"
 
 #: gui/credits/texts/special.jsonContent[1].Content[0].Subtitle
 msgid "0 A.D. Founder"
-msgstr ""
+msgstr "Ιδρυτής του 0 A.D."
 
 #: gui/credits/texts/special.jsonContent[1].Content[1].Subtitle
 msgid "Project Leaders"
-msgstr ""
+msgstr "Υπεύθυνοι του έργου"
 
 #: gui/credits/texts/special.jsonContent[1].Content[2].Subtitle
 msgid "Co-Lead Designers"
-msgstr ""
+msgstr "Υπευθυνοι Σχεδιασμού"
 
 #: gui/credits/texts/special.jsonContent[1].Title
 msgid "Special thanks to:"
-msgstr ""
+msgstr "Ειδικές ευχαριστίες σε:"
 
 #: gui/credits/texts/special.jsonContent[2].Title
 msgid "And thanks to the entire community for making 0 A.D. possible."
-msgstr ""
+msgstr "Και χάρη σε ολόκληρη την κοινότητα έγινε εφικτή η δημιουργία του 0 A.D."
 
 #: gui/credits/texts/special.jsonContent[3].Title
 msgid "No historians were harmed during the development of this project."
-msgstr ""
+msgstr "Κανένας ιστορικός δεν έχει θιχτεί από την ανάπτυξη αυτού του έργου."
 
 #: gui/credits/texts/special.jsonTitle
 msgid "Special Credits"
-msgstr ""
+msgstr "Ειδικές Μνείες"
 
 #: gui/credits/texts/translators.jsonTitle
 msgid "Translators"
-msgstr ""
+msgstr "Μεταφραστές"
 
 #: gui/options/options.jsonlobbySetting[0].tooltip
 msgid "Number of backlogged messages to load when joining the lobby"
-msgstr ""
+msgstr "Ο αριθμός των προηγούμενων μηνυμάτων που θα φορτωθεί όταν γίνει σύνδεση με το λόμπι"
 
 #: gui/options/options.jsonlobbySetting[0].label
 msgid "Chat Backlog"
-msgstr ""
+msgstr "Συνομιλία Ανεκτέλεστων"
 
 #: gui/options/options.jsongeneralSetting[0].tooltip
 msgid "How you want to be addressed in Single Player matches."
-msgstr ""
+msgstr "Πώς θέλετε να αντιμετωπιστούν οι αγώνες για έναν παίκτη."
 
 #: gui/options/options.jsongeneralSetting[0].label
 msgid "Playername (Single Player)"
-msgstr ""
+msgstr "Όνομα παίχτη (Παιχνίδι για ένα παίχτη)"
 
 #: gui/options/options.jsongeneralSetting[1].tooltip
 msgid "How you want to be addressed in Multiplayer matches (except lobby)."
-msgstr ""
+msgstr "Πώς θέλετε να αντιμετωπιστούν οι αγώνες Πολλούς Παίχτες (εξαιρούνται τα λόμπι)."
 
 #: gui/options/options.jsongeneralSetting[1].label
 msgid "Playername (Multiplayer)"
-msgstr ""
+msgstr "Όνομα παίχτη (Παιχνίδι για πολλούς παίχτες)"
 
 #: gui/options/options.jsongeneralSetting[2].tooltip
 msgid "Start 0 A.D. in a window"
@@ -2500,188 +2357,222 @@ msgstr "Παύση στο παρασκήνιο"
 
 #: gui/options/options.jsongeneralSetting[4].tooltip
 msgid ""
-"If you disable this screen completely, you may miss important announcements.\n"
-"You can still launch it using the main menu."
-msgstr "Αν απενεργοποιήσετε αυτή την οθόνη εντελώς, μπορεί να χάσετε σημαντικές ανακοινώσεις.\nΜπορείτε να την ξανά-ξεκινήσετε χρησιμοποιώντας το κύριο μενού."
+"When disabled, the welcome screen will nevertheless be shown once when a new"
+" version is available and you can always launch it from the main menu."
+msgstr "Όταν απενεργοποιηθεί, η οθόνη καλωσορίσματος ωστόσο θα εμφανίζεται κάθε φορά που μια νέα έκδοση είναι διαθέσιμη επίσης μπορείτε να την ξεκινήσει από το κύριο μενού."
 
 #: gui/options/options.jsongeneralSetting[4].label
-msgid "Disable Welcome Screen"
-msgstr "Απενεργοποίηση οθόνη υποδοχής"
+msgid "Enable Welcome Screen"
+msgstr "Ενεργοποίηση Οθόνης Υποδοχής"
 
 #: gui/options/options.jsongeneralSetting[5].tooltip
+msgid "Show tips when setting up a game."
+msgstr "Εμφάνιση συμβουλών όταν ρυθμίζετε ένα παιχνίδι."
+
+#: gui/options/options.jsongeneralSetting[5].label
+msgid "Enable Game Setting Tips"
+msgstr "Ενεργοποίηση Συμβουλών Ρυθμίσεων Παιχνιδιού"
+
+#: gui/options/options.jsongeneralSetting[6].tooltip
 msgid ""
 "Show detailed tooltips for trainable units in unit-producing buildings."
 msgstr "Εμφάνιση λεπτομερειών επεξηγήσεων εργαλείων για εκπαιδεύσιμες μονάδες σε μονάδα παραγωγής κτιρίων."
 
-#: gui/options/options.jsongeneralSetting[5].label
+#: gui/options/options.jsongeneralSetting[6].label
 msgid "Detailed Tooltips"
 msgstr "Λεπτομερείς Επεξηγήσεις"
 
-#: gui/options/options.jsongeneralSetting[6].tooltip
-msgid "Show which player has a bad connection in multiplayer games."
-msgstr ""
-
-#: gui/options/options.jsongeneralSetting[6].label
-msgid "Network Warnings"
-msgstr ""
-
 #: gui/options/options.jsongeneralSetting[7].tooltip
+msgid "Show which player has a bad connection in multiplayer games."
+msgstr "Εμφανίζει ποιοι παίχτες έχουν κακή σύνδεση με τα παιχνίδια για πολλούς παίχτες."
+
+#: gui/options/options.jsongeneralSetting[7].label
+msgid "Network Warnings"
+msgstr "Προειδοποιήσεις Δικτύου"
+
+#: gui/options/options.jsongeneralSetting[8].tooltip
 msgid "Show frames per second in top right corner."
 msgstr "Δείτε τα καρέ ανά δευτερόλεπτο στην πάνω δεξιά γωνία."
 
-#: gui/options/options.jsongeneralSetting[7].label
+#: gui/options/options.jsongeneralSetting[8].label
 msgid "FPS Overlay"
-msgstr ""
+msgstr "Εμφάνιση Ρυθμού Καρέ Ανά Δευτερόλεπτο (FPS)"
 
-#: gui/options/options.jsongeneralSetting[8].tooltip
+#: gui/options/options.jsongeneralSetting[9].tooltip
 msgid "Show current system time in top right corner."
 msgstr "Εμφάνιση της τρέχουσας ώρας συστήματος σε πάνω δεξιά γωνία."
 
-#: gui/options/options.jsongeneralSetting[8].label
-msgid "Realtime Overlay"
-msgstr ""
-
-#: gui/options/options.jsongeneralSetting[9].tooltip
-msgid "Show current simulation time in top right corner."
-msgstr ""
-
 #: gui/options/options.jsongeneralSetting[9].label
-msgid "Gametime Overlay"
-msgstr ""
+msgid "Realtime Overlay"
+msgstr "Εμφάνιση Πραγματικής Ώρας"
 
 #: gui/options/options.jsongeneralSetting[10].tooltip
+msgid "Show current simulation time in top right corner."
+msgstr "Εμφάνιση της τρέχουσας ώρας εξομοίωσης στην πάνω δεξιά γωνία."
+
+#: gui/options/options.jsongeneralSetting[10].label
+msgid "Gametime Overlay"
+msgstr "Εμφάνιση Χρόνου Παιχνιδιού"
+
+#: gui/options/options.jsongeneralSetting[11].tooltip
 msgid "Always show the remaining ceasefire time."
 msgstr "Πάντα δείχνε τον εναπωμείνοντα χρόνο κατάπαυσης πυρός"
 
-#: gui/options/options.jsongeneralSetting[10].label
-msgid "Ceasefire Time Overlay"
-msgstr ""
-
-#: gui/options/options.jsongeneralSetting[11].tooltip
-msgid ""
-"Save and restore match settings for quick reuse when hosting another game"
-msgstr ""
-
 #: gui/options/options.jsongeneralSetting[11].label
-msgid "Persist Match Settings"
-msgstr ""
+msgid "Ceasefire Time Overlay"
+msgstr "Εμφάνιση Χρόνου Παύσης Πυρός"
 
 #: gui/options/options.jsongeneralSetting[12].tooltip
-msgid "Allow observers to join the game after it started"
-msgstr ""
+msgid ""
+"Save and restore match settings for quick reuse when hosting another game"
+msgstr "Αποθηκεύει και επαναφέρει τις ρυθμίσεις του αγώνα για γρήγορη επαναχρησιμοποίηση, όταν φιλοξενιθεί ένα άλλο παιχνίδι"
 
 #: gui/options/options.jsongeneralSetting[12].label
-msgid "Late Observer Joins"
-msgstr ""
+msgid "Persist Match Settings"
+msgstr "Ρυθμίσεις Αγώνα που Υπάρχουν"
 
 #: gui/options/options.jsongeneralSetting[13].tooltip
-msgid "Prevent further observer from joining if the limit is reached"
-msgstr ""
+msgid "Allow observers to join the game after it started"
+msgstr "Να επιτρέπεται η είσοδος παρατηρητών μετά την έναρξη του παιχνιδιού"
 
 #: gui/options/options.jsongeneralSetting[13].label
-msgid "Observer Limit"
-msgstr ""
+msgid "Late Observer Joins"
+msgstr "Καθυστερημένη Σύνδεση Παρατηρητών"
 
 #: gui/options/options.jsongeneralSetting[14].tooltip
-msgid "Number of units trained per batch"
-msgstr ""
+msgid "Prevent further observers from joining if the limit is reached"
+msgstr "Αποτρέπει την περαιτέρω σύνδεση παρατηρητών εφόσον επιτευχθεί το όριο"
 
 #: gui/options/options.jsongeneralSetting[14].label
-msgid "Batch Training Size"
-msgstr ""
+msgid "Observer Limit"
+msgstr "Όριο Παρατηρητών"
 
 #: gui/options/options.jsongeneralSetting[15].tooltip
-msgid ""
-"Show time that messages are posted in the lobby, gamesetup and ingame chat."
-msgstr ""
+msgid "Number of units trained per batch"
+msgstr "Αριθμός των μονάδων που θα εκπαιδεύονται ανά παρτίδα"
 
 #: gui/options/options.jsongeneralSetting[15].label
+msgid "Batch Training Size"
+msgstr "Μέγεθος Παρτίδας Εκπαίδευσης"
+
+#: gui/options/options.jsongeneralSetting[16].tooltip
+msgid ""
+"Show time that messages are posted in the lobby, gamesetup and ingame chat."
+msgstr "Εμφάνιση του χρόνου που τα μηνύματα αποστέλλονται στο λόμπι, στην διαμόρφωση παιχνιδιού και εντός της συνομιλίας μέσα στο παιχνίδι."
+
+#: gui/options/options.jsongeneralSetting[16].label
 msgid "Chat Timestamp"
-msgstr ""
+msgstr "Χρονοθέτηση Συνομιλίας"
 
 #: gui/options/options.jsonsoundSetting[0].tooltip
 msgid "Master audio gain"
-msgstr ""
+msgstr "Ένταση κεντρικού ήχου"
 
 #: gui/options/options.jsonsoundSetting[0].label
 msgid "Master Gain"
-msgstr ""
+msgstr "Ένταση Κεντρικού"
 
 #: gui/options/options.jsonsoundSetting[1].tooltip
 msgid "In game music gain"
-msgstr ""
+msgstr "Ένταση ήχου μέσα στο παιχνίδι"
 
 #: gui/options/options.jsonsoundSetting[1].label
 msgid "Music Gain"
-msgstr ""
+msgstr "Ένταση Μουσικής"
 
 #: gui/options/options.jsonsoundSetting[2].tooltip
 msgid "In game ambient sound gain"
-msgstr ""
+msgstr "Ένταση ήχων περιβάλλοντος μέσα στο παιχνίδι"
 
 #: gui/options/options.jsonsoundSetting[2].label
 msgid "Ambient Gain"
-msgstr ""
+msgstr "Ένταση Ήχων Περιβάλλοντος"
 
 #: gui/options/options.jsonsoundSetting[3].tooltip
 msgid "In game unit action sound gain"
-msgstr ""
+msgstr "Ένταση τους ήχου της δράσης των μονάδων μέσα στο παιχνίδι"
 
 #: gui/options/options.jsonsoundSetting[3].label
 msgid "Action Gain"
-msgstr ""
+msgstr "Ένταση Δράσης"
 
 #: gui/options/options.jsonsoundSetting[4].tooltip
 msgid "UI sound gain"
-msgstr ""
+msgstr "Ένταση ήχου διεπαφής χρήστη"
 
 #: gui/options/options.jsonsoundSetting[4].label
 msgid "UI Gain"
-msgstr ""
+msgstr "Ένταση Διεπαφής Χρήστη"
 
 #: gui/options/options.jsonsoundSetting[5].tooltip
 msgid "Receive audio notification when someone types your nick"
-msgstr ""
+msgstr "Λαμβάνεις ηχητική προειδοποίηση όταν κάποιος πληκτρολογεί τον ψευδώνυμό σου."
 
 #: gui/options/options.jsonsoundSetting[5].label
 msgid "Nick Notification"
-msgstr ""
+msgstr "Προειδοποίηση για το Ψευδώνυμο"
+
+#: gui/options/options.jsonnotificationSetting[0].tooltip
+msgid "Show a chat notification if you are attacked by another player"
+msgstr "Δείχνει μία ειδοποίηση στη συζήτηση αν δεχθείς επίθεση από άλλον παίχτη"
+
+#: gui/options/options.jsonnotificationSetting[0].label
+msgid "Attack"
+msgstr "Επίθεση"
+
+#: gui/options/options.jsonnotificationSetting[1].tooltip
+msgid ""
+"Show a chat notification if an ally tributes resources to another team "
+"member if teams are locked, and all tributes in observer mode"
+msgstr "Δείχνει μια ειδοποίηση στη συζήτηση αν ένας σύμμαχος προσφέρει πόρους σε ένα μέλος μίας άλλης ομάδας αν οι ομάδες είναι κλειδωμένες και όλοι οι φόροι σε λειτουργία παρατήρησης"
+
+#: gui/options/options.jsonnotificationSetting[1].label
+msgid "Tribute"
+msgstr "Φόρος"
+
+#: gui/options/options.jsonnotificationSetting[2].tooltip
+msgid "Show a chat notification to observers when a player bartered resources"
+msgstr "Δείχνει μία ειδοποίηση στη συζήτηση των παρατηρητών όταν ένας παίχτης κάνει ανταλλαγή πόρων"
+
+#: gui/options/options.jsonnotificationSetting[2].label
+msgid "Barter"
+msgstr "Ανταλλαγή εμπορευμάτων"
 
 #: gui/options/options.jsongraphicsSetting[0].tooltip
 msgid "Use OpenGL 2.0 shaders (recommended)"
-msgstr ""
+msgstr "Χρήση του OpenGL 2.0 για τους ανταυγαστήρες (προτείνετε)"
 
 #: gui/options/options.jsongraphicsSetting[0].label
 msgid "Prefer GLSL"
-msgstr ""
+msgstr "Προτίμηση OpenGL Shading Language"
 
 #: gui/options/options.jsongraphicsSetting[1].tooltip
 msgid "Use screen-space postprocessing filters (HDR, Bloom, DOF, etc)"
-msgstr ""
+msgstr "Χρήση μετεπεξεργασμένων screen-space φίλτρων (HDR, Bloom, DOF, κλπ)"
 
 #: gui/options/options.jsongraphicsSetting[1].label
 msgid "Post Processing"
-msgstr ""
+msgstr "Μετεπεξαργασία"
 
 #: gui/options/options.jsongraphicsSetting[2].parameters.list[0]
 msgid "Low"
-msgstr ""
+msgstr "Χαμηλή"
 
 #: gui/options/options.jsongraphicsSetting[2].parameters.list[1]
 msgid "Medium"
-msgstr ""
+msgstr "Μεσαία"
 
 #: gui/options/options.jsongraphicsSetting[2].parameters.list[2]
 msgid "High"
-msgstr ""
+msgstr "Υψηλή"
 
 #: gui/options/options.jsongraphicsSetting[2].tooltip
 msgid "Graphics quality. REQUIRES GAME RESTART"
-msgstr ""
+msgstr "Ποιότητα γραφικών. ΑΠΑΙΤΗΤΕ ΕΠΑΝΕΚΚΙΝΗΣΗ ΤΟΥ ΠΑΙΧΝΙΔΙΟΥ"
 
 #: gui/options/options.jsongraphicsSetting[2].label
 msgid "Graphics quality"
-msgstr ""
+msgstr "Ποιότητα γραφικών"
 
 #: gui/options/options.jsongraphicsSetting[3].tooltip
 msgid "Enable shadows"
@@ -2701,11 +2592,11 @@ msgstr "Φιλτράρισμα Σκιών"
 
 #: gui/options/options.jsongraphicsSetting[5].tooltip
 msgid "Show outlines of units behind buildings"
-msgstr ""
+msgstr "Εμφάνιση του περιγράμματος των μονάδων πίσω από τα κτίρια"
 
 #: gui/options/options.jsongraphicsSetting[5].label
 msgid "Unit Silhouettes"
-msgstr ""
+msgstr "Σιλουέτες Μονάδων"
 
 #: gui/options/options.jsongraphicsSetting[6].tooltip
 msgid "Enable particles"
@@ -2719,17 +2610,17 @@ msgstr "Σωματίδια"
 msgid ""
 "When OFF, use the lowest settings possible to render water. This makes other"
 " settings irrelevant."
-msgstr ""
+msgstr "Όταν είναι ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟ, χρησιμοποιεί τις χαμηλότερες δυνατές ρυθμίσεις για την απεικόνιση του νερού. Αυτό απενεργοποιεί τις άλλες ρυθμίσεις."
 
 #: gui/options/options.jsongraphicsSetting[7].label
 msgid "Activate water effects"
-msgstr ""
+msgstr "Ενεργοποίση εφέ νερού"
 
 #: gui/options/options.jsongraphicsSetting[8].tooltip
 msgid ""
 "Use higher-quality effects for water, rendering coastal waves, shore foam, "
 "and ships trails."
-msgstr ""
+msgstr "Χρησιμοποίηση της μέγιστη ποιότητα των εφέ του νερού, εμφανίζει τα κύματα, το άφρισμα των ακτών και τα ίχνη των πλοίων."
 
 #: gui/options/options.jsongraphicsSetting[8].label
 msgid "HQ Water Effects"
@@ -2765,19 +2656,19 @@ msgstr "Ρίχτε σκιές στο νερό"
 
 #: gui/options/options.jsongraphicsSetting[12].label
 msgid "Shadows on Water"
-msgstr ""
+msgstr "Σκιές στο Νερό"
 
 #: gui/options/options.jsongraphicsSetting[13].tooltip
 msgid "Lift darkness and fog-of-war smoothly"
-msgstr ""
+msgstr "Άρει το σκοτάδι και την ομίχλη-του-πολέμου ομαλά"
 
 #: gui/options/options.jsongraphicsSetting[13].label
 msgid "Smooth LOS"
-msgstr ""
+msgstr "Εξομάλυνση Γραμμών Ιστοσελίδας"
 
 #: gui/options/options.jsongraphicsSetting[14].tooltip
 msgid "Render Sky"
-msgstr ""
+msgstr "Απόδοση Ουρανού"
 
 #: gui/options/options.jsongraphicsSetting[14].label
 msgid "Show Sky"
@@ -2785,7 +2676,7 @@ msgstr "Εμφάνιση Ουρανού"
 
 #: gui/options/options.jsongraphicsSetting[15].tooltip
 msgid "Run vertical sync to fix screen tearing. REQUIRES GAME RESTART"
-msgstr ""
+msgstr "Εκτέλεση κάθετου συγχρονισμού για να αποφευχθεί το \"σχίσιμο\" της οθόνης. ΑΠΑΙΤΕΙΤΑΙ ΕΠΑΝΕΚΚΙΝΗΣΗ ΤΟΥ ΠΑΙΧΝΙΔΙΟΥ"
 
 #: gui/options/options.jsongraphicsSetting[15].label
 msgid "VSync"
@@ -2793,16 +2684,196 @@ msgstr "VSync"
 
 #: gui/options/options.jsongraphicsSetting[16].tooltip
 msgid "Limit FPS to 50 in all menus, to save power."
-msgstr ""
+msgstr "Όριο 50 καρέ ανά δευτερόλεπτο σε όλα τα μενού για εξοικονόμηση ενέργειας."
 
 #: gui/options/options.jsongraphicsSetting[16].label
 msgid "Limit FPS in Menus"
-msgstr ""
+msgstr "Όριο Καρέ Ανά Δευτερόλεπτο στα Μενού."
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/food.jsonname
+msgctxt "firstWord"
+msgid "Food"
+msgstr "Τροφή"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/food.jsonname
+msgctxt "withinSentence"
+msgid "Food"
+msgstr "Τροφή"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/food.jsonsubtypes.fish
+msgctxt "firstWord"
+msgid "Fish"
+msgstr "Ψάρια"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/food.jsonsubtypes.fish
+msgctxt "withinSentence"
+msgid "Fish"
+msgstr "Ψάρια"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/food.jsonsubtypes.fruit
+msgctxt "firstWord"
+msgid "Fruit"
+msgstr "Φρούτα"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/food.jsonsubtypes.fruit
+msgctxt "withinSentence"
+msgid "Fruit"
+msgstr "Φρούτα"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/food.jsonsubtypes.grain
+msgctxt "firstWord"
+msgid "Grain"
+msgstr "Σιτηρά"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/food.jsonsubtypes.grain
+msgctxt "withinSentence"
+msgid "Grain"
+msgstr "Σιτηρά"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/food.jsonsubtypes.meat
+msgctxt "firstWord"
+msgid "Meat"
+msgstr "Κρέας"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/food.jsonsubtypes.meat
+msgctxt "withinSentence"
+msgid "Meat"
+msgstr "Κρέας"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/metal.jsonname
+msgctxt "firstWord"
+msgid "Metal"
+msgstr "Μέταλλο"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/metal.jsonname
+msgctxt "withinSentence"
+msgid "Metal"
+msgstr "Μέταλλο"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/metal.jsonsubtypes.ore
+msgctxt "firstWord"
+msgid "Ore"
+msgstr "Μετάλλευμα"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/metal.jsonsubtypes.ore
+msgctxt "withinSentence"
+msgid "Ore"
+msgstr "Μετάλλευμα"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/stone.jsonname
+msgctxt "firstWord"
+msgid "Stone"
+msgstr "Πέτρα"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/stone.jsonname
+msgctxt "withinSentence"
+msgid "Stone"
+msgstr "Πέτρα"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/stone.jsonsubtypes.ruins
+#: simulation/data/resources/wood.jsonsubtypes.ruins
+msgctxt "firstWord"
+msgid "Ruins"
+msgstr "Ερείπια"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/stone.jsonsubtypes.ruins
+#: simulation/data/resources/wood.jsonsubtypes.ruins
+msgctxt "withinSentence"
+msgid "Ruins"
+msgstr "Ερείπια"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/stone.jsonsubtypes.rock
+msgctxt "firstWord"
+msgid "Rock"
+msgstr "Βράχος"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/stone.jsonsubtypes.rock
+msgctxt "withinSentence"
+msgid "Rock"
+msgstr "Βράχος"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/wood.jsonname
+msgctxt "firstWord"
+msgid "Wood"
+msgstr "Ξυλεία"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/wood.jsonname
+msgctxt "withinSentence"
+msgid "Wood"
+msgstr "Ξυλεία"
+
+#. Translation: Word as used at the beginning of a sentence or as a single-
+#. word sentence.
+#: simulation/data/resources/wood.jsonsubtypes.tree
+msgctxt "firstWord"
+msgid "Tree"
+msgstr "Δέντρο"
+
+#. Translation: Word as used in the middle of a sentence (which may require
+#. using lowercase for your language).
+#: simulation/data/resources/wood.jsonsubtypes.tree
+msgctxt "withinSentence"
+msgid "Tree"
+msgstr "Δέντρο"
+
+#: gui/gamesetup/ai.txt:1
+msgid ""
+"Although reasonably easy for an experienced player, the default AI level is "
+"quite challenging for new players before they master the basic mechanisms of"
+" the game. It is advised to start by playing against a lower level (sandbox "
+"or very easy) when beginning with the game. Changing the AI level is done by"
+" clicking on the gear icon next to each AI player in the player selection "
+"panel above."
+msgstr "Αν και λογικά είναι εύκολο για έναν έμπειρο παίκτη, το προεπιλεγμένο επίπεδο Τεχνικής Νοημοσύνης είναι αρκετά δύσκολο για τους νέους παίκτες πριν εξασκηθούν στους βασικούς μηχανισμούς του παιχνιδιού. Καλό είναι να ξεκινήσετε το παιχνίδι ενάντια στο χαμηλότερο επίπεδο (περιβάλλων δοκιμών ή πολύ εύκολο) στα πρώτα σας βήματα στο παιχνίδι. Η Αλλαγή του επιπέδου ΤΝ γίνεται κάνοντας κλικ στο εικονίδιο με το γρανάζι δίπλα σε κάθε παίκτη ΤΝ στον παραπάνω πίνακα επιλογής παίκτη."
 
 #: gui/splashscreen/splashscreen.txt:2
 msgid ""
 "[font=\"sans-bold-20\"]  Thank you for installing 0 A.D. Empires Ascendant!"
-msgstr ""
+msgstr "[font=\"sans-bold-20\"] Ευχαριστούμε για την εγκατάσταση του 0 A.D. η Άνοδος των Αυτοκρατοριών."
 
 #: gui/splashscreen/splashscreen.txt:3
 msgid "[font=\"sans-16\"]"
@@ -2812,25 +2883,19 @@ msgstr "[font=\"sans-16\"]"
 msgid ""
 "[imgleft=\"constructionIcon\"]This game is still in development. Features "
 "are missing and it contains bugs."
-msgstr ""
+msgstr "[imgleft=\"constructionIcon\"]Αυτό το παιχνίδι είναι υπό ανάπτυξη. Λείπουν χαρακτηριστικά και εμπεριέχονται σφάλματα."
 
 #: gui/splashscreen/splashscreen.txt:6
 msgid ""
 "[imgleft=\"iconLag\"]The game can have performance problems, especially with"
 " large maps and a great number of units."
-msgstr ""
+msgstr "[imgleft=\"iconLag\"]Το παιχνίδι έχει προβλήματα επιδόσεων, ειδικά στους μεγάλους χάρτες και στο μεγάλο αριθμών μονάδων."
 
 #: gui/splashscreen/splashscreen.txt:8
 msgid ""
-"[imgleft=\"iconMap\"]This version features a new pathfinder, with increased "
-"performance, but it can be subject to new bugs."
-msgstr ""
-
-#: gui/splashscreen/splashscreen.txt:10
-msgid ""
 "[imgleft=\"iconFormation\"]Formations are a work in progress, but you can "
 "toggle forming and disbanding formations as desired."
-msgstr ""
+msgstr "[imgleft=\"iconFormation\"]Οι σχηματισμοί είναι υπό κατασκευή άλλα μπορείς να αλλάξεις και να διαλύσεις σχηματισμούς κατά βούληση."
 
 #: gui/text/tips/army_camp.txt:1
 msgid "ROMAN ARMY CAMP"
@@ -2841,21 +2906,21 @@ msgid ""
 "- Build anywhere on the map, even in enemy territory. Good for building a "
 "secret base behind enemy lines or to consolidate gains within enemy "
 "territory."
-msgstr ""
+msgstr "- Χτίστε οπουδήποτε στον χάρτη, ακόμη και στο έδαφος του αντιπάλου. Καλό είναι να κτιστεί μία βάση μυστικά πίσω από τις εχθρικές γραμμές ή να εδραιωθείτε κατακτόντας εχθρικό έδαφος."
 
 #: gui/text/tips/army_camp.txt:4
 msgid "- Decays to the territory owner when built in non-allied territory"
-msgstr ""
+msgstr "- Διασπάτε η συνοχή του εδάφους όταν κτίζεται σε μη συμμαχικό έδαφος."
 
 #: gui/text/tips/army_camp.txt:6
 msgid "- Construct siege weapons and train citizen-soldiers."
-msgstr ""
+msgstr "- Κατασκευάστε πολιορκητικά όπλα και εκπαιδεύστε πολίτες-οπλίτες."
 
 #: gui/text/tips/army_camp.txt:8
 msgid ""
 "- Garrison up to 40 units to slowly heal the units and protect the army camp"
 " from attacks and decay."
-msgstr ""
+msgstr "- Εγκαταστήστε φρουρά πάνω από 40 μονάδες για να θεραπεύουν αργά τις μονάδες και να προστατεύουν το στρατόπεδο από επιθέσεις και φθορές."
 
 #: gui/text/tips/barracks.txt:1
 msgid "BARRACKS"
@@ -2865,21 +2930,21 @@ msgstr "ΣΤΡΑΤΩΝΕΣ"
 msgid ""
 "- Train all citizen-soldiers. Some factions can unlock the training of "
 "champions as well."
-msgstr ""
+msgstr "- Εκπαιδεύστε όλους τους πολίτες-οπλίτες. Μερικές φατρίες μπορούν να ξεκλειδώσουν και την εκπαίδευση των πρωταθλητών."
 
 #: gui/text/tips/barracks.txt:4
 msgid "- Research military technologies unique to each faction."
-msgstr ""
+msgstr "- Ερευνήστε στρατιωτική τεχνολογία μοναδική για κάθε φατρία."
 
 #: gui/text/tips/barracks.txt:6
 msgid ""
 "- Build one early to train citizen-soldiers while you phase up your "
 "settlement."
-msgstr ""
+msgstr "- Κατασκευάστε κάτι νωρίς ώστε να εκπαιδεύετε πολίτες-οπλίτες κατή τη φάση ανάπτυξης του οικισμού σας."
 
 #: gui/text/tips/barracks.txt:8
 msgid "- Build in a forward base to resupply your assault with fresh troops."
-msgstr ""
+msgstr "- Κατασκευάστε μια προκεχωρημένη βάση για να εφοδιαζεται την επίθεση σας με φρέσκα στρατεύματα."
 
 #: gui/text/tips/blacksmith.txt:1
 msgid "BLACKSMITH"
@@ -2887,7 +2952,7 @@ msgstr "Σιδηρουργός"
 
 #: gui/text/tips/blacksmith.txt:2
 msgid "- Research structure for all factions."
-msgstr ""
+msgstr "- Εξερευνήστε τις δομές όλων των παρατάξεων."
 
 #: gui/text/tips/blacksmith.txt:4
 msgid "- Research weapon and armor upgrades for your units."
@@ -2897,27 +2962,27 @@ msgstr "-Ανακάλυψε βελτιώσεις όπλων και πανοπλ�
 msgid ""
 "- Garrison a citizen-soldier inside to research faster (NOT IMPLEMENTED "
 "YET)."
-msgstr ""
+msgstr "- Οχύρωσε ένα πολίτη-οπλίτη μέσα για γρηγορότερη έρευνα. (ΔΕΝ ΕΧΕΙ ΥΛΟΠΟΙΗΘΕΙ ΑΚΟΜΑ)"
 
 #: gui/text/tips/carth_sacred_band.txt:1
 msgid "CARTHAGINIAN SACRED BAND"
-msgstr ""
+msgstr "ΙΕΡΟΣ ΛΟΧΟΣ ΚΑΡΧΗΔΟΝΙΩΝ"
 
 #: gui/text/tips/carth_sacred_band.txt:2
 msgid "- Champion Spearmen and Champion Cavalry Spearmen for Carthage."
-msgstr ""
+msgstr "- Πρωταθλητής Λογχοφόρος και Πρωταθλητής Λογχοφόρος Ιππικού για την Καρχηδόνα."
 
 #: gui/text/tips/carth_sacred_band.txt:4
 msgid ""
 "- Both are trainable from the Temple, instead of the Fortress like most "
 "other champions."
-msgstr ""
+msgstr "- Αμφότεροι μπορούν να εκπαιδευτούν από τους Ναούς, αντί του Κάστρου όπως τους περισσότερους άλλους πρωταθλητές."
 
 #: gui/text/tips/carth_sacred_band.txt:6
 msgid ""
 "- Use the Spearmen as heavy infantry against cavalry. Use the Cavalry as "
 "heavy shock against siege weapons and skirmishers."
-msgstr ""
+msgstr "- Χρησιμοποίησε τους Λογχοφόρους ως βαρύ πεζικό κατά του ιππικού. Χρησιμοποίησε το Ιππικό ως ισχυρό πλήγμα εναντίων πολιορκητικών όπλων και ακροβολιστών."
 
 #: gui/text/tips/catapults.txt:1
 msgid "CATAPULTS"
@@ -2925,13 +2990,13 @@ msgstr "ΚΑΤΑΠΕΛΤΕΣ"
 
 #: gui/text/tips/catapults.txt:2
 msgid "- Ranged siege engines that are good against buildings."
-msgstr ""
+msgstr "- Πολιορκητικές μηχανές με βεληνεκές είναι καλές εναντίων κτηρίων."
 
 #: gui/text/tips/catapults.txt:4
 msgid ""
 "- May upgrade to flaming projectiles for extra effectiveness against "
 "buildings and units."
-msgstr ""
+msgstr "- Μπορείτε να αναβαθμίσετε σε φλεγόμενα βλήματα για επιπλέον αποτελεσματικότητα εναντίων κτηρίων και μονάδων."
 
 #: gui/text/tips/catapults.txt:6
 msgid "- Expensive and slow."
@@ -2941,19 +3006,19 @@ msgstr "-Ακριβό και αργό."
 msgid ""
 "- Pack up into carts for movement, and unpack into stationary engines for "
 "attack!"
-msgstr ""
+msgstr "- Πακετάρεται σε καροτσάκια για τη μετακίνηση, και αποσυσκευάζεται σε σταθερές μηχανές για την επίθεση!"
 
 #: gui/text/tips/celtic_war_barge.txt:1
 msgid "CELTIC WAR BARGE"
-msgstr ""
+msgstr "ΚΕΛΤΙΚΟ ΠΟΛΕΜΙΚΟ ΠΟΤΑΜΟΠΛΟΙΟ"
 
 #: gui/text/tips/celtic_war_barge.txt:2
 msgid "- A medium \"trireme\"-class warship."
-msgstr ""
+msgstr "- Ένα μέτριο πολεμικό πλοίο κλάσης-\"τριήρης\". "
 
 #: gui/text/tips/celtic_war_barge.txt:4
 msgid "- Available to the Celtic Factions (Britons, Gauls)."
-msgstr ""
+msgstr "- Διαθέσιμο στη Κέλτικη Φατρία (Βρετωνούς και Γαλάτες)."
 
 #: gui/text/tips/celtic_war_barge.txt:6
 msgid "- Can transport up to 40 units across the waters."
@@ -2961,11 +3026,11 @@ msgstr "-Μπορέι να μεταφέρει μέχρι 40 μονάδες πα�
 
 #: gui/text/tips/celtic_war_barge.txt:8
 msgid "- Increases firepower with garrisoned infantry."
-msgstr ""
+msgstr "- Αυξάνει τη δύναμη πυρός με τη φρουρά πεζικού."
 
 #: gui/text/tips/celtic_war_barge.txt:10
-msgid "- Cannot ram, like other triremes, but has greater health and armour."
-msgstr ""
+msgid "- Cannot ram, like other triremes, but has greater health and armor."
+msgstr "- Δεν μπορεί να εμβολίσει, όπως οι άλλες τριήρεις, αλλά έχει μεγαλύτερη αντοχή και θωράκιση."
 
 #: gui/text/tips/civic_centres.txt:1
 msgid "CIVIC CENTERS"
@@ -2977,7 +3042,7 @@ msgstr "-Τα θεμέλεια της νέας σου αποικίας."
 
 #: gui/text/tips/civic_centres.txt:4
 msgid "- Claim large tracts of territory."
-msgstr ""
+msgstr "- Διεκδικεί μεγάλες εδαφικές εκτάσεις."
 
 #: gui/text/tips/civic_centres.txt:6
 msgid "- Can be built in friendly and neutral territory."
@@ -2985,7 +3050,7 @@ msgstr "Μπορεί να χτιστεί σε φίλια και ουδέτερα
 
 #: gui/text/tips/civic_centres.txt:8
 msgid "- Train Female Citizens and basic Citizen-Soldiers."
-msgstr ""
+msgstr "- Εκπαιδεύει Γυναίκες Πολίτες και τους βασικούς Πολίτες-Οπλίτες."
 
 #: gui/text/tips/embassies.txt:1
 msgid "EMBASSIES"
@@ -2993,17 +3058,17 @@ msgstr "ΠΡΕΣΒΕΙΕΣ"
 
 #: gui/text/tips/embassies.txt:2
 msgid "- Special \"Barracks\" available to the Carthage faction."
-msgstr ""
+msgstr "- Ειδικό \"Στρατώνας\" διαθέσιμος στην φατρία των Καρχηδονίων."
 
 #: gui/text/tips/embassies.txt:4
 msgid "- Train mercenaries from each of the ethnically-themed embassies."
-msgstr ""
+msgstr "- Εκπαιδεύει μισθοφόρους από κάθε πρεσβεία εθνικότητας. "
 
 #: gui/text/tips/embassies.txt:6
 msgid ""
 "- Mercenary \"citizen-soldiers\" have their normal Food cost converted to "
 "Metal cost."
-msgstr ""
+msgstr "- Στο Μισθοφόρος \"πολίτη-οπλίτη\" το βασικό κόστος σε Τροφή μετατρέπεται σε κόστος σε Μέταλλο."
 
 #: gui/text/tips/fishing.txt:1
 msgid "FISHING"
@@ -3011,21 +3076,21 @@ msgstr "ΑΛΙΕΙΑ"
 
 #: gui/text/tips/fishing.txt:2
 msgid "- Fish the seas for a bountiful harvest."
-msgstr ""
+msgstr "- Αλιεύει στις θάλασσες για μια πλούσια συγκομιδή."
 
 #: gui/text/tips/fishing.txt:4
 msgid "- Fishing boats carry a large amount of food per trip."
-msgstr ""
+msgstr "- Τα αλιευτικά μεταφέρουν ένα μεγάλο μέγεθος από τροφή σε κάθε τους διαδρομή."
 
 #: gui/text/tips/fishing.txt:6
 msgid "- Fishing is faster than gathering food on fields."
-msgstr ""
+msgstr "- Το ψάρεμα είναι γρηγορότερο από το να συλλέγεις τροφή από τα λιβάδια."
 
 #: gui/text/tips/fishing.txt:8
 msgid ""
 "- Garrison a support unit aboard to double the fishing boat's gathering "
 "rate."
-msgstr ""
+msgstr "- Οχύρωσε μια μονάδα υποστήριξης πάνω στο πλωτό για να διπλασιάσεις το ποσοστό συλλογής του αλιευτικού."
 
 #: gui/text/tips/fishing.txt:10
 msgid "- Careful! Fish are not an infinite resource!"
@@ -3037,19 +3102,19 @@ msgstr "ΦΡΟΥΡΙΟ"
 
 #: gui/text/tips/fortress.txt:2
 msgid "- The Fortress is usually each faction's strongest building."
-msgstr ""
+msgstr "- Τα Κάστρα είναι συνήθως τα ισχυρότερα κτήρια κάθε φατρίας."
 
 #: gui/text/tips/fortress.txt:4
 msgid "- Trains strong units like Champions, Heroes, and Siege Weapons."
-msgstr ""
+msgstr "- Εκπαιδεύουν ισχυρές μονάδες όπως πρωταθλητές, Ήρωες και Πολιορκητικέ Μηχανές."
 
 #: gui/text/tips/fortress.txt:6
 msgid "- Gives a population boost."
-msgstr ""
+msgstr "- Δίνει ένα πλεόνασμα πληθυσμού"
 
 #: gui/text/tips/fortress.txt:8
 msgid "- Garrison soldiers inside to add more firepower to its defense."
-msgstr ""
+msgstr "- Οχύρωσε στρατιώτες μέσα για να αυξήσεις τη δύναμή πυρός στην άμυνα."
 
 #: gui/text/tips/gathering.txt:1
 msgid "RESOURCE GATHERING"
@@ -3057,43 +3122,43 @@ msgstr "ΣΥΛΛΟΓΗ ΠΡΟΜΗΘΕΙΩΝ"
 
 #: gui/text/tips/gathering.txt:2
 msgid "- Use Citizen-Soldiers and Female Citizens to gather resources."
-msgstr ""
+msgstr "- Χρησιμοποίησε Πολίτες-Οπλίτες και Γυναίκες Πολίτες για την συγκομιδή πόρων."
 
 #: gui/text/tips/gathering.txt:4
 msgid "- Female Citizens are bonused with Farming and Foraging."
-msgstr ""
+msgstr "- Οι Γυναίκες Πολίτες είναι καλλίτερες στην Καλλιέργεια και στην Αναζήτηση Τροφής."
 
 #: gui/text/tips/gathering.txt:6
 msgid "- Citizen-Soldiers are bonused with Mining."
-msgstr ""
+msgstr "- Οι Πολίτες-Οπλίτες είναι καλλίτεροι στην εξόρυξη."
 
 #: gui/text/tips/gathering.txt:8
 msgid "- Cavalry Citizen-Soldiers are bonused with Hunting."
-msgstr ""
+msgstr "- Οι Ιππείς Πολίτες-Οπλίτες είναι καλλίτεροι στο Κυνήγι."
 
 #: gui/text/tips/gathering.txt:10
 msgid ""
 "- The higher the level of Citizen-Soldier (Advanced, Elite), the better he "
 "fights, but the less efficient he is at gathering."
-msgstr ""
+msgstr "- Στο υψηλότερο επίπεδο ο Οπλίτης-Πολίτης (Προχωρημένος, Εκλεκτός) είναι καλλίτερος στη μάχη, αλλά λιγότερο αποτελεσματικός στη συγκομιδή."
 
 #: gui/text/tips/iphicrates.txt:1
 msgid "IPHICRATES"
-msgstr ""
+msgstr "ΙΦΙΚΡΑΤΗΣ"
 
 #: gui/text/tips/iphicrates.txt:2
 msgid ""
 "- The Athenian general who reformed the Athenian army to be faster and more "
 "maneuverable."
-msgstr ""
+msgstr "- Ο Αθηναίος στρατηγός που αναμόρφωσε τον Αθηναϊκό στρατό ώστε να είναι γρηγορότερος και πιο ευέλικτος."
 
 #: gui/text/tips/iphicrates.txt:4
 msgid "- Units in his formation are faster and stronger."
-msgstr ""
+msgstr "- Οι μονάδες σε αυτό το σχηματισμό είναι γρηγορότερες και ισχυρότερες."
 
 #: gui/text/tips/iphicrates.txt:6
 msgid "- Skirmishers move faster while he lives."
-msgstr ""
+msgstr "- Οι Ακροβολιστές κινούνται γρηγορότερα όσο είναι ζωντανός."
 
 #: gui/text/tips/outposts.txt:1
 msgid "OUTPOSTS"
@@ -3101,7 +3166,7 @@ msgstr "ΠΡΟΦΥΛΑΚΕΣ"
 
 #: gui/text/tips/outposts.txt:2
 msgid "- Build in neutral territory for a large scouting range."
-msgstr ""
+msgstr "- Κτίσε σε ουδέτερο έδαφος για μεγάλη περιοχή εξερεύνησης."
 
 #: gui/text/tips/outposts.txt:4
 msgid "- Cheap, at 80 Wood."
@@ -3114,11 +3179,11 @@ msgstr "- Κατασκευάζονται γρήγορα, αλλά είναι α�
 #: gui/text/tips/outposts.txt:8
 msgid ""
 "- Garrison a unit in it to stop them from decaying in neutral territory."
-msgstr ""
+msgstr "- Οχύρωσε μία μονάδα σε αυτό ώστε να σταματήσεις τη φθορά της στο ουδέτερο έδαφος."
 
 #: gui/text/tips/palisades.txt:1
 msgid "PALISADE WALLS"
-msgstr ""
+msgstr "ΤΟΙΧΟΣ ΑΠΟ ΠΑΣΣΑΛΟΥΣ"
 
 #: gui/text/tips/palisades.txt:2
 msgid "- A quick, cheap wooden wall available to all factions."
@@ -3126,13 +3191,13 @@ msgstr "-Ενα γρήγορο,φθηνό ξύλινο τοίχος,διαθέσ
 
 #: gui/text/tips/palisades.txt:4
 msgid "- Most factions have access to them in Village Phase."
-msgstr ""
+msgstr "- Οι περισσότερες φατρίες έχουν πρόσβαση σε αυτούς από την Φάση Αποικισμού."
 
 #: gui/text/tips/palisades.txt:6
 msgid ""
 "- Attackable by enemy soldiers, unlike City Walls, which are only attackable"
 " by siege weapons."
-msgstr ""
+msgstr "- Δέχεται επίθεση από εχθρικούς στρατιώτες, σε αντίθεση με τα Τοίχοι Πόλης, που προσβάλλονται μόνο από πολιορκητικές μηχανές."
 
 #: gui/text/tips/pericles.txt:1
 msgid "PERICLES"
@@ -3140,15 +3205,15 @@ msgstr "ΠΕΡΙΚΛΗΣ"
 
 #: gui/text/tips/pericles.txt:2
 msgid "- The foremost Athenian politician of the 5th century BCE."
-msgstr ""
+msgstr "- Ο κύριος Αθηναίος πολιτικός του 5ου αιώνα π.Χ.."
 
 #: gui/text/tips/pericles.txt:4
 msgid "- Buildings construct faster within his range."
-msgstr ""
+msgstr "- Τα κτίρια κατασκευάζονται γρηγορότερα μέσα στην εμβέλειά του."
 
 #: gui/text/tips/pericles.txt:6
 msgid "- Temples are cheaper while he lives."
-msgstr ""
+msgstr "- Οι ναοί είναι φθηνότεροι όσο είναι ζωντανός."
 
 #: gui/text/tips/persian_architecture.txt:1
 msgid "PERSIAN ARCHITECTURE"
@@ -3160,34 +3225,34 @@ msgstr "- Ειδική Τεχνολογία για τους Πέρσες."
 
 #: gui/text/tips/persian_architecture.txt:4
 msgid "- All Persian buildings +25% stronger."
-msgstr ""
+msgstr "- Όλα τα Περσικά κτίρια είναι +25% ισχυρότερα."
 
 #: gui/text/tips/persian_architecture.txt:6
 msgid "- Build time lengthened by +20% as a consequence."
-msgstr ""
+msgstr "- Ως ασυνέπεια επιμηκύνεται ο χρόνος κατασκευής κατά +20%."
 
 #: gui/text/tips/persian_architecture.txt:8
 msgid ""
 "- Persians also have access to a great number of structural & defensive "
 "technologies."
-msgstr ""
+msgstr "- Οι Πέρσες έχουν επίσης πρόσβαση σε μεγάλο αριθμό κατασκευαστικών και αμυντικών τεχνολογιών."
 
 #: gui/text/tips/pikemen.txt:1
 msgid "PIKEMEN"
-msgstr ""
+msgstr "ΔΟΡΑΤΟΦΟΡΟΣ"
 
 #: gui/text/tips/pikemen.txt:2
 msgid "- Heavily armored and slow. Low attack."
-msgstr ""
+msgstr "- Βαριά θωράκιση και αργοί. Χαμηλή επίθεση."
 
 #: gui/text/tips/pikemen.txt:4
 msgid ""
 "- Used against cavalry or against other melee infantry to pin them in place."
-msgstr ""
+msgstr "- Χρησιμοποιούνται εναντίων του ιππικού ή εναντίων άλλων εκ του συστάδην πεζικού για να τους καθηλώσουν."
 
 #: gui/text/tips/pikemen.txt:6
 msgid "- Available to: Macedonians, Seleucids, and Ptolemies."
-msgstr ""
+msgstr "- Διαθέσιμοι σε: Μακεδόνες, Σελευκίδες και Πτολεμαίους."
 
 #: gui/text/tips/quinquereme.txt:1
 msgid "HEAVY WARSHIP"
@@ -3197,31 +3262,31 @@ msgstr "ΒΑΡΥ ΠΟΛΕΜΙΚΟ-ΠΛΟΙΟ"
 msgid ""
 "- The heaviest standard warship. Available to: Rome, Carthage, Ptolemies, "
 "and Seleucids."
-msgstr ""
+msgstr "- Το βαρύτερο βασικό πολεμικό πλοίο. Διαθέσιμο σε: Ρωμαίους, Καρχηδόνιους, Πτολεμαίους και Σελευκίδες."
 
 #: gui/text/tips/quinquereme.txt:4
 msgid "- Transports up to 50 units."
-msgstr ""
+msgstr "- Μεταφέρει πάνω από 50 μονάδες."
 
 #: gui/text/tips/quinquereme.txt:6
 msgid "- Increases firepower with garrisoned catapults."
-msgstr ""
+msgstr "- Αυξάνει τη δύναμη πυρός με τη φρουρά καταπελτών."
 
 #: gui/text/tips/quinquereme.txt:8
 msgid "- Has a ramming attack that sinks enemy ships (NOT IMPLEMENTED YET)."
-msgstr ""
+msgstr "- Επιτίθεται με εμβολισμό και βυθίσει τα εχθρικά πλοία. (ΔΕΝ ΕΙΝΑΙ ΔΙΑΘΕΣΙΜΟ ΑΚΟΜΑ)."
 
 #: gui/text/tips/savanna_biome.txt:1
 msgid "SAVANNA BIOME"
-msgstr ""
+msgstr "ΒΙΟΤΟΠΟΣ ΣΑΒΑΝΑΣ"
 
 #: gui/text/tips/savanna_biome.txt:2
 msgid "- Generally flat, with a few watering holes and rocky outcrops."
-msgstr ""
+msgstr "- Γενικά επίπεδη, με μερικές τρύπες νερού και βραχώδης προεξοχές."
 
 #: gui/text/tips/savanna_biome.txt:4
 msgid "- Chock full of herd animals for plentiful hunting."
-msgstr ""
+msgstr "- Ασφυκτικά γεμάτη από αγέλες ζώων για πλούσιο κυνήγι."
 
 #: gui/text/tips/savanna_biome.txt:6
 msgid "- Rich in all types of mining."
@@ -3229,7 +3294,7 @@ msgstr "-Πλούσιο σε όλα τα είδη εξόρυξης."
 
 #: gui/text/tips/savanna_biome.txt:8
 msgid "- Wood tends to be sparse, but consists of high-yield Baobab trees."
-msgstr ""
+msgstr "- Τα δάση είναι αραιά, αλλά αποτελούνται από υψηλής απόδοσης Αδανσωνιών δέντρων."
 
 #: gui/text/tips/scout_towers.txt:1
 msgid "DEFENSE TOWERS"
@@ -3237,13 +3302,13 @@ msgstr "ΑΜΥΝΤΙΚΟΙ ΠΥΡΓΟΙ"
 
 #: gui/text/tips/scout_towers.txt:2
 msgid "- Free-standing towers good for defending large areas of countryside."
-msgstr ""
+msgstr "- Οι επιδαπέδιοι πύργοι είναι καλοί για την υπεράσπιση μεγάλων περιοχών της υπαίθρου."
 
 #: gui/text/tips/scout_towers.txt:4
 msgid ""
 "- They usually cost 100 Wood and 100 Stone. Iberian Defense Towers cost 300 "
 "Stone (because they're stronger)."
-msgstr ""
+msgstr "- Συνήθως στοιχίζουν 100 Ξύλο και 100 Πέτρα, Οι Ιβηρικοί Αμυντικοί Πύργοι στοιχίζουν 300 Πέτρα (επειδή είναι ισχυρότεροι)"
 
 #: gui/text/tips/scout_towers.txt:6
 msgid "- Has a ranged attack that increases for each garrisoned unit."
@@ -3259,13 +3324,13 @@ msgstr "- Η δυνατότερη μονάδα πεζικού στο παιχν�
 
 #: gui/text/tips/spartan_hoplites.txt:4
 msgid "- Champion Infantry available to the Spartans faction."
-msgstr ""
+msgstr "- Πρωταθλητής Πεζικάριος διαθέσιμος στη φατρία των Σπαρτιατών."
 
 #: gui/text/tips/spartan_hoplites.txt:6
 msgid ""
 "- Use them to slaughter enemy cavalry or as a shock force to support your "
 "regular infantry."
-msgstr ""
+msgstr "- Χρησιμοποίησέ τους για τη σφαγή του ιππικού ή ως δύναμη σοκ για την υποστήριξη του πεζικού σου."
 
 #: gui/text/tips/spartan_hoplites.txt:8
 msgid "- Use the 'Phalanx' formation for extra armor bonuses."
@@ -3273,25 +3338,25 @@ msgstr "- Χρησιμοποίησε το σχηματισμό Φάλαγγας 
 
 #: gui/text/tips/spearmen.txt:1
 msgid "SPEARMEN"
-msgstr ""
+msgstr "ΛΟΓΧΟΦΟΡΟΣ"
 
 #: gui/text/tips/spearmen.txt:2
 msgid "- The basic melee infantry for every faction in the game."
-msgstr ""
+msgstr "- Το βασικό εκ του συστάδην πεζικό για κάθε φατρία στο παιχνίδι."
 
 #: gui/text/tips/spearmen.txt:4
 msgid "- Used against cavalry for an attack bonus."
-msgstr ""
+msgstr "- Χρησιμοποιήστε εναντίον του ιππικού με ένα πλεόνασμα επίθεσης."
 
 #: gui/text/tips/spearmen.txt:6
 msgid "- Decent hack attack make them good front line troops."
-msgstr ""
+msgstr "- Η υπολογίσιμη δύναμη σπάθισης τους κάνουν καλούς για στρατιώτες πρώτης γραμμής."
 
 #: gui/text/tips/spearmen.txt:8
 msgid ""
 "- They are countered by ranged units and swordsmen, so support your spearmen"
 " with slingers or cavalry."
-msgstr ""
+msgstr "-  Αντιμετωπίζονται από μονάδες που βάλουν και ξιφομάχους, έτσι υποστηρίξτε τους ακοντιστές σας με σφενδονιστές ή ιππικό."
 
 #: gui/text/tips/stoa.txt:1
 msgid "STOA"
@@ -3299,11 +3364,11 @@ msgstr "ΣΤΟΑ"
 
 #: gui/text/tips/stoa.txt:2
 msgid "- A special structure for Greek factions."
-msgstr ""
+msgstr "- Μία ειδική κατασκευή για τις Ελληνικές φατρίες."
 
 #: gui/text/tips/stoa.txt:4
 msgid "- Trains Heavy Skirmishers and Sword Infantry Champions."
-msgstr ""
+msgstr "- Εκπαιδεύει Βαριούς Ακροβολιστές και Πρωταθλητές Ξιφομάχους."
 
 #: gui/text/tips/stoa.txt:6
 msgid "- Grants +10 Population."
@@ -3315,13 +3380,13 @@ msgstr "ΑΠΟΘΗΚΕΣ"
 
 #: gui/text/tips/storehouses.txt:2
 msgid "- A cheap dropsite for non-food resources (wood, stone, metal)."
-msgstr ""
+msgstr "- Ένα φτηνό εναποθετήριο για μη φαγώσιμες ύλες (ξύλο, πέτρα και μέταλλο)."
 
 #: gui/text/tips/storehouses.txt:4
 msgid ""
 "- Research technologies to improve the gathering capabilities of your "
 "citizens."
-msgstr ""
+msgstr "- Ερευνά τεχνολογίες για την βελτίωση της ποσότητας συγκομιδής των πολιτών σου."
 
 #: gui/text/tips/syntagma.txt:1
 msgid "SYNTAGMA FORMATION"
@@ -3333,7 +3398,7 @@ msgstr "- Σχηματισμός για πεζικό τύπου \"δορυφόρ
 
 #: gui/text/tips/syntagma.txt:4
 msgid "- Formation is slow and cumbersome."
-msgstr ""
+msgstr "- Ο σχηματισμός είναι αργός και δυσκίνητος."
 
 #: gui/text/tips/syntagma.txt:6
 msgid "- Nearly invulnerable from the front."
@@ -3349,7 +3414,7 @@ msgstr "ΝΑΟΙ"
 
 #: gui/text/tips/temples.txt:2
 msgid "- Town Phase structure."
-msgstr ""
+msgstr "- Κατασκευή στη Φάση Κωμόπολης"
 
 #: gui/text/tips/temples.txt:4
 msgid "- Recruit Healers to heal your troops on the battlefield."
@@ -3357,7 +3422,7 @@ msgstr "-Προσέλαβε Θεραπευτές να θεραπεύουν το�
 
 #: gui/text/tips/temples.txt:6
 msgid "- Research healing, religious devotion, and cultural technologies."
-msgstr ""
+msgstr "- Ερευνά επούλωση, θρησκευτική ευλάβεια, και πολιτιστικές τεχνολογίες."
 
 #: gui/text/tips/temples.txt:8
 msgid "- Its \"aura\" heals nearby units."
@@ -3396,15 +3461,15 @@ msgstr "ΘΕΜΙΣΤΟΚΛΗΣ"
 msgid ""
 "- Athenian hero who commanded the Greeks at the great naval battles of "
 "Artemisium and Salamis."
-msgstr ""
+msgstr "- Αθηναίος ήρωας που διοικούσε τους Έλληνες στις μεγάλες ναυμαχίες του Αρτεμισίου και της Σαλαμίνας."
 
 #: gui/text/tips/themistocles.txt:4
 msgid "- All ships are built faster while he lives."
 msgstr "- Όλα τα πλοία χτίζονται πιό γρήγορα όσο ειναι ζωντανός."
 
 #: gui/text/tips/themistocles.txt:6
-msgid "- The ship he is garrisoned inside moves much faster."
-msgstr ""
+msgid "- The ship he is garrisoned inside sails much faster."
+msgstr "- Στο πλοίο που επιβιβάζεται πλέει πολύ πιο γρήγορα."
 
 #: gui/text/tips/triremes.txt:1
 msgid "TRIREME"
@@ -3425,43 +3490,43 @@ msgstr "- Καλή για μεταφορές ή μάχες."
 
 #: gui/text/tips/triremes.txt:8
 msgid "- Garrison troops aboard to increase fire power."
-msgstr ""
+msgstr "- Επιβιβάζοντας στρατιώτες στο πλοίο αυξάνετε τη δύναμη πυρός του."
 
 #: gui/text/tips/triremes.txt:10
 msgid ""
 "- Garrison a catapult aboard for a long-range siege attack (NOT IMPLEMENTED "
 "YET)."
-msgstr ""
+msgstr "- Επιβιβάστε ένα καταπέλτη στο πλοίο για μεγάλου βεληνεκές επίθεση (ΔΕΝ ΕΧΕΙ ΥΛΟΠΟΙΗΘΕΙ ΑΚΟΜΑΙ)"
 
 #: gui/text/tips/triremes.txt:12
 msgid ""
 "- Capable of a devastating ship-to-ship ramming attack that must recharge "
 "between each use (NOT IMPLEMENTED YET)."
-msgstr ""
+msgstr "- Ικανή για καταστροφική επίθεση με εμβολισμό από πλοίο σε πλοίο, πρέπει να φορτίζεται πριν από κάθε χρήση (ΔΕΝ ΕΙΝΑΙ ΔΙΑΘΕΣΙΜΟ ΑΚΟΜΑ)."
 
 #: gui/text/tips/viriato.txt:1
 msgid "VIRIATO"
-msgstr ""
+msgstr "ΒΙΡΙΑΤΟΣ"
 
 #: gui/text/tips/viriato.txt:2
 msgid "- Iberian hero of the Lusitani tribe."
-msgstr ""
+msgstr "- Ιβηρικός ήρωα από τη φυλή της Λουζιτάνιας."
 
 #: gui/text/tips/viriato.txt:4
 msgid ""
 "- At least 7 campaigns against the Romans during the 'Lusitani Wars' from "
 "147 to 139 B.C."
-msgstr ""
+msgstr "- Πραγματοποίησε τουλάχιστον 7 εκστρατείες εναντίων των Ρωμαίων κατά τον \"Πύρινο Πόλεμο\" από το 147 έως το 139 π.Χ.."
 
 #: gui/text/tips/viriato.txt:6
 msgid "- Fast moving and can switch between sword and flaming javelin."
-msgstr ""
+msgstr "- Κινείται γρήγορα και μπορεί να εναλλάξει μεταξύ σπαθιού και πύρινου ακοντίου."
 
 #: gui/text/tips/viriato.txt:8
 msgid ""
 "- His \"aura\" is the \"Tactica Guerilla\" that allows nearby Iberian units "
 "to ambush their opponents."
-msgstr ""
+msgstr "- Η \"αύρα\" του είναι η \"Τακτική του Ανταρτοπόλεμου\" και επιτρέπει στις κοντινές σε αυτόν Ιβηρικές μονάδες να ενεδρεύουν τους αντιπάλους τους."
 
 #: gui/text/tips/war_elephants.txt:1
 msgid "WAR ELEPHANTS"
@@ -3479,11 +3544,11 @@ msgstr "- Κοστίζει πολύ μέταλλο και φαί, αλλά εί�
 
 #: gui/text/tips/war_elephants.txt:6
 msgid "- Vulnerable to infantry skirmishers."
-msgstr ""
+msgstr "- Ευάλωτοι σε πεζικό ακροβολιστών."
 
 #: gui/text/tips/war_elephants.txt:8
 msgid "- Available to: Mauryans, Ptolemies, Seleucids, and Carthaginians."
-msgstr ""
+msgstr "- Διαθέσιμοι σε: Μαουρύα, Πτολεμαίους, Σελευκίδες και Καρχηδόνιους."
 
 #: gui/text/tips/whales.txt:1
 msgid "WHALES"

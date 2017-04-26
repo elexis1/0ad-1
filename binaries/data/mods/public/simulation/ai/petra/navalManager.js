@@ -14,7 +14,7 @@ var PETRA = function(m)
 m.NavalManager = function(Config)
 {
 	this.Config = Config;
-	
+
 	// ship subCollections. Also exist for land zones, idem, not caring.
 	this.seaShips = [];
 	this.seaTransportShips = [];
@@ -28,7 +28,7 @@ m.NavalManager = function(Config)
 	// needed NB per zone.
 	this.neededTransportShips = [];
 	this.neededWarShips = [];
-	
+
 	this.transportPlans = [];
 
 	// shore-line regions where we can load and unload units
@@ -42,7 +42,7 @@ m.NavalManager.prototype.init = function(gameState, deserializing)
 	this.docks = gameState.getOwnStructures().filter(API3.Filters.and(API3.Filters.byClassesOr(["Dock", "Shipyard"]),
 		API3.Filters.not(API3.Filters.isFoundation())));
 	this.docks.registerUpdates();
-	
+
 	this.ships = gameState.getOwnUnits().filter(API3.Filters.and(API3.Filters.byClass("Ship"), API3.Filters.not(API3.Filters.byMetadata(PlayerID, "role", "trader"))));
 	// note: those two can overlap (some transport ships are warships too and vice-versa).
 	this.transportShips = this.ships.filter(API3.Filters.and(API3.Filters.byCanGarrison(), API3.Filters.not(API3.Filters.byClass("FishingBoat"))));
@@ -53,16 +53,14 @@ m.NavalManager.prototype.init = function(gameState, deserializing)
 	this.transportShips.registerUpdates();
 	this.warShips.registerUpdates();
 	this.fishShips.registerUpdates();
-	
-	let fishes = gameState.getFishableSupplies();
+
 	let availableFishes = {};
-	for (let fish of fishes.values())
+	for (let fish of gameState.getFishableSupplies().values())
 	{
-		let sea = gameState.ai.accessibility.getAccessValue(fish.position(), true);
-		fish.setMetadata(PlayerID, "sea", sea);
-		if (availableFishes[sea])
+		let sea = this.getFishSea(gameState, fish);
+		if (sea && availableFishes[sea])
 			availableFishes[sea] += fish.resourceSupplyAmount();
-		else
+		else if (sea)
 			availableFishes[sea] = fish.resourceSupplyAmount();
 	}
 
@@ -107,7 +105,7 @@ m.NavalManager.prototype.init = function(gameState, deserializing)
 	}
 
 	// load units and buildings from the config files
-	let civ = gameState.civ();
+	let civ = gameState.getPlayerCiv();
 	if (civ in this.Config.buildings.naval)
 		this.bNaval = this.Config.buildings.naval[civ];
 	else
@@ -171,7 +169,7 @@ m.NavalManager.prototype.init = function(gameState, deserializing)
 	for (let ship of this.ships.values())
 		this.setShipIndex(gameState, ship);
 	for (let dock of this.docks.values())
-		this.setDockIndex(gameState, dock);
+		this.setAccessIndices(gameState, dock);
 };
 
 m.NavalManager.prototype.updateFishingBoats = function(sea, num)
@@ -188,52 +186,81 @@ m.NavalManager.prototype.resetFishingBoats = function(gameState, sea)
 		this.wantedFishShips.fill(0);
 };
 
+m.NavalManager.prototype.setAccessIndices = function(gameState, ent)
+{
+	m.getLandAccess(gameState, ent);
+	m.getSeaAccess(gameState, ent);
+};
+
 m.NavalManager.prototype.setShipIndex = function(gameState, ship)
 {
 	let sea = gameState.ai.accessibility.getAccessValue(ship.position(), true);
 	ship.setMetadata(PlayerID, "sea", sea);
 };
 
-m.NavalManager.prototype.setDockIndex = function(gameState, dock)
+/** Get the sea, cache it if not yet done and check if in opensea */
+m.NavalManager.prototype.getFishSea = function(gameState, fish)
 {
-	let land = dock.getMetadata(PlayerID, "access");
-	if (land === undefined)
-	{
-		land = this.getDockIndex(gameState, dock, false);
-		dock.setMetadata(PlayerID, "access", land);
-	}
-	let sea = dock.getMetadata(PlayerID, "sea");
-	if (sea === undefined)
-	{
-		sea = this.getDockIndex(gameState, dock, true);
-		dock.setMetadata(PlayerID, "sea", sea);
-	}
+	let sea = fish.getMetadata(PlayerID, "sea");
+	if (sea)
+		return sea;
+	const ntry = 4;
+	const around = [ [-0.7,0.7], [0,1], [0.7,0.7], [1,0], [0.7,-0.7], [0,-1], [-0.7,-0.7], [-1,0] ];
+	let pos = gameState.ai.accessibility.gamePosToMapPos(fish.position());
+	let width = gameState.ai.accessibility.width;
+	let k = pos[0] + pos[1]*width;
+	sea = gameState.ai.accessibility.navalPassMap[k];
+	fish.setMetadata(PlayerID, "sea", sea);
+	let radius = 120 / gameState.ai.accessibility.cellSize / ntry;
+	if (around.every(a =>
+		{
+			for (let t = 0; t < ntry; ++t)
+			{
+				let i = pos[0] + Math.round(a[0]*radius*(ntry-t));
+				let j = pos[1] + Math.round(a[1]*radius*(ntry-t));
+				if (i < 0 || i >= width || j < 0 || j >= width)
+					continue;
+				if (gameState.ai.accessibility.landPassMap[i + j*width] === 1)
+				{
+					let navalPass = gameState.ai.accessibility.navalPassMap[i + j*width];
+					if (navalPass === sea)
+						return true;
+					else if (navalPass === 1)  // we could be outside the map
+						continue;
+				}
+				return false;
+			}
+			return true;
+		}))
+		fish.setMetadata(PlayerID, "opensea", true);
+	return sea;
 };
 
-/**
- * get the indices for our starting docks and those of our allies
- * land index when onWater=false, sea indes when true
- */
-m.NavalManager.prototype.getDockIndex = function(gameState, dock, onWater)
+/** check if we can safely fish at the fish position */
+m.NavalManager.prototype.canFishSafely = function(gameState, fish)
 {
-	let index = gameState.ai.accessibility.getAccessValue(dock.position(), onWater);
-	if (index < 2)
-	{
-		// pre-positioned docks are sometimes not well positionned
-		let dockPos = dock.position();
-		let radius = dock.footprintRadius();
-		for (let i = 0; i < 16; i++)
+	if (fish.getMetadata(PlayerID, "opensea"))
+		return true;
+	const ntry = 4;
+	const around = [ [-0.7,0.7], [0,1], [0.7,0.7], [1,0], [0.7,-0.7], [0,-1], [-0.7,-0.7], [-1,0] ];
+	let territoryMap = gameState.ai.HQ.territoryMap;
+	let width = territoryMap.width;
+	let radius = 140 / territoryMap.cellSize / ntry;
+	let pos = territoryMap.gamePosToMapPos(fish.position());
+	return around.every(a =>
 		{
-			let pos = [ dockPos[0] + radius*Math.cos(i*Math.PI/8), dockPos[1] + radius*Math.sin(i*Math.PI/8)];
-
-			index = gameState.ai.accessibility.getAccessValue(pos, onWater);
-			if (index >= 2)
-				break;
-		}
-	}
-	if (index < 2)
-		API3.warn("ERROR in Petra navalManager because of dock position (onWater=" + onWater + ") index " + index);
-	return index;
+			for (let t = 0; t < ntry; ++t)
+			{
+				let i = pos[0] + Math.round(a[0]*radius*t);
+				let j = pos[1] + Math.round(a[1]*radius*t);
+				if (i < 0 || i >= width || j < 0 || j >= width)
+					break;
+				let owner = territoryMap.getOwnerIndex(i + j*width);
+				if (owner !== 0 && gameState.isPlayerEnemy(owner))
+					return false;
+			}
+			return true;
+		});
 };
 
 /** get the list of seas (or lands) around this region not connected by a dock */
@@ -259,7 +286,7 @@ m.NavalManager.prototype.checkEvents = function(gameState, queues, events)
 			continue;
 		let entity = gameState.getEntityById(evt.newentity);
 		if (entity && entity.hasClass("Dock") && entity.isOwn(PlayerID))
-			this.setDockIndex(gameState, entity);
+			this.setAccessIndices(gameState, entity);
 	}
 
 	for (let evt of events.TrainingFinished)
@@ -326,7 +353,7 @@ m.NavalManager.prototype.checkEvents = function(gameState, queues, events)
 		{
 			let ent = gameState.getEntityById(evt.entity);
 			if (ent && ent.hasClass("Dock"))
-				this.setDockIndex(gameState, ent);
+				this.setAccessIndices(gameState, ent);
 		}
 	}
 };
@@ -640,7 +667,7 @@ m.NavalManager.prototype.buildNavalStructures = function(gameState, queues)
 /** goal can be either attack (choose ship with best arrowCount) or transport (choose ship with best capacity) */
 m.NavalManager.prototype.getBestShip = function(gameState, sea, goal)
 {
-	let civ = gameState.civ();
+	let civ = gameState.getPlayerCiv();
 	let trainableShips = [];
 	gameState.getOwnTrainingFacilities().filter(API3.Filters.byMetadata(PlayerID, "sea", sea)).forEach(function(ent) {
 		let trainables = ent.trainableEntities(civ);

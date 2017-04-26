@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Wildfire Games
+/* Copyright (c) 2017 Wildfire Games
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -231,11 +231,11 @@ public:
 	 * translations for @p locale.
 	 */
 	std::vector<std::wstring> GetDictionariesForLocale(const std::string& locale) const;
-	
+
 	std::wstring GetFallbackToAvailableDictLocale(const Locale& locale) const;
-	
+
 	std::wstring GetFallbackToAvailableDictLocale(const std::string& locale) const;
-	
+
 	/**
 	 * Returns the code of the recommended locale for the current user that the
 	 * game supports.
@@ -424,10 +424,10 @@ public:
 	 * @sa http://en.wikipedia.org/wiki/Unix_time
 	 * @sa http://icu-project.org/apiref/icu4c521/classicu_1_1DateFormat.html
 	 */
-	std::string LocalizeDateTime(const UDate& dateTime, const DateTimeType& type, const DateFormat::EStyle& style) const;
+	std::string LocalizeDateTime(const UDate dateTime, const DateTimeType& type, const DateFormat::EStyle& style) const;
 
 	/**
-	 * Returns the specified date converted to the local timezone using the specified date format.
+	 * Returns the specified date using the specified date format.
 	 *
 	 * @param milliseconds Date specified as a UNIX timestamp in milliseconds
 	 *        (not seconds).
@@ -435,13 +435,14 @@ public:
 	 *        symbols. Usually, you internationalize the format string and
 	 *        get it translated before you pass it to
 	 *        FormatMillisecondsIntoDateString().
+	 * @param useLocalTimezone Boolean useful for durations
 	 * @return String containing the specified date with the specified date
 	 *         format.
 	 *
 	 * @sa http://en.wikipedia.org/wiki/Unix_time
 	 * @sa https://sites.google.com/site/icuprojectuserguide/formatparse/datetime?pli=1#TOC-Date-Field-Symbol-Table
 	 */
-	std::string FormatMillisecondsIntoDateString(const UDate& milliseconds, const std::string& formatString) const;
+	std::string FormatMillisecondsIntoDateString(const UDate milliseconds, const std::string& formatString, bool useLocalTimezone) const;
 
 	/**
 	 * Returns the specified floating-point number as a string, with the number

@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Wildfire Games
+/* Copyright (c) 2017 Wildfire Games
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -93,8 +93,7 @@ bool L10n::SaveLocale(const Locale& locale) const
 		return false;
 
 	g_ConfigDB.SetValueString(CFG_USER, "locale", locale.getName());
-	g_ConfigDB.WriteValueToFile(CFG_USER, "locale", locale.getName());
-	return true;
+	return g_ConfigDB.WriteValueToFile(CFG_USER, "locale", locale.getName());
 }
 
 bool L10n::ValidateLocale(const std::string& localeCode) const
@@ -103,7 +102,7 @@ bool L10n::ValidateLocale(const std::string& localeCode) const
 }
 
 // Returns true if both of these conditions are true:
-//  1. ICU has resources for that locale (which also ensures it's a valid locale string) 
+//  1. ICU has resources for that locale (which also ensures it's a valid locale string)
 //  2. Either a dictionary for language_country or for language is available.
 bool L10n::ValidateLocale(const Locale& locale) const
 {
@@ -140,7 +139,7 @@ std::wstring L10n::GetFallbackToAvailableDictLocale(const Locale& locale) const
 		return strcmp(locale.getLanguage(), l->getLanguage()) == 0
 		       && strcmp(locale.getCountry(), l->getCountry()) == 0;
 	};
-	
+
 	if (strcmp(locale.getCountry(), "") != 0
 	    && std::find_if(availableLocales.begin(), availableLocales.end(), checkLangAndCountry) != availableLocales.end())
 	{
@@ -157,7 +156,7 @@ std::wstring L10n::GetFallbackToAvailableDictLocale(const Locale& locale) const
 		stream << locale.getLanguage();
 		return stream.str();
 	}
-	
+
 	return L"";
 }
 
@@ -182,7 +181,7 @@ void L10n::GetDictionaryLocale(const std::string& configLocaleString, Locale& ou
 		else
 			LOGWARNING("The configured locale is not valid or no translations are available. Falling back to another locale.");
 	}
-	
+
 	Locale systemLocale = Locale::getDefault();
 	if (ValidateLocale(systemLocale))
 		outLocale = systemLocale;
@@ -361,7 +360,7 @@ UDate L10n::ParseDateTime(const std::string& dateTimeString, const std::string& 
 	return date;
 }
 
-std::string L10n::LocalizeDateTime(const UDate& dateTime, const DateTimeType& type, const DateFormat::EStyle& style) const
+std::string L10n::LocalizeDateTime(const UDate dateTime, const DateTimeType& type, const DateFormat::EStyle& style) const
 {
 	UnicodeString utf16Date;
 
@@ -376,7 +375,7 @@ std::string L10n::LocalizeDateTime(const UDate& dateTime, const DateTimeType& ty
 	return std::string(utf8Date, sink.NumberOfBytesWritten());
 }
 
-std::string L10n::FormatMillisecondsIntoDateString(const UDate& milliseconds, const std::string& formatString) const
+std::string L10n::FormatMillisecondsIntoDateString(const UDate milliseconds, const std::string& formatString, bool useLocalTimezone) const
 {
 	UErrorCode status = U_ZERO_ERROR;
 	UnicodeString dateString;
@@ -387,13 +386,13 @@ std::string L10n::FormatMillisecondsIntoDateString(const UDate& milliseconds, co
 	if (U_FAILURE(status))
 		LOGERROR("Error creating SimpleDateFormat: %s", u_errorName(status));
 
-	const TimeZone* timeZone = TimeZone::createDefault();
+	const TimeZone* timeZone = useLocalTimezone ? TimeZone::createDefault() : TimeZone::getGMT() ;
 
 	status = U_ZERO_ERROR;
 	Calendar* calendar = Calendar::createInstance(*timeZone, currentLocale, status);
 	if (U_FAILURE(status))
 		LOGERROR("Error creating calendar: %s", u_errorName(status));
-   
+
 	dateFormat->adoptCalendar(calendar);
 	dateFormat->format(milliseconds, dateString);
 	delete dateFormat;

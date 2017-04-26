@@ -1,4 +1,9 @@
 /**
+ * Which enemy entity types will be attacked on sight when patroling.
+ */
+var g_PatrolTargets = ["Unit"];
+
+/**
  * List of different actions units can execute,
  * this is mostly used to determine which actions can be executed
  *
@@ -218,7 +223,7 @@ var unitActions =
 				"x": target.x,
 				"z": target.z,
 				"target": action.target,
-				"targetClasses": { "attack": ["Unit"] }, // patrol should only attack units
+				"targetClasses": { "attack": g_PatrolTargets },
 				"queued": queued,
 				"allowCapture": false
 			});
@@ -547,7 +552,7 @@ var unitActions =
 		"getActionInfo": function(entState, targetState)
 		{
 			if (targetState.foundation || !entState.trader || !targetState.market ||
-			    !playerCheck(entState, targetState, ["Player", "Ally"]) ||
+			    playerCheck(entState, targetState, ["Enemy"]) ||
 			    !(targetState.market.land && hasClass(entState, "Organic") ||
 			      targetState.market.naval && hasClass(entState, "Ship")))
 				return false;
@@ -1255,7 +1260,7 @@ var g_EntityCommands =
 				return false;
 
 			return {
-				"tooltip": translate("Select trading goods"),
+				"tooltip": translate("Barter & Trade"),
 				"icon": "economics.png"
 			};
 		},
@@ -1391,6 +1396,12 @@ function playerCheck(entState, targetState, validPlayers)
 			return true;
 	}
 	return false;
+}
+
+function hasClass(entState, className)
+{
+	// note: use the functions in globalscripts/Templates.js for more versatile matching
+	return entState.identity && entState.identity.classes.indexOf(className) != -1;
 }
 
 /**

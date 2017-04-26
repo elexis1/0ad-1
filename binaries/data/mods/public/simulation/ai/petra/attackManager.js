@@ -51,14 +51,14 @@ m.AttackManager.prototype.checkEvents = function(gameState, events)
 	for (let evt of events.PlayerDefeated)
 		this.defeated[evt.playerId] = true;
 
-	let answer = false;
+	let answer = "decline";
 	let other;
 	let targetPlayer;
 	for (let evt of events.AttackRequest)
 	{
-		if (evt.source === PlayerID || !gameState.isPlayerAlly(evt.source) || !gameState.isPlayerEnemy(evt.target))
+		if (evt.source === PlayerID || !gameState.isPlayerAlly(evt.source) || !gameState.isPlayerEnemy(evt.player))
 			continue;
-		targetPlayer = evt.target;
+		targetPlayer = evt.player;
 		let available = 0;
 		for (let attackType in this.upcomingAttacks)
 		{
@@ -94,8 +94,10 @@ m.AttackManager.prototype.checkEvents = function(gameState, events)
 					attack.requested = true;
 				}
 			}
-			answer = true;
+			answer = "join";
 		}
+		else if (other !== undefined)
+			answer = "other";
 		break;  // take only the first attack request into account
 	}
 	if (targetPlayer !== undefined)
@@ -358,11 +360,34 @@ m.AttackManager.prototype.getEnemyPlayer = function(gameState, attack)
 			return enemyPlayer;
 		}
 	}
+	else if (gameState.getGameType() === "capture_the_relic")
+	{
+		// Target the player with the most relics
+		let maxRelicsOwned = 0;
+		// TODO: target gaia relics
+		for (let i = 1; i < gameState.sharedScript.playersData.length; ++i)
+		{
+			if (!gameState.isPlayerEnemy(i) || this.defeated[i])
+				continue;
+
+			let relicsCount = gameState.getEnemyUnits(i).filter(API3.Filters.byClass("Relic")).length;
+			if (relicsCount <= maxRelicsOwned)
+				continue;
+			maxRelicsOwned = relicsCount;
+			enemyPlayer = i;
+		}
+		if (enemyPlayer)
+		{
+			if (attack.targetPlayer === undefined)
+				this.currentEnemyPlayer = enemyPlayer;
+			return enemyPlayer;
+		}
+	}
 
 	let veto = {};
 	for (let i in this.defeated)
 		veto[i] = true;
-	// No rush if enemy too well defended (i.e. iberians)     
+	// No rush if enemy too well defended (i.e. iberians)
 	if (attack.type === "Rush")
 	{
 		for (let i = 1; i < gameState.sharedScript.playersData.length; ++i)
@@ -387,7 +412,7 @@ m.AttackManager.prototype.getEnemyPlayer = function(gameState, attack)
 		if (attack.targetPlayer === undefined && this.currentEnemyPlayer !== undefined &&
 			!this.defeated[this.currentEnemyPlayer] &&
 			gameState.isPlayerEnemy(this.currentEnemyPlayer) &&
-			gameState.getEnemyEntities(this.currentEnemyPlayer).hasEntities())
+			gameState.getEntities(this.currentEnemyPlayer).hasEntities())
 			return this.currentEnemyPlayer;
 
 		let distmin;
@@ -435,7 +460,7 @@ m.AttackManager.prototype.getEnemyPlayer = function(gameState, attack)
 			continue;
 		let enemyCount = 0;
 		let enemyCivCentre = false;
-		for (let ent of gameState.getEnemyEntities(i).values())
+		for (let ent of gameState.getEntities(i).values())
 		{
 			enemyCount++;
 			if (ent.hasClass("CivCentre"))
@@ -451,6 +476,26 @@ m.AttackManager.prototype.getEnemyPlayer = function(gameState, attack)
 	if (attack.targetPlayer === undefined)
 		this.currentEnemyPlayer = enemyPlayer;
 	return enemyPlayer;
+};
+
+/** f.e. if we have changed diplomacy with another player. */
+m.AttackManager.prototype.cancelAttacksAgainstPlayer = function(player)
+{
+	for (let attackType in this.upcomingAttacks)
+		for (let attack of this.upcomingAttacks[attackType])
+			if (attack.targetPlayer === player)
+				attack.targetPlayer = undefined;
+
+	for (let attackType in this.startedAttacks)
+		for (let i = 0; i < this.startedAttacks[attackType].length; ++i)
+		{
+			let attack = this.startedAttacks[attackType][i];
+			if (attack.targetPlayer === player)
+			{
+				attack.Abort(gameState);
+				this.startedAttacks[attackType].splice(i--, 1);
+			}
+		}
 };
 
 m.AttackManager.prototype.Serialize = function()

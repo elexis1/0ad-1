@@ -81,11 +81,100 @@ m.getMaxStrength = function(ent, againstClass)
 	return strength * ent.maxHitpoints() / 100.0;
 };
 
-/** Decide if we should try to capture or destroy */
-m.allowCapture = function(ent, target)
+/** Get access and cache it in metadata if not already done */
+m.getLandAccess = function(gameState, ent)
 {
-	return !target.hasClass("Siege") || !ent.hasClass("Melee") ||
-		!target.isGarrisonHolder() || !target.garrisoned().length;
+	let access = ent.getMetadata(PlayerID, "access");
+	if (!access)
+	{
+		access = gameState.ai.accessibility.getAccessValue(ent.position());
+		ent.setMetadata(PlayerID, "access", access);
+	}
+	return access;
+};
+
+m.getSeaAccess = function(gameState, ent)
+{
+	let sea = ent.getMetadata(PlayerID, "sea");
+	if (!sea)
+	{
+		sea = gameState.ai.accessibility.getAccessValue(ent.position(), true);
+		if (sea < 2)	// pre-positioned docks are sometimes not well positionned
+		{
+			let entPos = ent.position();
+			let radius = ent.footprintRadius();
+			for (let i = 0; i < 16; ++i)
+			{
+				let pos = [ entPos[0] + radius*Math.cos(i*Math.PI/8),
+				            entPos[1] + radius*Math.sin(i*Math.PI/8) ];
+				sea = gameState.ai.accessibility.getAccessValue(pos, true);
+				if (sea >= 2)
+					break;
+			}
+		}
+		if (sea < 2)
+			API3.warn("ERROR in Petra getSeaAccess because of position with sea index " + sea);
+		ent.setMetadata(PlayerID, "sea", sea);
+	}
+	return sea;
+};
+
+/** Decide if we should try to capture (returns true) or destroy (return false) */
+m.allowCapture = function(gameState, ent, target)
+{
+	if (!ent.canCapture() || !target.isCapturable())
+		return false;
+	// always try to recapture cp from an allied, except if it's decaying
+	if (gameState.isPlayerAlly(target.owner()))
+		return !target.decaying();
+
+	let antiCapture = target.defaultRegenRate();
+	if (target.isGarrisonHolder() && target.garrisoned())
+		antiCapture += target.garrisonRegenRate() * target.garrisoned().length;
+	if (target.decaying())
+		antiCapture -= target.territoryDecayRate();
+
+	let capture;
+	let capturableTargets = gameState.ai.HQ.capturableTargets;
+	if (!capturableTargets.has(target.id()))
+	{
+		capture = ent.captureStrength() * m.getAttackBonus(ent, target, "Capture");
+		capturableTargets.set(target.id(), { "strength": capture, "ents": new Set([ent.id()]) });
+	}
+	else
+	{
+		let capturable = capturableTargets.get(target.id());
+		if (!capturable.ents.has(ent.id()))
+		{
+			capturable.strength += ent.captureStrength() * m.getAttackBonus(ent, target, "Capture");
+			capturable.ents.add(ent.id());
+		}
+		capture = capturable.strength;
+	}
+	capture *= 1 / ( 0.1 + 0.9*target.healthLevel());
+	let sumCapturePoints = target.capturePoints().reduce((a, b) => a + b);
+	if (target.hasDefensiveFire() && target.isGarrisonHolder() && target.garrisoned())
+		return capture > antiCapture + sumCapturePoints/50;
+	return capture > antiCapture + sumCapturePoints/80;
+};
+
+/** copy of GetAttackBonus from Attack.js */
+m.getAttackBonus = function(ent, target, type)
+{
+	let attackBonus = 1;
+	if (!ent.get("Attack/" + type) || !ent.get("Attack/" + type + "/Bonuses"))
+		return attackBonus;
+	let bonuses = ent.get("Attack/" + type + "/Bonuses");
+	for (let key in bonuses)
+	{
+		let bonus = bonuses[key];
+		if (bonus.Civ && bonus.Civ !== target.civ())
+			continue;
+		if (bonus.Classes && bonus.Classes.split(/\s+/).some(cls => !target.hasClass(cls)))
+			continue;
+		attackBonus *= bonus.Multiplier;
+	}
+	return attackBonus;
 };
 
 /** Makes the worker deposit the currently carried resources at the closest accessible dropsite */
@@ -146,7 +235,7 @@ m.IsSupplyFull = function(gameState, ent)
 /**
  * get the best base (in terms of distance and accessIndex) for an entity
  */
-m.getBestBase = function(gameState, ent)
+m.getBestBase = function(gameState, ent, onlyConstructedBase = false)
 {
 	let pos = ent.position();
 	if (!pos)
@@ -165,7 +254,7 @@ m.getBestBase = function(gameState, ent)
 	let accessIndex = gameState.ai.accessibility.getAccessValue(pos);
 	for (let base of gameState.ai.HQ.baseManagers)
 	{
-		if (!base.anchor)
+		if (!base.anchor || onlyConstructedBase && base.anchor.foundationProgress() !== undefined)
 			continue;
 		let dist = API3.SquareVectorDistance(base.anchor.position(), pos);
 		if (base.accessIndex !== accessIndex)
@@ -213,7 +302,8 @@ m.dumpEntity = function(ent)
 		  " state " + ent.unitAIState());
 	API3.warn(" base " + ent.getMetadata(PlayerID, "base") + " >>> role " + ent.getMetadata(PlayerID, "role") +
 		  " subrole " + ent.getMetadata(PlayerID, "subrole"));
-	API3.warn("owner " + ent.owner() + " health " + ent.hitpoints() + " healthMax " + ent.maxHitpoints());
+	API3.warn("owner " + ent.owner() + " health " + ent.hitpoints() + " healthMax " + ent.maxHitpoints() +
+	          " foundationProgress " + ent.foundationProgress());
 	API3.warn(" garrisoning " + ent.getMetadata(PlayerID, "garrisoning") + " garrisonHolder " + ent.getMetadata(PlayerID, "garrisonHolder") +
 		  " plan " + ent.getMetadata(PlayerID, "plan")	+ " transport " + ent.getMetadata(PlayerID, "transport") +
 		  " gather-type " + ent.getMetadata(PlayerID, "gather-type") + " target-foundation " + ent.getMetadata(PlayerID, "target-foundation") +

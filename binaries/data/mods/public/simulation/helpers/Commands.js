@@ -76,13 +76,6 @@ var g_Commands = {
 		Cheat(cmd);
 	},
 
-	"quit": function(player, cmd, data)
-	{
-		// Let the AI exit the game for testing purposes
-		var cmpGuiInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
-		cmpGuiInterface.PushNotification({ "type": "quit", "players": [player] });
-	},
-
 	"diplomacy": function(player, cmd, data)
 	{
 		let cmpCeasefireManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_CeasefireManager);
@@ -137,7 +130,7 @@ var g_Commands = {
 		cmpGuiInterface.PushNotification({
 			"type": "aichat",
 			"players": [player],
-			"message": "(Cheat - reveal map)" // TODO: translate me!
+			"message": markForTranslation("(Cheat - reveal map)")
 		});
 
 		// Reveal the map for all players, not just the current player,
@@ -261,8 +254,7 @@ var g_Commands = {
 	"train": function(player, cmd, data)
 	{
 		// Check entity limits
-		var cmpTempMan = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
-		var template = cmpTempMan.GetTemplate(cmd.template);
+		var template = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager).GetTemplate(cmd.template);
 		var unitCategory = null;
 		if (template.TrainingRestrictions)
 			unitCategory = template.TrainingRestrictions.Category;
@@ -270,7 +262,7 @@ var g_Commands = {
 		// Verify that the building(s) can be controlled by the player
 		if (data.entities.length <= 0)
 		{
-			 if (g_DebugCommands)
+			if (g_DebugCommands)
 				warn("Invalid command: training building(s) cannot be controlled by player "+player+": "+uneval(cmd));
 			return;
 		}
@@ -503,10 +495,6 @@ var g_Commands = {
 
 	"unload-template": function(player, cmd, data)
 	{
-		var index = cmd.template.indexOf("&");  // Templates for garrisoned units are extended
-		if (index == -1)
-			return;
-
 		var entities = FilterEntityListWithAllies(cmd.garrisonHolders, player, data.controlAllUnits);
 		for (let garrisonHolder of entities)
 		{
@@ -515,10 +503,10 @@ var g_Commands = {
 			{
 				// Only the owner of the garrisonHolder may unload entities from any owners
 				if (!IsOwnedByPlayer(player, garrisonHolder) && !data.controlAllUnits
-				    && player != +cmd.template.slice(1,index))
+				    && player != +cmd.owner)
 						continue;
 
-				if (!cmpGarrisonHolder.UnloadTemplate(cmd.template, cmd.all))
+				if (!cmpGarrisonHolder.UnloadTemplate(cmd.template, cmd.owner, cmd.all))
 					notifyUnloadFailure(player, garrisonHolder);
 			}
 		}
@@ -636,6 +624,10 @@ var g_Commands = {
 
 	"set-shading-color": function(player, cmd, data)
 	{
+		// Prevent multiplayer abuse
+		if (!data.cmpPlayer.IsAI())
+			return;
+
 		// Debug command to make an entity brightly colored
 		for (let ent of cmd.entities)
 		{
@@ -747,13 +739,40 @@ var g_Commands = {
 			"players": [player],
 			"message": "/allies " + markForTranslation("Attack against %(_player_)s requested."),
 			"translateParameters": ["_player_"],
-			"parameters": { "_player_": cmd.target }
+			"parameters": { "_player_": cmd.player }
 		});
 
 		// And send an attackRequest event to the AIs
 		let cmpAIInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_AIInterface);
 		if (cmpAIInterface)
 			cmpAIInterface.PushEvent("AttackRequest", cmd);
+	},
+
+	"spy-request": function(player, cmd, data)
+	{
+		let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
+		let ent = pickRandom(cmpRangeManager.GetEntitiesByPlayer(cmd.player).filter(ent => {
+			let cmpVisionSharing = Engine.QueryInterface(ent, IID_VisionSharing);
+			return cmpVisionSharing && cmpVisionSharing.IsBribable() && !cmpVisionSharing.ShareVisionWith(player);
+		}));
+
+		let cmpGUIInterface = Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface);
+		if (ent)
+		{
+			Engine.QueryInterface(ent, IID_VisionSharing).AddSpy(cmd.source);
+			cmpGUIInterface.PushNotification({
+				"type": "spy-response",
+				"players": [player],
+				"entity": ent
+			});
+		}
+		else
+			cmpGUIInterface.PushNotification({
+				"type": "text",
+				"players": [player],
+				"message": markForTranslation("There are no bribable units"),
+				"translateMessage": true
+			});
 	},
 
 	"dialog-answer": function(player, cmd, data)
@@ -967,8 +986,7 @@ function TryConstructBuilding(player, cmpPlayer, controlAllUnits, cmd)
 	}
 
 	// If it's a dock, get the right angle.
-	var cmpTemplateMgr = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
-	var template = cmpTemplateMgr.GetTemplate(cmd.template);
+	var template = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager).GetTemplate(cmd.template);
 	var angle = cmd.angle;
 	if (template.BuildRestrictions.Category === "Dock")
 	{
@@ -1566,8 +1584,7 @@ function ClusterEntities(ents, separationDistance)
 
 function GetFormationRequirements(formationTemplate)
 {
-	var cmpTempManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
-	var template = cmpTempManager.GetTemplate(formationTemplate);
+	var template = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager).GetTemplate(formationTemplate);
 	if (!template.Formation)
 		return false;
 

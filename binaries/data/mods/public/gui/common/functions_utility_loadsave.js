@@ -3,25 +3,27 @@ function sortDecreasingDate(a, b)
 	return b.metadata.time - a.metadata.time;
 }
 
-function generateLabel(metadata, engineInfo)
+function isCompatibleSavegame(metadata, engineInfo)
 {
-	let dateTimeString = Engine.FormatMillisecondsIntoDateString(metadata.time*1000, translate("yyyy-MM-dd HH:mm:ss"));
-	let dateString = sprintf(translate("\\[%(date)s]"), { "date": dateTimeString });
+	return engineInfo && hasSameSavegameVersion(metadata, engineInfo) &&
+		hasSameEngineVersion(metadata, engineInfo) & hasSameMods(metadata, engineInfo);
+}
 
-	if (engineInfo)
-	{
-		if (!hasSameSavegameVersion(metadata, engineInfo) || !hasSameEngineVersion(metadata, engineInfo))
-			dateString = "[color=\"red\"]" + dateString + "[/color]";
-		else if (!hasSameMods(metadata, engineInfo))
-			dateString = "[color=\"orange\"]" + dateString + "[/color]";
-	}
+function generateSavegameDateString(metadata, engineInfo)
+{
+	return compatibilityColor(
+		Engine.FormatMillisecondsIntoDateStringLocal(metadata.time * 1000, translate("yyyy-MM-dd HH:mm:ss")),
+		isCompatibleSavegame(metadata, engineInfo));
+}
 
+function generateSavegameLabel(metadata, engineInfo)
+{
 	return sprintf(
 		metadata.description ?
 			translate("%(dateString)s %(map)s - %(description)s") :
 			translate("%(dateString)s %(map)s"),
 		{
-			"dateString": dateString,
+			"dateString": generateSavegameDateString(metadata, engineInfo),
 			"map": metadata.initAttributes.map,
 			"description": metadata.description || ""
 		}
@@ -65,6 +67,28 @@ function hasSameMods(metadata, engineInfo)
 
 	// Mods must be loaded in the same order
 	return modsA.every((mod, index) => mod == modsB[index]);
+}
+
+function deleteGame()
+{
+	let gameSelection = Engine.GetGUIObjectByName("gameSelection");
+	let gameID = gameSelection.list_data[gameSelection.selected];
+
+	if (!gameID)
+		return;
+
+	if (Engine.HotkeyIsPressed("session.savedgames.noconfirmation"))
+		reallyDeleteGame(gameID);
+	else
+		messageBox(
+			500, 200,
+			sprintf(translate("\"%(label)s\""), {
+				"label": gameSelection.list[gameSelection.selected]
+			}) + "\n" + translate("Saved game will be permanently deleted, are you sure?"),
+			translate("DELETE"),
+			[translate("No"), translate("Yes")],
+			[null, function(){ reallyDeleteGame(gameID); }]
+		);
 }
 
 function reallyDeleteGame(gameID)

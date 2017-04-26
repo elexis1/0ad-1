@@ -8,7 +8,7 @@ const g_MapTypes = prepareForDropdown(g_Settings && g_Settings.MapTypes);
 const g_PopulationCapacities = prepareForDropdown(g_Settings && g_Settings.PopulationCapacities);
 const g_StartingResources = prepareForDropdown(g_Settings && g_Settings.StartingResources);
 const g_VictoryConditions = prepareForDropdown(g_Settings && g_Settings.VictoryConditions);
-const g_WonderDurations = prepareForDropdown(g_Settings && g_Settings.WonderDurations);
+const g_VictoryDurations = prepareForDropdown(g_Settings && g_Settings.VictoryDurations);
 
 /**
  * All selectable playercolors except gaia.
@@ -23,6 +23,33 @@ const g_MapPath = {
 	"scenario": "maps/scenarios/",
 	"skirmish": "maps/skirmishes/"
 };
+
+/**
+ * Containing the colors to highlight the ready status of players,
+ * the chat ready messages and
+ * the tooltips and captions for the ready button
+ */
+
+const g_ReadyData = [
+	{
+		"color": "",
+		"chat": translate("* %(username)s is not ready."),
+		"caption": translate("I'm ready"),
+		"tooltip": translate("State that you are ready to play.")
+	},
+	{
+		"color": "green",
+		"chat": translate("* %(username)s is ready!"),
+		"caption": translate("Stay ready"),
+		"tooltip": translate("Stay ready even when the game settings change.")
+	},
+	{
+		"color": "150 150 250",
+		"chat": "",
+		"caption": translate("I'm not ready!"),
+		"tooltip": translate("State that you are not ready to play.")
+	}
+];
 
 /**
  * Processes a CNetMessage (see NetMessage.h, NetMessages.h) sent by the CNetServer.
@@ -52,12 +79,7 @@ const g_FormatChatMessage = {
 		"username": senderFont(sprintf(translate("<%(username)s>"), { "username": user })),
 		"message": escapeText(msg.text || "")
 	}),
-	"ready": (msg, user) => sprintf(translate("* %(username)s is ready!"), {
-		"username": user
-	}),
-	"not-ready": (msg, user) => sprintf(translate("* %(username)s is not ready."), {
-		"username": user
-	}),
+	"ready": (msg, user) => sprintf(g_ReadyData[msg.status].chat, { "username": user }),
 	"clientlist": (msg, user) => getUsernameList()
 };
 
@@ -67,7 +89,7 @@ const g_FormatChatMessage = {
 const g_MapFilters = [
 	{
 		"id": "default",
-		"name": translate("Default"),
+		"name": translateWithContext("map filter", "Default"),
 		"filter": mapKeywords => mapKeywords.every(keyword => ["naval", "demo", "hidden"].indexOf(keyword) == -1)
 	},
 	{
@@ -134,11 +156,6 @@ const g_UnassignedColor = "140 140 140";
 const g_UnassignedPlayerColor = "170 170 250";
 
 /**
- * Highlight ready players.
- */
-const g_ReadyColor = "green";
-
-/**
  * Placeholder item for the map-dropdownlist.
  */
 const g_RandomMap = '[color="' + g_ColorRandom + '"]' + translateWithContext("map selection", "Random") + "[/color]";
@@ -177,6 +194,9 @@ var g_IsInGuiUpdate;
 
 /**
  * Whether the current player is ready to start the game.
+ * 0 - not ready
+ * 1 - ready
+ * 2 - stay ready
  */
 var g_IsReady;
 
@@ -292,8 +312,8 @@ function initGUIObjects()
 		initPopulationCaps();
 		initStartingResources();
 		initCeasefire();
-		initWonderDurations();
 		initVictoryConditions();
+		initVictoryDurations();
 		initMapSizes();
 		initRadioButtons();
 	}
@@ -309,6 +329,8 @@ function initGUIObjects()
 
 	if (g_IsNetworked)
 		Engine.GetGUIObjectByName("chatInput").focus();
+	else
+		initSPTips();
 
 	if (g_IsController)
 	{
@@ -346,8 +368,25 @@ function initMapFilters()
 	g_GameAttributes.mapFilter = "default";
 }
 
+function initSPTips()
+{
+	if (Engine.ConfigDB_GetValue("user", "gui.gamesetup.enabletips") !== "true")
+		return;
+
+	Engine.GetGUIObjectByName("spTips").hidden = false;
+	Engine.GetGUIObjectByName("displaySPTips").checked = true;
+	Engine.GetGUIObjectByName("aiTips").caption = Engine.TranslateLines(Engine.ReadFile("gui/gamesetup/ai.txt"));
+}
+
+function saveSPTipsSetting()
+{
+	let enabled = String(Engine.GetGUIObjectByName("displaySPTips").checked);
+	Engine.ConfigDB_CreateValue("user", "gui.gamesetup.enabletips", enabled);
+	Engine.ConfigDB_WriteValueToFile("user", "gui.gamesetup.enabletips", enabled, "config/user.cfg");
+}
+
 /**
- * Remove empty space in case of hidden options (like cheats, rating or wonder duration)
+ * Remove empty space in case of hidden options (like cheats, rating or victory duration)
  */
 function resizeMoreOptionsWindow()
 {
@@ -468,19 +507,19 @@ function initVictoryConditions()
 	victoryConditions.selected = g_VictoryConditions.Default;
 }
 
-function initWonderDurations()
+function initVictoryDurations()
 {
-	let wonderConditions = Engine.GetGUIObjectByName("wonderDuration");
-	wonderConditions.list = g_WonderDurations.Title;
-	wonderConditions.list_data = g_WonderDurations.Duration;
-	wonderConditions.onSelectionChange = function()
+	let victoryDurationsConditions = Engine.GetGUIObjectByName("victoryDuration");
+	victoryDurationsConditions.list = g_VictoryDurations.Title;
+	victoryDurationsConditions.list_data = g_VictoryDurations.Duration;
+	victoryDurationsConditions.onSelectionChange = function()
 	{
 		if (this.selected != -1)
-			g_GameAttributes.settings.WonderDuration = g_WonderDurations.Duration[this.selected];
+			g_GameAttributes.settings.VictoryDuration = g_VictoryDurations.Duration[this.selected];
 
 		updateGameAttributes();
 	};
-	wonderConditions.selected = g_WonderDurations.Default;
+	victoryDurationsConditions.selected = g_VictoryDurations.Default;
 }
 
 function initMapSizes()
@@ -505,6 +544,7 @@ function initRadioButtons()
 		"RevealMap": "revealMap",
 		"ExploreMap": "exploreMap",
 		"DisableTreasures": "disableTreasures",
+		"DisableSpies": "disableSpies",
 		"LockTeams": "lockTeams",
 		"LastManStanding" : "lastManStanding",
 		"CheatsEnabled": "enableCheats"
@@ -695,14 +735,12 @@ function handleReadyMessage(message)
 
 	if (g_ReadyChanged < 1 && g_PlayerAssignments[message.guid].player != -1)
 		addChatMessage({
-			"type": message.status == 1 ? "ready" : "not-ready",
+			"type": "ready",
+			"status": message.status,
 			"guid": message.guid
 		});
 
-	if (!g_IsController)
-		return;
-
-	g_PlayerAssignments[message.guid].status = +message.status == 1;
+	g_PlayerAssignments[message.guid].status = message.status;
 	updateReadyUI();
 }
 
@@ -781,18 +819,18 @@ function onClientJoin(newGUID, newAssignments)
 		"username": newAssignments[newGUID].name
 	});
 
-	// Assign joining observers to unused player numbers
-	if (!g_IsController || newAssignments[newGUID].player != -1)
-		return;
-
 	let freeSlot = g_GameAttributes.settings.PlayerData.findIndex((v,i) =>
 		Object.keys(g_PlayerAssignments).every(guid => g_PlayerAssignments[guid].player != i+1)
 	);
 
-	if (freeSlot == -1)
+	// Client is not and cannot assigned as player
+	if (newAssignments[newGUID].player == -1 && freeSlot == -1)
 		return;
 
-	Engine.AssignNetworkPlayer(freeSlot + 1, newGUID);
+	// Assign the joining client to the free slot
+	if (g_IsController && newAssignments[newGUID].player == -1)
+		Engine.AssignNetworkPlayer(freeSlot + 1, newGUID);
+
 	resetReadyData();
 }
 
@@ -1226,7 +1264,7 @@ function selectMap(name)
 
 	if (g_GameAttributes.mapType == "scenario")
 	{
-		delete g_GameAttributes.settings.WonderDuration;
+		delete g_GameAttributes.settings.VictoryDuration;
 		delete g_GameAttributes.settings.LastManStanding;
 	}
 
@@ -1263,8 +1301,7 @@ function launchGame()
 	{
 		let victoryScriptsSelected = g_GameAttributes.settings.VictoryScripts;
 		let gameTypeSelected = g_GameAttributes.settings.GameType;
-		selectMap(Engine.GetGUIObjectByName("mapSelection").list_data[Math.floor(Math.random() *
-			(Engine.GetGUIObjectByName("mapSelection").list.length - 1)) + 1]);
+		selectMap(pickRandom(Engine.GetGUIObjectByName("mapSelection").list_data.slice(1)));
 		g_GameAttributes.settings.VictoryScripts = victoryScriptsSelected;
 		g_GameAttributes.settings.GameType = gameTypeSelected;
 	}
@@ -1287,9 +1324,8 @@ function launchGame()
 		let chosenCiv = g_GameAttributes.settings.PlayerData[i].Civ || "random";
 		if (chosenCiv == "random")
 		{
-			let culture = cultures[Math.floor(Math.random() * cultures.length)];
-			let civs = Object.keys(g_CivData).filter(civ => g_CivData[civ].Culture == culture);
-			chosenCiv = civs[Math.floor(Math.random() * civs.length)];
+			let culture = pickRandom(cultures);
+			chosenCiv = pickRandom(Object.keys(g_CivData).filter(civ => g_CivData[civ].Culture == culture));
 		}
 		g_GameAttributes.settings.PlayerData[i].Civ = chosenCiv;
 
@@ -1297,7 +1333,7 @@ function launchGame()
 		if (g_GameAttributes.mapType === "scenario" || !g_GameAttributes.settings.PlayerData[i].AI)
 			continue;
 
-		let chosenName = g_CivData[chosenCiv].AINames[Math.floor(Math.random() * g_CivData[chosenCiv].AINames.length)];
+		let chosenName = pickRandom(g_CivData[chosenCiv].AINames);
 
 		if (!g_IsNetworked)
 			chosenName = translate(chosenName);
@@ -1317,8 +1353,8 @@ function launchGame()
 	}
 
 	// Seed used for both map generation and simulation
-	g_GameAttributes.settings.Seed = Math.floor(Math.random() * Math.pow(2, 32));
-	g_GameAttributes.settings.AISeed = Math.floor(Math.random() * Math.pow(2, 32));
+	g_GameAttributes.settings.Seed = randIntExclusive(0, Math.pow(2, 32));
+	g_GameAttributes.settings.AISeed = randIntExclusive(0, Math.pow(2, 32));
 
 	// Used for identifying rated game reports for the lobby
 	g_GameAttributes.matchID = Engine.GetMatchID();
@@ -1368,7 +1404,7 @@ function updateGUIObjects()
 	// These dropdowns might set the default (as they ignore g_IsInGuiUpdate)
 	let mapSizeIdx = mapSettings.Size !== undefined ? g_MapSizes.Tiles.indexOf(mapSettings.Size) : g_MapSizes.Default;
 	let victoryIdx = mapSettings.GameType !== undefined ? g_VictoryConditions.Name.indexOf(mapSettings.GameType) : g_VictoryConditions.Default;
-	let wonderDurationIdx = mapSettings.WonderDuration !== undefined ? g_WonderDurations.Duration.indexOf(mapSettings.WonderDuration) : g_WonderDurations.Default;
+	let victoryDurationIdx = mapSettings.VictoryDuration !== undefined ? g_VictoryDurations.Duration.indexOf(mapSettings.VictoryDuration) : g_VictoryDurations.Default;
 	let popIdx = mapSettings.PopulationCap !== undefined ? g_PopulationCapacities.Population.indexOf(mapSettings.PopulationCap) : g_PopulationCapacities.Default;
 	let startingResIdx = mapSettings.StartingResources !== undefined ? g_StartingResources.Resources.indexOf(mapSettings.StartingResources) : g_StartingResources.Default;
 	let ceasefireIdx = mapSettings.Ceasefire !== undefined ? g_Ceasefire.Duration.indexOf(mapSettings.Ceasefire) : g_Ceasefire.Default;
@@ -1382,7 +1418,7 @@ function updateGUIObjects()
 		Engine.GetGUIObjectByName("mapSize").selected = mapSizeIdx;
 		Engine.GetGUIObjectByName("numPlayers").selected = numPlayers - 1;
 		Engine.GetGUIObjectByName("victoryCondition").selected = victoryIdx;
-		Engine.GetGUIObjectByName("wonderDuration").selected = wonderDurationIdx;
+		Engine.GetGUIObjectByName("victoryDuration").selected = victoryDurationIdx;
 		Engine.GetGUIObjectByName("populationCap").selected = popIdx;
 		Engine.GetGUIObjectByName("gameSpeed").selected = gameSpeedIdx;
 		Engine.GetGUIObjectByName("ceasefire").selected = ceasefireIdx;
@@ -1397,10 +1433,10 @@ function updateGUIObjects()
 	}
 
 	// Can be visible to both host and clients
-	Engine.GetGUIObjectByName("mapSizeText").caption = g_GameAttributes.mapType == "random" ? g_MapSizes.Name[mapSizeIdx] : translate("Default");
+	Engine.GetGUIObjectByName("mapSizeText").caption = g_GameAttributes.mapType == "random" ? g_MapSizes.Name[mapSizeIdx] : translateWithContext("map size", "Default");
 	Engine.GetGUIObjectByName("numPlayersText").caption = numPlayers;
 	Engine.GetGUIObjectByName("victoryConditionText").caption = g_VictoryConditions.Title[victoryIdx];
-	Engine.GetGUIObjectByName("wonderDurationText").caption = g_WonderDurations.Title[wonderDurationIdx];
+	Engine.GetGUIObjectByName("victoryDurationText").caption = g_VictoryDurations.Title[victoryDurationIdx];
 	Engine.GetGUIObjectByName("populationCapText").caption = g_PopulationCapacities.Title[popIdx];
 	Engine.GetGUIObjectByName("startingResourcesText").caption = g_StartingResources.Title[startingResIdx];
 	Engine.GetGUIObjectByName("ceasefireText").caption = g_Ceasefire.Title[ceasefireIdx];
@@ -1408,15 +1444,16 @@ function updateGUIObjects()
 
 	setGUIBoolean("enableCheats", "enableCheatsText", !!mapSettings.CheatsEnabled);
 	setGUIBoolean("disableTreasures", "disableTreasuresText", !!mapSettings.DisableTreasures);
+	setGUIBoolean("disableSpies", "disableSpiesText", !!mapSettings.DisableSpies);
 	setGUIBoolean("exploreMap", "exploreMapText", !!mapSettings.ExploreMap);
 	setGUIBoolean("revealMap", "revealMapText", !!mapSettings.RevealMap);
 	setGUIBoolean("lockTeams", "lockTeamsText", !!mapSettings.LockTeams);
 	setGUIBoolean("lastManStanding", "lastManStandingText", !!mapSettings.LastManStanding);
 	setGUIBoolean("enableRating", "enableRatingText", !!mapSettings.RatingEnabled);
 
-	Engine.GetGUIObjectByName("optionWonderDuration").hidden =
+	Engine.GetGUIObjectByName("optionVictoryDuration").hidden =
 		g_GameAttributes.settings.GameType &&
-		g_GameAttributes.settings.GameType != "wonder";
+		g_GameAttributes.settings.GameType != "wonder" && g_GameAttributes.settings.GameType != "capture_the_relic";
 
 	Engine.GetGUIObjectByName("cheatWarningText").hidden = !g_IsNetworked || !mapSettings.CheatsEnabled;
 
@@ -1433,9 +1470,9 @@ function updateGUIObjects()
 
 	let notScenario = g_GameAttributes.mapType != "scenario" && g_IsController ;
 
-	for (let ctrl of ["victoryCondition", "wonderDuration", "populationCap",
+	for (let ctrl of ["victoryCondition", "victoryDuration", "populationCap",
 	                  "startingResources", "ceasefire", "revealMap",
-	                  "exploreMap", "disableTreasures", "lockTeams", "lastManStanding"])
+	                  "exploreMap", "disableTreasures", "disableSpies", "lockTeams", "lastManStanding"])
 		hideControl(ctrl, ctrl + "Text", notScenario);
 
 	Engine.GetGUIObjectByName("civResetButton").hidden = !notScenario;
@@ -1792,25 +1829,28 @@ function colorizePlayernameByGUID(guid, username = "")
 
 function addChatMessage(msg)
 {
-	if (msg.text)
+	if (!g_FormatChatMessage[msg.type])
+		return;
+
+	if (msg.type == "chat")
 	{
-		let userName = g_PlayerAssignments[Engine.GetPlayerGUID() || "local"].name;
+		let userName = g_PlayerAssignments[Engine.GetPlayerGUID()].name;
 
 		if (userName != g_PlayerAssignments[msg.guid].name)
 			notifyUser(userName, msg.text);
 	}
 
-	if (!g_FormatChatMessage[msg.type])
-		return;
-
 	let user = colorizePlayernameByGUID(msg.guid || -1, msg.username || "");
 
 	let text = g_FormatChatMessage[msg.type](msg, user);
 
+	if (!text)
+		return;
+
 	if (Engine.ConfigDB_GetValue("user", "chat.timestamp") == "true")
 		text = sprintf(translate("%(time)s %(message)s"), {
 			"time": sprintf(translate("\\[%(time)s]"), {
-				"time": Engine.FormatMillisecondsIntoDateString(new Date().getTime(), translate("HH:mm"))
+				"time": Engine.FormatMillisecondsIntoDateStringLocal(new Date().getTime(), translate("HH:mm"))
 			}),
 			"message": text
 		});
@@ -1844,28 +1884,22 @@ function resetTeams()
 
 function toggleReady()
 {
-	setReady(!g_IsReady);
+	setReady((g_IsReady + 1) % 3, true);
 }
 
-function setReady(ready, sendMessage = true)
+function setReady(ready, sendMessage)
 {
 	g_IsReady = ready;
 
 	if (sendMessage)
-		Engine.SendNetworkReady(+g_IsReady);
+		Engine.SendNetworkReady(g_IsReady);
 
 	if (g_IsController)
 		return;
 
 	let button = Engine.GetGUIObjectByName("startGame");
-
-	button.caption = g_IsReady ?
-		translate("I'm not ready!") :
-		translate("I'm ready");
-
-	button.tooltip = g_IsReady ?
-		translate("State that you are not ready to play.") :
-		translate("State that you are ready to play!");
+	button.caption = g_ReadyData[g_IsReady].caption;
+	button.tooltip = g_ReadyData[g_IsReady].tooltip;
 }
 
 function updateReadyUI()
@@ -1883,8 +1917,10 @@ function updateReadyUI()
 		let pData = g_GameAttributes.settings.PlayerData ? g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player - 1] : {};
 		let pDefs = g_DefaultPlayerData ? g_DefaultPlayerData[g_PlayerAssignments[guid].player - 1] : {};
 		isAI[g_PlayerAssignments[guid].player] = false;
-		if (g_PlayerAssignments[guid].status || !g_IsNetworked)
-			Engine.GetGUIObjectByName("playerName[" + (g_PlayerAssignments[guid].player - 1) + "]").caption = '[color="' + g_ReadyColor + '"]' + translate(getSetting(pData, pDefs, "Name")) + '[/color]';
+		if (g_PlayerAssignments[guid].status)
+			Engine.GetGUIObjectByName("playerName[" + (g_PlayerAssignments[guid].player - 1) + "]").caption =
+				'[color="' + g_ReadyData[+g_PlayerAssignments[guid].status].color + '"]' +
+				translate(getSetting(pData, pDefs, "Name")) + '[/color]';
 		else
 		{
 			Engine.GetGUIObjectByName("playerName[" + (g_PlayerAssignments[guid].player - 1) + "]").caption = translate(getSetting(pData, pDefs, "Name"));
@@ -1900,7 +1936,8 @@ function updateReadyUI()
 		let pData = g_GameAttributes.settings.PlayerData ? g_GameAttributes.settings.PlayerData[playerid] : {};
 		let pDefs = g_DefaultPlayerData ? g_DefaultPlayerData[playerid] : {};
 		if (isAI[playerid + 1])
-			Engine.GetGUIObjectByName("playerName[" + playerid + "]").caption = '[color="' + g_ReadyColor + '"]' + translate(getSetting(pData, pDefs, "Name")) + '[/color]';
+			Engine.GetGUIObjectByName("playerName[" + playerid + "]").caption =
+				'[color="' + g_ReadyData[2].color + '"]' + translate(getSetting(pData, pDefs, "Name")) + '[/color]';
 	}
 
 	// The host is not allowed to start until everyone is ready.
@@ -1931,14 +1968,14 @@ function resetReadyData()
 
 	g_ReadyChanged = 2;
 	if (!g_IsNetworked)
-		g_IsReady = true;
+		g_IsReady = 2;
 	else if (g_IsController)
 	{
 		Engine.ClearAllPlayerReady();
-		setReady(true);
+		setReady(2, true);
 	}
-	else
-		setReady(false, false);
+	else if (g_IsReady != 2)
+		setReady(0, false);
 }
 
 /**

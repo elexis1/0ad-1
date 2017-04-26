@@ -78,7 +78,7 @@ function addElements(elements)
  */
 function pickAmount(amounts)
 {
-	var amount = amounts[randInt(amounts.length)];
+	let amount = pickRandom(amounts);
 
 	if (amount in g_Amounts)
 		return g_Amounts[amount];
@@ -91,7 +91,7 @@ function pickAmount(amounts)
  */
 function pickMix(mixes)
 {
-	var mix = mixes[randInt(mixes.length)];
+	let mix = pickRandom(mixes);
 
 	if (mix in g_Mixes)
 		return g_Mixes[mix];
@@ -104,7 +104,7 @@ function pickMix(mixes)
  */
 function pickSize(sizes)
 {
-	var size = sizes[randInt(sizes.length)];
+	let size = pickRandom(sizes);
 
 	if (size in g_Sizes)
 		return g_Sizes[size];
@@ -143,25 +143,18 @@ function addBases(type, distance, groupedDistance)
 	groupedDistance = groupedDistance || 0.05;
 
 	var playerIDs = randomizePlayers();
-	var players = {};
 
 	switch(type)
 	{
 		case "line":
-			players = placeLine(playerIDs, distance, groupedDistance);
-			break;
+			return placeLine(playerIDs, distance, groupedDistance);
 		case "radial":
-			players = placeRadial(playerIDs, distance);
-			break;
+			return placeRadial(playerIDs, distance);
 		case "random":
-			players = placeRandom(playerIDs);
-			break;
+			return placeRandom(playerIDs) || placeRadial(playerIDs, distance);
 		case "stronghold":
-			players = placeStronghold(playerIDs, distance, groupedDistance);
-			break;
+			return placeStronghold(playerIDs, distance, groupedDistance);
 	}
-
-	return players;
 }
 
 /**
@@ -242,8 +235,6 @@ function createBase(player, walls = true)
 		g_Gaia.chicken
 	);
 
-	var hillSize = PI * g_MapInfo.mapRadius * g_MapInfo.mapRadius;
-
 	// Create starting trees
 	var num = g_MapInfo.biome == g_BiomeSavanna ? 5 : 15;
 	for (var tries = 0; tries < 10; ++tries)
@@ -262,20 +253,13 @@ function createBase(player, walls = true)
 			break;
 	}
 
-	// Create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; ++j)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = g_MapInfo.mapRadius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(g_Decoratives.grassShort, 2, 5, 0, 1, -PI / 8, PI / 8)],
-			false, g_TileClasses.baseResource, gX, gZ
-		);
-		createObjectGroup(group, 0, avoidClasses(g_TileClasses.baseResource, 4));
-	}
+	placeDefaultDecoratives(
+		fx,
+		fz,
+		g_Decoratives.grassShort,
+		g_TileClasses.baseResource,
+		g_MapInfo.mapRadius,
+		avoidClasses(g_TileClasses.baseResource, 4));
 }
 
 /**
@@ -326,7 +310,7 @@ function randomStartingPositionPattern()
 		formats.push("line");
 
 	return {
-		"setup": formats[randInt(formats.length)],
+		"setup": pickRandom(formats),
 		"distance": randFloat(0.2, 0.35),
 		"separation": randFloat(0.05, 0.1)
 	};
@@ -415,10 +399,15 @@ function placeRandom(playerIDs)
 	var players = [];
 	var placed = [];
 
+	var attempts = 0;
+	var resets = 0;
+
 	for (var i = 0; i < g_MapInfo.numPlayers; ++i)
 	{
-		var attempts = 0;
 		var playerAngle = randFloat(0, TWO_PI);
+
+		// Distance from the center of the map in percent
+		// Mapsize being used as a diameter, so 0.5 is the edge of the map
 		var distance = randFloat(0, 0.42);
 		var x = 0.5 + distance * cos(playerAngle);
 		var z = 0.5 + distance * sin(playerAngle);
@@ -426,6 +415,7 @@ function placeRandom(playerIDs)
 		var tooClose = false;
 		for (var j = 0; j < placed.length; ++j)
 		{
+			// Minimum distance between initial bases must be a quarter of the map diameter
 			var sep = getDistance(x, z, placed[j].x, placed[j].z);
 			if (sep < 0.25)
 			{
@@ -446,8 +436,12 @@ function placeRandom(playerIDs)
 				placed = [];
 				i = -1;
 				attempts = 0;
-			}
+				++resets;
 
+				// If we only pick bad locations, stop trying to place randomly
+				if (resets == 100)
+					return undefined;
+			}
 			continue;
 		}
 
@@ -461,7 +455,6 @@ function placeRandom(playerIDs)
 		placed.push(players[i]);
 	}
 
-	// Create the bases
 	for (var i = 0; i < g_MapInfo.numPlayers; ++i)
 		createBase(players[i]);
 
@@ -525,7 +518,7 @@ function randomPlayerPlacementAt(singleBases, strongholdBases, heightmapScale, g
 	let strongholdBasesRandom = shuffleArray(strongholdBases);
 	let singleBasesRandom = shuffleArray(singleBases);
 
-	if (randInt(2) == 1 &&
+	if (randBool() &&
 	    g_MapInfo.mapSize >= 256 &&
 	    g_MapInfo.teams.length >= 2 &&
 	    g_MapInfo.teams.length < g_MapInfo.numPlayers &&

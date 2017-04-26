@@ -42,12 +42,8 @@ var mouseIsOverObject = false;
 // Number of pixels the mouse can move before the action is considered a drag
 var maxDragDelta = 4;
 
-// Time in milliseconds in which a double click is recognized
-const doubleClickTime = 500;
-var doubleClickTimer = 0;
-var doubleClicked = false;
-// Store the previously clicked entity - ensure a double/triple click happens on the same entity
-var prevClickedEntity = 0;
+// Store the clicked entity on mousedown or mouseup
+var clickedEntity = 0;
 
 // Same double-click behaviour for hotkey presses
 const doublePressTime = 500;
@@ -79,7 +75,8 @@ function updateCursorAndTooltip()
 	}
 
 	if (!cursorSet)
-		Engine.SetCursor("arrow-default");
+		Engine.ResetCursor();
+
 	if (!tooltipSet)
 		informationTooltip.hidden = true;
 
@@ -209,7 +206,7 @@ function getActionInfo(action, target)
 			else if (Engine.HotkeyIsPressed("session.patrol"))
 			{
 				data.command = "patrol";
-				data.targetClasses = { "attack": ["Unit"] };
+				data.targetClasses = { "attack": g_PatrolTargets };
 				cursor = "action-patrol";
 			}
 			return { "possible": true, "data": data, "cursor": cursor };
@@ -288,36 +285,31 @@ function determineAction(x, y, fromMinimap)
 	if (preSelectedAction != ACTION_NONE)
 	{
 		for (var action of actions)
-		{
 			if (unitActions[action].preSelectedActionCheck)
 			{
 				var r = unitActions[action].preSelectedActionCheck(target, selection);
 				if (r)
 					return r;
 			}
-		}
+
 		return { "type": "none", "cursor": "", "target": target };
 	}
 
 	for (var action of actions)
-	{
 		if (unitActions[action].hotkeyActionCheck)
 		{
 			var r = unitActions[action].hotkeyActionCheck(target, selection);
 			if (r)
 				return r;
 		}
-	}
 
 	for (var action of actions)
-	{
 		if (unitActions[action].actionCheck)
 		{
 			var r = unitActions[action].actionCheck(target, selection);
 			if (r)
 				return r;
 		}
-	}
 
 	return { "type": "none", "cursor": "", "target": target };
 }
@@ -329,14 +321,10 @@ function tryPlaceBuilding(queued)
 {
 	if (placementSupport.mode !== "building")
 	{
-		error(sprintf("[%(functionName)s] Called while in '%(mode)s' placement mode instead of 'building'", {
-			"functionName": "tryPlaceBuilding",
-			"mode": placementSupport.mode
-		}));
+		error("tryPlaceBuilding expected 'building', got '" + placementSupport.mode + "'");
 		return false;
 	}
 
-	// Use the preview to check it's a valid build location
 	if (!updateBuildingPlacementPreview())
 	{
 		// invalid location - don't build it
@@ -372,21 +360,14 @@ function tryPlaceWall(queued)
 {
 	if (placementSupport.mode !== "wall")
 	{
-		error(sprintf("[%(functionName)s] Called while in '%(mode)s' placement mode; expected 'wall' mode", {
-			functionName: "tryPlaceWall",
-			mode: placementSupport.mode
-		}));
+		error("tryPlaceWall expected 'wall', got '" + placementSupport.mode + "'");
 		return false;
 	}
 
 	var wallPlacementInfo = updateBuildingPlacementPreview(); // entities making up the wall (wall segments, towers, ...)
 	if (!(wallPlacementInfo === false || typeof(wallPlacementInfo) === "object"))
 	{
-		error(sprintf("[%(functionName)s] Unexpected return value from %(function2Name)s: '%(value)s'; expected either 'false' or 'object'", {
-			functionName: "tryPlaceWall",
-			function2Name: "updateBuildingPlacementPreview",
-			value: uneval(placementInfo)
-		}));
+		error("Invalid updateBuildingPlacementPreview return value: " + uneval(wallPlacementInfo));
 		return false;
 	}
 
@@ -440,7 +421,9 @@ function updateBandbox(bandbox, ev, hidden)
 	if (x0 > x1) { let t = x0; x0 = x1; x1 = t; }
 	if (y0 > y1) { let t = y0; y0 = y1; y1 = t; }
 
-	bandbox.size = [x0, y0, x1, y1].join(" ");
+	let scale = +Engine.ConfigDB_GetValue("user", "gui.scale");
+
+	bandbox.size = [x0 * scale, y0 * scale, x1 * scale, y1 * scale].join(" ");
 	bandbox.hidden = hidden;
 
 	return [x0, y0, x1, y1];
@@ -875,6 +858,10 @@ function handleInputAfterGui(ev)
 			{
 				dragStart = [ ev.x, ev.y ];
 				inputState = INPUT_SELECTING;
+				// If a single click occured, reset the clickedEntity.
+				// Also set it if we're double/triple clicking and missed the unit earlier.
+				if (ev.clicks == 1 || clickedEntity == INVALID_ENTITY)
+					clickedEntity = Engine.PickEntityAtPoint(ev.x, ev.y);
 				return true;
 			}
 			else if (ev.button == SDL_BUTTON_RIGHT)
@@ -979,9 +966,9 @@ function handleInputAfterGui(ev)
 		case "mousebuttonup":
 			if (ev.button == SDL_BUTTON_LEFT)
 			{
-				var ents = [];
-				var selectedEntity = Engine.PickEntityAtPoint(ev.x, ev.y);
-				if (selectedEntity == INVALID_ENTITY)
+				if (clickedEntity == INVALID_ENTITY)
+					clickedEntity = Engine.PickEntityAtPoint(ev.x, ev.y);
+				if (clickedEntity == INVALID_ENTITY)
 				{
 					if (!Engine.HotkeyIsPressed("selection.add") && !Engine.HotkeyIsPressed("selection.remove"))
 					{
@@ -992,15 +979,14 @@ function handleInputAfterGui(ev)
 					return true;
 				}
 
-				var now = new Date();
-
 				// If camera following and we select different unit, stop
-				if (Engine.GetFollowedEntity() != selectedEntity)
-				{
+				if (Engine.GetFollowedEntity() != clickedEntity)
 					Engine.CameraFollow(0);
-				}
 
-				if ((now.getTime() - doubleClickTimer < doubleClickTime) && (selectedEntity == prevClickedEntity))
+				var ents = [];
+				if (ev.clicks == 1)
+					ents = [clickedEntity];
+				else
 				{
 					// Double click or triple click has occurred
 					var showOffscreen = Engine.HotkeyIsPressed("selection.offscreen");
@@ -1008,54 +994,31 @@ function handleInputAfterGui(ev)
 					var templateToMatch;
 
 					// Check for double click or triple click
-					if (!doubleClicked)
+					if (ev.clicks == 2)
 					{
-						// If double click hasn't already occurred, this is a double click.
 						// Select similar units regardless of rank
-						templateToMatch = GetEntityState(selectedEntity).identity.selectionGroupName;
+						templateToMatch = GetEntityState(clickedEntity).identity.selectionGroupName;
 						if (templateToMatch)
-						{
 							matchRank = false;
-						}
 						else
-						{	// No selection group name defined, so fall back to exact match
-							templateToMatch = GetEntityState(selectedEntity).template;
-						}
+							// No selection group name defined, so fall back to exact match
+							templateToMatch = GetEntityState(clickedEntity).template;
 
-						doubleClicked = true;
-						// Reset the timer so the user has an extra period 'doubleClickTimer' to do a triple-click
-						doubleClickTimer = now.getTime();
 					}
 					else
-					{
-						// Double click has already occurred, so this is a triple click.
+						// Triple click
 						// Select units matching exact template name (same rank)
-						templateToMatch = GetEntityState(selectedEntity).template;
-					}
+						templateToMatch = GetEntityState(clickedEntity).template;
 
 					// TODO: Should we handle "control all units" here as well?
 					ents = Engine.PickSimilarPlayerEntities(templateToMatch, showOffscreen, matchRank, false);
 				}
-				else
-				{
-					// It's single click right now but it may become double or triple click
-					doubleClicked = false;
-					doubleClickTimer = now.getTime();
-					prevClickedEntity = selectedEntity;
-
-					// We only want to include the first picked unit in the selection
-					ents = [selectedEntity];
-				}
 
 				// Update the list of selected units
 				if (Engine.HotkeyIsPressed("selection.add"))
-				{
 					g_Selection.addList(ents);
-				}
 				else if (Engine.HotkeyIsPressed("selection.remove"))
-				{
 					g_Selection.removeList(ents);
-				}
 				else
 				{
 					g_Selection.reset();
@@ -1160,6 +1123,9 @@ function handleInputAfterGui(ev)
 
 function doAction(action, ev)
 {
+	if (!controlsPlayer(g_ViewedPlayer))
+		return false;
+
 	var selection = g_Selection.toList();
 
 	// If shift is down, add the order to the unit's order queue instead
@@ -1169,7 +1135,8 @@ function doAction(action, ev)
 
 	if (unitActions[action.type] && unitActions[action.type].execute)
 		return unitActions[action.type].execute(target, action, selection, queued);
-	error("Invalid action.type "+action.type);
+
+	error("Invalid action.type " + action.type);
 	return false;
 }
 
@@ -1191,7 +1158,7 @@ function handleMinimapEvent(target)
 	var queued = Engine.HotkeyIsPressed("session.queue");
 	if (unitActions[action.type] && unitActions[action.type].execute)
 		return unitActions[action.type].execute(target, action, selection, queued);
-	error("Invalid action.type "+action.type);
+	error("Invalid action.type " + action.type);
 	return false;
 }
 
@@ -1264,42 +1231,42 @@ function setJumpCamera(index)
 // Batch training:
 // When the user shift-clicks, we set these variables and switch to INPUT_BATCHTRAINING
 // When the user releases shift, or clicks on a different training button, we create the batched units
-var batchTrainingEntities;
-var batchTrainingType;
-var batchTrainingCount;
-var batchTrainingEntityAllowedCount;
+var g_BatchTrainingEntities;
+var g_BatchTrainingType;
+var g_BatchTrainingCount;
+var g_BatchTrainingEntityAllowedCount;
 
 function flushTrainingBatch()
 {
-	var appropriateBuildings = getBuildingsWhichCanTrainEntity(batchTrainingEntities, batchTrainingType);
-	// If training limits don't allow us to train batchTrainingCount in each appropriate building
-	if (batchTrainingEntityAllowedCount !== undefined &&
-		batchTrainingEntityAllowedCount < batchTrainingCount * appropriateBuildings.length)
+	var appropriateBuildings = getBuildingsWhichCanTrainEntity(g_BatchTrainingEntities, g_BatchTrainingType);
+	// If training limits don't allow us to train g_BatchTrainingCount in each appropriate building
+	if (g_BatchTrainingEntityAllowedCount !== undefined &&
+		g_BatchTrainingEntityAllowedCount < g_BatchTrainingCount * appropriateBuildings.length)
 	{
 		// Train as many full batches as we can
-		var buildingsCountToTrainFullBatch = Math.floor(batchTrainingEntityAllowedCount / batchTrainingCount);
+		var buildingsCountToTrainFullBatch = Math.floor(g_BatchTrainingEntityAllowedCount / g_BatchTrainingCount);
 		var buildingsToTrainFullBatch = appropriateBuildings.slice(0, buildingsCountToTrainFullBatch);
 		Engine.PostNetworkCommand({
 			"type": "train",
 			"entities": buildingsToTrainFullBatch,
-			"template": batchTrainingType,
-			"count": batchTrainingCount
+			"template": g_BatchTrainingType,
+			"count": g_BatchTrainingCount
 		});
 
 		// Train remainer in one more building
 		Engine.PostNetworkCommand({
 			"type": "train",
 			"entities": [ appropriateBuildings[buildingsCountToTrainFullBatch] ],
-			"template": batchTrainingType,
-			"count": batchTrainingEntityAllowedCount % batchTrainingCount
+			"template": g_BatchTrainingType,
+			"count": g_BatchTrainingEntityAllowedCount % g_BatchTrainingCount
 		});
 	}
 	else
 		Engine.PostNetworkCommand({
 			"type": "train",
 			"entities": appropriateBuildings,
-			"template": batchTrainingType,
-			"count": batchTrainingCount
+			"template": g_BatchTrainingType,
+			"count": g_BatchTrainingCount
 		});
 }
 
@@ -1385,36 +1352,32 @@ function addTrainingToQueue(selection, trainEntType, playerState)
 		{
 			// Check if we are training in the same building(s) as the last batch
 			var sameEnts = false;
-			if (batchTrainingEntities.length == selection.length)
-			{
+			if (g_BatchTrainingEntities.length == selection.length)
 				// NOTE: We just check if the arrays are the same and if the order is the same
 				// If the order changed, we have a new selection and we should create a new batch.
-				for (var i = 0; i < batchTrainingEntities.length; ++i)
-				{
-					if (!(sameEnts = batchTrainingEntities[i] == selection[i]))
+				for (let i = 0; i < g_BatchTrainingEntities.length; ++i)
+					if (!(sameEnts = g_BatchTrainingEntities[i] == selection[i]))
 						break;
-				}
-			}
 			// If we're already creating a batch of this unit (in the same building(s)), then just extend it
 			// (if training limits allow)
-			if (sameEnts && batchTrainingType == trainEntType)
+			if (sameEnts && g_BatchTrainingType == trainEntType)
 			{
 				if (decrement)
 				{
-					batchTrainingCount -= batchIncrementSize;
-					if (batchTrainingCount <= 0)
+					g_BatchTrainingCount -= batchIncrementSize;
+					if (g_BatchTrainingCount <= 0)
 						inputState = INPUT_NORMAL;
 				}
 				else if (limits.canBeAddedCount == undefined ||
-					limits.canBeAddedCount > batchTrainingCount * appropriateBuildings.length)
+					limits.canBeAddedCount > g_BatchTrainingCount * appropriateBuildings.length)
 				{
 					if (Engine.GuiInterfaceCall("GetNeededResources", { "cost":
-						multiplyEntityCosts(template, batchTrainingCount + batchIncrementSize) }))
+						multiplyEntityCosts(template, g_BatchTrainingCount + batchIncrementSize) }))
 						return;
 
-					batchTrainingCount += batchIncrementSize;
+					g_BatchTrainingCount += batchIncrementSize;
 				}
-				batchTrainingEntityAllowedCount = limits.canBeAddedCount;
+				g_BatchTrainingEntityAllowedCount = limits.canBeAddedCount;
 				return;
 			}
 			// Otherwise start a new one
@@ -1431,10 +1394,10 @@ function addTrainingToQueue(selection, trainEntType, playerState)
 			return;
 
 		inputState = INPUT_BATCHTRAINING;
-		batchTrainingEntities = selection;
-		batchTrainingType = trainEntType;
-		batchTrainingEntityAllowedCount = limits.canBeAddedCount;
-		batchTrainingCount = batchIncrementSize;
+		g_BatchTrainingEntities = selection;
+		g_BatchTrainingType = trainEntType;
+		g_BatchTrainingEntityAllowedCount = limits.canBeAddedCount;
+		g_BatchTrainingCount = batchIncrementSize;
 	}
 	else
 	{
@@ -1462,22 +1425,20 @@ function addResearchToQueue(entity, researchType)
  * Returns the number of units that will be present in a batch if the user clicks
  * the training button with shift down
  */
-function getTrainingBatchStatus(playerState, trainEntType, selection)
+function getTrainingStatus(playerState, trainEntType, selection)
 {
 	let batchIncrementSize = +Engine.ConfigDB_GetValue("user", "gui.session.batchtrainingsize");
 	var appropriateBuildings = [];
 	if (selection)
 		appropriateBuildings = getBuildingsWhichCanTrainEntity(selection, trainEntType);
 	var nextBatchTrainingCount = 0;
-	var currentBatchTrainingCount = 0;
 
 	var limits;
-	if (inputState == INPUT_BATCHTRAINING && batchTrainingType == trainEntType)
+	if (inputState == INPUT_BATCHTRAINING && g_BatchTrainingType == trainEntType)
 	{
-		nextBatchTrainingCount = batchTrainingCount;
-		currentBatchTrainingCount = batchTrainingCount;
+		nextBatchTrainingCount = g_BatchTrainingCount;
 		limits = {
-			"canBeAddedCount": batchTrainingEntityAllowedCount
+			"canBeAddedCount": g_BatchTrainingEntityAllowedCount
 		};
 	}
 	else
@@ -1499,7 +1460,7 @@ function getTrainingBatchStatus(playerState, trainEntType, selection)
 		remainderToTrain = limits.canBeAddedCount % nextBatchTrainingCount;
 	}
 
-	return [buildingsCountToTrainFullBatch, nextBatchTrainingCount, remainderToTrain, currentBatchTrainingCount];
+	return [buildingsCountToTrainFullBatch, nextBatchTrainingCount, remainderToTrain];
 }
 
 // Called by GUI when user clicks production queue item
@@ -1722,7 +1683,7 @@ function findIdleUnit(classes)
 	if (position)
 		Engine.CameraMoveTo(position.x, position.z);
 	// Move the idle class index to the first class an idle unit was found for.
-	var indexChange = data.idleClasses.findIndex(elem => hasClass(entityState, elem));
+	var indexChange = data.idleClasses.findIndex(elem => MatchesClassList(entityState.identity.classes, elem));
 	currIdleClassIndex = (currIdleClassIndex + indexChange) % classes.length;
 }
 
@@ -1739,7 +1700,7 @@ function unload(garrisonHolder, entities)
 		Engine.PostNetworkCommand({ "type": "unload", "entities": [entities[0]], "garrisonHolder": garrisonHolder });
 }
 
-function unloadTemplate(template)
+function unloadTemplate(template, owner)
 {
 	// Filter out all entities that aren't garrisonable.
 	var garrisonHolders = g_Selection.toList().filter(e => {
@@ -1753,29 +1714,30 @@ function unloadTemplate(template)
 		"type": "unload-template",
 		"all": Engine.HotkeyIsPressed("session.unloadtype"),
 		"template": template,
+		"owner": owner,
 		"garrisonHolders": garrisonHolders
 	});
 }
 
 function unloadSelection()
 {
-	var parent = 0;
-	var ents = [];
-	for each (var ent in g_Selection.selected)
+	let parent = 0;
+	let ents = [];
+	for (let ent in g_Selection.selected)
 	{
-		var state = GetExtendedEntityState(ent);
+		let state = GetExtendedEntityState(+ent);
 		if (!state || !state.turretParent)
 			continue;
 		if (!parent)
 		{
 			parent = state.turretParent;
-			ents.push(ent);
+			ents.push(+ent);
 		}
 		else if (state.turretParent == parent)
-			ents.push(ent);
+			ents.push(+ent);
 	}
 	if (parent)
-		Engine.PostNetworkCommand({ "type": "unload", "entities":ents, "garrisonHolder": parent });
+		Engine.PostNetworkCommand({ "type": "unload", "entities": ents, "garrisonHolder": parent });
 }
 
 function unloadAllByOwner()

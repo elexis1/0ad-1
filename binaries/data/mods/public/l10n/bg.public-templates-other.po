@@ -8,12 +8,12 @@
 # Любомир Василев, 2016
 # AccountKiller, 2015
 # Yordan Grigorov <yoreei.grigorov@gmail.com>, 2015
-# Любомир Василев, 2016
+# Любомир Василев, 2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-09-30 09:55+0000\n"
+"POT-Creation-Date: 2017-04-03 09:02+0200\n"
+"PO-Revision-Date: 2017-04-03 14:06+0000\n"
 "Last-Translator: Любомир Василев\n"
 "Language-Team: Bulgarian (http://www.transifex.com/wildfire-games/0ad/language/bg/)\n"
 "MIME-Version: 1.0\n"
@@ -120,7 +120,7 @@ msgstr "Съкровище"
 msgid "A treasure that can be quickly gathered."
 msgstr "Съкровище, което лесно може да бъде взето."
 
-#: simulation/templates/template_structure.xml:55
+#: simulation/templates/template_structure.xml:60
 msgid "Structure"
 msgstr "Сграда"
 
@@ -205,8 +205,8 @@ msgid "Box"
 msgstr "Кутия"
 
 #: simulation/templates/formations/column_closed.xml:5
-msgid "Column Closed"
-msgstr "Затворена колона"
+msgid "Forced March"
+msgstr "Пресилен марш"
 
 #: simulation/templates/formations/column_open.xml:5
 msgid "Column Open"
@@ -221,20 +221,20 @@ msgid "Flank"
 msgstr "Фланг"
 
 #: simulation/templates/formations/line_closed.xml:5
-msgid "Line Closed"
-msgstr "Затворена линия"
+msgid "Close Order"
+msgstr "Затворена подредба"
 
 #: simulation/templates/formations/line_open.xml:5
-msgid "Line Open"
-msgstr "Отворена линия"
+msgid "Open Order"
+msgstr "Отворена подредба"
 
 #: simulation/templates/formations/null.xml:5
 msgid "None"
 msgstr "Без"
 
 #: simulation/templates/formations/phalanx.xml:6
-msgid "10 melee infantry units required"
-msgstr "Нужни са 10 близкобойни пехотни единици"
+msgid "10 hoplite infantry required"
+msgstr "Нужни са 10 пехотни хоплити"
 
 #: simulation/templates/formations/phalanx.xml:7
 msgid "Phalanx"
@@ -253,10 +253,10 @@ msgid "Skirmish"
 msgstr "Стрелкова"
 
 #: simulation/templates/formations/syntagma.xml:6
-msgid "9 pike infantry units required"
-msgstr "Нужни са 9 пехотни единици с пики"
+msgid "16 pike infantry units required"
+msgstr "Нужни са 16 пехотинци с копия"
 
-#: simulation/templates/formations/syntagma.xml:7
+#: simulation/templates/formations/syntagma.xml:8
 msgid "Syntagma"
 msgstr "Синтагма"
 
@@ -269,8 +269,8 @@ msgid "Testudo"
 msgstr "Костенурка"
 
 #: simulation/templates/formations/wedge.xml:6
-msgid "3 cavalry units required"
-msgstr "Нужни са 3 конни единици"
+msgid "6 cavalry units required"
+msgstr "Нужни са 6 конници"
 
 #: simulation/templates/formations/wedge.xml:7
 msgid "Wedge"
@@ -281,8 +281,12 @@ msgid "Bear"
 msgstr "Мечка"
 
 #: simulation/templates/gaia/fauna_boar.xml:18
-msgid "Boar"
+msgid "Wild Boar"
 msgstr "Дива свиня"
+
+#: simulation/templates/gaia/fauna_boar.xml:19
+msgid "Sus scrofa"
+msgstr "Сус скрофа"
 
 #: simulation/templates/gaia/fauna_camel.xml:9
 msgid "Camel"
@@ -304,19 +308,23 @@ msgstr "Нилски крокодил"
 msgid "Deer"
 msgstr "Сърна"
 
-#: simulation/templates/gaia/fauna_elephant_african_bush.xml:33
+#: simulation/templates/gaia/fauna_elephant_african_bush.xml:11
 msgid "African Bush Elephant"
 msgstr "Африкански саванен слон"
+
+#: simulation/templates/gaia/fauna_elephant_african_infant.xml:14
+msgid "Elephant"
+msgstr "Слон"
 
 #: simulation/templates/gaia/fauna_elephant_african_infant.xml:15
 msgid "African Elephant (Infant)"
 msgstr "Африкански слон (малък)"
 
-#: simulation/templates/gaia/fauna_elephant_asian.xml:33
+#: simulation/templates/gaia/fauna_elephant_asian.xml:11
 msgid "Asian Elephant"
 msgstr "Азиатски слон"
 
-#: simulation/templates/gaia/fauna_elephant_north_african.xml:33
+#: simulation/templates/gaia/fauna_elephant_north_african.xml:11
 msgid "North African Elephant"
 msgstr "Северноафрикански слон"
 
@@ -370,13 +378,25 @@ msgstr "Лъвица"
 msgid "Muskox"
 msgstr "Овцебик"
 
-#: simulation/templates/gaia/fauna_peacock.xml:12
+#: simulation/templates/gaia/fauna_peacock.xml:14
 msgid "Peacock"
 msgstr "Паун"
+
+#: simulation/templates/gaia/fauna_peacock.xml:15
+msgid "Pavo cristatus"
+msgstr "Паво кристатус"
 
 #: simulation/templates/gaia/fauna_pig.xml:15
 msgid "Pig"
 msgstr "Прасе"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:18
+msgid "Flaming Pig"
+msgstr "Горящо прасе"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:19
+msgid "Sus scrofa domesticus igne"
+msgstr "Сус скрофа доместикус игне"
 
 #: simulation/templates/gaia/fauna_rabbit.xml:9
 msgid "Rabbit"
@@ -402,7 +422,7 @@ msgstr "Овца"
 msgid "Tiger"
 msgstr "Тигър"
 
-#: simulation/templates/gaia/fauna_walrus.xml:23
+#: simulation/templates/gaia/fauna_walrus.xml:24
 msgid "Walrus"
 msgstr "Морж"
 
@@ -418,11 +438,11 @@ msgstr "Гърбат кит"
 msgid "Wildebeest"
 msgstr "Гну"
 
-#: simulation/templates/gaia/fauna_wolf.xml:18
+#: simulation/templates/gaia/fauna_wolf.xml:4
 msgid "Wolf"
 msgstr "Вълк"
 
-#: simulation/templates/gaia/fauna_wolf_snow.xml:18
+#: simulation/templates/gaia/fauna_wolf_snow.xml:4
 msgid "Snow Wolf"
 msgstr "Снежен вълк"
 
@@ -773,13 +793,13 @@ msgstr "Край на палисада"
 msgid "Wooden Wall End"
 msgstr "Край на дървена стена"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr "Кула на палисада"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr "Караулна кула"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr "Дървена кула"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
@@ -882,6 +902,18 @@ msgstr "Колонада"
 msgid "Corinthian Colonnade"
 msgstr "Коринтска колонада"
 
+#: simulation/templates/other/special_catafalque.xml:22
+msgid "Catafalque"
+msgstr "Катафалка"
+
+#: simulation/templates/other/special_catafalque.xml:24
+msgid "A catafalque that holds the remains of a great leader."
+msgstr "Катафалка, превозваща останките на велик водач."
+
+#: simulation/templates/other/special_catafalque.xml:25
+msgid "Relic"
+msgstr "Реликва"
+
 #: simulation/templates/other/special_treasure_shipwreck.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_ram_bow.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_sail_boat.xml:10
@@ -945,6 +977,61 @@ msgstr "Незавършен гръцки храм"
 msgid "This temple is unfinished and has fallen to ruin."
 msgstr "Това са останки от незавършен храм."
 
+#: simulation/templates/other/catafalque/athen_catafalque.xml:6
+msgid "Solon"
+msgstr "Солон"
+
+#: simulation/templates/other/catafalque/brit_catafalque.xml:6
+msgid "Cassivellaunus"
+msgstr "Касивелаун"
+
+#: simulation/templates/other/catafalque/cart_catafalque.xml:6
+msgid "Hasdrubal (Quartermaster)"
+msgstr "Хасдрубал (интендант)"
+
+#: simulation/templates/other/catafalque/gaul_catafalque.xml:6
+msgid "Ambiorix"
+msgstr "Амбиорикс"
+
+#: simulation/templates/other/catafalque/iber_catafalque.xml:6
+msgid "Mandonius"
+msgstr "Мандоний"
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:6
+msgid "Philip V"
+msgstr "Филип V"
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:7
+msgid ""
+"Financial Reorganization: Allied with Rome, Philip reorganized the country's"
+" internal affairs and finances, leaving as a legacy reopened mines and a new"
+" currency. Gain a slow trickle of metal."
+msgstr "Финансов реформатор: В съюз с Рим, Филип променил вътрешното устройство и финансите на страната си, като оставил след себе си повторно отворени мини и нова валута. Получавате малко метал."
+
+#: simulation/templates/other/catafalque/maur_catafalque.xml:6
+msgid "Bindusara"
+msgstr "Биндусара"
+
+#: simulation/templates/other/catafalque/pers_catafalque.xml:6
+msgid "Artaxerxes II"
+msgstr "Артаксеркс II"
+
+#: simulation/templates/other/catafalque/ptol_catafalque.xml:6
+msgid "Ptolemy III Euergetes (Benefactor)"
+msgstr "Птолемей III Евригет (благодетел)"
+
+#: simulation/templates/other/catafalque/rome_catafalque.xml:6
+msgid "Lucius Junius Brutus"
+msgstr "Луций Юний Брут"
+
+#: simulation/templates/other/catafalque/sele_catafalque.xml:6
+msgid "Antiochus I Soter (Savior)"
+msgstr "Антиох I Сотер (спасител)"
+
+#: simulation/templates/other/catafalque/spart_catafalque.xml:6
+msgid "Lycurgus"
+msgstr "Ликург"
+
 #: simulation/templates/skirmish/structures/default_house_10.xml:5
 msgid ""
 "Changes in a 10-pop house for civilisations with those houses, is deleted "
@@ -962,9 +1049,13 @@ msgstr "Превръща се в къща, осигуряваща 5 населе
 msgid "Marker"
 msgstr "Белег"
 
-#: simulation/templates/special/player.xml:56
+#: simulation/templates/special/player.xml:57
 msgid "Player"
 msgstr "Играч"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr "Шпионин"
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5

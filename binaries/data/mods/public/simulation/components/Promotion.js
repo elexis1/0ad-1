@@ -86,17 +86,39 @@ Promotion.prototype.Promote = function(promotedTemplateName)
 	if (cmpCurrentUnitAI.IsGarrisoned())
 		cmpPromotedUnitAI.SetGarrisoned();
 	if (cmpCurrentUnitPosition.IsInWorld())	// do not cheer if not visibly garrisoned
-		cmpPromotedUnitAI.Cheer();	
+		cmpPromotedUnitAI.Cheer();
 	cmpPromotedUnitAI.AddOrders(orders);
 
 	var workOrders = cmpCurrentUnitAI.GetWorkOrders();
 	cmpPromotedUnitAI.SetWorkOrders(workOrders);
-	cmpPromotedUnitAI.SetGuardOf(cmpCurrentUnitAI.IsGuardOf());
 
-	var cmpCurrentUnitGuard = Engine.QueryInterface(this.entity, IID_Guard);
-	var cmpPromotedUnitGuard = Engine.QueryInterface(promotedUnitEntity, IID_Guard);
+	if (cmpCurrentUnitAI.IsGuardOf())
+	{
+		let guarded = cmpCurrentUnitAI.IsGuardOf();
+		let cmpGuard = Engine.QueryInterface(guarded, IID_Guard);
+		if (cmpGuard)
+		{
+			cmpGuard.RenameGuard(this.entity, promotedUnitEntity);
+			cmpPromotedUnitAI.SetGuardOf(guarded);
+		}
+	}
+
+	let cmpCurrentUnitGuard = Engine.QueryInterface(this.entity, IID_Guard);
+	let cmpPromotedUnitGuard = Engine.QueryInterface(promotedUnitEntity, IID_Guard);
 	if (cmpCurrentUnitGuard && cmpPromotedUnitGuard)
-		cmpPromotedUnitGuard.SetEntities(cmpCurrentUnitGuard.GetEntities());
+	{
+		let entities = cmpCurrentUnitGuard.GetEntities();
+		if (entities.length)
+		{
+			cmpPromotedUnitGuard.SetEntities(entities);
+			for (let ent of entities)
+			{
+				let cmpUnitAI = Engine.QueryInterface(ent, IID_UnitAI);
+				if (cmpUnitAI)
+					cmpUnitAI.SetGuardOf(promotedUnitEntity);
+			}
+		}
+	}
 
 	Engine.BroadcastMessage(MT_EntityRenamed, { entity: this.entity, newentity: promotedUnitEntity });
 

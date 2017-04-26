@@ -117,9 +117,6 @@ for (var i = 0; i < numPlayers; i++)
 	addToClass(ix-5, iz, clPlayer);
 	addToClass(ix, iz-5, clPlayer);
 
-	// calculate size based on the radius
-	var hillSize = PI * radius * radius;
-
 	// create the city patch
 	var cityRadius = radius/3;
 	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
@@ -179,20 +176,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aGrassShort, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 RMS.SetProgress(10);
 
@@ -239,11 +223,13 @@ for (var ix = 0; ix < mapSize; ix++)
 RMS.SetProgress(20);
 
 log("Creating rivers");
-for (var i = 0; i <= randInt(8, (scaleByMapSize(12,20))); i++)
+for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 {
-	var cLocation = randFloat(0.05,0.95);
-	var tang = 2*PI * randFloat(0.2, 0.8) * (randInt(2) - 0.5);
-	var cDistance = 0.05 * (tang > 0 ? 1 : -1);
+	var cLocation = randFloat(0.05, 0.95);
+
+	var sign = randBool() ? 1 : -1;
+	var tang = sign * PI * randFloat(0.2, 0.8);
+	var cDistance = sign * 0.05;
 
 	var point = getTIPIADBON([fractionToTiles(cLocation), fractionToTiles(0.5 + cDistance)], [fractionToTiles(cLocation), fractionToTiles(0.5 - cDistance)], [-6, -1.5], 0.5, 4, 0.01);
 	if (point !== undefined)
@@ -385,7 +371,7 @@ createFood
   [new SimpleObject(oBerryBush, 5,7, 0,4)]
  ],
  [
-  randInt(1, 4) * numPlayers + 2
+  randIntInclusive(1, 4) * numPlayers + 2
  ],
  avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 10)
 );
@@ -402,7 +388,7 @@ createFood
 
 log("Creating straggler trees...");
 var types = [oBeech, oPoplar, oApple];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 8, clMetal, 1, clRock, 1));
+createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 8, clMetal, 6, clRock, 6));
 
 // Set environment
 setSkySet("cirrus");

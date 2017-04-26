@@ -62,7 +62,7 @@ function randomizeBiome(avoid = [])
 {
 	let biomeIndex;
 	do
-		biomeIndex = randInt(1, 8);
+		biomeIndex = randIntInclusive(1, 8);
 	while (avoid.indexOf(biomeIndex) != -1);
 
 	setBiome(biomeIndex);
@@ -72,13 +72,7 @@ function randomizeBiome(avoid = [])
 
 function setBiome(biomeIndex)
 {
-	var random_sky = randInt(1,3);
-	if (random_sky==1)
-		setSkySet("cirrus");
-	else if (random_sky ==2)
-		setSkySet("cumulus");
-	else if (random_sky ==3)
-		setSkySet("sunny");
+	setSkySet(pickRandom(["cirrus", "cumulus", "sunny"]));
 
 	setSunRotation(randFloat(0, TWO_PI));
 	setSunElevation(randFloat(PI/ 6, PI / 3));
@@ -116,7 +110,7 @@ function setBiome(biomeIndex)
 			"water": "medit_sand_wet"
 		};
 
-		if (randInt(2))
+		if (randBool())
 		{
 			g_Terrains.mainTerrain = "alpine_grass";
 			g_Terrains.forestFloor1 = "temp_forestfloor_pine";
@@ -148,13 +142,13 @@ function setBiome(biomeIndex)
 			"metalLarge": "gaia/geology_metal_temperate_slabs"
 		};
 
-		var random_trees = randInt(3);
-		if (random_trees == 0)
+		var random_trees = randIntInclusive(1, 3);
+		if (random_trees == 1)
 		{
 			g_Gaia.tree1 = "gaia/flora_tree_oak";
 			g_Gaia.tree2 = "gaia/flora_tree_oak_large";
 		}
-		else if (random_trees == 1)
+		else if (random_trees == 2)
 		{
 			g_Gaia.tree1 = "gaia/flora_tree_poplar";
 			g_Gaia.tree2 = "gaia/flora_tree_poplar";
@@ -165,13 +159,13 @@ function setBiome(biomeIndex)
 			g_Gaia.tree2 = "gaia/flora_tree_euro_beech";
 		}
 		g_Gaia.tree3 = "gaia/flora_tree_apple";
-		random_trees = randInt(3);
-		if (random_trees == 0)
+		random_trees = randIntInclusive(1, 3);
+		if (random_trees == 1)
 		{
 			g_Gaia.tree4 = "gaia/flora_tree_pine";
 			g_Gaia.tree5 = "gaia/flora_tree_aleppo_pine";
 		}
-		else if (random_trees == 1)
+		else if (random_trees == 2)
 		{
 			g_Gaia.tree4 = "gaia/flora_tree_pine";
 			g_Gaia.tree5 = "gaia/flora_tree_pine";
@@ -302,7 +296,8 @@ function setBiome(biomeIndex)
 			"stoneSmall": "gaia/geology_stone_desert_small",
 			"metalLarge": "gaia/geology_metal_desert_slabs"
 		};
-		if (randInt(2))
+
+		if (randBool())
 		{
 			g_Gaia.tree1 = "gaia/flora_tree_cretan_date_palm_short";
 			g_Gaia.tree2 = "gaia/flora_tree_cretan_date_palm_tall";
@@ -313,7 +308,8 @@ function setBiome(biomeIndex)
 			g_Gaia.tree2 = "gaia/flora_tree_date_palm";
 		}
 		g_Gaia.tree3 = "gaia/flora_tree_fig";
-		if (randInt(2))
+
+		if (randBool())
 		{
 			g_Gaia.tree4 = "gaia/flora_tree_tamarix";
 			g_Gaia.tree5 = "gaia/flora_tree_tamarix";
@@ -443,13 +439,13 @@ function setBiome(biomeIndex)
 			"metalLarge": "gaia/geology_metal_mediterranean_slabs"
 		};
 
-		var random_trees = randInt(3);
-		if (random_trees == 0)
+		var random_trees = randIntInclusive(1, 3);
+		if (random_trees == 1)
 		{
 			g_Gaia.tree1 = "gaia/flora_tree_cretan_date_palm_short";
 			g_Gaia.tree2 = "gaia/flora_tree_cretan_date_palm_tall";
 		}
-		else if (random_trees == 1)
+		else if (random_trees == 2)
 		{
 			g_Gaia.tree1 = "gaia/flora_tree_carob";
 			g_Gaia.tree2 = "gaia/flora_tree_carob";
@@ -460,12 +456,12 @@ function setBiome(biomeIndex)
 			g_Gaia.tree2 = "gaia/flora_tree_medit_fan_palm";
 		}
 
-		if (randInt(2))
+		if (randBool())
 			g_Gaia.tree3 = "gaia/flora_tree_apple";
 		else
 			g_Gaia.tree3 = "gaia/flora_tree_poplar_lombardy";
 
-		if (randInt(2))
+		if (randBool())
 		{
 			g_Gaia.tree4 = "gaia/flora_tree_cypress";
 			g_Gaia.tree5 = "gaia/flora_tree_cypress";
@@ -476,7 +472,7 @@ function setBiome(biomeIndex)
 			g_Gaia.tree5 = "gaia/flora_tree_aleppo_pine";
 		}
 
-		if (randInt(2))
+		if (randBool())
 			g_Gaia.fruitBush = "gaia/flora_bush_berry";
 		else
 			g_Gaia.fruitBush = "gaia/flora_bush_grapes";
@@ -536,21 +532,17 @@ function setBiome(biomeIndex)
 			"fruitBush": "gaia/flora_bush_grapes",
 			"chicken": "gaia/fauna_chicken",
 			"fish": "gaia/fauna_fish",
+			"mainHuntableAnimal": pickRandom([
+				"gaia/fauna_wildebeest",
+				"gaia/fauna_zebra",
+				"gaia/fauna_giraffe",
+				"gaia/fauna_elephant_african_bush"
+			]),
 			"secondaryHuntableAnimal": "gaia/fauna_gazelle",
 			"stoneLarge": "gaia/geology_stonemine_desert_quarry",
 			"stoneSmall": "gaia/geology_stone_savanna_small",
 			"metalLarge": "gaia/geology_metal_savanna_slabs"
 		};
-
-		var rts = randInt(1,4);
-		if (rts == 1)
-			g_Gaia.mainHuntableAnimal = "gaia/fauna_wildebeest";
-		else if (rts == 2)
-			g_Gaia.mainHuntableAnimal = "gaia/fauna_zebra";
-		else if (rts == 3)
-			g_Gaia.mainHuntableAnimal = "gaia/fauna_giraffe";
-		else if (rts == 4)
-			g_Gaia.mainHuntableAnimal = "gaia/fauna_elephant_african_bush";
 
 		g_Decoratives = {
 			"grass": "actor|props/flora/grass_savanna.xml",

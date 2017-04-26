@@ -4,15 +4,18 @@
 # 
 # Translators:
 # Dominik Kosić <dominik.kosic98@gmail.com>, 2015
+# Dominik Novosel <vortextardis@gmail.com>, 2017
+# Jan Švigir <svigirjan@gmail.com>, 2017
+# marin mornar <marin.mornar@gmail.com>, 2017
 # Chris_Kay_083, 2015
 # Gifmaster <necrotico31@gmail.com>, 2015
 # Tomislav Gregorić, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-09-30 09:49+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-03-27 09:02+0200\n"
+"PO-Revision-Date: 2017-03-29 17:29+0000\n"
+"Last-Translator: Jan Švigir <svigirjan@gmail.com>\n"
 "Language-Team: Croatian (http://www.transifex.com/wildfire-games/0ad/language/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,26 +57,26 @@ msgstr "Vojna kolonija"
 msgid "Klēroukhía"
 msgstr ""
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:25
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:33
 msgid "Stoa"
 msgstr ""
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:26
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:34
 msgid "Hellenic Royal Stoa"
 msgstr ""
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:28
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:36
 msgid "Recruit special units."
-msgstr ""
+msgstr "Zaposli specijalne vojnike"
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:31
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:39
 #: simulation/templates/template_structure_civic_temple.xml:33
 #: simulation/templates/template_structure_defense_defense_tower.xml:57
 #: simulation/templates/template_structure_economic_market.xml:24
 #: simulation/templates/template_structure_military_blacksmith.xml:32
-#: simulation/templates/template_structure_military_embassy.xml:24
+#: simulation/templates/template_structure_military_embassy.xml:26
 #: simulation/templates/structures/brit_blacksmith.xml:11
-#: simulation/templates/structures/brit_kennel.xml:35
+#: simulation/templates/structures/brit_kennel.xml:39
 #: simulation/templates/structures/cart_super_dock.xml:37
 #: simulation/templates/structures/gaul_blacksmith.xml:11
 #: simulation/templates/structures/gaul_tavern.xml:29
@@ -82,13 +85,13 @@ msgstr ""
 msgid "Town"
 msgstr "Grad"
 
-#: simulation/templates/template_structure_civic_house.xml:34
+#: simulation/templates/template_structure_civic_house.xml:35
 msgid "Increase the population limit."
 msgstr "Povisi populacijsku granicu."
 
-#: simulation/templates/template_structure_civic_house.xml:36
+#: simulation/templates/template_structure_civic_house.xml:37
 #: simulation/templates/template_structure_defense_outpost.xml:65
-#: simulation/templates/template_structure_defense_wooden_tower.xml:42
+#: simulation/templates/template_structure_defense_sentry_tower.xml:42
 #: simulation/templates/template_structure_economic_farmstead.xml:27
 #: simulation/templates/template_structure_economic_storehouse.xml:27
 #: simulation/templates/template_structure_military_barracks.xml:31
@@ -97,8 +100,8 @@ msgstr "Povisi populacijsku granicu."
 msgid "Village"
 msgstr "Selo"
 
-#: simulation/templates/template_structure_civic_house.xml:36
-#: simulation/templates/template_structure_civic_house.xml:33
+#: simulation/templates/template_structure_civic_house.xml:37
+#: simulation/templates/template_structure_civic_house.xml:34
 msgid "House"
 msgstr "Kuća"
 
@@ -144,7 +147,24 @@ msgstr "Gradite u neutralnom i svom djelu teritorija kako bi imali nadzor nad ma
 msgid "Outpost"
 msgstr "Predstraža "
 
+#: simulation/templates/template_structure_defense_sentry_tower.xml:40
+#: simulation/templates/template_structure_defense_sentry_tower.xml:39
+msgid "Sentry Tower"
+msgstr ""
+
+#: simulation/templates/template_structure_defense_sentry_tower.xml:42
+msgid "SentryTower"
+msgstr ""
+
+#: simulation/templates/template_structure_defense_sentry_tower.xml:69
+msgid "Reinforce with stone and upgrade to a defense tower."
+msgstr "Pojačaj sa kamenon i nadogradi u ombranbeni toranj."
+
 #: simulation/templates/template_structure_defense_wall.xml:24
+#: simulation/templates/structures/cart_s_wall_long.xml:7
+#: simulation/templates/structures/cart_s_wall_medium.xml:7
+#: simulation/templates/structures/cart_s_wall_short.xml:7
+#: simulation/templates/structures/cart_s_wall_tower.xml:7
 msgid "Stone Wall"
 msgstr "Kameni zid"
 
@@ -182,15 +202,6 @@ msgstr "Ispaljuje strijele. Brani zidove od napadača."
 #: simulation/templates/template_structure_defense_wallset.xml:10
 msgid "City Wall"
 msgstr "Gradski Zid"
-
-#: simulation/templates/template_structure_defense_wooden_tower.xml:39
-#: simulation/templates/template_structure_defense_wooden_tower.xml:38
-msgid "Sentry Tower"
-msgstr ""
-
-#: simulation/templates/template_structure_defense_wooden_tower.xml:67
-msgid "Reinforce with stone and upgrade to a defense tower."
-msgstr ""
 
 #: simulation/templates/template_structure_economic.xml:14
 msgid "Economic Structure"
@@ -279,8 +290,8 @@ msgstr ""
 msgid "Dock"
 msgstr "Dok"
 
-#: simulation/templates/template_structure_military_embassy.xml:24
-#: simulation/templates/template_structure_military_embassy.xml:25
+#: simulation/templates/template_structure_military_embassy.xml:26
+#: simulation/templates/template_structure_military_embassy.xml:27
 #: simulation/templates/structures/cart_embassy.xml:19
 #: simulation/templates/structures/cart_embassy.xml:20
 msgid "Embassy"
@@ -332,9 +343,9 @@ msgid "Harvest vegetables for food. Max gatherers: 5."
 msgstr ""
 
 #: simulation/templates/template_structure_special.xml:42
-#: simulation/templates/structures/brit_kennel.xml:32
+#: simulation/templates/structures/brit_kennel.xml:36
 msgid "Special Building"
-msgstr ""
+msgstr "Specijalna Zgrada"
 
 #: simulation/templates/template_structure_special.xml:43
 msgid "This is a special building unique to a particular civilization."
@@ -358,7 +369,7 @@ msgstr ""
 
 #: simulation/templates/template_structure_special_theatron.xml:23
 msgid "Greek Theater"
-msgstr ""
+msgstr "Grčko Kazalište"
 
 #: simulation/templates/template_structure_special_theatron.xml:24
 msgid "Théātron"
@@ -433,15 +444,15 @@ msgstr ""
 msgid "Build siege engines. Garrison soldiers inside for stout defense."
 msgstr ""
 
-#: simulation/templates/structures/athen_gymnasion.xml:20
+#: simulation/templates/structures/athen_gymnasion.xml:23
 msgid "Gymnasium"
 msgstr ""
 
-#: simulation/templates/structures/athen_gymnasion.xml:21
+#: simulation/templates/structures/athen_gymnasion.xml:24
 msgid "Gymnásion"
 msgstr ""
 
-#: simulation/templates/structures/athen_gymnasion.xml:22
+#: simulation/templates/structures/athen_gymnasion.xml:25
 msgid "Train champion units."
 msgstr ""
 
@@ -536,7 +547,7 @@ msgstr ""
 #: simulation/templates/structures/cart_wonder.xml:17
 #: simulation/templates/structures/mace_wonder.xml:17
 #: simulation/templates/structures/ptol_wonder.xml:17
-#: simulation/templates/structures/rome_wonder.xml:16
+#: simulation/templates/structures/rome_wonder.xml:14
 msgid ""
 "Bring glory to your civilization and add large tracts of land to your "
 "empire. Garrison units to heal them at an extremely quick rate."
@@ -606,11 +617,11 @@ msgstr ""
 msgid "Annedd"
 msgstr ""
 
-#: simulation/templates/structures/brit_kennel.xml:33
+#: simulation/templates/structures/brit_kennel.xml:37
 msgid "Kennel"
 msgstr ""
 
-#: simulation/templates/structures/brit_kennel.xml:36
+#: simulation/templates/structures/brit_kennel.xml:40
 msgid "Train Celtic war dogs."
 msgstr ""
 
@@ -628,8 +639,8 @@ msgstr ""
 msgid "Ystordy"
 msgstr ""
 
-#: simulation/templates/structures/brit_temple.xml:19
-#: simulation/templates/structures/gaul_temple.xml:19
+#: simulation/templates/structures/brit_temple.xml:18
+#: simulation/templates/structures/gaul_temple.xml:18
 msgid "Addoldy"
 msgstr ""
 
@@ -658,6 +669,10 @@ msgstr ""
 msgid "Stonehenge"
 msgstr ""
 
+#: simulation/templates/structures/cart_apartment.xml:17
+msgid "Apartment Building"
+msgstr ""
+
 #: simulation/templates/structures/cart_barracks.xml:18
 msgid "Maḥanēt"
 msgstr ""
@@ -666,13 +681,6 @@ msgstr ""
 msgid ""
 "Train North African citizen-soldiers. Research improvements for North "
 "African units."
-msgstr ""
-
-#: simulation/templates/structures/cart_blacksmith.xml:5
-#: simulation/templates/structures/ptol_blacksmith.xml:5
-#: simulation/templates/structures/ptol_field.xml:5
-#: simulation/templates/structures/ptol_temple.xml:12
-msgid "?"
 msgstr ""
 
 #: simulation/templates/structures/cart_civil_centre.xml:8
@@ -758,6 +766,14 @@ msgstr ""
 msgid "Carthaginian Outpost"
 msgstr "Kartaška Stražarnica"
 
+#: simulation/templates/structures/cart_s_wall_long.xml:6
+#: simulation/templates/structures/cart_s_wall_medium.xml:6
+#: simulation/templates/structures/cart_s_wall_short.xml:6
+#: simulation/templates/structures/cart_s_wall_tower.xml:6
+#: simulation/templates/structures/cart_wallset_short.xml:5
+msgid "Low Wall"
+msgstr "Niski Zid"
+
 #: simulation/templates/structures/cart_storehouse.xml:9
 msgid "Maḥṣabah"
 msgstr ""
@@ -776,7 +792,7 @@ msgstr ""
 
 #: simulation/templates/structures/cart_super_dock.xml:39
 msgid "Construct and repair mighty warships."
-msgstr ""
+msgstr "Izgradi i popravi moćne ratne brodove"
 
 #: simulation/templates/structures/cart_temple.xml:14
 msgid "Maqdaš"
@@ -880,15 +896,19 @@ msgstr ""
 msgid "Arruga"
 msgstr ""
 
-#: simulation/templates/structures/iber_monument.xml:28
-msgid "Revered Monument"
-msgstr ""
-
-#: simulation/templates/structures/iber_monument.xml:29
-msgid "Gur Oroigarri"
+#: simulation/templates/structures/iber_monument.xml:7
+msgid "Monument"
 msgstr ""
 
 #: simulation/templates/structures/iber_monument.xml:32
+msgid "Revered Monument"
+msgstr ""
+
+#: simulation/templates/structures/iber_monument.xml:33
+msgid "Gur Oroigarri"
+msgstr ""
+
+#: simulation/templates/structures/iber_monument.xml:36
 msgid ""
 "All units within vision of this monument will fight harder. Buildings in the"
 " territory of the monument do not decay."
@@ -926,11 +946,11 @@ msgstr ""
 msgid "Sidērourgeîon"
 msgstr ""
 
-#: simulation/templates/structures/mace_fortress.xml:15
+#: simulation/templates/structures/mace_fortress.xml:9
 msgid "Teíchisma"
 msgstr ""
 
-#: simulation/templates/structures/mace_fortress.xml:16
+#: simulation/templates/structures/mace_fortress.xml:10
 msgid ""
 "Train Champions and Heroes. Garrison soldiers inside for stout defense."
 msgstr ""
@@ -950,7 +970,7 @@ msgstr "Radionica za opsadu"
 
 #: simulation/templates/structures/mace_siege_workshop.xml:20
 msgid "Build siege engines. Research siege technologies."
-msgstr ""
+msgstr "Gradi opsadne strojeve. Istraži opsadsku tehnologiju."
 
 #: simulation/templates/structures/mace_temple.xml:9
 #: simulation/templates/structures/spart_temple.xml:9
@@ -1021,15 +1041,19 @@ msgstr ""
 msgid "Uparaksana"
 msgstr ""
 
-#: simulation/templates/structures/maur_pillar_ashoka.xml:27
+#: simulation/templates/structures/maur_pillar_ashoka.xml:7
+msgid "Pillar"
+msgstr "Stup"
+
+#: simulation/templates/structures/maur_pillar_ashoka.xml:32
 msgid "Edict Pillar of Ashoka"
 msgstr ""
 
-#: simulation/templates/structures/maur_pillar_ashoka.xml:28
+#: simulation/templates/structures/maur_pillar_ashoka.xml:33
 msgid "Śāsana Stambha Aśokā"
 msgstr ""
 
-#: simulation/templates/structures/maur_pillar_ashoka.xml:31
+#: simulation/templates/structures/maur_pillar_ashoka.xml:36
 msgid ""
 "The famous pillar of Ashoka. Increases the walk speed of traders. Buildings "
 "in the territory of the monument do not decay."
@@ -1080,16 +1104,16 @@ msgstr ""
 msgid "Capture this structure to train mercenaries from Hellenistic Egypt."
 msgstr ""
 
-#: simulation/templates/structures/pers_apadana.xml:26
-#: simulation/templates/structures/pers_palace.xml:23
+#: simulation/templates/structures/pers_apadana.xml:29
+#: simulation/templates/structures/pers_tacara.xml:26
 msgid "Persian Palace"
 msgstr "Perzijska palača"
 
-#: simulation/templates/structures/pers_apadana.xml:27
+#: simulation/templates/structures/pers_apadana.xml:30
 msgid "Apadana"
 msgstr ""
 
-#: simulation/templates/structures/pers_apadana.xml:31
+#: simulation/templates/structures/pers_apadana.xml:34
 msgid ""
 "\"Satrapy Tribute\": Gain a trickle of food, wood, stone, and metal "
 "resources. Train Persian heroes and their \"Immortals\" bodyguards."
@@ -1144,15 +1168,15 @@ msgstr ""
 msgid "Train Champion Cavalry and Construct Siege Rams."
 msgstr ""
 
-#: simulation/templates/structures/pers_hall.xml:25
+#: simulation/templates/structures/pers_hall.xml:28
 msgid "Persian Hall"
 msgstr ""
 
-#: simulation/templates/structures/pers_hall.xml:26
+#: simulation/templates/structures/pers_hall.xml:29
 msgid "Duvarthi Visadahyu"
 msgstr ""
 
-#: simulation/templates/structures/pers_hall.xml:28
+#: simulation/templates/structures/pers_hall.xml:31
 msgid "Train War Elephants and Kardakes mercenaries."
 msgstr ""
 
@@ -1160,15 +1184,15 @@ msgstr ""
 msgid "Huvādā"
 msgstr ""
 
-#: simulation/templates/structures/pers_ishtar_gate.xml:25
+#: simulation/templates/structures/pers_ishtar_gate.xml:28
 msgid "Persian Special Building"
 msgstr ""
 
-#: simulation/templates/structures/pers_ishtar_gate.xml:26
+#: simulation/templates/structures/pers_ishtar_gate.xml:29
 msgid "Ishtar Gate of Babylon"
 msgstr ""
 
-#: simulation/templates/structures/pers_ishtar_gate.xml:27
+#: simulation/templates/structures/pers_ishtar_gate.xml:30
 msgid ""
 "Increases the loyalty regeneration of nearby structures, making them harder "
 "to capture."
@@ -1180,10 +1204,6 @@ msgstr ""
 
 #: simulation/templates/structures/pers_outpost.xml:5
 msgid "Didebani"
-msgstr ""
-
-#: simulation/templates/structures/pers_palace.xml:24
-msgid "Taçara"
 msgstr ""
 
 #: simulation/templates/structures/pers_stables.xml:18
@@ -1204,6 +1224,10 @@ msgstr ""
 
 #: simulation/templates/structures/pers_storehouse.xml:5
 msgid "Asiyah"
+msgstr ""
+
+#: simulation/templates/structures/pers_tacara.xml:27
+msgid "Taçara"
 msgstr ""
 
 #: simulation/templates/structures/pers_temple.xml:12
@@ -1440,7 +1464,7 @@ msgstr ""
 
 #: simulation/templates/structures/rome_siege_wall_tower.xml:31
 msgid "Siege Wall Tower"
-msgstr ""
+msgstr "Opsadna kula"
 
 #: simulation/templates/structures/rome_siege_wall_tower.xml:32
 msgid "Turris Circummunitionis"
@@ -1506,7 +1530,7 @@ msgstr ""
 msgid "Murus Latericius"
 msgstr ""
 
-#: simulation/templates/structures/rome_wonder.xml:15
+#: simulation/templates/structures/rome_wonder.xml:13
 msgid "Aedes Iovis Optimi Maximi"
 msgstr ""
 
@@ -1578,7 +1602,7 @@ msgstr ""
 
 #: simulation/templates/structures/spart_gerousia.xml:21
 msgid "Spartan Senate"
-msgstr ""
+msgstr "Spartanski senat"
 
 #: simulation/templates/structures/spart_gerousia.xml:22
 msgid "Gerontía"
@@ -1586,17 +1610,17 @@ msgstr ""
 
 #: simulation/templates/structures/spart_gerousia.xml:23
 msgid "Train heroes."
-msgstr ""
+msgstr "Treniraj heroje."
 
-#: simulation/templates/structures/spart_syssiton.xml:21
+#: simulation/templates/structures/spart_syssiton.xml:24
 msgid "Military Mess Hall"
 msgstr ""
 
-#: simulation/templates/structures/spart_syssiton.xml:22
+#: simulation/templates/structures/spart_syssiton.xml:25
 msgid "Syssítion"
 msgstr ""
 
-#: simulation/templates/structures/spart_syssiton.xml:24
+#: simulation/templates/structures/spart_syssiton.xml:27
 msgid "Train Spartan heroes and Spartiate champion hoplites."
 msgstr ""
 

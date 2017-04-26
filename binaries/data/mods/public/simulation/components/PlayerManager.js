@@ -24,7 +24,7 @@ PlayerManager.prototype.AddPlayer = function(ent)
 	}
 	newDiplo[id] = 1;
 	cmpPlayer.SetDiplomacy(newDiplo);
-	
+
 	return id;
 };
 
@@ -89,7 +89,7 @@ PlayerManager.prototype.GetNumPlayers = function()
 PlayerManager.prototype.RemoveAllPlayers = function()
 {
 	// Destroy existing player entities
-	for each (var id in this.playerEntities)
+	for (var id of this.playerEntities)
 		Engine.DestroyEntity(id);
 
 	this.playerEntities = [];
@@ -97,7 +97,7 @@ PlayerManager.prototype.RemoveAllPlayers = function()
 
 PlayerManager.prototype.RemoveLastPlayer = function()
 {
-	if (this.playerEntities.length == 0) 
+	if (this.playerEntities.length == 0)
 		return;
 
 	var lastId = this.playerEntities.pop();

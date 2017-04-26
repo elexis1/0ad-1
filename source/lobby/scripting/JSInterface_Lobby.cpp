@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ void JSI_Lobby::RegisterScriptFunctions(ScriptInterface& scriptInterface)
 
 bool JSI_Lobby::HasXmppClient(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
 {
-	return (g_XmppClient ? true : false);
+	return g_XmppClient;
 }
 
 bool JSI_Lobby::IsRankedGame(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
@@ -185,7 +185,7 @@ JS::Value JSI_Lobby::GetPlayerList(ScriptInterface::CxPrivate* pCxPrivate)
 
 	JSContext* cx = pCxPrivate->pScriptInterface->GetContext();
 	JSAutoRequest rq(cx);
-		
+
 	JS::RootedValue playerList(cx);
 	g_XmppClient->GUIGetPlayerList(*(pCxPrivate->pScriptInterface), &playerList);
 
@@ -254,7 +254,7 @@ JS::Value JSI_Lobby::LobbyGuiPollMessage(ScriptInterface::CxPrivate* pCxPrivate)
 
 	JSContext* cx = pCxPrivate->pScriptInterface->GetContext();
 	JSAutoRequest rq(cx);
-	
+
 	JS::RootedValue poll(cx);
 	g_XmppClient->GuiPollMessage(*(pCxPrivate->pScriptInterface), &poll);
 
@@ -265,7 +265,7 @@ void JSI_Lobby::LobbySendMessage(ScriptInterface::CxPrivate* UNUSED(pCxPrivate),
 {
 	if (!g_XmppClient)
 		return;
-		
+
 	g_XmppClient->SendMUCMessage(utf8_from_wstring(message));
 }
 

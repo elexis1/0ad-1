@@ -180,7 +180,7 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, mX, mZ
 	);
 	createObjectGroup(group, 0);
-	var hillSize = PI * radius * radius;
+
 	// create starting trees
 	var num = 2;
 	var tAngle = randFloat(-PI/3, 4*PI/3);
@@ -193,20 +193,7 @@ for (var i = 0; i < numPlayers; i++)
 	);
 	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
 
-	// create grass tufts
-	var num = hillSize / 250;
-	for (var j = 0; j < num; j++)
-	{
-		var gAngle = randFloat(0, TWO_PI);
-		var gDist = radius - (5 + randInt(7));
-		var gX = round(fx + gDist * cos(gAngle));
-		var gZ = round(fz + gDist * sin(gAngle));
-		group = new SimpleGroup(
-			[new SimpleObject(aBush1, 2,5, 0,1, -PI/8,PI/8)],
-			false, clBaseResource, gX, gZ
-		);
-		createObjectGroup(group, 0);
-	}
+	placeDefaultDecoratives(fx, fz, aBush1, clBaseResource, radius);
 }
 
 RMS.SetProgress(30);
@@ -534,7 +521,7 @@ for (var i = 0; i < types.length; ++i)
 {
 	group = new SimpleGroup([new SimpleObject(types[i], 1,1, 0,0)], true);
 	createObjectGroups(group, 0,
-		avoidClasses(clForest, 0, clWater, 1, clPlayer, 20, clMetal, 1, clDesert, 1, clTreasure, 2, clPond, 1),
+		avoidClasses(clForest, 0, clWater, 1, clPlayer, 20, clMetal, 6, clDesert, 1, clTreasure, 2, clPond, 1),
 		num
 	);
 }
@@ -545,7 +532,7 @@ for (var i = 0; i < types.length; ++i)
 {
 	group = new SimpleGroup([new SimpleObject(types[i], 1,1, 0,0)], true);
 	createObjectGroups(group, 0,
-		avoidClasses(clForest, 0, clWater, 1, clPlayer, 20, clMetal, 1, clTreasure, 2),
+		avoidClasses(clForest, 0, clWater, 1, clPlayer, 20, clMetal, 6, clTreasure, 2),
 		num
 	);
 }
@@ -571,7 +558,7 @@ group = new SimpleGroup(
 );
 createObjectGroups(
 	group, 0,
-	[avoidClasses(clWater, 4, clForest, 3, clPlayer, 20, clMetal, 2, clRock, 2, clPond, 4, clTreasure, 2), stayClasses(clDesert, 3)],
+	[avoidClasses(clWater, 4, clForest, 3, clPlayer, 20, clMetal, 6, clRock, 2, clPond, 4, clTreasure, 2), stayClasses(clDesert, 3)],
 	scaleByMapSize(5, 30), 50
 );
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -83,12 +83,18 @@ public:
 	bool GroundEnabled;
 	bool WaterEnabled;
 	bool ShadowsEnabled;
+
+	// Whether shadows, sky and water are enabled outside of the actor viewer.
+	bool OldShadows;
+	bool OldSky;
+	bool OldWater;
+
 	bool SelectionBoxEnabled;
 	bool AxesMarkerEnabled;
 	int PropPointsMode; // 0 disabled, 1 for point markers, 2 for point markers + axes
 
 	SColor4ub Background;
-	
+
 	CTerrain Terrain;
 
 	CColladaManager ColladaManager;
@@ -153,7 +159,7 @@ public:
 					{
 						// prop point positions are automatically updated during animations etc. by CModel::ValidatePosition
 						const CMatrix3D& propCoordSystem = prop.m_Model->GetTransform();
-						
+
 						SOverlayLine pointGimbal;
 						pointGimbal.m_Color = CColor(1.f, 0.f, 1.f, 1.f);
 						SimRender::ConstructGimbal(propCoordSystem.GetTranslation(), 0.05f, pointGimbal);
@@ -235,7 +241,7 @@ void ActorViewerImpl::UpdatePropListRecursive(CModelAbstract* modelAbstract)
 		for (size_t i=0; i < modelProps.size(); i++)
 		{
 			CModel::Prop& modelProp = modelProps[i];
-			
+
 			Props.push_back(modelProp);
 			if (modelProp.m_Model)
 				UpdatePropListRecursive(modelProp.m_Model);
@@ -440,6 +446,29 @@ void ActorViewer::SetActor(const CStrW& name, const CStrW& animation, player_id_
 	m.CurrentUnitAnim = animation;
 }
 
+void ActorViewer::SetEnabled(bool enabled)
+{
+	if (enabled)
+	{
+		// Set shadows, sky and water.
+		m.OldShadows = g_Renderer.GetOptionBool(CRenderer::OPT_SHADOWS);
+		g_Renderer.SetOptionBool(CRenderer::OPT_SHADOWS, m.ShadowsEnabled);
+
+		m.OldSky = g_Renderer.GetSkyManager()->m_RenderSky;
+		g_Renderer.GetSkyManager()->m_RenderSky = false;
+
+		m.OldWater = g_Renderer.GetWaterManager()->m_RenderWater;
+		g_Renderer.GetWaterManager()->m_RenderWater = m.WaterEnabled;
+	}
+	else
+	{
+		// Restore the old renderer state
+		g_Renderer.SetOptionBool(CRenderer::OPT_SHADOWS, m.OldShadows);
+		g_Renderer.GetSkyManager()->m_RenderSky = m.OldSky;
+		g_Renderer.GetWaterManager()->m_RenderWater = m.OldWater;
+	}
+}
+
 void ActorViewer::SetBackgroundColor(const SColor4ub& color)
 {
 	m.Background = color;
@@ -476,16 +505,6 @@ void ActorViewer::Render()
 
 	g_Renderer.SetClearColor(m.Background);
 
-	// Set shadows, sky and water locally (avoid clobbering global state)
-	bool oldShadows = g_Renderer.GetOptionBool(CRenderer::OPT_SHADOWS);
-	g_Renderer.SetOptionBool(CRenderer::OPT_SHADOWS, m.ShadowsEnabled);
-
-	bool oldSky = g_Renderer.GetSkyManager()->m_RenderSky;
-	g_Renderer.GetSkyManager()->m_RenderSky = false;
-
-	bool oldWater = g_Renderer.GetWaterManager()->m_RenderWater;
-	g_Renderer.GetWaterManager()->m_RenderWater = m.WaterEnabled;
-
 	// Set simulation context for rendering purposes
 	g_Renderer.SetSimulation(&m.Simulation2);
 
@@ -504,7 +523,7 @@ void ActorViewer::Render()
 	CCamera camera = AtlasView::GetView_Actor()->GetCamera();
 	camera.m_Orientation.Translate(centre.X, centre.Y, centre.Z);
 	camera.UpdateFrustum();
-	
+
 	g_Renderer.SetSceneCamera(camera, camera);
 
 	g_Renderer.RenderScene(m);
@@ -515,11 +534,6 @@ void ActorViewer::Render()
 	glEnable(GL_DEPTH_TEST);
 
 	g_Renderer.EndFrame();
-
-	// Restore the old renderer state
-	g_Renderer.SetOptionBool(CRenderer::OPT_SHADOWS, oldShadows);
-	g_Renderer.GetSkyManager()->m_RenderSky = oldSky;
-	g_Renderer.GetWaterManager()->m_RenderWater = oldWater;
 
 	ogl_WarnIfError();
 }

@@ -23,7 +23,7 @@
 		</action>
 
 		<!-- Left panel: Player list. -->
-		<object name="leftPanel" size="20 30 20% 100%-280">
+		<object name="leftPanel" size="20 30 20% 100%-310">
 			<object name="playersBox"
 				style="ModernList"
 				sprite_asc="ModernArrowDown"
@@ -36,10 +36,11 @@
 				size="0 0 100% 100%"
 				font="sans-bold-stroke-13"
 			>
+				<column id="buddy" width="12"/>
 				<column id="status" width="26%">
 					<translatableAttribute id="heading">Status</translatableAttribute>
 				</column>
-				<column id="name" width="48%">
+				<column id="name" width="45%-12">
 					<translatableAttribute id="heading">Name</translatableAttribute>
 				</column>
 				<column id="rating" width="26%">
@@ -51,10 +52,11 @@
 				<action on="SelectionColumnChange">
 					updatePlayerList();
 				</action>
+				<action on="mouseleftdoubleclickitem">toggleBuddy();</action>
 			</object>
 		</object>
 
-		<object name="profilePanel" size="20 100%-275 20% 100%-80">
+		<object name="profilePanel" size="20 100%-305 20% 100%-110">
 			<object name="profileBox" type="image" sprite="ModernDarkBoxGold" size="0 0 100% 100%">
 				<object name="profileArea" size="0 0 100% 100%" hidden="true">
 					<object name="usernameText" size="0 0 100% 45" type="text" style="ModernLabelText" text_align="center" font="sans-bold-16" />
@@ -87,8 +89,14 @@
 			</object>
 		</object>
 
-		<object name="leftButtonPanel" size="20 100%-75 20% 100%-20">
-			<object type="button" style="ModernButtonRed" size="0 0 100% 25">
+		<object name="leftButtonPanel" size="20 100%-105 20% 100%-20">
+			<object name="toggleBuddy" type="button" style="ModernButtonRed" size="0 100%-85 100% 100%-60">
+				<translatableAttribute id="caption" comment="Toggle Buddy">Toggle Buddy</translatableAttribute>
+				<action on="Press">
+					toggleBuddy();
+				</action>
+			</object>
+			<object name="leaderboardButton" type="button" style="ModernButtonRed" size="0 100%-55 100% 100%-30">
 				<translatableAttribute id="caption">Leaderboard</translatableAttribute>
 				<action on="Press">
 					Engine.SendGetBoardList();
@@ -97,7 +105,7 @@
 					displayProfile("leaderboard");
 				</action>
 			</object>
-			<object type="button" style="ModernButtonRed" size="0 30 100% 100%">
+			<object name="userprofileButton" type="button" style="ModernButtonRed" size="0 100%-25 100% 100%">
 				<translatableAttribute id="caption">User Profile Lookup</translatableAttribute>
 				<action on="Press">
 					Engine.GetGUIObjectByName("profileFetch").hidden = false;
@@ -199,7 +207,8 @@
 				<action on="SelectionChange">updateGameSelection();</action>
 				<action on="SelectionColumnChange">applyFilters();</action>
 				<action on="mouseleftdoubleclickitem">joinButton();</action>
-				<column id="name" color="0 60 0" width="27%">
+				<column id="buddy" width="12"/>
+				<column id="name" color="0 60 0" width="27%-12">
 					<translatableAttribute id="heading">Name</translatableAttribute>
 				</column>
 				<column id="mapName" color="128 128 128" width="25%">
@@ -250,7 +259,10 @@
 					style="ModernTickBox"
 					size="0 0 20 20"
 					font="sans-bold-13">
-					<action on="Press">applyFilters();</action>
+					<action on="Press">
+						applyFilters();
+						selectGameFromSelectedPlayername();
+					</action>
 				</object>
 			</object>
 
@@ -319,7 +331,7 @@
 			</object>
 			<object name="profileWindowPanel" size="25 95 100%-25 100%-60">
 			<object name="profileWindowBox" type="image" sprite="ModernDarkBoxGold" size="0 0 100% 100%">
-				<object name="profileWindowArea" size="0 0 100% 100%" hidden="false">
+				<object name="profileWindowArea" size="0 0 100% 100%" hidden="true">
 					<object name="profileUsernameText" size="0 0 100% 25" type="text" style="ModernLabelText" text_align="center" font="sans-bold-16" />
 					<object size="0 30 40%+40 50" type="text" style="ModernLabelText" text_align="right" font="sans-bold-stroke-13">
 						<translatableAttribute id="caption">Current Rank:</translatableAttribute>
@@ -346,8 +358,8 @@
 					</object>
 					<object name="profileRatioText" size="40%+45 130 100% 150" type="text" style="ModernLabelText" text_align="left" font="sans-bold-stroke-12" />
 				</object>
-				<object name="profileErrorText" size="25% 25% 75% 75%" type="text" style="ModernLabelText" text_align="center" font="sans-bold-stroke-13" hidden="true">
-					<translatableAttribute id="caption">Player not found.</translatableAttribute>
+				<object name="profileErrorText" size="25% 25% 75% 75%" type="text" style="ModernLabelText" text_align="center" font="sans-bold-stroke-13" hidden="false">
+					<translatableAttribute id="caption">Please enter a player name.</translatableAttribute>
 				</object>
 			</object>
 			</object>

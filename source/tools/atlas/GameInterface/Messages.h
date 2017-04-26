@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -473,10 +473,10 @@ struct sEnvironmentSettings
 	Shareable<Color> terraincolor;
 	Shareable<Color> unitcolor;
 	Shareable<Color> fogcolor;
-	
+
 	Shareable<float> fogfactor;
 	Shareable<float> fogmax;
-	
+
 	Shareable<float> brightness;
 	Shareable<float> contrast;
 	Shareable<float> saturation;
@@ -654,9 +654,15 @@ QUERY(GetCameraInfo,
 	  ((AtlasMessage::sCameraInfo, info))
 	  );
 
+COMMAND(AddCinemaPath, NOMERGE, ((std::wstring, pathName)));
+
+COMMAND(DeleteCinemaPath, NOMERGE, ((std::wstring, pathName)));
+
 COMMAND(SetCinemaPaths, NOMERGE,
 		((std::vector<AtlasMessage::sCinemaPath>, paths))
 		);
+
+COMMAND(SetCinemaPathsDrawing, NOMERGE, ((bool, drawPaths)));
 
 MESSAGE(CinemaEvent,
 		((std::wstring, path))
@@ -689,8 +695,8 @@ QUERY(GetTriggerChoices,
 	  ((std::vector<std::wstring>, choices))
 	  ((std::vector<std::wstring>, translations))
 	  );
-		
-COMMAND(SetAllTriggers, NOMERGE, 
+
+COMMAND(SetAllTriggers, NOMERGE,
 	  ((std::vector<AtlasMessage::sTriggerGroup>, groups))
 	  );
 

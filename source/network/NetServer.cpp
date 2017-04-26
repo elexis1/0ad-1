@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 #include "NetClient.h"
 #include "NetMessage.h"
 #include "NetSession.h"
+#include "NetServerTurnManager.h"
 #include "NetStats.h"
-#include "NetTurnManager.h"
 
 #ifdef WIN32
 #  include <winsock2.h>
@@ -42,6 +42,7 @@
 #include "scriptinterface/ScriptInterface.h"
 #include "scriptinterface/ScriptRuntime.h"
 #include "simulation2/Simulation2.h"
+#include "simulation2/system/TurnManager.h"
 
 #if CONFIG2_MINIUPNPC
 #include <miniupnpc/miniwget.h>
@@ -348,19 +349,19 @@ bool CNetServerWorker::SendMessage(ENetPeer* peer, const CNetMessage* message)
 	return CNetHost::SendMessage(message, peer, DebugName(session).c_str());
 }
 
-bool CNetServerWorker::Broadcast(const CNetMessage* message)
+bool CNetServerWorker::Broadcast(const CNetMessage* message, const std::vector<NetServerSessionState>& targetStates)
 {
 	ENSURE(m_Host);
 
 	bool ok = true;
 
-	// Send to all sessions that are active and has finished authentication
 	// TODO: this does lots of repeated message serialisation if we have lots
 	// of remote peers; could do it more efficiently if that's a real problem
+
 	for (CNetServerSession* session : m_Sessions)
-		if (session->GetCurrState() == NSS_PREGAME || session->GetCurrState() == NSS_INGAME)
-			if (!session->SendMessage(message))
-				ok = false;
+		if (std::find(targetStates.begin(), targetStates.end(), session->GetCurrState()) != targetStates.end() &&
+		    !session->SendMessage(message))
+			ok = false;
 
 	return ok;
 }
@@ -774,17 +775,11 @@ void CNetServerWorker::RemovePlayer(const CStr& guid)
 	SendPlayerAssignments();
 }
 
-void CNetServerWorker::SetPlayerReady(const CStr& guid, const int ready)
-{
-	m_PlayerAssignments[guid].m_Status = ready;
-
-	SendPlayerAssignments();
-}
-
 void CNetServerWorker::ClearAllPlayerReady()
 {
-	for (PlayerAssignmentMap::iterator it = m_PlayerAssignments.begin(); it != m_PlayerAssignments.end(); ++it)
-		it->second.m_Status = 0;
+	for (std::pair<const CStr, PlayerAssignment>& p : m_PlayerAssignments)
+		if (p.second.m_Status != 2)
+			p.second.m_Status = 0;
 
 	SendPlayerAssignments();
 }
@@ -818,9 +813,7 @@ void CNetServerWorker::KickPlayer(const CStrW& playerName, const bool ban)
 	CKickedMessage kickedMessage;
 	kickedMessage.m_Name = playerName;
 	kickedMessage.m_Ban = ban;
-	for (CNetServerSession* session : m_Sessions)
-		if (session->GetCurrState() > NSS_AUTHENTICATE)
-			session->SendMessage(&kickedMessage);
+	Broadcast(&kickedMessage, { NSS_PREGAME, NSS_JOIN_SYNCING, NSS_INGAME });
 }
 
 void CNetServerWorker::AssignPlayer(int playerID, const CStr& guid)
@@ -859,7 +852,7 @@ void CNetServerWorker::SendPlayerAssignments()
 {
 	CPlayerAssignmentMessage message;
 	ConstructPlayerAssignmentMessage(message);
-	Broadcast(&message);
+	Broadcast(&message, { NSS_PREGAME, NSS_JOIN_SYNCING, NSS_INGAME });
 }
 
 ScriptInterface& CNetServerWorker::GetScriptInterface()
@@ -913,6 +906,7 @@ bool CNetServerWorker::OnAuthenticate(void* context, CFsmEvent* event)
 
 	CAuthenticateMessage* message = (CAuthenticateMessage*)event->GetParamRef();
 	CStrW username = SanitisePlayerName(message->m_Name);
+	CStr guid = message->m_GUID;
 
 	// Either deduplicate or prohibit join if name is in use
 	bool duplicatePlayernames = false;
@@ -926,6 +920,16 @@ bool CNetServerWorker::OnAuthenticate(void* context, CFsmEvent* event)
 		!= server.m_Sessions.end())
 	{
 		session->Disconnect(NDR_PLAYERNAME_IN_USE);
+		return true;
+	}
+
+	// Disconnect user if the provided GUID is already in use
+	if (std::find_if(
+		server.m_Sessions.begin(), server.m_Sessions.end(),
+		[&guid] (const CNetServerSession* session)
+		{ return session->GetGUID() == guid; }) != server.m_Sessions.end())
+	{
+		session->Disconnect(NDR_PLAYERGUID_IN_USE);
 		return true;
 	}
 
@@ -1060,8 +1064,9 @@ bool CNetServerWorker::OnInGame(void* context, CFsmEvent* event)
 		if (!cheatsEnabled && (it == server.m_PlayerAssignments.end() || it->second.m_PlayerID != simMessage->m_Player))
 			return true;
 
-		// Send it back to all clients immediately
-		server.Broadcast(simMessage);
+		// Send it back to all clients that have finished
+		// the loading screen (and the synchronization when rejoining)
+		server.Broadcast(simMessage, { NSS_INGAME });
 
 		// Save all the received commands
 		if (server.m_SavedCommands.size() < simMessage->m_Turn + 1)
@@ -1096,7 +1101,7 @@ bool CNetServerWorker::OnChat(void* context, CFsmEvent* event)
 
 	message->m_GUID = session->GetGUID();
 
-	server.Broadcast(message);
+	server.Broadcast(message, { NSS_PREGAME, NSS_INGAME });
 
 	return true;
 }
@@ -1108,12 +1113,16 @@ bool CNetServerWorker::OnReady(void* context, CFsmEvent* event)
 	CNetServerSession* session = (CNetServerSession*)context;
 	CNetServerWorker& server = session->GetServer();
 
+	// Occurs if a client presses not-ready
+	// in the very last moment before the hosts starts the game
+	if (server.m_State == SERVER_STATE_LOADING)
+		return true;
+
 	CReadyMessage* message = (CReadyMessage*)event->GetParamRef();
-
 	message->m_GUID = session->GetGUID();
+	server.Broadcast(message, { NSS_PREGAME });
 
-	server.Broadcast(message);
-	server.SetPlayerReady(message->m_GUID, message->m_Status);
+	server.m_PlayerAssignments[message->m_GUID].m_Status = message->m_Status;
 
 	return true;
 }
@@ -1176,13 +1185,29 @@ bool CNetServerWorker::OnLoadedGame(void* context, CFsmEvent* event)
 {
 	ENSURE(event->GetType() == (uint)NMT_LOADED_GAME);
 
-	CNetServerSession* session = (CNetServerSession*)context;
-	CNetServerWorker& server = session->GetServer();
+	CNetServerSession* loadedSession = (CNetServerSession*)context;
+	CNetServerWorker& server = loadedSession->GetServer();
 
-	// We're in the loading state, so wait until every player has loaded before
-	// starting the game
+	// We're in the loading state, so wait until every client has loaded
+	// before starting the game
 	ENSURE(server.m_State == SERVER_STATE_LOADING);
-	server.CheckGameLoadStatus(session);
+	if (server.CheckGameLoadStatus(loadedSession))
+		return true;
+
+	CClientsLoadingMessage message;
+	// We always send all GUIDs of clients in the loading state
+	// so that we don't have to bother about switching GUI pages
+	for (CNetServerSession* session : server.m_Sessions)
+		if (session->GetCurrState() != NSS_INGAME && loadedSession->GetGUID() != session->GetGUID())
+		{
+			CClientsLoadingMessage::S_m_Clients client;
+			client.m_GUID = session->GetGUID();
+			message.m_Clients.push_back(client);
+		}
+
+	// Send to the client who has loaded the game but did not reach the NSS_INGAME state yet
+	loadedSession->SendMessage(&message);
+	server.Broadcast(&message, { NSS_INGAME });
 
 	return true;
 }
@@ -1246,11 +1271,10 @@ bool CNetServerWorker::OnRejoined(void* context, CFsmEvent* event)
 	CNetServerSession* session = (CNetServerSession*)context;
 	CNetServerWorker& server = session->GetServer();
 
+	// Inform everyone of the client having rejoined
 	CRejoinedMessage* message = (CRejoinedMessage*)event->GetParamRef();
-
 	message->m_GUID = session->GetGUID();
-
-	server.Broadcast(message);
+	server.Broadcast(message, { NSS_INGAME });
 
 	// Send all pausing players to the rejoined client.
 	for (const CStr& guid : server.m_PausingPlayers)
@@ -1330,17 +1354,21 @@ bool CNetServerWorker::OnClientPaused(void* context, CFsmEvent* event)
 	return true;
 }
 
-void CNetServerWorker::CheckGameLoadStatus(CNetServerSession* changedSession)
+bool CNetServerWorker::CheckGameLoadStatus(CNetServerSession* changedSession)
 {
 	for (const CNetServerSession* session : m_Sessions)
 		if (session != changedSession && session->GetCurrState() != NSS_INGAME)
-			return;
+			return false;
 
+	// Inform clients that everyone has loaded the map and that the game can start
 	CLoadedGameMessage loaded;
 	loaded.m_CurrentTurn = 0;
-	Broadcast(&loaded);
+
+	// Notice the changedSession is still in the NSS_PREGAME state
+	Broadcast(&loaded, { NSS_PREGAME, NSS_INGAME });
 
 	m_State = SERVER_STATE_INGAME;
+	return true;
 }
 
 void CNetServerWorker::StartGame()
@@ -1365,7 +1393,7 @@ void CNetServerWorker::StartGame()
 	SendPlayerAssignments();
 
 	CGameStartMessage gameStart;
-	Broadcast(&gameStart);
+	Broadcast(&gameStart, { NSS_PREGAME });
 }
 
 void CNetServerWorker::UpdateGameAttributes(JS::MutableHandleValue attrs)
@@ -1377,7 +1405,7 @@ void CNetServerWorker::UpdateGameAttributes(JS::MutableHandleValue attrs)
 
 	CGameSetupMessage gameSetupMessage(GetScriptInterface());
 	gameSetupMessage.m_Data = m_GameAttributes;
-	Broadcast(&gameSetupMessage);
+	Broadcast(&gameSetupMessage, { NSS_PREGAME });
 }
 
 CStrW CNetServerWorker::SanitisePlayerName(const CStrW& original)

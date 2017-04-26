@@ -3,11 +3,14 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
+# Beāte Lakševica <tava.unochka@inbox.lv>, 2016
+# Jānis Ločmelis <minimenlatvia@gmail.com>, 2017
+# Vladimirs Kuzmins, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-08-15 09:00+0200\n"
-"PO-Revision-Date: 2016-08-15 09:39+0000\n"
+"POT-Creation-Date: 2017-03-03 09:01+0100\n"
+"PO-Revision-Date: 2017-03-03 08:58+0000\n"
 "Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Latvian (http://www.transifex.com/wildfire-games/0ad/language/lv/)\n"
 "MIME-Version: 1.0\n"
@@ -16,189 +19,223 @@ msgstr ""
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
-#: gui/lobby/lobby.js:54
+#: gui/lobby/lobby.js:49
 msgid "Online"
 msgstr "Tiešsaitē"
 
-#: gui/lobby/lobby.js:55
+#: gui/lobby/lobby.js:50
 msgid "Away"
 msgstr "Prom"
 
-#: gui/lobby/lobby.js:56
+#: gui/lobby/lobby.js:51
 msgid "Busy"
 msgstr "Aizņemts"
 
-#: gui/lobby/lobby.js:57
+#: gui/lobby/lobby.js:52
 msgid "Offline"
 msgstr "Bezsaistē"
 
-#: gui/lobby/lobby.js:58
+#: gui/lobby/lobby.js:53
 msgctxt "lobby presence"
 msgid "Unknown"
 msgstr "Nezināms"
 
-#: gui/lobby/lobby.js:132
+#: gui/lobby/lobby.js:136
 msgid "Disconnected."
-msgstr ""
+msgstr "Atslēgts."
 
-#: gui/lobby/lobby.js:150
+#: gui/lobby/lobby.js:152
 #, javascript-format
 msgid "%(nick)s has joined."
 msgstr "%(nick)s pievienojās."
 
-#: gui/lobby/lobby.js:159
+#: gui/lobby/lobby.js:161
 #, javascript-format
 msgid "%(nick)s has left."
 msgstr "%(nick)s izgāja."
 
-#: gui/lobby/lobby.js:169
+#: gui/lobby/lobby.js:174
 #, javascript-format
 msgid "%(oldnick)s is now known as %(newnick)s."
+msgstr "%(oldnick)s tagad ir zināms kā %(newnick)s."
+
+#: gui/lobby/lobby.js:217
+msgid "You have been banned from the lobby!"
 msgstr ""
 
-#: gui/lobby/lobby.js:238
+#: gui/lobby/lobby.js:218
+msgid "You have been kicked from the lobby!"
+msgstr ""
+
+#: gui/lobby/lobby.js:220
+#, javascript-format
+msgid "%(nick)s has been banned from the lobby."
+msgstr ""
+
+#: gui/lobby/lobby.js:221
+#, javascript-format
+msgid "%(nick)s has been kicked from the lobby."
+msgstr ""
+
+#: gui/lobby/lobby.js:224
+#, javascript-format
+msgctxt "lobby kick"
+msgid "Reason: %(reason)s"
+msgstr ""
+
+#: gui/lobby/lobby.js:249
+msgid "BANNED"
+msgstr ""
+
+#: gui/lobby/lobby.js:249
+msgid "KICKED"
+msgstr ""
+
+#: gui/lobby/lobby.js:291
 msgctxt "map size"
 msgid "Any"
 msgstr "Ikviens"
 
-#: gui/lobby/lobby.js:243
+#: gui/lobby/lobby.js:296
 msgctxt "player number"
 msgid "Any"
 msgstr "Ikviens"
 
-#: gui/lobby/lobby.js:247
+#: gui/lobby/lobby.js:300
 msgctxt "map"
 msgid "Any"
 msgstr "Ikviens"
 
-#: gui/lobby/lobby.js:426
+#: gui/lobby/lobby.js:479
 msgid "Moderator"
-msgstr ""
+msgstr "Moderātors"
 
-#: gui/lobby/lobby.js:426
+#: gui/lobby/lobby.js:479
 msgid "Player"
-msgstr ""
+msgstr "Spēlētājs"
 
-#: gui/lobby/lobby.js:427 gui/lobby/lobby.js:428 gui/lobby/lobby.js:429
-#: gui/lobby/lobby.js:430 gui/lobby/lobby.js:431 gui/lobby/lobby.js:432
+#: gui/lobby/lobby.js:480 gui/lobby/lobby.js:481 gui/lobby/lobby.js:482
+#: gui/lobby/lobby.js:483 gui/lobby/lobby.js:484 gui/lobby/lobby.js:485
 msgid "N/A"
-msgstr ""
+msgstr "Nav pieejams"
 
-#: gui/lobby/lobby.js:442
+#: gui/lobby/lobby.js:506
 #, javascript-format
-msgid "%(nick)s (%(rating)s)"
-msgstr ""
+msgid "Player \"%(nick)s\" not found."
+msgstr "Spēlētājs \"%(nick)s\" nav atrasts."
 
-#: gui/lobby/lobby.js:631
+#. Translation: %(time)s is the hour and minute here.
+#: gui/lobby/lobby.js:687
 #, javascript-format
 msgid "Game started at %(time)s"
-msgstr ""
+msgstr "Spēle sākās %(time)s"
 
-#: gui/lobby/lobby.js:632 gui/lobby/lobby.js:994
+#: gui/lobby/lobby.js:688 gui/lobby/lobby.js:1044
 msgid "HH:mm"
 msgstr "HH:mm"
 
-#: gui/lobby/lobby.js:636
+#: gui/lobby/lobby.js:692
 #, javascript-format
 msgid "Players: %(current)s/%(total)s"
-msgstr ""
+msgstr "Spēlētāji: %(current)s/ %(total)s"
 
-#: gui/lobby/lobby.js:678
-msgid "The game has already started."
-msgstr ""
+#: gui/lobby/lobby.js:734
+msgid "The game has already started. Do you want to join as observer?"
+msgstr "Šī spēle jau ir sākusies. Vai vēlaties pievienoties kā novērotājs?"
 
-#: gui/lobby/lobby.js:679
-msgid "Do you want to join as observer?"
-msgstr ""
-
-#: gui/lobby/lobby.js:680
+#: gui/lobby/lobby.js:735
 msgid "Confirmation"
-msgstr ""
+msgstr "Apstiprinājums"
 
-#: gui/lobby/lobby.js:681
+#: gui/lobby/lobby.js:736
 msgid "No"
-msgstr ""
+msgstr "Nē"
 
-#: gui/lobby/lobby.js:681
+#: gui/lobby/lobby.js:736
 msgid "Yes"
-msgstr ""
+msgstr "Jā"
 
-#: gui/lobby/lobby.js:700
+#: gui/lobby/lobby.js:755
 #, javascript-format
 msgid "This game's address '%(ip)s' does not appear to be valid."
-msgstr ""
+msgstr "Spēles adrese '%(ip)s' šķiet ir nederīga."
 
-#: gui/lobby/lobby.js:819
+#: gui/lobby/lobby.js:874
 #, javascript-format
 msgid "We're sorry, the '%(cmd)s' command is not supported."
-msgstr ""
+msgstr "Atvainojamies, komanda '%(cmd)s' netiek atbalstīta."
 
 #. Translation: IRC message prefix when the sender uses the /me command.
-#: gui/lobby/lobby.js:901
+#: gui/lobby/lobby.js:951
 #, javascript-format
 msgid "* %(sender)s"
-msgstr ""
+msgstr "* %(sender)s"
 
 #. Translation: IRC message issued using the ‘/me’ command.
-#: gui/lobby/lobby.js:906
+#: gui/lobby/lobby.js:956
 #, javascript-format
 msgid "%(sender)s %(action)s"
-msgstr ""
+msgstr "%(sender)s %(action)s"
 
 #. Translation: IRC message prefix.
-#: gui/lobby/lobby.js:915 gui/lobby/lobby.js:936 gui/lobby/lobby.js:962
+#: gui/lobby/lobby.js:965 gui/lobby/lobby.js:986 gui/lobby/lobby.js:1012
 #, javascript-format
 msgid "<%(sender)s>"
-msgstr ""
+msgstr "<%(sender)s>"
 
 #. Translation: IRC message.
-#: gui/lobby/lobby.js:920 gui/lobby/lobby.js:941 gui/lobby/lobby.js:967
+#: gui/lobby/lobby.js:970 gui/lobby/lobby.js:991 gui/lobby/lobby.js:1017
 #, javascript-format
 msgid "%(sender)s %(message)s"
-msgstr ""
+msgstr "%(sender)s %(message)s"
 
 #. Translation: IRC system message.
-#: gui/lobby/lobby.js:930
+#: gui/lobby/lobby.js:980
 #, javascript-format
 msgid "== %(message)s"
-msgstr ""
+msgstr "== %(message)s"
 
-#: gui/lobby/lobby.js:956
+#: gui/lobby/lobby.js:1006
 #, javascript-format
 msgctxt "lobby private message"
 msgid "(%(private)s) <%(sender)s>"
-msgstr ""
+msgstr "(%(private)s) <%(sender)s>"
 
-#: gui/lobby/lobby.js:958
+#: gui/lobby/lobby.js:1008
 msgid "Private"
-msgstr ""
+msgstr "Privāts"
 
 #. Translation: Time prefix as shown in the multiplayer lobby (when you enable
 #. it in the options page).
-#: gui/lobby/lobby.js:997
+#: gui/lobby/lobby.js:1047
 #, javascript-format
 msgid "\\[%(time)s]"
-msgstr ""
+msgstr "\\[%(time)s]"
 
 #. Translation: IRC message format when there is a time prefix.
-#: gui/lobby/lobby.js:1002
+#: gui/lobby/lobby.js:1052
 #, javascript-format
 msgid "%(time)s %(message)s"
-msgstr ""
+msgstr "%(time)s %(message)s"
 
-#: gui/lobby/lobby.js:1063
+#: gui/lobby/lobby.js:1113
 msgid "Please do not spam. You have been blocked for thirty seconds."
-msgstr ""
+msgstr "Lūdzu nespamot. Jūs esat nobloķēts 30 sekundes"
 
-#: gui/lobby/lobby.js:1130
+#: gui/lobby/lobby.js:1174
+#, javascript-format
+msgid "%(nick)s (%(rating)s)"
+msgstr "%(nick)s (%(rating)s)"
+
+#: gui/lobby/lobby.js:1189
 msgctxt "Used for an undefined winning rate"
 msgid "-"
-msgstr ""
+msgstr "-"
 
-#: gui/lobby/lobby.js:1132
+#: gui/lobby/lobby.js:1191
 #, javascript-format
 msgid "%(percentage)s%%"
-msgstr ""
+msgstr "%(percentage)s%%"
 
 #: gui/lobby/prelobby.js:40
 msgid "Connecting..."
@@ -210,19 +247,19 @@ msgstr "Reģistrējas..."
 
 #: gui/lobby/prelobby.js:92
 msgid "Please enter your username"
-msgstr ""
+msgstr "Lūdzu ievadiet savu lietotājvārdu"
 
 #: gui/lobby/prelobby.js:98
 msgid "Usernames can't contain \\[, ], unicode, whitespace, or commas"
-msgstr ""
+msgstr "Lietotājvārdi nedrīkst saturēt \\[, ], unikodu, baltās atstarpes vai komatus"
 
 #: gui/lobby/prelobby.js:104
 msgid "Please enter your password"
-msgstr ""
+msgstr "Lūdzu ievadiet savu paroli"
 
 #: gui/lobby/prelobby.js:117
 msgid "Please enter your password again"
-msgstr ""
+msgstr "Lūdzu vēlreiz ievadiet savu paroli"
 
 #: gui/lobby/prelobby.js:123
 msgid "Passwords do not match"
@@ -230,163 +267,169 @@ msgstr "Paroles nesakrīt"
 
 #: gui/lobby/prelobby.js:129
 msgid "Please read the Terms of Service"
-msgstr ""
+msgstr "Lūdzu izlasiet Pakalpojumu sniegšanas noteikumus"
 
 #: gui/lobby/prelobby.js:135
 msgid "Please read the Terms of Use"
-msgstr ""
+msgstr "Lūdzu izlasiet lietošanas noteikumus"
 
 #: gui/lobby/prelobby.js:141
 msgid "Please agree to the Terms of Service and Terms of Use"
+msgstr "Lūdzu piekrītiet pakalpojumu sniegšanas noteikumiem un lietošanas noteikumiem"
+
+#: gui/lobby/prelobby.js:166
+msgid ""
+"Unknown error. This usually occurs because the same IP address is not "
+"allowed to register more than one account within one hour."
 msgstr ""
 
-#: gui/lobby/prelobby.js:171
+#: gui/lobby/prelobby.js:172
 msgid "Registered"
-msgstr ""
+msgstr "Reģistrēts"
 
-#: gui/lobby/prelobby.js:233
+#: gui/lobby/prelobby.js:234
 msgid "Register"
 msgstr "Reģistrēties"
 
-#: gui/lobby/prelobby.js:239 gui/lobby/prelobby.xml:(caption):109
+#: gui/lobby/prelobby.js:240 gui/lobby/prelobby.xml:(caption):109
 msgid "Connect"
 msgstr "Pieslēgties"
 
-#: gui/lobby/prelobby.js:249 gui/lobby/prelobby.xml:(caption):78
+#: gui/lobby/prelobby.js:250 gui/lobby/prelobby.xml:(caption):78
 msgid "Terms of Service"
-msgstr ""
+msgstr "Pakalpojumu sniegšanas noteikumi"
 
-#: gui/lobby/prelobby.js:258 gui/lobby/prelobby.xml:(caption):83
+#: gui/lobby/prelobby.js:259 gui/lobby/prelobby.xml:(caption):83
 msgid "Terms of Use"
-msgstr ""
+msgstr "Lietošanas noteikumi"
 
-#: gui/lobby/lobby.xml:(caption):17 gui/lobby/prelobby.xml:(caption):18
+#: gui/lobby/lobby.xml:(caption):18 gui/lobby/prelobby.xml:(caption):18
 msgid "Multiplayer Lobby"
-msgstr ""
+msgstr "Vairāku spēlētāju priekšnams"
 
-#: gui/lobby/lobby.xml:(caption):51 gui/lobby/lobby.xml:(caption):303
+#: gui/lobby/lobby.xml:(caption):63 gui/lobby/lobby.xml:(caption):325
 msgid "Current Rank:"
-msgstr ""
+msgstr "Pašreizējais rangs:"
 
-#: gui/lobby/lobby.xml:(caption):55 gui/lobby/lobby.xml:(caption):307
+#: gui/lobby/lobby.xml:(caption):67 gui/lobby/lobby.xml:(caption):329
 msgid "Highest Rating:"
-msgstr ""
+msgstr "Augstākais Novērtējums:"
 
-#: gui/lobby/lobby.xml:(caption):59 gui/lobby/lobby.xml:(caption):311
+#: gui/lobby/lobby.xml:(caption):71 gui/lobby/lobby.xml:(caption):333
 msgid "Total Games:"
-msgstr ""
+msgstr "Pavisam spēles:"
 
-#: gui/lobby/lobby.xml:(caption):63 gui/lobby/lobby.xml:(caption):315
+#: gui/lobby/lobby.xml:(caption):75 gui/lobby/lobby.xml:(caption):337
 msgid "Wins:"
-msgstr ""
+msgstr "Uzvaras:"
 
-#: gui/lobby/lobby.xml:(caption):67 gui/lobby/lobby.xml:(caption):319
+#: gui/lobby/lobby.xml:(caption):79 gui/lobby/lobby.xml:(caption):341
 msgid "Losses:"
-msgstr ""
+msgstr "Zaudējumi:"
 
-#: gui/lobby/lobby.xml:(caption):71 gui/lobby/lobby.xml:(caption):323
+#: gui/lobby/lobby.xml:(caption):83 gui/lobby/lobby.xml:(caption):345
 msgid "Win Rate:"
-msgstr ""
+msgstr "Uzvaru proporcija:"
 
-#: gui/lobby/lobby.xml:(caption):80 gui/lobby/lobby.xml:(caption):251
+#: gui/lobby/lobby.xml:(caption):92 gui/lobby/lobby.xml:(caption):273
 msgid "Leaderboard"
 msgstr "Līderu tabula"
 
-#: gui/lobby/lobby.xml:(caption):89 gui/lobby/lobby.xml:(caption):286
+#: gui/lobby/lobby.xml:(caption):101 gui/lobby/lobby.xml:(caption):308
 msgid "User Profile Lookup"
-msgstr ""
+msgstr "Lietotāja profils uzmeklēt"
 
-#: gui/lobby/lobby.xml:(caption):118
+#: gui/lobby/lobby.xml:(caption):130
 msgid "Map Type:"
 msgstr "Kartes tips:"
 
-#: gui/lobby/lobby.xml:(caption):130
+#: gui/lobby/lobby.xml:(caption):142
 msgid "Map Size:"
 msgstr "Kartes Izmērs:"
 
 #. Join the game currently selected in the list.
-#: gui/lobby/lobby.xml:(caption):155
+#: gui/lobby/lobby.xml:(caption):167
 msgid "Join Game"
 msgstr "Pievienoties spēlei"
 
-#: gui/lobby/lobby.xml:(caption):161
+#: gui/lobby/lobby.xml:(caption):173
 msgid "Host Game"
-msgstr ""
+msgstr "Izmitināt spēli"
 
-#: gui/lobby/lobby.xml:(caption):168
+#: gui/lobby/lobby.xml:(caption):180
 msgid "Main Menu"
 msgstr "Galvenā izvēle"
 
-#: gui/lobby/lobby.xml:(caption):223
+#: gui/lobby/lobby.xml:(caption):245
 msgid "Show full games"
-msgstr ""
+msgstr "Parādīt pilnās spēles"
 
-#: gui/lobby/lobby.xml:(caption):271 gui/lobby/lobby.xml:(caption):333
+#: gui/lobby/lobby.xml:(caption):293 gui/lobby/lobby.xml:(caption):355
 msgid "Back"
 msgstr "Atpakaļ"
 
-#: gui/lobby/lobby.xml:(caption):279
+#: gui/lobby/lobby.xml:(caption):301
 msgid "Update"
-msgstr ""
+msgstr "Atjaunināt"
 
-#: gui/lobby/lobby.xml:(caption):289
+#: gui/lobby/lobby.xml:(caption):311
 msgid "Enter username:"
-msgstr ""
+msgstr "Ievadiet lietotājvārdu:"
 
-#: gui/lobby/lobby.xml:(caption):295
+#: gui/lobby/lobby.xml:(caption):317
 msgid "View Profile"
-msgstr ""
+msgstr "Apskatīt Profilu"
 
-#: gui/lobby/lobby.xml:(caption):328
-msgid "Player not found."
-msgstr ""
+#: gui/lobby/lobby.xml:(caption):350
+msgid "Please enter a player name."
+msgstr "Lūdzu ievadiet spēlētāja vārdu."
 
-#: gui/lobby/lobby.xml:(heading):28
+#: gui/lobby/lobby.xml:(heading):40
 msgid "Status"
-msgstr ""
+msgstr "Statuss"
 
-#: gui/lobby/lobby.xml:(heading):31 gui/lobby/lobby.xml:(heading):180
-#: gui/lobby/lobby.xml:(heading):261
+#: gui/lobby/lobby.xml:(heading):43 gui/lobby/lobby.xml:(heading):203
+#: gui/lobby/lobby.xml:(heading):283
 msgid "Name"
 msgstr "Vārds"
 
-#: gui/lobby/lobby.xml:(heading):34 gui/lobby/lobby.xml:(heading):264
+#: gui/lobby/lobby.xml:(heading):46 gui/lobby/lobby.xml:(heading):286
 msgid "Rating"
-msgstr ""
+msgstr "Novērtējums"
 
-#: gui/lobby/lobby.xml:(heading):184
+#: gui/lobby/lobby.xml:(heading):206
 msgid "Map Name"
-msgstr ""
+msgstr "Kartes Nosaukums"
 
-#: gui/lobby/lobby.xml:(heading):187
+#: gui/lobby/lobby.xml:(heading):209
 msgctxt "map"
 msgid "Size"
-msgstr ""
+msgstr "Izmērs"
 
-#: gui/lobby/lobby.xml:(heading):190
+#: gui/lobby/lobby.xml:(heading):212
 msgctxt "map"
 msgid "Type"
-msgstr ""
+msgstr "Veids"
 
-#: gui/lobby/lobby.xml:(heading):193
+#: gui/lobby/lobby.xml:(heading):215
 msgid "Players"
 msgstr "Spēlētāji"
 
-#: gui/lobby/lobby.xml:(heading):258
+#: gui/lobby/lobby.xml:(heading):280
 msgid "Rank"
 msgstr "Rangs"
 
 #: gui/lobby/prelobby.xml:(caption):23
 msgid "Create a new account"
-msgstr ""
+msgstr "Izveidot jaunu kontu"
 
 #: gui/lobby/prelobby.xml:(caption):27
 msgid "Login to an existing account"
-msgstr ""
+msgstr "Pieslēgties esošā kontā"
 
 #: gui/lobby/prelobby.xml:(caption):33
 msgid "Connect to the game lobby"
-msgstr ""
+msgstr "Pieslēgties spēles priekšnamam"
 
 #: gui/lobby/prelobby.xml:(caption):36 gui/lobby/prelobby.xml:(caption):63
 msgid "Login:"
@@ -406,7 +449,7 @@ msgstr "Parole atkārtoti:"
 
 #: gui/lobby/prelobby.xml:(caption):88
 msgid "I have read and agree to the Terms of Service and Terms of Use:"
-msgstr ""
+msgstr "Esmu izlasījis un piekrītu pakalpojumu sniegšanas noteikumiem un lietošanas noteikumiem:"
 
 #: gui/lobby/prelobby.xml:(caption):97
 msgid "Cancel"
@@ -414,49 +457,49 @@ msgstr "Atcelt"
 
 #: gui/lobby/Terms_of_Service.txt:1
 msgid "0 A.D. Empires Ascendant Multiplayer Lobby Terms of Service"
-msgstr ""
+msgstr "0 A.D. impērijas augstākā vairāku spēlētāju priekšnama pakalpojumu noteikumi"
 
 #: gui/lobby/Terms_of_Service.txt:2 gui/lobby/Terms_of_Use.txt:2
 msgid "Definitions:"
-msgstr ""
+msgstr "Definīcijas:"
 
 #: gui/lobby/Terms_of_Service.txt:3 gui/lobby/Terms_of_Use.txt:3
 msgid ""
 " * The \"service\" is the 0 A.D. Empires Ascendant Multiplayer Lobby "
 "provided by Wildfire Games (WFG)."
-msgstr ""
+msgstr "* \"serviss\" ir 0 A.D. impērijas augstākais vairāku spēlētāju priekšnams ko nodrošina Wildfire Games (WFG)."
 
 #: gui/lobby/Terms_of_Service.txt:4 gui/lobby/Terms_of_Use.txt:4
 msgid " * \"You\" are the user of the service."
-msgstr ""
+msgstr "* \"\"Jūs\" esat pakalpojuma lietotājs"
 
 #: gui/lobby/Terms_of_Service.txt:5
 msgid " * \"We\" are the collective of all Wildfire Games (WFG) team members."
-msgstr ""
+msgstr "* \"Mēs\" esam Wildfire Games (WFG) komandas biedri."
 
 #: gui/lobby/Terms_of_Service.txt:6
 msgid ""
 " * \"Rating\" refers to the process of analyzing various user statistics for"
 " the purpose of generating a single comprehensive score."
-msgstr ""
+msgstr "* \"Novērtējums\" atsaucas uz dažādiem lietotāja statistikas analizēšanu kura mērķis ir ģenerēt vienu vienotu rādītāju"
 
 #: gui/lobby/Terms_of_Service.txt:7
 msgid " * \"Moderate\" refers to the process of enforcing usage policies."
-msgstr ""
+msgstr "* \"Mērens\" atsaucas uz izmantošanas politikas lietošanas procesu."
 
 #: gui/lobby/Terms_of_Service.txt:8
 msgid "By using the service you agree to:"
-msgstr ""
+msgstr "Lietojot pakalpojumu jūs piekrītat:"
 
 #: gui/lobby/Terms_of_Service.txt:9
 msgid " 1. Follow all usage policies."
-msgstr ""
+msgstr "1. Sekojiet visām lietošanas politikām."
 
 #: gui/lobby/Terms_of_Service.txt:10
 msgid ""
 " 2. Allow user identifiable statistics to be gathered for the purposes of "
 "rating, user profiles, and community statistics."
-msgstr ""
+msgstr "2. Atļaut lietotāja idetificējamajai statistikai tikt sakopotai priekš rādītājiem, lietotāju profiliem un sabiedrības statistika."
 
 #: gui/lobby/Terms_of_Service.txt:11 gui/lobby/Terms_of_Use.txt:18
 msgid "We also reserve the right to:"
@@ -512,7 +555,7 @@ msgstr ""
 
 #: gui/lobby/Terms_of_Use.txt:1
 msgid "0 A.D. Empires Ascendant Multiplayer Lobby Terms of Use"
-msgstr ""
+msgstr "0 A.D. impērijas augstākā vairāku spēlētāju priekšnama lietošanas noteikumi"
 
 #: gui/lobby/Terms_of_Use.txt:5
 msgid ""
@@ -538,7 +581,7 @@ msgstr ""
 
 #: gui/lobby/Terms_of_Use.txt:9
 msgid "You agree to:"
-msgstr ""
+msgstr "Jūs piekrītat:"
 
 #: gui/lobby/Terms_of_Use.txt:10
 msgid ""

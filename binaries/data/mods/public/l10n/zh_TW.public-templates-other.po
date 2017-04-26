@@ -3,12 +3,12 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# Jeff Huang <s8321414@gmail.com>, 2014-2016
+# Jeff Huang <s8321414@gmail.com>, 2014-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-09-30 14:02+0000\n"
+"POT-Creation-Date: 2017-04-03 09:02+0200\n"
+"PO-Revision-Date: 2017-04-05 04:26+0000\n"
 "Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/wildfire-games/0ad/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -115,7 +115,7 @@ msgstr "寶藏"
 msgid "A treasure that can be quickly gathered."
 msgstr "可以快速收集的資源。"
 
-#: simulation/templates/template_structure.xml:55
+#: simulation/templates/template_structure.xml:60
 msgid "Structure"
 msgstr "建築物"
 
@@ -200,8 +200,8 @@ msgid "Box"
 msgstr "方陣"
 
 #: simulation/templates/formations/column_closed.xml:5
-msgid "Column Closed"
-msgstr "密集縱隊"
+msgid "Forced March"
+msgstr "強制進展"
 
 #: simulation/templates/formations/column_open.xml:5
 msgid "Column Open"
@@ -216,20 +216,20 @@ msgid "Flank"
 msgstr "翼形"
 
 #: simulation/templates/formations/line_closed.xml:5
-msgid "Line Closed"
-msgstr "密集橫隊"
+msgid "Close Order"
+msgstr "關閉順序"
 
 #: simulation/templates/formations/line_open.xml:5
-msgid "Line Open"
-msgstr "分散橫隊"
+msgid "Open Order"
+msgstr "開放順序"
 
 #: simulation/templates/formations/null.xml:5
 msgid "None"
 msgstr "無"
 
 #: simulation/templates/formations/phalanx.xml:6
-msgid "10 melee infantry units required"
-msgstr "需要10個近戰步兵單位"
+msgid "10 hoplite infantry required"
+msgstr "需要 10 個重裝步兵"
 
 #: simulation/templates/formations/phalanx.xml:7
 msgid "Phalanx"
@@ -248,10 +248,10 @@ msgid "Skirmish"
 msgstr "小規模戰鬥"
 
 #: simulation/templates/formations/syntagma.xml:6
-msgid "9 pike infantry units required"
-msgstr "需要9個長槍步兵單位"
+msgid "16 pike infantry units required"
+msgstr "需要 16 個長槍兵"
 
-#: simulation/templates/formations/syntagma.xml:7
+#: simulation/templates/formations/syntagma.xml:8
 msgid "Syntagma"
 msgstr "馬其頓方陣"
 
@@ -264,8 +264,8 @@ msgid "Testudo"
 msgstr "龜甲陣"
 
 #: simulation/templates/formations/wedge.xml:6
-msgid "3 cavalry units required"
-msgstr "需要3個騎兵單位"
+msgid "6 cavalry units required"
+msgstr "需要 6 個騎兵"
 
 #: simulation/templates/formations/wedge.xml:7
 msgid "Wedge"
@@ -276,8 +276,12 @@ msgid "Bear"
 msgstr "熊"
 
 #: simulation/templates/gaia/fauna_boar.xml:18
-msgid "Boar"
+msgid "Wild Boar"
 msgstr "野豬"
+
+#: simulation/templates/gaia/fauna_boar.xml:19
+msgid "Sus scrofa"
+msgstr "Sus scrofa"
 
 #: simulation/templates/gaia/fauna_camel.xml:9
 msgid "Camel"
@@ -299,19 +303,23 @@ msgstr "尼羅鱷"
 msgid "Deer"
 msgstr "鹿"
 
-#: simulation/templates/gaia/fauna_elephant_african_bush.xml:33
+#: simulation/templates/gaia/fauna_elephant_african_bush.xml:11
 msgid "African Bush Elephant"
 msgstr "普通非洲象"
+
+#: simulation/templates/gaia/fauna_elephant_african_infant.xml:14
+msgid "Elephant"
+msgstr "大象"
 
 #: simulation/templates/gaia/fauna_elephant_african_infant.xml:15
 msgid "African Elephant (Infant)"
 msgstr "非洲象(幼兒)"
 
-#: simulation/templates/gaia/fauna_elephant_asian.xml:33
+#: simulation/templates/gaia/fauna_elephant_asian.xml:11
 msgid "Asian Elephant"
 msgstr "亞洲象"
 
-#: simulation/templates/gaia/fauna_elephant_north_african.xml:33
+#: simulation/templates/gaia/fauna_elephant_north_african.xml:11
 msgid "North African Elephant"
 msgstr "北部非洲象"
 
@@ -365,13 +373,25 @@ msgstr "母獅"
 msgid "Muskox"
 msgstr "麝牛"
 
-#: simulation/templates/gaia/fauna_peacock.xml:12
+#: simulation/templates/gaia/fauna_peacock.xml:14
 msgid "Peacock"
 msgstr "孔雀"
+
+#: simulation/templates/gaia/fauna_peacock.xml:15
+msgid "Pavo cristatus"
+msgstr "Pavo cristatus"
 
 #: simulation/templates/gaia/fauna_pig.xml:15
 msgid "Pig"
 msgstr "豬"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:18
+msgid "Flaming Pig"
+msgstr "火焰豬"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:19
+msgid "Sus scrofa domesticus igne"
+msgstr "Sus scrofa domesticus igne"
 
 #: simulation/templates/gaia/fauna_rabbit.xml:9
 msgid "Rabbit"
@@ -397,7 +417,7 @@ msgstr "綿羊"
 msgid "Tiger"
 msgstr "虎"
 
-#: simulation/templates/gaia/fauna_walrus.xml:23
+#: simulation/templates/gaia/fauna_walrus.xml:24
 msgid "Walrus"
 msgstr "海象"
 
@@ -413,11 +433,11 @@ msgstr "座頭鯨"
 msgid "Wildebeest"
 msgstr "牛羚"
 
-#: simulation/templates/gaia/fauna_wolf.xml:18
+#: simulation/templates/gaia/fauna_wolf.xml:4
 msgid "Wolf"
 msgstr "狼"
 
-#: simulation/templates/gaia/fauna_wolf_snow.xml:18
+#: simulation/templates/gaia/fauna_wolf_snow.xml:4
 msgid "Snow Wolf"
 msgstr "雪狼"
 
@@ -768,13 +788,13 @@ msgstr "柵欄末端"
 msgid "Wooden Wall End"
 msgstr "木牆末端"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr "柵欄要塞"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr "瞭望塔"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr "木製塔樓"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
@@ -877,6 +897,18 @@ msgstr "柱廊"
 msgid "Corinthian Colonnade"
 msgstr "科林斯柱廊"
 
+#: simulation/templates/other/special_catafalque.xml:22
+msgid "Catafalque"
+msgstr "靈車"
+
+#: simulation/templates/other/special_catafalque.xml:24
+msgid "A catafalque that holds the remains of a great leader."
+msgstr "載著一位曾經的偉大領導者。"
+
+#: simulation/templates/other/special_catafalque.xml:25
+msgid "Relic"
+msgstr "遺蹟"
+
 #: simulation/templates/other/special_treasure_shipwreck.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_ram_bow.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_sail_boat.xml:10
@@ -940,6 +972,61 @@ msgstr "未完成的希臘神殿"
 msgid "This temple is unfinished and has fallen to ruin."
 msgstr "此神廟未建成就變為廢墟了。"
 
+#: simulation/templates/other/catafalque/athen_catafalque.xml:6
+msgid "Solon"
+msgstr "賢者"
+
+#: simulation/templates/other/catafalque/brit_catafalque.xml:6
+msgid "Cassivellaunus"
+msgstr "Cassivellaunus"
+
+#: simulation/templates/other/catafalque/cart_catafalque.xml:6
+msgid "Hasdrubal (Quartermaster)"
+msgstr "哈斯德魯巴（軍需官）"
+
+#: simulation/templates/other/catafalque/gaul_catafalque.xml:6
+msgid "Ambiorix"
+msgstr "Ambiorix"
+
+#: simulation/templates/other/catafalque/iber_catafalque.xml:6
+msgid "Mandonius"
+msgstr "Mandonius"
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:6
+msgid "Philip V"
+msgstr "腓力五世"
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:7
+msgid ""
+"Financial Reorganization: Allied with Rome, Philip reorganized the country's"
+" internal affairs and finances, leaving as a legacy reopened mines and a new"
+" currency. Gain a slow trickle of metal."
+msgstr "商業組織：與羅馬同盟，腓力國王重組了國內的政治與財政，並重新開採礦山與發行新貨幣。可隨時間緩慢地取得金屬。"
+
+#: simulation/templates/other/catafalque/maur_catafalque.xml:6
+msgid "Bindusara"
+msgstr "賓頭娑羅"
+
+#: simulation/templates/other/catafalque/pers_catafalque.xml:6
+msgid "Artaxerxes II"
+msgstr "阿爾塔薛西斯二世"
+
+#: simulation/templates/other/catafalque/ptol_catafalque.xml:6
+msgid "Ptolemy III Euergetes (Benefactor)"
+msgstr "托勒密三世（施惠者）"
+
+#: simulation/templates/other/catafalque/rome_catafalque.xml:6
+msgid "Lucius Junius Brutus"
+msgstr "盧基烏斯·尤尼烏斯·布魯圖斯"
+
+#: simulation/templates/other/catafalque/sele_catafalque.xml:6
+msgid "Antiochus I Soter (Savior)"
+msgstr "安條克一世（救主）"
+
+#: simulation/templates/other/catafalque/spart_catafalque.xml:6
+msgid "Lycurgus"
+msgstr "來古格士"
+
 #: simulation/templates/skirmish/structures/default_house_10.xml:5
 msgid ""
 "Changes in a 10-pop house for civilisations with those houses, is deleted "
@@ -957,9 +1044,13 @@ msgstr "將有那些房舍的文明變為5單位容量的房舍，其他文明�
 msgid "Marker"
 msgstr "里程碑"
 
-#: simulation/templates/special/player.xml:56
+#: simulation/templates/special/player.xml:57
 msgid "Player"
 msgstr "玩家"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr "間諜"
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5

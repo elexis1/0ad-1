@@ -98,7 +98,7 @@ GuiInterface.prototype.GetSimulationState = function()
 			"popCount": cmpPlayer.GetPopulationCount(),
 			"popLimit": cmpPlayer.GetPopulationLimit(),
 			"popMax": cmpPlayer.GetMaxPopulation(),
-			"heroes": cmpPlayer.GetHeroes(),
+			"panelEntities": cmpPlayer.GetPanelEntities(),
 			"resourceCounts": cmpPlayer.GetResourceCounts(),
 			"trainingBlocked": cmpPlayer.IsTrainingBlocked(),
 			"state": cmpPlayer.GetState(),
@@ -106,8 +106,10 @@ GuiInterface.prototype.GetSimulationState = function()
 			"teamsLocked": cmpPlayer.GetLockTeams(),
 			"cheatsEnabled": cmpPlayer.GetCheatsEnabled(),
 			"disabledTemplates": cmpPlayer.GetDisabledTemplates(),
+			"disabledTechnologies": cmpPlayer.GetDisabledTechnologies(),
 			"hasSharedDropsites": cmpPlayer.HasSharedDropsites(),
 			"hasSharedLos": cmpPlayer.HasSharedLos(),
+			"spyCostMultiplier": cmpPlayer.GetSpyCostMultiplier(),
 			"phase": phase,
 			"isAlly": allies,
 			"isMutualAlly": mutualAllies,
@@ -117,10 +119,11 @@ GuiInterface.prototype.GetSimulationState = function()
 			"entityCounts": cmpPlayerEntityLimits ? cmpPlayerEntityLimits.GetCounts() : null,
 			"entityLimitChangers": cmpPlayerEntityLimits ? cmpPlayerEntityLimits.GetLimitChangers() : null,
 			"researchQueued": cmpTechnologyManager ? cmpTechnologyManager.GetQueuedResearch() : null,
-			"researchStarted": cmpTechnologyManager ? cmpTechnologyManager.GetStartedResearch() : null,
+			"researchStarted": cmpTechnologyManager ? cmpTechnologyManager.GetStartedTechs() : null,
 			"researchedTechs": cmpTechnologyManager ? cmpTechnologyManager.GetResearchedTechs() : null,
 			"classCounts": cmpTechnologyManager ? cmpTechnologyManager.GetClassCounts() : null,
-			"typeCountsByClass": cmpTechnologyManager ? cmpTechnologyManager.GetTypeCountsByClass() : null
+			"typeCountsByClass": cmpTechnologyManager ? cmpTechnologyManager.GetTypeCountsByClass() : null,
+			"canBarter": Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter).PlayerHasMarket(playerEnt)
 		});
 	}
 
@@ -144,13 +147,21 @@ GuiInterface.prototype.GetSimulationState = function()
 		ret.ceasefireTimeRemaining = ret.ceasefireActive ? cmpCeasefireManager.GetCeasefireStartedTime() + cmpCeasefireManager.GetCeasefireTime() - ret.timeElapsed : 0;
 	}
 
-	// Add the game type
+	// Add the game type and allied victory
 	let cmpEndGameManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_EndGameManager);
 	ret.gameType = cmpEndGameManager.GetGameType();
+	ret.alliedVictory = cmpEndGameManager.GetAlliedVictory();
 
-	// Add bartering prices
-	let cmpBarter = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter);
-	ret.barterPrices = cmpBarter.GetPrices();
+	ret.barterPrices = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter).GetPrices();
+
+	// Add Resource Codes, untranslated names and AI Analysis
+	ret.resources = {
+		"codes": Resources.GetCodes(),
+		"names": Resources.GetNames(),
+		"aiInfluenceGroups": {}
+	};
+	for (let res of ret.resources.codes)
+		ret.resources.aiInfluenceGroups[res] = Resources.GetResource(res).aiAnalysisInfluenceGroup;
 
 	// Add basic statistics to each player
 	for (let i = 0; i < numPlayers; ++i)
@@ -365,7 +376,6 @@ GuiInterface.prototype.GetEntityState = function(player, ent)
 
 	let cmpUnitAI = Engine.QueryInterface(ent, IID_UnitAI);
 	if (cmpUnitAI)
-	{
 		ret.unitAI = {
 			"state": cmpUnitAI.GetCurrentState(),
 			"orders": cmpUnitAI.GetOrders(),
@@ -375,10 +385,6 @@ GuiInterface.prototype.GetEntityState = function(player, ent)
 			"possibleStances": cmpUnitAI.GetPossibleStances(),
 			"isIdle":cmpUnitAI.IsIdle(),
 		};
-		// Add some information needed for ungarrisoning
-		if (cmpUnitAI.IsGarrisoned() && ret.player !== undefined)
-			ret.template = "p" + ret.player + "&" + ret.template;
-	}
 
 	let cmpGuard = Engine.QueryInterface(ent, IID_Guard);
 	if (cmpGuard)
@@ -418,9 +424,9 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 	let ret = {
 		"armour": null,
 		"attack": null,
-		"barterMarket": null,
 		"buildingAI": null,
 		"heal": null,
+		"isBarterMarket": null,
 		"loot": null,
 		"obstruction": null,
 		"turretParent":null,
@@ -430,6 +436,7 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 		"resourceDropsite": null,
 		"resourceGatherRates": null,
 		"resourceSupply": null,
+		"resourceTrickle": null,
 		"speed": null,
 	};
 
@@ -555,10 +562,7 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 		};
 
 	if (!cmpFoundation && cmpIdentity && cmpIdentity.HasClass("BarterMarket"))
-	{
-		let cmpBarter = Engine.QueryInterface(SYSTEM_ENTITY, IID_Barter);
-		ret.barterMarket = { "prices": cmpBarter.GetPrices() };
-	}
+		ret.isBarterMarket = true;
 
 	let cmpHeal = Engine.QueryInterface(ent, IID_Heal);
 	if (cmpHeal)
@@ -575,12 +579,23 @@ GuiInterface.prototype.GetExtendedEntityState = function(player, ent)
 	{
 		let resources = cmpLoot.GetResources();
 		ret.loot = {
-			"xp": cmpLoot.GetXp(),
-			"food": resources.food,
-			"wood": resources.wood,
-			"stone": resources.stone,
-			"metal": resources.metal
+			"xp": cmpLoot.GetXp()
 		};
+		for (let res of Resources.GetCodes())
+			ret.loot[res] = resources[res];
+	}
+
+	let cmpResourceTrickle = Engine.QueryInterface(ent, IID_ResourceTrickle);
+	if (cmpResourceTrickle)
+	{
+		ret.resourceTrickle = {
+			"interval": cmpResourceTrickle.GetTimer(),
+			"rates": {}
+		};
+
+		let rates = cmpResourceTrickle.GetRates();
+		for (let res in rates)
+			ret.resourceTrickle.rates[res] = rates[res];
 	}
 
 	let cmpUnitMotion = Engine.QueryInterface(ent, IID_UnitMotion);
@@ -611,13 +626,8 @@ GuiInterface.prototype.GetAverageRangeForBuildings = function(player, cmd)
 	return cmpRangeManager.GetElevationAdaptedRange(pos, rot, range, elevationBonus, 2*Math.PI);
 };
 
-GuiInterface.prototype.GetTemplateData = function(player, extendedName)
+GuiInterface.prototype.GetTemplateData = function(player, name)
 {
-	let name = extendedName;
-	// Special case for garrisoned units which have a extended template
-	if (extendedName.indexOf("&") != -1)
-		name = extendedName.slice(extendedName.indexOf("&")+1);
-
 	let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
 	let template = cmpTemplateManager.GetTemplate(name);
 
@@ -627,7 +637,7 @@ GuiInterface.prototype.GetTemplateData = function(player, extendedName)
 	let aurasTemplate = {};
 
 	if (!template.Auras)
-		return GetTemplateDataHelper(template, player, aurasTemplate);
+		return GetTemplateDataHelper(template, player, aurasTemplate, Resources);
 
 	// Add aura name and description loaded from JSON file
 	let auraNames = template.Auras._string.split(/\s+/);
@@ -645,22 +655,22 @@ GuiInterface.prototype.GetTemplateData = function(player, extendedName)
 		aurasTemplate[name].auraName = auraTemplate.auraName || null;
 		aurasTemplate[name].auraDescription = auraTemplate.auraDescription || null;
 	}
-	return GetTemplateDataHelper(template, player, aurasTemplate);
+	return GetTemplateDataHelper(template, player, aurasTemplate, Resources);
 };
 
-GuiInterface.prototype.GetTechnologyData = function(player, name)
+GuiInterface.prototype.GetTechnologyData = function(player, data)
 {
 	let cmpDataTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_DataTemplateManager);
-	let template = cmpDataTemplateManager.GetTechnologyTemplate(name);
+	let template = cmpDataTemplateManager.GetTechnologyTemplate(data.name);
 
 	if (!template)
 	{
-		warn("Tried to get data for invalid technology: " + name);
+		warn("Tried to get data for invalid technology: " + data.name);
 		return null;
 	}
 
 	let cmpPlayer = QueryPlayerIDInterface(player, IID_Player);
-	return GetTechnologyDataHelper(template, cmpPlayer.GetCiv());
+	return GetTechnologyDataHelper(template, data.civ || cmpPlayer.GetCiv(), Resources);
 };
 
 GuiInterface.prototype.IsTechnologyResearched = function(player, data)
@@ -696,7 +706,7 @@ GuiInterface.prototype.GetStartedResearch = function(player)
 		return {};
 
 	let ret = {};
-	for (let tech in cmpTechnologyManager.GetTechsStarted())
+	for (let tech in cmpTechnologyManager.GetStartedTechs())
 	{
 		ret[tech] = { "researcher": cmpTechnologyManager.GetResearcher(tech) };
 		let cmpProductionQueue = Engine.QueryInterface(ret[tech].researcher, IID_ProductionQueue);
@@ -819,7 +829,7 @@ GuiInterface.prototype.GetFormationInfoFromTemplate = function(player, data)
 
 GuiInterface.prototype.IsFormationSelected = function(player, data)
 {
-	for each (let ent in data.ents)
+	for (let ent of data.ents)
 	{
 		let cmpUnitAI = Engine.QueryInterface(ent, IID_UnitAI);
 		// GetLastFormationName is named in a strange way as it (also) is
@@ -832,7 +842,7 @@ GuiInterface.prototype.IsFormationSelected = function(player, data)
 
 GuiInterface.prototype.IsStanceSelected = function(player, data)
 {
-	for each (let ent in data.ents)
+	for (let ent of data.ents)
 	{
 		let cmpUnitAI = Engine.QueryInterface(ent, IID_UnitAI);
 		if (cmpUnitAI && cmpUnitAI.GetStanceName() == data.stance)
@@ -844,7 +854,7 @@ GuiInterface.prototype.IsStanceSelected = function(player, data)
 GuiInterface.prototype.GetAllBuildableEntities = function(player, cmd)
 {
 	let buildableEnts = [];
-	for each (let ent in cmd.entities)
+	for (let ent of cmd.entities)
 	{
 		let cmpBuilder = Engine.QueryInterface(ent, IID_Builder);
 		if (!cmpBuilder)
@@ -861,7 +871,7 @@ GuiInterface.prototype.SetSelectionHighlight = function(player, cmd)
 {
 	let playerColors = {}; // cache of owner -> color map
 
-	for each (let ent in cmd.entities)
+	for (let ent of cmd.entities)
 	{
 		let cmpSelectable = Engine.QueryInterface(ent, IID_Selectable);
 		if (!cmpSelectable)
@@ -951,7 +961,7 @@ GuiInterface.prototype.DisplayRallyPoint = function(player, cmd)
 	let cmpPlayer = QueryPlayerIDInterface(player);
 
 	// If there are some rally points already displayed, first hide them
-	for each (let ent in this.entsRallyPointsDisplayed)
+	for (let ent of this.entsRallyPointsDisplayed)
 	{
 		let cmpRallyPointRenderer = Engine.QueryInterface(ent, IID_RallyPointRenderer);
 		if (cmpRallyPointRenderer)
@@ -961,7 +971,7 @@ GuiInterface.prototype.DisplayRallyPoint = function(player, cmd)
 	this.entsRallyPointsDisplayed = [];
 
 	// Show the rally points for the passed entities
-	for each (let ent in cmd.entities)
+	for (let ent of cmd.entities)
 	{
 		let cmpRallyPointRenderer = Engine.QueryInterface(ent, IID_RallyPointRenderer);
 		if (!cmpRallyPointRenderer)
@@ -998,7 +1008,7 @@ GuiInterface.prototype.DisplayRallyPoint = function(player, cmd)
 
 			// rebuild the renderer when not set (when reading saved game or in case of building update)
 			else if (!cmpRallyPointRenderer.IsSet())
-				for each (let posi in cmpRallyPoint.GetPositions())
+				for (let posi of cmpRallyPoint.GetPositions())
 					cmpRallyPointRenderer.AddPosition({ 'x': posi.x, 'y': posi.z });
 
 			cmpRallyPointRenderer.SetDisplayed(true);
@@ -1178,7 +1188,7 @@ GuiInterface.prototype.SetWallPlacementPreview = function(player, cmd)
 		// we're clearing the preview, clear the entity cache and bail
 		for (let tpl in this.placementWallEntities)
 		{
-			for each (let ent in this.placementWallEntities[tpl].entities)
+			for (let ent of this.placementWallEntities[tpl].entities)
 				Engine.DestroyEntity(ent);
 
 			this.placementWallEntities[tpl].numUsed = 0;
@@ -1193,7 +1203,7 @@ GuiInterface.prototype.SetWallPlacementPreview = function(player, cmd)
 		// Move all existing cached entities outside of the world and reset their use count
 		for (let tpl in this.placementWallEntities)
 		{
-			for each (let ent in this.placementWallEntities[tpl].entities)
+			for (let ent of this.placementWallEntities[tpl].entities)
 			{
 				let pos = Engine.QueryInterface(ent, IID_Position);
 				if (pos)
@@ -1204,8 +1214,9 @@ GuiInterface.prototype.SetWallPlacementPreview = function(player, cmd)
 		}
 
 		// Create cache entries for templates we haven't seen before
-		for each (let tpl in wallSet.templates)
+		for (let type in wallSet.templates)
 		{
+			let tpl = wallSet.templates[type];
 			if (!(tpl in this.placementWallEntities))
 			{
 				this.placementWallEntities[tpl] = {
@@ -1284,8 +1295,10 @@ GuiInterface.prototype.SetWallPlacementPreview = function(player, cmd)
 
 	let result = {
 		"pieces": [],
-		"cost": { "food": 0, "wood": 0, "stone": 0, "metal": 0, "population": 0, "populationBonus": 0, "time": 0 },
+		"cost": { "population": 0, "populationBonus": 0, "time": 0 },
 	};
+	for (let res of Resources.GetCodes())
+		result.cost[res] = 0;
 
 	let previewEntities = [];
 	if (end.pos)
@@ -1560,13 +1573,8 @@ GuiInterface.prototype.SetWallPlacementPreview = function(player, cmd)
 			// copied over, so we need to fetch it from the template instead).
 			// TODO: we should really use a Cost object or at least some utility functions for this, this is mindless
 			// boilerplate that's probably duplicated in tons of places.
-			result.cost.food += tplData.cost.food;
-			result.cost.wood += tplData.cost.wood;
-			result.cost.stone += tplData.cost.stone;
-			result.cost.metal += tplData.cost.metal;
-			result.cost.population += tplData.cost.population;
-			result.cost.populationBonus += tplData.cost.populationBonus;
-			result.cost.time += tplData.cost.time;
+			for (let res of Resources.GetCodes().concat(["population", "populationBonus", "time"]))
+				result.cost[res] += tplData.cost[res];
 		}
 
 		let canAfford = true;
@@ -1635,7 +1643,7 @@ GuiInterface.prototype.GetFoundationSnapData = function(player, data)
 		let minDistEntitySnapData = null;
 		let radius2 = data.snapRadius * data.snapRadius;
 
-		for each (let ent in data.snapEntities)
+		for (let ent of data.snapEntities)
 		{
 			let cmpPosition = Engine.QueryInterface(ent, IID_Position);
 			if (!cmpPosition || !cmpPosition.IsInWorld())
@@ -1764,7 +1772,7 @@ GuiInterface.prototype.IdleUnitFilter = function(unit, idleClasses, excludeUnits
 	if(!cmpIdentity)
 		return { "idle": false };
 
-	let bucket = idleClasses.findIndex(elem => cmpIdentity.HasClass(elem));
+	let bucket = idleClasses.findIndex(elem => MatchesClassList(cmpIdentity.GetClassesList(), elem));
 	if (bucket == -1 || excludeUnits.indexOf(unit) > -1)
 		return { "idle": false };
 
@@ -1890,7 +1898,7 @@ GuiInterface.prototype.SetObstructionDebugOverlay = function(player, enabled)
 
 GuiInterface.prototype.SetMotionDebugOverlay = function(player, data)
 {
-	for each (let ent in data.entities)
+	for (let ent of data.entities)
 	{
 		let cmpUnitMotion = Engine.QueryInterface(ent, IID_UnitMotion);
 		if (cmpUnitMotion)
@@ -1911,7 +1919,7 @@ GuiInterface.prototype.GetTraderNumber = function(player)
 	let landTrader = { "total": 0, "trading": 0, "garrisoned": 0 };
 	let shipTrader = { "total": 0, "trading": 0 };
 
-	for each (let ent in traders)
+	for (let ent of traders)
 	{
 		let cmpIdentity = Engine.QueryInterface(ent, IID_Identity);
 		let cmpUnitAI = Engine.QueryInterface(ent, IID_UnitAI);

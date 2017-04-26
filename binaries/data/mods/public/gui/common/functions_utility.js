@@ -3,16 +3,6 @@
  */
 var g_LastNickNotification = -1;
 
-function getRandom(randomMin, randomMax)
-{
-	// Returns a random whole number in a min..max range.
-	// NOTE: There should probably be an engine function for this,
-	// since we'd need to keep track of random seeds for replays.
-
-	var randomNum = randomMin + (randomMax-randomMin)*Math.random();  // num is random, from A to B
-	return Math.round(randomNum);
-}
-
 // Get list of XML files in pathname with recursion, excepting those starting with _
 function getXMLFileList(pathname)
 {
@@ -38,12 +28,9 @@ function getXMLFileList(pathname)
 
 function getJSONFileList(pathname)
 {
-	var files = Engine.BuildDirEntList(pathname, "*.json", false);
-
 	// Remove the path and extension from each name, since we just want the filename
-	files = [ n.substring(pathname.length, n.length-5) for each (n in files) ];
-
-	return files;
+	return Engine.BuildDirEntList(pathname, "*.json", false).map(
+		filename => filename.substring(pathname.length, filename.length-5));
 }
 
 // A sorting function for arrays of objects with 'name' properties, ignoring case
@@ -128,11 +115,8 @@ function translateMapTitle(mapTitle)
  */
 function timeToString(time)
 {
-	if (time < 1000 * 60 * 60)
-		var format = translate("mm:ss");
-	else
-		var format = translate("HH:mm:ss");
-	return Engine.FormatMillisecondsIntoDateString(time, format);
+	return Engine.FormatMillisecondsIntoDateStringGMT(time, time < 1000 * 60 * 60 ?
+		translate("mm:ss") : translate("HH:mm:ss"));
 }
 
 function removeDupes(array)
@@ -172,6 +156,15 @@ function singleplayerName()
 function multiplayerName()
 {
 	return Engine.ConfigDB_GetValue("user", "playername.multiplayer") || Engine.GetSystemUsername();
+}
+
+/**
+ * Returns the nickname without the lobby rating.
+ */
+function removeRatingFromNick(playerName)
+{
+	let result = /^(\S+)\ \(\d+\)$/g.exec(playerName);
+	return result ? result[1] : playerName;
 }
 
 function tryAutoComplete(text, autoCompleteList)
@@ -244,4 +237,33 @@ function notifyUser(userName, msgText)
 		Engine.PlayUISound("audio/interface/ui/chat_alert.ogg", false);
 
 	g_LastNickNotification = timeNow;
+}
+
+/**
+ * Horizontally spaces objects within a parent
+ *
+ * @param margin The gap, in px, between the objects
+ */
+function horizontallySpaceObjects(parentName, margin=0)
+{
+	let objects = Engine.GetGUIObjectByName(parentName).children;
+	for (let i = 0; i < objects.length; ++i)
+	{
+		let size = objects[i].size;
+		let width = size.right - size.left;
+		size.left = i * (width + margin) + margin;
+		size.right = (i + 1) * (width + margin);
+		objects[i].size = size;
+	}
+}
+
+/**
+ * Hide all children after a certain index
+ */
+function hideRemaining(parentName, start = 0)
+{
+	let objects = Engine.GetGUIObjectByName(parentName).children;
+
+	for (let i = start; i < objects.length; ++i)
+		objects[i].hidden = true;
 }

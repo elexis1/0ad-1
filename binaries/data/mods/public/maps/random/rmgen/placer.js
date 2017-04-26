@@ -156,11 +156,9 @@ ChainPlacer.prototype.place = function(constraint)
 	var edges = [[this.x, this.z]];
 	for (var i = 0; i < this.numCircles; ++i)
 	{
-		var point = edges[randInt(edges.length)];
-		var cx = point[0], cz = point[1];
-
+		var [cx, cz] = pickRandom(edges);
 		if (queueEmpty)
-			var radius = randInt(this.minRadius, this.maxRadius);
+			var radius = randIntInclusive(this.minRadius, this.maxRadius);
 		else
 		{
 			var radius = this.q.pop();
@@ -346,11 +344,9 @@ function SimpleObject(type, minCount, maxCount, minDistance, maxDistance, minAng
 SimpleObject.prototype.place = function(cx, cz, player, avoidSelf, constraint, maxFailCount = 20)
 {
 	var failCount = 0;
-	var count = randInt(this.minCount, this.maxCount);
 	var resultObjs = [];
 
-	for (var i=0; i < count; i++)
-	{
+	for (var i = 0; i < randIntInclusive(this.minCount, this.maxCount); ++i)
 		while(true)
 		{
 			var distance = randFloat(this.minDistance, this.maxDistance);
@@ -397,7 +393,6 @@ SimpleObject.prototype.place = function(cx, cz, player, avoidSelf, constraint, m
 					return undefined;
 			}
 		}
-	}
 
 	return resultObjs;
 };
@@ -437,11 +432,9 @@ function RandomObject(types, minCount, maxCount, minDistance, maxDistance, minAn
 RandomObject.prototype.place = function(cx, cz, player, avoidSelf, constraint, maxFailCount = 20)
 {
 	var failCount = 0;
-	var count = randInt(this.minCount, this.maxCount);
 	var resultObjs = [];
 
-	for (var i=0; i < count; i++)
-	{
+	for (var i = 0; i < randIntInclusive(this.minCount, this.maxCount); ++i)
 		while(true)
 		{
 			var distance = randFloat(this.minDistance, this.maxDistance);
@@ -475,10 +468,7 @@ RandomObject.prototype.place = function(cx, cz, player, avoidSelf, constraint, m
 					else
 					{
 						var angle = randFloat(this.minAngle, this.maxAngle);
-
-						//Randomly select entity
-						var type = this.types[randInt(this.types.length)];
-						resultObjs.push(new Entity(type, player, x, z, angle));
+						resultObjs.push(new Entity(pickRandom(this.types), player, x, z, angle));
 						break;
 					}
 				}
@@ -491,7 +481,6 @@ RandomObject.prototype.place = function(cx, cz, player, avoidSelf, constraint, m
 					return undefined;
 			}
 		}
-	}
 
 	return resultObjs;
 };
@@ -569,10 +558,7 @@ function RandomGroup(elements, avoidSelf, tileClass, x, z)
 
 RandomGroup.prototype.place = function(player, constraint)
 {
-	// Pick one of the object placers at random
-	var placer = this.elements[randInt(this.elements.length)];
-
-	var resultObjs = placer.place(this.x, this.z, player, this.avoidSelf, constraint);
+	var resultObjs = pickRandom(this.elements).place(this.x, this.z, player, this.avoidSelf, constraint);
 	if (resultObjs === undefined)
 		return false;
 

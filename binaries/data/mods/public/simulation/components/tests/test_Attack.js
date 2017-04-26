@@ -45,7 +45,7 @@ function attackComponentTest(defenderClass, test_function)
 			"MinRange": 3,
 			"MaxRange": 5,
 			"PreferredClasses": {
-				"_string": "Female"
+				"_string": "FemaleCitizen"
 			},
 			"RestrictedClasses": {
 				"_string": "Elephant Archer"
@@ -99,7 +99,7 @@ function attackComponentTest(defenderClass, test_function)
 attackComponentTest(undefined, (attacker, cmpAttack, defender) => {
 
 	TS_ASSERT_UNEVAL_EQUALS(cmpAttack.GetAttackTypes(), ["Melee", "Ranged", "Capture"]);
-	TS_ASSERT_UNEVAL_EQUALS(cmpAttack.GetPreferredClasses("Melee"), ["Female"]);
+	TS_ASSERT_UNEVAL_EQUALS(cmpAttack.GetPreferredClasses("Melee"), ["FemaleCitizen"]);
 	TS_ASSERT_UNEVAL_EQUALS(cmpAttack.GetRestrictedClasses("Melee"), ["Elephant", "Archer"]);
 	TS_ASSERT_UNEVAL_EQUALS(cmpAttack.GetFullAttackRange(), { "min": 0, "max": 80 });
 	TS_ASSERT_UNEVAL_EQUALS(cmpAttack.GetAttackStrengths("Capture"), { "value": 8 });
@@ -152,12 +152,45 @@ function testGetBestAttackAgainst(defenderClass, bestAttack, isBuilding = false)
 		if (!isBuilding)
 			allowCapturing.push(false);
 
-		for (let allowCapturing of allowCapturing)
-			TS_ASSERT_EQUALS(cmpAttack.GetBestAttackAgainst(defender, allowCapturing), bestAttack);
+		for (let ac of allowCapturing)
+			TS_ASSERT_EQUALS(cmpAttack.GetBestAttackAgainst(defender, ac), bestAttack);
 	});
 }
 
-testGetBestAttackAgainst("Female", "Melee");
+testGetBestAttackAgainst("FemaleCitizen", "Melee");
 testGetBestAttackAgainst("Archer", "Ranged");
 testGetBestAttackAgainst("Domestic", "Slaughter");
 testGetBestAttackAgainst("Structure", "Capture", true);
+
+function testPredictTimeToTarget(selfPosition, horizSpeed, targetPosition, targetVelocity)
+{
+	let cmpAttack = ConstructComponent(1, "Attack", {});
+	let timeToTarget = cmpAttack.PredictTimeToTarget(selfPosition, horizSpeed, targetPosition, targetVelocity);
+	if (timeToTarget === false)
+		return;
+	// Position of the target after that time.
+	let targetPos = Vector3D.mult(targetVelocity, timeToTarget).add(targetPosition);
+	// Time that the projectile need to reach it.
+	let time = targetPos.horizDistanceTo(selfPosition) / horizSpeed;
+	TS_ASSERT_EQUALS(timeToTarget.toFixed(1), time.toFixed(1));
+}
+
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(0, 0, 0), new Vector3D(0, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(0, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(1, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(4, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(16, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(-1, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(-4, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(-16, 0, 0));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(0, 0, 1));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(0, 0, 4));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(0, 0, 16));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(1, 0, 1));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(2, 0, 2));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(8, 0, 8));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(-1, 0, 1));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(-2, 0, 2));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(-8, 0, 8));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(4, 0, 2));
+testPredictTimeToTarget(new Vector3D(0, 0, 0), 4, new Vector3D(20, 0, 0), new Vector3D(-4, 0, 2));

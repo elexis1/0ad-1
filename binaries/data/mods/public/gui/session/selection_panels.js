@@ -102,84 +102,19 @@ g_SelectionPanels.Barter = {
 	"conflictsWith": ["Alert", "Garrison"],
 	"getItems": function(unitEntStates)
 	{
-		if (unitEntStates.every(state => !state.barterMarket))
+		// If more than `rowLength` resources, don't display icons.
+		if (unitEntStates.every(state => !state.isBarterMarket) || g_ResourceData.GetCodes().length > this.rowLength)
 			return [];
-		// ["food", "wood", "stone", "metal"]
-		return BARTER_RESOURCES;
+		return g_ResourceData.GetCodes();
 	},
 	"setupButton": function(data)
 	{
-		// data.item is the resource name in this case
+		barterOpenCommon(data.item, data.i, "unitBarter");
+		barterUpdateCommon(data.item, data.i, "unitBarter", data.player);
+
 		let button = {};
-		let icon = {};
-		let amount = {};
-		for (let a of BARTER_ACTIONS)
-		{
-			button[a] = Engine.GetGUIObjectByName("unitBarter" + a + "Button[" + data.i + "]");
-			icon[a] = Engine.GetGUIObjectByName("unitBarter" + a + "Icon[" + data.i + "]");
-			amount[a] = Engine.GetGUIObjectByName("unitBarter" + a + "Amount[" + data.i + "]");
-		}
-		let selectionIcon = Engine.GetGUIObjectByName("unitBarterSellSelection[" + data.i + "]");
-
-		let amountToSell = BARTER_RESOURCE_AMOUNT_TO_SELL;
-		if (Engine.HotkeyIsPressed("session.massbarter"))
-			amountToSell *= BARTER_BUNCH_MULTIPLIER;
-
-		amount.Sell.caption = "-" + amountToSell;
-		let prices;
-		for (let state of data.unitEntStates)
-			if (state.barterMarket)
-			{
-				prices = state.barterMarket.prices;
-				break;
-			}
-
-		amount.Buy.caption = "+" + Math.round(prices.sell[g_BarterSell] / prices.buy[data.item] * amountToSell);
-
-		let resource = getLocalizedResourceName(data.item, "withinSentence");
-		button.Buy.tooltip = sprintf(translate("Buy %(resource)s"), { "resource": resource });
-		button.Sell.tooltip = sprintf(translate("Sell %(resource)s"), { "resource": resource });
-
-		button.Sell.onPress = function() {
-			g_BarterSell = data.item;
-			updateSelectionDetails();
-		};
-
-		button.Buy.onPress = function() {
-			Engine.PostNetworkCommand({
-				"type": "barter",
-				"sell": g_BarterSell,
-				"buy": data.item,
-				"amount": amountToSell
-			});
-		};
-
-		let isSelected = data.item == g_BarterSell;
-		let grayscale = isSelected ? "color: 0 0 0 100:grayscale:" : "";
-
-		// do we have enough of this resource to sell?
-		let neededRes = {};
-		neededRes[data.item] = amountToSell;
-		let canSellCurrent = Engine.GuiInterfaceCall("GetNeededResources", {
-			"cost": neededRes,
-			"player": data.player
-		}) ? "color:255 0 0 80:" : "";
-
-		// Let's see if we have enough resources to barter.
-		neededRes = {};
-		neededRes[g_BarterSell] = amountToSell;
-		let canBuyAny = Engine.GuiInterfaceCall("GetNeededResources", {
-			"cost": neededRes,
-			"player": data.player
-		}) ? "color:255 0 0 80:" : "";
-
-		icon.Sell.sprite = canSellCurrent + "stretched:" + grayscale + "session/icons/resources/" + data.item + ".png";
-		icon.Buy.sprite = canBuyAny + "stretched:" + grayscale + "session/icons/resources/" + data.item + ".png";
-
-		button.Buy.hidden = isSelected;
-		button.Buy.enabled = controlsPlayer(data.player);
-		button.Sell.hidden = false;
-		selectionIcon.hidden = !isSelected;
+		for (let action of g_BarterActions)
+			button[action] = Engine.GetGUIObjectByName("unitBarter" + action + "Button[" + data.i + "]");
 
 		setPanelObjectPosition(button.Sell, data.i, data.rowLength);
 		setPanelObjectPosition(button.Buy, data.i + data.rowLength, data.rowLength);
@@ -346,7 +281,7 @@ g_SelectionPanels.Construction = {
 		let limits = getEntityLimitAndCount(data.playerState, data.item);
 		tooltips.push(
 			formatLimitString(limits.entLimit, limits.entCount, limits.entLimitChangers),
-			getRequiredTechnologyTooltip(technologyEnabled, template.requiredTechnology),
+			getRequiredTechnologyTooltip(technologyEnabled, template.requiredTechnology, GetSimState().players[data.player].civ),
 			getNeededResourcesTooltip(neededResources));
 
 		data.button.tooltip = tooltips.filter(tip => tip).join("\n");
@@ -383,11 +318,19 @@ g_SelectionPanels.Formation = {
 	"conflictsWith": ["Garrison"],
 	"getItems": function(unitEntStates)
 	{
-		if (unitEntStates.some(state => !hasClass(state, "Unit") || hasClass(state, "Animal")))
+		if (unitEntStates.some(state => !hasClass(state, "Unit")))
 			return [];
+
 		if (!g_AvailableFormations.has(unitEntStates[0].player))
 			g_AvailableFormations.set(unitEntStates[0].player, Engine.GuiInterfaceCall("GetAvailableFormations", unitEntStates[0].player));
-		return g_AvailableFormations.get(unitEntStates[0].player);
+
+		let availableFormations = g_AvailableFormations.get(unitEntStates[0].player);
+
+		// Hide the panel if all formations are disabled
+		if (availableFormations.some(formation => canMoveSelectionIntoFormation(formation)))
+			return availableFormations;
+
+		return [];
 	},
 	"setupButton": function(data)
 	{
@@ -442,17 +385,19 @@ g_SelectionPanels.Garrison = {
 	},
 	"setupButton": function(data)
 	{
-		let template = GetTemplateData(data.item.template);
+		let entState = GetEntityState(data.item.ents[0]);
+
+		let template = GetTemplateData(entState.template);
 		if (!template)
 			return false;
 
 		data.button.onPress = function() {
-			unloadTemplate(data.item.template);
+			unloadTemplate(template.selectionGroupName || entState.template, entState.player);
 		};
 
 		data.countDisplay.caption = data.item.ents.length || "";
 
-		let garrisonedUnitOwner = GetEntityState(data.item.ents[0]).player;
+		let garrisonedUnitOwner = entState.player;
 
 		let canUngarrison =
 			g_ViewedPlayer == data.player ||
@@ -472,7 +417,7 @@ g_SelectionPanels.Garrison = {
 
 		data.button.tooltip = tooltip;
 
-		data.button.sprite = "color:" + rgbToGuiColor(g_Players[garrisonedUnitOwner].color) + ":";
+		data.guiSelection.sprite = getPlayerHighlightColor(garrisonedUnitOwner);
 		data.button.sprite_disabled = data.button.sprite;
 
 		// Selection panel buttons only appear disabled if they
@@ -689,7 +634,7 @@ g_SelectionPanels.Queue = {
 		{
 			tooltip += "\n[color=\"red\"]" + translate("Insufficient population capacity:") + "\n[/color]";
 			tooltip += sprintf(translate("%(population)s %(neededSlots)s"), {
-				"population": costIcon("population"),
+				"population": resourceIcon("population"),
 				"neededSlots": data.item.neededSlots
 			});
 		}
@@ -790,12 +735,14 @@ g_SelectionPanels.Research = {
 		setPanelObjectPosition(pair, data.i, data.rowLength);
 
 		// Handle one or two techs (tech pair)
+		let player = data.player;
 		for (let i in techs)
 		{
 			let tech = techs[i];
+			let playerState = GetSimState().players[player];
 
 			// Don't change the object returned by GetTechnologyData
-			let template = clone(GetTechnologyData(tech));
+			let template = clone(GetTechnologyData(tech, playerState.civ));
 			if (!template)
 				return false;
 
@@ -804,12 +751,12 @@ g_SelectionPanels.Research = {
 
 			let neededResources = Engine.GuiInterfaceCall("GetNeededResources", {
 				"cost": template.cost,
-				"player": data.player
+				"player": player
 			});
 
 			let requirementsPassed = Engine.GuiInterfaceCall("CheckTechnologyRequirements", {
 				"tech": tech,
-				"player": data.player
+				"player": player
 			});
 
 			let button = Engine.GetGUIObjectByName("unitResearchButton[" + position + "]");
@@ -824,13 +771,40 @@ g_SelectionPanels.Research = {
 			if (!requirementsPassed)
 			{
 				let tip = template.requirementsTooltip;
-				if (template.classRequirements)
+				let reqs = template.reqs;
+				for (let req of reqs)
 				{
-					let player = data.player;
-					let current = GetSimState().players[player].classCounts[template.classRequirements.class] || 0;
-					let remaining = template.classRequirements.number - current;
-					tip += " " + sprintf(translatePlural("Remaining: %(number)s to build.", "Remaining: %(number)s to build.", remaining), {
-						"number": remaining
+					if (!req.entities)
+						continue;
+
+					let entityCounts = [];
+					for (let entity of req.entities)
+					{
+						let current = 0;
+						switch (entity.check)
+						{
+						case "count":
+							current = playerState.classCounts[entity.class] || 0;
+							break;
+
+						case "variants":
+							current = playerState.typeCountsByClass[entity.class] ?
+								Object.keys(playerState.typeCountsByClass[entity.class]).length : 0;
+							break;
+						}
+
+						let remaining = entity.number - current;
+						if (remaining < 1)
+							continue;
+
+						entityCounts.push(sprintf(translatePlural("%(number)s entity of class %(class)s", "%(number)s entities of class %(class)s", remaining), {
+							"number": remaining,
+							"class": entity.class
+						}));
+					}
+
+					tip += " " + sprintf(translate("Remaining: %(entityCounts)s"), {
+						"entityCounts": entityCounts.join(translate(", "))
 					});
 				}
 				tooltips.push(tip);
@@ -893,16 +867,16 @@ g_SelectionPanels.Selection = {
 	{
 		if (unitEntStates.length < 2)
 			return [];
-		return g_Selection.groups.getTemplateNames();
+		return g_Selection.groups.getEntsGrouped();
 	},
 	"setupButton": function(data)
 	{
-		let template = GetTemplateData(data.item);
+		let entState = GetEntityState(data.item.ents[0]);
+		let template = GetTemplateData(entState.template);
 		if (!template)
 			return false;
 
-		let ents = g_Selection.groups.getEntsByName(data.item);
-		for (let ent of ents)
+		for (let ent of data.item.ents)
 		{
 			let state = GetEntityState(ent);
 
@@ -935,17 +909,25 @@ g_SelectionPanels.Selection = {
 			}
 		}
 
+		let unitOwner = GetEntityState(data.item.ents[0]).player;
 		let tooltip = getEntityNames(template);
 		if (data.carried)
 			tooltip += "\n" + Object.keys(data.carried).map(res =>
-				costIcon(res) + data.carried[res]
+				resourceIcon(res) + data.carried[res]
 			).join(" ");
+		if (g_IsObserver)
+			tooltip += "\n" + sprintf(translate("Player: %(playername)s"), {
+				"playername": g_Players[unitOwner].name
+			});
 		data.button.tooltip = tooltip;
 
-		data.countDisplay.caption = ents.length || "";
+		data.guiSelection.sprite = getPlayerHighlightColor(unitOwner);
+		data.guiSelection.hidden = !g_IsObserver;
 
-		data.button.onPress = function() { changePrimarySelectionGroup(data.item, false); };
-		data.button.onPressRight = function() { changePrimarySelectionGroup(data.item, true); };
+		data.countDisplay.caption = data.item.ents.length || "";
+
+		data.button.onPress = function() { changePrimarySelectionGroup(data.item.key, false); };
+		data.button.onPressRight = function() { changePrimarySelectionGroup(data.item.key, true); };
 
 		if (template.icon)
 			data.icon.sprite = "stretched:session/portraits/" + template.icon;
@@ -1007,7 +989,7 @@ g_SelectionPanels.Training = {
 		});
 
 		let [buildingsCountToTrainFullBatch, fullBatchSize, remainderBatch] =
-			getTrainingBatchStatus(data.playerState, data.item, data.unitEntStates.map(status => status.id));
+			getTrainingStatus(data.playerState, data.item, data.unitEntStates.map(status => status.id));
 
 		let trainNum = buildingsCountToTrainFullBatch || 1;
 		if (Engine.HotkeyIsPressed("session.batchtrain"))
@@ -1055,7 +1037,7 @@ g_SelectionPanels.Training = {
 			"[color=\"" + g_HotkeyColor + "\"]" +
 			formatBatchTrainingString(buildingsCountToTrainFullBatch, fullBatchSize, remainderBatch) +
 			"[/color]",
-			getRequiredTechnologyTooltip(technologyEnabled, template.requiredTechnology),
+			getRequiredTechnologyTooltip(technologyEnabled, template.requiredTechnology, GetSimState().players[data.player].civ),
 			getNeededResourcesTooltip(neededResources));
 
 		data.button.tooltip = tooltips.filter(tip => tip).join("\n");
@@ -1145,7 +1127,7 @@ g_SelectionPanels.Upgrade = {
 			tooltips.push(
 				getEntityCostTooltip(data.item),
 				formatLimitString(limits.entLimit, limits.entCount, limits.entLimitChangers),
-				getRequiredTechnologyTooltip(technologyEnabled, data.item.requiredTechnology),
+				getRequiredTechnologyTooltip(technologyEnabled, data.item.requiredTechnology, GetSimState().players[data.player].civ),
 				getNeededResourcesTooltip(neededResources));
 
 			tooltip = tooltips.filter(tip => tip).join("\n");
@@ -1162,12 +1144,14 @@ g_SelectionPanels.Upgrade = {
 			tooltip = translate("Cannot upgrade when the entity is already upgrading.");
 			data.button.onPress = function() {};
 		}
+		data.button.enabled = controlsPlayer(data.player);
 		data.button.tooltip = tooltip;
 
 		let modifier = "";
 		if (!isUpgrading)
 		{
-			if (progress || !technologyEnabled || limits.canBeAddedCount == 0)
+			if (progress || !technologyEnabled || limits.canBeAddedCount == 0 &&
+				!hasSameRestrictionCategory(data.item.entity, data.unitEntStates[0].template))
 			{
 				data.button.enabled = false;
 				modifier = "color:0 0 0 127:grayscale:";
@@ -1227,13 +1211,3 @@ let g_PanelsOrder = [
 	"Queue",
 	"Selection",
 ];
-
-function getRequiredTechnologyTooltip(technologyEnabled, requiredTechnology)
-{
-	if (technologyEnabled)
-		return "";
-
-	return sprintf(translate("Requires %(technology)s"), {
-		"technology": getEntityNames(GetTechnologyData(requiredTechnology))
-	});
-}

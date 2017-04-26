@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -43,6 +43,8 @@
 #include "simulation2/serialization/StdSerializer.h"
 #include "simulation2/serialization/SerializeTemplates.h"
 
+extern void kill_mainloop();
+
 /**
  * @file
  * Player AI interface.
@@ -80,7 +82,7 @@ private:
 	public:
 		CAIPlayer(CAIWorker& worker, const std::wstring& aiName, player_id_t player, u8 difficulty,
 				shared_ptr<ScriptInterface> scriptInterface) :
-			m_Worker(worker), m_AIName(aiName), m_Player(player), m_Difficulty(difficulty), 
+			m_Worker(worker), m_AIName(aiName), m_Player(player), m_Difficulty(difficulty),
 			m_ScriptInterface(scriptInterface), m_Obj(scriptInterface->GetJSRuntime())
 		{
 		}
@@ -223,6 +225,7 @@ public:
 		m_ScriptInterface->RegisterFunction<void, int, JS::HandleValue, CAIWorker::PostCommand>("PostCommand");
 		m_ScriptInterface->RegisterFunction<void, std::wstring, CAIWorker::IncludeModule>("IncludeModule");
 		m_ScriptInterface->RegisterFunction<void, CAIWorker::ForceGC>("ForceGC");
+		m_ScriptInterface->RegisterFunction<void, CAIWorker::ExitProgram>("Exit");
 
 		m_ScriptInterface->RegisterFunction<JS::Value, JS::HandleValue, JS::HandleValue, pass_class_t, CAIWorker::ComputePath>("ComputePath");
 
@@ -281,14 +284,14 @@ public:
 	{
 		for (size_t i=0; i<m_Players.size(); i++)
 		{
-			if (m_Players[i]->m_Player == playerid)	
+			if (m_Players[i]->m_Player == playerid)
 			{
 				m_Players[i]->m_Commands.push_back(m_ScriptInterface->WriteStructuredClone(cmd));
 				return;
 			}
 		}
 
-		LOGERROR("Invalid playerid in PostCommand!");	
+		LOGERROR("Invalid playerid in PostCommand!");
 	}
 
 	static JS::Value ComputePath(ScriptInterface::CxPrivate* pCxPrivate,
@@ -326,6 +329,11 @@ public:
 	{
 		PROFILE3("AI compute GC");
 		JS_GC(pCxPrivate->pScriptInterface->GetJSRuntime());
+	}
+
+	static void ExitProgram(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
+	{
+		kill_mainloop();
 	}
 
 	/**
@@ -392,7 +400,7 @@ public:
 		OsPath path = L"simulation/ai/common-api/";
 
 		// Constructor name is SharedScript, it's in the module API3
-		// TODO: Hardcoding this is bad, we need a smarter way. 
+		// TODO: Hardcoding this is bad, we need a smarter way.
 		JS::RootedValue AIModule(cx);
 		JS::RootedValue global(cx, m_ScriptInterface->GetGlobalObject());
 		JS::RootedValue ctor(cx);
@@ -466,7 +474,7 @@ public:
 		return true;
 	}
 
-	bool RunGamestateInit(const shared_ptr<ScriptInterface::StructuredClone>& gameState, const Grid<NavcellData>& passabilityMap, const Grid<u8>& territoryMap, 
+	bool RunGamestateInit(const shared_ptr<ScriptInterface::StructuredClone>& gameState, const Grid<NavcellData>& passabilityMap, const Grid<u8>& territoryMap,
 		const std::map<std::string, pass_class_t>& nonPathfindingPassClassMasks, const std::map<std::string, pass_class_t>& pathfindingPassClassMasks)
 	{
 		// this will be run last by InitGame.Js, passing the full game representation.
@@ -539,7 +547,7 @@ public:
 
 			JS::AutoCheckCannotGC nogc;
 			memcpy((void*)JS_GetUint16ArrayData(dataObj, nogc), m_PassabilityMap.m_Data, nbytes);
-		}		
+		}
 	}
 
 	void UpdateTerritoryMap(const Grid<u8>& territoryMap)
@@ -548,7 +556,7 @@ public:
 		bool dimensionChange = m_TerritoryMap.m_W != territoryMap.m_W || m_TerritoryMap.m_H != territoryMap.m_H;
 
 		m_TerritoryMap = territoryMap;
-		
+
 		JSContext* cx = m_ScriptInterface->GetContext();
 		if (dimensionChange)
 			ScriptInterface::ToJSVal(cx, &m_TerritoryMapVal, m_TerritoryMap);
@@ -698,7 +706,7 @@ public:
 		SerializeMap<SerializeString, SerializeU16_Unbounded>()(serializer, "pathfinding pass classes", m_PathfindingPassClasses);
 		serializer.NumberU16_Unbounded("pathfinder grid w", m_PassabilityMap.m_W);
 		serializer.NumberU16_Unbounded("pathfinder grid h", m_PassabilityMap.m_H);
-		serializer.RawBytes("pathfinder grid data", (const u8*)m_PassabilityMap.m_Data, 
+		serializer.RawBytes("pathfinder grid data", (const u8*)m_PassabilityMap.m_Data,
 			m_PassabilityMap.m_W*m_PassabilityMap.m_H*sizeof(NavcellData));
 	}
 
@@ -1106,7 +1114,7 @@ public:
 		CmpPtr<ICmpPathfinder> cmpPathfinder(GetSystemEntity());
 		if (cmpPathfinder)
 		{
-			GridUpdateInformation dirtinessInformations = cmpPathfinder->GetDirtinessData();
+			const GridUpdateInformation& dirtinessInformations = cmpPathfinder->GetDirtinessData();
 
 			if (dirtinessInformations.dirty || m_JustDeserialized)
 			{

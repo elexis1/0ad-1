@@ -28,9 +28,19 @@ function shuffleArray(source)
 	let result = [source[0]];
 	for (let i = 1; i < source.length; ++i)
 	{
-		let j = Math.floor(Math.random() * (i+1));
+		let j = randIntInclusive(0, i);
 		result[i] = result[j];
 		result[j] = source[i];
 	}
 	return result;
+}
+
+/**
+ * Removes prefixing path from a path or filename, leaving just the file's name (with extension)
+ *
+ * ie. a/b/c/file.ext -> file.ext
+ */
+function basename(path)
+{
+	return path.slice(path.lastIndexOf("/") + 1);
 }

@@ -39,13 +39,17 @@ var g_NetworkWarningTexts = {
 var g_NetworkCommands = {
 	"/kick": argument => kickPlayer(argument, false),
 	"/ban": argument => kickPlayer(argument, true),
+	"/kickspecs": argument => kickObservers(false),
+	"/banspecs": argument => kickObservers(true),
 	"/list": argument => addChatMessage({ "type": "clientlist" }),
 	"/clear": argument => clearChatMessages()
 };
 
+var g_ValidPorts = { "min": 1, "max": 65535 };
+
 function getValidPort(port)
 {
-	if (isNaN(+port) || +port <= 0 || +port > 65535)
+	if (isNaN(+port) || +port < g_ValidPorts.min || +port > g_ValidPorts.max)
 		return Engine.GetDefaultPort();
 
 	return +port;
@@ -69,6 +73,7 @@ function getDisconnectReason(id, wasConnected)
 	case 6: return translate("You have been banned");
 	case 7: return translate("Playername in use. If you were disconnected, retry in few seconds");
 	case 8: return translate("Server full");
+	case 9: return translate("Player identifier in use, retry connecting");
 	default:
 		warn("Unknown disconnect-reason ID received: " + id);
 		return sprintf(translate("\\[Invalid value %(id)s]"), { "id": id });
@@ -83,7 +88,7 @@ function getDisconnectReason(id, wasConnected)
 function reportDisconnect(reason, wasConnected)
 {
 	// Translation: States the reason why the client disconnected from the server.
-	let reasonText = sprintf(translate("Reason: %(reason)s."), { "reason": getDisconnectReason(reason, wasConnected) })
+	let reasonText = sprintf(translate("Reason: %(reason)s."), { "reason": getDisconnectReason(reason, wasConnected) });
 
 	messageBox(
 		400, 200,
@@ -95,17 +100,33 @@ function reportDisconnect(reason, wasConnected)
 	);
 }
 
+function kickError()
+{
+	addChatMessage({
+		"type": "system",
+		"text": translate("Only the host can kick clients!")
+	});
+}
+
 function kickPlayer(username, ban)
 {
 	if (g_IsController)
 		Engine.KickPlayer(username, ban);
 	else
-		addChatMessage({
-			"type": "system",
-			"text": sprintf(ban ? translate("Could not ban %(name)s.") : translate("Could not kick %(name)s."), {
-				"name": username
-			})
-		});
+		kickError();
+}
+
+function kickObservers(ban)
+{
+	if (!g_IsController)
+	{
+		kickError();
+		return;
+	}
+
+	for (let guid in g_PlayerAssignments)
+		if (g_PlayerAssignments[guid].player == -1)
+			Engine.KickPlayer(g_PlayerAssignments[guid].name, ban);
 }
 
 /**

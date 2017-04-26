@@ -4,6 +4,22 @@
 var g_DescriptionHighlight = "orange";
 
 /**
+ * XEP-0172 doesn't restrict nicknames, but our lobby policy does.
+ * So use this human readable delimiter to separate buddy names in the config file.
+ */
+var g_BuddyListDelimiter = ",";
+
+/**
+ * Array of playernames that the current user has marked as buddies.
+ */
+var g_Buddies = Engine.ConfigDB_GetValue("user", "lobby.buddies").split(g_BuddyListDelimiter);
+
+/**
+ * Denotes which players are a lobby buddy of the current user.
+ */
+var g_BuddySymbol = '•';
+
+/**
  * Returns map description and preview image or placeholder.
  */
 function getMapDescriptionAndPreview(mapType, mapName)
@@ -123,7 +139,10 @@ function formatPlayerInfo(playerDataArray, playerStates)
 				(typeof getPlayerColor == 'function' ?
 					(isAI ? "white" : getPlayerColor(playerData.Name)) :
 					rgbToGuiColor(playerData.Color || g_Settings.PlayerDefaults[playerIdx].Color)) +
-				'"]' + escapeText(playerData.Name) + "[/color]",
+				'"]' +
+				(g_Buddies.indexOf(removeRatingFromNick(playerData.Name)) != -1 ? g_BuddySymbol + " " : "") +
+				escapeText(playerData.Name) +
+				"[/color]",
 
 			"civ":
 				!playerData.Civ ?
@@ -195,10 +214,22 @@ function getGameDescription(extended = false)
 					"victory condition",
 					"Wonder (%(min)s minute)",
 					"Wonder (%(min)s minutes)",
-					g_GameAttributes.settings.WonderDuration
+					g_GameAttributes.settings.VictoryDuration
 				),
-				{ "min": g_GameAttributes.settings.WonderDuration }
+				{ "min": g_GameAttributes.settings.VictoryDuration }
 			);
+
+		else if (g_VictoryConditions.Name[victoryIdx] == "capture_the_relic")
+			title = sprintf(
+				translatePluralWithContext(
+					"victory condition",
+					"Capture The Relic (%(min)s minute)",
+					"Capture The Relic (%(min)s minutes)",
+					g_GameAttributes.settings.VictoryDuration
+				),
+				{ "min": g_GameAttributes.settings.VictoryDuration }
+			);
+
 		titles.push({
 			"label": title,
 			"value": g_VictoryConditions.Description[victoryIdx]
@@ -328,4 +359,25 @@ function getGameDescription(extended = false)
 			!title.value ? translateWithContext("gamesetup option", "disabled") :
 			title.value
 	})).join("\n");
+}
+
+/**
+ * Sets the win/defeat icon to indicate current player's state.
+ * @param {string} state - The current in-game state of the player.
+ * @param {string} imageID - The name of the XML image object to update.
+ */
+function setOutcomeIcon(state, imageID)
+{
+	let image = Engine.GetGUIObjectByName(imageID);
+
+	if (state == "won")
+	{
+		image.sprite = "stretched:session/icons/victory.png";
+		image.tooltip = translate("Victorious");
+	}
+	else if (state == "defeated")
+	{
+		image.sprite = "stretched:session/icons/defeat.png";
+		image.tooltip = translate("Defeated");
+	}
 }

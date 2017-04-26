@@ -3,16 +3,18 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
+# Adrian Pappas <pappasadrian@gmail.com>, 2017
 # Archie Mc <archiemc1@gmail.com>, 2016
 # LOUKAS SKOUROLIAKOS, 2015
-# Marinus Savoritias <savoritias@gmail.com>, 2015-2016
+# Marinus Savoritias <msavorritias@gmail.com>, 2015-2016
 # TitanJack <titanjack.com@gmail.com>, 2015
+# Vasilis Drosos <basilisd@gmail.com>, 2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-09-30 08:24+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-04-03 09:02+0200\n"
+"PO-Revision-Date: 2017-04-10 21:59+0000\n"
+"Last-Translator: Vasilis Drosos <basilisd@gmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/wildfire-games/0ad/language/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -118,7 +120,7 @@ msgstr "Θησαυρός"
 msgid "A treasure that can be quickly gathered."
 msgstr "Ενας θησαυρός που μπορεί να μαζευτεί γρήγορα."
 
-#: simulation/templates/template_structure.xml:55
+#: simulation/templates/template_structure.xml:60
 msgid "Structure"
 msgstr "Κατασκευή"
 
@@ -159,7 +161,7 @@ msgstr "Ο στρατός του Λεωνίδα Α'"
 #: simulation/templates/campaigns/campaign_city_minor_test.xml:25
 #: simulation/templates/campaigns/campaign_city_test.xml:25
 msgid "Market"
-msgstr ""
+msgstr "Αγορά"
 
 #: simulation/templates/campaigns/campaign_city_minor_test.xml:26
 #: simulation/templates/campaigns/campaign_city_test.xml:26
@@ -203,8 +205,8 @@ msgid "Box"
 msgstr "Κουτί"
 
 #: simulation/templates/formations/column_closed.xml:5
-msgid "Column Closed"
-msgstr "Κλειστή φάλαγγα"
+msgid "Forced March"
+msgstr "Γοργό Βάδην"
 
 #: simulation/templates/formations/column_open.xml:5
 msgid "Column Open"
@@ -219,20 +221,20 @@ msgid "Flank"
 msgstr "Πλευρό"
 
 #: simulation/templates/formations/line_closed.xml:5
-msgid "Line Closed"
-msgstr "Κλειστή γραμμή"
+msgid "Close Order"
+msgstr "Κλειστή Φάλαγξ"
 
 #: simulation/templates/formations/line_open.xml:5
-msgid "Line Open"
-msgstr "Ανοιχτή γραμμή"
+msgid "Open Order"
+msgstr "Ανοικτή Φάλαγξ"
 
 #: simulation/templates/formations/null.xml:5
 msgid "None"
 msgstr "Κανένα"
 
 #: simulation/templates/formations/phalanx.xml:6
-msgid "10 melee infantry units required"
-msgstr "Απαιτούνται 10 μονάδες πεζικού κοντινής εμβέλειας"
+msgid "10 hoplite infantry required"
+msgstr "Απαιτούνται 10 οπλίτες πεζικού"
 
 #: simulation/templates/formations/phalanx.xml:7
 msgid "Phalanx"
@@ -251,24 +253,24 @@ msgid "Skirmish"
 msgstr "Αψιμαχία"
 
 #: simulation/templates/formations/syntagma.xml:6
-msgid "9 pike infantry units required"
-msgstr ""
+msgid "16 pike infantry units required"
+msgstr "Απαιτούνται 16 μονάδες πεζικού με δόρυ"
 
-#: simulation/templates/formations/syntagma.xml:7
+#: simulation/templates/formations/syntagma.xml:8
 msgid "Syntagma"
 msgstr "Σύνταγμα"
 
 #: simulation/templates/formations/testudo.xml:6
 msgid "9 melee infantry units required"
-msgstr ""
+msgstr "απαιτούνται 9 μονάδες πεζικού εκ του συστάδην"
 
 #: simulation/templates/formations/testudo.xml:7
 msgid "Testudo"
 msgstr "Χελώνα"
 
 #: simulation/templates/formations/wedge.xml:6
-msgid "3 cavalry units required"
-msgstr "Απαιτούνται 3 μονάδες ιππικού"
+msgid "6 cavalry units required"
+msgstr "Απαιτούνται 6 μονάδες ιππικού"
 
 #: simulation/templates/formations/wedge.xml:7
 msgid "Wedge"
@@ -279,8 +281,12 @@ msgid "Bear"
 msgstr "Αρκούδα"
 
 #: simulation/templates/gaia/fauna_boar.xml:18
-msgid "Boar"
+msgid "Wild Boar"
 msgstr "Αγριόχοιρος"
+
+#: simulation/templates/gaia/fauna_boar.xml:19
+msgid "Sus scrofa"
+msgstr "Αγριογούρουνο"
 
 #: simulation/templates/gaia/fauna_camel.xml:9
 msgid "Camel"
@@ -292,7 +298,7 @@ msgstr "κοτόπουλο"
 
 #: simulation/templates/gaia/fauna_crocodile.xml:18
 msgid "Crocodylus niloticus"
-msgstr ""
+msgstr "Κροκόδειλος του Νείλου"
 
 #: simulation/templates/gaia/fauna_crocodile.xml:19
 msgid "Nile Crocodile"
@@ -302,19 +308,23 @@ msgstr "Κροκόδειλος Νείλου"
 msgid "Deer"
 msgstr "Ελάφι"
 
-#: simulation/templates/gaia/fauna_elephant_african_bush.xml:33
+#: simulation/templates/gaia/fauna_elephant_african_bush.xml:11
 msgid "African Bush Elephant"
-msgstr ""
+msgstr "Αφρικανικός Eλέφαντας"
+
+#: simulation/templates/gaia/fauna_elephant_african_infant.xml:14
+msgid "Elephant"
+msgstr "Ελέφαντας"
 
 #: simulation/templates/gaia/fauna_elephant_african_infant.xml:15
 msgid "African Elephant (Infant)"
 msgstr "Αφρικανικός Ελέφαντας (μωρό)"
 
-#: simulation/templates/gaia/fauna_elephant_asian.xml:33
+#: simulation/templates/gaia/fauna_elephant_asian.xml:11
 msgid "Asian Elephant"
 msgstr "Ασιατικός Ελέφαντας"
 
-#: simulation/templates/gaia/fauna_elephant_north_african.xml:33
+#: simulation/templates/gaia/fauna_elephant_north_african.xml:11
 msgid "North African Elephant"
 msgstr "Βορειο-αφρικανικός Ελέφαντας"
 
@@ -326,7 +336,7 @@ msgstr "Τόνος"
 #: simulation/templates/gaia/fauna_fish.xml:6
 #: simulation/templates/gaia/fauna_fish_tuna.xml:6
 msgid "Collect food from this bountiful oceanic resource."
-msgstr ""
+msgstr "Συνέλεξε τροφή από αυτόν τον άφθονο σε πόρους ωκεανό. "
 
 #: simulation/templates/gaia/fauna_fish_tilapia.xml:5
 msgid "Tilapia Fish"
@@ -334,7 +344,7 @@ msgstr "Ψάρι Tilapia"
 
 #: simulation/templates/gaia/fauna_fish_tilapia.xml:6
 msgid "Collect food from this bountiful riparian resource."
-msgstr ""
+msgstr "Συνέλεξε τροφή από αυτόν τον άφθονο σε πόρους ποταμό. "
 
 #: simulation/templates/gaia/fauna_gazelle.xml:9
 msgid "Gazelle"
@@ -368,13 +378,25 @@ msgstr " Λέαινα"
 msgid "Muskox"
 msgstr "Μοσχόβους"
 
-#: simulation/templates/gaia/fauna_peacock.xml:12
+#: simulation/templates/gaia/fauna_peacock.xml:14
 msgid "Peacock"
 msgstr "Παγώνι"
+
+#: simulation/templates/gaia/fauna_peacock.xml:15
+msgid "Pavo cristatus"
+msgstr "Ταώς ο λοφιοφόρος"
 
 #: simulation/templates/gaia/fauna_pig.xml:15
 msgid "Pig"
 msgstr "Χοίρος"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:18
+msgid "Flaming Pig"
+msgstr "Πύρινος Χοίρος"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:19
+msgid "Sus scrofa domesticus igne"
+msgstr "Φωτιά κατοικίδιου χοίρου"
 
 #: simulation/templates/gaia/fauna_rabbit.xml:9
 msgid "Rabbit"
@@ -400,7 +422,7 @@ msgstr "Πρόβατα"
 msgid "Tiger"
 msgstr "Τίγρης"
 
-#: simulation/templates/gaia/fauna_walrus.xml:23
+#: simulation/templates/gaia/fauna_walrus.xml:24
 msgid "Walrus"
 msgstr "Φώκια"
 
@@ -416,11 +438,11 @@ msgstr "Μεγάπτερη Φάλαινα"
 msgid "Wildebeest"
 msgstr "Αγριοζώο"
 
-#: simulation/templates/gaia/fauna_wolf.xml:18
+#: simulation/templates/gaia/fauna_wolf.xml:4
 msgid "Wolf"
 msgstr "Λύκος"
 
-#: simulation/templates/gaia/fauna_wolf_snow.xml:18
+#: simulation/templates/gaia/fauna_wolf_snow.xml:4
 msgid "Snow Wolf"
 msgstr "Λύκος του χιονιά"
 
@@ -430,7 +452,7 @@ msgstr "Ζέβρα"
 
 #: simulation/templates/gaia/flora_bush_badlands.xml:8
 msgid "Hardy Bush"
-msgstr ""
+msgstr "Σκληρός Θάμνος"
 
 #: simulation/templates/gaia/flora_bush_grapes.xml:4
 msgid "Forage"
@@ -442,7 +464,7 @@ msgstr "Σταφύλια"
 
 #: simulation/templates/gaia/flora_bush_grapes.xml:6
 msgid "Gather grapes from these vines for Food."
-msgstr ""
+msgstr "Μαζέψτε τα σταφύλια από τα αμπέλια για Φαγητό."
 
 #: simulation/templates/gaia/flora_bush_temperate.xml:8
 msgid "Deciduous Bush"
@@ -454,7 +476,7 @@ msgstr "Ακακία"
 
 #: simulation/templates/gaia/flora_tree_aleppo_pine.xml:4
 msgid "Aleppo Pine Tree"
-msgstr ""
+msgstr "Πεύκο Χαλεπιού"
 
 #: simulation/templates/gaia/flora_tree_apple.xml:8
 msgid "Apple Tree"
@@ -462,7 +484,7 @@ msgstr "Μηλιά"
 
 #: simulation/templates/gaia/flora_tree_baobab.xml:8
 msgid "Baobab"
-msgstr ""
+msgstr "Αδανσωνιών"
 
 #: simulation/templates/gaia/flora_tree_carob.xml:4
 msgid "Carob Tree"
@@ -472,7 +494,7 @@ msgstr "Χαρουπιά Δέντρο"
 #: simulation/templates/gaia/flora_tree_cretan_date_palm_short.xml:4
 #: simulation/templates/gaia/flora_tree_cretan_date_palm_tall.xml:4
 msgid "Cretan Date Palm"
-msgstr ""
+msgstr "Κρητική Χουρμαδιά"
 
 #: simulation/templates/gaia/flora_tree_cypress.xml:4
 msgid "Cypress Tree"
@@ -501,7 +523,7 @@ msgstr "Συγκέντρωσε σύκα για φαγητό"
 
 #: simulation/templates/gaia/flora_tree_medit_fan_palm.xml:4
 msgid "Mediterranean Fan Palm"
-msgstr ""
+msgstr "Χαμαίρωψ"
 
 #: simulation/templates/gaia/flora_tree_oak.xml:4
 #: simulation/templates/gaia/flora_tree_oak_aut.xml:4
@@ -538,19 +560,19 @@ msgstr "Λεύκα"
 
 #: simulation/templates/gaia/flora_tree_poplar_lombardy.xml:4
 msgid "Lombardy Poplar Tree"
-msgstr ""
+msgstr "Λεύκα Λομβαρδίας"
 
 #: simulation/templates/gaia/flora_tree_senegal_date_palm.xml:4
 msgid "Senegal Date Palm"
-msgstr ""
+msgstr "Σενεγαλέζικη Χουρμαδιά"
 
 #: simulation/templates/gaia/flora_tree_tamarix.xml:4
 msgid "Tamarix Tree"
-msgstr ""
+msgstr "Αλμυρίκι"
 
 #: simulation/templates/gaia/flora_tree_toona.xml:4
 msgid "Toona Tree"
-msgstr ""
+msgstr "Μαόνι Δέντρο"
 
 #: simulation/templates/gaia/special_ruins.xml:10
 #: simulation/templates/gaia/special_ruins_column_doric.xml:10
@@ -566,7 +588,7 @@ msgstr "Πέτρινα Ερείπια"
 #: simulation/templates/gaia/special_ruins_standing_stone.xml:10
 #: simulation/templates/gaia/special_treasure_standing_stone.xml:10
 msgid "Celtic Standing Stone"
-msgstr ""
+msgstr "Κέλτικος Ορθόλιθος"
 
 #: simulation/templates/gaia/special_ruins_stone_statues_egyptian.xml:10
 msgid "Ptolemaic Egyptian Statues"
@@ -591,11 +613,11 @@ msgstr "Μισοθαμμένα βαρέλια"
 
 #: simulation/templates/gaia/special_treasure_food_persian_big.xml:10
 msgid "Persian Food Stores"
-msgstr ""
+msgstr "Περσική Αποθήκη Τροφίμων"
 
 #: simulation/templates/gaia/special_treasure_food_persian_small.xml:10
 msgid "Persian Food Treasure"
-msgstr ""
+msgstr "Περσικός Θησαυρός Τροφίμων"
 
 #: simulation/templates/gaia/special_treasure_golden_fleece.xml:10
 msgid "Golden Fleece"
@@ -630,7 +652,7 @@ msgstr "Πέτρινος θησαυρός"
 
 #: simulation/templates/gaia/special_treasure_wood.xml:10
 msgid "Wood Treasure"
-msgstr ""
+msgstr "Θησαυρός Ξύλου"
 
 #: simulation/templates/other/bench.xml:20
 msgid "Bench"
@@ -660,7 +682,7 @@ msgstr "Τοφεθ"
 
 #: simulation/templates/other/cart_tophet.xml:24
 msgid "Train physicians and Sacred Band Cavalrymen."
-msgstr ""
+msgstr "Εκπαιδεύει Γιατρούς και Ιππής της Ιεράς Ίλης."
 
 #: simulation/templates/other/celt_hut.xml:21
 msgid "Hut"
@@ -668,7 +690,7 @@ msgstr "Καλύβα"
 
 #: simulation/templates/other/celt_longhouse.xml:22
 msgid "Longhouse"
-msgstr ""
+msgstr "Ξυλόσπιτο"
 
 #: simulation/templates/other/column_doric.xml:20
 #: simulation/templates/other/column_doric_fallen.xml:20
@@ -717,7 +739,7 @@ msgstr "Νέος Παρθένος"
 
 #: simulation/templates/other/hellenic_epic_temple.xml:32
 msgid "Garrison units to heal them at a quick rate."
-msgstr ""
+msgstr "Θέσε μονάδες σε φρουρά για να τις θεραπεύσεις με γρήγορο ρυθμό."
 
 #: simulation/templates/other/hellenic_propylaea.xml:25
 msgid "Portico"
@@ -737,7 +759,7 @@ msgstr "Ελληνική Στοά"
 
 #: simulation/templates/other/maur_palace.xml:12
 msgid "Harmya"
-msgstr ""
+msgstr "Παλάτι"
 
 #: simulation/templates/other/obelisk.xml:20
 msgid "Obelisk"
@@ -749,15 +771,15 @@ msgstr "Αιγυπτιακός Οβελίσκος"
 
 #: simulation/templates/other/palisades_angle_spike.xml:16
 msgid "Palisade Angle Spike"
-msgstr ""
+msgstr "Ακιδωτή Περίφραξη"
 
 #: simulation/templates/other/palisades_angle_spike.xml:17
 msgid "Big Spike"
-msgstr ""
+msgstr "Μεγάλη Ακίδα"
 
 #: simulation/templates/other/palisades_rocks_curve.xml:15
 msgid "Palisade Curve"
-msgstr ""
+msgstr "Φράγμα από Πασσάλους"
 
 #: simulation/templates/other/palisades_rocks_curve.xml:16
 msgid "Wooden Wall Corner"
@@ -765,23 +787,23 @@ msgstr "Γωνία ξύλινου τείχους"
 
 #: simulation/templates/other/palisades_rocks_end.xml:15
 msgid "Palisade End"
-msgstr ""
+msgstr "Τέλος Περίφραξης με Πασσάλους"
 
 #: simulation/templates/other/palisades_rocks_end.xml:16
 msgid "Wooden Wall End"
-msgstr ""
-
-#: simulation/templates/other/palisades_rocks_fort.xml:5
-msgid "Palisade Fort"
-msgstr ""
+msgstr "Τέλος Ξύλινου Τείχους"
 
 #: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr ""
+msgid "Palisade Fort"
+msgstr "Οχυρό από Πασσάλους"
+
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr "Ξύλινος Πύργος"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
-msgstr ""
+msgstr "Πύλη από Πασσάλους"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:19
 msgid "Wooden Gate"
@@ -820,7 +842,7 @@ msgstr "Παρατηρητήριο"
 
 #: simulation/templates/other/palisades_small_spikes.xml:16
 msgid "Spikes Small"
-msgstr ""
+msgstr "Μικρά Καρφιά"
 
 #: simulation/templates/other/palisades_small_spikes.xml:17
 msgid "Small Spikes"
@@ -832,11 +854,11 @@ msgstr "Καρφιά Ψηλά"
 
 #: simulation/templates/other/palisades_tall_spikes.xml:17
 msgid "Tall Spikes"
-msgstr ""
+msgstr "Μακριά Καρφιά"
 
 #: simulation/templates/other/pers_apartment_block.xml:15
 msgid "Apartment Block"
-msgstr ""
+msgstr "Συγκρότημα Διαμερισμάτων"
 
 #: simulation/templates/other/pers_house_a.xml:12
 msgid "House"
@@ -857,7 +879,7 @@ msgstr "P-51 Mustang"
 
 #: simulation/templates/other/plane.xml:43
 msgid "A World War 2 American fighter plane."
-msgstr ""
+msgstr "Ένα αμερικάνικο μαχητικό αεροπλάνο του Β΄ Παγκοσμίου Πολέμου."
 
 #: simulation/templates/other/pyramid_great.xml:9
 #: simulation/templates/other/pyramid_minor.xml:9
@@ -874,11 +896,23 @@ msgstr "Μικρή Πυραμίδα"
 
 #: simulation/templates/other/sele_colonnade.xml:20
 msgid "Colonnade"
-msgstr ""
+msgstr "Κιονοστοιχία"
 
 #: simulation/templates/other/sele_colonnade.xml:21
 msgid "Corinthian Colonnade"
-msgstr ""
+msgstr "Κορινθιακή Κιονοστοιχία"
+
+#: simulation/templates/other/special_catafalque.xml:22
+msgid "Catafalque"
+msgstr "Κενοτάφιο"
+
+#: simulation/templates/other/special_catafalque.xml:24
+msgid "A catafalque that holds the remains of a great leader."
+msgstr "Ένα κενοτάφιο που διατηρεί τα λείψανα ενός μεγάλου ηγέτη."
+
+#: simulation/templates/other/special_catafalque.xml:25
+msgid "Relic"
+msgstr "Ιερό Λείψανο"
 
 #: simulation/templates/other/special_treasure_shipwreck.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_ram_bow.xml:10
@@ -889,7 +923,7 @@ msgstr "Ναυάγιο"
 
 #: simulation/templates/other/special_treasure_shipwreck.xml:11
 msgid "A decaying military shipwreck. A good opportunity for any businessman."
-msgstr ""
+msgstr "Ένα σάπιο στρατιωτικό ναυάγιο. Μια καλή ευκαιρία για κάθε επιχειρηματία."
 
 #: simulation/templates/other/special_treasure_shipwreck_debris.xml:10
 msgid "Shipwreck Cargo"
@@ -898,29 +932,29 @@ msgstr "Φορτίο Ναυαγίου"
 #: simulation/templates/other/special_treasure_shipwreck_ram_bow.xml:11
 msgid ""
 "A shipwreck with much loss of life. A good opportunity for any businessman."
-msgstr ""
+msgstr "Ένα ναυάγιο όπου χάθηκαν πολλές ζωές. Μια καλή ευκαιρία για κάθε επιχειρηματία."
 
 #: simulation/templates/other/special_treasure_shipwreck_sail_boat.xml:11
 msgid ""
 "The wreck of a small cargo ship. A good opportunity for any businessman."
-msgstr ""
+msgstr "Το ναυάγιο ενός μικρού φορτηγού πλοίου. Μια καλή ευκαιρία για κάθε επιχειρηματία."
 
 #: simulation/templates/other/special_treasure_shipwreck_sail_boat_cut.xml:11
 msgid "A cargo ship rammed in half. A good opportunity for any businessman."
-msgstr ""
+msgstr "Ένα φορτηγό πλοίο εμβολισμένο στη μέση. Μια καλή ευκαιρία για κάθε επιχειρηματία."
 
 #: simulation/templates/other/stall_big.xml:12
 msgid "Big stall"
-msgstr ""
+msgstr "Μεγάλος σταύλος"
 
 #: simulation/templates/other/stall_med.xml:12
 msgid "Medium stall"
-msgstr ""
+msgstr "Μεσαίος σταύλος"
 
 #: simulation/templates/other/stall_small_a.xml:12
 #: simulation/templates/other/stall_small_b.xml:12
 msgid "Small stall"
-msgstr ""
+msgstr "Μικρός σταύλος"
 
 #: simulation/templates/other/table_rectangle.xml:20
 #: simulation/templates/other/table_square.xml:20
@@ -941,28 +975,87 @@ msgstr "Ημιτελής Ελληνικός Ναός"
 
 #: simulation/templates/other/unfinished_greek_temple.xml:12
 msgid "This temple is unfinished and has fallen to ruin."
-msgstr ""
+msgstr "Αυτός ο ημιτελές ναός έχει μετατραπεί σε ερείπια."
+
+#: simulation/templates/other/catafalque/athen_catafalque.xml:6
+msgid "Solon"
+msgstr "Σόλωνας"
+
+#: simulation/templates/other/catafalque/brit_catafalque.xml:6
+msgid "Cassivellaunus"
+msgstr "Κασιβέλανος"
+
+#: simulation/templates/other/catafalque/cart_catafalque.xml:6
+msgid "Hasdrubal (Quartermaster)"
+msgstr "Ασδρούβας (Φροντιστής)"
+
+#: simulation/templates/other/catafalque/gaul_catafalque.xml:6
+msgid "Ambiorix"
+msgstr "Αμβιόριξ"
+
+#: simulation/templates/other/catafalque/iber_catafalque.xml:6
+msgid "Mandonius"
+msgstr "Μανδόνιος"
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:6
+msgid "Philip V"
+msgstr "Φίλιππος Ε'"
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:7
+msgid ""
+"Financial Reorganization: Allied with Rome, Philip reorganized the country's"
+" internal affairs and finances, leaving as a legacy reopened mines and a new"
+" currency. Gain a slow trickle of metal."
+msgstr "Οικονομική Αναδιοργάνωση: Συμμαχώντας με τη Ρώμη, ο Φίλιππος αναδιοργάνωσε τις εσωτερικές υποθέσεις και τα οικονομικά της χώρας, αφήνοντας ως παρακαταθήκη ξανανοιγμένα ορυχεία και ένα νέο νόμισμα. Αποκτάς μια αργή εισροή από μέταλλα."
+
+#: simulation/templates/other/catafalque/maur_catafalque.xml:6
+msgid "Bindusara"
+msgstr "Μπιντουσάρα"
+
+#: simulation/templates/other/catafalque/pers_catafalque.xml:6
+msgid "Artaxerxes II"
+msgstr "Αρταξέρξης Β'"
+
+#: simulation/templates/other/catafalque/ptol_catafalque.xml:6
+msgid "Ptolemy III Euergetes (Benefactor)"
+msgstr "Πτολεμαίος Γ' ο Ευεργέτης"
+
+#: simulation/templates/other/catafalque/rome_catafalque.xml:6
+msgid "Lucius Junius Brutus"
+msgstr "Λεύκιος Ιούνιος Βρούτος"
+
+#: simulation/templates/other/catafalque/sele_catafalque.xml:6
+msgid "Antiochus I Soter (Savior)"
+msgstr "Αντίοχος Α' ο Σωτήρ"
+
+#: simulation/templates/other/catafalque/spart_catafalque.xml:6
+msgid "Lycurgus"
+msgstr "Λυκούργος"
 
 #: simulation/templates/skirmish/structures/default_house_10.xml:5
 msgid ""
 "Changes in a 10-pop house for civilisations with those houses, is deleted "
 "for other civs"
-msgstr ""
+msgstr "Αλάζει σε ένα 10 θέσιο σπίτι για πολιτισμούς με αυτά τα σπίτια, διαγράφεται για του άλλους πολιτισμούς"
 
 #: simulation/templates/skirmish/structures/default_house_5.xml:9
 msgid ""
 "Changes in a 5-pop house for civilisations with those houses, is deleted for"
 " other civs"
-msgstr ""
+msgstr "Αλάζει σε ένα 5 θέσιο σπίτι για πολιτισμούς με αυτά τα σπίτια, διαγράφεται για του άλλους πολιτισμούς"
 
 #: simulation/templates/special/marker_object_sound.xml:15
 #: simulation/templates/special/marker_object_sound.xml:16
 msgid "Marker"
-msgstr ""
+msgstr "Μαρκαδόρος"
 
-#: simulation/templates/special/player.xml:56
+#: simulation/templates/special/player.xml:57
 msgid "Player"
 msgstr "Παίκτης"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr "Κατάσκοπος"
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5
@@ -976,7 +1069,7 @@ msgstr "Λιθοβόλος"
 #: simulation/templates/special_units/mace_mechanical_siege_oxybeles_common.xml:5
 #: simulation/templates/special_units/spart_mechanical_siege_oxybeles_common.xml:5
 msgid "Oxybelḗs"
-msgstr ""
+msgstr "Οξυβόλος"
 
 #: simulation/templates/special_units/cart_mechanical_siege_ballista_common.xml:5
 #: simulation/templates/special_units/rome_mechanical_siege_ballista_common.xml:20

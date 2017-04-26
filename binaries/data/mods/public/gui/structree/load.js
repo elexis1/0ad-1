@@ -1,58 +1,10 @@
-/**
- * Calculates gather rates.
- *
- * All available rates that have a value greater than 0 are summed and averaged
- */
-function getGatherRates(templateName)
-{
-	// TODO: It would be nice to use the gather rates present in the templates
-	// instead of hard-coding the possible rates here.
-
-	// We ignore ruins here, as those are not that common and would skew the results
-	var types = {
-		"food": ["food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk"],
-		"wood": ["wood", "wood.tree"],
-		"stone": ["stone", "stone.rock"],
-		"metal": ["metal", "metal.ore"]
-	};
-	var rates = {};
-
-	for (let type in types)
-	{
-		let count, rate;
-		[rate, count] = types[type].reduce(function(sum, t) {
-				let r = +fetchValue(templateName, "ResourceGatherer/Rates/"+t);
-				return [sum[0] + (r > 0 ? r : 0), sum[1] + (r > 0 ? 1 : 0)];
-			}, [0, 0]);
-
-		if (rate > 0)
-			rates[type] = Math.round(rate / count * 100) / 100;
-	}
-
-	if (!Object.keys(rates).length)
-		return null;
-
-	return rates;
-}
-
 function loadUnit(templateName)
 {
 	if (!Engine.TemplateExists(templateName))
 		return null;
-	var template = loadTemplate(templateName);
 
-	var unit = GetTemplateDataHelper(template, null, g_AuraData);
-	unit.phase = false;
-
-	if (unit.requiredTechnology)
-	{
-		if (depath(unit.requiredTechnology).slice(0, 5) == "phase")
-			unit.phase = unit.requiredTechnology;
-		else if (unit.requiredTechnology.length)
-			unit.required = unit.requiredTechnology;
-	}
-
-	unit.gather = getGatherRates(templateName);
+	let template = loadTemplate(templateName);
+	let unit = GetTemplateDataHelper(template, null, g_AuraData, g_ResourceData, g_CurrentModifiers);
 
 	if (template.ProductionQueue)
 	{
@@ -93,17 +45,8 @@ function loadUnit(templateName)
 
 function loadStructure(templateName)
 {
-	var template = loadTemplate(templateName);
-	var structure = GetTemplateDataHelper(template, null, g_AuraData);
-	structure.phase = false;
-
-	if (structure.requiredTechnology)
-	{
-		if (depath(structure.requiredTechnology).slice(0, 5) == "phase")
-			structure.phase = structure.requiredTechnology;
-		else if (structure.requiredTechnology.length)
-			structure.required = structure.requiredTechnology;
-	}
+	let template = loadTemplate(templateName);
+	let structure = GetTemplateDataHelper(template, null, g_AuraData, g_ResourceData, g_CurrentModifiers);
 
 	structure.production = {
 		"technology": [],
@@ -179,63 +122,11 @@ function loadStructure(templateName)
 
 function loadTechnology(techName)
 {
-	var template = loadTechData(techName);
-	var tech = GetTechnologyDataHelper(template, g_SelectedCiv);
-	tech.reqs = {};
+	let template = loadTechData(techName);
+	let tech = GetTechnologyDataHelper(template, g_SelectedCiv, g_ResourceData);
 
 	if (template.pair !== undefined)
 		tech.pair = template.pair;
-
-	if (template.requirements !== undefined)
-	{
-		for (let op in template.requirements)
-		{
-			let val = template.requirements[op];
-			let req = calcReqs(op, val);
-
-			switch (op)
-			{
-			case "tech":
-				tech.reqs.generic = req;
-				break;
-
-			case "civ":
-				tech.reqs[req] = [];
-				break;
-
-			case "any":
-				if (req[0].length > 0)
-					for (let r of req[0])
-					{
-						let v = req[0][r];
-						if (typeof r == "number")
-							tech.reqs[v] = [];
-						else
-							tech.reqs[r] = v;
-					}
-				if (req[1].length > 0)
-					tech.reqs.generic = req[1];
-				break;
-
-			case "all":
-				if (!req[0].length)
-					tech.reqs.generic = req[1];
-				else
-					for (let r of req[0])
-						tech.reqs[r] = req[1];
-				break;
-			}
-		}
-	}
-
-	if (template.supersedes !== undefined)
-	{
-		if (tech.reqs.generic !== undefined)
-			tech.reqs.generic.push(template.supersedes);
-		else
-			for (let ck of Object.keys(tech.reqs))
-				tech.reqs[ck].push(template.supersedes);
-	}
 
 	return tech;
 }
@@ -243,7 +134,7 @@ function loadTechnology(techName)
 function loadPhase(phaseCode)
 {
 	var template = loadTechData(phaseCode);
-	var phase = GetTechnologyDataHelper(template, g_SelectedCiv);
+	var phase = GetTechnologyDataHelper(template, g_SelectedCiv, g_ResourceData);
 
 	phase.actualPhase = phaseCode;
 	if (template.replaces !== undefined)
@@ -258,78 +149,12 @@ function loadTechnologyPair(pairCode)
 
 	return {
 		"techs": [ pairInfo.top, pairInfo.bottom ],
-		"req": pairInfo.supersedes || ""
+		"reqs": DeriveTechnologyRequirements(pairInfo, g_SelectedCiv)
 	};
 }
 
 /**
- * Calculate the prerequisite requirements of a technology.
- * Works recursively if needed.
- *
- * @param op The base operation. Can be "civ", "tech", "all" or "any".
- * @param val The value associated with the above operation.
- *
- * @return Sorted requirments.
- */
-function calcReqs(op, val)
-{
-	switch (op)
-	{
-	case "civ":
-	case "class":
-	case "notciv":
-	case "number":
-		// nothing needs doing
-		break;
-
-	case "tech":
-		if (depath(val).slice(0,4) === "pair")
-			return loadTechnologyPair(val).techs;
-		return [ val ];
-
-	case "all":
-	case "any":
-		let t = [];
-		let c = [];
-		for (let nv of val)
-		{
-			for (let o in nv)
-			{
-				let v = nv[o];
-				let r = calcReqs(o, v);
-				switch (o)
-				{
-				case "civ":
-				case "notciv":
-					c.push(r);
-					break;
-
-				case "tech":
-					t = t.concat(r);
-					break;
-
-				case "any":
-					c = c.concat(r[0]);
-					t = t.concat(r[1]);
-					break;
-
-				case "all":
-					for (let ci in r[0])
-						c[ci] = r[1];
-					t = t;
-				}
-			}
-		}
-		return [ c, t ];
-
-	default:
-		warn("Unknown reqs operator: "+op);
-	}
-	return val;
-}
-
-/**
- * Unravel phases
+ * Loads the names of all phases required to research the given technologies.
  *
  * @param techs The current available store of techs
  *
@@ -343,28 +168,26 @@ function unravelPhases(techs)
 	{
 		let techdata = techs[techcode];
 
-		if (!("generic" in techdata.reqs) || techdata.reqs.generic.length < 2)
+		if (!techdata.reqs || !techdata.reqs.length || !techdata.reqs[0].techs || techdata.reqs[0].techs.length < 2)
 			continue;
 
-		let reqTech = techs[techcode].reqs.generic[1];
+		let reqTech = techs[techcode].reqs[0].techs[1];
 
-		// Tech that can't be researched anywhere
-		if (!(reqTech in techs))
+		if (!techs[reqTech] || !techs[reqTech].reqs.length)
 			continue;
 
-		if (!("generic" in techs[reqTech].reqs))
-			continue;
+		// Assume the first tech to be a phase
+		let reqPhase = techs[reqTech].reqs[0].techs[0];
+		let myPhase = techs[techcode].reqs[0].techs[0];
 
-		let reqPhase = techs[reqTech].reqs.generic[0];
-		let myPhase = techs[techcode].reqs.generic[0];
-
-		if (reqPhase == myPhase || depath(reqPhase).slice(0,5) !== "phase" || depath(myPhase).slice(0,5) !== "phase")
+		if (reqPhase == myPhase || !basename(reqPhase).startsWith("phase") || !basename(myPhase).startsWith("phase"))
 			continue;
 
 		let reqPhasePos = phaseList.indexOf(reqPhase);
 		let myPhasePos = phaseList.indexOf(myPhase);
 
-		if (phaseList.length === 0)
+		// Sort the phases in the order they can be researched
+		if (!phaseList.length)
 			phaseList = [reqPhase, myPhase];
 		else if (reqPhasePos < 0 && myPhasePos > -1)
 			phaseList.splice(myPhasePos, 0, reqPhase);
@@ -376,5 +199,6 @@ function unravelPhases(techs)
 			phaseList.splice(myPhasePos, 1);
 		}
 	}
+
 	return phaseList;
 }

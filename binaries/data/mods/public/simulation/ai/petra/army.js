@@ -214,37 +214,39 @@ m.Army.prototype.removeOwn = function (gameState, id, Entity)
 	this.assignedTo[id] = undefined;
 
 	let ent = Entity ? Entity : gameState.getEntityById(id);
-	if (ent)    // TODO recompute strength when no entities (could happen if capture+destroy)
+	if (!ent)
+		return true;
+
+	this.evaluateStrength(ent, true, true);
+	ent.setMetadata(PlayerID, "PartOfArmy", undefined);
+	if (ent.getMetadata(PlayerID, "plan") === -2)
+		ent.setMetadata(PlayerID, "plan", -1);
+	else
+		ent.setMetadata(PlayerID, "plan", undefined);
+
+	let formerSubrole = ent.getMetadata(PlayerID, "formerSubrole");
+	if (formerSubrole !== undefined)
+		ent.setMetadata(PlayerID, "subrole", formerSubrole);
+	else
+		ent.setMetadata(PlayerID, "subrole", undefined);
+	ent.setMetadata(PlayerID, "formerSubrole", undefined);
+
+/*
+	// TODO be sure that all units in the transport need the cancelation
+	if (!ent.position())	// this unit must still be in a transport plan ... try to cancel it
 	{
-		this.evaluateStrength(ent, true, true);
-		ent.setMetadata(PlayerID, "PartOfArmy", undefined);
-		if (ent.getMetadata(PlayerID, "plan") === -2)
-			ent.setMetadata(PlayerID, "plan", -1);
-		else
-			ent.setMetadata(PlayerID, "plan", undefined);
-
-		let formerSubrole = ent.getMetadata(PlayerID, "formerSubrole");
-		if (formerSubrole !== undefined)
-			ent.setMetadata(PlayerID, "subrole", formerSubrole);
-		else
-			ent.setMetadata(PlayerID, "subrole", undefined);
-		ent.setMetadata(PlayerID, "formerSubrole", undefined);
-
-		// TODO be sure that all units in the transport need the cancelation
-/*		if (!ent.position())	// this unit must still be in a transport plan ... try to cancel it
+		let planID = ent.getMetadata(PlayerID, "transport");
+		// no plans must mean that the unit was in a ship which was destroyed, so do nothing
+		if (planID)
 		{
-			let planID = ent.getMetadata(PlayerID, "transport");
-			// no plans must mean that the unit was in a ship which was destroyed, so do nothing
-			if (planID)
-			{
-				if (gameState.ai.Config.debug > 0)
-					warn("ent from army still in transport plan: plan " + planID + " canceled");
-				let plan = gameState.ai.HQ.navalManager.getPlan(planID);
-				if (plan && !plan.canceled)
-					plan.cancelTransport(gameState);
-			}
-		} */
+			if (gameState.ai.Config.debug > 0)
+				warn("ent from army still in transport plan: plan " + planID + " canceled");
+			let plan = gameState.ai.HQ.navalManager.getPlan(planID);
+			if (plan && !plan.canceled)
+				plan.cancelTransport(gameState);
+		}
 	}
+*/
 
 	return true;
 };
@@ -259,7 +261,7 @@ m.Army.prototype.isCapturing = function (gameState)
 		return false;
 	let ent = gameState.getEntityById(this.foeEntities[0]);
 	return ent && ent.hasClass("Structure");
-};    
+};
 
 /**
  * this one is "undefined entity" proof because it's called at odd times.
@@ -305,7 +307,7 @@ m.Army.prototype.merge = function (gameState, otherArmy)
 	}
 	for (let i in otherArmy.assignedTo)
 		this.assignedTo[i] = otherArmy.assignedTo[i];
-	
+
 	for (let id of otherArmy.foeEntities)
 		this.addFoe(gameState, id, true);
 	// TODO: reassign those ?
@@ -314,7 +316,7 @@ m.Army.prototype.merge = function (gameState, otherArmy)
 
 	this.recalculatePosition(gameState, true);
 	this.recalculateStrengths(gameState);
-	
+
 	return true;
 };
 
@@ -395,7 +397,7 @@ m.Army.prototype.onUpdate = function (gameState)
 	let breakaways = [];
 	// TODO: assign unassigned defenders, cleanup of a few things.
 	// perhaps occasional strength recomputation
-	
+
 	// occasional update or breakaways, positions…
 	if (gameState.ai.elapsedTime - this.positionLastUpdate > 5)
 	{

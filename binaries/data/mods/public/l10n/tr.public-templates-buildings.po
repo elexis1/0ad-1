@@ -4,24 +4,27 @@
 # 
 # Translators:
 # Ender Türsen <ado.ender@gmail.com>, 2014
-# Cem Aktas <cemwstone@gmail.com>, 2015
+# Cem Aktas <cemwstone@gmail.com>, 2015,2017
 # Cengizhan Asıliskender <ceas08@gmail.com>, 2016
-# Doğu Kan, 2015
+# Doğu Kan, 2015,2017
 # Ender Türsen <ado.ender@gmail.com>, 2014,2016
 # Eren Ramiz <kumbasar2004@hotmail.com>, 2016
 # Hüseyin Cem Aras <hcemaras@gmail.com>, 2015
+# Muha Aliss <muhaaliss@gmail.com>, 2017
+# Ngokwanele Elenawkogn <ngokwanele@gmail.com>, 2016
 # sicey <sicey224@hotmail.com>, 2015
 # Sinan Özgün <ozgunsinan@gmail.com>, 2014
 # Taha Karadoğan <tahakaradogan@gmail.com>, 2016
+# Typhoon das <info@typhoonwebexpert.com>, 2017
 # Volkan Gezer <volkangezer@gmail.com>, 2014
 # Volkan SARIBÜLBÜL <rvolkansaribulbul@gmail.com>, 2015
 # yakup <mutouk@yandex.ru>, 2014-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-09-30 09:49+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-03-27 09:02+0200\n"
+"PO-Revision-Date: 2017-04-05 14:53+0000\n"
+"Last-Translator: Cem Aktas <cemwstone@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/wildfire-games/0ad/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +46,7 @@ msgstr "Şehir Merkezi"
 
 #: simulation/templates/template_structure_civic_civil_centre.xml:74
 msgid "Build to acquire large tracts of territory. Train citizens."
-msgstr "Bölgenin geniş  alanlarını elde etmek icin inşaa et . Yurttaşları çalıştır. Garnizon:20."
+msgstr "Bölgenin geniş alanlarına sahip olmak için inşa et . Yurttaşları çalıştır."
 
 #: simulation/templates/template_structure_civic_civil_centre.xml:76
 #: simulation/templates/template_structure_civic_civil_centre.xml:38
@@ -63,26 +66,26 @@ msgstr "Askeri Koloni"
 msgid "Klēroukhía"
 msgstr "Klēroukhía"
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:25
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:33
 msgid "Stoa"
 msgstr "Saçak altı"
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:26
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:34
 msgid "Hellenic Royal Stoa"
-msgstr "Helen Kraliyet Saçak altı"
+msgstr "Helen Kraliyet Revağı"
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:28
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:36
 msgid "Recruit special units."
-msgstr "Özel birimleri eğit"
+msgstr "Özel birimleri askere al."
 
-#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:31
+#: simulation/templates/template_structure_civic_hellenic_royal_stoa.xml:39
 #: simulation/templates/template_structure_civic_temple.xml:33
 #: simulation/templates/template_structure_defense_defense_tower.xml:57
 #: simulation/templates/template_structure_economic_market.xml:24
 #: simulation/templates/template_structure_military_blacksmith.xml:32
-#: simulation/templates/template_structure_military_embassy.xml:24
+#: simulation/templates/template_structure_military_embassy.xml:26
 #: simulation/templates/structures/brit_blacksmith.xml:11
-#: simulation/templates/structures/brit_kennel.xml:35
+#: simulation/templates/structures/brit_kennel.xml:39
 #: simulation/templates/structures/cart_super_dock.xml:37
 #: simulation/templates/structures/gaul_blacksmith.xml:11
 #: simulation/templates/structures/gaul_tavern.xml:29
@@ -91,13 +94,13 @@ msgstr "Özel birimleri eğit"
 msgid "Town"
 msgstr "Kasaba"
 
-#: simulation/templates/template_structure_civic_house.xml:34
+#: simulation/templates/template_structure_civic_house.xml:35
 msgid "Increase the population limit."
 msgstr "Nüfus limitini arttır."
 
-#: simulation/templates/template_structure_civic_house.xml:36
+#: simulation/templates/template_structure_civic_house.xml:37
 #: simulation/templates/template_structure_defense_outpost.xml:65
-#: simulation/templates/template_structure_defense_wooden_tower.xml:42
+#: simulation/templates/template_structure_defense_sentry_tower.xml:42
 #: simulation/templates/template_structure_economic_farmstead.xml:27
 #: simulation/templates/template_structure_economic_storehouse.xml:27
 #: simulation/templates/template_structure_military_barracks.xml:31
@@ -106,8 +109,8 @@ msgstr "Nüfus limitini arttır."
 msgid "Village"
 msgstr "Köy"
 
-#: simulation/templates/template_structure_civic_house.xml:36
-#: simulation/templates/template_structure_civic_house.xml:33
+#: simulation/templates/template_structure_civic_house.xml:37
+#: simulation/templates/template_structure_civic_house.xml:34
 msgid "House"
 msgstr "Ev"
 
@@ -115,7 +118,7 @@ msgstr "Ev"
 msgid ""
 "Train healers. Garrison units to heal them at a quick rate (3 HP per "
 "second). Research healing and religious improvements."
-msgstr " "
+msgstr " Şifacı eğit. Garnizon birimlerinin hızlı bir şekilde iyileşmesini sağlar (saniyede 3 HP). Dinî gelişmeleri ve iyileşmeyi araştır."
 
 #: simulation/templates/template_structure_civic_temple.xml:33
 #: simulation/templates/template_structure_civic_temple.xml:31
@@ -153,7 +156,24 @@ msgstr "Haritanın alanlarını keşfetmek için tarafsız ve kendi bölgelerini
 msgid "Outpost"
 msgstr "Karakol"
 
+#: simulation/templates/template_structure_defense_sentry_tower.xml:40
+#: simulation/templates/template_structure_defense_sentry_tower.xml:39
+msgid "Sentry Tower"
+msgstr "Nöbetçi Kulesi"
+
+#: simulation/templates/template_structure_defense_sentry_tower.xml:42
+msgid "SentryTower"
+msgstr "Nöbetçi kulesi"
+
+#: simulation/templates/template_structure_defense_sentry_tower.xml:69
+msgid "Reinforce with stone and upgrade to a defense tower."
+msgstr "Taşla güçlendirin ve bir savunma kulesine geçin."
+
 #: simulation/templates/template_structure_defense_wall.xml:24
+#: simulation/templates/structures/cart_s_wall_long.xml:7
+#: simulation/templates/structures/cart_s_wall_medium.xml:7
+#: simulation/templates/structures/cart_s_wall_short.xml:7
+#: simulation/templates/structures/cart_s_wall_tower.xml:7
 msgid "Stone Wall"
 msgstr "Taş Duvar"
 
@@ -178,7 +198,7 @@ msgstr " Uzun duvar parçaları kapılara dönüştürülebilir."
 #: simulation/templates/template_structure_defense_wall_long.xml:45
 msgid ""
 "This will allow you to let units circulate through your fortifications."
-msgstr ""
+msgstr "This will allow you to let units circulate through your fortifications."
 
 #: simulation/templates/template_structure_defense_wall_tower.xml:50
 msgid "Wall Turret"
@@ -191,15 +211,6 @@ msgstr "Okları fırlatın. Garnizon bir şehir duvarını hücum edenlere karş
 #: simulation/templates/template_structure_defense_wallset.xml:10
 msgid "City Wall"
 msgstr "Şehir Duvarı"
-
-#: simulation/templates/template_structure_defense_wooden_tower.xml:39
-#: simulation/templates/template_structure_defense_wooden_tower.xml:38
-msgid "Sentry Tower"
-msgstr ""
-
-#: simulation/templates/template_structure_defense_wooden_tower.xml:67
-msgid "Reinforce with stone and upgrade to a defense tower."
-msgstr ""
 
 #: simulation/templates/template_structure_economic.xml:14
 msgid "Economic Structure"
@@ -288,8 +299,8 @@ msgstr "Donanma gemilerini oluşturmak ve deniz ticaretini açmak için bir kıy
 msgid "Dock"
 msgstr "Rıhtım"
 
-#: simulation/templates/template_structure_military_embassy.xml:24
-#: simulation/templates/template_structure_military_embassy.xml:25
+#: simulation/templates/template_structure_military_embassy.xml:26
+#: simulation/templates/template_structure_military_embassy.xml:27
 #: simulation/templates/structures/cart_embassy.xml:19
 #: simulation/templates/structures/cart_embassy.xml:20
 msgid "Embassy"
@@ -341,7 +352,7 @@ msgid "Harvest vegetables for food. Max gatherers: 5."
 msgstr "Gıda için sebze hasadı. En fazla toplayıcı: 5."
 
 #: simulation/templates/template_structure_special.xml:42
-#: simulation/templates/structures/brit_kennel.xml:32
+#: simulation/templates/structures/brit_kennel.xml:36
 msgid "Special Building"
 msgstr "Özel Yapılar"
 
@@ -440,17 +451,17 @@ msgstr "Epiteíkhisma"
 
 #: simulation/templates/structures/athen_fortress.xml:10
 msgid "Build siege engines. Garrison soldiers inside for stout defense."
-msgstr ""
+msgstr "Kuşatma makineleri inşa et. Garnizon askerleri içeride savunma için destek verir."
 
-#: simulation/templates/structures/athen_gymnasion.xml:20
+#: simulation/templates/structures/athen_gymnasion.xml:23
 msgid "Gymnasium"
 msgstr "spor salonu"
 
-#: simulation/templates/structures/athen_gymnasion.xml:21
+#: simulation/templates/structures/athen_gymnasion.xml:24
 msgid "Gymnásion"
 msgstr "Gymnásion"
 
-#: simulation/templates/structures/athen_gymnasion.xml:22
+#: simulation/templates/structures/athen_gymnasion.xml:25
 msgid "Train champion units."
 msgstr "Şampiyon birimleri eğitme."
 
@@ -500,7 +511,7 @@ msgstr "Ambar"
 
 #: simulation/templates/structures/athen_temple.xml:9
 msgid "Naṓs"
-msgstr ""
+msgstr "Naṓs"
 
 #: simulation/templates/structures/athen_wall_gate.xml:9
 #: simulation/templates/structures/mace_wall_gate.xml:9
@@ -545,11 +556,11 @@ msgstr "Naós Parthenṓn"
 #: simulation/templates/structures/cart_wonder.xml:17
 #: simulation/templates/structures/mace_wonder.xml:17
 #: simulation/templates/structures/ptol_wonder.xml:17
-#: simulation/templates/structures/rome_wonder.xml:16
+#: simulation/templates/structures/rome_wonder.xml:14
 msgid ""
 "Bring glory to your civilization and add large tracts of land to your "
 "empire. Garrison units to heal them at an extremely quick rate."
-msgstr ""
+msgstr "Uygarlık için zafer getirin ve imparatorluğunuza büyük toprak parçalarını ekleyin. Garnizon birimleri onları son derece hızlı bir oranda iyileştirecek."
 
 #: simulation/templates/structures/brit_barracks.xml:15
 #: simulation/templates/structures/gaul_barracks.xml:15
@@ -615,11 +626,11 @@ msgstr "Brythonic kahramanlar ve mükemmeller yetiştirin. Kuşatma koçbaşlı 
 msgid "Annedd"
 msgstr "Annedd"
 
-#: simulation/templates/structures/brit_kennel.xml:33
+#: simulation/templates/structures/brit_kennel.xml:37
 msgid "Kennel"
 msgstr "köpek kulübesi"
 
-#: simulation/templates/structures/brit_kennel.xml:36
+#: simulation/templates/structures/brit_kennel.xml:40
 msgid "Train Celtic war dogs."
 msgstr "Kelt savaş köpeklerini eğit."
 
@@ -637,8 +648,8 @@ msgstr "Brythonic Karakol"
 msgid "Ystordy"
 msgstr "Ystordy"
 
-#: simulation/templates/structures/brit_temple.xml:19
-#: simulation/templates/structures/gaul_temple.xml:19
+#: simulation/templates/structures/brit_temple.xml:18
+#: simulation/templates/structures/gaul_temple.xml:18
 msgid "Addoldy"
 msgstr "Addoldy"
 
@@ -667,6 +678,10 @@ msgstr "Atış veya garnizon yapılmadı."
 msgid "Stonehenge"
 msgstr "Stonehenge"
 
+#: simulation/templates/structures/cart_apartment.xml:17
+msgid "Apartment Building"
+msgstr "Apartman binası"
+
 #: simulation/templates/structures/cart_barracks.xml:18
 msgid "Maḥanēt"
 msgstr "Maḥanēt"
@@ -676,13 +691,6 @@ msgid ""
 "Train North African citizen-soldiers. Research improvements for North "
 "African units."
 msgstr "Kuzey Afrikalı vatandaş-asker Yetiştir. Kuzey Afrikalı birimler için Araştırma gelişmeleri."
-
-#: simulation/templates/structures/cart_blacksmith.xml:5
-#: simulation/templates/structures/ptol_blacksmith.xml:5
-#: simulation/templates/structures/ptol_field.xml:5
-#: simulation/templates/structures/ptol_temple.xml:12
-msgid "?"
-msgstr "?"
 
 #: simulation/templates/structures/cart_civil_centre.xml:8
 msgid "Merkāz"
@@ -767,6 +775,14 @@ msgstr "Šūq"
 msgid "Carthaginian Outpost"
 msgstr "Kartaca Karakolu"
 
+#: simulation/templates/structures/cart_s_wall_long.xml:6
+#: simulation/templates/structures/cart_s_wall_medium.xml:6
+#: simulation/templates/structures/cart_s_wall_short.xml:6
+#: simulation/templates/structures/cart_s_wall_tower.xml:6
+#: simulation/templates/structures/cart_wallset_short.xml:5
+msgid "Low Wall"
+msgstr "Alçak Duvar"
+
 #: simulation/templates/structures/cart_storehouse.xml:9
 msgid "Maḥṣabah"
 msgstr "Maḥṣabah"
@@ -781,7 +797,7 @@ msgstr "Pamuk"
 
 #: simulation/templates/structures/cart_super_dock.xml:37
 msgid "Shipyard"
-msgstr ""
+msgstr "Tersane"
 
 #: simulation/templates/structures/cart_super_dock.xml:39
 msgid "Construct and repair mighty warships."
@@ -795,7 +811,7 @@ msgstr "Maqdaš"
 msgid ""
 "Train priestesses to heal your troops. Train Sacred Band pikemen. Garrison "
 "units to heal them at a quick rate."
-msgstr ""
+msgstr "Birliklerinizi iyileştirmek için rahibeleri eğitin. Kutsal Bant pikemeni eğitin. Garnizon birimleri onları hızlı bir oranda iyileştirecek."
 
 #: simulation/templates/structures/cart_wall.xml:9
 #: simulation/templates/structures/cart_wallset_stone.xml:5
@@ -889,19 +905,23 @@ msgstr "Etxe"
 msgid "Arruga"
 msgstr "Kırışıklık"
 
-#: simulation/templates/structures/iber_monument.xml:28
+#: simulation/templates/structures/iber_monument.xml:7
+msgid "Monument"
+msgstr "Anıt"
+
+#: simulation/templates/structures/iber_monument.xml:32
 msgid "Revered Monument"
 msgstr "Kutsal Tapınak"
 
-#: simulation/templates/structures/iber_monument.xml:29
+#: simulation/templates/structures/iber_monument.xml:33
 msgid "Gur Oroigarri"
 msgstr "Gur Oroigarri"
 
-#: simulation/templates/structures/iber_monument.xml:32
+#: simulation/templates/structures/iber_monument.xml:36
 msgid ""
 "All units within vision of this monument will fight harder. Buildings in the"
 " territory of the monument do not decay."
-msgstr ""
+msgstr "Bu anıtın vizyonundaki tüm birimler daha fazla savaşacaklar. Anıtın bulunduğu bölgedeki binalar çürütülmez."
 
 #: simulation/templates/structures/iber_outpost.xml:5
 msgid "Iberian Outpost"
@@ -935,14 +955,14 @@ msgstr "Cancho Roano"
 msgid "Sidērourgeîon"
 msgstr "Sidērourgeîon"
 
-#: simulation/templates/structures/mace_fortress.xml:15
+#: simulation/templates/structures/mace_fortress.xml:9
 msgid "Teíchisma"
 msgstr "Teíchisma"
 
-#: simulation/templates/structures/mace_fortress.xml:16
+#: simulation/templates/structures/mace_fortress.xml:10
 msgid ""
 "Train Champions and Heroes. Garrison soldiers inside for stout defense."
-msgstr ""
+msgstr "Şampiyonları ve Kahramanları Eğitin. İçinde büyük bir savunma için garnizon askerleri var."
 
 #: simulation/templates/structures/mace_library.xml:5
 #: simulation/templates/structures/ptol_library.xml:5
@@ -1030,15 +1050,19 @@ msgstr "Vipana"
 msgid "Uparaksana"
 msgstr "Uparaksana"
 
-#: simulation/templates/structures/maur_pillar_ashoka.xml:27
+#: simulation/templates/structures/maur_pillar_ashoka.xml:7
+msgid "Pillar"
+msgstr "Sütun"
+
+#: simulation/templates/structures/maur_pillar_ashoka.xml:32
 msgid "Edict Pillar of Ashoka"
 msgstr "Asoka'nın ferman sütunu"
 
-#: simulation/templates/structures/maur_pillar_ashoka.xml:28
+#: simulation/templates/structures/maur_pillar_ashoka.xml:33
 msgid "Śāsana Stambha Aśokā"
 msgstr "Śāsana Stambha Aśokā"
 
-#: simulation/templates/structures/maur_pillar_ashoka.xml:31
+#: simulation/templates/structures/maur_pillar_ashoka.xml:36
 msgid ""
 "The famous pillar of Ashoka. Increases the walk speed of traders. Buildings "
 "in the territory of the monument do not decay."
@@ -1089,20 +1113,20 @@ msgstr "Stratópedo Misthophóron Aigyptiakós"
 msgid "Capture this structure to train mercenaries from Hellenistic Egypt."
 msgstr "Bu yapıyı ele geçirerek Yunanlaşmış  Mısır'dan paralı asker yetiştirin."
 
-#: simulation/templates/structures/pers_apadana.xml:26
-#: simulation/templates/structures/pers_palace.xml:23
+#: simulation/templates/structures/pers_apadana.xml:29
+#: simulation/templates/structures/pers_tacara.xml:26
 msgid "Persian Palace"
 msgstr "Pers Sarayı"
 
-#: simulation/templates/structures/pers_apadana.xml:27
+#: simulation/templates/structures/pers_apadana.xml:30
 msgid "Apadana"
 msgstr "Apadana"
 
-#: simulation/templates/structures/pers_apadana.xml:31
+#: simulation/templates/structures/pers_apadana.xml:34
 msgid ""
 "\"Satrapy Tribute\": Gain a trickle of food, wood, stone, and metal "
 "resources. Train Persian heroes and their \"Immortals\" bodyguards."
-msgstr ""
+msgstr "\"Satrapy Tribute\" : Bir miktar yiyecek, ahşap, taş ve metal kaynakları elde edin. Pers kahramanlarını ve onların \"Immortals\" korumalarını eğitin."
 
 #: simulation/templates/structures/pers_barracks.xml:5
 msgid "Padgan"
@@ -1153,35 +1177,35 @@ msgstr "Didā"
 msgid "Train Champion Cavalry and Construct Siege Rams."
 msgstr "Şampiyon Süvari yetiştirin ve Kuşatma koçbaşlıları oluşturun. "
 
-#: simulation/templates/structures/pers_hall.xml:25
+#: simulation/templates/structures/pers_hall.xml:28
 msgid "Persian Hall"
 msgstr "Pers Holü"
 
-#: simulation/templates/structures/pers_hall.xml:26
+#: simulation/templates/structures/pers_hall.xml:29
 msgid "Duvarthi Visadahyu"
 msgstr "Duvarthi Visadahyu"
 
-#: simulation/templates/structures/pers_hall.xml:28
+#: simulation/templates/structures/pers_hall.xml:31
 msgid "Train War Elephants and Kardakes mercenaries."
-msgstr ""
+msgstr "Savaş filleri ve kardakes paralı askerleri eğitin."
 
 #: simulation/templates/structures/pers_house.xml:9
 msgid "Huvādā"
 msgstr "Huvādā"
 
-#: simulation/templates/structures/pers_ishtar_gate.xml:25
+#: simulation/templates/structures/pers_ishtar_gate.xml:28
 msgid "Persian Special Building"
 msgstr "Pers Özel Yapıları"
 
-#: simulation/templates/structures/pers_ishtar_gate.xml:26
+#: simulation/templates/structures/pers_ishtar_gate.xml:29
 msgid "Ishtar Gate of Babylon"
 msgstr "Babil'in İştar Kapısı"
 
-#: simulation/templates/structures/pers_ishtar_gate.xml:27
+#: simulation/templates/structures/pers_ishtar_gate.xml:30
 msgid ""
 "Increases the loyalty regeneration of nearby structures, making them harder "
 "to capture."
-msgstr ""
+msgstr "Yakındaki yapıların sadakat yenilenmesini arttırarak onları yakalamalarını zorlaştırıyor."
 
 #: simulation/templates/structures/pers_market.xml:12
 msgid "Ardatašta"
@@ -1190,10 +1214,6 @@ msgstr "Ardatašta"
 #: simulation/templates/structures/pers_outpost.xml:5
 msgid "Didebani"
 msgstr "Didebani"
-
-#: simulation/templates/structures/pers_palace.xml:24
-msgid "Taçara"
-msgstr "Taçara"
 
 #: simulation/templates/structures/pers_stables.xml:18
 msgid "Cavalry Stables"
@@ -1214,6 +1234,10 @@ msgstr "Yurttaş süvari birimleri eğit."
 #: simulation/templates/structures/pers_storehouse.xml:5
 msgid "Asiyah"
 msgstr "Asiyah"
+
+#: simulation/templates/structures/pers_tacara.xml:27
+msgid "Taçara"
+msgstr "Taçara"
 
 #: simulation/templates/structures/pers_temple.xml:12
 msgid "Ayadana"
@@ -1243,7 +1267,7 @@ msgstr "ḥwt-n-mš'"
 msgid ""
 "Train Egyptian and Middle-Eastern citizen-soldiers. Research training "
 "improvements."
-msgstr ""
+msgstr "Mısır ve Orta Doğu vatandaş askerlerine eğitim verin. Araştırma eğitiminde iyileştirmeler."
 
 #: simulation/templates/structures/ptol_civil_centre.xml:12
 msgid "pr-'a"
@@ -1277,7 +1301,7 @@ msgstr "ḥwt"
 msgid ""
 "Increase the population limit. Since they are made of mud brick, Egyptian "
 "houses are free of cost, but are very weak."
-msgstr ""
+msgstr "Nüfus sınırını arttır. Çamur tuğladan yapılmış oldukları için, Mısır evleri bedavadır, ancak çok zayıftır."
 
 #: simulation/templates/structures/ptol_lighthouse.xml:17
 msgid "Lighthouse"
@@ -1309,7 +1333,7 @@ msgstr "Stratopedeía Misthophórōn"
 msgid ""
 "Cheap barracks-like structure that is buildable in neutral territory, but "
 "casts no territory influence. Train Mercenaries."
-msgstr ""
+msgstr "Tarafsız bir bölgede inşa edilebilen, ancak bölgeye etki etmeyen ucuz kışla benzeri bir yapı. Paralı askerler."
 
 #: simulation/templates/structures/ptol_military_colony.xml:10
 msgid "Klēroukhia"
@@ -1320,7 +1344,7 @@ msgid ""
 "This is the Ptolemaic expansion building, similar to Civic Centers for other"
 " factions. It is weaker and carries a smaller territory influence, but is "
 "cheaper and built faster. Train settler-soldiers of various nationalities."
-msgstr ""
+msgstr "Bu Ptolemaios genişleme binası, diğer ihtilaflardaki Şehir Merkezlerine benzer. Daha zayıftır ve daha küçük bir toprak nüfuzu taşır, ancak daha ucuzdur ve daha hızlı inşa edilmiştir. Çeşitli uluslardan yerleşimci-askerler eğitin."
 
 #: simulation/templates/structures/ptol_outpost.xml:5
 msgid "mktr-n-ḫt"
@@ -1355,7 +1379,7 @@ msgstr "Zafer takı"
 
 #: simulation/templates/structures/rome_arch.xml:23
 msgid "Special Imperial Roman building."
-msgstr "Özel İmparatorluk Roma binası."
+msgstr "Özel Emperyal Roma binası."
 
 #: simulation/templates/structures/rome_army_camp.xml:59
 msgid "Entrenched Army Camp"
@@ -1369,7 +1393,7 @@ msgstr "Castra Vallum"
 msgid ""
 "Build anywhere on the map, even in enemy territory. Construct siege weapons "
 "and train citizen-soldiers. Heal garrisoned units slowly."
-msgstr "Harita üzerinde herhangi bir yere hatta düşman topraklarına inşa et. \nKuşatma silahları ve yetişmiş vatandaş-asker oluştur. Garnizon birimleri ni yavaş yavaş iyileştir."
+msgstr "Harita üzerinde herhangi bir yere hatta düşman topraklarına inşa et. Kuşatma silahları yap ve vatandaş-asker yetiştir. Garnizon birimlerini yavaş yavaş iyileştir."
 
 #: simulation/templates/structures/rome_barracks.xml:18
 msgid "Castrum"
@@ -1445,7 +1469,7 @@ msgstr "Murus Circummunitionis"
 #: simulation/templates/structures/rome_siege_wall_short.xml:36
 #: simulation/templates/structures/rome_wallset_siege.xml:8
 msgid "A wooden and turf palisade buildable in enemy and neutral territories."
-msgstr "Düşman ve tarafsız bölgede inşa edilebilir çim ve bir ağaçtan çit."
+msgstr "Ağaçtan yapılma çayırlık çit, tarafsız veya düşman bölgelere inşa edilebilir."
 
 #: simulation/templates/structures/rome_siege_wall_tower.xml:31
 msgid "Siege Wall Tower"
@@ -1473,7 +1497,7 @@ msgstr "Aedes Martis"
 
 #: simulation/templates/structures/rome_temple_mars.xml:15
 msgid "Train healers. Garrison units to heal them at a quick rate."
-msgstr ""
+msgstr "Şifacıları arayın. Garrison birimlerini hızlı bir oranda iyileştirecekler."
 
 #: simulation/templates/structures/rome_temple_vesta.xml:15
 msgid "Temple of Vesta"
@@ -1485,7 +1509,7 @@ msgstr "Aedes Vestae"
 
 #: simulation/templates/structures/rome_tent.xml:29
 msgid "Tent"
-msgstr "çadır"
+msgstr "Çadır"
 
 #: simulation/templates/structures/rome_tent.xml:30
 msgid "Tabernāculum"
@@ -1493,7 +1517,7 @@ msgstr "Tabernāculum"
 
 #: simulation/templates/structures/rome_tent.xml:32
 msgid "A temporary shelter for soldiers."
-msgstr ""
+msgstr "Askerler için geçici bir sığınak."
 
 #: simulation/templates/structures/rome_wall.xml:9
 #: simulation/templates/structures/rome_wall_long.xml:29
@@ -1515,7 +1539,7 @@ msgstr "Turris Lapidea"
 msgid "Murus Latericius"
 msgstr "Tuğla Duvar"
 
-#: simulation/templates/structures/rome_wonder.xml:15
+#: simulation/templates/structures/rome_wonder.xml:13
 msgid "Aedes Iovis Optimi Maximi"
 msgstr "Jupiter Optimus Maximus Tapınağı"
 
@@ -1547,7 +1571,7 @@ msgstr "Phrourion"
 msgid ""
 "Build siege engines and train Champions. Garrison soldiers inside for stout "
 "defense."
-msgstr ""
+msgstr "Kuşatma makinaları oluşturun ve Şampiyonlar yetiştirin. İçerde sağlam bir savunma için garnizona 20 kadar asker."
 
 #: simulation/templates/structures/sele_library.xml:9
 msgid "Bibliothikon"
@@ -1562,7 +1586,7 @@ msgid ""
 "This is the Seleucid expansion building, similar to Civic Centers for other "
 "factions. It is weaker and carries a smaller territory influence, but is "
 "cheaper and built faster. Train settler-soldiers of various nationalities."
-msgstr ""
+msgstr "Bu, Seleukos genişleme binası, diğer ihtilaflardaki Şehir Merkezlerine benzer. Daha zayıftır ve daha küçük bir toprak nüfuzu taşır, ancak daha ucuzdur ve daha hızlı inşa edilmiştir. Çeşitli uluslardan yerleşimci-askerler eğitin."
 
 #: simulation/templates/structures/sele_outpost.xml:5
 msgid "Prophylax"
@@ -1570,11 +1594,11 @@ msgstr "Prophylax"
 
 #: simulation/templates/structures/sele_temple.xml:9
 msgid "Naós"
-msgstr "Tapınak"
+msgstr "Naós"
 
 #: simulation/templates/structures/sele_wonder.xml:12
 msgid "Temple of Pythian Apollo"
-msgstr "Pythian apollo tapınağı"
+msgstr "Pythialı Apollo tapınağı"
 
 #: simulation/templates/structures/spart_fortress.xml:9
 msgid "Teíkhisma"
@@ -1597,15 +1621,15 @@ msgstr "Gerontía"
 msgid "Train heroes."
 msgstr "Kahramanlar yetiştir."
 
-#: simulation/templates/structures/spart_syssiton.xml:21
+#: simulation/templates/structures/spart_syssiton.xml:24
 msgid "Military Mess Hall"
 msgstr "Askeri gazino"
 
-#: simulation/templates/structures/spart_syssiton.xml:22
+#: simulation/templates/structures/spart_syssiton.xml:25
 msgid "Syssítion"
 msgstr "Syssition"
 
-#: simulation/templates/structures/spart_syssiton.xml:24
+#: simulation/templates/structures/spart_syssiton.xml:27
 msgid "Train Spartan heroes and Spartiate champion hoplites."
 msgstr "Spartan kahramanlar ve şampiyon Spartiate hoplite yetiştirin."
 
@@ -1613,4 +1637,4 @@ msgstr "Spartan kahramanlar ve şampiyon Spartiate hoplite yetiştirin."
 msgid ""
 "Bring glory to your civilization and add large tracts of land to your "
 "empire. Garrison units to heal them at a quick rate."
-msgstr ""
+msgstr "Medeniyetinize zafer kazandırın ve imparatorluğunuza büyük toprak parçalarını ekleyin. Garrison birimlerini hızlı bir oranda iyileştirecekler."

@@ -3,12 +3,12 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# Balázs Meskó <meskobalazs@gmail.com>, 2015-2016
+# Balázs Meskó <meskobalazs@gmail.com>, 2015-2017
 # Balázs Úr <urbalazs@gmail.com>, 2015-2016
 # Benedict Drummer <inactive+beni1999@transifex.com>, 2014
 # Benedict Drummer <inactive+beni1999@transifex.com>, 2014
 # Boross Péter <borosspet@web.de>, 2015
-# Gellért Gyuris <gellert.gyuris@gmail.com>, 2015
+# Gyuris Gellért <gellert.gyuris@gmail.com>, 2015
 # lkishalmi <laszlo.kishalmi@gmail.com>, 2015
 # lkishalmi <laszlo.kishalmi@gmail.com>, 2015
 # Mikola Péter <mikopet@gmail.com>, 2015
@@ -18,15 +18,23 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-10-01 16:52+0000\n"
-"Last-Translator: Balázs Meskó <meskobalazs@gmail.com>\n"
+"POT-Creation-Date: 2017-03-31 09:22+0200\n"
+"PO-Revision-Date: 2017-03-31 10:10+0000\n"
+"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/wildfire-games/0ad/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: simulation/data/technologies/advanced_unit_bonus.jsontooltip
+msgid ""
+"Units promoted to the advanced class gain a lot of quality: 20% extra "
+"health, 1 extra armour level of every type, 20% extra attack for melee "
+"units, 4m extra range and 5% better precision for ranged units, faster "
+"movement speeds and extra heal speed and range for healers."
+msgstr "A fejlett osztályra képzett egységek a következő bónuszokat kapják: 20% további életerő, 1 további páncélszint minden típusból, 20% további támadás a közelharci egységeknek, 4 m további hatótávolság és 5%-kal jobb pontosság a távolsági egységeknek, gyorsabb mozgási sebesség és további gyógyítási sebesség és hatótáv a gyógyítóknak."
 
 #: simulation/data/technologies/armor_cav_01.jsondescription
 #: simulation/data/technologies/armor_cav_chamfron.jsondescription
@@ -74,7 +82,7 @@ msgstr "Chamfron"
 #: simulation/data/technologies/health_walls_geometric_masonry.jsonrequirementsTooltip
 #: simulation/data/technologies/melee_inf_sidearms.jsonrequirementsTooltip
 #: simulation/data/technologies/pop_civic_01.jsonrequirementsTooltip
-#: simulation/data/technologies/pop_house_02.jsonrequirementsTooltip
+#: simulation/data/technologies/pop_house_01.jsonrequirementsTooltip
 #: simulation/data/technologies/ranged_inf_irregulars.jsonrequirementsTooltip
 #: simulation/data/technologies/speed_cavalry_01.jsonrequirementsTooltip
 #: simulation/data/technologies/trade_commercial_treaty.jsonrequirementsTooltip
@@ -145,6 +153,7 @@ msgstr "Fémpáncél egy ló testére."
 #: simulation/data/technologies/health_regen_units.jsonrequirementsTooltip
 #: simulation/data/technologies/melee_inf_spearheads.jsonrequirementsTooltip
 #: simulation/data/technologies/pop_civic_02.jsonrequirementsTooltip
+#: simulation/data/technologies/pop_house_02.jsonrequirementsTooltip
 #: simulation/data/technologies/pop_wonder.jsonrequirementsTooltip
 #: simulation/data/technologies/ranged_inf_skirmishers.jsonrequirementsTooltip
 #: simulation/data/technologies/siege_armor.jsonrequirementsTooltip
@@ -461,7 +470,6 @@ msgstr "Megerősített hajótest"
 #: simulation/data/technologies/gather_fishing_net.jsonrequirementsTooltip
 #: simulation/data/technologies/gather_lumbering_ironaxes.jsonrequirementsTooltip
 #: simulation/data/technologies/health_females_01.jsonrequirementsTooltip
-#: simulation/data/technologies/pop_house_01.jsonrequirementsTooltip
 #: simulation/data/technologies/mauryans/special_archery_tradition.jsonrequirementsTooltip
 #: simulation/data/technologies/persians/special_archery_tradition.jsonrequirementsTooltip
 msgid "Unlocked in Village Phase."
@@ -673,8 +681,9 @@ msgid "The will to fight is crucial to victory."
 msgstr "A harcolni akarás elengedhetetlen a győzelemhez."
 
 #: simulation/data/technologies/attack_soldiers_will.jsontooltip
-msgid "Inspire your troops with higher pay. All soldiers +25% attack."
-msgstr "Zsoldosok ösztönzése magasabb fizetéssel. Minden katonának +25% támadás."
+msgid ""
+"Inspire your troops with higher pay. All land and naval army +25% attack."
+msgstr "Csapatok ösztönzése magasabb fizetéssel. Minden szárazföldi és vízi hadseregnek +25% támadás."
 
 #: simulation/data/technologies/attack_soldiers_will.jsongenericName
 msgid "Will to fight"
@@ -809,6 +818,14 @@ msgstr "-50% területpusztulás az előőrsöknél."
 #: simulation/data/technologies/decay_outpost.jsongenericName
 msgid "Stone Foundations"
 msgstr "Kőzetalapok"
+
+#: simulation/data/technologies/elite_unit_bonus.jsontooltip
+msgid ""
+"Units trained to the elite class gain a lot of quality: 20% extra health, 1 "
+"extra armour level of every type, 20% extra attack for melee units, extra "
+"range and better precision for ranged units, faster movement speeds and "
+"extra heal speed and range for healers."
+msgstr "Az elit osztályra képzett egységek a következő bónuszokat kapják: 20% további életerő, 1 további páncélszint minden típusból, 20% további támadás a közelharci egységeknek, további hatótávolság és jobb pontosság a távolsági egységeknek, gyorsabb mozgási sebesség és további gyógyítási sebesség és hatótáv a gyógyítóknak."
 
 #: simulation/data/technologies/gather_animals_stockbreeding.jsondescription
 msgid "Breeding livestock for food."
@@ -1596,6 +1613,18 @@ msgstr "A lovak kiképzése a gyorsabb mozgáshoz."
 msgid "Cavalry Speed Training"
 msgstr "Lovassági sebesség képzése"
 
+#: simulation/data/technologies/spy_counter.jsondescription
+msgid "Recruit a network of informants to watch over your people."
+msgstr ""
+
+#: simulation/data/technologies/spy_counter.jsontooltip
+msgid "Make your units 50% more expensive to bribe."
+msgstr ""
+
+#: simulation/data/technologies/spy_counter.jsongenericName
+msgid "Counter Espionage"
+msgstr ""
+
 #: simulation/data/technologies/trade_commercial_treaty.jsondescription
 msgid "Improve the international trading profit."
 msgstr "Növeli a nemzetközi kereskedelem hozamát."
@@ -1795,6 +1824,20 @@ msgstr "Lásd amit a szövetségeseid látnak, böngészd az összegzésüket, �
 msgid "Cartography"
 msgstr "Térképészet"
 
+#: simulation/data/technologies/unlock_spies.jsondescription
+msgid ""
+"Merchants' first goal was trading, but they also gathered information about "
+"the countries they crossed."
+msgstr "A kereskedők elsődleges célja a kereskedelem volt, de információt is gyűjtöttek azokról az országok, ahol megfordultak."
+
+#: simulation/data/technologies/unlock_spies.jsontooltip
+msgid "Allows to bribe other players' units to share their vision."
+msgstr "Lefizethetek a többi játékos egységeit, hogy osztozz a látókörükön."
+
+#: simulation/data/technologies/unlock_spies.jsongenericName
+msgid "Espionage"
+msgstr "Kémkedés"
+
 #: simulation/data/technologies/upgrade_rank_advanced_cavalry.jsondescription
 #: simulation/data/technologies/upgrade_rank_elite_cavalry.jsondescription
 msgid "Promote all of your citizen-soldier cavalrymen to Advanced rank."
@@ -1880,10 +1923,14 @@ msgstr "Postagalambok"
 msgid ""
 "Carthaginians built their city walls in three concentric circuits. These "
 "walls were never breached. Even when the city was taken by the Romans, it "
-"was via the city's harbor, not by storming its walls. Consequently, "
+"was via the city's harbor, not by storming its walls."
+msgstr "A karthágóiak a városfalaikat három koncentrikus körben építették. Ezeket a falakat sosem törték át. Amikor a rómaiak elfoglalták a várost, akkor is a város kikötőjén keresztül tették, és nem a falak ostromával."
+
+#: simulation/data/technologies/carthaginians/civbonus_triple_walls.jsontooltip
+msgid ""
 "Carthaginian walls, gates, and wall towers have 3x the health of a standard "
 "wall, but also cost twice as much and take twice as long to build."
-msgstr "A karthágóiak a városfalaikat három koncentrikus körben építették. Ezeket a falakat sosem törték át. Amikor a rómaiak elfoglalták a várost, akkor is a város kikötőjén keresztül tették, és nem a falak ostromával. Következésképpen, a karthágói falak, kapuk és tornyok 3x annyi életerővel rendelkeznek, mint az egyszerű falak, de kétszer annyiba is kerülnek és kétszer tovább tart őket felépíteni."
+msgstr "A karthágói falak, kapuk és tornyok háromszor olyan ellenállóak, mint a hagyományos falak, de kétszer annyiba kerülnek, és kétszer olyan sok idő alatt épülnek fel."
 
 #: simulation/data/technologies/carthaginians/civbonus_triple_walls.jsongenericName
 msgid "Triple Walls"
@@ -2192,11 +2239,14 @@ msgid "Elite Italiote Mercenaries"
 msgstr "Elit italióta zsoldosok"
 
 #: simulation/data/technologies/celts/civbonus_celts_wooden_struct.jsondescription
+msgid "Celtic structures were mostly made of wood with rubble foundations."
+msgstr "A kelta épületek többnyire fából készültek, terméskő alapokra."
+
+#: simulation/data/technologies/celts/civbonus_celts_wooden_struct.jsontooltip
 msgid ""
-"Celtic structures were mostly made of wood with rubble foundations. "
-"Consequently, their structures have less health than other cultures do, but "
-"they also construct faster."
-msgstr "A kelta épületek főleg fából készültek, terméskő alappal. Következésképp az épületeiknek kevesebb életereje van mint más népeknek, de gyorsabban építkeznek."
+"Celtic buildings have 20% less health, but are also 20% cheaper and faster "
+"to construct."
+msgstr "A kelta épületeknek 20%-kal kevesebb életerejük van, de 20%-kal olcsóbbak, és gyorsabban épülnek."
 
 #: simulation/data/technologies/celts/civbonus_celts_wooden_struct.jsongenericName
 msgid "Wooden Construction"
@@ -2224,13 +2274,15 @@ msgstr "Doratismós"
 msgid "The Greeks used stone construction from early Mycenaean times."
 msgstr "A görögök kőépítményeket használtak a korai mükénei időktől."
 
+#: simulation/data/technologies/hellenes/civbonus_hellenic_architecture.jsontooltip
+msgid ""
+"All structures have 10% more health and capture points, but also take 10% "
+"longer to build."
+msgstr "Minden épületnek 10%-kal több életerő és foglalási pontja van, de 10%-kal hosszabb az építési idő is."
+
 #: simulation/data/technologies/hellenes/civbonus_hellenic_architecture.jsongenericName
 msgid "Hellenic Architecture"
 msgstr "Görög építészet"
-
-#: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsongenericName
-msgid "Underdogs"
-msgstr "A gyengébb fél"
 
 #: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsondescription
 msgid ""
@@ -2239,6 +2291,14 @@ msgid ""
 "quantity, they made up with quality. It was said that Sparta did not need "
 "strong city walls, for its men were its walls."
 msgstr "A spártaiak hadserege nem a legnagyobb, de az akkori világ legjobbja volt. Ami mennyiségben hiányzott, azt minőséggel kompenzálták. Azt mondták, hogy Spártának nincs szüksége erős városfalakra, mert az emberek maguk a fal."
+
+#: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsontooltip
+msgid "Spartans have 10% less maximum population"
+msgstr "A spártaiknak 10%-kal kisebb a maximális népességkorlátja"
+
+#: simulation/data/technologies/hellenes/civpenalty_spart_popcap.jsongenericName
+msgid "Underdogs"
+msgstr "A gyengébb fél"
 
 #: simulation/data/technologies/hellenes/spartans_agoge.jsondescription
 msgid ""
@@ -2294,6 +2354,10 @@ msgid ""
 "time."
 msgstr "A Maurja birodalom több tucat, előzőleg független királyságot fogott össze mintegy 5 millió négyzetkilométernyi területen, közel 60 millió fős lakossággal. A Maurja uralkódok címe a császárok császára volt és egy hatalmas állandó seregnek parancsoltak. A 600.000 fős gyalogság, 9000 elefánt, 8000 harci szekér és 30.000 fős lovasság kétség kívül a kor legnagyobb hadserege volt."
 
+#: simulation/data/technologies/mauryans/civbonus_maur_popcap.jsontooltip
+msgid "Mauryans have a 10% higher maximum population limit."
+msgstr "A maurjáknak 10%-kal nagyobb a maximális népességkorlátja."
+
 #: simulation/data/technologies/mauryans/civbonus_maur_popcap.jsongenericName
 msgid "Emperor of Emperors"
 msgstr "A császárok császára"
@@ -2323,17 +2387,16 @@ msgstr "Íjászhagyomány"
 #: simulation/data/technologies/mauryans/wooden_walls.jsondescription
 msgid ""
 "The Mauryans built their city walls out of wood, an abundant natural "
-"resource in India. Consequently, Mauryan city walls have -20% health and "
-"-20% build time."
-msgstr "A maurják a városfalaikat fából építették, amely bőséges nyersanyag volt Indiában. Következésképpen, -20% életerő és -20% építési idő a maurja városfalaknak."
+"resource in India."
+msgstr "A maurják a városfalaikat fából építették, amely bőséges nyersanyag volt Indiában."
+
+#: simulation/data/technologies/mauryans/wooden_walls.jsontooltip
+msgid "Mauryan city walls have 20% less health and 20% less build time."
+msgstr "A maurja városfalaknak 20%-kal kevesebb az életerejük, és 20%-kal kevesebb idő alatt épülnek fel."
 
 #: simulation/data/technologies/mauryans/wooden_walls.jsongenericName
 msgid "Wooden Walls"
 msgstr "Fa falak"
-
-#: simulation/data/technologies/persians/civbonus_pers_popcap.jsongenericName
-msgid "Great King's Levy"
-msgstr "Nagy király sorozása"
 
 #: simulation/data/technologies/persians/civbonus_pers_popcap.jsondescription
 msgid ""
@@ -2344,6 +2407,14 @@ msgid ""
 "hand, close combat fighters. Also, with the exception of the elite "
 "regiments, the Persian infantry was not a standing professional force."
 msgstr "A perzsák nagy számú gyalogságot tudtak besorozni háború idején, az Óperzsa birodalom puszta méretéből és a felépítéséből adódóan. Általánosságban a perzsa gyalogság jól képzett volt és nagy kitartással harcolt. Viszont a gyalogság gyenge volt a kézitusában és a közelharcban. Emellett az elit csapatokat leszámítva, a perzsa gyalogság nem egy állandó, hivatásos haderő volt."
+
+#: simulation/data/technologies/persians/civbonus_pers_popcap.jsontooltip
+msgid "Persians have a 10% higher maximum population limit."
+msgstr "A perzsáknak 10%-kal nagyobb a maximális népességkorlátja."
+
+#: simulation/data/technologies/persians/civbonus_pers_popcap.jsongenericName
+msgid "Great King's Levy"
+msgstr "Nagy király sorozása"
 
 #: simulation/data/technologies/persians/immortals.jsondescription
 msgid ""
@@ -2381,7 +2452,7 @@ msgstr "Perzsa építészet"
 msgid ""
 "The Persians had a tradition of fine archery and a penchant for using massed"
 " archers in battle."
-msgstr "A Perzsáknak tradicionális volt az íjászatuk és előszeretettel használták fel őket tömegesen a csatában."
+msgstr "A perzsák nagy íjászhagyománnyal rendelkeztek, és előszeretettel használtak íjászokat tömegesen a csatában."
 
 #: simulation/data/technologies/persians/special_equine_transports.jsondescription
 msgid ""
@@ -2392,7 +2463,7 @@ msgid ""
 "example, a canal was built in Egypt and a Persian navy was sent exploring "
 "the Indus river. According to Herodotus, some 300 ships in the Persian navy "
 "were retrofitted to carry horses and their riders."
-msgstr "A krai óperzsa uralkodók az irányba tevékenykedtek, hogy Perzsia legyen az első nagy ázsiai birodalom, amely uralja a tengereket. A nagykirály különböző tengeri népek kedvére tevékenykedett, hogy biztosítsa szolgálataikat, de különféle tengeri kezdeményezései is voltak. Nagy Dárajavaus uralma alatt például egy csatorna épült Egyiptomban ás a perzsa flottát az Indus folyó felfedezésére küldték. Hérodotosz szerint körülbelül 300 perzsa hadihajó lett átépítve, hogy lovakat és lovasaikat szállítsák."
+msgstr "A korai óperzsa uralkodók az irányba tevékenykedtek, hogy Perzsia legyen az első nagy ázsiai birodalom, amely uralja a tengereket. A nagykirály különböző tengeri népek kedvére tevékenykedett, hogy biztosítsa szolgálataikat, de különféle tengeri kezdeményezései is voltak. Nagy Dárajavaus uralma alatt például egy csatorna épült Egyiptomban ás a perzsa flottát az Indus folyó felfedezésére küldték. Hérodotosz szerint körülbelül 300 perzsa hadihajó lett átépítve, hogy lovakat és lovasaikat szállítsák."
 
 #: simulation/data/technologies/persians/special_equine_transports.jsontooltip
 msgid "Phoenician Triremes gain the ability to train cavalry units."
@@ -2476,9 +2547,8 @@ msgid ""
 msgstr "Alexszandrosszal kezdve, a hellén uralkodók sok várost alapítottak birodalomszerte, ahol a görög kultúra és művészet keveredett a helyi szokásokkal, így létrehozva a sokszínű görög hellén civilizációt."
 
 #: simulation/data/technologies/successors/special_hellenistic_metropolis.jsontooltip
-msgid ""
-"Civic centers +100% health and capture points and double default arrows."
-msgstr "A Városházáknak +100% életerő és foglalási pont és dupla alapértelmezett nyílvessző."
+msgid "Civic centers +100% health and capture points, double default arrows."
+msgstr "A Városházáknak +100% életerő és foglalási pont, dupla alapértelmezett nyílvessző."
 
 #: simulation/data/technologies/successors/special_hellenistic_metropolis.jsongenericName
 msgid "Hellenistic Metropolis"

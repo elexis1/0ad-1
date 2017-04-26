@@ -3,17 +3,19 @@
 # This file is distributed under the same license as the 0 A.D. — Empires Ascendant project.
 # 
 # Translators:
-# Wuzzy <almikes@aol.com>, 2015-2016
+# Wuzzy <almikes@aol.com>, 2015-2017
+# Fabian Gref <fabian.gref@gmail.com>, 2017
 # Jonas <jesus_007@posteo.de>, 2015
 # leper <leper@wildfiregames.com>, 2015-2016
-# Raymond Vetter, 2014-2016
+# Maximilian von Lindern <hobbituhukai@live.de>, 2017
+# Raymond Vetter, 2014-2017
 # Xaver, 2014-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:01+0200\n"
-"PO-Revision-Date: 2016-10-03 17:35+0000\n"
-"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2017-04-03 09:02+0200\n"
+"PO-Revision-Date: 2017-04-11 12:23+0000\n"
+"Last-Translator: Wuzzy <almikes@aol.com>\n"
 "Language-Team: German (http://www.transifex.com/wildfire-games/0ad/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -119,7 +121,7 @@ msgstr "Schatz"
 msgid "A treasure that can be quickly gathered."
 msgstr "Ein Schatz, der schnell geplündert werden kann."
 
-#: simulation/templates/template_structure.xml:55
+#: simulation/templates/template_structure.xml:60
 msgid "Structure"
 msgstr "Gebäude"
 
@@ -204,8 +206,8 @@ msgid "Box"
 msgstr "Kasten"
 
 #: simulation/templates/formations/column_closed.xml:5
-msgid "Column Closed"
-msgstr "Geschlossene Kolonnenformation"
+msgid "Forced March"
+msgstr "Gewaltmarsch"
 
 #: simulation/templates/formations/column_open.xml:5
 msgid "Column Open"
@@ -220,20 +222,20 @@ msgid "Flank"
 msgstr "Flankenformation"
 
 #: simulation/templates/formations/line_closed.xml:5
-msgid "Line Closed"
-msgstr "Geschlossene Linienformation"
+msgid "Close Order"
+msgstr "Geschlossene Schlachtordnung"
 
 #: simulation/templates/formations/line_open.xml:5
-msgid "Line Open"
-msgstr "Offene Linienformation"
+msgid "Open Order"
+msgstr "Geöffnete Schlachtordnung"
 
 #: simulation/templates/formations/null.xml:5
 msgid "None"
 msgstr "Kein"
 
 #: simulation/templates/formations/phalanx.xml:6
-msgid "10 melee infantry units required"
-msgstr "10 Nahkampfinfanteristen benötigt"
+msgid "10 hoplite infantry required"
+msgstr "10 Hopliteninfanterien benötigt"
 
 #: simulation/templates/formations/phalanx.xml:7
 msgid "Phalanx"
@@ -252,10 +254,10 @@ msgid "Skirmish"
 msgstr "Lockere Formation"
 
 #: simulation/templates/formations/syntagma.xml:6
-msgid "9 pike infantry units required"
-msgstr "9 Pikeniere benötigt"
+msgid "16 pike infantry units required"
+msgstr "16 Pikeninfanterieeinheiten benötigt"
 
-#: simulation/templates/formations/syntagma.xml:7
+#: simulation/templates/formations/syntagma.xml:8
 msgid "Syntagma"
 msgstr "Syntagma"
 
@@ -268,8 +270,8 @@ msgid "Testudo"
 msgstr "Testudo"
 
 #: simulation/templates/formations/wedge.xml:6
-msgid "3 cavalry units required"
-msgstr "3 Kavallerieeinheiten benötigt"
+msgid "6 cavalry units required"
+msgstr "6 Kavallerieeinheiten benötigt"
 
 #: simulation/templates/formations/wedge.xml:7
 msgid "Wedge"
@@ -280,8 +282,12 @@ msgid "Bear"
 msgstr "Bär"
 
 #: simulation/templates/gaia/fauna_boar.xml:18
-msgid "Boar"
-msgstr "Eber"
+msgid "Wild Boar"
+msgstr "Wildschwein"
+
+#: simulation/templates/gaia/fauna_boar.xml:19
+msgid "Sus scrofa"
+msgstr "Sus scrofa"
 
 #: simulation/templates/gaia/fauna_camel.xml:9
 msgid "Camel"
@@ -303,19 +309,23 @@ msgstr "Nilkrokodil"
 msgid "Deer"
 msgstr "Reh"
 
-#: simulation/templates/gaia/fauna_elephant_african_bush.xml:33
+#: simulation/templates/gaia/fauna_elephant_african_bush.xml:11
 msgid "African Bush Elephant"
 msgstr "Afrikanischer Buschelefant"
+
+#: simulation/templates/gaia/fauna_elephant_african_infant.xml:14
+msgid "Elephant"
+msgstr "Elefant"
 
 #: simulation/templates/gaia/fauna_elephant_african_infant.xml:15
 msgid "African Elephant (Infant)"
 msgstr "Afrikanischer Elefant (Kalb)"
 
-#: simulation/templates/gaia/fauna_elephant_asian.xml:33
+#: simulation/templates/gaia/fauna_elephant_asian.xml:11
 msgid "Asian Elephant"
 msgstr "Asiatischer Elefant"
 
-#: simulation/templates/gaia/fauna_elephant_north_african.xml:33
+#: simulation/templates/gaia/fauna_elephant_north_african.xml:11
 msgid "North African Elephant"
 msgstr "Nordafrikanischer Elefant"
 
@@ -369,13 +379,25 @@ msgstr "Löwin"
 msgid "Muskox"
 msgstr "Moschusochse"
 
-#: simulation/templates/gaia/fauna_peacock.xml:12
+#: simulation/templates/gaia/fauna_peacock.xml:14
 msgid "Peacock"
 msgstr "Pfau"
+
+#: simulation/templates/gaia/fauna_peacock.xml:15
+msgid "Pavo cristatus"
+msgstr "Blauer Pfau"
 
 #: simulation/templates/gaia/fauna_pig.xml:15
 msgid "Pig"
 msgstr "Schwein"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:18
+msgid "Flaming Pig"
+msgstr "Brennendes Schwein"
+
+#: simulation/templates/gaia/fauna_pig_flaming.xml:19
+msgid "Sus scrofa domesticus igne"
+msgstr "Sus scrofa domesticus igne"
 
 #: simulation/templates/gaia/fauna_rabbit.xml:9
 msgid "Rabbit"
@@ -401,7 +423,7 @@ msgstr "Schaf"
 msgid "Tiger"
 msgstr "Tiger"
 
-#: simulation/templates/gaia/fauna_walrus.xml:23
+#: simulation/templates/gaia/fauna_walrus.xml:24
 msgid "Walrus"
 msgstr "Walross"
 
@@ -417,11 +439,11 @@ msgstr "Buckelwal"
 msgid "Wildebeest"
 msgstr "Gnu"
 
-#: simulation/templates/gaia/fauna_wolf.xml:18
+#: simulation/templates/gaia/fauna_wolf.xml:4
 msgid "Wolf"
 msgstr "Wolf"
 
-#: simulation/templates/gaia/fauna_wolf_snow.xml:18
+#: simulation/templates/gaia/fauna_wolf_snow.xml:4
 msgid "Snow Wolf"
 msgstr "Schneewolf"
 
@@ -772,13 +794,13 @@ msgstr "Palisadenende"
 msgid "Wooden Wall End"
 msgstr "Holzwallende"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:5
+#: simulation/templates/other/palisades_rocks_fort.xml:6
 msgid "Palisade Fort"
 msgstr "Palisadenfort"
 
-#: simulation/templates/other/palisades_rocks_fort.xml:6
-msgid "Sentry Tower"
-msgstr "Wachturm"
+#: simulation/templates/other/palisades_rocks_fort.xml:7
+msgid "Wooden Tower"
+msgstr "Hölzerner Turm"
 
 #: simulation/templates/other/palisades_rocks_gate.xml:18
 msgid "Palisade Gate"
@@ -881,6 +903,18 @@ msgstr "Säulengang"
 msgid "Corinthian Colonnade"
 msgstr "Korinthischer Säulengang"
 
+#: simulation/templates/other/special_catafalque.xml:22
+msgid "Catafalque"
+msgstr "Katafalk"
+
+#: simulation/templates/other/special_catafalque.xml:24
+msgid "A catafalque that holds the remains of a great leader."
+msgstr "Ein Katafalk, welches die Überreste eines großen Führers enthält."
+
+#: simulation/templates/other/special_catafalque.xml:25
+msgid "Relic"
+msgstr "Relikt"
+
 #: simulation/templates/other/special_treasure_shipwreck.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_ram_bow.xml:10
 #: simulation/templates/other/special_treasure_shipwreck_sail_boat.xml:10
@@ -944,6 +978,61 @@ msgstr "Unvollendeter griechischer Tempel"
 msgid "This temple is unfinished and has fallen to ruin."
 msgstr "Dieser Tempel ist unvollendet und zerfallen."
 
+#: simulation/templates/other/catafalque/athen_catafalque.xml:6
+msgid "Solon"
+msgstr "Solon"
+
+#: simulation/templates/other/catafalque/brit_catafalque.xml:6
+msgid "Cassivellaunus"
+msgstr "Cassivellaunus"
+
+#: simulation/templates/other/catafalque/cart_catafalque.xml:6
+msgid "Hasdrubal (Quartermaster)"
+msgstr "Hasdrubal (Quartiermeister)"
+
+#: simulation/templates/other/catafalque/gaul_catafalque.xml:6
+msgid "Ambiorix"
+msgstr "Ambiorix"
+
+#: simulation/templates/other/catafalque/iber_catafalque.xml:6
+msgid "Mandonius"
+msgstr "Mandonius"
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:6
+msgid "Philip V"
+msgstr "Philip V."
+
+#: simulation/templates/other/catafalque/mace_catafalque.xml:7
+msgid ""
+"Financial Reorganization: Allied with Rome, Philip reorganized the country's"
+" internal affairs and finances, leaving as a legacy reopened mines and a new"
+" currency. Gain a slow trickle of metal."
+msgstr "Finanzielle Sanierung: Im Bund mit Rom organisierte Philip die internen Angelegenheiten und Finanzen neu und hinterließ neu eröffnete Minen und eine neue Währung. Dadurch erhälst du einen langsamen stetigen Zufluss an Metall."
+
+#: simulation/templates/other/catafalque/maur_catafalque.xml:6
+msgid "Bindusara"
+msgstr "Bindusara"
+
+#: simulation/templates/other/catafalque/pers_catafalque.xml:6
+msgid "Artaxerxes II"
+msgstr "Artaxerxes II."
+
+#: simulation/templates/other/catafalque/ptol_catafalque.xml:6
+msgid "Ptolemy III Euergetes (Benefactor)"
+msgstr "Ptolemaios III. Euergetes I. (Wohltäter)"
+
+#: simulation/templates/other/catafalque/rome_catafalque.xml:6
+msgid "Lucius Junius Brutus"
+msgstr "Lucius Iunius Brutus"
+
+#: simulation/templates/other/catafalque/sele_catafalque.xml:6
+msgid "Antiochus I Soter (Savior)"
+msgstr "Antiochos I. Soter (Retter)"
+
+#: simulation/templates/other/catafalque/spart_catafalque.xml:6
+msgid "Lycurgus"
+msgstr "Lykurg"
+
 #: simulation/templates/skirmish/structures/default_house_10.xml:5
 msgid ""
 "Changes in a 10-pop house for civilisations with those houses, is deleted "
@@ -961,9 +1050,13 @@ msgstr "Änderungen in einem 5er Wohnhaus für Zivilisationen mit diesen Häuser
 msgid "Marker"
 msgstr "Marker"
 
-#: simulation/templates/special/player.xml:56
+#: simulation/templates/special/player.xml:57
 msgid "Player"
 msgstr "Spieler"
+
+#: simulation/templates/special/spy.xml:17
+msgid "Spy"
+msgstr "Spion"
 
 #: simulation/templates/special_units/athen_mechanical_siege_lithobolos_common.xml:5
 #: simulation/templates/special_units/mace_mechanical_siege_lithobolos_common.xml:5

@@ -7,7 +7,7 @@ const g_MapTypes = prepareForDropdown(g_Settings && g_Settings.MapTypes);
 const g_PopulationCapacities = prepareForDropdown(g_Settings && g_Settings.PopulationCapacities);
 const g_StartingResources = prepareForDropdown(g_Settings && g_Settings.StartingResources);
 const g_VictoryConditions = prepareForDropdown(g_Settings && g_Settings.VictoryConditions);
-const g_WonderDurations = prepareForDropdown(g_Settings && g_Settings.WonderDurations);
+const g_VictoryDurations = prepareForDropdown(g_Settings && g_Settings.VictoryDurations);
 
 /**
  * Colors to flash when pop limit reached.
@@ -136,6 +136,7 @@ var g_EntityStates = {};
 var g_TemplateData = {};
 var g_TemplateDataWithoutLocalization = {};
 var g_TechnologyData = {};
+var g_ResourceData = new Resources();
 
 /**
  * Top coordinate of the research list.
@@ -151,14 +152,20 @@ var g_ShowGuarded = false;
 var g_AdditionalHighlight = [];
 
 /**
- * Display data of the current players heroes.
+ * Display data of the current players entities shown in the top panel.
  */
-var g_Heroes = [];
+var g_PanelEntities = [];
+
+/**
+ * Order in which the panel entities are shown.
+ */
+var g_PanelEntityOrder = ["Hero", "Relic"];
 
 /**
  * Unit classes to be checked for the idle-worker-hotkey.
  */
-var g_WorkerTypes = ["Female", "Trader", "FishingBoat", "CitizenSoldier"];
+var g_WorkerTypes = ["FemaleCitizen", "Trader", "FishingBoat", "CitizenSoldier"];
+
 /**
  * Unit classes to be checked for the military-only-selection modifier and for the idle-warrior-hotkey.
  */
@@ -221,16 +228,19 @@ function GetTemplateDataWithoutLocalization(templateName)
 	return g_TemplateDataWithoutLocalization[templateName];
 }
 
-function GetTechnologyData(technologyName)
+function GetTechnologyData(technologyName, civ)
 {
-	if (!(technologyName in g_TechnologyData))
+	if (!g_TechnologyData[civ])
+		g_TechnologyData[civ] = {};
+
+	if (!(technologyName in g_TechnologyData[civ]))
 	{
-		let template = Engine.GuiInterfaceCall("GetTechnologyData", technologyName);
+		let template = Engine.GuiInterfaceCall("GetTechnologyData", { "name": technologyName, "civ": civ });
 		translateObjectKeys(template, ["specific", "generic", "description", "tooltip", "requirementsTooltip"]);
-		g_TechnologyData[technologyName] = template;
+		g_TechnologyData[civ][technologyName] = template;
 	}
 
-	return g_TechnologyData[technologyName];
+	return g_TechnologyData[civ][technologyName];
 }
 
 function init(initData, hotloadData)
@@ -261,10 +271,12 @@ function init(initData, hotloadData)
 			g_PlayerAssignments.local.player = -1;
 	}
 
-	g_Players = getPlayerData();
+	updatePlayerData();
 
 	g_CivData = loadCivData();
 	g_CivData.gaia = { "Code": "gaia", "Name": translate("Gaia") };
+
+	g_BarterSell = g_ResourceData.GetCodes()[0];
 
 	initializeMusic(); // before changing the perspective
 
@@ -274,10 +286,13 @@ function init(initData, hotloadData)
 	let gameSpeedIdx = g_GameSpeeds.Speed.indexOf(Engine.GetSimRate());
 	gameSpeed.selected = gameSpeedIdx != -1 ? gameSpeedIdx : g_GameSpeeds.Default;
 	gameSpeed.onSelectionChange = function() { changeGameSpeed(+this.list_data[this.selected]); };
-	initMenuPosition();
 
-	for (let slot in Engine.GetGUIObjectByName("unitHeroPanel").children)
-		initGUIHeroes(slot);
+	initMenuPosition();
+	resizeDiplomacyDialog();
+	resizeTradeDialog();
+
+	for (let slot in Engine.GetGUIObjectByName("panelEntityPanel").children)
+		initPanelEntities(slot);
 
 	// Populate player selection dropdown
 	let playerNames = [translate("Observer")];
@@ -319,6 +334,54 @@ function init(initData, hotloadData)
 	//setTimeout(function() { reportPerformance(60); }, 60000);
 }
 
+function updatePlayerData()
+{
+	let simState = GetSimState();
+	if (!simState)
+		return;
+
+	let playerData = [];
+
+	for (let i = 0; i < simState.players.length; ++i)
+	{
+		let playerState = simState.players[i];
+
+		playerData.push({
+			"name": playerState.name,
+			"civ": playerState.civ,
+			"color": {
+				"r": playerState.color.r * 255,
+				"g": playerState.color.g * 255,
+				"b": playerState.color.b * 255,
+				"a": playerState.color.a * 255
+			},
+			"team": playerState.team,
+			"teamsLocked": playerState.teamsLocked,
+			"cheatsEnabled": playerState.cheatsEnabled,
+			"state": playerState.state,
+			"isAlly": playerState.isAlly,
+			"isMutualAlly": playerState.isMutualAlly,
+			"isNeutral": playerState.isNeutral,
+			"isEnemy": playerState.isEnemy,
+			"guid": undefined, // network guid for players controlled by hosts
+			"offline": g_Players[i] && !!g_Players[i].offline
+		});
+	}
+
+	for (let guid in g_PlayerAssignments)
+	{
+		let playerID = g_PlayerAssignments[guid].player;
+
+		if (!playerData[playerID])
+			continue;
+
+		playerData[playerID].guid = guid;
+		playerData[playerID].name = g_PlayerAssignments[guid].name;
+	}
+
+	g_Players = playerData;
+}
+
 /**
  * Depends on the current player (g_IsObserver).
  */
@@ -332,39 +395,58 @@ function updateHotkeyTooltips()
 			"\n" + (g_IsObserver ?
 				translate("Press %(hotkey)s to open the observer chat.") :
 				translate("Press %(hotkey)s to open the ally chat.")),
-			"teamchat");
+			"teamchat") +
+		colorizeHotkey("\n" + translate("Press %(hotkey)s to open the previously selected private chat."), "privatechat");
 
 	Engine.GetGUIObjectByName("idleWorkerButton").tooltip =
 		colorizeHotkey("%(hotkey)s" + " ", "selection.idleworker") +
 		translate("Find idle worker");
 
-	Engine.GetGUIObjectByName("tradeHelp").tooltip =
-		translate("Select one type of goods as origin of the changes, then use the arrows of the target type of goods to make the changes.") +
-		colorizeHotkey(
-			"\n" + translate("Using %(hotkey)s will put the selected resource to 100%%."),
-			"session.fulltradeswap");
+	Engine.GetGUIObjectByName("tradeHelp").tooltip = colorizeHotkey(
+		translate("Select one type of goods you want to modify by clicking on it (Pressing %(hotkey)s while selecting will also bring its share to 100%%) and then use the arrows of the other types to modify their shares."),
+		"session.fulltradeswap");
+
+	Engine.GetGUIObjectByName("barterHelp").tooltip = sprintf(
+		translate("Start by selecting the resource from the upper row that you wish to sell. Upon each press on one of the lower buttons, %(quantity)s of the upper resource will be sold for the displayed quantity of the lower. Press and hold %(hotkey)s to temporarily multiply all quantities by %(multiplier)s."), {
+			"quantity": g_BarterResourceSellQuantity,
+			"hotkey": colorizeHotkey("%(hotkey)s", "session.massbarter"),
+			"multiplier": g_BarterMultiplier
+		});
 }
 
-function initGUIHeroes(slot)
+function initPanelEntities(slot)
 {
-	let button = Engine.GetGUIObjectByName("unitHeroButton[" + slot + "]");
+	let button = Engine.GetGUIObjectByName("panelEntityButton[" + slot + "]");
 
 	button.onPress = function() {
-		let hero = g_Heroes.find(hero => hero.slot !== undefined && hero.slot == slot);
-		if (!hero)
+		let panelEnt = g_PanelEntities.find(panelEnt => panelEnt.slot !== undefined && panelEnt.slot == slot);
+		if (!panelEnt)
 			return;
 
 		if (!Engine.HotkeyIsPressed("selection.add"))
 			g_Selection.reset();
 
-		g_Selection.addList([hero.ent]);
+		g_Selection.addList([panelEnt.ent]);
 	};
 
 	button.onDoublePress = function() {
-		let hero = g_Heroes.find(hero => hero.slot !== undefined && hero.slot == slot);
-		if (hero)
-			selectAndMoveTo(getEntityOrHolder(hero.ent));
+		let panelEnt = g_PanelEntities.find(panelEnt => panelEnt.slot !== undefined && panelEnt.slot == slot);
+		if (panelEnt)
+			selectAndMoveTo(getEntityOrHolder(panelEnt.ent));
 	};
+}
+
+/**
+ * Returns the entity itself except when garrisoned where it returns its garrisonHolder
+ */
+function getEntityOrHolder(ent)
+{
+	let entState = GetEntityState(ent);
+	if (entState && !entState.position && entState.unitAI && entState.unitAI.orders.length &&
+			(entState.unitAI.orders[0].type == "Garrison" || entState.unitAI.orders[0].type == "Autogarrison"))
+		return getEntityOrHolder(entState.unitAI.orders[0].data.target);
+
+	return ent;
 }
 
 function initializeMusic()
@@ -397,7 +479,11 @@ function selectViewPlayer(playerID)
 	g_IsObserver = isPlayerObserver(Engine.GetPlayerID());
 
 	if (g_IsObserver || g_DevSettings.changePerspective)
+	{
+		if (g_ViewedPlayer != playerID)
+			clearSelection();
 		g_ViewedPlayer = playerID;
+	}
 
 	if (g_DevSettings.changePerspective)
 	{
@@ -406,7 +492,6 @@ function selectViewPlayer(playerID)
 	}
 
 	Engine.SetViewedPlayer(g_ViewedPlayer);
-
 	updateTopPanel();
 	updateChatAddressees();
 	updateHotkeyTooltips();
@@ -452,7 +537,7 @@ function playerFinished(player, won)
 	if (player == Engine.GetPlayerID())
 		reportGame();
 
-	updateDiplomacy();
+	updatePlayerData();
 	updateChatAddressees();
 
 	if (player != g_ViewedPlayer)
@@ -496,10 +581,27 @@ function updateTopPanel()
 	let viewPlayer = Engine.GetGUIObjectByName("viewPlayer");
 	viewPlayer.hidden = !g_IsObserver && !g_DevSettings.changePerspective;
 
-	Engine.GetGUIObjectByName("food").hidden = !isPlayer;
-	Engine.GetGUIObjectByName("wood").hidden = !isPlayer;
-	Engine.GetGUIObjectByName("stone").hidden = !isPlayer;
-	Engine.GetGUIObjectByName("metal").hidden = !isPlayer;
+	let resCodes = g_ResourceData.GetCodes();
+	let r = 0;
+	for (let res of resCodes)
+	{
+		if (!Engine.GetGUIObjectByName("resource["+r+"]"))
+		{
+			warn("Current GUI limits prevent displaying more than " + r + " resources in the top panel!");
+			break;
+		}
+		Engine.GetGUIObjectByName("resource["+r+"]_icon").sprite = "stretched:session/icons/resources/" + res + ".png";
+		Engine.GetGUIObjectByName("resource["+r+"]").hidden = !isPlayer;
+		++r;
+	}
+	horizontallySpaceObjects("resourceCounts", 5);
+	hideRemaining("resourceCounts", r);
+
+	let resPop = Engine.GetGUIObjectByName("population");
+	let resPopSize = resPop.size;
+	resPopSize.left = Engine.GetGUIObjectByName("resource["+ (r-1) +"]").size.right;
+	resPop.size = resPopSize;
+
 	Engine.GetGUIObjectByName("population").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("diplomacyButton1").hidden = !isPlayer;
 	Engine.GetGUIObjectByName("tradeButton1").hidden = !isPlayer;
@@ -509,7 +611,7 @@ function updateTopPanel()
 	alphaLabel.hidden = isPlayer && !viewPlayer.hidden;
 	alphaLabel.size = isPlayer ? "50%+20 0 100%-226 100%" : "200 0 100%-475 100%";
 
-	Engine.GetGUIObjectByName("pauseButton").enabled = !g_IsObserver || !g_IsNetworked;
+	Engine.GetGUIObjectByName("pauseButton").enabled = !g_IsObserver || !g_IsNetworked || g_IsController;
 	Engine.GetGUIObjectByName("menuResignButton").enabled = !g_IsObserver;
 }
 
@@ -699,11 +801,16 @@ function confirmExit()
 
 	closeOpenDialogs();
 
-	let subject = g_PlayerStateMessages[g_ConfirmExit] + "\n" +
-		translate("Do you want to quit?");
+	// Don't ask for exit if other humans are still playing
+	let isHost = g_IsController && g_IsNetworked;
+	let askExit = !isHost || isHost && g_Players.every((player, i) =>
+		i == 0 ||
+		player.state != "active" ||
+		g_GameAttributes.settings.PlayerData[i].AI != "");
 
-	if (g_IsNetworked && g_IsController)
-		subject += "\n" + translate("Leaving will disconnect all other players.");
+	let subject = g_PlayerStateMessages[g_ConfirmExit];
+	if (askExit)
+		subject += "\n" + translate("Do you want to quit?");
 
 	messageBox(
 		400, 200,
@@ -711,8 +818,8 @@ function confirmExit()
 		g_ConfirmExit == "won" ?
 			translate("VICTORIOUS!") :
 			translate("DEFEATED!"),
-		[translate("No"), translate("Yes")],
-		[resumeGame, leaveGame]
+		askExit ? [translate("No"), translate("Yes")] : [translate("Ok")],
+		askExit ? [resumeGame, leaveGame] : [resumeGame]
 	);
 
 	g_ConfirmExit = false;
@@ -728,8 +835,8 @@ function updateGUIObjects()
 	if (g_ShowGuarding || g_ShowGuarded)
 		updateAdditionalHighlight();
 
-	updateHeroes();
-	displayHeroes();
+	updatePanelEntities();
+	displayPanelEntities();
 
 	updateGroups();
 	updateDebug();
@@ -739,6 +846,12 @@ function updateGUIObjects()
 	updateBuildingPlacementPreview();
 	updateTimeNotifications();
 	updateIdleWorkerButton();
+
+	if (g_IsTradeOpen)
+	{
+		updateTraderTexts();
+		updateBarterButtons();
+	}
 
 	if (g_ViewedPlayer > 0)
 	{
@@ -754,6 +867,8 @@ function updateGUIObjects()
 		if (battleState)
 			global.music.setState(global.music.states[battleState]);
 	}
+
+	updateDiplomacy();
 }
 
 function onReplayFinished()
@@ -805,99 +920,102 @@ function updateGUIStatusBar(nameOfBar, points, maxPoints, direction)
 	statusBar.size = healthSize;
 }
 
-function updateHeroes()
+function updatePanelEntities()
 {
 	let playerState = GetSimState().players[g_ViewedPlayer];
-	let heroes = playerState ? playerState.heroes : [];
+	let panelEnts = playerState ? playerState.panelEntities : [];
 
-	g_Heroes = g_Heroes.filter(hero => heroes.find(ent => ent == hero.ent));
+	g_PanelEntities = g_PanelEntities.filter(panelEnt => panelEnts.find(ent => ent == panelEnt.ent));
 
-	for (let ent of heroes)
+	for (let ent of panelEnts)
 	{
-		let heroState = GetExtendedEntityState(ent);
-		let template = GetTemplateData(heroState.template);
+		let panelEntState = GetExtendedEntityState(ent);
+		let template = GetTemplateData(panelEntState.template);
 
-		let hero = g_Heroes.find(hero => ent == hero.ent);
-		if (!hero)
+		let panelEnt = g_PanelEntities.find(panelEnt => ent == panelEnt.ent);
+
+		if (!panelEnt)
 		{
-			hero = {
+			panelEnt = {
 				"ent": ent,
 				"tooltip": undefined,
 				"sprite": "stretched:session/portraits/" + template.icon,
 				"maxHitpoints": undefined,
-				"currentHitpoints": heroState.hitpoints,
+				"currentHitpoints": panelEntState.hitpoints,
 				"previousHitpoints": undefined
 			};
-			g_Heroes.push(hero);
+			g_PanelEntities.push(panelEnt);
 		}
 
-		hero.tooltip = createHeroTooltip(heroState, template);
-
-		hero.previousHitpoints = hero.currentHitpoints;
-		hero.currentHitpoints = heroState.hitpoints;
-		hero.maxHitpoints = heroState.maxHitpoints;
+		panelEnt.tooltip = createPanelEntityTooltip(panelEntState, template);
+		panelEnt.previousHitpoints = panelEnt.currentHitpoints;
+		panelEnt.currentHitpoints = panelEntState.hitpoints;
+		panelEnt.maxHitpoints = panelEntState.maxHitpoints;
 	}
+
+	let panelEntIndex = ent => g_PanelEntityOrder.findIndex(entClass =>
+		GetEntityState(ent).identity.classes.indexOf(entClass) != -1);
+
+	g_PanelEntities = g_PanelEntities.sort((panelEntA, panelEntB) => panelEntIndex(panelEntA.ent) - panelEntIndex(panelEntB.ent))
 }
 
-function createHeroTooltip(heroState, template)
+function createPanelEntityTooltip(panelEntState, template)
 {
+	let getPanelEntNameTooltip = panelEntState => "[font=\"sans-bold-16\"]" + template.name.specific + "[/font]";
+
 	return [
-		"[font=\"sans-bold-16\"]" + template.name.specific + "[/font]" + "\n" +
-			sprintf(translate("%(label)s %(current)s / %(max)s"), {
-				"label": "[font=\"sans-bold-13\"]" + translate("Health:") + "[/font]",
-				"current": Math.ceil(heroState.hitpoints),
-				"max": Math.ceil(heroState.maxHitpoints)
-			}),
-		getAttackTooltip(heroState),
-		getArmorTooltip(heroState),
-		getEntityTooltip(heroState)
-	].filter(tip => tip).join("\n");
+		getPanelEntNameTooltip,
+		getCurrentHealthTooltip,
+		getAttackTooltip,
+		getArmorTooltip,
+		getEntityTooltip
+	].map(tooltip => tooltip(panelEntState)).filter(tip => tip).join("\n");
 }
 
-function displayHeroes()
+function displayPanelEntities()
 {
-	let buttons = Engine.GetGUIObjectByName("unitHeroPanel").children;
+	let buttons = Engine.GetGUIObjectByName("panelEntityPanel").children;
 
 	buttons.forEach((button, slot) => {
 
-		if (button.hidden || g_Heroes.some(hero => hero.slot !== undefined && hero.slot == slot))
+		if (button.hidden || g_PanelEntities.some(panelEnt => panelEnt.slot !== undefined && panelEnt.slot == slot))
 			return;
 
 		button.hidden = true;
-		stopColorFade("heroHitOverlay[" + slot + "]");
+		stopColorFade("panelEntityHitOverlay[" + slot + "]");
 	});
 
 	// The slot identifies the button, displayIndex determines its position.
-	for (let displayIndex = 0; displayIndex < Math.min(g_Heroes.length, buttons.length); ++displayIndex)
+	for (let displayIndex = 0; displayIndex < Math.min(g_PanelEntities.length, buttons.length); ++displayIndex)
 	{
-		let hero = g_Heroes[displayIndex];
+		let panelEnt = g_PanelEntities[displayIndex];
 
 		// Find the first unused slot if new, otherwise reuse previous.
-		let slot = hero.slot === undefined ?
+		let slot = panelEnt.slot === undefined ?
 			buttons.findIndex(button => button.hidden) :
-			hero.slot;
+			panelEnt.slot;
 
-		let heroButton = Engine.GetGUIObjectByName("unitHeroButton[" + slot + "]");
-		heroButton.tooltip = hero.tooltip;
+		let panelEntButton = Engine.GetGUIObjectByName("panelEntityButton[" + slot + "]");
+		panelEntButton.tooltip = panelEnt.tooltip;
 
-		updateGUIStatusBar("heroHealthBar[" + slot + "]", hero.currentHitpoints, hero.maxHitpoints);
+		updateGUIStatusBar("panelEntityHealthBar[" + slot + "]", panelEnt.currentHitpoints, panelEnt.maxHitpoints);
 
-		if (hero.slot === undefined)
+		if (panelEnt.slot === undefined)
 		{
-			let heroImage = Engine.GetGUIObjectByName("unitHeroImage[" + slot + "]");
-			heroImage.sprite = hero.sprite;
+			let panelEntImage = Engine.GetGUIObjectByName("panelEntityImage[" + slot + "]");
+			panelEntImage.sprite = panelEnt.sprite;
 
-			heroButton.hidden = false;
-			hero.slot = slot;
+			panelEntButton.hidden = false;
+			panelEnt.slot = slot;
 		}
 
-		// If the health of the hero changed since the last update, trigger the animation.
-		if (hero.previousHitpoints > hero.currentHitpoints)
-			startColorFade("heroHitOverlay[" + slot + "]", 100, 0,
+		// If the health of the panelEnt changed since the last update, trigger the animation.
+		if (panelEnt.previousHitpoints > panelEnt.currentHitpoints)
+			startColorFade("panelEntityHitOverlay[" + slot + "]", 100, 0,
 				colorFade_attackUnit, true, smoothColorFadeRestart_attackUnit);
 
 		// TODO: Instead of instant position changes, animate button movement.
-		setPanelObjectPosition(heroButton, displayIndex, buttons.length);
+		setPanelObjectPosition(panelEntButton, displayIndex, buttons.length);
 	}
 }
 
@@ -906,9 +1024,9 @@ function updateGroups()
 	g_Groups.update();
 
 	// Determine the sum of the costs of a given template
-	let getCostSum = (template) =>
+	let getCostSum = (ent) =>
 	{
-		let cost = GetTemplateData(template).cost;
+		let cost = GetTemplateData(GetEntityState(ent).template).cost;
 		return cost ? Object.keys(cost).map(key => cost[key]).reduce((sum, cur) => sum + cur) : 0;
 	};
 
@@ -925,11 +1043,11 @@ function updateGroups()
 		// Chose icon of the most common template (or the most costly if it's not unique)
 		if (g_Groups.groups[i].getTotalCount() > 0)
 		{
-			let icon = GetTemplateData(g_Groups.groups[i].getEntsGrouped().reduce((pre, cur) => {
+			let icon = GetTemplateData(GetEntityState(g_Groups.groups[i].getEntsGrouped().reduce((pre, cur) => {
 				if (pre.ents.length == cur.ents.length)
-					return getCostSum(pre.template) > getCostSum(cur.template) ? pre : cur;
+					return getCostSum(pre.ents[0]) > getCostSum(cur.ents[0]) ? pre : cur;
 				return pre.ents.length > cur.ents.length ? pre : cur;
-			}).template).icon;
+			}).ents[0]).template).icon;
 
 			Engine.GetGUIObjectByName("unitGroupIcon[" + i + "]").sprite =
 				icon ? ("stretched:session/portraits/" + icon) : "groupsIcon";
@@ -976,15 +1094,25 @@ function getAllyStatTooltip(resource)
 {
 	let playersState = GetSimState().players;
 	let ret = "";
+
 	for (let player in playersState)
-		if (player != 0 && player != g_ViewedPlayer &&
-		    (g_IsObserver || playersState[g_ViewedPlayer].hasSharedLos && g_Players[player].isMutualAlly[g_ViewedPlayer]))
+	{
+		if (player != 0 &&
+		    player != g_ViewedPlayer &&
+		    g_Players[player].state != "defeated" &&
+		    (g_IsObserver ||
+		       playersState[g_ViewedPlayer].hasSharedLos &&
+		       g_Players[player].isMutualAlly[g_ViewedPlayer]))
+		{
 			ret += "\n" + sprintf(translate("%(playername)s: %(statValue)s"),{
 				"playername": colorizePlayernameHelper("■", player) + " " + g_Players[player].name,
 				"statValue": resource == "pop" ?
 					sprintf(translate("%(popCount)s/%(popLimit)s/%(popMax)s"), playersState[player]) :
 					Math.round(playersState[player].resourceCounts[resource])
 			});
+		}
+	}
+
 	return ret;
 }
 
@@ -994,10 +1122,15 @@ function updatePlayerDisplay()
 	if (!playerState)
 		return;
 
-	for (let res of RESOURCES)
+	let resCodes = g_ResourceData.GetCodes();
+	let resNames = g_ResourceData.GetNames();
+	for (let r = 0; r < resCodes.length; ++r)
 	{
-		Engine.GetGUIObjectByName("resource_" + res).caption = Math.floor(playerState.resourceCounts[res]);
-		Engine.GetGUIObjectByName(res).tooltip = getLocalizedResourceName(res, "firstWord") + getAllyStatTooltip(res);
+		if (!Engine.GetGUIObjectByName("resource["+r+"]"))
+			break;
+		let res = resCodes[r];
+		Engine.GetGUIObjectByName("resource["+r+"]").tooltip = getLocalizedResourceName(resNames[res], "firstWord") + getAllyStatTooltip(res);
+		Engine.GetGUIObjectByName("resource["+r+"]_count").caption = Math.floor(playerState.resourceCounts[res]);
 	}
 
 	Engine.GetGUIObjectByName("resourcePop").caption = sprintf(translate("%(popCount)s/%(popLimit)s"), playerState);
@@ -1149,7 +1282,7 @@ function updateAdditionalHighlight()
 
 function playAmbient()
 {
-	Engine.PlayAmbientSound(g_Ambient[Math.floor(Math.random() * g_Ambient.length)], true);
+	Engine.PlayAmbientSound(pickRandom(g_Ambient), true);
 }
 
 function getBuildString()
@@ -1170,6 +1303,91 @@ function showTimeWarpMessageBox()
 }
 
 /**
+ * Adds the ingame time and ceasefire counter to the global FPS and
+ * realtime counters shown in the top right corner.
+ */
+function appendSessionCounters(counters)
+{
+	let simState = GetSimState();
+
+	if (Engine.ConfigDB_GetValue("user", "gui.session.timeelapsedcounter") === "true")
+	{
+		let currentSpeed = Engine.GetSimRate();
+		if (currentSpeed != 1.0)
+			// Translation: The "x" means "times", with the mathematical meaning of multiplication.
+			counters.push(sprintf(translate("%(time)s (%(speed)sx)"), {
+				"time": timeToString(simState.timeElapsed),
+				"speed": Engine.FormatDecimalNumberIntoString(currentSpeed)
+			}));
+		else
+			counters.push(timeToString(simState.timeElapsed));
+	}
+
+	if (simState.ceasefireActive && Engine.ConfigDB_GetValue("user", "gui.session.ceasefirecounter") === "true")
+		counters.push(timeToString(simState.ceasefireTimeRemaining));
+
+	g_ResearchListTop = 4 + 14 * counters.length;
+}
+
+/**
+ * Send the current list of players, teams, AIs, observers and defeated/won and offline states to the lobby.
+ * The playerData format from g_GameAttributes is kept to reuse the GUI function presenting the data.
+ */
+function sendLobbyPlayerlistUpdate()
+{
+	if (!g_IsController || !Engine.HasXmppClient())
+		return;
+
+	// Extract the relevant player data and minimize packet load
+	let minPlayerData = [];
+	for (let playerID in g_GameAttributes.settings.PlayerData)
+	{
+		if (+playerID == 0)
+			continue;
+
+		let pData = g_GameAttributes.settings.PlayerData[playerID];
+
+		let minPData = { "Name": pData.Name };
+
+		if (g_GameAttributes.settings.LockTeams)
+			minPData.Team = pData.Team;
+
+		if (pData.AI)
+		{
+			minPData.AI = pData.AI;
+			minPData.AIDiff = pData.AIDiff;
+		}
+
+		if (g_Players[playerID].offline)
+			minPData.Offline = true;
+
+		// Whether the player has won or was defeated
+		let state = g_Players[playerID].state;
+		if (state != "active")
+			minPData.State = state;
+
+		minPlayerData.push(minPData);
+	}
+
+	// Add observers
+	let connectedPlayers = 0;
+	for (let guid in g_PlayerAssignments)
+	{
+		let pData = g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player];
+
+		if (pData)
+			++connectedPlayers;
+		else
+			minPlayerData.push({
+				"Name": g_PlayerAssignments[guid].name,
+				"Team": "observer"
+			});
+	}
+
+	Engine.SendChangeStateGame(connectedPlayers, playerDataToStringifiedTeamList(minPlayerData));
+}
+
+/**
  * Send a report on the gamestatus to the lobby.
  */
 function reportGame()
@@ -1185,7 +1403,7 @@ function reportGame()
 		"total",
 		"Infantry",
 		"Worker",
-		"Female",
+		"FemaleCitizen",
 		"Cavalry",
 		"Champion",
 		"Hero",

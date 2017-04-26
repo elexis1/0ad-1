@@ -10,12 +10,12 @@
 # Любомир Василев, 2016
 # radochrist <ruzor@mail.bg>, 2014
 # Yordan Grigorov <yoreei.grigorov@gmail.com>, 2014
-# Любомир Василев, 2016
+# Любомир Василев, 2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2016-09-30 09:00+0200\n"
-"PO-Revision-Date: 2016-09-30 08:58+0000\n"
+"POT-Creation-Date: 2016-11-28 09:00+0100\n"
+"PO-Revision-Date: 2017-04-03 14:06+0000\n"
 "Last-Translator: Любомир Василев\n"
 "Language-Team: Bulgarian (http://www.transifex.com/wildfire-games/0ad/language/bg/)\n"
 "MIME-Version: 1.0\n"
@@ -520,7 +520,7 @@ msgstr "Бритите били известни с това, че отглеж�
 #: simulation/data/civs/brit.jsonHistory
 msgid ""
 "The Britons were the Celtic tribes of the British Isles. Using chariots, "
-"longswordsmen and powerful melee soldiers, they staged fearesome revolts "
+"longswordsmen and powerful melee soldiers, they staged fearsome revolts "
 "against Rome to protect their customs and interests. Also, they built "
 "thousands of unique structures such as hill forts, crannogs and brochs."
 msgstr "Бритите били келтски племена на Британските острови. Използвайки колесници, войници с дълги мечове и такива за близък бой, те повеждали ожесточени бунтове срещу Рим, за да защитават интересите и обичаите си. Също така построили хиляди уникални постройки, като планински замъци, кранози и брохи."
@@ -984,7 +984,7 @@ msgstr "Кар"
 #: simulation/data/civs/iber.jsonAINames[3]
 #: simulation/data/civs/iber.jsonFactions[0].Heroes[2].Name
 msgid "Indibil"
-msgstr "Индибил"
+msgstr "Андобал"
 
 #: simulation/data/civs/iber.jsonAINames[4]
 msgid "Audax"
@@ -1366,7 +1366,7 @@ msgstr "Обсадна работилница"
 
 #: simulation/data/civs/mace.jsonStructures[2].Special
 msgid "Constructs and upgrades all Macedonian siege engines."
-msgstr "Строи и подобрява всички македонски обсадни машини"
+msgstr "Строи и подобрява всички македонски обсадни машини."
 
 #: simulation/data/civs/mace.jsonStructures[2].History
 msgid "The Macedonians were innovators in area of siegecraft."

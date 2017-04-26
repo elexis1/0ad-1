@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -494,10 +494,10 @@ void CComponentManager::Script_DestroyEntity(ScriptInterface::CxPrivate* pCxPriv
 	componentManager->DestroyComponentsSoon(ent);
 }
 
-void CComponentManager::Script_FlushDestroyedEntities(ScriptInterface::CxPrivate *pCxPrivate) 
-{ 
-	CComponentManager* componentManager = static_cast<CComponentManager*> (pCxPrivate->pCBData); 
-	componentManager->FlushDestroyedComponents(); 
+void CComponentManager::Script_FlushDestroyedEntities(ScriptInterface::CxPrivate *pCxPrivate)
+{
+	CComponentManager* componentManager = static_cast<CComponentManager*> (pCxPrivate->pCBData);
+	componentManager->FlushDestroyedComponents();
 }
 
 void CComponentManager::ResetState()
@@ -525,7 +525,7 @@ void CComponentManager::ResetState()
 	m_ComponentsByTypeId.clear();
 
 	// Delete all SEntityComponentCaches
-	std::map<entity_id_t, SEntityComponentCache*>::iterator ccit = m_ComponentCaches.begin();
+	std::unordered_map<entity_id_t, SEntityComponentCache*>::iterator ccit = m_ComponentCaches.begin();
 	for (; ccit != m_ComponentCaches.end(); ++ccit)
 		free(ccit->second);
 	m_ComponentCaches.clear();
@@ -741,7 +741,7 @@ IComponent* CComponentManager::ConstructComponent(CEntityHandle ent, ComponentTy
 {
 	JSContext* cx = m_ScriptInterface.GetContext();
 	JSAutoRequest rq(cx);
-	
+
 	std::map<ComponentTypeId, ComponentType>::const_iterator it = m_ComponentTypesById.find(cid);
 	if (it == m_ComponentTypesById.end())
 	{
@@ -829,7 +829,7 @@ CEntityHandle CComponentManager::AllocateEntityHandle(entity_id_t ent)
 
 CEntityHandle CComponentManager::LookupEntityHandle(entity_id_t ent, bool allowCreate)
 {
-	std::map<entity_id_t, SEntityComponentCache*>::iterator it;
+	std::unordered_map<entity_id_t, SEntityComponentCache*>::iterator it;
 	it = m_ComponentCaches.find(ent);
 	if (it == m_ComponentCaches.end())
 	{
@@ -858,7 +858,7 @@ entity_id_t CComponentManager::AddEntity(const std::wstring& templateName, entit
 		return INVALID_ENTITY;
 	}
 
-	const CParamNode* tmpl = cmpTemplateManager->LoadTemplate(ent, utf8_from_wstring(templateName), -1);
+	const CParamNode* tmpl = cmpTemplateManager->LoadTemplate(ent, utf8_from_wstring(templateName));
 	if (!tmpl)
 		return INVALID_ENTITY; // LoadTemplate will have reported the error
 
@@ -909,10 +909,6 @@ void CComponentManager::FlushDestroyedComponents()
 		std::vector<entity_id_t> queue;
 		queue.swap(m_DestructionQueue);
 
-		// Flatten all the dynamic subscriptions to ensure there are no dangling
-		// references in the 'removed' lists to components we're going to delete
-		FlattenDynamicSubscriptions();
-
 		for (std::vector<entity_id_t>::iterator it = queue.begin(); it != queue.end(); ++it)
 		{
 			entity_id_t ent = *it;
@@ -920,6 +916,11 @@ void CComponentManager::FlushDestroyedComponents()
 
 			CMessageDestroy msg(ent);
 			PostMessage(ent, msg);
+
+			// Flatten all the dynamic subscriptions to ensure there are no dangling
+			// references in the 'removed' lists to components we're going to delete
+			// Some components may have dynamically unsubscribed following the Destroy message
+			FlattenDynamicSubscriptions();
 
 			// Destroy the components, and remove from m_ComponentsByTypeId:
 			std::map<ComponentTypeId, std::map<entity_id_t, IComponent*> >::iterator iit = m_ComponentsByTypeId.begin();
@@ -1205,11 +1206,11 @@ JS::Value CComponentManager::ReadJSONFile(ScriptInterface::CxPrivate* pCxPrivate
 	componentManager->GetScriptInterface().ReadJSONFile(path, &out);
 	return out;
 }
-	
+
 Status CComponentManager::FindJSONFilesCallback(const VfsPath& pathname, const CFileInfo& UNUSED(fileInfo), const uintptr_t cbData)
 {
 	FindJSONFilesCallbackData* data = (FindJSONFilesCallbackData*)cbData;
-	
+
 	VfsPath pathstem = pathname.ChangeExtension(L"");
 	// Strip the root from the path
 	std::wstring name = pathstem.string().substr(data->path.string().length());
@@ -1223,7 +1224,7 @@ std::vector<std::string> CComponentManager::Script_FindJSONFiles(ScriptInterface
 {
 	FindJSONFilesCallbackData cbData;
 	cbData.path = VfsPath(L"simulation/data/" + subPath + L"/");
-	
+
 	int dir_flags = 0;
 	if (recursive) {
 		dir_flags = vfs::DIR_RECURSIVE;
@@ -1237,6 +1238,6 @@ std::vector<std::string> CComponentManager::Script_FindJSONFiles(ScriptInterface
 		wchar_t error[200];
 		LOGERROR("Error reading directory '%s': %s", cbData.path.string8(), utf8_from_wstring(StatusDescription(ret, error, ARRAY_SIZE(error))));
 	}
-	
+
 	return cbData.templates;
 }

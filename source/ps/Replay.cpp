@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ CReplayLogger::~CReplayLogger()
 void CReplayLogger::StartGame(JS::MutableHandleValue attribs)
 {
 	// Add timestamp, since the file-modification-date can change
-	m_ScriptInterface.SetProperty(attribs, "timestamp", std::to_string(std::time(nullptr)));
+	m_ScriptInterface.SetProperty(attribs, "timestamp", (double)std::time(nullptr));
 
 	// Add engine version and currently loaded mods for sanity checks when replaying
 	m_ScriptInterface.SetProperty(attribs, "engine_version", CStr(engine_version));
@@ -73,10 +73,10 @@ void CReplayLogger::Turn(u32 n, u32 turnLength, std::vector<SimulationCommand>& 
 	JSAutoRequest rq(cx);
 
 	*m_Stream << "turn " << n << " " << turnLength << "\n";
-	for (size_t i = 0; i < commands.size(); ++i)
-	{
-		*m_Stream << "cmd " << commands[i].player << " " << m_ScriptInterface.StringifyJSON(&commands[i].data, false) << "\n";
-	}
+
+	for (SimulationCommand& command : commands)
+		*m_Stream << "cmd " << command.player << " " << m_ScriptInterface.StringifyJSON(&command.data, false) << "\n";
+
 	*m_Stream << "end\n";
 	m_Stream->flush();
 }
@@ -114,7 +114,7 @@ void CReplayPlayer::Load(const std::string& path)
 	ENSURE(m_Stream->good());
 }
 
-void CReplayPlayer::Replay(bool serializationtest, bool ooslog)
+void CReplayPlayer::Replay(bool serializationtest, int rejointestturn, bool ooslog)
 {
 	ENSURE(m_Stream);
 
@@ -130,6 +130,8 @@ void CReplayPlayer::Replay(bool serializationtest, bool ooslog)
 	g_Game = new CGame(true, false);
 	if (serializationtest)
 		g_Game->GetSimulation2()->EnableSerializationTest();
+	if (rejointestturn > 0)
+		g_Game->GetSimulation2()->EnableRejoinTest(rejointestturn);
 	if (ooslog)
 		g_Game->GetSimulation2()->EnableOOSLog();
 
