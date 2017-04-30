@@ -307,8 +307,8 @@ var g_OptionOrderGUI = {
 			"ceasefire",
 		],
 		"Checkbox": [
-			"revealMap",
 			"exploreMap",
+			"revealMap",
 			"disableTreasures",
 			"disableSpies",
 			"lockTeams",
@@ -355,9 +355,7 @@ var g_Dropdowns = {
 		"defined": () => g_GameAttributes.mapType !== undefined,
 		"get": () => g_GameAttributes.mapType,
 		"select": (idx) => {
-
 			g_MapData = {};
-
 			g_GameAttributes.mapType = g_MapTypes.Name[idx];
 			g_GameAttributes.mapPath = g_MapPath[g_GameAttributes.mapType];
 			delete g_GameAttributes.map;
@@ -629,7 +627,7 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.ExploreMap = checked;
 		},
-		"enabled": () => g_GameAttributes.mapType != "scenario",
+		"enabled": () => g_GameAttributes.mapType != "scenario" && !g_GameAttributes.settings.RevealMap,
 	},
 	"disableTreasures": {
 		"title": () => translate("Disable Treasures"),
