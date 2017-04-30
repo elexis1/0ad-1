@@ -285,9 +285,8 @@
 					<translatableAttribute id="tooltip">See more game options</translatableAttribute>
 					<action on="Press">showMoreOptions(true);</action>
 				</object>
-
-			<!-- End Options -->
 			</object>
+			<!-- End Options -->
 
 			<!-- More Options -->
 			<object hidden="true" name="moreOptionsFade" type="image" z="60" sprite="ModernFade"/>
@@ -358,8 +357,8 @@
 					<translatableAttribute id="tooltip">Close more game options window</translatableAttribute>
 					<action on="Press">showMoreOptions(false);</action>
 				</object>
-			<!-- End More Options -->
 			</object>
+			<!-- End More Options -->
 
 		</object>
 	</object>

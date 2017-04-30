@@ -611,6 +611,9 @@ var g_Checkboxes = {
 		"get": () => g_GameAttributes.settings.RevealMap,
 		"set": checked => {
 			g_GameAttributes.settings.RevealMap = checked;
+
+			if (checked)
+				g_Checkboxes.exploreMap.set(true);
 		},
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
@@ -701,8 +704,11 @@ var g_Checkboxes = {
 		"set": checked => {
 			g_GameAttributes.settings.RatingEnabled = Engine.HasXmppClient() ? checked : undefined;
 			Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
-			g_Checkboxes.lockTeams.set(true);
-			g_Checkboxes.enableCheats.set(false);
+			if (checked)
+			{
+				g_Checkboxes.lockTeams.set(true);
+				g_Checkboxes.enableCheats.set(false);
+			}
 		},
 	},
 };
