@@ -96,4 +96,8 @@
 		<action on="Press">clearSelection();</action>
 	</object>
 
+	<object hotkey="session.toggleauraoverlays">
+		<action on="Press">toggleRangeOverlay("Aura");</action>
+	</object>
+
 </object>

@@ -43,6 +43,7 @@ public:
 		CStrIntern m_LineTexture;
 		CStrIntern m_LineTextureMask;
 		float m_LineThickness;
+		int m_Radius;
 
 		SOverlayDescriptor() : m_LineThickness(0) { }
 	};
@@ -59,6 +60,16 @@ public:
 	 * @param selected whether the entity is selected; affects desaturation for always visible highlights.
 	 */
 	virtual void SetSelectionHighlight(const CColor& color, bool selected) = 0;
+
+	/**
+	* Set a range overlay.
+	*/
+	virtual void SetRangeOverlay(float radius, const std::string& texture, const std::string& textureMask, float thickness) = 0;
+
+	/**
+	* Reset any range overlays.
+	*/
+	virtual void ResetRangeOverlays() = 0;
 
 	/**
 	 * Enables or disables rendering of an entity's selectable.

@@ -1826,3 +1826,16 @@ function clearSelection()
 	preSelectedAction = ACTION_NONE;
 }
 
+function toggleRangeOverlay(type)
+{
+	let configString = "renderer." + type.toLowerCase() + "range";
+	let enabled = String(Engine.ConfigDB_GetValue("user", configString) != "true");
+
+	Engine.GuiInterfaceCall("EnableVisualRangeOverlayType", {
+		"type": type, "enabled": enabled == "true"
+	});
+
+	recalculateRangeOverlays(enabled == "true");
+	Engine.ConfigDB_CreateValue("user", configString, enabled);
+	Engine.ConfigDB_WriteValueToFile("user", configString, enabled, "config/user.cfg");
+}

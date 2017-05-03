@@ -209,6 +209,12 @@
 			"label": "Limit FPS in Menus",
 			"tooltip": "Limit FPS to 50 in all menus, to save power.",
 			"parameters": { "config": "gui.menu.limitfps" }
+		},
+		{
+			"type": "boolean",
+			"label": "Aura Range Visualization",
+			"tooltip": "Display the range of auras (can also be toggled in-game with the hotkey).",
+			"parameters": { "config": "renderer.aurarange" }
 		}
 	],
 	"soundSetting":

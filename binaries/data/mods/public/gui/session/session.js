@@ -328,6 +328,10 @@ function init(initData, hotloadData)
 	onSimulationUpdate();
 	setTimeout(displayGamestateNotifications, 1000);
 
+	Engine.GuiInterfaceCall("SetVisualRangeOverlayTypes", {
+		"Aura": Engine.ConfigDB_GetValue("user", "renderer.aurarange") == "true"
+	});
+
 	// Report the performance after 5 seconds (when we're still near
 	// the initial camera view) and a minute (when the profiler will
 	// have settled down if framerates as very low), to give some
@@ -1247,6 +1251,21 @@ function recalculateStatusBarDisplay(remove = false)
 	Engine.GuiInterfaceCall("SetStatusBars", {
 		"entities": entities,
 		"enabled": g_ShowAllStatusBars && !remove
+	});
+}
+
+/**
+ * Toggles the display of range overlays for selected entities.
+ */
+function recalculateRangeOverlays(remove = false)
+{
+	let selected = g_Selection.toList();
+	for (let ent in g_Selection.highlighted)
+		selected.push(g_Selection.highlighted[ent]);
+
+	Engine.GuiInterfaceCall("SetRangeOverlays", {
+		"entities": selected,
+		"enabled": remove
 	});
 }
 
