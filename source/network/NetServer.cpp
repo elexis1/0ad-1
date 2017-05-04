@@ -31,6 +31,7 @@
 #  undef GetUserName
 #  undef SendMessage
 #  undef max
+#  undef min
 #endif
 
 #include "lib/external_libraries/enet.h"
