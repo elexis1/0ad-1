@@ -265,20 +265,6 @@ void XmppClient::handleMUCError(glooxwrapper::MUCRoom*, gloox::StanzaError err)
  *****************************************************/
 
 /**
- * Request a listing of active games from the server.
- */
-void XmppClient::SendIqGetGameList()
-{
-	glooxwrapper::JID xpartamuppJid(m_xpartamuppId);
-
-	// Send IQ
-	glooxwrapper::IQ iq(gloox::IQ::Get, xpartamuppJid);
-	iq.addExtension(new GameListQuery());
-	DbgXMPP("SendIqGetGameList [" << tag_xml(iq) << "]");
-	m_client->send(iq);
-}
-
-/**
  * Request the leaderboard data from the server.
  */
 void XmppClient::SendIqGetBoardList()
@@ -307,22 +293,6 @@ void XmppClient::SendIqGetProfile(const std::string& player)
 	glooxwrapper::IQ iq(gloox::IQ::Get, xpartamuppJid);
 	iq.addExtension(b);
 	DbgXMPP("SendIqGetProfile [" << tag_xml(iq) << "]");
-	m_client->send(iq);
-}
-
-/**
- * Request the rating data from the server.
- */
-void XmppClient::SendIqGetRatingList()
-{
-	glooxwrapper::JID xpartamuppJid(m_xpartamuppId);
-
-	// Send IQ
-	BoardListQuery* b = new BoardListQuery();
-	b->m_Command = "getratinglist";
-	glooxwrapper::IQ iq(gloox::IQ::Get, xpartamuppJid);
-	iq.addExtension(b);
-	DbgXMPP("SendIqGetRatingList [" << tag_xml(iq) << "]");
 	m_client->send(iq);
 }
 
