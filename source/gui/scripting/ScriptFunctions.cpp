@@ -395,7 +395,8 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	g_NetClient = new CNetClient(g_Game, false);
 	g_NetClient->SetUserName(playerName);
 
-	StunClient::SendHolePunchingMessages(enetClient, serverAddress.c_str(), serverPort);
+	if (stunEnabled)
+		StunClient::SendHolePunchingMessages(enetClient, serverAddress.c_str(), serverPort);
 
 	if (!g_NetClient->SetupConnection(serverAddress, serverPort, enetClient))
 	{
