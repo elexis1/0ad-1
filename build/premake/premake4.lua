@@ -583,7 +583,6 @@ function setup_all_libs ()
 		"spidermonkey",
 		"enet",
 		"boost",	-- dragged in via server->simulation.h->random
-		"sdl",	-- key definitions
 	}
 	if not _OPTIONS["without-miniupnpc"] then
 		table.insert(extern_libs, "miniupnpc")

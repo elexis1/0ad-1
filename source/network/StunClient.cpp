@@ -6,7 +6,9 @@
 
 #include "StunClient.h"
 
+#include <chrono>
 #include <cstdio>
+#include <thread>
 
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +25,6 @@
 #include <assert.h>
 
 #include "lib/external_libraries/enet.h"
-#include "lib/external_libraries/libsdl.h"
 
 #include <string>
 #include <vector>
@@ -186,7 +187,7 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	while(len < 0 && (count<max_tries || max_tries==-1) )
 	{
 		count++;
-		SDL_Delay(1000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		len = recvfrom(transactionHost->socket, buffer, LEN, 0,
 		        (struct sockaddr*)(&addr), &from_len);
 	}
@@ -354,6 +355,6 @@ void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serv
 	for (int i = 0; i < 3; ++i)
 	{
 		StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
-		SDL_Delay(1000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	}
 }
