@@ -31,7 +31,6 @@
 #include "i18n/L10n.h"
 #include "i18n/scripting/JSInterface_L10n.h"
 #include "lib/external_libraries/enet.h"
-#include "lib/external_libraries/libsdl.h"
 #include "lib/svn_revision.h"
 #include "lib/sysdep/sysdep.h"
 #include "lib/timer.h"

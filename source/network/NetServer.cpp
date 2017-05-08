@@ -26,7 +26,6 @@
 #include "NetStats.h"
 
 #include "lib/external_libraries/enet.h"
-#include "lib/external_libraries/libsdl.h"
 #include "network/StunClient.h"
 #include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
