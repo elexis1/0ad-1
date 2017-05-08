@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 
+#include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
 #include "scriptinterface/ScriptInterface.h"
 
@@ -340,4 +341,20 @@ StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
 	stunEndpoint.ip = m_ip;
 	stunEndpoint.port = m_port;
 	return stunEndpoint;
+}
+
+void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serverAddress, u16 serverPort)
+{
+	// Convert ip string to int64
+	ENetAddress addr;
+	addr.port = serverPort;
+	enet_address_set_host(&addr, serverAddress);
+	// Send a UDP message from enet host to ip:port
+	LOGWARNING("Sending STUN request to %s:%d", serverAddress, serverPort);
+	StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
+	SDL_Delay(1000);
+	StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
+	SDL_Delay(1000);
+	StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
+	SDL_Delay(1000);
 }

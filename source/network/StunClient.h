@@ -19,6 +19,8 @@ JS::Value FindStunEndpoint(ScriptInterface& scriptInterface, int port);
 
 StunEndpoint FindStunEndpoint(ENetHost* transactionHost);
 
+void SendHolePunchingMessages(ENetHost* enetClient, const char* serverAddress, u16 serverPort);
+
 }
 
 #endif	// STUNCLIENT_H

@@ -25,15 +25,6 @@
 #include "NetServerTurnManager.h"
 #include "NetStats.h"
 
-#ifdef WIN32
-#  include <winsock2.h>
-// Undefine conflicting names from winsock2.h and underlying headers
-#  undef GetUserName
-#  undef SendMessage
-#  undef max
-#  undef min
-#endif
-
 #include "lib/external_libraries/enet.h"
 #include "lib/external_libraries/libsdl.h"
 #include "network/StunClient.h"
@@ -1457,17 +1448,7 @@ CStrW CNetServerWorker::DeduplicatePlayerName(const CStrW& original)
 }
 
 void CNetServerWorker::SendHolePunchingMessage(std::string ipStr, int port) {
-	// Convert ip string to int64
-	ENetAddress addr;
-	addr.port = port;
-	enet_address_set_host(&addr, ipStr.c_str());
-	// Send a UDP message from enet host to ip:port
-	StunClient::SendStunRequest(m_Host, htonl(addr.host), port);
-	SDL_Delay(1000);
-	StunClient::SendStunRequest(m_Host, htonl(addr.host), port);
-	SDL_Delay(1000);
-	StunClient::SendStunRequest(m_Host, htonl(addr.host), port);
-	SDL_Delay(1000);
+	StunClient::SendHolePunchingMessages(m_Host, ipStr.c_str(), port);
 }
 
 
