@@ -874,8 +874,10 @@ function createVolcano(fx = 0.5, fz = 0.5, tileClass = clHill, terrainTexture = 
 	createObjectGroup(
 		new SimpleGroup(
 			[new SimpleObject("actor|particle/smoke.xml", num, num, 0, 7)],
-			false, createTileClass(), Math.round(fx), Math.round(fz)
-		),
+			false,
+			createTileClass(),
+			ix,
+			iz),
 		0,
 		stayClasses(tileClass, 1));
 }
