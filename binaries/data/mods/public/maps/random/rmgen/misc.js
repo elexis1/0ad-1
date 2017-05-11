@@ -804,12 +804,17 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 }
 
 /**
- * @param {number} x - horizontal coordinate
- * @param {number} z - other horizontal coordinate
- * @param {number} tileClass - which class to paint
- * @param {number} elevationType - Elevation painter type, ELEVATION_SET = absolute or ELEVATION_MODIFY = relative
+ * Generates a volcano mountain. Smoke and lava are optional.
+ *
+ * @param {number} fx - horizontal coordinate of the center.
+ * @param {number} fz - horizontal coordinate of the center.
+ * @param {number} tileClass - painted onto every tile that is occupied by the volcano.
+ * @param {string} terrainTexture - texture painted.
+ * @param {array} lavaTextures - three different textures for the interior, from the outside to the inside.
+ * @param {boolean} smoke - Whether to place smoke particles.
+ * @param {number} elevationType - Elevation painter type, ELEVATION_SET = absolute or ELEVATION_MODIFY = relative.
  */
-function createVolcano(fx = 0.5, fz = 0.5, tileClass = clHill, terrainTexture = tCliff, elevationType = ELEVATION_SET, smoke = true)
+function createVolcano(fx, fz, tileClass, terrainTexture, lavaTextures, smoke, elevationType)
 {
 	log("Creating volcano");
 
@@ -822,7 +827,6 @@ function createVolcano(fx = 0.5, fz = 0.5, tileClass = clHill, terrainTexture = 
 	let smoothness = 0.05;
 	let failFraction = 100;
 	let steepness = 3;
-	let clLast = createTileClass();
 
 	let layerSizes = [
 		{
@@ -843,7 +847,14 @@ function createVolcano(fx = 0.5, fz = 0.5, tileClass = clHill, terrainTexture = 
 		{
 			"clumps": 0.011,
 			"elevation": 62,
-			"tileClass": clLast
+			"tileClass": createTileClass()
+		},
+		{
+			"clumps": 0.003,
+			"elevation": 42,
+			"tileClass": createTileClass(),
+			"painter": lavaTextures && new LayeredPainter([terrainTexture, ...lavaTextures], [1, 1, 1]),
+			"steepness": 1
 		}
 	];
 
@@ -851,33 +862,23 @@ function createVolcano(fx = 0.5, fz = 0.5, tileClass = clHill, terrainTexture = 
 		createArea(
 			new ClumpPlacer(baseSize * layerSizes[i].clumps, coherence, smoothness, failFraction, ix, iz),
 			[
-				new LayeredPainter([terrainTexture, terrainTexture], [3]),
-				new SmoothElevationPainter(elevationType, layerSizes[i].elevation, steepness),
+				layerSizes[i].painter || new LayeredPainter([terrainTexture, terrainTexture], [3]),
+				new SmoothElevationPainter(elevationType, layerSizes[i].elevation, layerSizes[i].steepness || steepness),
 				paintClass(layerSizes[i].tileClass)
 			],
 			i == 0 ? null : stayClasses(layerSizes[i - 1].tileClass, 1));
 
-	// lava
-	createArea(
-		new ClumpPlacer(baseSize * 0.003, coherence, smoothness, failFraction, ix, iz),
-		[
-			new LayeredPainter([terrainTexture, tLava1, tLava2, tLava3], [1, 1, 1]),
-			new SmoothElevationPainter(elevationType, 42, 1),
-			paintClass(clLast)
-		],
-		stayClasses(clLast, 1));
-
-	if (!smoke)
-		return;
-
-	let num = Math.floor(baseSize * 0.002);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject("actor|particle/smoke.xml", num, num, 0, 7)],
-			false,
-			createTileClass(),
-			ix,
-			iz),
-		0,
+	if (smoke)
+	{
+		let num = Math.floor(baseSize * 0.002);
+		createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject("actor|particle/smoke.xml", num, num, 0, 7)],
+				false,
+				createTileClass(),
+				ix,
+				iz),
+			0,
 		stayClasses(tileClass, 1));
+	}
 }

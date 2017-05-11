@@ -132,7 +132,7 @@ for (var i = 0; i < numPlayers; i++)
 }
 RMS.SetProgress(15);
 
-createVolcano();
+createVolcano(0.5, 0.5, clHill, tCliff, [tLava1, tLava2, tLava3], true, ELEVATION_SET);
 RMS.SetProgress(45);
 
 log("Creating hills...");

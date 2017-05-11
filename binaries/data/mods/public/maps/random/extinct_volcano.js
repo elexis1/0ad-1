@@ -15,9 +15,6 @@ const tGrassB = "ocean_rock_a";
 const tGrass3 = "temp_grass_plants";
 const tGrassPatchBlend = "temp_grass_long_b";
 const tGrassPatch = ["temp_grass_d", "temp_grass_clovers"];
-const tLava1 = "cliff volcanic light"; // TODO:
-const tLava2 = "cliff volcanic light";
-const tLava3 = "cliff volcanic light";
 const tShoreBlend = "cliff volcanic light";
 const tShore = "ocean_rock_a";
 const tWater = "ocean_rock_b";
@@ -207,7 +204,7 @@ for (let i = 0; i < numPlayers; ++i)
 }
 RMS.SetProgress(15);
 
-createVolcano(0.5, 0.5, clHill, tHillVeryDark, ELEVATION_SET, false);
+createVolcano(0.5, 0.5, clHill, tHillVeryDark, undefined, false, ELEVATION_SET);
 RMS.SetProgress(45);
 
 log("Creating lakes...");
