@@ -502,7 +502,7 @@ createObjectGroups(
 	numStragglers);
 RMS.SetProgress(95);
 
-setWaterType("default");
+setWaterType("lake");
 setWaterWaviness(2);
 setWaterColor(0.035, 0.047, 0.05);
 setWaterTint(0.058, 0.05, 0.035);

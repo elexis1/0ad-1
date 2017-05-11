@@ -68,6 +68,11 @@ var waterWarningTexts = [
 	markForTranslation("The lakes start swallowing the land, we have to find shelter!")
 ];
 
+/**
+ * Units to be garrisoned in the wooden towers.
+ */
+var garrisonedUnits = "units/rome_legionnaire_marian";
+
 Trigger.prototype.RaisingWaterNotification = function()
 {
 	Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface).AddTimeNotification({
@@ -83,6 +88,25 @@ Trigger.prototype.DebugLog = function(txt)
 
 	let time = Math.round(Engine.QueryInterface(SYSTEM_ENTITY, IID_Timer).GetTime() / 60 / 1000);
 	print("DEBUG [" + time + "] " + txt + "\n");
+};
+
+
+Trigger.prototype.GarrisonWoodenTowers = function()
+{
+	for (let gaiaEnt of Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager).GetEntitiesByPlayer(0))
+	{
+		let cmpIdentity = Engine.QueryInterface(gaiaEnt, IID_Identity);
+		if (!cmpIdentity || !cmpIdentity.HasClass("DefenseTower"))
+			continue;
+
+		let cmpGarrisonHolder = Engine.QueryInterface(gaiaEnt, IID_GarrisonHolder);
+		if (!cmpGarrisonHolder)
+			continue;
+
+		for (let newEnt of TriggerHelper.SpawnUnits(gaiaEnt, garrisonedUnits, cmpGarrisonHolder.GetCapacity(), 0))
+			if (Engine.QueryInterface(gaiaEnt, IID_GarrisonHolder).Garrison(newEnt))
+				Engine.QueryInterface(newEnt, IID_UnitAI).Autogarrison(gaiaEnt);
+	}
 };
 
 Trigger.prototype.RaiseWaterLevelStep = function()
@@ -105,7 +129,7 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 	let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
 	let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
 
-	for (let ent of [...cmpRangeManager.GetEntitiesByPlayer(0), ...cmpRangeManager.GetNonGaiaEntities()])
+	for (let ent of cmpRangeManager.GetGaiaAndNonGaiaEntities())
 	{
 		let cmpPosition = Engine.QueryInterface(ent, IID_Position);
 		if (!cmpPosition || !cmpPosition.IsInWorld())
@@ -170,6 +194,7 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 {
 	let waterRiseTime = debugWaterRise ? 0 : randFloat(...waterRiseStartTime);
 	let cmpTrigger = Engine.QueryInterface(SYSTEM_ENTITY, IID_Trigger);
+	cmpTrigger.GarrisonWoodenTowers();
 	cmpTrigger.DoAfterDelay((waterRiseTime - waterRiseNotificationDuration) * 60 * 1000, "RaisingWaterNotification", {});
 	cmpTrigger.DoAfterDelay(waterRiseTime * 60 * 1000, "RaiseWaterLevelStep", {});
 }
