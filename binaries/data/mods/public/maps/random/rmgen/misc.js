@@ -828,7 +828,7 @@ function createVolcano(fx, fz, tileClass, terrainTexture, lavaTextures, smoke, e
 	let failFraction = 100;
 	let steepness = 3;
 
-	let layerSizes = [
+	let layers = [
 		{
 			"clumps": 0.067,
 			"elevation": 15,
@@ -858,15 +858,15 @@ function createVolcano(fx, fz, tileClass, terrainTexture, lavaTextures, smoke, e
 		}
 	];
 
-	for (let i = 0; i < layerSizes.length; ++i)
+	for (let i = 0; i < layers.length; ++i)
 		createArea(
-			new ClumpPlacer(baseSize * layerSizes[i].clumps, coherence, smoothness, failFraction, ix, iz),
+			new ClumpPlacer(baseSize * layers[i].clumps, coherence, smoothness, failFraction, ix, iz),
 			[
-				layerSizes[i].painter || new LayeredPainter([terrainTexture, terrainTexture], [3]),
-				new SmoothElevationPainter(elevationType, layerSizes[i].elevation, layerSizes[i].steepness || steepness),
-				paintClass(layerSizes[i].tileClass)
+				layers[i].painter || new LayeredPainter([terrainTexture, terrainTexture], [3]),
+				new SmoothElevationPainter(elevationType, layers[i].elevation, layers[i].steepness || steepness),
+				paintClass(layers[i].tileClass)
 			],
-			i == 0 ? null : stayClasses(layerSizes[i - 1].tileClass, 1));
+			i == 0 ? null : stayClasses(layers[i - 1].tileClass, 1));
 
 	if (smoke)
 	{
