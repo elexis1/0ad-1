@@ -806,11 +806,11 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 /**
  * Generates a volcano mountain. Smoke and lava are optional.
  *
- * @param {number} fx - horizontal coordinate of the center.
- * @param {number} fz - horizontal coordinate of the center.
- * @param {number} tileClass - painted onto every tile that is occupied by the volcano.
- * @param {string} terrainTexture - texture painted.
- * @param {array} lavaTextures - three different textures for the interior, from the outside to the inside.
+ * @param {number} fx - Horizontal coordinate of the center.
+ * @param {number} fz - Horizontal coordinate of the center.
+ * @param {number} tileClass - Painted onto every tile that is occupied by the volcano.
+ * @param {string} terrainTexture - The texture painted onto the volcano hill.
+ * @param {array} lavaTextures - Three different textures for the interior, from the outside to the inside.
  * @param {boolean} smoke - Whether to place smoke particles.
  * @param {number} elevationType - Elevation painter type, ELEVATION_SET = absolute or ELEVATION_MODIFY = relative.
  */
@@ -827,6 +827,8 @@ function createVolcano(fx, fz, tileClass, terrainTexture, lavaTextures, smoke, e
 	let smoothness = 0.05;
 	let failFraction = 100;
 	let steepness = 3;
+
+	let clLava = createTileClass();
 
 	let layers = [
 		{
@@ -852,7 +854,7 @@ function createVolcano(fx, fz, tileClass, terrainTexture, lavaTextures, smoke, e
 		{
 			"clumps": 0.003,
 			"elevation": 42,
-			"tileClass": createTileClass(),
+			"tileClass": clLava,
 			"painter": lavaTextures && new LayeredPainter([terrainTexture, ...lavaTextures], [1, 1, 1]),
 			"steepness": 1
 		}
@@ -875,7 +877,7 @@ function createVolcano(fx, fz, tileClass, terrainTexture, lavaTextures, smoke, e
 			new SimpleGroup(
 				[new SimpleObject("actor|particle/smoke.xml", num, num, 0, 7)],
 				false,
-				createTileClass(),
+				clLava,
 				ix,
 				iz),
 			0,

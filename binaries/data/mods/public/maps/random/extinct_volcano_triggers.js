@@ -6,7 +6,7 @@ var debugLog = false;
 /**
  * Whether to rise the water to the maximum level in a minute or two.
  */
-var debugWaterRise = true;
+var debugWaterRise = false;
 
 /**
  * Time in minutes when the water level starts to rise.
@@ -20,7 +20,7 @@ var waterRiseStartTime = [22, 26];
 var waterRiseNotificationDuration = 1;
 
 /**
- * Time in minutes determining how often to increase the water level.
+ * Time in minutes between increases of the water level.
  * If the water rises too fast, the hills are of no strategic importance,
  * building structures would be pointless.
  *
@@ -35,7 +35,7 @@ var waterRiseNotificationDuration = 1;
 var waterIncreaseTime = [0.5, 1];
 
 /**
- * How much height to increase each step.
+ * Number of meters the waterheight increases each step.
  * Each time the water level is changed, the pathfinder grids have to be recomputed.
  * Therefore raising the level should occur as rarely as possible, i.e. have the value
  * as big as possible, but as small as needed to keep it visually authentic.
@@ -48,15 +48,35 @@ var waterLevelIncreaseHeight = 1;
  */
 var maxWaterLevel = 70;
 
+/**
+ * Let buildings, relics and siege engines become actors, but kill organic units.
+ */
+var drownClass = "Organic";
+
+/**
+ * Maximum height that units and structures can be submerged before drowning or becoming destructed.
+ */
+var drownHeight = 1;
+
+/**
+ * One of these warnings is printed some minutes before the water level starts to rise.
+ */
+var waterWarningTexts = [
+	markForTranslation("It keeps on raining, we will have to evacuate soon!"),
+	markForTranslation("The rivers are standing high, we need to find a save place!"),
+	markForTranslation("We have got to find dry ground, our lands will drawn soon!"),
+	markForTranslation("The lakes start swallowing the land, we have to find shelter!")
+];
+
 Trigger.prototype.RaisingWaterNotification = function()
 {
 	Engine.QueryInterface(SYSTEM_ENTITY, IID_GuiInterface).AddTimeNotification({
-		"message": markForTranslation("It keeps on raining, we will have to evacuate soon!"),
+		"message": pickRandom(waterWarningTexts),
 		"translateMessage": true
 	}, waterRiseNotificationDuration * 60 * 1000);
 };
 
-Trigger.prototype.debugLog = function(txt)
+Trigger.prototype.DebugLog = function(txt)
 {
 	if (!debugLog)
 		return;
@@ -67,41 +87,43 @@ Trigger.prototype.debugLog = function(txt)
 
 Trigger.prototype.RaiseWaterLevelStep = function()
 {
-	let time = new Date().getTime();
+	let cmpTimer = Engine.QueryInterface(SYSTEM_ENTITY, IID_Timer);
+	let time = cmpTimer.GetTime();
 	let cmpWaterManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_WaterManager);
 	let newLevel = cmpWaterManager.GetWaterLevel() + waterLevelIncreaseHeight;
 	cmpWaterManager.SetWaterLevel(newLevel);
-	this.debugLog("Raising water level to " + Math.round(newLevel) + " took " + (new Date().getTime() - time));
+	this.DebugLog("Raising water level to " + Math.round(newLevel) + " took " + (cmpTimer.GetTime() - time));
 
 	if (newLevel < maxWaterLevel)
 		this.DoAfterDelay((debugWaterRise ? 10 : randFloat(...waterIncreaseTime) * 60) * 1000, "RaiseWaterLevelStep", {});
 	else
-		this.debugLog("Water reached final level");
+		this.DebugLog("Water reached final level");
 
 	let actorTemplates = {};
 	let killedTemplates = {};
 
+	let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
 	let cmpRangeManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_RangeManager);
+
 	for (let ent of [...cmpRangeManager.GetEntitiesByPlayer(0), ...cmpRangeManager.GetNonGaiaEntities()])
 	{
-		let cmpPos = Engine.QueryInterface(ent, IID_Position);
-		if (!cmpPos || !cmpPos.IsInWorld() || cmpPos.GetPosition().y >= newLevel)
+		let cmpPosition = Engine.QueryInterface(ent, IID_Position);
+		if (!cmpPosition || !cmpPosition.IsInWorld())
 			continue;
 
-		let cmpVisualActor = Engine.QueryInterface(ent, IID_Visual);
-		if (!cmpVisualActor)
+		let pos = cmpPosition.GetPosition();
+		if (pos.y + drownHeight >= newLevel)
 			continue;
 
 		let cmpIdentity = Engine.QueryInterface(ent, IID_Identity);
 		if (!cmpIdentity)
 			continue;
 
-		let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
 		let templateName = cmpTemplateManager.GetCurrentTemplateName(ent);
 
 		// Animals and units drown
 		let cmpHealth = Engine.QueryInterface(ent, IID_Health);
-		if (cmpHealth && cmpIdentity.HasClass("Unit"))
+		if (cmpHealth && cmpIdentity.HasClass(drownClass))
 		{
 			cmpHealth.Kill();
 
@@ -115,12 +137,14 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		// Do not use ChangeEntityTemplate for performance and
 		// because we don't need nor want the effects of MT_EntityRenamed
 
-		let pos = cmpPos.GetPosition2D();
-		let height = cmpPos.GetHeightOffset();
-		let rot = cmpPos.GetRotation();
+		let cmpVisualActor = Engine.QueryInterface(ent, IID_Visual);
+		if (!cmpVisualActor)
+			continue;
 
-		let template = cmpTemplateManager.GetTemplate(templateName);
-		let actorTemplate = template.VisualActor.Actor;
+		let height = cmpPosition.GetHeightOffset();
+		let rot = cmpPosition.GetRotation();
+
+		let actorTemplate = cmpTemplateManager.GetTemplate(templateName).VisualActor.Actor;
 		let seed = cmpVisualActor.GetActorSeed();
 		Engine.DestroyEntity(ent);
 
@@ -128,7 +152,7 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 		Engine.QueryInterface(newEnt, IID_Visual).SetActorSeed(seed);
 
 		let cmpNewPos = Engine.QueryInterface(newEnt, IID_Position);
-		cmpNewPos.JumpTo(pos.x, pos.y);
+		cmpNewPos.JumpTo(pos.x, pos.z);
 		cmpNewPos.SetHeightOffset(height);
 		cmpNewPos.SetXZRotation(rot.x, rot.z);
 		cmpNewPos.SetYRotation(rot.y);
@@ -137,15 +161,15 @@ Trigger.prototype.RaiseWaterLevelStep = function()
 			actorTemplates[templateName] = (actorTemplates[templateName] || 0) + 1;
 	}
 
-	this.debugLog("Checking entities took " + (new Date().getTime() - time));
-	this.debugLog("Killed: " + uneval(killedTemplates));
-	this.debugLog("Converted to actors: " + uneval(actorTemplates));
+	this.DebugLog("Checking entities took " + (cmpTimer.GetTime() - time));
+	this.DebugLog("Killed: " + uneval(killedTemplates));
+	this.DebugLog("Converted to actors: " + uneval(actorTemplates));
 };
 
 
 {
 	let waterRiseTime = debugWaterRise ? 0 : randFloat(...waterRiseStartTime);
 	let cmpTrigger = Engine.QueryInterface(SYSTEM_ENTITY, IID_Trigger);
-	cmpTrigger.DoAfterDelay(60 * 1000 * (waterRiseTime - waterRiseNotificationDuration), "RaisingWaterNotification", {});
-	cmpTrigger.DoAfterDelay(60 * 1000 * waterRiseTime, "RaiseWaterLevelStep", {});
+	cmpTrigger.DoAfterDelay((waterRiseTime - waterRiseNotificationDuration) * 60 * 1000, "RaisingWaterNotification", {});
+	cmpTrigger.DoAfterDelay(waterRiseTime * 60 * 1000, "RaiseWaterLevelStep", {});
 }
