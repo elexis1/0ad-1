@@ -1038,7 +1038,8 @@ function openStrucTree()
  */
 function pauseGame(pause = true, explicit = false)
 {
-	if (g_IsNetworked && !explicit)
+	// The NetServer only supports pausing after all clients finished loading the game.
+	if (g_IsNetworked && (!explicit || !g_IsNetworkedActive))
 		return;
 
 	if (explicit)
@@ -1121,8 +1122,7 @@ function openManual()
 
 function toggleDeveloperOverlay()
 {
-	// The developer overlay is disabled in ranked games
-	if (Engine.HasXmppClient() && Engine.IsRankedGame())
+	if (!g_GameAttributes.settings.CheatsEnabled)
 		return;
 
 	let devCommands = Engine.GetGUIObjectByName("devCommands");
