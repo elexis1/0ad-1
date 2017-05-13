@@ -1001,7 +1001,7 @@ function joinSelectedGame()
 
 	let ip;
 	let port;
-	if (g_StunEnabled && game.stunIP !== undefined)
+	if (g_StunEnabled && game.stunIP)
 	{
 		ip = game.stunIP;
 		port = game.stunPort;

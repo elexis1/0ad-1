@@ -319,8 +319,6 @@ public:
 
 	ZeroAdGameData(const gloox::Tag* tag) : Plugin(gloox::Jingle::PluginUser)
 	{
-		if (!tag)
-			return;
 	}
 
 	const std::string& filterString() const {
