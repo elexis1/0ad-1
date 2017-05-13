@@ -36,7 +36,7 @@ function init(attribs)
 	{
 		if (Engine.HasXmppClient())
 		{
-			if (startJoin(attribs.name, attribs.ip, getValidPort(attribs.port), attribs.hostJid))
+			if (startJoin(attribs.name, attribs.ip, getValidPort(attribs.port), attribs.hostJID))
 				switchSetupPage("pageConnecting");
 		}
 		else
@@ -327,12 +327,11 @@ function startHost(playername, servername, port)
 	return true;
 }
 
-function startJoin(playername, ip, port, hostJid)
+function startJoin(playername, ip, port, hostJID)
 {
 	try
 	{
-		var fullplayername = playername + (g_UserRating ? " (" + g_UserRating + ")" : "");
-		Engine.StartNetworkJoin(fullplayername, ip, port, hostJid);
+		Engine.StartNetworkJoin(playername + (g_UserRating ? " (" + g_UserRating + ")" : ""), ip, port, hostJID);
 	}
 	catch (e)
 	{

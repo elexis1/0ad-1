@@ -961,11 +961,13 @@ function joinSelectedGame()
 
 	let ip;
 	let port;
-	if (g_StunEnabled && game.stunIp !== undefined) {
-		ip = game.stunIp;
+	if (g_StunEnabled && game.stunIP !== undefined)
+	{
+		ip = game.stunIP;
 		port = game.stunPort;
 	}
-	else {
+	else
+	{
 		ip = game.ip;
 		port = game.port;
 	}
@@ -999,7 +1001,7 @@ function joinSelectedGame()
 		"port": port,
 		"name": g_Username,
 		"rating": g_UserRating,
-		"hostJid": hostJid
+		"hostJID": hostJID
 	});
 }
 

@@ -484,7 +484,7 @@ void XmppClient::GUIGetGameList(ScriptInterface& scriptInterface, JS::MutableHan
 	JSAutoRequest rq(cx);
 
 	scriptInterface.Eval("([])", ret);
-	const char* stats[] = { "name", "ip", "port", "stunIp", "stunPort", "state", "nbp", "maxnbp", "players", "mapName", "niceMapName", "mapSize", "mapType", "victoryCondition", "startTime" };
+	const char* stats[] = { "name", "ip", "port", "stunIP", "stunPort", "state", "nbp", "maxnbp", "players", "mapName", "niceMapName", "mapSize", "mapType", "victoryCondition", "startTime" };
 	for(const glooxwrapper::Tag* const& t : m_GameList)
 	{
 		JS::RootedValue game(cx);
@@ -1096,10 +1096,10 @@ std::string XmppClient::RegistrationResultToString(gloox::RegistrationResult res
 }
 
 
-void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, const std::string& hostJidStr)
+void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, const std::string& hostJIDStr)
 {
-	glooxwrapper::JID hostJid(hostJidStr);
-	glooxwrapper::Jingle::Session session = m_sessionManager->createSession(hostJid);
+	glooxwrapper::JID hostJID(hostJIDStr);
+	glooxwrapper::Jingle::Session session = m_sessionManager->createSession(hostJID);
 
 	char ipStr[256] = "(error)";
 	ENetAddress addr;

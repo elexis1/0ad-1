@@ -368,7 +368,7 @@ void StartNetworkHost(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	}
 }
 
-void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, const CStr& serverAddress, u16 serverPort, const std::string& hostJid)
+void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, const CStr& serverAddress, u16 serverPort, const std::string& hostJID)
 {
 	ENSURE(!g_NetClient);
 	ENSURE(!g_NetServer);
@@ -384,7 +384,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 		enetClient = enet_host_create(&hostAddr, 1, 1, 0, 0);
 
 		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpoint(enetClient);
-		g_XmppClient->SendStunEndpointToHost(stunEndpoint, hostJid);
+		g_XmppClient->SendStunEndpointToHost(stunEndpoint, hostJID);
 		// Note: we are sending endpoint and starting to connect right away
 		// we may actually need to wait for host's response (this needs
 		// to be checked)

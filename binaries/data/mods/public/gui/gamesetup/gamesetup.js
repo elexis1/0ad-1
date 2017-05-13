@@ -2089,8 +2089,9 @@ function sendRegisterGameStanza()
 		"players": clients.list,
 	};
 
-	if (g_StunEndpoint !== undefined) {
-		stanza.stunIp = g_StunEndpoint.ip;
+	if (g_StunEndpoint !== undefined)
+	{
+		stanza.stunIP = g_StunEndpoint.ip;
 		stanza.stunPort = g_StunEndpoint.port;
 	}
 
