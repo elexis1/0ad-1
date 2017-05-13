@@ -989,11 +989,8 @@ function joinSelectedGame()
 	 * This works for testing, but may require a better solution for the "production" version
 	 * (probably an explicit "hostname" param)
 	 */
-	let hostPlayerName = stringifiedTeamListToPlayerData(game.players)[0].Name;
-	let ratingPos = hostPlayerName.indexOf(" (");
-	if (hostPlayerName.indexOf(" (") != -1)
-		hostPlayerName = hostPlayerName.substr(0, ratingPos);
-	let hostJid = hostPlayerName + "@" + g_LobbyServer + "/0ad";
+	let hostPlayerName = removeRatingFromNick(stringifiedTeamListToPlayerData(game.players)[0].Name)[0];
+	let hostJID = hostPlayerName + "@" + g_LobbyServer + "/0ad";
 
 	Engine.PushGuiPage("page_gamesetup_mp.xml", {
 		"multiplayerGameType": "join",
