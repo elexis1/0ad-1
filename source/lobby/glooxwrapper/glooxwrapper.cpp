@@ -847,14 +847,14 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
 
-	const gloox::Jingle::ICEUDP *iceUdp = static_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
-	if (iceUdp == NULL)
+	const gloox::Jingle::ICEUDP *iceUDP = static_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
+	if (iceUDP == NULL)
 	{
 		printf("Failed to retrieve Jingle ICE-UDP data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
 
-	gloox::Jingle::ICEUDP::Candidate glooxCandidate = iceUdp->candidates().front();
+	gloox::Jingle::ICEUDP::Candidate glooxCandidate = iceUDP->candidates().front();
 	return glooxwrapper::Jingle::ICEUDP::Candidate{glooxCandidate.ip, glooxCandidate.port};
 }
 
@@ -880,11 +880,11 @@ bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, uint16_t port)
 		/*type*/ gloox::Jingle::ICEUDP::ServerReflexive
 	});
 
-	gloox::Jingle::ICEUDP *iceUdp = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", *candidateList);
+	gloox::Jingle::ICEUDP *iceUDP = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", *candidateList);
 
 	gloox::Jingle::PluginList *pluginList = new gloox::Jingle::PluginList();
 	pluginList->push_back(gameData);
-	pluginList->push_back(iceUdp);
+	pluginList->push_back(iceUDP);
 	gloox::Jingle::Content *content = new gloox::Jingle::Content(std::string("game-data"), *pluginList);
 
 	return m_Wrapped->sessionInitiate(content);
