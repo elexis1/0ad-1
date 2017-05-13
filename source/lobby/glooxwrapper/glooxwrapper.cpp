@@ -317,7 +317,7 @@ class ZeroADGameData : public gloox::Jingle::Plugin
 public:
 	ZeroADGameData() : Plugin(gloox::Jingle::PluginUser) {}
 
-	ZeroADGameData(const gloox::Tag* tag) : Plugin(gloox::Jingle::PluginUser)
+	ZeroADGameData(const gloox::Tag* UNUSED(tag)) : Plugin(gloox::Jingle::PluginUser)
 	{
 	}
 
