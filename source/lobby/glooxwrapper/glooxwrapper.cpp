@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -283,21 +283,20 @@ public:
 	glooxwrapper::Jingle::SessionHandler* m_Wrapped;
 	bool m_Owned;
 
-	SessionHandlerWrapper(glooxwrapper::Jingle::SessionHandler* wrapped, bool owned) : m_Wrapped(wrapped), m_Owned(owned) {}
+	SessionHandlerWrapper(glooxwrapper::Jingle::SessionHandler* wrapped, bool owned) :
+		m_Wrapped(wrapped), m_Owned(owned) {}
 
 	virtual void handleSessionAction(gloox::Jingle::Action action, gloox::Jingle::Session* session, const gloox::Jingle::Session::Jingle* jingle)
 	{
 		m_Wrapped->handleSessionAction(action, new glooxwrapper::Jingle::Session(session, false), new glooxwrapper::Jingle::Session::Jingle(jingle, false));
 	}
 
-	virtual void handleSessionActionError(gloox::Jingle::Action action, gloox::Jingle::Session* session, const gloox::Error* error)
+	virtual void handleSessionActionError(gloox::Jingle::Action UNUSED(action), gloox::Jingle::Session* UNUSED(session), const gloox::Error* UNUSED(error))
 	{
-
 	}
 
-	virtual void handleIncomingSession(gloox::Jingle::Session* session )
+	virtual void handleIncomingSession(gloox::Jingle::Session* UNUSED(session))
 	{
-
 	}
 };
 

@@ -1106,10 +1106,10 @@ void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, c
 	addr.host = ntohl(stunEndpoint.ip);
 	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
-	bool result = session.sessionInitiate(ipStr, stunEndpoint.port);
+	session.sessionInitiate(ipStr, stunEndpoint.port);
 }
 
-void XmppClient::handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *session, const glooxwrapper::Jingle::Session::Jingle *jingle)
+void XmppClient::handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *UNUSED(session), const glooxwrapper::Jingle::Session::Jingle *jingle)
 {
 	if (action != gloox::Jingle::SessionInitiate) {
 		return;

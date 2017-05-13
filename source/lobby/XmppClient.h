@@ -123,7 +123,7 @@ protected:
 	virtual void handleMessage(const glooxwrapper::Message& msg, glooxwrapper::MessageSession * session);
 
 	/* Session Handler */
-	virtual void handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *session, const glooxwrapper::Jingle::Session::Jingle *jingle);
+	virtual void handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *UNUSED(session), const glooxwrapper::Jingle::Session::Jingle *jingle);
 
 	// Helpers
 	void GetPresenceString(const gloox::Presence::PresenceType p, std::string& presence) const;
