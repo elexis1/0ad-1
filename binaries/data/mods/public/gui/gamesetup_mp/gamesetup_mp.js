@@ -22,8 +22,6 @@ var g_IsRejoining = false;
 var g_GameAttributes; // used when rejoining
 var g_PlayerAssignments; // used when rejoining
 var g_UserRating;
-
-var g_StunEnabled = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
 var g_StunEndpoint;
 
 function init(attribs)
@@ -50,6 +48,9 @@ function init(attribs)
 			Engine.GetGUIObjectByName("hostPlayerName").caption = attribs.name;
 			Engine.GetGUIObjectByName("hostServerName").caption =
 				sprintf(translate("%(name)s's game"), { "name": attribs.name });
+
+			Engine.GetGUIObjectByName("hostSTUNWrapper").hidden = false;
+			Engine.GetGUIObjectByName("useSTUN").checked = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
 		}
 
 		switchSetupPage("pageHost");
@@ -275,6 +276,12 @@ function switchSetupPage(newPage)
 	Engine.GetGUIObjectByName("continueButton").hidden = newPage == "pageConnecting";
 }
 
+function saveSTUNSetting(enabled)
+{
+	Engine.ConfigDB_CreateValue("user", "stun.enabled", enabled);
+	Engine.ConfigDB_WriteValueToFile("user", "stun.enabled", enabled, "config/user.cfg");
+}
+
 function startHost(playername, servername, port)
 {
 	startConnectionStatus("server");
@@ -297,7 +304,7 @@ function startHost(playername, servername, port)
 		return false;
 	}
 
-	if (Engine.HasXmppClient() && g_StunEnabled)
+	if (Engine.HasXmppClient() && Engine.GetGUIObjectByName("useSTUN").checked)
 		g_StunEndpoint = Engine.FindStunEndpoint(port);
 
 	try

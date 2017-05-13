@@ -206,7 +206,7 @@ var g_ServerName;
 var g_ServerPort;
 
 /**
- * STUN endpoint.
+ * IP address of the STUN endpoint.
  */
 var g_StunEndpoint;
 
