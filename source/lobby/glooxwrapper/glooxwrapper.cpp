@@ -312,12 +312,12 @@ public:
 static const std::string XMLNS = "xmlns";
 static const std::string XMLNS_JINGLE_0AD_GAME = "urn:xmpp:jingle:apps:0ad-game:1";
 
-class ZeroAdGameData : public gloox::Jingle::Plugin
+class ZeroADGameData : public gloox::Jingle::Plugin
 {
 public:
-	ZeroAdGameData() : Plugin(gloox::Jingle::PluginUser) {}
+	ZeroADGameData() : Plugin(gloox::Jingle::PluginUser) {}
 
-	ZeroAdGameData(const gloox::Tag* tag) : Plugin(gloox::Jingle::PluginUser)
+	ZeroADGameData(const gloox::Tag* tag) : Plugin(gloox::Jingle::PluginUser)
 	{
 	}
 
@@ -333,12 +333,12 @@ public:
 
 	Plugin* newInstance(const gloox::Tag* tag) const
 	{
-		return new ZeroAdGameData(tag);
+		return new ZeroADGameData(tag);
 	}
 
 	Plugin* clone() const
 	{
-		return new ZeroAdGameData(*this);
+		return new ZeroADGameData(*this);
 	}
 };
 
@@ -840,7 +840,7 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
 
-	const ZeroAdGameData *gameData = static_cast<const ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
+	const ZeroADGameData *gameData = static_cast<const ZeroADGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
 	if (gameData == NULL)
 	{
 		printf("Failed to retrieve Jingle game data\n");
@@ -860,7 +860,7 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 
 bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, uint16_t port)
 {
-	ZeroAdGameData *gameData = new ZeroAdGameData();
+	ZeroADGameData *gameData = new ZeroADGameData();
 
 	gloox::Jingle::ICEUDP::CandidateList *candidateList = new gloox::Jingle::ICEUDP::CandidateList();
 
@@ -945,7 +945,7 @@ void glooxwrapper::SessionManager::registerPlugins()
 {
 	m_Wrapped->registerPlugin(new gloox::Jingle::Content());
 	m_Wrapped->registerPlugin(new gloox::Jingle::ICEUDP());
-	m_Wrapped->registerPlugin(new ZeroAdGameData());
+	m_Wrapped->registerPlugin(new ZeroADGameData());
 }
 
 glooxwrapper::Jingle::Session glooxwrapper::SessionManager::createSession(const JID& callee)
