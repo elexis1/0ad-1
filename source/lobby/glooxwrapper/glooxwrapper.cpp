@@ -283,8 +283,8 @@ public:
 	glooxwrapper::Jingle::SessionHandler* m_Wrapped;
 	bool m_Owned;
 
-	SessionHandlerWrapper(glooxwrapper::Jingle::SessionHandler* wrapped, bool owned) :
-		m_Wrapped(wrapped), m_Owned(owned) {}
+	SessionHandlerWrapper(glooxwrapper::Jingle::SessionHandler* wrapped, bool owned)
+		: m_Wrapped(wrapped), m_Owned(owned) {}
 
 	virtual void handleSessionAction(gloox::Jingle::Action action, gloox::Jingle::Session* session, const gloox::Jingle::Session::Jingle* jingle)
 	{
@@ -317,10 +317,10 @@ class ZeroAdGameData : public gloox::Jingle::Plugin
 public:
 	ZeroAdGameData() : Plugin(gloox::Jingle::PluginUser) {}
 
-	ZeroAdGameData(const gloox::Tag* tag) : Plugin(gloox::Jingle::PluginUser) {
-		if (!tag) {
+	ZeroAdGameData(const gloox::Tag* tag) : Plugin(gloox::Jingle::PluginUser)
+	{
+		if (!tag)
 			return;
-		}
 	}
 
 	const std::string& filterString() const {
@@ -333,11 +333,13 @@ public:
 		return r;
 	}
 
-	Plugin* newInstance(const gloox::Tag* tag) const {
+	Plugin* newInstance(const gloox::Tag* tag) const
+	{
 		return new ZeroAdGameData(tag);
 	}
 
-	Plugin* clone() const {
+	Plugin* clone() const
+	{
 		return new ZeroAdGameData(*this);
 	}
 };
@@ -834,20 +836,26 @@ const glooxwrapper::Jingle::PluginList glooxwrapper::Jingle::Session::Jingle::pl
 glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::getCandidate() const
 {
 	const gloox::Jingle::Content *content = static_cast<const gloox::Jingle::Content*>(m_Wrapped->plugins().front());
-	if (content == NULL) {
+	if (content == NULL)
+	{
 		printf("Failed to retrieve Jingle content\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
+
 	const ZeroAdGameData *gameData = static_cast<const ZeroAdGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
-	if (gameData == NULL) {
+	if (gameData == NULL)
+	{
 		printf("Failed to retrieve Jingle game data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
+
 	const gloox::Jingle::ICEUDP *iceUdp = static_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
-	if (iceUdp == NULL) {
+	if (iceUdp == NULL)
+	{
 		printf("Failed to retrieve Jingle ICE-UDP data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
+
 	gloox::Jingle::ICEUDP::Candidate glooxCandidate = iceUdp->candidates().front();
 	return glooxwrapper::Jingle::ICEUDP::Candidate{glooxCandidate.ip, glooxCandidate.port};
 }
@@ -859,10 +867,20 @@ bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, uint16_t port)
 	gloox::Jingle::ICEUDP::CandidateList *candidateList = new gloox::Jingle::ICEUDP::CandidateList();
 
 	candidateList->push_back(gloox::Jingle::ICEUDP::Candidate
-	   {/*component_id*/"1", /*foundation*/"1",
-		/*candidate_generation*/"0", /*candidate_id*/"1",
-		ipStr, /*network*/"", port,
-		/*priotiry*/0, "udp", /*base_ip*/"", /*base_port*/0, /*type*/gloox::Jingle::ICEUDP::ServerReflexive });
+	{
+		/*component_id*/ "1",
+		/*foundation*/ "1",
+		/*candidate_generation*/ "0",
+		/*candidate_id*/ "1",
+		ipStr,
+		/*network*/ "",
+		port,
+		/*priotiry*/ 0,
+		"udp",
+		/*base_ip*/ "",
+		/*base_port*/ 0,
+		/*type*/ gloox::Jingle::ICEUDP::ServerReflexive
+	});
 
 	gloox::Jingle::ICEUDP *iceUdp = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", *candidateList);
 
@@ -880,10 +898,20 @@ glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList
 	gloox::Jingle::ICEUDP::CandidateList glooxCandidates;
 	for (const glooxwrapper::Jingle::ICEUDP::Candidate candidate: candidates)
 		glooxCandidates.push_back(gloox::Jingle::ICEUDP::Candidate
-				{/*component_id*/"1", /*foundation*/"1",
-				/*candidate_generation*/"0", /*candidate_id*/"1",
-				candidate.ip.to_string(), /*network*/"", candidate.port,
-				/*priotiry*/0, "udp", /*base_ip*/"", /*base_port*/0, /*type*/gloox::Jingle::ICEUDP::ServerReflexive});
+			{
+				/*component_id*/ "1",
+				/*foundation*/ "1",
+				/*candidate_generation*/ "0",
+				/*candidate_id*/ "1",
+				candidate.ip.to_string(),
+				/*network*/ "",
+				candidate.port,
+				/*priotiry*/0, "udp",
+				/*base_ip*/ "",
+				/*base_port*/ 0,
+				/*type*/ gloox::Jingle::ICEUDP::ServerReflexive
+			});
+
 	m_Wrapped = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", glooxCandidates);
 	m_Owned = true;
 }
@@ -927,5 +955,3 @@ glooxwrapper::Jingle::Session glooxwrapper::SessionManager::createSession(const 
 	gloox::Jingle::Session* glooxSession = m_Wrapped->createSession(callee.getWrapped(), m_HandlerWrapper);
 	return glooxwrapper::Jingle::Session(glooxSession, false);
 }
-
-

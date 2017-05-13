@@ -1111,9 +1111,8 @@ void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, c
 
 void XmppClient::handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *UNUSED(session), const glooxwrapper::Jingle::Session::Jingle *jingle)
 {
-	if (action != gloox::Jingle::SessionInitiate) {
+	if (action != gloox::Jingle::SessionInitiate)
 		return;
-	}
 
 	ProcessJingleData(jingle);
 }
