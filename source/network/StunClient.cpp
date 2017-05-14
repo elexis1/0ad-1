@@ -150,7 +150,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	// sendRawPacket
 	struct sockaddr_in to;
 	int to_len = sizeof(to);
-	memset(&to,0,to_len);
+	memset(&to, 0, to_len);
 
 	to.sin_family = AF_INET;
 	to.sin_port = htons(targetPort);
@@ -192,7 +192,7 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 
 	int count = 0;
 	// wait to receive the message because enet sockets are non-blocking
-	while(len < 0 && (count<max_tries || max_tries==-1))
+	while (len < 0 && (count<max_tries || max_tries==-1))
 	{
 		++count;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
