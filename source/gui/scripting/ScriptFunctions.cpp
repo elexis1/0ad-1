@@ -379,8 +379,17 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	ENetHost* enetClient = nullptr;
 	if (stunEnabled)
 	{
+		// By default we are binding client to the same port as host (20595),
+		// if there are multiple 0ad instances running on the same machine
+		// (host + client or multiple STUN-enabled clients), this will fail
+		// (with enet_host_create returning null as a result),
+		// so we are also trying a couple of subsequent ports.
 		ENetAddress hostAddr{ENET_HOST_ANY, 20595};
-		enetClient = enet_host_create(&hostAddr, 1, 1, 0, 0);
+		for (int i = 0; i < 3 && enetClient == nullptr; ++i)
+		{
+			enetClient = enet_host_create(&hostAddr, 1, 1, 0, 0);
+			hostAddr.port++;
+		}
 
 		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpoint(enetClient);
 		g_XmppClient->SendStunEndpointToHost(stunEndpoint, hostJID);
