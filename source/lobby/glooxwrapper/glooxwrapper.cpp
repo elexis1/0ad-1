@@ -826,7 +826,7 @@ glooxwrapper::Jingle::Content::Content()
 const glooxwrapper::Jingle::PluginList glooxwrapper::Jingle::Session::Jingle::plugins() const
 {
 	glooxwrapper::Jingle::PluginList pluginListWrapper;
-	for (const gloox::Jingle::Plugin* const& plugin: m_Wrapped->plugins())
+	for (const gloox::Jingle::Plugin* const& plugin : m_Wrapped->plugins())
 		pluginListWrapper.push_back(new glooxwrapper::Jingle::Plugin(const_cast<gloox::Jingle::Plugin*>(plugin), false));
 	return pluginListWrapper;
 }
@@ -894,7 +894,7 @@ glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList
 	: glooxwrapper::Jingle::Plugin(NULL, false)
 {
 	gloox::Jingle::ICEUDP::CandidateList glooxCandidates;
-	for (const glooxwrapper::Jingle::ICEUDP::Candidate candidate: candidates)
+	for (const glooxwrapper::Jingle::ICEUDP::Candidate candidate : candidates)
 		glooxCandidates.push_back(gloox::Jingle::ICEUDP::Candidate
 			{
 				/*component_id*/ "1",
@@ -924,7 +924,7 @@ glooxwrapper::Jingle::ICEUDP::ICEUDP()
 const glooxwrapper::Jingle::ICEUDP::CandidateList glooxwrapper::Jingle::ICEUDP::candidates() const
 {
 	glooxwrapper::Jingle::ICEUDP::CandidateList candidateListWrapper;
-	for (const gloox::Jingle::ICEUDP::Candidate candidate: static_cast<const gloox::Jingle::ICEUDP*>(m_Wrapped)->candidates())
+	for (const gloox::Jingle::ICEUDP::Candidate candidate : static_cast<const gloox::Jingle::ICEUDP*>(m_Wrapped)->candidates())
 		candidateListWrapper.push_back(glooxwrapper::Jingle::ICEUDP::Candidate{candidate.ip, candidate.port});
 	return candidateListWrapper;
 }
