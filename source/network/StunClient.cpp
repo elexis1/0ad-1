@@ -57,7 +57,7 @@ void addUInt32(std::vector<uint8_t>& m_buffer, const uint32_t& value)
 	m_buffer.push_back((value >> 16) & 0xff);
 	m_buffer.push_back((value >>  8) & 0xff);
 	m_buffer.push_back( value        & 0xff);
-}   // addUInt32
+}
 
 template<typename T, size_t n>
 T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
@@ -148,10 +148,10 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	to.sin_addr.s_addr = htonl(targetIp);
 
 	LOGMESSAGERENDER("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d",
-		((targetIp >> 24) & 0xff),
-		((targetIp >> 16) & 0xff),
-		((targetIp >>  8) & 0xff),
-		((targetIp >>  0) & 0xff),
+		(targetIp >> 24) & 0xff,
+		(targetIp >> 16) & 0xff,
+		(targetIp >>  8) & 0xff,
+		(targetIp >>  0) & 0xff,
 		targetPort);
 
 	int send_result = sendto(transactionHost->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0, (sockaddr*)&to, to_len);
@@ -206,8 +206,10 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	if (sender_ip != m_StunServerIP)
 		LOGMESSAGERENDER("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s",
 			addr.sin_addr.s_addr, addr.sin_port,
-			((sender_ip >> 24) & 0xff), ((sender_ip >> 16) & 0xff),
-			((sender_ip >>  8) & 0xff), ((sender_ip >>  0) & 0xff),
+			(sender_ip >> 24) & 0xff,
+			(sender_ip >> 16) & 0xff,
+			(sender_ip >>  8) & 0xff,
+			(sender_ip >>  0) & 0xff,
 			sender_port, buffer);
 
 	if (len < 0)
@@ -266,8 +268,10 @@ std::string parseStunResponse(ENetHost* transactionHost)
 
 			// finished parsing, we know our public transport address
 			LOGMESSAGERENDER("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d",
-				((m_IP >> 24) & 0xff), ((m_IP >> 16) & 0xff),
-				((m_IP >>  8) & 0xff), ((m_IP >>  0) & 0xff),
+				(m_IP >> 24) & 0xff,
+				(m_IP >> 16) & 0xff,
+				(m_IP >>  8) & 0xff,
+				(m_IP >>  0) & 0xff,
 				m_Port);
 			break;
 		}
