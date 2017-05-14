@@ -34,14 +34,12 @@
 #  include <netdb.h>
 #endif
 
-#include "lib/external_libraries/enet.h"
-
-#include <string>
 #include <vector>
 
+#include "lib/external_libraries/enet.h"
+#include "scriptinterface/ScriptInterface.h"
 #include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
-#include "scriptinterface/ScriptInterface.h"
 
 unsigned int m_StunServerIP;
 static const int m_StunServerPort = 3478;
