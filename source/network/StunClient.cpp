@@ -31,10 +31,10 @@
 #include "ps/ConfigDB.h"
 #include "scriptinterface/ScriptInterface.h"
 
-unsigned int m_stun_server_ip;
-static const int m_stun_server_port = 3478;
-const uint32_t m_stun_magic_cookie = 0x2112A442;
-uint8_t m_stun_tansaction_id[12];
+unsigned int m_StunServerIP;
+static const int m_StunServerPort = 3478;
+const uint32_t m_StunMagicCookie = 0x2112A442;
+uint8_t m_StunTransactionID[12];
 
 /**
  * Discovered STUN endpoint
@@ -104,7 +104,7 @@ void createStunRequest(ENetHost* transactionHost)
 	// documentation says it points to "one or more addrinfo structures"
 	ENSURE(res != NULL);
 	struct sockaddr_in* current_interface = (struct sockaddr_in*)(res->ai_addr);
-	m_stun_server_ip = ntohl(current_interface->sin_addr.s_addr);
+	m_StunServerIP = ntohl(current_interface->sin_addr.s_addr);
 
 	if (transactionHost == NULL)
 	{
@@ -112,7 +112,7 @@ void createStunRequest(ENetHost* transactionHost)
 		return;
 	}
 
-	StunClient::SendStunRequest(transactionHost, m_stun_server_ip, m_stun_server_port);
+	StunClient::SendStunRequest(transactionHost, m_StunServerIP, m_StunServerPort);
 
 	freeaddrinfo(res);
 }
@@ -134,7 +134,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	{
 		uint8_t random_byte = rand() % 256;
 		m_buffer.push_back(random_byte);
-		m_stun_tansaction_id[i] = random_byte;
+		m_StunTransactionID[i] = random_byte;
 	}
 	//m_buffer.push_back(0); -- this breaks STUN message
 
@@ -203,14 +203,12 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	uint32_t sender_ip = ntohl((uint32_t)(addr.sin_addr.s_addr));
 	uint16_t sender_port = ntohs(addr.sin_port);
 
-	if (sender_ip != m_stun_server_ip)
-	{
+	if (sender_ip != m_StunServerIP)
 		LOGMESSAGERENDER("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s",
 			addr.sin_addr.s_addr, addr.sin_port,
 			((sender_ip >> 24) & 0xff), ((sender_ip >> 16) & 0xff),
 			((sender_ip >>  8) & 0xff), ((sender_ip >>  0) & 0xff),
 			sender_port, buffer);
-	}
 
 	if (len < 0)
 		return "STUN response contains no data at all";
@@ -232,11 +230,11 @@ std::string parseStunResponse(ENetHost* transactionHost)
 		return "STUN response has incorrect type";
 
 	int message_size = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-	if (getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset) != m_stun_magic_cookie)
+	if (getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset) != m_StunMagicCookie)
 		return "STUN response doesn't contain the magic cookie";
 
 	for (int i = 0; i < 12; ++i)
-		if (m_buffer[m_current_offset++] != m_stun_tansaction_id[i])
+		if (m_buffer[m_current_offset++] != m_StunTransactionID[i])
 			return "STUN response doesn't contain the transaction ID";
 
 	LOGERROR("GetPublicAddress: The STUN server responded with a valid answer");
