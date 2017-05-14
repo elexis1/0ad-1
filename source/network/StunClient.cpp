@@ -22,8 +22,6 @@
 #  include <netdb.h>
 #endif
 
-#include <assert.h>
-
 #include "lib/external_libraries/enet.h"
 
 #include <string>
@@ -101,7 +99,7 @@ void createStunRequest(ENetHost* transactionHost)
 		return;
 	}
 	// documentation says it points to "one or more addrinfo structures"
-	assert(res != NULL);
+	ENSURE(res != NULL);
 	struct sockaddr_in* current_interface = (struct sockaddr_in*)(res->ai_addr);
 	m_stun_server_ip = ntohl(current_interface->sin_addr.s_addr);
 
@@ -262,8 +260,8 @@ std::string parseStunResponse(ENetHost* transactionHost)
 		int size = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 		if (type == 0 || type == 1)
 		{
-			assert(size == 8);
-			m_current_offset++;  // skip 1 byte
+			ENSURE(size == 8);
+			++m_current_offset;
 
 			// Check address family
 			char address_family = m_buffer[m_current_offset++];
@@ -281,8 +279,7 @@ std::string parseStunResponse(ENetHost* transactionHost)
 		}   // type = 0 or 1
 		// datas.skip(4 + size);
 		m_current_offset += 4 + size;
-		assert(m_current_offset >=0 &&
-		       m_current_offset < (int)m_buffer.size());
+		ENSURE(m_current_offset >=0 && m_current_offset < (int)m_buffer.size());
 
 		message_size -= 4 + size;
 		if (message_size == 0)
