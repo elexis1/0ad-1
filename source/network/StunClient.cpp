@@ -1,5 +1,5 @@
 /*
- * Note: the code is extracted from SuperTuxKart:
+ * The code is extracted from SuperTuxKart:
  * https://github.com/supertuxkart/stk-code
  */
 #include "precompiled.h"
@@ -35,7 +35,9 @@ unsigned int m_stun_server_ip;
 const uint32_t m_stun_magic_cookie = 0x2112A442;
 uint8_t m_stun_tansaction_id[12];
 
-// Discovered STUN endpoint
+/**
+ * Discovered STUN endpoint
+ */
 uint32_t m_ip;
 uint16_t m_port;
 
@@ -43,10 +45,11 @@ void addUInt16(std::vector<uint8_t>& m_buffer, const uint16_t value)
 {
 	m_buffer.push_back((value >> 8) & 0xff);
 	m_buffer.push_back(value & 0xff);
-}   // addUInt16
+}
 
-// ------------------------------------------------------------------------
-/** Adds unsigned 32 bit integer. */
+/**
+ * Adds unsigned 32 bit integer.
+ */
 void addUInt32(std::vector<uint8_t>& m_buffer, const uint32_t& value)
 {
 	m_buffer.push_back((value >> 24) & 0xff);
@@ -64,19 +67,18 @@ T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
 	int offset = m_current_offset -1;
 	while (a--)
 	{
-		result <<= 8; // offset one byte
-		// add the data to result
+		result <<= 8;
 		result += m_buffer[offset - a];
 	}
 	return result;
 }
 
-// ----------------------------------------------------------------------------
-/** Creates a STUN request and sends it to a STUN server.
- *  See https://tools.ietf.org/html/rfc5389#section-6
- *  for details on the message structure.
- *  The request is send through m_transaction_host, from which the answer
- *  will be retrieved by parseStunResponse()
+/**
+ * Creates a STUN request and sends it to a STUN server.
+ * See https://tools.ietf.org/html/rfc5389#section-6
+ * for details on the message structure.
+ * The request is send through m_transaction_host, from which the answer
+ * will be retrieved by parseStunResponse()
  */
 void createStunRequest(ENetHost* transactionHost)
 {
@@ -112,7 +114,7 @@ void createStunRequest(ENetHost* transactionHost)
 	StunClient::SendStunRequest(transactionHost, m_stun_server_ip, m_stun_server_port);
 
 	freeaddrinfo(res);
-}   // createStunRequest
+}
 
 void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort) {
 	// Assemble the message for the stun server
@@ -125,6 +127,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	addUInt16(m_buffer, message_type);
 	addUInt16(m_buffer, message_length);
 	addUInt32(m_buffer, 0x2112A442);
+
 	// bytes 8-19: the transaction id
 	for (int i = 0; i < 12; i++)
 	{
@@ -133,7 +136,6 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 		m_stun_tansaction_id[i] = random_byte;
 	}
 	//m_buffer.push_back(0); -- this breaks STUN message
-
 
 	// sendRawPacket
 	struct sockaddr_in to;
@@ -154,7 +156,6 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	printf("GetPublicAddress: sendto result: %d\n", send_result);
 }
 
-// ----------------------------------------------------------------------------
 /**
  * Gets the response from the STUN server, checks it for its validity and
  * then parses the answer into address and port
@@ -165,7 +166,6 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	// TransportAddress sender;
 	const int LEN = 2048;
 	char buffer[LEN];
-
 
 	// receiveRawPacket
 	// int len = m_transaction_host->receiveRawPacket(buffer, LEN, &sender, 2000);
@@ -197,7 +197,6 @@ std::string parseStunResponse(ENetHost* transactionHost)
 		printf("GetPublicAddress: recvfrom error: %d\n", err);
 	}
 
-	// No message received
 	if (len < 0)
 		return "No message received";
 
@@ -276,8 +275,8 @@ std::string parseStunResponse(ENetHost* transactionHost)
 			       ((m_ip >>  8) & 0xff), ((m_ip >>  0) & 0xff),
 			       m_port);
 			break;
-		}   // type = 0 or 1
-		// datas.skip(4 + size);
+		}
+
 		m_current_offset += 4 + size;
 		ENSURE(m_current_offset >=0 && m_current_offset < (int)m_buffer.size());
 
@@ -286,10 +285,10 @@ std::string parseStunResponse(ENetHost* transactionHost)
 			return "STUN response is invalid.";
 		if (message_size < 4) // cannot even read the size
 			return "STUN response is invalid.";
-	}   // while true
+	}
 
 	return "";
-}   // parseStunResponse
+}
 
 JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int port)
 {
