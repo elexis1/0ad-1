@@ -179,21 +179,19 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	socklen_t from_len = sizeof(addr);
 
 	int err;
-	int len = recvfrom(transactionHost->socket, buffer, LEN, 0,
-	                   (struct sockaddr*)(&addr), &from_len);
+	int len = recvfrom(transactionHost->socket, buffer, LEN, 0, (struct sockaddr*)(&addr), &from_len);
 
 	int count = 0;
 	// wait to receive the message because enet sockets are non-blocking
-	while(len < 0 && (count<max_tries || max_tries==-1) )
+	while(len < 0 && (count<max_tries || max_tries==-1))
 	{
-		count++;
+		++count;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		len = recvfrom(transactionHost->socket, buffer, LEN, 0,
-		        (struct sockaddr*)(&addr), &from_len);
+		len = recvfrom(transactionHost->socket, buffer, LEN, 0, (struct sockaddr*)(&addr), &from_len);
 	}
-	if (len == -1) {
+
+	if (len == -1)
 		err = errno;
-	}
 	LOGERROR("GetPublicAddress: recvfrom result: %d", len);
 
 	if (len == -1)
@@ -205,8 +203,7 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	uint32_t sender_ip = ntohl((uint32_t)(addr.sin_addr.s_addr));
 	uint16_t sender_port = ntohs(addr.sin_port);
 
-
-	if(sender_ip != m_stun_server_ip)
+	if (sender_ip != m_stun_server_ip)
 	{
 		LOGMESSAGERENDER("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s",
 			addr.sin_addr.s_addr, addr.sin_port,
@@ -215,7 +212,7 @@ std::string parseStunResponse(ENetHost* transactionHost)
 			sender_port, buffer);
 	}
 
-	if (len<0)
+	if (len < 0)
 		return "STUN response contains no data at all";
 
 	// Convert to network string.
@@ -233,28 +230,25 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	// and the transaction ID
 	if (getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset) != 0x0101)
 		return "STUN response has incorrect type";
+
 	int message_size = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 	if (getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset) != m_stun_magic_cookie)
-	{
 		return "STUN response doesn't contain the magic cookie";
-	}
 
-	for (int i = 0; i < 12; i++)
-	{
+	for (int i = 0; i < 12; ++i)
 		if (m_buffer[m_current_offset++] != m_stun_tansaction_id[i])
 			return "STUN response doesn't contain the transaction ID";
-	}
 
 	LOGERROR("GetPublicAddress: The STUN server responded with a valid answer");
 
 	// The stun message is valid, so we parse it now:
 	if (message_size == 0)
 		return "STUN response does not contain any information.";
-	if (message_size < 4) // cannot even read the size
+
+	if (message_size < 4)
 		return "STUN response is too short.";
 
 	// Those are the port and the address to be detected
-
 	while (true)
 	{
 		int type = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
@@ -270,7 +264,8 @@ std::string parseStunResponse(ENetHost* transactionHost)
 				return "Unsupported address family, IPv4 is expected";
 
 			m_port = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-			m_ip   = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
+			m_ip = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
+
 			// finished parsing, we know our public transport address
 			LOGMESSAGERENDER("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d",
 				((m_ip >> 24) & 0xff), ((m_ip >> 16) & 0xff),
