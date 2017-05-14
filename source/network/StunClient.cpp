@@ -39,8 +39,8 @@ uint8_t m_stun_tansaction_id[12];
 /**
  * Discovered STUN endpoint
  */
-uint32_t m_ip;
-uint16_t m_port;
+uint32_t m_IP;
+uint16_t m_Port;
 
 void addUInt16(std::vector<uint8_t>& m_buffer, const uint16_t value)
 {
@@ -263,14 +263,14 @@ std::string parseStunResponse(ENetHost* transactionHost)
 			if (address_family != 0x01)
 				return "Unsupported address family, IPv4 is expected";
 
-			m_port = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-			m_ip = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
+			m_Port = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
+			m_IP = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
 
 			// finished parsing, we know our public transport address
 			LOGMESSAGERENDER("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d",
-				((m_ip >> 24) & 0xff), ((m_ip >> 16) & 0xff),
-				((m_ip >>  8) & 0xff), ((m_ip >>  0) & 0xff),
-				m_port);
+				((m_IP >> 24) & 0xff), ((m_IP >> 16) & 0xff),
+				((m_IP >>  8) & 0xff), ((m_IP >>  0) & 0xff),
+				m_Port);
 			break;
 		}
 
@@ -301,10 +301,10 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 	if (!parse_result.empty())
 		LOGERROR("Parse error: %s", parse_result.c_str());
 
-	// Convert m_ip to string
+	// Convert m_IP to string
 	char ipStr[256] = "(error)";
 	ENetAddress addr;
-	addr.host = ntohl(m_ip);
+	addr.host = ntohl(m_IP);
 	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
 	JSContext* cx = scriptInterface.GetContext();
@@ -313,7 +313,7 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 	JS::RootedValue stunEndpoint(cx);
 	scriptInterface.Eval("({})", &stunEndpoint);
 	scriptInterface.SetProperty(stunEndpoint, "ip", std::string(ipStr));
-	scriptInterface.SetProperty(stunEndpoint, "port", m_port);
+	scriptInterface.SetProperty(stunEndpoint, "port", m_Port);
 	return stunEndpoint;
 }
 
@@ -324,15 +324,15 @@ StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
 	if (!parse_result.empty())
 		LOGERROR("Parse error: %s", parse_result.c_str());
 
-	// Convert m_ip to string
+	// Convert m_IP to string
 	char ipStr[256] = "(error)";
 	ENetAddress addr;
-	addr.host = ntohl(m_ip);
+	addr.host = ntohl(m_IP);
 	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
 	StunEndpoint stunEndpoint;
-	stunEndpoint.ip = m_ip;
-	stunEndpoint.port = m_port;
+	stunEndpoint.ip = m_IP;
+	stunEndpoint.port = m_Port;
 	return stunEndpoint;
 }
 
