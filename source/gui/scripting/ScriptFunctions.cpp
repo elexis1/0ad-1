@@ -374,14 +374,12 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	ENSURE(!g_NetServer);
 	ENSURE(!g_Game);
 
-	bool stunEnabled;
+	bool stunEnabled(false);
 	CFG_GET_VAL("stun.enabled", stunEnabled);
-	ENetHost* enetClient = NULL;
+	ENetHost* enetClient = nullptr;
 	if (stunEnabled)
 	{
-		ENetAddress hostAddr;
-		hostAddr.host = ENET_HOST_ANY;
-		hostAddr.port = 20595;
+		ENetAddress hostAddr{ENET_HOST_ANY, 20595};
 		enetClient = enet_host_create(&hostAddr, 1, 1, 0, 0);
 
 		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpoint(enetClient);

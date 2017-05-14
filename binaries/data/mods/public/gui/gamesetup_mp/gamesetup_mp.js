@@ -22,6 +22,10 @@ var g_IsRejoining = false;
 var g_GameAttributes; // used when rejoining
 var g_PlayerAssignments; // used when rejoining
 var g_UserRating;
+
+/**
+ * Object containing the IP address and port of the stun server.
+ */
 var g_StunEndpoint;
 
 function init(attribs)

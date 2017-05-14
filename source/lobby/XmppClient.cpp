@@ -1098,7 +1098,7 @@ std::string XmppClient::RegistrationResultToString(gloox::RegistrationResult res
 }
 
 
-void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint stunEndpoint, const std::string& hostJIDStr)
+void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint& stunEndpoint, const std::string& hostJIDStr)
 {
 	glooxwrapper::JID hostJID(hostJIDStr);
 	glooxwrapper::Jingle::Session session = m_sessionManager->createSession(hostJID);
