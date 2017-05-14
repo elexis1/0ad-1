@@ -87,14 +87,15 @@ void CreateStunRequest(ENetHost* transactionHost)
 	CFG_GET_VAL("stun.server", server_name);
 	LOGMESSAGERENDER("GetPublicAddress: Using STUN server %s", server_name.c_str());
 
-	struct addrinfo hints, *res;
+	addrinfo hints;
+	addrinfo* res;
 
-	memset(&hints, 0, sizeof hints);
+	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC; // AF_INET or AF_INET6 to force version
 	hints.ai_socktype = SOCK_STREAM;
 
 	// Resolve the stun server name so we can send it a STUN request
-	int status = getaddrinfo(server_name.c_str(), NULL, &hints, &res);
+	int status = getaddrinfo(server_name.c_str(), nullptr, &hints, &res);
 	if (status != 0)
 	{
 		LOGERROR("GetPublicAddress: Error in getaddrinfo: %s", gai_strerror(status));
@@ -102,11 +103,11 @@ void CreateStunRequest(ENetHost* transactionHost)
 	}
 
 	// documentation says it points to "one or more addrinfo structures"
-	ENSURE(res != NULL);
+	ENSURE(res != nullptr);
 	struct sockaddr_in* current_interface = (struct sockaddr_in*)(res->ai_addr);
 	m_StunServerIP = ntohl(current_interface->sin_addr.s_addr);
 
-	if (transactionHost == NULL)
+	if (transactionHost == nullptr)
 	{
 		LOGERROR("Failed to create enet host");
 		return;
@@ -224,7 +225,7 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 	memcpy(m_buffer.data(), (uint8_t*)buffer, len);
 
 	m_current_offset = 0;
-	// m_current_offset = 5;   // ignore type and token -- this breaks STUN response processing
+	// m_current_offset = 5; // ignore type and token -- this breaks STUN response processing
 
 	// check that the stun response is a response, contains the magic cookie
 	// and the transaction ID
