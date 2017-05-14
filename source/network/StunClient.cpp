@@ -42,7 +42,7 @@ uint8_t m_StunTransactionID[12];
 uint32_t m_IP;
 uint16_t m_Port;
 
-void addUInt16(std::vector<uint8_t>& m_buffer, const uint16_t value)
+void AddUInt16(std::vector<uint8_t>& m_buffer, const uint16_t value)
 {
 	m_buffer.push_back((value >> 8) & 0xff);
 	m_buffer.push_back(value & 0xff);
@@ -51,7 +51,7 @@ void addUInt16(std::vector<uint8_t>& m_buffer, const uint16_t value)
 /**
  * Adds unsigned 32 bit integer.
  */
-void addUInt32(std::vector<uint8_t>& m_buffer, const uint32_t& value)
+void AddUInt32(std::vector<uint8_t>& m_buffer, const uint32_t& value)
 {
 	m_buffer.push_back((value >> 24) & 0xff);
 	m_buffer.push_back((value >> 16) & 0xff);
@@ -60,7 +60,7 @@ void addUInt32(std::vector<uint8_t>& m_buffer, const uint32_t& value)
 }
 
 template<typename T, size_t n>
-T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
+T GetFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
 {
 	int a = n;
 	T result = 0;
@@ -79,9 +79,9 @@ T getFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
  * See https://tools.ietf.org/html/rfc5389#section-6
  * for details on the message structure.
  * The request is send through m_transaction_host, from which the answer
- * will be retrieved by parseStunResponse()
+ * will be retrieved by ParseStunResponse()
  */
-void createStunRequest(ENetHost* transactionHost)
+void CreateStunRequest(ENetHost* transactionHost)
 {
 	std::string server_name;
 	CFG_GET_VAL("stun.server", server_name);
@@ -125,9 +125,9 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	// bytes 2-3: message length added to header (attributes)
 	uint16_t message_type = 0x0001; // binding request
 	uint16_t message_length = 0x0000;
-	addUInt16(m_buffer, message_type);
-	addUInt16(m_buffer, message_length);
-	addUInt32(m_buffer, 0x2112A442);
+	AddUInt16(m_buffer, message_type);
+	AddUInt16(m_buffer, message_length);
+	AddUInt32(m_buffer, 0x2112A442);
 
 	// bytes 8-19: the transaction id
 	for (int i = 0; i < 12; i++)
@@ -163,7 +163,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
  * then parses the answer into address and port
  * \return "" if the address could be parsed or an error message
 */
-std::string parseStunResponse(ENetHost* transactionHost)
+std::string ParseStunResponse(ENetHost* transactionHost)
 {
 	// TransportAddress sender;
 	const int LEN = 2048;
@@ -228,11 +228,11 @@ std::string parseStunResponse(ENetHost* transactionHost)
 
 	// check that the stun response is a response, contains the magic cookie
 	// and the transaction ID
-	if (getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset) != 0x0101)
+	if (GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset) != 0x0101)
 		return "STUN response has incorrect type";
 
-	int message_size = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-	if (getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset) != m_StunMagicCookie)
+	int message_size = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
+	if (GetFromBuffer<uint32_t, 4>(m_buffer, m_current_offset) != m_StunMagicCookie)
 		return "STUN response doesn't contain the magic cookie";
 
 	for (int i = 0; i < 12; ++i)
@@ -251,8 +251,8 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	// Those are the port and the address to be detected
 	while (true)
 	{
-		int type = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-		int size = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
+		int type = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
+		int size = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 		if (type == 0 || type == 1)
 		{
 			ENSURE(size == 8);
@@ -263,8 +263,8 @@ std::string parseStunResponse(ENetHost* transactionHost)
 			if (address_family != 0x01)
 				return "Unsupported address family, IPv4 is expected";
 
-			m_Port = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-			m_IP = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
+			m_Port = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
+			m_IP = GetFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
 
 			// finished parsing, we know our public transport address
 			LOGMESSAGERENDER("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d",
@@ -296,8 +296,8 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 
 	ENetHost* transactionHost = enet_host_create(&hostAddr, 1, 1, 0, 0);
 
-	createStunRequest(transactionHost);
-	std::string parse_result = parseStunResponse(transactionHost);
+	CreateStunRequest(transactionHost);
+	std::string parse_result = ParseStunResponse(transactionHost);
 	enet_host_destroy(transactionHost);
 
 	if (!parse_result.empty())
@@ -321,8 +321,8 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 
 StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
 {
-	createStunRequest(transactionHost);
-	std::string parse_result = parseStunResponse(transactionHost);
+	CreateStunRequest(transactionHost);
+	std::string parse_result = ParseStunResponse(transactionHost);
 	if (!parse_result.empty())
 		LOGERROR("Parse error: %s", parse_result.c_str());
 
