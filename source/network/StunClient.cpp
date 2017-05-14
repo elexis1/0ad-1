@@ -111,7 +111,7 @@ void CreateStunRequest(ENetHost* transactionHost)
 
 	// documentation says it points to "one or more addrinfo structures"
 	ENSURE(res != nullptr);
-	struct sockaddr_in* current_interface = (struct sockaddr_in*)(res->ai_addr);
+	sockaddr_in* current_interface = (sockaddr_in*)(res->ai_addr);
 	m_StunServerIP = ntohl(current_interface->sin_addr.s_addr);
 
 	if (transactionHost == nullptr)
@@ -148,7 +148,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	//m_buffer.push_back(0); -- this breaks STUN message
 
 	// sendRawPacket
-	struct sockaddr_in to;
+	sockaddr_in to;
 	int to_len = sizeof(to);
 	memset(&to, 0, to_len);
 
@@ -184,11 +184,11 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 
 	memset(buffer, 0, LEN);
 
-	struct sockaddr_in addr;
+	sockaddr_in addr;
 	socklen_t from_len = sizeof(addr);
 
 	int err;
-	int len = recvfrom(transactionHost->socket, buffer, LEN, 0, (struct sockaddr*)(&addr), &from_len);
+	int len = recvfrom(transactionHost->socket, buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 
 	int count = 0;
 	// wait to receive the message because enet sockets are non-blocking
@@ -196,7 +196,7 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 	{
 		++count;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		len = recvfrom(transactionHost->socket, buffer, LEN, 0, (struct sockaddr*)(&addr), &from_len);
+		len = recvfrom(transactionHost->socket, buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
 
 	if (len == -1)
