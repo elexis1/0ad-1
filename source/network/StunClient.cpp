@@ -32,6 +32,7 @@
 #include "scriptinterface/ScriptInterface.h"
 
 unsigned int m_stun_server_ip;
+static const int m_stun_server_port = 3478;
 const uint32_t m_stun_magic_cookie = 0x2112A442;
 uint8_t m_stun_tansaction_id[12];
 
@@ -111,7 +112,6 @@ void createStunRequest(ENetHost* transactionHost)
 		return;
 	}
 
-	static const int m_stun_server_port = 3478;
 	StunClient::SendStunRequest(transactionHost, m_stun_server_ip, m_stun_server_port);
 
 	freeaddrinfo(res);
