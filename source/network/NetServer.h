@@ -134,7 +134,7 @@ public:
 	 */
 	void SetTurnLength(u32 msecs);
 
-	void SendHolePunchingMessage(std::string ip, int port);
+	void SendHolePunchingMessage(const CStr& ip, u16 port);
 
 private:
 	CNetServerWorker* m_Worker;
@@ -273,7 +273,7 @@ private:
 	 */
 	void CheckClientConnections();
 
-	void SendHolePunchingMessage(std::string ip, int port);
+	void SendHolePunchingMessage(const CStr& ip, u16 port);
 
 	/**
 	 * Internal script context for (de)serializing script messages,

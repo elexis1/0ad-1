@@ -1446,7 +1446,7 @@ CStrW CNetServerWorker::DeduplicatePlayerName(const CStrW& original)
 	}
 }
 
-void CNetServerWorker::SendHolePunchingMessage(std::string ipStr, int port)
+void CNetServerWorker::SendHolePunchingMessage(const CStr& ipStr, u16 port)
 {
 	StunClient::SendHolePunchingMessages(m_Host, ipStr.c_str(), port);
 }
@@ -1491,7 +1491,7 @@ void CNetServer::SetTurnLength(u32 msecs)
 	m_Worker->m_TurnLengthQueue.push_back(msecs);
 }
 
-void CNetServer::SendHolePunchingMessage(std::string ip, int port)
+void CNetServer::SendHolePunchingMessage(const CStr& ip, u16 port)
 {
 	m_Worker->SendHolePunchingMessage(ip, port);
 }
