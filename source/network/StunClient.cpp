@@ -48,9 +48,6 @@ void AddUInt16(std::vector<uint8_t>& m_buffer, const uint16_t value)
 	m_buffer.push_back(value & 0xff);
 }
 
-/**
- * Adds unsigned 32 bit integer.
- */
 void AddUInt32(std::vector<uint8_t>& m_buffer, const uint32_t& value)
 {
 	m_buffer.push_back((value >> 24) & 0xff);
@@ -118,7 +115,8 @@ void CreateStunRequest(ENetHost* transactionHost)
 	freeaddrinfo(res);
 }
 
-void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort) {
+void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort)
+{
 	// Assemble the message for the stun server
 	std::vector<uint8_t> m_buffer;
 

@@ -377,7 +377,8 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	bool stunEnabled;
 	CFG_GET_VAL("stun.enabled", stunEnabled);
 	ENetHost* enetClient = NULL;
-	if (stunEnabled) {
+	if (stunEnabled)
+	{
 		ENetAddress hostAddr;
 		hostAddr.host = ENET_HOST_ANY;
 		hostAddr.port = 20595;

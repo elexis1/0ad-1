@@ -1491,7 +1491,7 @@ void CNetServer::SetTurnLength(u32 msecs)
 	m_Worker->m_TurnLengthQueue.push_back(msecs);
 }
 
-
-void CNetServer::SendHolePunchingMessage(std::string ip, int port) {
+void CNetServer::SendHolePunchingMessage(std::string ip, int port)
+{
 	m_Worker->SendHolePunchingMessage(ip, port);
 }

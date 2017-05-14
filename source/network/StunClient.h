@@ -23,4 +23,4 @@ void SendHolePunchingMessages(ENetHost* enetClient, const char* serverAddress, u
 
 }
 
-#endif	// STUNCLIENT_H
+#endif // STUNCLIENT_H
