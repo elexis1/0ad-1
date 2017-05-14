@@ -278,9 +278,8 @@ std::string parseStunResponse(ENetHost* transactionHost)
 		ENSURE(m_current_offset >=0 && m_current_offset < (int)m_buffer.size());
 
 		message_size -= 4 + size;
-		if (message_size == 0)
-			return "STUN response is invalid.";
-		if (message_size < 4) // cannot even read the size
+
+		if (message_size < 4)
 			return "STUN response is invalid.";
 	}
 
