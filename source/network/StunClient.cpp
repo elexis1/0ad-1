@@ -84,7 +84,7 @@ void createStunRequest(ENetHost* transactionHost)
 {
 	std::string server_name;
 	CFG_GET_VAL("stun.server", server_name);
-	printf("GetPublicAddress: Using STUN server %s\n", server_name.c_str());
+	LOGMESSAGERENDER("GetPublicAddress: Using STUN server %s", server_name.c_str());
 
 	struct addrinfo hints, *res;
 
@@ -96,17 +96,18 @@ void createStunRequest(ENetHost* transactionHost)
 	int status = getaddrinfo(server_name.c_str(), NULL, &hints, &res);
 	if (status != 0)
 	{
-		printf("GetPublicAddress: Error in getaddrinfo: %s\n",
-		       gai_strerror(status));
+		LOGERROR("GetPublicAddress: Error in getaddrinfo: %s", gai_strerror(status));
 		return;
 	}
+
 	// documentation says it points to "one or more addrinfo structures"
 	ENSURE(res != NULL);
 	struct sockaddr_in* current_interface = (struct sockaddr_in*)(res->ai_addr);
 	m_stun_server_ip = ntohl(current_interface->sin_addr.s_addr);
 
-	if (transactionHost == NULL) {
-		printf("Failed to create enet host");
+	if (transactionHost == NULL)
+	{
+		LOGERROR("Failed to create enet host");
 		return;
 	}
 
@@ -146,14 +147,15 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	to.sin_port = htons(targetPort);
 	to.sin_addr.s_addr = htonl(targetIp);
 
-	printf("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d\n",
-	       ((targetIp >> 24) & 0xff), ((targetIp >> 16) & 0xff),
-	       ((targetIp >>  8) & 0xff), ((targetIp >>  0) & 0xff),
-	       targetPort);
+	LOGMESSAGERENDER("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d",
+		((targetIp >> 24) & 0xff),
+		((targetIp >> 16) & 0xff),
+		((targetIp >>  8) & 0xff),
+		((targetIp >>  0) & 0xff),
+		targetPort);
 
-	int send_result = sendto(transactionHost->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0,
-	       (sockaddr*)&to, to_len);
-	printf("GetPublicAddress: sendto result: %d\n", send_result);
+	int send_result = sendto(transactionHost->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0, (sockaddr*)&to, to_len);
+	LOGMESSAGERENDER("GetPublicAddress: sendto result: %d", send_result);
 }
 
 /**
@@ -192,10 +194,10 @@ std::string parseStunResponse(ENetHost* transactionHost)
 	if (len == -1) {
 		err = errno;
 	}
-	printf("GetPublicAddress: recvfrom result: %d\n", len);
-	if (len == -1) {
-		printf("GetPublicAddress: recvfrom error: %d\n", err);
-	}
+	LOGERROR("GetPublicAddress: recvfrom result: %d", len);
+
+	if (len == -1)
+		LOGERROR("GetPublicAddress: recvfrom error: %d", err);
 
 	if (len < 0)
 		return "No message received";
@@ -206,11 +208,11 @@ std::string parseStunResponse(ENetHost* transactionHost)
 
 	if(sender_ip != m_stun_server_ip)
 	{
-		printf("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s\n",
-		       addr.sin_addr.s_addr, addr.sin_port,
-		       ((sender_ip >> 24) & 0xff), ((sender_ip >> 16) & 0xff),
-		       ((sender_ip >>  8) & 0xff), ((sender_ip >>  0) & 0xff),
-		       sender_port, buffer);
+		LOGMESSAGERENDER("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s",
+			addr.sin_addr.s_addr, addr.sin_port,
+			((sender_ip >> 24) & 0xff), ((sender_ip >> 16) & 0xff),
+			((sender_ip >>  8) & 0xff), ((sender_ip >>  0) & 0xff),
+			sender_port, buffer);
 	}
 
 	if (len<0)
@@ -243,7 +245,7 @@ std::string parseStunResponse(ENetHost* transactionHost)
 			return "STUN response doesn't contain the transaction ID";
 	}
 
-	printf("GetPublicAddress: The STUN server responded with a valid answer\n");
+	LOGERROR("GetPublicAddress: The STUN server responded with a valid answer");
 
 	// The stun message is valid, so we parse it now:
 	if (message_size == 0)
@@ -270,10 +272,10 @@ std::string parseStunResponse(ENetHost* transactionHost)
 			m_port = getFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 			m_ip   = getFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
 			// finished parsing, we know our public transport address
-			printf("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d\n",
-			       ((m_ip >> 24) & 0xff), ((m_ip >> 16) & 0xff),
-			       ((m_ip >>  8) & 0xff), ((m_ip >>  0) & 0xff),
-			       m_port);
+			LOGMESSAGERENDER("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d",
+				((m_ip >> 24) & 0xff), ((m_ip >> 16) & 0xff),
+				((m_ip >>  8) & 0xff), ((m_ip >>  0) & 0xff),
+				m_port);
 			break;
 		}
 
@@ -303,7 +305,7 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 	enet_host_destroy(transactionHost);
 
 	if (!parse_result.empty())
-			printf("Parse error: %s\n", parse_result.c_str());
+		LOGERROR("Parse error: %s", parse_result.c_str());
 
 	// Convert m_ip to string
 	char ipStr[256] = "(error)";
@@ -326,7 +328,7 @@ StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
 	createStunRequest(transactionHost);
 	std::string parse_result = parseStunResponse(transactionHost);
 	if (!parse_result.empty())
-			printf("Parse error: %s\n", parse_result.c_str());
+		LOGERROR("Parse error: %s", parse_result.c_str());
 
 	// Convert m_ip to string
 	char ipStr[256] = "(error)";
@@ -346,8 +348,9 @@ void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serv
 	ENetAddress addr;
 	addr.port = serverPort;
 	enet_address_set_host(&addr, serverAddress);
+
 	// Send a UDP message from enet host to ip:port
-	LOGWARNING("Sending STUN request to %s:%d", serverAddress, serverPort);
+	LOGMESSAGERENDER("Sending STUN request to %s:%d", serverAddress, serverPort);
 	for (int i = 0; i < 3; ++i)
 	{
 		StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
