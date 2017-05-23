@@ -85,7 +85,7 @@ T GetFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
  * Creates a STUN request and sends it to a STUN server.
  * See https://tools.ietf.org/html/rfc5389#section-6
  * for details on the message structure.
- * The request is send through m_transaction_host, from which the answer
+ * The request is sent through m_transaction_host, from which the answer
  * will be retrieved by ParseStunResponse()
  */
 void CreateStunRequest(ENetHost* transactionHost)
@@ -156,7 +156,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	to.sin_port = htons(targetPort);
 	to.sin_addr.s_addr = htonl(targetIp);
 
-	LOGMESSAGERENDER("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d",
+	debug_printf("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d",
 		(targetIp >> 24) & 0xff,
 		(targetIp >> 16) & 0xff,
 		(targetIp >>  8) & 0xff,
@@ -164,7 +164,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 		targetPort);
 
 	int send_result = sendto(transactionHost->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0, (sockaddr*)&to, to_len);
-	LOGMESSAGERENDER("GetPublicAddress: sendto result: %d", send_result);
+	debug_printf("GetPublicAddress: sendto result: %d", send_result);
 }
 
 /**
