@@ -91,7 +91,7 @@ void CreateStunRequest(ENetHost* transactionHost)
 {
 	std::string server_name;
 	CFG_GET_VAL("stun.server", server_name);
-	LOGMESSAGERENDER("GetPublicAddress: Using STUN server %s", server_name.c_str());
+	debug_printf("GetPublicAddress: Using STUN server %s\n", server_name.c_str());
 
 	addrinfo hints;
 	addrinfo* res;
@@ -363,7 +363,7 @@ void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serv
 	enet_address_set_host(&addr, serverAddress);
 
 	// Send a UDP message from enet host to ip:port
-	LOGMESSAGERENDER("Sending STUN request to %s:%d", serverAddress, serverPort);
+	debug_printf("Sending STUN request to %s:%d\n", serverAddress, serverPort);
 	for (int i = 0; i < 3; ++i)
 	{
 		StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
