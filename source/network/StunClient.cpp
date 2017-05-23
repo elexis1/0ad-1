@@ -172,7 +172,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
  * then parses the answer into address and port
  * \return "" if the address could be parsed or an error message
 */
-std::string ParseStunResponse(ENetHost* transactionHost)
+bool ParseStunResponse(ENetHost* transactionHost)
 {
 	// TransportAddress sender;
 	const int LEN = 2048;
@@ -203,7 +203,7 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 	if (len < 0)
 	{
 		LOGERROR("GetPublicAddress: recvfrom error: %d", errno);
-		return "No message received";
+		return false;
 	}
 
 	uint32_t sender_ip = ntohl((uint32_t)(addr.sin_addr.s_addr));
@@ -219,10 +219,12 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 			sender_port, buffer);
 
 	if (len < 0)
-		return "STUN response contains no data at all";
+	{
+		LOGERROR("STUN response contains no data at all");
+		return false;
+	}
 
 	// Convert to network string.
-	// NetworkString datas((uint8_t*)buffer, len);
 	std::vector<uint8_t> m_buffer;
 	int m_current_offset;
 
@@ -230,35 +232,45 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 	memcpy(m_buffer.data(), (uint8_t*)buffer, len);
 
 	m_current_offset = 0;
+
 	// m_current_offset = 5; // ignore type and token -- this breaks STUN response processing
 
 	// check that the stun response is a response, contains the magic cookie
 	// and the transaction ID
 	if (GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset) != 0x0101)
-		return "STUN response has incorrect type";
+	{
+		LOGERROR("STUN response has incorrect type");
+		return false;
+	}
 
 	int message_size = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 	if (GetFromBuffer<uint32_t, 4>(m_buffer, m_current_offset) != m_StunMagicCookie)
-		return "STUN response doesn't contain the magic cookie";
+	{
+		LOGERROR("STUN response doesn't contain the magic cookie");
+		return false;
+	}
 
 	for (int i = 0; i < 12; ++i)
 		if (m_buffer[m_current_offset++] != m_StunTransactionID[i])
-			return "STUN response doesn't contain the transaction ID";
+		{
+			LOGERROR("STUN response doesn't contain the transaction ID");
+			return false;
+		}
 
-
-	// The stun message is valid, so we parse it now:
-	if (message_size == 0)
-		return "STUN response does not contain any information.";
 	debug_printf("GetPublicAddress: The STUN server responded with a valid answer");
 
 	if (message_size < 4)
-		return "STUN response is too short.";
+	{
+		LOGERROR("STUN response is too short");
+		return false;
+	}
 
 	// Those are the port and the address to be detected
 	while (true)
 	{
 		int type = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 		int size = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
+
 		if (type == 0 || type == 1)
 		{
 			ENSURE(size == 8);
@@ -267,7 +279,10 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 			// Check address family
 			char address_family = m_buffer[m_current_offset++];
 			if (address_family != 0x01)
-				return "Unsupported address family, IPv4 is expected";
+			{
+				LOGERROR("Unsupported address family, IPv4 is expected");
+				return false;
+			}
 
 			m_Port = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
 			m_IP = GetFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
@@ -288,10 +303,13 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 		message_size -= 4 + size;
 
 		if (message_size < 4)
-			return "STUN response is invalid.";
+		{
+			LOGERROR("STUN response is invalid");
+			return false;
+		}
 	}
 
-	return "";
+	return true;
 }
 
 JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int port)
@@ -303,11 +321,8 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 	ENetHost* transactionHost = enet_host_create(&hostAddr, 1, 1, 0, 0);
 
 	CreateStunRequest(transactionHost);
-	std::string parse_result = ParseStunResponse(transactionHost);
+	ParseStunResponse(transactionHost);
 	enet_host_destroy(transactionHost);
-
-	if (!parse_result.empty())
-		LOGERROR("Parse error: %s", parse_result.c_str());
 
 	// Convert m_IP to string
 	char ipStr[256] = "(error)";
@@ -328,9 +343,7 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
 {
 	CreateStunRequest(transactionHost);
-	std::string parse_result = ParseStunResponse(transactionHost);
-	if (!parse_result.empty())
-		LOGERROR("Parse error: %s", parse_result.c_str());
+	ParseStunResponse(transactionHost);
 
 	// Convert m_IP to string
 	char ipStr[256] = "(error)";
