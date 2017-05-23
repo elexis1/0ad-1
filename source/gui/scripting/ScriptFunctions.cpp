@@ -374,10 +374,8 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	ENSURE(!g_NetServer);
 	ENSURE(!g_Game);
 
-	bool stunEnabled(false);
-	CFG_GET_VAL("stun.enabled", stunEnabled);
 	ENetHost* enetClient = nullptr;
-	if (stunEnabled)
+	if (!hostJID.empty())
 	{
 		// By default we are binding client to the same port as host (20595),
 		// if there are multiple 0ad instances running on the same machine
@@ -403,7 +401,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	g_NetClient = new CNetClient(g_Game, false);
 	g_NetClient->SetUserName(playerName);
 
-	if (stunEnabled)
+	if (!hostJID.empty())
 		StunClient::SendHolePunchingMessages(enetClient, serverAddress.c_str(), serverPort);
 
 	if (!g_NetClient->SetupConnection(serverAddress, serverPort, enetClient))

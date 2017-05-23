@@ -29,12 +29,6 @@ const g_ModeratorPrefix = "@";
 const g_Username = Engine.LobbyGetNick();
 
 /**
- * If STUN is enabled for both host and client, we are using it
- * to discovered NAT-mapped host endpoint
- */
-const g_StunEnabled = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
-
-/**
  * Lobby server address to construct host JID
  */
 const g_LobbyServer = Engine.ConfigDB_GetValue("user", "lobby.server");
@@ -1001,7 +995,7 @@ function joinSelectedGame()
 
 	let ip;
 	let port;
-	if (g_StunEnabled && game.stunIP)
+	if (game.stunIP)
 	{
 		ip = game.stunIP;
 		port = game.stunPort;
