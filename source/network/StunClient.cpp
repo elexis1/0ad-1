@@ -156,7 +156,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 	to.sin_port = htons(targetPort);
 	to.sin_addr.s_addr = htonl(targetIp);
 
-	debug_printf("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d",
+	debug_printf("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d\n",
 		(targetIp >> 24) & 0xff,
 		(targetIp >> 16) & 0xff,
 		(targetIp >>  8) & 0xff,
@@ -164,7 +164,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 		targetPort);
 
 	int send_result = sendto(transactionHost->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0, (sockaddr*)&to, to_len);
-	debug_printf("GetPublicAddress: sendto result: %d", send_result);
+	debug_printf("GetPublicAddress: sendto result: %d\n", send_result);
 }
 
 /**
@@ -198,7 +198,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		len = recvfrom(transactionHost->socket, buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
 
-	debug_printf("GetPublicAddress: recvfrom result: %d", len);
+	debug_printf("GetPublicAddress: recvfrom result: %d\n", len);
 
 	if (len < 0)
 	{
@@ -257,7 +257,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			return false;
 		}
 
-	debug_printf("GetPublicAddress: The STUN server responded with a valid answer");
+	debug_printf("GetPublicAddress: The STUN server responded with a valid answer\n");
 
 	if (message_size < 4)
 	{
