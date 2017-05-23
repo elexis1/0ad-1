@@ -26,11 +26,11 @@ namespace StunClient
 {
 
 struct StunEndpoint {
-	uint32_t ip;
-	uint16_t port;
+	u32 ip;
+	u16 port;
 };
 
-void SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort);
+void SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 targetPort);
 
 JS::Value FindStunEndpoint(ScriptInterface& scriptInterface, int port);
 

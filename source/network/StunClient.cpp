@@ -43,40 +43,39 @@
 
 unsigned int m_StunServerIP;
 static const int m_StunServerPort = 3478;
-const uint32_t m_StunMagicCookie = 0x2112A442;
-uint8_t m_StunTransactionID[12];
+const u32 m_StunMagicCookie = 0x2112A442;
+u8 m_StunTransactionID[12];
 
 /**
  * Discovered STUN endpoint
  */
-uint32_t m_IP;
-uint16_t m_Port;
+u32 m_IP;
+u16 m_Port;
 
-void AddUInt16(std::vector<uint8_t>& m_buffer, const uint16_t value)
+void AddUInt16(std::vector<u8>& buffer, const u16 value)
 {
-	m_buffer.push_back((value >> 8) & 0xff);
-	m_buffer.push_back(value & 0xff);
+	buffer.push_back((value >> 8) & 0xff);
+	buffer.push_back(value & 0xff);
 }
 
-void AddUInt32(std::vector<uint8_t>& m_buffer, const uint32_t& value)
+void AddUInt32(std::vector<u8>& buffer, const u32& value)
 {
-	m_buffer.push_back((value >> 24) & 0xff);
-	m_buffer.push_back((value >> 16) & 0xff);
-	m_buffer.push_back((value >>  8) & 0xff);
-	m_buffer.push_back( value        & 0xff);
+	buffer.push_back((value >> 24) & 0xff);
+	buffer.push_back((value >> 16) & 0xff);
+	buffer.push_back((value >>  8) & 0xff);
+	buffer.push_back( value        & 0xff);
 }
 
 template<typename T, size_t n>
-T GetFromBuffer(std::vector<uint8_t> m_buffer, int& m_current_offset)
+T GetFromBuffer(std::vector<u8> buffer, int& offset)
 {
 	int a = n;
 	T result = 0;
-	m_current_offset += n;
-	int offset = m_current_offset -1;
+	offset += n;
 	while (a--)
 	{
 		result <<= 8;
-		result += m_buffer[offset - a];
+		result += buffer[offset - 1 - a];
 	}
 	return result;
 }
@@ -125,27 +124,27 @@ void CreateStunRequest(ENetHost* transactionHost)
 	freeaddrinfo(res);
 }
 
-void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, uint16_t targetPort)
+void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 targetPort)
 {
 	// Assemble the message for the stun server
-	std::vector<uint8_t> m_buffer;
+	std::vector<u8> buffer;
 
 	// bytes 0-1: the type of the message
 	// bytes 2-3: message length added to header (attributes)
-	uint16_t message_type = 0x0001; // binding request
-	uint16_t message_length = 0x0000;
-	AddUInt16(m_buffer, message_type);
-	AddUInt16(m_buffer, message_length);
-	AddUInt32(m_buffer, 0x2112A442);
+	u16 message_type = 0x0001; // binding request
+	u16 message_length = 0x0000;
+	AddUInt16(buffer, message_type);
+	AddUInt16(buffer, message_length);
+	AddUInt32(buffer, 0x2112A442);
 
 	// bytes 8-19: the transaction id
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 12; ++i)
 	{
-		uint8_t random_byte = rand() % 256;
-		m_buffer.push_back(random_byte);
+		u8 random_byte = rand() % 256;
+		buffer.push_back(random_byte);
 		m_StunTransactionID[i] = random_byte;
 	}
-	//m_buffer.push_back(0); -- this breaks STUN message
+	//buffer.push_back(0); -- this breaks STUN message
 
 	// sendRawPacket
 	sockaddr_in to;
@@ -163,7 +162,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, uint32_t targetIp, u
 		(targetIp >>  0) & 0xff,
 		targetPort);
 
-	int send_result = sendto(transactionHost->socket, (char*)(m_buffer.data()), (int)m_buffer.size(), 0, (sockaddr*)&to, to_len);
+	int send_result = sendto(transactionHost->socket, (char*)(buffer.data()), (int)buffer.size(), 0, (sockaddr*)&to, to_len);
 	debug_printf("GetPublicAddress: sendto result: %d\n", send_result);
 }
 
@@ -176,26 +175,23 @@ bool ParseStunResponse(ENetHost* transactionHost)
 {
 	// TransportAddress sender;
 	const int LEN = 2048;
-	char buffer[LEN];
+	char input_buffer[LEN];
 
-	// receiveRawPacket
-	// int len = m_transaction_host->receiveRawPacket(buffer, LEN, &sender, 2000);
 	int max_tries = 2000;
-
-	memset(buffer, 0, LEN);
+	memset(input_buffer, 0, LEN);
 
 	sockaddr_in addr;
 	socklen_t from_len = sizeof(addr);
 
-	int len = recvfrom(transactionHost->socket, buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
+	int len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 
 	int count = 0;
 	// wait to receive the message because enet sockets are non-blocking
-	while (len < 0 && (count<max_tries || max_tries==-1))
+	while (len < 0 && (count < max_tries || max_tries == -1))
 	{
 		++count;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		len = recvfrom(transactionHost->socket, buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
+		len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
 
 	debug_printf("GetPublicAddress: recvfrom result: %d\n", len);
@@ -206,17 +202,19 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		return false;
 	}
 
-	uint32_t sender_ip = ntohl((uint32_t)(addr.sin_addr.s_addr));
-	uint16_t sender_port = ntohs(addr.sin_port);
+	u32 sender_ip = ntohl((u32)(addr.sin_addr.s_addr));
+	u16 sender_port = ntohs(addr.sin_port);
 
 	if (sender_ip != m_StunServerIP)
 		LOGERROR("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s",
-			addr.sin_addr.s_addr, addr.sin_port,
+			addr.sin_addr.s_addr,
+			addr.sin_port,
 			(sender_ip >> 24) & 0xff,
 			(sender_ip >> 16) & 0xff,
 			(sender_ip >>  8) & 0xff,
 			(sender_ip >>  0) & 0xff,
-			sender_port, buffer);
+			sender_port,
+			input_buffer);
 
 	if (len < 0)
 	{
@@ -225,33 +223,33 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	}
 
 	// Convert to network string.
-	std::vector<uint8_t> m_buffer;
-	int m_current_offset;
+	std::vector<u8> buffer;
+	int offset;
 
-	m_buffer.resize(len);
-	memcpy(m_buffer.data(), (uint8_t*)buffer, len);
+	buffer.resize(len);
+	memcpy(buffer.data(), (u8*)input_buffer, len);
 
-	m_current_offset = 0;
+	offset = 0;
 
-	// m_current_offset = 5; // ignore type and token -- this breaks STUN response processing
+	// offset = 5; // ignore type and token -- this breaks STUN response processing
 
 	// check that the stun response is a response, contains the magic cookie
 	// and the transaction ID
-	if (GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset) != 0x0101)
+	if (GetFromBuffer<u16, 2>(buffer, offset) != 0x0101)
 	{
 		LOGERROR("STUN response has incorrect type");
 		return false;
 	}
 
-	int message_size = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-	if (GetFromBuffer<uint32_t, 4>(m_buffer, m_current_offset) != m_StunMagicCookie)
+	int message_size = GetFromBuffer<u16, 2>(buffer, offset);
+	if (GetFromBuffer<u32, 4>(buffer, offset) != m_StunMagicCookie)
 	{
 		LOGERROR("STUN response doesn't contain the magic cookie");
 		return false;
 	}
 
 	for (int i = 0; i < 12; ++i)
-		if (m_buffer[m_current_offset++] != m_StunTransactionID[i])
+		if (buffer[offset++] != m_StunTransactionID[i])
 		{
 			LOGERROR("STUN response doesn't contain the transaction ID");
 			return false;
@@ -268,24 +266,24 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	// Those are the port and the address to be detected
 	while (true)
 	{
-		int type = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-		int size = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
+		int type = GetFromBuffer<u16, 2>(buffer, offset);
+		int size = GetFromBuffer<u16, 2>(buffer, offset);
 
 		if (type == 0 || type == 1)
 		{
 			ENSURE(size == 8);
-			++m_current_offset;
+			++offset;
 
 			// Check address family
-			char address_family = m_buffer[m_current_offset++];
+			char address_family = buffer[offset++];
 			if (address_family != 0x01)
 			{
 				LOGERROR("Unsupported address family, IPv4 is expected");
 				return false;
 			}
 
-			m_Port = GetFromBuffer<uint16_t, 2>(m_buffer, m_current_offset);
-			m_IP = GetFromBuffer<uint32_t, 4>(m_buffer, m_current_offset);
+			m_Port = GetFromBuffer<u16, 2>(buffer, offset);
+			m_IP = GetFromBuffer<u32, 4>(buffer, offset);
 
 			// finished parsing, we know our public transport address
 			LOGMESSAGERENDER("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d",
@@ -297,8 +295,8 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			break;
 		}
 
-		m_current_offset += 4 + size;
-		ENSURE(m_current_offset >=0 && m_current_offset < (int)m_buffer.size());
+		offset += 4 + size;
+		ENSURE(offset >=0 && offset < (int)buffer.size());
 
 		message_size -= 4 + size;
 
