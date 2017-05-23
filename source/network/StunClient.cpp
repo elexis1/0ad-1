@@ -110,11 +110,11 @@ void CreateStunRequest(ENetHost* transactionHost)
 	}
 
 	// documentation says it points to "one or more addrinfo structures"
-	ENSURE(res != nullptr);
+	ENSURE(res);
 	sockaddr_in* current_interface = (sockaddr_in*)(res->ai_addr);
 	m_StunServerIP = ntohl(current_interface->sin_addr.s_addr);
 
-	if (transactionHost == nullptr)
+	if (!transactionHost)
 	{
 		LOGERROR("Failed to create enet host");
 		return;
