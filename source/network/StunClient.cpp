@@ -187,7 +187,6 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 	sockaddr_in addr;
 	socklen_t from_len = sizeof(addr);
 
-	int err;
 	int len = recvfrom(transactionHost->socket, buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 
 	int count = 0;
@@ -199,15 +198,13 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 		len = recvfrom(transactionHost->socket, buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
 
-	if (len == -1)
-		err = errno;
-
-	if (len == -1)
-		LOGERROR("GetPublicAddress: recvfrom error: %d", err);
 	debug_printf("GetPublicAddress: recvfrom result: %d", len);
 
 	if (len < 0)
+	{
+		LOGERROR("GetPublicAddress: recvfrom error: %d", errno);
 		return "No message received";
+	}
 
 	uint32_t sender_ip = ntohl((uint32_t)(addr.sin_addr.s_addr));
 	uint16_t sender_port = ntohs(addr.sin_port);
