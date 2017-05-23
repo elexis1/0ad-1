@@ -1023,7 +1023,7 @@ function joinSelectedGame()
 	 * This works for testing, but may require a better solution for the "production" version
 	 * (probably an explicit "hostname" param)
 	 */
-	let hostPlayerName = removeRatingFromNick(stringifiedTeamListToPlayerData(game.players)[0].Name)[0];
+	let hostPlayerName = removeRatingFromNick(stringifiedTeamListToPlayerData(game.players)[0].Name);
 	let hostJID = hostPlayerName + "@" + g_LobbyServer + "/0ad";
 
 	Engine.PushGuiPage("page_gamesetup_mp.xml", {
