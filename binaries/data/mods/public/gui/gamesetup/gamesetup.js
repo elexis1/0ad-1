@@ -206,7 +206,7 @@ var g_ServerName;
 var g_ServerPort;
 
 /**
- * IP address of the STUN endpoint.
+ * IP address and port of the STUN endpoint.
  */
 var g_StunEndpoint;
 
@@ -2120,13 +2120,9 @@ function sendRegisterGameStanza()
 		"nbp": clients.connectedPlayers,
 		"maxnbp": g_GameAttributes.settings.PlayerData.length,
 		"players": clients.list,
+		"stunIP": g_StunEndpoint ? g_StunEndpoint.ip : "",
+		"stunPort": g_StunEndpoint ? g_StunEndpoint.port : "",
 	};
-
-	if (g_StunEndpoint !== undefined)
-	{
-		stanza.stunIP = g_StunEndpoint.ip;
-		stanza.stunPort = g_StunEndpoint.port;
-	}
 
 	// Only send the stanza if the relevant settings actually changed
 	if (g_LastGameStanza && Object.keys(stanza).every(prop => g_LastGameStanza[prop] == stanza[prop]))
