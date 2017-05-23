@@ -342,7 +342,7 @@ function startJoin(playername, ip, port, hostJID)
 {
 	try
 	{
-		Engine.StartNetworkJoin(playername + (g_UserRating ? " (" + g_UserRating + ")" : ""), ip, port, hostJID);
+		Engine.StartNetworkJoin(playername + (g_UserRating ? " (" + g_UserRating + ")" : ""), ip, port, hostJID || "");
 	}
 	catch (e)
 	{
