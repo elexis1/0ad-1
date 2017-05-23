@@ -798,6 +798,8 @@ m.AttackPlan.prototype.getNearestTarget = function(gameState, position, sameLand
 	let minDist = Math.min();
 	for (let ent of targets.values())
 	{
+		if (this.targetPlayer === 0 && gameState.getGameType() === "capture_the_relic" && !ent.hasClass("Relic"))
+			continue;
 		if (!ent.position())
 			continue;
 		if (sameLand && gameState.ai.accessibility.getAccessValue(ent.position()) !== land)
@@ -835,7 +837,7 @@ m.AttackPlan.prototype.defaultTargetFinder = function(gameState, playerEnemy)
 	else if (gameState.getGameType() === "regicide")
 		targets = gameState.getEnemyUnits(playerEnemy).filter(API3.Filters.byClass("Hero"));
 	else if (gameState.getGameType() === "capture_the_relic")
-		targets = gameState.getEnemyUnits(playerEnemy).filter(API3.Filters.byClass("Relic"));
+		targets = gameState.updatingGlobalCollection("allRelics", API3.Filters.byClass("Relic")).filter(relic => relic.owner() === playerEnemy);
 	if (targets && targets.hasEntities())
 		return targets;
 
@@ -1213,9 +1215,9 @@ m.AttackPlan.prototype.update = function(gameState, events)
 			if (!this.unitCollection.hasEntId(evt.target))
 				continue;
 			let attacker = gameState.getEntityById(evt.attacker);
-			if (!attacker || !attacker.position() || !attacker.hasClass("Unit"))
-				continue;
 			let ourUnit = gameState.getEntityById(evt.target);
+			if (!ourUnit || !attacker || !attacker.position() || !attacker.hasClass("Unit"))
+				continue;
 			if (m.isSiegeUnit(ourUnit))
 			{	// if our siege units are attacked, we'll send some units to deal with enemies.
 				let collec = this.unitCollection.filter(API3.Filters.not(API3.Filters.byClass("Siege"))).filterNearest(ourUnit.position(), 5);
@@ -1699,7 +1701,7 @@ m.AttackPlan.prototype.UpdateWalking = function(gameState, events)
 				nexttoWalls = true;
 		}
 		// there are walls but we can attack
-		if (nexttoWalls && this.unitCollection.filter(API3.Filters.byCanAttack("StoneWall")).hasEntities())
+		if (nexttoWalls && this.unitCollection.filter(API3.Filters.byCanAttackClass("StoneWall")).hasEntities())
 		{
 			if (this.Config.debug > 1)
 				API3.warn("Attack Plan " + this.type + " " + this.name + " has met walls and is not happy.");

@@ -69,6 +69,7 @@ var g_RelicCountList = Object.keys(g_CivData).map((civ, i) => i + 1);
 
 var g_PlayerCivList = g_CivData && prepareForDropdown([{
 		"name": translateWithContext("civilization", "Random"),
+		"tooltip": translate("Picks one civilization at random when the game starts."),
 		"color": g_ColorRandom,
 		"code": "random"
 	}].concat(
@@ -76,6 +77,7 @@ var g_PlayerCivList = g_CivData && prepareForDropdown([{
 			civ => g_CivData[civ].SelectableInGameSetup
 		).map(civ => ({
 			"name": g_CivData[civ].Name,
+			"tooltip": g_CivData[civ].History,
 			"color": g_ColorRegular,
 			"code": civ
 		})).sort(sortNameIgnoreCase)
@@ -159,32 +161,38 @@ var g_MapFilterList = prepareForDropdown([
 	{
 		"id": "default",
 		"name": translateWithContext("map filter", "Default"),
+		"tooltip": translateWithContext("map filter", "All maps except naval and demo maps."),
 		"filter": mapKeywords => mapKeywords.every(keyword => ["naval", "demo", "hidden"].indexOf(keyword) == -1),
 		"Default": true
 	},
 	{
 		"id": "naval",
 		"name": translate("Naval Maps"),
+		"tooltip": translateWithContext("map filter", "Maps where ships are needed to reach the enemy."),
 		"filter": mapKeywords => mapKeywords.indexOf("naval") != -1
 	},
 	{
 		"id": "demo",
 		"name": translate("Demo Maps"),
+		"tooltip": translateWithContext("map filter", "These maps are not playable but for demonstration purposes only."),
 		"filter": mapKeywords => mapKeywords.indexOf("demo") != -1
 	},
 	{
 		"id": "new",
 		"name": translate("New Maps"),
+		"tooltip": translateWithContext("map filter", "Maps that are brand new in this release of the game."),
 		"filter": mapKeywords => mapKeywords.indexOf("new") != -1
 	},
 	{
 		"id": "trigger",
 		"name": translate("Trigger Maps"),
+		"tooltip": translateWithContext("map filter", "Maps that come with scripted events and potentially spawn enemy units."),
 		"filter": mapKeywords => mapKeywords.indexOf("trigger") != -1
 	},
 	{
 		"id": "all",
 		"name": translate("All Maps"),
+		"tooltip": translateWithContext("map filter", "Every map of the chosen maptype."),
 		"filter": mapKeywords => true
 	},
 ]);
@@ -198,6 +206,11 @@ var g_IsNetworked;
  * Is this user in control of game settings (i.e. singleplayer or host of a multiplayergame).
  */
 var g_IsController;
+
+/**
+ * Whether this is a tutorial.
+ */
+var g_IsTutorial;
 
 /**
  * To report the game to the lobby bot.
@@ -288,6 +301,16 @@ var g_MapData = {};
 var g_LoadingState = 0;
 
 /**
+ * Send the current gamesettings to the lobby bot if the settings didn't change for this number of seconds.
+ */
+var g_GameStanzaTimeout = 2;
+
+/**
+ * Index of the GUI timer.
+ */
+var g_GameStanzaTimer = undefined;
+
+/**
  * Only send a lobby update if something actually changed.
  */
 var g_LastGameStanza;
@@ -296,6 +319,12 @@ var g_LastGameStanza;
  * Remembers if the current player viewed the AI settings of some playerslot.
  */
 var g_LastViewedAIPlayer = -1;
+
+/**
+ * Total number of units that the engine can run with smoothly.
+ * It means a 4v4 with 150 population can still run nicely, but more than that might "lag".
+ */
+var g_PopulationCapacityRecommendation = 1200;
 
 /**
  * Order in which the GUI elements will be shown.
@@ -326,6 +355,7 @@ var g_OptionOrderGUI = {
 			"ceasefire",
 		],
 		"Checkbox": [
+			"regicideGarrison",
 			"exploreMap",
 			"revealMap",
 			"disableTreasures",
@@ -363,7 +393,7 @@ var g_OptionOrderInit = {
  *
  * GUI
  * title        - The caption shown in the label.
- * tooltip      - A description shown when hovering the option.
+ * tooltip      - A description shown when hovering the dropdown or a specific item.
  * labels       - Array of translated strings selectable for this dropdown.
  * colors       - Optional array of colors to tint the according dropdown items with.
  * hidden       - If hidden, both the label and dropdown won't be visible. (default: false)
@@ -374,7 +404,7 @@ var g_OptionOrderInit = {
 var g_Dropdowns = {
 	"mapType": {
 		"title": () => translate("Map Type"),
-		"tooltip": () => translate("Select a map type."),
+		"tooltip": (hoverIdx) => g_MapTypes.Description[hoverIdx] || translate("Select a map type."),
 		"labels": () => g_MapTypes.Title,
 		"ids": () => g_MapTypes.Name,
 		"default": () => g_MapTypes.Default,
@@ -397,7 +427,7 @@ var g_Dropdowns = {
 	},
 	"mapFilter": {
 		"title": () => translate("Map Filter"),
-		"tooltip": () => translate("Select a map filter."),
+		"tooltip": (hoverIdx) => g_MapFilterList.tooltip[hoverIdx] || translate("Select a map filter."),
 		"labels": () => g_MapFilterList.name,
 		"ids": () => g_MapFilterList.id,
 		"default": () => g_MapFilterList.Default,
@@ -412,7 +442,7 @@ var g_Dropdowns = {
 	},
 	"mapSelection": {
 		"title": () => translate("Select Map"),
-		"tooltip": () => translate("Select a map to play on."),
+		"tooltip": (hoverIdx) => g_MapSelectionList.description[hoverIdx] || translate("Select a map to play on."),
 		"labels": () => g_MapSelectionList.name,
 		"colors": () => g_MapSelectionList.color,
 		"ids": () => g_MapSelectionList.file,
@@ -426,7 +456,7 @@ var g_Dropdowns = {
 	},
 	"mapSize": {
 		"title": () => translate("Map Size"),
-		"tooltip": () => translate("Select map size. (Larger sizes may reduce performance.)"),
+		"tooltip": (hoverIdx) => g_MapSizes.Tooltip[hoverIdx] || translate("Select map size. (Larger sizes may reduce performance.)"),
 		"labels": () => g_MapSizes.Name,
 		"ids": () => g_MapSizes.Tiles,
 		"default": () => g_MapSizes.Default,
@@ -440,7 +470,7 @@ var g_Dropdowns = {
 	},
 	"numPlayers": {
 		"title": () => translate("Number of Players"),
-		"tooltip": () => translate("Select number of players."),
+		"tooltip": (hoverIdx) => translate("Select number of players."),
 		"labels": () => g_NumPlayersList,
 		"ids": () => g_NumPlayersList,
 		"default": () => g_MaxPlayers - 1,
@@ -460,7 +490,20 @@ var g_Dropdowns = {
 	},
 	"populationCap": {
 		"title": () => translate("Population Cap"),
-		"tooltip": () => translate("Select population cap."),
+		"tooltip": (hoverIdx) => {
+
+			let popCap = g_PopulationCapacities.Population[hoverIdx];
+			let players = g_GameAttributes.settings.PlayerData.length;
+
+			if (hoverIdx == -1 || popCap * players <= g_PopulationCapacityRecommendation)
+				return translate("Select population limit.");
+
+			return '[color="orange"]' +
+				sprintf(translate("Warning: There might be performance issues if all %(players)s players reach %(popCap)s population."), {
+					"players": players,
+					"popCap": popCap
+				}) + '[/color]';
+		},
 		"labels": () => g_PopulationCapacities.Title,
 		"ids": () => g_PopulationCapacities.Population,
 		"default": () => g_PopulationCapacities.Default,
@@ -473,7 +516,13 @@ var g_Dropdowns = {
 	},
 	"startingResources": {
 		"title": () => translate("Starting Resources"),
-		"tooltip": () => translate("Select the game's starting resources."),
+		"tooltip": (hoverIdx) => {
+			return hoverIdx >= 0 ?
+				sprintf(translate("Initial amount of each resource: %(resources)s."), {
+					"resources": g_StartingResources.Resources[hoverIdx]
+				}) :
+				translate("Select the game's starting resources.");
+		},
 		"labels": () => g_StartingResources.Title,
 		"ids": () => g_StartingResources.Resources,
 		"default": () => g_StartingResources.Default,
@@ -487,7 +536,7 @@ var g_Dropdowns = {
 	},
 	"ceasefire": {
 		"title": () => translate("Ceasefire"),
-		"tooltip": () => translate("Set time where no attacks are possible."),
+		"tooltip": (hoverIdx) => translate("Set time where no attacks are possible."),
 		"labels": () => g_Ceasefire.Title,
 		"ids": () => g_Ceasefire.Duration,
 		"default": () => g_Ceasefire.Default,
@@ -500,7 +549,7 @@ var g_Dropdowns = {
 	},
 	"victoryCondition": {
 		"title": () => translate("Victory Condition"),
-		"tooltip": () => translate("Select victory condition."),
+		"tooltip": (hoverIdx) => g_VictoryConditions.Description[hoverIdx] || translate("Select victory condition."),
 		"labels": () => g_VictoryConditions.Title,
 		"ids": () => g_VictoryConditions.Name,
 		"default": () => g_VictoryConditions.Default,
@@ -515,7 +564,7 @@ var g_Dropdowns = {
 	},
 	"relicCount": {
 		"title": () => translate("Relic Count"),
-		"tooltip": () => translate("Total number of relics spawned on the map."),
+		"tooltip": (hoverIdx) => translate("Total number of relics spawned on the map."),
 		"labels": () => g_RelicCountList,
 		"ids": () => g_RelicCountList,
 		"default": () => g_RelicCountList.indexOf(5),
@@ -529,7 +578,7 @@ var g_Dropdowns = {
 	},
 	"victoryDuration": {
 		"title": () => translate("Victory Duration"),
-		"tooltip": () => translate("Number of minutes until the player has won."),
+		"tooltip": (hoverIdx) => translate("Number of minutes until the player has won."),
 		"labels": () => g_VictoryDurations.Title,
 		"ids": () => g_VictoryDurations.Duration,
 		"default": () => g_VictoryDurations.Default,
@@ -545,7 +594,7 @@ var g_Dropdowns = {
 	},
 	"gameSpeed": {
 		"title": () => translate("Game Speed"),
-		"tooltip": () => translate("Select game speed."),
+		"tooltip": (hoverIdx) => translate("Select game speed."),
 		"labels": () => g_GameSpeeds.Title,
 		"ids": () => g_GameSpeeds.Speed,
 		"default": () => g_GameSpeeds.Default,
@@ -608,6 +657,7 @@ var g_PlayerDropdowns = {
 		"enabled": () => g_GameAttributes.mapType != "scenario",
 	},
 	"playerCiv": {
+		"tooltip": (hoverIdx, idx) => g_PlayerCivList.tooltip[hoverIdx] || translate("Chose the civilization for this player"),
 		"labels": (idx) => g_PlayerCivList.name,
 		"colors": (idx) => g_PlayerCivList.color,
 		"ids": (idx) => g_PlayerCivList.code,
@@ -646,6 +696,18 @@ var g_PlayerDropdowns = {
  * Contains the logic of all boolean gamesettings.
  */
 var g_Checkboxes = {
+	"regicideGarrison": {
+		"title": () => translate("Hero Garrison"),
+		"tooltip": () => translate("Toggle whether heroes can be garrisoned."),
+		"default": () => false,
+		"defined": () => g_GameAttributes.settings.RegicideGarrison !== undefined,
+		"get": () => g_GameAttributes.settings.RegicideGarrison,
+		"set": checked => {
+			g_GameAttributes.settings.RegicideGarrison = checked;
+		},
+		"hidden": () => g_GameAttributes.settings.GameType != "regicide",
+		"enabled": () => g_GameAttributes.mapType != "scenario",
+	},
 	"revealMap": {
 		"title": () =>
 			// Translation: Make sure to differentiate between the revealed map and explored map options!
@@ -782,7 +844,7 @@ var g_MiscControls = {
 	"startGame": {
 		"caption": () =>
 			g_IsController ? translate("Start game!") : g_ReadyData[g_IsReady].caption,
-		"tooltip": () =>
+		"tooltip": (hoverIdx) =>
 			!g_IsController ?
 				g_ReadyData[g_IsReady].tooltip :
 				!g_IsNetworked || Object.keys(g_PlayerAssignments).every(guid =>
@@ -870,6 +932,7 @@ function init(attribs)
 
 	g_IsNetworked = attribs.type != "offline";
 	g_IsController = attribs.type != "client";
+	g_IsTutorial = attribs.tutorial &&  attribs.tutorial == true;
 	g_ServerName = attribs.serverName;
 	g_ServerPort = attribs.serverPort;
 	g_StunEndpoint = attribs.stunEndpoint;
@@ -956,6 +1019,13 @@ function initGUIObjects()
 
 	loadPersistMatchSettings();
 	updateGameAttributes();
+	sendRegisterGameStanzaImmediate();
+
+	if (g_IsTutorial)
+	{
+		launchTutorial();
+		return;
+	}
 
 	Engine.GetGUIObjectByName("loadingWindow").hidden = true;
 	Engine.GetGUIObjectByName("setupWindow").hidden = false;
@@ -975,7 +1045,7 @@ function getGUIObjectNameFromSetting(name)
 		{
 			let idx = g_OptionOrderGUI[panel][type].indexOf(name);
 			if (idx != -1)
-				return [panel + "Option" + type, "[" + idx + "]"]
+				return [panel + "Option" + type, "[" + idx + "]"];
 		}
 
 	// Assume there is a GUI object with exactly that setting name
@@ -1011,6 +1081,11 @@ function initDropdown(name, idx)
 		supplementDefaults();
 		updateGameAttributes();
 	};
+
+	if (data.tooltip)
+		dropdown.onHoverChange = function() {
+			this.tooltip = data.tooltip(this.hovered, idx);
+		};
 }
 
 function initPlayerDropdowns(name)
@@ -1139,6 +1214,7 @@ function handleGamestartMessage(message)
 	// Immediately inform the lobby server instead of waiting for the load to finish
 	if (g_IsController && Engine.HasXmppClient())
 	{
+		sendRegisterGameStanzaImmediate();
 		let clients = formatClientsForStanza();
 		Engine.SendChangeStateGame(clients.connectedPlayers, clients.list);
 	}
@@ -1170,6 +1246,8 @@ function handleGamesetupMessage(message)
 
 	Engine.SetRankedGame(!!g_GameAttributes.settings.RatingEnabled);
 
+	resetReadyData();
+
 	updateGUIObjects();
 }
 
@@ -1178,18 +1256,31 @@ function handleGamesetupMessage(message)
  */
 function handlePlayerAssignmentMessage(message)
 {
+	let playerChange = false;
+
 	for (let guid in message.newAssignments)
 		if (!g_PlayerAssignments[guid])
+		{
 			onClientJoin(guid, message.newAssignments);
+			playerChange = true;
+		}
 
 	for (let guid in g_PlayerAssignments)
 		if (!message.newAssignments[guid])
+		{
 			onClientLeave(guid);
+			playerChange = true;
+		}
 
 	g_PlayerAssignments = message.newAssignments;
 
+	sanitizePlayerData(g_GameAttributes.settings.PlayerData);
 	updateGUIObjects();
-	sendRegisterGameStanza();
+
+	if (playerChange)
+		sendRegisterGameStanzaImmediate();
+	else
+		sendRegisterGameStanza();
 }
 
 function onClientJoin(newGUID, newAssignments)
@@ -1211,9 +1302,6 @@ function onClientJoin(newGUID, newAssignments)
 	// Assign the joining client to the free slot
 	if (g_IsController && newAssignments[newGUID].player == -1)
 		Engine.AssignNetworkPlayer(freeSlot + 1, newGUID);
-
-	g_GameAttributes.settings.PlayerData[freeSlot].AI = "";
-	g_GameAttributes.settings.PlayerData[freeSlot].AIDiff = g_DefaultPlayerData[freeSlot].AIDiff;
 
 	resetReadyData();
 }
@@ -1285,18 +1373,20 @@ function reloadMapList()
 
 		mapList.push({
 			"file": file,
+			"name": translate(getMapDisplayName(file)),
 			"color": g_ColorRegular,
-			"name": translate(getMapDisplayName(file))
+			"description": translate(mapData.settings.Description)
 		});
 	}
 
-	mapList = mapList.sort(sortNameIgnoreCase)
+	mapList = mapList.sort(sortNameIgnoreCase);
 
 	if (g_GameAttributes.mapType == "random")
 		mapList.unshift({
 			"file": "random",
 			"name": translateWithContext("map selection", "Random"),
-			"color": g_ColorRandom
+			"color": g_ColorRandom,
+			"description": "Picks one of the maps of the given maptype and filter at random."
 		});
 
 	g_MapSelectionList = prepareForDropdown(mapList);
@@ -1324,7 +1414,7 @@ function loadMapData(name)
  */
 function loadPersistMatchSettings()
 {
-	if (!g_IsController || Engine.ConfigDB_GetValue("user", "persistmatchsettings") != "true")
+	if (!g_IsController || Engine.ConfigDB_GetValue("user", "persistmatchsettings") != "true" || g_IsTutorial)
 		return;
 
 	let settingsFile = g_IsNetworked ? g_MatchSettings_MP : g_MatchSettings_SP;
@@ -1379,6 +1469,8 @@ function loadPersistMatchSettings()
 
 function savePersistMatchSettings()
 {
+	if (g_IsTutorial)
+		return;
 	let attributes = Engine.ConfigDB_GetValue("user", "persistmatchsettings") == "true" ? g_GameAttributes : {};
 	Engine.WriteJSONFile(g_IsNetworked ? g_MatchSettings_MP : g_MatchSettings_SP, attributes);
 }
@@ -1403,6 +1495,10 @@ function sanitizePlayerData(playerData)
 			let smallestDistance = colorDistances.find(distance => colorDistances.every(distance2 => (distance2 >= distance)));
 			pData.Color = g_PlayerColorPickerList.find(color => colorDistance(color, pData.Color) == smallestDistance);
 		}
+
+		// If there is a player in that slot, then there can't be an AI
+		if (Object.keys(g_PlayerAssignments).some(guid => g_PlayerAssignments[guid].player == index + 1))
+			pData.AI = "";
 	});
 
 	ensureUniquePlayerColors(playerData);
@@ -1497,7 +1593,7 @@ function ensureUniquePlayerColors(playerData)
 function selectMap(name)
 {
 	// Reset some map specific properties which are not necessarily redefined on each map
-	for (let prop of ["TriggerScripts", "CircularMap", "Garrison"])
+	for (let prop of ["TriggerScripts", "CircularMap", "Garrison", "DisabledTemplates"])
 		g_GameAttributes.settings[prop] = undefined;
 
 	let mapData = loadMapData(name);
@@ -1515,6 +1611,7 @@ function selectMap(name)
 	{
 		delete g_GameAttributes.settings.VictoryDuration;
 		delete g_GameAttributes.settings.LastManStanding;
+		delete g_GameAttributes.settings.RegicideGarrison;
 	}
 
 	if (mapSettings.PlayerData)
@@ -1558,7 +1655,7 @@ function updateGUIDropdown(name, idx = undefined)
 
 	dropdown.hidden = !g_IsController || !enabled || hidden;
 	dropdown.selected = indexHidden ? -1 : selected;
-	dropdown.tooltip = !indexHidden && obj.tooltip ? obj.tooltip(idx) : "";
+	dropdown.tooltip = !indexHidden && obj.tooltip ? obj.tooltip(-1, idx) : "";
 
 	if (frame)
 		frame.hidden = hidden;
@@ -1720,10 +1817,17 @@ function launchGame()
 		Engine.StartGame(g_GameAttributes, playerID);
 		Engine.SwitchGuiPage("page_loading.xml", {
 			"attribs": g_GameAttributes,
-			"isNetworked" : g_IsNetworked,
+			"isNetworked": g_IsNetworked,
 			"playerAssignments": g_PlayerAssignments
 		});
 	}
+}
+
+function launchTutorial()
+{
+	g_GameAttributes.mapType = "scenario";
+	selectMap("maps/tutorials/starting_economy_walkthrough");
+	launchGame();
 }
 
 /**
@@ -2100,12 +2204,18 @@ function formatClientsForStanza()
 }
 
 /**
- * Send the relevant gamesettings to the lobbybot.
+ * Send the relevant gamesettings to the lobbybot immediately.
  */
-function sendRegisterGameStanza()
+function sendRegisterGameStanzaImmediate()
 {
 	if (!g_IsController || !Engine.HasXmppClient())
 		return;
+
+	if (g_GameStanzaTimer != undefined)
+	{
+		clearTimeout(g_GameStanzaTimer);
+		g_GameStanzaTimer = undefined;
+	}
 
 	let clients = formatClientsForStanza();
 
@@ -2130,6 +2240,20 @@ function sendRegisterGameStanza()
 
 	g_LastGameStanza = stanza;
 	Engine.SendRegisterGame(stanza);
+}
+
+/**
+ * Send the relevant gamesettings to the lobbybot in a deferred manner.
+ */
+function sendRegisterGameStanza()
+{
+	if (!g_IsController || !Engine.HasXmppClient())
+		return;
+
+	if (g_GameStanzaTimer != undefined)
+		clearTimeout(g_GameStanzaTimer);
+
+	g_GameStanzaTimer = setTimeout(sendRegisterGameStanzaImmediate, g_GameStanzaTimeout * 1000);
 }
 
 function updateAutocompleteEntries()

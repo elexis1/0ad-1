@@ -4,10 +4,29 @@
 var g_DescriptionHighlight = "orange";
 
 /**
+ * The rating assigned to lobby players who didn't complete a ranked 1v1 yet.
+ */
+var g_DefaultLobbyRating = 1200;
+
+/**
  * XEP-0172 doesn't restrict nicknames, but our lobby policy does.
  * So use this human readable delimiter to separate buddy names in the config file.
  */
 var g_BuddyListDelimiter = ",";
+
+
+/**
+ * Returns the nickname without the lobby rating.
+ */
+function splitRatingFromNick(playerName)
+{
+	let result = /^(\S+)\ \((\d+)\)$/g.exec(playerName);
+
+	if (!result)
+		return [playerName, g_DefaultLobbyRating];
+
+	return [result[1], +result[2]];
+}
 
 /**
  * Array of playernames that the current user has marked as buddies.
@@ -140,7 +159,7 @@ function formatPlayerInfo(playerDataArray, playerStates)
 					(isAI ? "white" : getPlayerColor(playerData.Name)) :
 					rgbToGuiColor(playerData.Color || g_Settings.PlayerDefaults[playerIdx].Color)) +
 				'"]' +
-				(g_Buddies.indexOf(removeRatingFromNick(playerData.Name)) != -1 ? g_BuddySymbol + " " : "") +
+				(g_Buddies.indexOf(splitRatingFromNick(playerData.Name)[0]) != -1 ? g_BuddySymbol + " " : "") +
 				escapeText(playerData.Name) +
 				"[/color]",
 
@@ -241,6 +260,18 @@ function getGameDescription(extended = false)
 				"label": translate("Relic Count"),
 				"value": g_GameAttributes.settings.RelicCount
 			});
+
+		if (g_VictoryConditions.Name[victoryIdx] == "regicide")
+			if (g_GameAttributes.settings.RegicideGarrison)
+				titles.push({
+					"label": translate("Hero Garrison"),
+					"value": translate("Heroes can be garrisoned.")
+				});
+			else
+				titles.push({
+					"label": translate("Exposed Heroes"),
+					"value": translate("Heroes cannot be garrisoned, and they are vulnerable to raids.")
+				});
 	}
 
 	if (g_GameAttributes.settings.RatingEnabled &&

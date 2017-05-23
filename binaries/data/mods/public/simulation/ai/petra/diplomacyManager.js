@@ -24,6 +24,7 @@ m.DiplomacyManager = function(Config)
 	this.nextTributeRequest.set("all", 240);
 	this.betrayLapseTime = -1;
 	this.waitingToBetray = false;
+	this.betrayWeighting = 150;
 	this.diplomacyRequests = new Map();
 };
 
@@ -241,7 +242,29 @@ m.DiplomacyManager.prototype.lastManStandingCheck = function(gameState)
 		turnFactor = gameState.getEntities(i).length;
 
 		if (gameState.isPlayerNeutral(i)) // be more inclined to turn against neutral players
-			turnFactor += 150;
+			turnFactor += this.betrayWeighting;
+
+		if (gameState.getGameType() === "wonder")
+		{
+			let wonder = gameState.getEnemyStructures(i).filter(API3.Filters.byClass("Wonder"))[0];
+			if (wonder)
+			{
+				let wonderProgess = wonder.foundationProgress();
+				if (wonderProgess === undefined)
+				{
+					playerToTurnAgainst = i;
+					break;
+				}
+				turnFactor += wonderProgess * 2.5 + this.betrayWeighting;
+			}
+		}
+
+		if (gameState.getGameType() === "capture_the_relic")
+		{
+			let relicsCount = gameState.updatingGlobalCollection("allRelics", API3.Filters.byClass("Relic"))
+				.filter(relic => relic.owner() === i).length;
+			turnFactor += relicsCount * this.betrayWeighting;
+		}
 
 		if (turnFactor < max)
 			continue;
@@ -322,7 +345,7 @@ m.DiplomacyManager.prototype.handleDiplomacyRequest = function(gameState, player
 m.DiplomacyManager.prototype.changePlayerDiplomacy = function(gameState, player, newDiplomaticStance)
 {
 	if (gameState.isPlayerEnemy(player) && (newDiplomaticStance === "ally" || newDiplomaticStance === "neutral"))
-		gameState.ai.HQ.attackManager.cancelAttacksAgainstPlayer(player);
+		gameState.ai.HQ.attackManager.cancelAttacksAgainstPlayer(gameState, player);
 	Engine.PostCommand(PlayerID, { "type": "diplomacy", "player": player, "to": newDiplomaticStance });
 	if (this.Config.debug > 1)
 		API3.warn("diplomacy stance with player " + player + " is now " + newDiplomaticStance);
@@ -372,6 +395,7 @@ m.DiplomacyManager.prototype.Serialize = function()
 		"nextTributeRequest": this.nextTributeRequest,
 		"betrayLapseTime": this.betrayLapseTime,
 		"waitingToBetray": this.waitingToBetray,
+		"betrayWeighting": this.betrayWeighting,
 		"diplomacyRequests": this.diplomacyRequests
 	};
 };

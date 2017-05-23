@@ -19,34 +19,43 @@ m.GameState.prototype.init = function(SharedScript, state, player) {
 	this.entities = SharedScript.entities;
 	this.player = player;
 	this.playerData = SharedScript.playersData[this.player];
-	this.barterPrices = SharedScript.barterPrices;
 	this.gameType = SharedScript.gameType;
 	this.alliedVictory = SharedScript.alliedVictory;
 	this.ceasefireActive = SharedScript.ceasefireActive;
 
 	// get the list of possible phases for this civ:
 	// we assume all of them are researchable from the civil centre
-	this.phases = [ { name: "phase_village" }, { name: "phase_town" }, { name: "phase_city" } ];
+	this.phases = [{ name: "phase_village" }, { name: "phase_town" }, { name: "phase_city" }];
 	let cctemplate = this.getTemplate(this.applyCiv("structures/{civ}_civil_centre"));
 	if (!cctemplate)
 		return;
-	let techs = cctemplate.researchableTechs(this.getPlayerCiv());
-	for (let i = 0; i < this.phases.length; ++i)
+	let civ = this.getPlayerCiv();
+	let techs = cctemplate.researchableTechs(civ);
+	for (let phase of this.phases)
 	{
-		let k = techs.indexOf(this.phases[i].name);
+		phase.requirements = [];
+		let k = techs.indexOf(phase.name);
 		if (k !== -1)
 		{
-			this.phases[i].requirements = DeriveTechnologyRequirements(this.getTemplate(techs[k])._template, this.getPlayerCiv());
-			continue;
+			let reqs = DeriveTechnologyRequirements(this.getTemplate(techs[k])._template, civ);
+			if (reqs)
+			{
+				phase.requirements = reqs;
+				continue;
+			}
 		}
 		for (let tech of techs)
 		{
 			let template = (this.getTemplate(tech))._template;
-			if (template.replaces && template.replaces.indexOf(this.phases[i].name) != -1)
+			if (template.replaces && template.replaces.indexOf(phase.name) != -1)
 			{
-				this.phases[i].name = tech;
-				this.phases[i].requirements = DeriveTechnologyRequirements(template, this.getPlayerCiv());
-				break;
+				let reqs = DeriveTechnologyRequirements(template, civ);
+				if (reqs)
+				{
+					phase.name = tech;
+					phase.requirements = reqs;
+					break;
+				}
 			}
 		}
 	}
@@ -56,7 +65,6 @@ m.GameState.prototype.update = function(SharedScript)
 {
 	this.timeElapsed = SharedScript.timeElapsed;
 	this.playerData = SharedScript.playersData[this.player];
-	this.barterPrices = SharedScript.barterPrices;
 	this.ceasefireActive = SharedScript.ceasefireActive;
 };
 
@@ -112,7 +120,7 @@ m.GameState.prototype.getTimeElapsed = function()
 
 m.GameState.prototype.getBarterPrices = function()
 {
-	return this.barterPrices;
+	return this.playerData.barterPrices;
 };
 
 m.GameState.prototype.getGameType = function()

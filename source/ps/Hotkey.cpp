@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 
 #include <boost/tokenizer.hpp>
 
-#include "lib/input.h"
 #include "ps/CConsole.h"
 #include "ps/CLogger.h"
 #include "ps/CStr.h"
@@ -76,6 +75,8 @@ static void LoadConfigBindings()
 			{
 				// Attempt decode as key name
 				int mapping = FindKeyCode(*it);
+				if (!mapping)
+					mapping = SDL_GetKeyFromName(it->c_str());
 				if (!mapping)
 				{
 					LOGWARNING("Hotkey mapping used invalid key '%s'", hotkey.c_str());
@@ -142,7 +143,7 @@ bool isNegated(const SKey& key)
 	if ((int)key.code < EXTRA_KEYS_BASE && g_keys[key.code] == key.negated)
 		return false;
 	// Mouse 'keycodes' are after the modifier keys
-	else if ((int)key.code > UNIFIED_LAST && g_mouse_buttons[key.code - UNIFIED_LAST] == key.negated)
+	else if ((int)key.code < MOUSE_LAST && (int)key.code > MOUSE_BASE && g_mouse_buttons[key.code - MOUSE_BASE] == key.negated)
 		return false;
 	// Modifier keycodes are between the normal keys and the mouse 'keys'
 	else if ((int)key.code < UNIFIED_LAST && (int)key.code > SDL_SCANCODE_TO_KEYCODE(SDL_NUM_SCANCODES) && unified[key.code - UNIFIED_SHIFT] == key.negated)

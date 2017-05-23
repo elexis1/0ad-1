@@ -269,6 +269,12 @@
 			"label": "Chat Backlog",
 			"tooltip": "Number of backlogged messages to load when joining the lobby",
 			"parameters": { "config": "lobby.history", "min": "0" }
+		},
+		{
+			"type": "boolean",
+			"label": "Game Rating Column",
+			"tooltip": "Show the average rating of the participating players in a column of the gamelist.",
+			"parameters": { "config": "lobby.columns.gamerating" }
 		}
 	],
 	"notificationSetting":
@@ -295,7 +301,14 @@
 			"type": "dropdown",
 			"label": "Phase",
 			"tooltip": "Show a chat notification if you or an ally have started, aborted or completed a new phase, and phases of all players in observer mode",
-			"parameters": { "config": "gui.session.notifications.phase",  "list": [ "Disable", "Completed", "All displayed" ] }
+			"parameters": {
+				"config": "gui.session.notifications.phase",
+				"list": [
+					{ "value": "none", "label": "Disable" },
+					{ "value": "completed", "label": "Completed" },
+					{ "value": "all", "label": "All displayed" }
+				]
+			}
 		}
 	]
 }

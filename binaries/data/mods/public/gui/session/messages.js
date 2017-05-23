@@ -348,6 +348,10 @@ var g_NotificationsTypes =
 	{
 		updatePlayerData();
 	},
+	"tutorial": function(notification, player)
+	{
+		updateTutorial(notification);
+	},
 	"tribute": function(notification, player)
 	{
 		addChatMessage({
@@ -535,6 +539,44 @@ function handleNotifications()
 
 		for (let player of notification.players)
 			g_NotificationsTypes[notification.type](notification, player);
+	}
+}
+
+/**
+ * Updates the tutorial panel when a new goal.
+ */
+function updateTutorial(notification)
+{
+	// Show the tutorial panel if not yet done
+	Engine.GetGUIObjectByName("tutorialPanel").hidden = false;
+
+	if (notification.warning)
+	{
+		Engine.GetGUIObjectByName("tutorialWarning").caption = "[color=\"orange\"]" + notification.message + "[/color]";
+		return;
+	}
+
+	let tutorialText = Engine.GetGUIObjectByName("tutorialText");
+	let caption = tutorialText.caption.replace('[color=\"yellow\"]', '').replace('[/color]', '');
+	if (caption)
+		caption += "\n";
+	tutorialText.caption = caption + "[color=\"yellow\"]" + notification.message + "[/color]";
+	if (notification.readyButton)
+	{
+		Engine.GetGUIObjectByName("tutorialReady").hidden = false;
+		if (notification.leave)
+		{
+			Engine.GetGUIObjectByName("tutorialWarning").caption = translate("Click to quit this tutorial.");
+			Engine.GetGUIObjectByName("tutorialReady").caption = translate("Quit");
+			Engine.GetGUIObjectByName("tutorialReady").onPress = leaveGame;
+		}
+		else
+			Engine.GetGUIObjectByName("tutorialWarning").caption = translate("Click when ready.");
+	}
+	else
+	{
+		Engine.GetGUIObjectByName("tutorialWarning").caption = translate("Follow the instructions.");
+		Engine.GetGUIObjectByName("tutorialReady").hidden = true;
 	}
 }
 
@@ -1018,11 +1060,11 @@ function formatAttackMessage(msg)
 function formatPhaseMessage(msg)
 {
 	let notifyPhase = Engine.ConfigDB_GetValue("user", "gui.session.notifications.phase");
-	if (notifyPhase == 0 || msg.player != g_ViewedPlayer && !g_IsObserver && !g_Players[msg.player].isMutualAlly[g_ViewedPlayer])
+	if (notifyPhase == "none" || msg.player != g_ViewedPlayer && !g_IsObserver && !g_Players[msg.player].isMutualAlly[g_ViewedPlayer])
 		return "";
 
 	let message = "";
-	if (notifyPhase == 2)
+	if (notifyPhase == "all")
 	{
 		if (msg.phaseState == "started")
 			message = translate("%(player)s is advancing to the %(phaseName)s.");

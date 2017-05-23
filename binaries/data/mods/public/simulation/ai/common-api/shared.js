@@ -114,6 +114,20 @@ m.SharedScript.prototype.GetTemplate = function(name)
 		this._derivedTemplates[name] = resource;
 		return resource;
 	}
+	else if (name.indexOf("ungarrisonable|") !== -1)
+	{
+		let base = this.GetTemplate(name.substr(15));
+
+		let ent = {};
+		for (let key in base)
+			if (key !== "Garrisonable")
+				ent[key] = base[key];
+			else
+				ent[key] = "false";
+
+		this._derivedTemplates[name] = ent;
+		return ent;
+	}
 
 	error("Tried to retrieve invalid template '"+name+"'");
 	return null;
@@ -142,7 +156,6 @@ m.SharedScript.prototype.init = function(state, deserialization)
 	this.circularMap = state.circularMap;
 	this.mapSize = state.mapSize;
 	this.gameType = state.gameType;
-	this.barterPrices = state.barterPrices;
 	this.alliedVictory = state.alliedVictory;
 	this.ceasefireActive = state.ceasefireActive;
 

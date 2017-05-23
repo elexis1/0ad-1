@@ -13,6 +13,8 @@ m.GameTypeManager = function(Config)
 	// Holds ids of all ents who are (or can be) guarding and if the ent is currently guarding
 	this.guardEnts = new Map();
 	this.healersPerCriticalEnt = 2 + Math.round(this.Config.personality.defensive * 2);
+	this.tryCaptureGaiaRelic = false;
+	this.tryCaptureGaiaRelicLapseTime = -1;
 };
 
 /**
@@ -31,11 +33,11 @@ m.GameTypeManager.prototype.init = function(gameState)
 	{
 		for (let hero of gameState.getOwnEntitiesByClass("Hero", true).values())
 		{
-			let heroStance = hero.hasClass("Soldier") ? "aggressive" : "passive";
-			hero.setStance(heroStance);
+			let defaultStance = hero.hasClass("Soldier") ? "aggressive" : "passive";
+			if (hero.getStance() !== defaultStance)
+				hero.setStance(defaultStance);
 			this.criticalEnts.set(hero.id(), {
 				"garrisonEmergency": false,
-				"stance": heroStance,
 				"healersAssigned": 0,
 				"guardsAssigned": 0, // for non-healer guards
 				"guards": new Map() // ids of ents who are currently guarding this hero
@@ -91,7 +93,7 @@ m.GameTypeManager.prototype.checkEvents = function(gameState, events)
 				continue;
 
 			let target = gameState.getEntityById(evt.target);
-			if (!target || !target.position() || target.healthLevel() > 0.7)
+			if (!target || !target.position() || target.healthLevel() > this.Config.garrisonHealthLevel.high)
 				continue;
 
 			let plan = target.getMetadata(PlayerID, "plan");
@@ -114,10 +116,10 @@ m.GameTypeManager.prototype.checkEvents = function(gameState, events)
 						army.removeOwn(gameState, target.id());
 				}
 
-				hero.garrisonEmergency = target.healthLevel() < 0.4;
+				hero.garrisonEmergency = target.healthLevel() < this.Config.garrisonHealthLevel.low;
 				this.pickCriticalEntRetreatLocation(gameState, target, hero.garrisonEmergency);
 			}
-			else if (target.healthLevel() < 0.4 && !hero.garrisonEmergency)
+			else if (target.healthLevel() < this.Config.garrisonHealthLevel.low && !hero.garrisonEmergency)
 			{
 				// the hero is severely wounded, try to retreat/garrison quicker
 				gameState.ai.HQ.garrisonManager.cancelGarrison(target);
@@ -244,7 +246,11 @@ m.GameTypeManager.prototype.checkEvents = function(gameState, events)
 			this.criticalEnts.set(ent.id(), { "guardsAssigned": 0, "guards": new Map() });
 			// Move captured relics to the closest base
 			if (ent.hasClass("Unit"))
+			{
 				this.pickCriticalEntRetreatLocation(gameState, ent, false);
+				if (evt.from === 0)
+					gameState.ai.HQ.attackManager.cancelAttacksAgainstPlayer(gameState, evt.from);
+			}
 		}
 	}
 };
@@ -398,12 +404,19 @@ m.GameTypeManager.prototype.pickCriticalEntRetreatLocation = function(gameState,
 	if (plan === -2 || plan === -3)
 		return;
 
+	if (this.criticalEnts.get(criticalEnt.id()).garrisonEmergency)
+		this.criticalEnts.get(criticalEnt.id()).garrisonEmergency = false;
+
 	// Couldn't find a place to garrison, so the ent will flee from attacks
-	criticalEnt.setStance("passive");
+	if (!criticalEnt.hasClass("Relic") && criticalEnt.getStance() !== "passive")
+		criticalEnt.setStance("passive");
 	let accessIndex = gameState.ai.accessibility.getAccessValue(criticalEnt.position());
-	let basePos = m.getBestBase(gameState, criticalEnt, true);
-	if (basePos && basePos.accessIndex == accessIndex)
-		criticalEnt.move(basePos.anchor.position()[0], basePos.anchor.position()[1]);
+	let bestBase = m.getBestBase(gameState, criticalEnt, true);
+	if (bestBase.accessIndex == accessIndex)
+	{
+		let bestBasePos = bestBase.anchor.position();
+		criticalEnt.move(bestBasePos[0], bestBasePos[1]);
+	}
 };
 
 /**
@@ -485,6 +498,13 @@ m.GameTypeManager.prototype.assignGuardToCriticalEnt = function(gameState, guard
 	return true;
 };
 
+m.GameTypeManager.prototype.resetCaptureGaiaRelic = function(gameState)
+{
+	// Do not capture gaia relics too frequently as the ai has access to the entire map
+	this.tryCaptureGaiaRelicLapseTime = gameState.ai.elapsedTime + 300 - 30 * (this.Config.difficulty - 3);
+	this.tryCaptureGaiaRelic = false;
+};
+
 m.GameTypeManager.prototype.update = function(gameState, events, queues)
 {
 	// Wait a turn for trigger scripts to spawn any critical ents (i.e. in regicide)
@@ -504,8 +524,8 @@ m.GameTypeManager.prototype.update = function(gameState, events, queues)
 		for (let [id, data] of this.criticalEnts)
 		{
 			let ent = gameState.getEntityById(id);
-			if (ent && ent.healthLevel() > 0.7 && ent.hasClass("Soldier") &&
-			    data.stance !== "aggressive")
+			if (ent && ent.healthLevel() > this.Config.garrisonHealthLevel.high && ent.hasClass("Soldier") &&
+			    ent.getStance() !== "aggressive")
 				ent.setStance("aggressive");
 
 			if (data.healersAssigned < this.healersPerCriticalEnt &&
@@ -516,7 +536,11 @@ m.GameTypeManager.prototype.update = function(gameState, events, queues)
 	}
 
 	if (gameState.getGameType() === "capture_the_relic" && gameState.ai.playedTurn % 10 === 0)
+	{
 		this.manageCriticalEntGuards(gameState);
+		if (!this.tryCaptureGaiaRelic && gameState.ai.elapsedTime > this.tryCaptureGaiaRelicLapseTime)
+			this.tryCaptureGaiaRelic = true;
+	}
 };
 
 m.GameTypeManager.prototype.Serialize = function()
@@ -524,7 +548,9 @@ m.GameTypeManager.prototype.Serialize = function()
 	return {
 		"criticalEnts": this.criticalEnts,
 		"guardEnts": this.guardEnts,
-		"healersPerCriticalEnt": this.healersPerCriticalEnt
+		"healersPerCriticalEnt": this.healersPerCriticalEnt,
+		"tryCaptureGaiaRelic": this.tryCaptureGaiaRelic,
+		"tryCaptureGaiaRelicLapseTime": this.tryCaptureGaiaRelicLapseTime
 	};
 };
 
