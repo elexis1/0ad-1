@@ -201,10 +201,10 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 
 	if (len == -1)
 		err = errno;
-	LOGERROR("GetPublicAddress: recvfrom result: %d", len);
 
 	if (len == -1)
 		LOGERROR("GetPublicAddress: recvfrom error: %d", err);
+	debug_printf("GetPublicAddress: recvfrom result: %d", len);
 
 	if (len < 0)
 		return "No message received";
@@ -213,7 +213,7 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 	uint16_t sender_port = ntohs(addr.sin_port);
 
 	if (sender_ip != m_StunServerIP)
-		LOGMESSAGERENDER("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s",
+		LOGERROR("GetPublicAddress: Received stun response from different address: %d:%d (%d.%d.%d.%d:%d) %s",
 			addr.sin_addr.s_addr, addr.sin_port,
 			(sender_ip >> 24) & 0xff,
 			(sender_ip >> 16) & 0xff,
@@ -248,11 +248,11 @@ std::string ParseStunResponse(ENetHost* transactionHost)
 		if (m_buffer[m_current_offset++] != m_StunTransactionID[i])
 			return "STUN response doesn't contain the transaction ID";
 
-	LOGERROR("GetPublicAddress: The STUN server responded with a valid answer");
 
 	// The stun message is valid, so we parse it now:
 	if (message_size == 0)
 		return "STUN response does not contain any information.";
+	debug_printf("GetPublicAddress: The STUN server responded with a valid answer");
 
 	if (message_size < 4)
 		return "STUN response is too short.";
