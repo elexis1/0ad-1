@@ -298,6 +298,11 @@ var g_LastGameStanza;
 var g_LastViewedAIPlayer = -1;
 
 /**
+ * Current username. Cannot contain whitespace.
+ */
+var g_Username = Engine.LobbyGetNick();
+
+/**
  * Order in which the GUI elements will be shown.
  * All valid options are required to appear here.
  * The ones under "map" are shown in the map selection panel,
@@ -2112,6 +2117,7 @@ function sendRegisterGameStanza()
 	let stanza = {
 		"name": g_ServerName,
 		"port": g_ServerPort,
+		"hostUsername": g_Username,
 		"mapName": g_GameAttributes.map,
 		"niceMapName": getMapDisplayName(g_GameAttributes.map),
 		"mapSize": g_GameAttributes.mapType == "random" ? g_GameAttributes.settings.Size : "Default",
