@@ -185,16 +185,14 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 	int len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 
+	// Wait to receive the message because enet sockets are non-blocking
 	int count = 0;
-	// wait to receive the message because enet sockets are non-blocking
 	while (len < 0 && (count < max_tries || max_tries == -1))
 	{
 		++count;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
-
-	debug_printf("GetPublicAddress: recvfrom result: %d\n", len);
 
 	if (len < 0)
 	{
@@ -218,7 +216,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 	if (len < 0)
 	{
-		LOGERROR("STUN response contains no data at all");
+		LOGERROR("STUN response contains no data");
 		return false;
 	}
 
@@ -228,13 +226,9 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 	buffer.resize(len);
 	memcpy(buffer.data(), (u8*)input_buffer, len);
-
 	offset = 0;
 
-	// offset = 5; // ignore type and token -- this breaks STUN response processing
-
-	// check that the stun response is a response, contains the magic cookie
-	// and the transaction ID
+	// Check that the stun response contains the magic cookie and the transaction ID
 	if (GetFromBuffer<u16, 2>(buffer, offset) != 0x0101)
 	{
 		LOGERROR("STUN response has incorrect type");
@@ -255,8 +249,6 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			return false;
 		}
 
-	debug_printf("GetPublicAddress: The STUN server responded\n");
-
 	if (message_size < 4)
 	{
 		LOGERROR("STUN response is too short");
@@ -274,7 +266,6 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			ENSURE(size == 8);
 			++offset;
 
-			// Check address family
 			char address_family = buffer[offset++];
 			if (address_family != 0x01)
 			{
@@ -285,13 +276,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			m_Port = GetFromBuffer<u16, 2>(buffer, offset);
 			m_IP = GetFromBuffer<u32, 4>(buffer, offset);
 
-			// finished parsing, we know our public transport address
-			LOGMESSAGERENDER("GetPublicAddress: The public address has been found: %d.%d.%d.%d:%d",
-				(m_IP >> 24) & 0xff,
-				(m_IP >> 16) & 0xff,
-				(m_IP >>  8) & 0xff,
-				(m_IP >>  0) & 0xff,
-				m_Port);
+			LOGMESSAGERENDER("GetPublicAddress: The public address has been found");
 			break;
 		}
 
@@ -360,7 +345,7 @@ void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serv
 	addr.port = serverPort;
 	enet_address_set_host(&addr, serverAddress);
 
-	// Send a UDP message from enet host to ip:port
+	// Send an UDP message from enet host to ip:port
 	debug_printf("Sending STUN request to %s:%d\n", serverAddress, serverPort);
 	for (int i = 0; i < 3; ++i)
 	{
