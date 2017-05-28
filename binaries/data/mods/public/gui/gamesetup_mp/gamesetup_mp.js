@@ -47,13 +47,13 @@ function init(attribs)
 	}
 	case "host":
 	{
+		Engine.GetGUIObjectByName("hostSTUNWrapper").hidden = !Engine.HasXmppClient();
 		if (Engine.HasXmppClient())
 		{
 			Engine.GetGUIObjectByName("hostPlayerName").caption = attribs.name;
 			Engine.GetGUIObjectByName("hostServerName").caption =
 				sprintf(translate("%(name)s's game"), { "name": attribs.name });
 
-			Engine.GetGUIObjectByName("hostSTUNWrapper").hidden = false;
 			Engine.GetGUIObjectByName("useSTUN").checked = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
 		}
 
