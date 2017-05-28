@@ -255,7 +255,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			return false;
 		}
 
-	debug_printf("GetPublicAddress: The STUN server responded with a valid answer\n");
+	debug_printf("GetPublicAddress: The STUN server responded\n");
 
 	if (message_size < 4)
 	{
@@ -296,11 +296,9 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		}
 
 		offset += 4 + size;
-		ENSURE(offset >=0 && offset < (int)buffer.size());
-
 		message_size -= 4 + size;
 
-		if (message_size < 4)
+		if (message_size < 4 || offset < 0 || offset >= (int)buffer.size())
 		{
 			LOGERROR("STUN response is invalid");
 			return false;
