@@ -143,7 +143,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 	AddUInt32(buffer, 0x2112A442);
 
 	// bytes 8-19: the transaction id
-	for (int i = 0; i < 12; ++i)
+	for (std::size_t i = 0; i < sizeof(m_StunTransactionID); ++i)
 	{
 		u8 random_byte = rand() % 256;
 		buffer.push_back(random_byte);
@@ -246,7 +246,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		return false;
 	}
 
-	for (int i = 0; i < 12; ++i)
+	for (std::size_t i = 0; i < sizeof(m_StunTransactionID); ++i)
 		if (buffer[offset++] != m_StunTransactionID[i])
 		{
 			LOGERROR("STUN response doesn't contain the transaction ID");
