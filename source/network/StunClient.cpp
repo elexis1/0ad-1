@@ -289,8 +289,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			// Ignore the first byte as mentioned in Section 15.1 of RFC 5389.
 			++offset;
 
-			char address_family = buffer[offset++];
-			if (address_family != m_StunIPAddressFamilyIPv4)
+			if (buffer[offset++] != m_StunIPAddressFamilyIPv4)
 			{
 				LOGERROR("Unsupported address family, IPv4 is expected");
 				return false;
