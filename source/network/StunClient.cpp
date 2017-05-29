@@ -248,6 +248,12 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	}
 
 	int message_size = GetFromBuffer<u16, 2>(buffer, offset);
+	if (message_size < 16)
+	{
+		LOGERROR("STUN response is too short");
+		return false;
+	}
+
 	if (GetFromBuffer<u32, 4>(buffer, offset) != m_StunMagicCookie)
 	{
 		LOGERROR("STUN response doesn't contain the magic cookie");
@@ -260,12 +266,6 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			LOGERROR("STUN response doesn't contain the transaction ID");
 			return false;
 		}
-
-	if (message_size < 4)
-	{
-		LOGERROR("STUN response is too short");
-		return false;
-	}
 
 	// Those are the port and the address to be detected
 	while (true)
