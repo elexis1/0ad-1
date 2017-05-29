@@ -280,7 +280,13 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 		if (type == m_TypeMappedAddress)
 		{
-			ENSURE(size == 8);
+			if (size != 8)
+			{
+				LOGERROR("Invalid STUN Mapped Address length");
+				return false;
+			}
+
+			// Ignore the first byte as mentioned in Section 15.1 of RFC 5389.
 			++offset;
 
 			char address_family = buffer[offset++];
