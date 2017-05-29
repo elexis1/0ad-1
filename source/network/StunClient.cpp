@@ -42,8 +42,8 @@
 #include "ps/ConfigDB.h"
 
 unsigned int m_StunServerIP;
+int m_StunServerPort;
 
-static const int m_StunServerPort = 3478;
 const u32 m_StunMagicCookie = 0x2112A442;
 const u32 m_BindingSuccessResponse = 0x0101;
 
@@ -94,7 +94,9 @@ void CreateStunRequest(ENetHost* transactionHost)
 {
 	std::string server_name;
 	CFG_GET_VAL("stun.server", server_name);
-	debug_printf("GetPublicAddress: Using STUN server %s\n", server_name.c_str());
+	CFG_GET_VAL("stun.port", m_StunServerPort);
+
+	debug_printf("GetPublicAddress: Using STUN server %s:%d\n", server_name.c_str(), m_StunServerPort);
 
 	addrinfo hints;
 	addrinfo* res;
