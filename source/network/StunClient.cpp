@@ -44,8 +44,16 @@
 unsigned int m_StunServerIP;
 int m_StunServerPort;
 
+/**
+ * These constants are defined in Section 6 of RFC 5389.
+ */
 const u32 m_StunMagicCookie = 0x2112A442;
 const u32 m_BindingSuccessResponse = 0x0101;
+
+/**
+ * These constants are defined in Section 18.2 of RFC 5389.
+ */
+const u16 m_TypeMappedAddress = 0x001;
 
 u8 m_StunTransactionID[12];
 
@@ -265,7 +273,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		int type = GetFromBuffer<u16, 2>(buffer, offset);
 		int size = GetFromBuffer<u16, 2>(buffer, offset);
 
-		if (type == 0 || type == 1)
+		if (type == m_TypeMappedAddress)
 		{
 			ENSURE(size == 8);
 			++offset;
