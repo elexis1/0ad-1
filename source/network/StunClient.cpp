@@ -51,6 +51,11 @@ const u32 m_StunMagicCookie = 0x2112A442;
 const u32 m_BindingSuccessResponse = 0x0101;
 
 /**
+ * These constants are defined in Section 15.1 of RFC 5389.
+ */
+const u8 m_StunIPAddressFamilyIPv4 = 0x01;
+
+/**
  * These constants are defined in Section 18.2 of RFC 5389.
  */
 const u16 m_TypeMappedAddress = 0x001;
@@ -279,7 +284,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			++offset;
 
 			char address_family = buffer[offset++];
-			if (address_family != 0x01)
+			if (address_family != m_StunIPAddressFamilyIPv4)
 			{
 				LOGERROR("Unsupported address family, IPv4 is expected");
 				return false;
