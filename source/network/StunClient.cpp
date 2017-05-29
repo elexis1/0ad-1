@@ -271,13 +271,14 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			return false;
 		}
 
-	// Those are the port and the address to be detected
-	while (true)
+	while (offset < (int)buffer.size())
 	{
 		int type = GetFromBuffer<u16, 2>(buffer, offset);
 		int size = GetFromBuffer<u16, 2>(buffer, offset);
 
-		if (type == m_TypeMappedAddress)
+		switch (type)
+		{
+		case m_TypeMappedAddress:
 		{
 			if (size != 8)
 			{
@@ -300,14 +301,12 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			LOGMESSAGERENDER("GetPublicAddress: The public address has been found");
 			break;
 		}
-
-		offset += 4 + size;
-		message_size -= 4 + size;
-
-		if (message_size < 4 || offset < 0 || offset >= (int)buffer.size())
+		default:
 		{
-			LOGERROR("STUN response is invalid");
-			return false;
+			LOGWARNING("STUN encountered unsupported type %d", type);
+			offset += size;
+			break;
+		}
 		}
 	}
 
