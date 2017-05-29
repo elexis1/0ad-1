@@ -240,11 +240,10 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 	// Convert to network string.
 	std::vector<u8> buffer;
-	int offset;
+	int offset = 0;
 
 	buffer.resize(len);
 	memcpy(buffer.data(), (u8*)input_buffer, len);
-	offset = 0;
 
 	if (GetFromBuffer<u16, 2>(buffer, offset) != m_BindingSuccessResponse)
 	{
