@@ -375,7 +375,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	ENSURE(!g_Game);
 
 	ENetHost* enetClient = nullptr;
-	if (!hostJID.empty())
+	if (g_XmppClient && !hostJID.empty())
 	{
 		// Find an unused port
 		for (int i = 0; i < 5 && !enetClient; ++i)
@@ -401,7 +401,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	g_NetClient = new CNetClient(g_Game, false);
 	g_NetClient->SetUserName(playerName);
 
-	if (!hostJID.empty())
+	if (g_XmppClient && !hostJID.empty())
 		StunClient::SendHolePunchingMessages(enetClient, serverAddress.c_str(), serverPort);
 
 	if (!g_NetClient->SetupConnection(serverAddress, serverPort, enetClient))
