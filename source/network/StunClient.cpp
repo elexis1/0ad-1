@@ -42,8 +42,11 @@
 #include "ps/ConfigDB.h"
 
 unsigned int m_StunServerIP;
+
 static const int m_StunServerPort = 3478;
 const u32 m_StunMagicCookie = 0x2112A442;
+const u32 m_BindingSuccessResponse = 0x0101;
+
 u8 m_StunTransactionID[12];
 
 /**
@@ -228,10 +231,9 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	memcpy(buffer.data(), (u8*)input_buffer, len);
 	offset = 0;
 
-	// Check that the stun response contains the magic cookie and the transaction ID
-	if (GetFromBuffer<u16, 2>(buffer, offset) != 0x0101)
+	if (GetFromBuffer<u16, 2>(buffer, offset) != m_BindingSuccessResponse)
 	{
-		LOGERROR("STUN response has incorrect type");
+		LOGERROR("STUN response isn't a binding success response");
 		return false;
 	}
 
