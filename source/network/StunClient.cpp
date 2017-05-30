@@ -53,7 +53,7 @@ const u32 m_BindingSuccessResponse = 0x0101;
 /**
  * These constants are defined in Section 15.1 of RFC 5389.
  */
-const u8 m_StunIPAddressFamilyIPv4 = 0x01;
+const u8 m_IPAddressFamilyIPv4 = 0x01;
 
 /**
  * These constants are defined in Section 18.2 of RFC 5389.
@@ -277,7 +277,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			// Ignore the first byte as mentioned in Section 15.1 of RFC 5389.
 			++offset;
 
-			if (buffer[offset++] != m_StunIPAddressFamilyIPv4)
+			if (buffer[offset++] != m_IPAddressFamilyIPv4)
 			{
 				LOGERROR("Unsupported address family, IPv4 is expected");
 				return false;
