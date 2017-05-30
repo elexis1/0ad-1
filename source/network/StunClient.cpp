@@ -122,6 +122,8 @@ T GetFromBuffer(std::vector<u8> buffer, int& offset)
  */
 void CreateStunRequest(ENetHost* transactionHost)
 {
+	ENSURE(transactionHost);
+
 	std::string server_name;
 	CFG_GET_VAL("lobby.stun.server", server_name);
 	CFG_GET_VAL("lobby.stun.port", m_StunServerPort);
@@ -147,12 +149,6 @@ void CreateStunRequest(ENetHost* transactionHost)
 	ENSURE(res);
 	sockaddr_in* current_interface = (sockaddr_in*)(res->ai_addr);
 	m_StunServerIP = ntohl(current_interface->sin_addr.s_addr);
-
-	if (!transactionHost)
-	{
-		LOGERROR("Failed to create enet host");
-		return;
-	}
 
 	StunClient::SendStunRequest(transactionHost, m_StunServerIP, m_StunServerPort);
 
@@ -329,6 +325,11 @@ JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int
 {
 	ENetAddress hostAddr({ENET_HOST_ANY, (u16)port});
 	ENetHost* transactionHost = enet_host_create(&hostAddr, 1, 1, 0, 0);
+	if (!transactionHost)
+	{
+		LOGERROR("FindStunEndpointHost: Failed to create enet host");
+		return JS::UndefinedValue();
+	}
 
 	CreateStunRequest(transactionHost);
 	ParseStunResponse(transactionHost);
