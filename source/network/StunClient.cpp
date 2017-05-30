@@ -327,10 +327,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int port)
 {
-	ENetAddress hostAddr;
-	hostAddr.host = ENET_HOST_ANY;
-	hostAddr.port = port;
-
+	ENetAddress hostAddr({ENET_HOST_ANY, (u16)port});
 	ENetHost* transactionHost = enet_host_create(&hostAddr, 1, 1, 0, 0);
 
 	CreateStunRequest(transactionHost);
