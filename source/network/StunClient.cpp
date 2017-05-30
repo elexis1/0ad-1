@@ -173,15 +173,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 	to.sin_port = htons(targetPort);
 	to.sin_addr.s_addr = htonl(targetIp);
 
-	debug_printf("GetPublicAddress: Sending STUN request to: %d.%d.%d.%d:%d\n",
-		(targetIp >> 24) & 0xff,
-		(targetIp >> 16) & 0xff,
-		(targetIp >>  8) & 0xff,
-		(targetIp >>  0) & 0xff,
-		targetPort);
-
-	int send_result = sendto(transactionHost->socket, (char*)(buffer.data()), (int)buffer.size(), 0, (sockaddr*)&to, to_len);
-	debug_printf("GetPublicAddress: sendto result: %d\n", send_result);
+	sendto(transactionHost->socket, (char*)(buffer.data()), (int)buffer.size(), 0, (sockaddr*)&to, to_len);
 }
 
 /**
@@ -251,12 +243,8 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		return false;
 	}
 
-	int message_size = GetFromBuffer<u16, 2>(buffer, offset);
-	if (message_size < 16)
-	{
-		LOGERROR("STUN response is too short");
-		return false;
-	}
+	// Ignore message size
+	offset += 2;
 
 	if (GetFromBuffer<u32, 4>(buffer, offset) != m_StunMagicCookie)
 	{
