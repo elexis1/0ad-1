@@ -836,21 +836,21 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 	const gloox::Jingle::Content *content = static_cast<const gloox::Jingle::Content*>(m_Wrapped->plugins().front());
 	if (content == NULL)
 	{
-		printf("Failed to retrieve Jingle content\n");
+		debug_printf("Failed to retrieve Jingle content\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
 
 	const ZeroADGameData *gameData = static_cast<const ZeroADGameData*>(content->findPlugin(gloox::Jingle::PluginUser));
 	if (gameData == NULL)
 	{
-		printf("Failed to retrieve Jingle game data\n");
+		debug_printf("Failed to retrieve Jingle game data");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
 
 	const gloox::Jingle::ICEUDP *iceUDP = static_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
 	if (iceUDP == NULL)
 	{
-		printf("Failed to retrieve Jingle ICE-UDP data\n");
+		debug_printf("Failed to retrieve Jingle ICE-UDP data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
 	}
 
@@ -858,7 +858,7 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 	return glooxwrapper::Jingle::ICEUDP::Candidate{glooxCandidate.ip, glooxCandidate.port};
 }
 
-bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, uint16_t port)
+bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, u16 port)
 {
 	ZeroADGameData *gameData = new ZeroADGameData();
 
