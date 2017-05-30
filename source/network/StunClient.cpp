@@ -58,7 +58,7 @@ const u8 m_IPAddressFamilyIPv4 = 0x01;
 /**
  * These constants are defined in Section 18.2 of RFC 5389.
  */
-const u16 m_TypeMappedAddress = 0x001;
+const u16 m_AttrTypeMappedAddress = 0x001;
 
 /**
  * Described in section 3 of RFC 5389.
@@ -268,7 +268,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 		switch (type)
 		{
-		case m_TypeMappedAddress:
+		case m_AttrTypeMappedAddress:
 		{
 			if (size != 8)
 			{
