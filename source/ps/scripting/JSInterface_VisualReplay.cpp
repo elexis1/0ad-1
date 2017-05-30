@@ -1,4 +1,4 @@
-/* Copyright (C) 2016 Wildfire Games.
+/* Copyright (C) 2017 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ bool JSI_VisualReplay::DeleteReplay(ScriptInterface::CxPrivate* UNUSED(pCxPrivat
 	return VisualReplay::DeleteReplay(replayFile);
 }
 
-JS::Value JSI_VisualReplay::GetReplays(ScriptInterface::CxPrivate* pCxPrivate)
+JS::Value JSI_VisualReplay::GetReplays(ScriptInterface::CxPrivate* pCxPrivate, bool compareFiles)
 {
-	return VisualReplay::GetReplays(*(pCxPrivate->pScriptInterface));
+	return VisualReplay::GetReplays(*(pCxPrivate->pScriptInterface), compareFiles);
 }
 
 JS::Value JSI_VisualReplay::GetReplayAttributes(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& directoryName)
@@ -53,12 +53,24 @@ JS::Value JSI_VisualReplay::GetReplayMetadata(ScriptInterface::CxPrivate* pCxPri
 	return VisualReplay::GetReplayMetadata(pCxPrivate, directoryName);
 }
 
+void JSI_VisualReplay::AddReplayToCache(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& directoryName)
+{
+	VisualReplay::AddReplayToCache(*(pCxPrivate->pScriptInterface), directoryName);
+}
+
+CStrW JSI_VisualReplay::GetReplayDirectoryName(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const CStrW& directoryName)
+{
+	return OsPath(VisualReplay::GetDirectoryName() / directoryName).string();
+}
+
 void JSI_VisualReplay::RegisterScriptFunctions(ScriptInterface& scriptInterface)
 {
-	scriptInterface.RegisterFunction<JS::Value, &GetReplays>("GetReplays");
+	scriptInterface.RegisterFunction<JS::Value, bool, &GetReplays>("GetReplays");
 	scriptInterface.RegisterFunction<bool, CStrW, &DeleteReplay>("DeleteReplay");
 	scriptInterface.RegisterFunction<void, CStrW, &StartVisualReplay>("StartVisualReplay");
 	scriptInterface.RegisterFunction<JS::Value, CStrW, &GetReplayAttributes>("GetReplayAttributes");
 	scriptInterface.RegisterFunction<JS::Value, CStrW, &GetReplayMetadata>("GetReplayMetadata");
 	scriptInterface.RegisterFunction<bool, CStrW, &HasReplayMetadata>("HasReplayMetadata");
+	scriptInterface.RegisterFunction<void, CStrW, &AddReplayToCache>("AddReplayToCache");
+	scriptInterface.RegisterFunction<CStrW, CStrW, &GetReplayDirectoryName>("GetReplayDirectoryName");
 }

@@ -59,7 +59,7 @@ function init(data)
 		return;
 	}
 
-	loadReplays(data && data.replaySelectionData);
+	loadReplays(data && data.replaySelectionData, false);
 
 	if (!g_Replays)
 	{
@@ -75,10 +75,13 @@ function init(data)
  * Store the list of replays loaded in C++ in g_Replays.
  * Check timestamp and compatibility and extract g_Playernames, g_MapNames, g_VictoryConditions.
  * Restore selected filters and item.
+ * @param replaySelectionData - Currently selected filters and item to be restored after the loading.
+ * @param compareFiles - If true, compares files briefly (which might be slow with optical harddrives),
+ *                       otherwise blindly trusts the replay cache.
  */
-function loadReplays(replaySelectionData)
+function loadReplays(replaySelectionData, compareFiles)
 {
-	g_Replays = Engine.GetReplays();
+	g_Replays = Engine.GetReplays(compareFiles);
 
 	if (!g_Replays)
 		return;
@@ -254,6 +257,7 @@ function displayReplayDetails()
 	Engine.GetGUIObjectByName("replayInfoEmpty").hidden = replaySelected;
 	Engine.GetGUIObjectByName("startReplayButton").enabled = replaySelected;
 	Engine.GetGUIObjectByName("deleteReplayButton").enabled = replaySelected;
+	Engine.GetGUIObjectByName("replayFilename").hidden = !replaySelected;
 	Engine.GetGUIObjectByName("summaryButton").hidden = true;
 
 	if (!replaySelected)
@@ -267,6 +271,7 @@ function displayReplayDetails()
 	Engine.GetGUIObjectByName("sgVictory").caption = translateVictoryCondition(replay.attribs.settings.GameType);
 	Engine.GetGUIObjectByName("sgNbPlayers").caption = sprintf(translate("Players: %(numberOfPlayers)s"),
 		{ "numberOfPlayers": replay.attribs.settings.PlayerData.length });
+	Engine.GetGUIObjectByName("replayFilename").caption = escapeText(Engine.GetReplayDirectoryName(replay.directory));
 
 	let metadata = Engine.GetReplayMetadata(replay.directory);
 	Engine.GetGUIObjectByName("sgPlayersNames").caption =

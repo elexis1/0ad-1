@@ -99,6 +99,11 @@ var g_Players = [];
 var lastTickTime = new Date();
 
 /**
+ * Recalculate which units have their status bars shown with this frequency in milliseconds.
+ */
+const g_StatusBarUpdate = 200;
+
+/**
  * Not constant as we add "gaia".
  */
 var g_CivData = {};
@@ -666,6 +671,11 @@ function leaveGame(willRejoin)
 
 	Engine.EndGame();
 
+	// After the replay file was closed in EndGame
+	// Done here to keep EndGame small
+	if (!g_IsReplay)
+		Engine.AddReplayToCache(replayDirectory);
+
 	if (g_IsController && Engine.HasXmppClient())
 		Engine.SendUnregisterGame();
 
@@ -722,7 +732,7 @@ function onTick()
 		return;
 
 	let now = new Date();
-	let tickLength = new Date() - lastTickTime;
+	let tickLength = now - lastTickTime;
 	lastTickTime = now;
 
 	handleNetMessages();
@@ -739,13 +749,15 @@ function onTick()
 		if (Engine.GetPlayerID() != -1)
 			Engine.GuiInterfaceCall("DisplayRallyPoint", { "entities": g_Selection.toList() });
 	}
+	else if (g_ShowAllStatusBars && now % g_StatusBarUpdate <= tickLength)
+		recalculateStatusBarDisplay();
 
 	updateTimers();
 
 	updateMenuPosition(tickLength);
 
 	// When training is blocked, flash population (alternates color every 500msec)
-	Engine.GetGUIObjectByName("resourcePop").textcolor = g_IsTrainingBlocked && Date.now() % 1000 < 500 ? g_PopulationAlertColor : g_DefaultPopulationColor;
+	Engine.GetGUIObjectByName("resourcePop").textcolor = g_IsTrainingBlocked && now % 1000 < 500 ? g_PopulationAlertColor : g_DefaultPopulationColor;
 
 	Engine.GuiInterfaceCall("ClearRenamedEntities");
 }
@@ -792,10 +804,11 @@ function onSimulationUpdate()
 	handleNotifications();
 	updateGUIObjects();
 
-	Engine.GuiInterfaceCall("EnableVisualRangeOverlayType", {
-		"type": "Aura",
-		"enabled": Engine.ConfigDB_GetValue("user", "gui.session.aurarange") == "true"
-	});
+	for (let type of ["Aura", "Heal"])
+		Engine.GuiInterfaceCall("EnableVisualRangeOverlayType", {
+			"type": type,
+			"enabled": Engine.ConfigDB_GetValue("user", "gui.session." + type.toLowerCase() + "range") == "true"
+		});
 
 	if (g_ConfirmExit)
 		confirmExit();
@@ -1260,7 +1273,7 @@ function recalculateStatusBarDisplay(remove = false)
  * Toggles the display of range overlays of selected entities for the given range type.
  * @param {string} type - for example "Aura"
  */
-function toggleRangeOverlay(type, currentValue)
+function toggleRangeOverlay(type)
 {
 	let configString = "gui.session." + type.toLowerCase() + "range";
 	let enabled = Engine.ConfigDB_GetValue("user", configString) != "true";
