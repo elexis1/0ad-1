@@ -303,8 +303,15 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		}
 		default:
 		{
-			LOGWARNING("STUN encountered unsupported type %d", type);
+			// We don't care about other attributes at all
+
+			// Skip attribute
 			offset += size;
+
+			// Skip padding
+			int padding = size % 4;
+			if (padding)
+				offset += 4 - padding;
 			break;
 		}
 		}
