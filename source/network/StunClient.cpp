@@ -211,7 +211,9 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 	if (len < 0)
 	{
-		LOGERROR("GetPublicAddress: recvfrom error: %d", errno);
+		char errorMessageBuffer[256];
+		char* errorMessage = strerror_r(errno, errorMessageBuffer, sizeof(errorMessageBuffer));
+		LOGERROR("GetPublicAddress: recvfrom error (%d): %s ", errno, errorMessage);
 		return false;
 	}
 
