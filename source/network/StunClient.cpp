@@ -325,7 +325,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	return true;
 }
 
-JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int port)
+JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int port)
 {
 	ENetAddress hostAddr({ENET_HOST_ANY, (u16)port});
 	ENetHost* transactionHost = enet_host_create(&hostAddr, 1, 1, 0, 0);
@@ -350,7 +350,7 @@ JS::Value StunClient::FindStunEndpoint(ScriptInterface& scriptInterface, int por
 	return stunEndpoint;
 }
 
-StunClient::StunEndpoint StunClient::FindStunEndpoint(ENetHost* transactionHost)
+StunClient::StunEndpoint StunClient::FindStunEndpointJoin(ENetHost* transactionHost)
 {
 	CreateStunRequest(transactionHost);
 	ParseStunResponse(transactionHost);

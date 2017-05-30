@@ -242,7 +242,7 @@ JS::Value GetEngineInfo(ScriptInterface::CxPrivate* pCxPrivate)
 
 JS::Value FindStunEndpoint(ScriptInterface::CxPrivate* pCxPrivate, int port)
 {
-	return StunClient::FindStunEndpoint(*(pCxPrivate->pScriptInterface), port);
+	return StunClient::FindStunEndpointHost(*(pCxPrivate->pScriptInterface), port);
 }
 
 void StartNetworkGame(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
@@ -392,7 +392,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 			return;
 		}
 
-		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpoint(enetClient);
+		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpointJoin(enetClient);
 		g_XmppClient->SendStunEndpointToHost(stunEndpoint, hostJID);
 		SDL_Delay(1000);
 	}
