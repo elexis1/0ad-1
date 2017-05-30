@@ -54,7 +54,7 @@ function init(attribs)
 			Engine.GetGUIObjectByName("hostServerName").caption =
 				sprintf(translate("%(name)s's game"), { "name": attribs.name });
 
-			Engine.GetGUIObjectByName("useSTUN").checked = Engine.ConfigDB_GetValue("user", "stun.enabled") == "true";
+			Engine.GetGUIObjectByName("useSTUN").checked = Engine.ConfigDB_GetValue("user", "lobby.stun.enabled") == "true";
 		}
 
 		switchSetupPage("pageHost");
@@ -282,8 +282,8 @@ function switchSetupPage(newPage)
 
 function saveSTUNSetting(enabled)
 {
-	Engine.ConfigDB_CreateValue("user", "stun.enabled", enabled);
-	Engine.ConfigDB_WriteValueToFile("user", "stun.enabled", enabled, "config/user.cfg");
+	Engine.ConfigDB_CreateValue("user", "lobby.stun.enabled", enabled);
+	Engine.ConfigDB_WriteValueToFile("user", "lobby.stun.enabled", enabled, "config/user.cfg");
 }
 
 function startHost(playername, servername, port)

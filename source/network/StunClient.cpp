@@ -123,8 +123,8 @@ T GetFromBuffer(std::vector<u8> buffer, int& offset)
 void CreateStunRequest(ENetHost* transactionHost)
 {
 	std::string server_name;
-	CFG_GET_VAL("stun.server", server_name);
-	CFG_GET_VAL("stun.port", m_StunServerPort);
+	CFG_GET_VAL("lobby.stun.server", server_name);
+	CFG_GET_VAL("lobby.stun.port", m_StunServerPort);
 
 	debug_printf("GetPublicAddress: Using STUN server %s:%d\n", server_name.c_str(), m_StunServerPort);
 
