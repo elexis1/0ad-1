@@ -162,7 +162,6 @@ void CreateStunRequest(ENetHost* transactionHost)
 void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 targetPort)
 {
 	std::vector<u8> buffer;
-
 	AddUInt16(buffer, m_MethodTypeBinding);
 	AddUInt16(buffer, 0); // length
 	AddUInt32(buffer, m_MagicCookie);
@@ -173,9 +172,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 		buffer.push_back(random_byte);
 		m_TransactionID[i] = random_byte;
 	}
-	//buffer.push_back(0); -- this breaks STUN message
 
-	// sendRawPacket
 	sockaddr_in to;
 	int to_len = sizeof(to);
 	memset(&to, 0, to_len);
@@ -301,7 +298,6 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			m_Port = GetFromBuffer<u16, 2>(buffer, offset);
 			m_IP = GetFromBuffer<u32, 4>(buffer, offset);
 
-			LOGMESSAGERENDER("GetPublicAddress: The public address has been found");
 			// Obfuscation is described in Section 15.2 of RFC 5389.
 			if (type == m_AttrTypeXORMappedAddress)
 			{
