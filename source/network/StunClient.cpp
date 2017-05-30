@@ -48,6 +48,7 @@ int m_StunServerPort;
  * These constants are defined in Section 6 of RFC 5389.
  */
 const u32 m_MagicCookie = 0x2112A442;
+const u32 m_MethodTypeBinding = 0x0001;
 const u32 m_BindingSuccessResponse = 0x0101;
 
 /**
@@ -147,15 +148,10 @@ void CreateStunRequest(ENetHost* transactionHost)
 
 void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 targetPort)
 {
-	// Assemble the message for the stun server
 	std::vector<u8> buffer;
 
-	// bytes 0-1: the type of the message
-	// bytes 2-3: message length added to header (attributes)
-	u16 message_type = 0x0001; // binding request
-	u16 message_length = 0x0000;
-	AddUInt16(buffer, message_type);
-	AddUInt16(buffer, message_length);
+	AddUInt16(buffer, m_MethodTypeBinding);
+	AddUInt16(buffer, 0); // length
 	AddUInt32(buffer, m_MagicCookie);
 
 	for (std::size_t i = 0; i < sizeof(m_TransactionID); ++i)
