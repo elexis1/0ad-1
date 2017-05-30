@@ -877,7 +877,7 @@ bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, u16 port)
 		"udp",
 		/*base_ip*/ "",
 		/*base_port*/ 0,
-		/*type*/ gloox::Jingle::ICEUDP::ServerReflexive
+		gloox::Jingle::ICEUDP::ServerReflexive
 	});
 
 	gloox::Jingle::ICEUDP *iceUDP = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", *candidateList);
@@ -897,17 +897,18 @@ glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList
 	for (const glooxwrapper::Jingle::ICEUDP::Candidate candidate : candidates)
 		glooxCandidates.push_back(gloox::Jingle::ICEUDP::Candidate
 			{
-				/*component_id*/ "1",
-				/*foundation*/ "1",
-				/*candidate_generation*/ "0",
-				/*candidate_id*/ "1",
+				"1", // component_id,
+				"1", // foundation
+				"0", // candidate_generation
+				"1", // candidate_id
 				candidate.ip.to_string(),
-				/*network*/ "",
+				"", // network
 				candidate.port,
-				/*priotiry*/0, "udp",
-				/*base_ip*/ "",
-				/*base_port*/ 0,
-				/*type*/ gloox::Jingle::ICEUDP::ServerReflexive
+				0, // priority
+				"udp",
+				"", // base_ip
+				0, // base_port
+				gloox::Jingle::ICEUDP::ServerReflexive
 			});
 
 	m_Wrapped = new gloox::Jingle::ICEUDP(/*local_pwd*/"", /*local_ufrag*/"", glooxCandidates);
