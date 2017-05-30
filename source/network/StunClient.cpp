@@ -72,6 +72,7 @@ const u8 m_IPAddressFamilyIPv4 = 0x01;
  * These constants are defined in Section 18.2 of RFC 5389.
  */
 const u16 m_AttrTypeMappedAddress = 0x001;
+const u16 m_AttrTypeXORMappedAddress = 0x0020;
 
 /**
  * Described in section 3 of RFC 5389.
@@ -280,6 +281,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		switch (type)
 		{
 		case m_AttrTypeMappedAddress:
+		case m_AttrTypeXORMappedAddress:
 		{
 			if (size != 8)
 			{
@@ -300,6 +302,12 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			m_IP = GetFromBuffer<u32, 4>(buffer, offset);
 
 			LOGMESSAGERENDER("GetPublicAddress: The public address has been found");
+			// Obfuscation is described in Section 15.2 of RFC 5389.
+			if (type == m_AttrTypeXORMappedAddress)
+			{
+				m_Port ^= m_MagicCookie >> 16;
+				m_IP ^= m_MagicCookie;
+			}
 			break;
 		}
 		default:
