@@ -52,6 +52,18 @@ const u32 m_MethodTypeBinding = 0x0001;
 const u32 m_BindingSuccessResponse = 0x0101;
 
 /**
+ * Bit determining whether comprehension of an attribute is optional.
+ * Described in Section 15 of RFC 5389.
+ */
+const u16 m_ComprehensionOptional = 0x1 << 15;
+
+/**
+ * Bit determining whether the bit was assigned by IETF Review.
+ * Described in section 18.1. of  RFC 5389.
+ */
+const u16 m_IETFReview = 0x1 << 14;
+
+/**
  * These constants are defined in Section 15.1 of RFC 5389.
  */
 const u8 m_IPAddressFamilyIPv4 = 0x01;
@@ -261,6 +273,9 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	{
 		int type = GetFromBuffer<u16, 2>(buffer, offset);
 		int size = GetFromBuffer<u16, 2>(buffer, offset);
+
+		// The first two bits are irrelevant to the type
+		type &= ~(m_ComprehensionOptional | m_IETFReview);
 
 		switch (type)
 		{
