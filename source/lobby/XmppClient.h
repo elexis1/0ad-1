@@ -82,7 +82,7 @@ public:
 	void GUIGetBoardList(ScriptInterface& scriptInterface, JS::MutableHandleValue ret);
 	void GUIGetProfile(ScriptInterface& scriptInterface, JS::MutableHandleValue ret);
 
-	void SendStunEndpointToHost(StunClient::StunEndpoint& stunEndpoint, const std::string& hostJID);
+	void SendStunEndpointToHost(StunClient::StunEndpoint* stunEndpoint, const std::string& hostJID);
 
 	//Script
 	ScriptInterface& GetScriptInterface();

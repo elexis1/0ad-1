@@ -392,8 +392,16 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 			return;
 		}
 
-		StunClient::StunEndpoint stunEndpoint = StunClient::FindStunEndpointJoin(enetClient);
+		StunClient::StunEndpoint* stunEndpoint = StunClient::FindStunEndpointJoin(enetClient);
+		if (!stunEndpoint)
+		{
+			pCxPrivate->pScriptInterface->ReportError("Could not find the STUN endpoint");
+			return;
+		}
+
 		g_XmppClient->SendStunEndpointToHost(stunEndpoint, hostJID);
+		delete stunEndpoint;
+
 		SDL_Delay(1000);
 	}
 

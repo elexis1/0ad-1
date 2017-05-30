@@ -58,7 +58,7 @@ public:
 	virtual void GuiPollMessage(ScriptInterface& scriptInterface, JS::MutableHandleValue ret) = 0;
 	virtual void SendMUCMessage(const std::string& message) = 0;
 
-	virtual void SendStunEndpointToHost(StunClient::StunEndpoint& stunEndpoint, const std::string& hostJID) = 0;
+	virtual void SendStunEndpointToHost(StunClient::StunEndpoint* stunEndpoint, const std::string& hostJID) = 0;
 };
 
 extern IXmppClient *g_XmppClient;

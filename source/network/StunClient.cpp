@@ -120,7 +120,7 @@ T GetFromBuffer(std::vector<u8> buffer, int& offset)
  * The request is sent through m_transaction_host, from which the answer
  * will be retrieved by ParseStunResponse()
  */
-void CreateStunRequest(ENetHost* transactionHost)
+bool CreateStunRequest(ENetHost* transactionHost)
 {
 	ENSURE(transactionHost);
 
@@ -142,7 +142,7 @@ void CreateStunRequest(ENetHost* transactionHost)
 	if (status != 0)
 	{
 		LOGERROR("GetPublicAddress: Error in getaddrinfo: %s", gai_strerror(status));
-		return;
+		return false;
 	}
 
 	// documentation says it points to "one or more addrinfo structures"
@@ -153,6 +153,7 @@ void CreateStunRequest(ENetHost* transactionHost)
 	StunClient::SendStunRequest(transactionHost, m_StunServerIP, m_StunServerPort);
 
 	freeaddrinfo(res);
+	return true;
 }
 
 void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 targetPort)
@@ -187,6 +188,8 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 */
 bool ParseStunResponse(ENetHost* transactionHost)
 {
+	ENSURE(transactionHost);
+
 	// TransportAddress sender;
 	const int LEN = 2048;
 	char input_buffer[LEN];
@@ -331,9 +334,10 @@ JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int
 		return JS::UndefinedValue();
 	}
 
-	CreateStunRequest(transactionHost);
-	ParseStunResponse(transactionHost);
+	bool success = CreateStunRequest(transactionHost) && ParseStunResponse(transactionHost);
 	enet_host_destroy(transactionHost);
+	if (!success)
+		return JS::UndefinedValue();
 
 	// Convert m_IP to string
 	char ipStr[256] = "(error)";
@@ -351,10 +355,12 @@ JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int
 	return stunEndpoint;
 }
 
-StunClient::StunEndpoint StunClient::FindStunEndpointJoin(ENetHost* transactionHost)
+StunClient::StunEndpoint* StunClient::FindStunEndpointJoin(ENetHost* transactionHost)
 {
-	CreateStunRequest(transactionHost);
-	ParseStunResponse(transactionHost);
+	ENSURE(transactionHost);
+
+	if (!CreateStunRequest(transactionHost) || !ParseStunResponse(transactionHost))
+		return nullptr;
 
 	// Convert m_IP to string
 	char ipStr[256] = "(error)";
@@ -362,10 +368,7 @@ StunClient::StunEndpoint StunClient::FindStunEndpointJoin(ENetHost* transactionH
 	addr.host = ntohl(m_IP);
 	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
-	StunEndpoint stunEndpoint;
-	stunEndpoint.ip = m_IP;
-	stunEndpoint.port = m_Port;
-	return stunEndpoint;
+	return new StunEndpoint({ m_IP, m_Port });
 }
 
 void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serverAddress, u16 serverPort)

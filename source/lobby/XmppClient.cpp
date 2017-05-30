@@ -1098,17 +1098,19 @@ std::string XmppClient::RegistrationResultToString(gloox::RegistrationResult res
 }
 
 
-void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint& stunEndpoint, const std::string& hostJIDStr)
+void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint* stunEndpoint, const std::string& hostJIDStr)
 {
+	ENSURE(stunEndpoint);
+
 	glooxwrapper::JID hostJID(hostJIDStr);
 	glooxwrapper::Jingle::Session session = m_sessionManager->createSession(hostJID);
 
 	char ipStr[256] = "(error)";
 	ENetAddress addr;
-	addr.host = ntohl(stunEndpoint.ip);
+	addr.host = ntohl(stunEndpoint->ip);
 	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
-	session.sessionInitiate(ipStr, stunEndpoint.port);
+	session.sessionInitiate(ipStr, stunEndpoint->port);
 }
 
 void XmppClient::handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *UNUSED(session), const glooxwrapper::Jingle::Session::Jingle *jingle)
