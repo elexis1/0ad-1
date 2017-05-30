@@ -60,7 +60,10 @@ const u8 m_IPAddressFamilyIPv4 = 0x01;
  */
 const u16 m_TypeMappedAddress = 0x001;
 
-u8 m_StunTransactionID[12];
+/**
+ * Described in section 3 of RFC 5389.
+ */
+u8 m_TransactionID[12];
 
 /**
  * Discovered STUN endpoint
@@ -155,12 +158,11 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 	AddUInt16(buffer, message_length);
 	AddUInt32(buffer, m_MagicCookie);
 
-	// bytes 8-19: the transaction id
-	for (std::size_t i = 0; i < sizeof(m_StunTransactionID); ++i)
+	for (std::size_t i = 0; i < sizeof(m_TransactionID); ++i)
 	{
 		u8 random_byte = rand() % 256;
 		buffer.push_back(random_byte);
-		m_StunTransactionID[i] = random_byte;
+		m_TransactionID[i] = random_byte;
 	}
 	//buffer.push_back(0); -- this breaks STUN message
 
@@ -252,8 +254,8 @@ bool ParseStunResponse(ENetHost* transactionHost)
 		return false;
 	}
 
-	for (std::size_t i = 0; i < sizeof(m_StunTransactionID); ++i)
-		if (buffer[offset++] != m_StunTransactionID[i])
+	for (std::size_t i = 0; i < sizeof(m_TransactionID); ++i)
+		if (buffer[offset++] != m_TransactionID[i])
 		{
 			LOGERROR("STUN response doesn't contain the transaction ID");
 			return false;
