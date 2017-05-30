@@ -47,7 +47,7 @@ int m_StunServerPort;
 /**
  * These constants are defined in Section 6 of RFC 5389.
  */
-const u32 m_StunMagicCookie = 0x2112A442;
+const u32 m_MagicCookie = 0x2112A442;
 const u32 m_BindingSuccessResponse = 0x0101;
 
 /**
@@ -153,7 +153,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 	u16 message_length = 0x0000;
 	AddUInt16(buffer, message_type);
 	AddUInt16(buffer, message_length);
-	AddUInt32(buffer, 0x2112A442);
+	AddUInt32(buffer, m_MagicCookie);
 
 	// bytes 8-19: the transaction id
 	for (std::size_t i = 0; i < sizeof(m_StunTransactionID); ++i)
@@ -246,7 +246,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	// Ignore message size
 	offset += 2;
 
-	if (GetFromBuffer<u32, 4>(buffer, offset) != m_StunMagicCookie)
+	if (GetFromBuffer<u32, 4>(buffer, offset) != m_MagicCookie)
 	{
 		LOGERROR("STUN response doesn't contain the magic cookie");
 		return false;
