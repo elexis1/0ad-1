@@ -298,18 +298,27 @@ function startHost(playername, servername, port)
 	Engine.ConfigDB_CreateValue("user", "multiplayerhosting.port", port);
 	Engine.ConfigDB_WriteValueToFile("user", "multiplayerhosting.port", port, "config/user.cfg");
 
+	let hostFeedback = Engine.GetGUIObjectByName("hostFeedback");
+
 	// Disallow identically named games in the multiplayer lobby
 	if (Engine.HasXmppClient() &&
 	    Engine.GetGameList().some(game => game.name == servername))
 	{
 		cancelSetup();
-		Engine.GetGUIObjectByName("hostFeedback").caption =
-			translate("Game name already in use.");
+		hostFeedback.caption = translate("Game name already in use.");
 		return false;
 	}
 
 	if (Engine.HasXmppClient() && Engine.GetGUIObjectByName("useSTUN").checked)
+	{
 		g_StunEndpoint = Engine.FindStunEndpoint(port);
+		if (!g_StunEndpoint)
+		{
+			cancelSetup();
+			hostFeedback.caption = translate("Failed to host via STUN.");
+			return false;
+		}
+	}
 
 	try
 	{
