@@ -1065,21 +1065,13 @@ function joinSelectedGame()
 		return;
 	}
 
-	/*
-	 * Use the first player name as the host name.
-	 * This works for testing, but may require a better solution for the "production" version
-	 * (probably an explicit "hostname" param)
-	 */
-	let hostPlayerName = splitRatingFromNick(stringifiedTeamListToPlayerData(game.players)[0].Name)[0];
-	let hostJID = hostPlayerName + "@" + g_LobbyServer + "/0ad";
-
 	Engine.PushGuiPage("page_gamesetup_mp.xml", {
 		"multiplayerGameType": "join",
 		"ip": ip,
 		"port": port,
 		"name": g_Username,
 		"rating": g_UserRating,
-		"hostJID": hostJID
+		"hostJID": game.hostUsername + "@" + g_LobbyServer + "/0ad"
 	});
 }
 
