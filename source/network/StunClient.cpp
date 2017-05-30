@@ -194,7 +194,6 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	const int LEN = 2048;
 	char input_buffer[LEN];
 
-	int max_tries = 2000;
 	memset(input_buffer, 0, LEN);
 
 	sockaddr_in addr;
@@ -203,10 +202,9 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	int len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 
 	// Wait to receive the message because enet sockets are non-blocking
-	int count = 0;
-	while (len < 0 && (count < max_tries || max_tries == -1))
+	const int max_tries = 5;
+	for (int count = 0; len < 0 && (count < max_tries || max_tries == -1); ++count)
 	{
-		++count;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
