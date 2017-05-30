@@ -378,7 +378,6 @@ void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serv
 	enet_address_set_host(&addr, serverAddress);
 
 	// Send an UDP message from enet host to ip:port
-	debug_printf("Sending STUN request to %s:%d\n", serverAddress, serverPort);
 	for (int i = 0; i < 3; ++i)
 	{
 		StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
