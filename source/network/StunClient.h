@@ -32,8 +32,14 @@ struct StunEndpoint {
 
 void SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 targetPort);
 
+/**
+ * Used for hosting.
+ */
 JS::Value FindStunEndpoint(ScriptInterface& scriptInterface, int port);
 
+/**
+ * Used for joining.
+ */
 StunEndpoint FindStunEndpoint(ENetHost* transactionHost);
 
 void SendHolePunchingMessages(ENetHost* enetClient, const char* serverAddress, u16 serverPort);
