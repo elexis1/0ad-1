@@ -37,6 +37,11 @@
 #include <vector>
 
 #include "lib/external_libraries/enet.h"
+
+#if OS_WIN
+#include "lib/sysdep/os/win/wposix/wtime.h"
+#endif
+
 #include "scriptinterface/ScriptInterface.h"
 #include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
@@ -205,7 +210,7 @@ bool ReceiveStunResponse(ENetHost* transactionHost, std::vector<u8>& buffer)
 	const int max_tries = 5;
 	for (int count = 0; len < 0 && (count < max_tries || max_tries == -1); ++count)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+		usleep(delay * 1000);
 		len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
 
@@ -391,6 +396,6 @@ void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serv
 	for (int i = 0; i < 3; ++i)
 	{
 		StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
-		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+		usleep(delay * 1000);
 	}
 }
