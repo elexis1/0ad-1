@@ -124,6 +124,7 @@ protected:
 
 	/* Session Handler */
 	virtual void handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *UNUSED(session), const glooxwrapper::Jingle::Session::Jingle *jingle);
+	virtual void handleSessionInitiation(const glooxwrapper::Jingle::Session::Jingle *jingle);
 
 	// Helpers
 	void GetPresenceString(const gloox::Presence::PresenceType p, std::string& presence) const;
@@ -131,8 +132,6 @@ protected:
 	std::string StanzaErrorToString(gloox::StanzaError err) const;
 	std::string ConnectionErrorToString(gloox::ConnectionError err) const;
 	std::string RegistrationResultToString(gloox::RegistrationResult res) const;
-
-	void ProcessJingleData(const glooxwrapper::Jingle::Session::Jingle *jingle);
 
 public:
 	/* Messages */

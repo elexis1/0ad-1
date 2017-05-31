@@ -1114,13 +1114,11 @@ void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint* stunEndpoint, 
 
 void XmppClient::handleSessionAction(gloox::Jingle::Action action, glooxwrapper::Jingle::Session *UNUSED(session), const glooxwrapper::Jingle::Session::Jingle *jingle)
 {
-	if (action != gloox::Jingle::SessionInitiate)
-		return;
-
-	ProcessJingleData(jingle);
+	if (action == gloox::Jingle::SessionInitiate)
+		handleSessionInitiation(jingle);
 }
 
-void XmppClient::ProcessJingleData(const glooxwrapper::Jingle::Session::Jingle *jingle)
+void XmppClient::handleSessionInitiation(const glooxwrapper::Jingle::Session::Jingle *jingle)
 {
 	glooxwrapper::Jingle::ICEUDP::Candidate candidate = jingle->getCandidate();
 	g_NetServer->SendHolePunchingMessage(candidate.ip.to_string(), candidate.port);
