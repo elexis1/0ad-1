@@ -1102,14 +1102,13 @@ void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint* stunEndpoint, 
 {
 	ENSURE(stunEndpoint);
 
-	glooxwrapper::JID hostJID(hostJIDStr);
-	glooxwrapper::Jingle::Session session = m_sessionManager->createSession(hostJID);
-
 	char ipStr[256] = "(error)";
 	ENetAddress addr;
 	addr.host = ntohl(stunEndpoint->ip);
 	enet_address_get_host_ip(&addr, ipStr, ARRAY_SIZE(ipStr));
 
+	glooxwrapper::JID hostJID(hostJIDStr);
+	glooxwrapper::Jingle::Session session = m_sessionManager->createSession(hostJID);
 	session.sessionInitiate(ipStr, stunEndpoint->port);
 }
 
