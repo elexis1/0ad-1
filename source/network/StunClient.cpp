@@ -211,9 +211,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 	if (len < 0)
 	{
-		char errorMessageBuffer[256];
-		char* errorMessage = strerror_r(errno, errorMessageBuffer, sizeof(errorMessageBuffer));
-		LOGERROR("GetPublicAddress: recvfrom error (%d): %s ", errno, errorMessage);
+		LOGERROR("GetPublicAddress: recvfrom error (%d): %s", errno, strerror(errno));
 		return false;
 	}
 
@@ -326,7 +324,7 @@ bool ParseStunResponse(ENetHost* transactionHost)
 
 JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int port)
 {
-	ENetAddress hostAddr({ENET_HOST_ANY, (u16)port});
+	ENetAddress hostAddr{ENET_HOST_ANY, (u16)port};
 	ENetHost* transactionHost = enet_host_create(&hostAddr, 1, 1, 0, 0);
 	if (!transactionHost)
 	{
