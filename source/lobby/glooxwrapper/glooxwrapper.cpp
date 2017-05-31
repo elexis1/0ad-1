@@ -869,7 +869,7 @@ bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, u16 port)
 		"0", // andidate_generation
 		"1", // candidate_id
 		ipStr,
-		"", // network
+		"0", // network
 		port,
 		0, // priotiry
 		"udp",
@@ -896,7 +896,7 @@ glooxwrapper::Jingle::ICEUDP::ICEUDP(glooxwrapper::Jingle::ICEUDP::CandidateList
 				"0", // candidate_generation
 				"1", // candidate_id
 				candidate.ip.to_string(),
-				"", // network
+				"0", // network
 				candidate.port,
 				0, // priority
 				"udp",
