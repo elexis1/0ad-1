@@ -864,17 +864,17 @@ bool glooxwrapper::Jingle::Session::sessionInitiate(char* ipStr, u16 port)
 
 	candidateList->push_back(gloox::Jingle::ICEUDP::Candidate
 	{
-		/*component_id*/ "1",
-		/*foundation*/ "1",
-		/*candidate_generation*/ "0",
-		/*candidate_id*/ "1",
+		"1", // component_id,
+		"1", // foundation
+		"0", // andidate_generation
+		"1", // candidate_id
 		ipStr,
-		/*network*/ "",
+		"", // network
 		port,
-		/*priotiry*/ 0,
+		0, // priotiry
 		"udp",
-		/*base_ip*/ "",
-		/*base_port*/ 0,
+		"", // base_ip
+		0, // base_port
 		gloox::Jingle::ICEUDP::ServerReflexive
 	});
 
