@@ -115,10 +115,9 @@ T GetFromBuffer(std::vector<u8> buffer, int& offset)
 
 /**
  * Creates a STUN request and sends it to a STUN server.
- * See https://tools.ietf.org/html/rfc5389#section-6
- * for details on the message structure.
- * The request is sent through m_transaction_host, from which the answer
- * will be retrieved by ParseStunResponse()
+ * The request is sent through transactionHost, from which the answer
+ * will be retrieved by ReceiveStunResponse and interpreted by ParseStunResponse.
+ *
  */
 bool CreateStunRequest(ENetHost* transactionHost)
 {
@@ -182,9 +181,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 }
 
 /**
- * Gets the response from the STUN server, checks it for its validity and
- * then parses the answer into address and port
- * \return "" if the address could be parsed or an error message
+ * Gets the response from the STUN server and checks it for its validity.
 */
 bool ParseStunResponse(ENetHost* transactionHost)
 {
