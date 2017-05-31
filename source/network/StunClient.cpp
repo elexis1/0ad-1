@@ -107,7 +107,7 @@ void AddUInt32(std::vector<u8>& buffer, const u32& value)
 }
 
 template<typename T, size_t n>
-T GetFromBuffer(std::vector<u8> buffer, int& offset)
+T GetFromBuffer(std::vector<u8> buffer, u32& offset)
 {
 	int a = n;
 	T result = 0;
@@ -245,9 +245,10 @@ bool ReceiveStunResponse(ENetHost* transactionHost, std::vector<u8>& buffer)
 
 bool ParseStunResponse(const std::vector<u8>& buffer)
 {
-	int offset = 0;
+	u32 offset = 0;
+	std::size_t len = buffer.size();
 
-	if (GetFromBuffer<u16, 2>(buffer, offset) != m_BindingSuccessResponse)
+	if (len < 2 || GetFromBuffer<u16, 2>(buffer, offset) != m_BindingSuccessResponse)
 	{
 		LOGERROR("STUN response isn't a binding success response");
 		return false;
@@ -256,23 +257,29 @@ bool ParseStunResponse(const std::vector<u8>& buffer)
 	// Ignore message size
 	offset += 2;
 
-	if (GetFromBuffer<u32, 4>(buffer, offset) != m_MagicCookie)
+	if (len < offset + 4 || GetFromBuffer<u32, 4>(buffer, offset) != m_MagicCookie)
 	{
 		LOGERROR("STUN response doesn't contain the magic cookie");
 		return false;
 	}
 
 	for (std::size_t i = 0; i < sizeof(m_TransactionID); ++i)
-		if (buffer[offset++] != m_TransactionID[i])
+		if (len < offset + 1 || buffer[offset++] != m_TransactionID[i])
 		{
 			LOGERROR("STUN response doesn't contain the transaction ID");
 			return false;
 		}
 
-	while (offset < (int)buffer.size())
+	while (offset < len)
 	{
-		int type = GetFromBuffer<u16, 2>(buffer, offset);
-		int size = GetFromBuffer<u16, 2>(buffer, offset);
+		if (len < offset + 4)
+		{
+			LOGERROR("STUN response contains invalid attribute");
+			return false;
+		}
+
+		u16 type = GetFromBuffer<u16, 2>(buffer, offset);
+		u16 size = GetFromBuffer<u16, 2>(buffer, offset);
 
 		// The first two bits are irrelevant to the type
 		type &= ~(m_ComprehensionOptional | m_IETFReview);
@@ -291,9 +298,15 @@ bool ParseStunResponse(const std::vector<u8>& buffer)
 			// Ignore the first byte as mentioned in Section 15.1 of RFC 5389.
 			++offset;
 
-			if (buffer[offset++] != m_IPAddressFamilyIPv4)
+			if (len < offset + 1 || buffer[offset++] != m_IPAddressFamilyIPv4)
 			{
 				LOGERROR("Unsupported address family, IPv4 is expected");
+				return false;
+			}
+
+			if (len < offset + 6)
+			{
+				LOGERROR("Mapped address doesn't contain IP and port");
 				return false;
 			}
 
