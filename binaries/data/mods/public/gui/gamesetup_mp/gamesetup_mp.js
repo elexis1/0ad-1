@@ -24,7 +24,7 @@ var g_PlayerAssignments; // used when rejoining
 var g_UserRating;
 
 /**
- * Object containing the IP address and port of the stun server.
+ * Object containing the IP address and port of the STUN server.
  */
 var g_StunEndpoint;
 

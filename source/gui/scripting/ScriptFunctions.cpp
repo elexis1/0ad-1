@@ -380,6 +380,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 		// Find an unused port
 		for (int i = 0; i < 5 && !enetClient; ++i)
 		{
+			// Ports below 1024 are privileged on unix
 			u16 port = 1024 + rand() % (UINT16_MAX - 1024);
 			ENetAddress hostAddr{ENET_HOST_ANY, port};
 			enetClient = enet_host_create(&hostAddr, 1, 1, 0, 0);

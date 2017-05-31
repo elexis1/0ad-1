@@ -59,7 +59,7 @@ bool CNetClientSession::Connect(const CStr& server, const u16 port, const bool i
 
 	// Create ENet host
 	ENetHost* host;
-	if (enetClient != NULL)
+	if (enetClient != nullptr)
 		host = enetClient;
 	else
 		host = enet_host_create(NULL, 1, CHANNEL_COUNT, 0, 0);
