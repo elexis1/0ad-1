@@ -1097,7 +1097,6 @@ std::string XmppClient::RegistrationResultToString(gloox::RegistrationResult res
 #undef CASE
 }
 
-
 void XmppClient::SendStunEndpointToHost(StunClient::StunEndpoint* stunEndpoint, const std::string& hostJIDStr)
 {
 	ENSURE(stunEndpoint);
