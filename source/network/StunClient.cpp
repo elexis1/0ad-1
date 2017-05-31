@@ -22,7 +22,6 @@
 
 #include <chrono>
 #include <cstdio>
-#include <thread>
 
 #include <stdlib.h>
 #include <string.h>
