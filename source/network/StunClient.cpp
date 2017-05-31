@@ -229,12 +229,6 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			sender_port,
 			input_buffer);
 
-	if (len < 0)
-	{
-		LOGERROR("STUN response contains no data");
-		return false;
-	}
-
 	// Convert to network string.
 	std::vector<u8> buffer;
 	int offset = 0;
