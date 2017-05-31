@@ -198,11 +198,14 @@ bool ReceiveStunResponse(ENetHost* transactionHost, std::vector<u8>& buffer)
 
 	int len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 
+	int delay = 300;
+	CFG_GET_VAL("lobby.stun.delay", delay);
+
 	// Wait to receive the message because enet sockets are non-blocking
 	const int max_tries = 5;
 	for (int count = 0; len < 0 && (count < max_tries || max_tries == -1); ++count)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 		len = recvfrom(transactionHost->socket, input_buffer, LEN, 0, (sockaddr*)(&addr), &from_len);
 	}
 
@@ -381,10 +384,13 @@ void StunClient::SendHolePunchingMessages(ENetHost* enetClient, const char* serv
 	addr.port = serverPort;
 	enet_address_set_host(&addr, serverAddress);
 
+	int delay = 300;
+	CFG_GET_VAL("lobby.stun.delay", delay);
+
 	// Send an UDP message from enet host to ip:port
 	for (int i = 0; i < 3; ++i)
 	{
 		StunClient::SendStunRequest(enetClient, htonl(addr.host), serverPort);
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 	}
 }
