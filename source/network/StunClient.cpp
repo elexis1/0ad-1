@@ -183,7 +183,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 /**
  * Gets the response from the STUN server and checks it for its validity.
 */
-bool ParseStunResponse(ENetHost* transactionHost)
+bool ReceiveStunResponse(ENetHost* transactionHost, std::vector<u8>& buffer)
 {
 	ENSURE(transactionHost);
 
@@ -227,11 +227,15 @@ bool ParseStunResponse(ENetHost* transactionHost)
 			input_buffer);
 
 	// Convert to network string.
-	std::vector<u8> buffer;
-	int offset = 0;
-
 	buffer.resize(len);
 	memcpy(buffer.data(), (u8*)input_buffer, len);
+
+	return true;
+}
+
+bool ParseStunResponse(const std::vector<u8>& buffer)
+{
+	int offset = 0;
 
 	if (GetFromBuffer<u16, 2>(buffer, offset) != m_BindingSuccessResponse)
 	{
@@ -313,6 +317,16 @@ bool ParseStunResponse(ENetHost* transactionHost)
 	return true;
 }
 
+bool STUNRequestAndResponse(ENetHost* transactionHost)
+{
+	if (!CreateStunRequest(transactionHost))
+		return false;
+
+	std::vector<u8> buffer;
+	return ReceiveStunResponse(transactionHost, buffer) &&
+	       ParseStunResponse(buffer);
+}
+
 JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int port)
 {
 	ENetAddress hostAddr{ENET_HOST_ANY, (u16)port};
@@ -323,7 +337,7 @@ JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int
 		return JS::UndefinedValue();
 	}
 
-	bool success = CreateStunRequest(transactionHost) && ParseStunResponse(transactionHost);
+	bool success = STUNRequestAndResponse(transactionHost);
 	enet_host_destroy(transactionHost);
 	if (!success)
 		return JS::UndefinedValue();
@@ -348,7 +362,7 @@ StunClient::StunEndpoint* StunClient::FindStunEndpointJoin(ENetHost* transaction
 {
 	ENSURE(transactionHost);
 
-	if (!CreateStunRequest(transactionHost) || !ParseStunResponse(transactionHost))
+	if (!STUNRequestAndResponse(transactionHost))
 		return nullptr;
 
 	// Convert m_IP to string
