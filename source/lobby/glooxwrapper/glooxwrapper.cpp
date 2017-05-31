@@ -805,17 +805,11 @@ glooxwrapper::Jingle::ICEUDP::Candidate glooxwrapper::Jingle::Session::Jingle::g
 {
 	const gloox::Jingle::Content *content = static_cast<const gloox::Jingle::Content*>(m_Wrapped->plugins().front());
 	if (!content)
-	{
-		debug_printf("Failed to retrieve Jingle content\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
-	}
 
 	const gloox::Jingle::ICEUDP *iceUDP = static_cast<const gloox::Jingle::ICEUDP*>(content->findPlugin(gloox::Jingle::PluginICEUDP));
 	if (!iceUDP)
-	{
-		debug_printf("Failed to retrieve Jingle ICE-UDP data\n");
 		return glooxwrapper::Jingle::ICEUDP::Candidate();
-	}
 
 	gloox::Jingle::ICEUDP::Candidate glooxCandidate = iceUDP->candidates().front();
 	return glooxwrapper::Jingle::ICEUDP::Candidate{glooxCandidate.ip, glooxCandidate.port};

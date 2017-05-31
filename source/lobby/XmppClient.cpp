@@ -1120,5 +1120,12 @@ void XmppClient::handleSessionAction(gloox::Jingle::Action action, glooxwrapper:
 void XmppClient::handleSessionInitiation(const glooxwrapper::Jingle::Session::Jingle *jingle)
 {
 	glooxwrapper::Jingle::ICEUDP::Candidate candidate = jingle->getCandidate();
+
+	if (candidate.ip.empty())
+	{
+		LOGERROR("Failed to retrieve Jingle candidate");
+		return;
+	}
+
 	g_NetServer->SendHolePunchingMessage(candidate.ip.to_string(), candidate.port);
 }
