@@ -1071,6 +1071,7 @@ function joinSelectedGame()
 		"port": port,
 		"name": g_Username,
 		"rating": g_UserRating,
+		"useSTUN": !!game.stunIP,
 		"hostJID": game.hostUsername + "@" + g_LobbyServer + "/0ad"
 	});
 }

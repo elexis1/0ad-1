@@ -368,14 +368,14 @@ void StartNetworkHost(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	}
 }
 
-void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, const CStr& serverAddress, u16 serverPort, const std::string& hostJID)
+void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, const CStr& serverAddress, u16 serverPort, bool useSTUN, const std::string& hostJID)
 {
 	ENSURE(!g_NetClient);
 	ENSURE(!g_NetServer);
 	ENSURE(!g_Game);
 
 	ENetHost* enetClient = nullptr;
-	if (g_XmppClient && !hostJID.empty())
+	if (g_XmppClient && useSTUN)
 	{
 		// Find an unused port
 		for (int i = 0; i < 5 && !enetClient; ++i)
@@ -410,7 +410,7 @@ void StartNetworkJoin(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playe
 	g_NetClient = new CNetClient(g_Game, false);
 	g_NetClient->SetUserName(playerName);
 
-	if (g_XmppClient && !hostJID.empty())
+	if (g_XmppClient && useSTUN)
 		StunClient::SendHolePunchingMessages(enetClient, serverAddress.c_str(), serverPort);
 
 	if (!g_NetClient->SetupConnection(serverAddress, serverPort, enetClient))
@@ -1078,7 +1078,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<void, JS::HandleValue, int, &StartGame>("StartGame");
 	scriptInterface.RegisterFunction<void, &Script_EndGame>("EndGame");
 	scriptInterface.RegisterFunction<void, CStrW, u16, &StartNetworkHost>("StartNetworkHost");
-	scriptInterface.RegisterFunction<void, CStrW, CStr, u16, std::string, &StartNetworkJoin>("StartNetworkJoin");
+	scriptInterface.RegisterFunction<void, CStrW, CStr, u16, bool, std::string, &StartNetworkJoin>("StartNetworkJoin");
 	scriptInterface.RegisterFunction<u16, &GetDefaultPort>("GetDefaultPort");
 	scriptInterface.RegisterFunction<void, &DisconnectNetworkGame>("DisconnectNetworkGame");
 	scriptInterface.RegisterFunction<std::string, &GetPlayerGUID>("GetPlayerGUID");

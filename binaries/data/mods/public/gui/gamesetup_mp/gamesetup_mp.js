@@ -38,7 +38,7 @@ function init(attribs)
 	{
 		if (Engine.HasXmppClient())
 		{
-			if (startJoin(attribs.name, attribs.ip, getValidPort(attribs.port), attribs.hostJID))
+			if (startJoin(attribs.name, attribs.ip, getValidPort(attribs.port), attribs.useSTUN, attribs.hostJID))
 				switchSetupPage("pageConnecting");
 		}
 		else
@@ -100,7 +100,7 @@ function confirmSetup()
 		let joinServer = Engine.GetGUIObjectByName("joinServer").caption;
 		let joinPort = Engine.GetGUIObjectByName("joinPort").caption;
 
-		if (startJoin(joinPlayerName, joinServer, getValidPort(joinPort)))
+		if (startJoin(joinPlayerName, joinServer, getValidPort(joinPort), false))
 			switchSetupPage("pageConnecting");
 	}
 	else if (!Engine.GetGUIObjectByName("pageHost").hidden)
@@ -347,11 +347,14 @@ function startHost(playername, servername, port)
 	return true;
 }
 
-function startJoin(playername, ip, port, hostJID)
+/**
+ * Connects via STUN if the hostJID is given.
+ */
+function startJoin(playername, ip, port, useSTUN, hostJID = "")
 {
 	try
 	{
-		Engine.StartNetworkJoin(playername + (g_UserRating ? " (" + g_UserRating + ")" : ""), ip, port, hostJID || "");
+		Engine.StartNetworkJoin(playername + (g_UserRating ? " (" + g_UserRating + ")" : ""), ip, port, useSTUN, hostJID);
 	}
 	catch (e)
 	{
