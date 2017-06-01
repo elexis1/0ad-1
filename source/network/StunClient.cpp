@@ -97,7 +97,7 @@ void AddUInt16(std::vector<u8>& buffer, const u16 value)
 	buffer.push_back(value & 0xff);
 }
 
-void AddUInt32(std::vector<u8>& buffer, const u32& value)
+void AddUInt32(std::vector<u8>& buffer, const u32 value)
 {
 	buffer.push_back((value >> 24) & 0xff);
 	buffer.push_back((value >> 16) & 0xff);
@@ -123,13 +123,12 @@ T GetFromBuffer(std::vector<u8> buffer, u32& offset)
  * Creates a STUN request and sends it to a STUN server.
  * The request is sent through transactionHost, from which the answer
  * will be retrieved by ReceiveStunResponse and interpreted by ParseStunResponse.
- *
  */
 bool CreateStunRequest(ENetHost* transactionHost)
 {
 	ENSURE(transactionHost);
 
-	std::string server_name;
+	CStr server_name;
 	CFG_GET_VAL("lobby.stun.server", server_name);
 	CFG_GET_VAL("lobby.stun.port", m_StunServerPort);
 
@@ -150,8 +149,9 @@ bool CreateStunRequest(ENetHost* transactionHost)
 		return false;
 	}
 
-	// documentation says it points to "one or more addrinfo structures"
 	ENSURE(res);
+
+	// Documentation says it points to "one or more addrinfo structures"
 	sockaddr_in* current_interface = (sockaddr_in*)(res->ai_addr);
 	m_StunServerIP = ntohl(current_interface->sin_addr.s_addr);
 
@@ -188,7 +188,7 @@ void StunClient::SendStunRequest(ENetHost* transactionHost, u32 targetIp, u16 ta
 
 /**
  * Gets the response from the STUN server and checks it for its validity.
-*/
+ */
 bool ReceiveStunResponse(ENetHost* transactionHost, std::vector<u8>& buffer)
 {
 	ENSURE(transactionHost);
@@ -375,7 +375,7 @@ JS::Value StunClient::FindStunEndpointHost(ScriptInterface& scriptInterface, int
 
 	JS::RootedValue stunEndpoint(cx);
 	scriptInterface.Eval("({})", &stunEndpoint);
-	scriptInterface.SetProperty(stunEndpoint, "ip", std::string(ipStr));
+	scriptInterface.SetProperty(stunEndpoint, "ip", CStr(ipStr));
 	scriptInterface.SetProperty(stunEndpoint, "port", m_Port);
 	return stunEndpoint;
 }
