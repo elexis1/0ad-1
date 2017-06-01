@@ -19,7 +19,7 @@ const g_ModeratorPrefix = "@";
 const g_Username = Engine.LobbyGetNick();
 
 /**
- * Lobby server address to construct host JID
+ * Lobby server address to construct host JID.
  */
 const g_LobbyServer = Engine.ConfigDB_GetValue("user", "lobby.server");
 
