@@ -14,6 +14,10 @@ function init(data)
 
 function placeTabButtons()
 {
+	let maxColumns = 3;
+	let row = 0;
+	let column = 0;
+
 	for (let category in g_Options)
 	{
 		let button = Engine.GetGUIObjectByName("tabButton[" + category + "]");
@@ -25,10 +29,22 @@ function placeTabButtons()
 
 		button.hidden = false;
 
-		let size = button.size;
-		size.top = category * 35;
-		size.bottom = size.top + 30;
-		button.size = size;
+		let width = 190;
+		let height = 30;
+		let spacing = 10;
+
+		button.size = new GUISize(
+			column * (width + spacing),
+			row * (height + spacing),
+			column * (width + spacing) + width,
+			row * (height + spacing) + height);
+
+		++column
+		if (column > maxColumns - 1 )
+		{
+			column = 0;
+			++row;
+		}
 
 		button.onPress = (category => function() {
 			selectCategory(category);

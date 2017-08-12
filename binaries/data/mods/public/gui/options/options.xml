@@ -14,7 +14,7 @@
 	<object type="image" sprite="ModernFade"/>
 
 	<!-- Settings Window -->
-	<object name="options" type="image" style="ModernDialog" size="50%-333 50%-316 50%+333 50%+316">
+	<object name="options" type="image" style="ModernDialog" size="50%-315 50%-356 50%+315 50%+356">
 
 		<object style="ModernLabelText" type="text" size="50%-128 -16 50%+128 16">
 			<translatableAttribute id="caption">Game Options</translatableAttribute>
@@ -36,9 +36,9 @@
 			</repeat>
 		</object>
 
-		<object name="optionControls" type="image" sprite="ModernDarkBoxGold" size="220 16 650 100%-52">
+		<object name="optionControls" type="image" sprite="ModernDarkBoxGold" size="16 110 614 100%-60">
 			<repeat count="25">
-				<object name="optionControl[n]" size="0 25 100% 50">
+				<object name="optionControl[n]" size="0 10 100% 35">
 					<object name="optionControlLabel[n]" size="0 0 65% 100%" type="text" style="ModernLeftLabelText"/>
 					<object name="optionControlTickbox[n]" size="90% 5 100% 100%+5" type="checkbox" style="ModernTickBox"/>
 					<object name="optionControlInput[n]" size="70% 0 100%-8 100%" type="input" style="ModernInput"/>
