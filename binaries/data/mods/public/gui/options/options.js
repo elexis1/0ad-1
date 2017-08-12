@@ -1,59 +1,106 @@
 var g_HasCallback = false;
 var g_Controls;
+var g_Options = Engine.ReadJSONFile("gui/options/options.json");
 
 function init(data)
 {
 	if (data && data.callback)
 		g_HasCallback = true;
+
+	placeTabButtons();
+
+	selectCategory(0);
+}
+
+function placeTabButtons()
+{
+	for (let category in g_Options)
+	{
+		let button = Engine.GetGUIObjectByName("tabButton[" + category + "]");
+		if (!button)
+		{
+			warn("Too few options tab-buttons!");
+			break;
+		}
+
+		button.hidden = false;
+
+		let size = button.size;
+		size.top = category * 35;
+		size.bottom = size.top + 30;
+		button.size = size;
+
+		button.onPress = (category => function() {
+			selectCategory(category);
+		})(category);
+
+		Engine.GetGUIObjectByName("tabButtonText[" + category + "]").caption =
+			translate(g_Options[category].label);
+	}
+}
+
+function selectCategory(category)
+{
+	Engine.GetGUIObjectByName("tabButtons").children.forEach((button, i) => {
+		button.sprite = i == category ? "TabForeground" : "TabBackground";
+	});
+
+	for (let controls of Engine.GetGUIObjectByName("optionControls").children)
+		for (let control of controls.children)
+			control.hidden = true;
+
 	g_Controls = {};
 
-	var options = Engine.ReadJSONFile("gui/options/options.json");
-	for (let category in options)
+	let lastSize;
+	for (let i = 0; i < g_Options[category].options.length; ++i)
 	{
-		let lastSize;
-		for (let i = 0; i < options[category].length; ++i)
+		let option = g_Options[category].options[i];
+		if (!option.label || !option.parameters || !option.parameters.config)
+			continue;
+
+		let body = Engine.GetGUIObjectByName("optionControl[" + i + "]");
+		let label = Engine.GetGUIObjectByName("optionControlLabel[" + i + "]");
+		label.hidden = false;
+
+		let config = option.parameters.config;
+
+		g_Controls[config] = {
+			"control": setupControl(option, i),
+			"label": label,
+			"type": option.type,
+			"dependencies": option.dependencies || undefined,
+			"parameters": option.parameters
+		};
+
+		label.caption = translate(option.label);
+		label.tooltip = option.tooltip ? translate(option.tooltip) : "";
+
+		// Move each element to the correct place.
+		if (lastSize)
 		{
-			let option = options[category][i];
-			if (!option.label || !option.parameters || !option.parameters.config)
-				continue;
-			let body = Engine.GetGUIObjectByName(category + "[" + i + "]");
-			let label = Engine.GetGUIObjectByName(category + "Label[" + i + "]");
-			let config = option.parameters.config;
-			g_Controls[config] = {
-				"control": setupControl(option, i, category),
-				"label": label,
-				"type": option.type,
-				"dependencies": option.dependencies || undefined,
-				"parameters": option.parameters
-			};
-			label.caption = translate(option.label);
-			label.tooltip = option.tooltip ? translate(option.tooltip) : "";
-			// Move each element to the correct place.
-			if (lastSize)
-			{
-				let newSize = new GUISize();
-				newSize.left = lastSize.left;
-				newSize.rright = lastSize.rright;
-				newSize.top = lastSize.bottom;
-				newSize.bottom = newSize.top + 26;
-				body.size = newSize;
-				lastSize = newSize;
-			}
-			else
-				lastSize = body.size;
-			// small right shift of options which depends on another one
-			for (let opt of options[category])
-			{
-				if (!opt.label || !opt.parameters || !opt.parameters.config)
-					continue;
-				if (!opt.dependencies || opt.dependencies.indexOf(config) === -1)
-					continue;
-				label.caption = "      " + label.caption;
-				break;
-			}
-			// Show element.
-			body.hidden = false;
+			let newSize = new GUISize();
+			newSize.left = lastSize.left;
+			newSize.rright = lastSize.rright;
+			newSize.top = lastSize.bottom;
+			newSize.bottom = newSize.top + 26;
+			body.size = newSize;
+			lastSize = newSize;
 		}
+		else
+			lastSize = body.size;
+
+		// small right shift of options which depends on another one
+		for (let opt of g_Options[category].options)
+		{
+			if (!opt.label || !opt.parameters || !opt.parameters.config)
+				continue;
+			if (!opt.dependencies || opt.dependencies.indexOf(config) === -1)
+				continue;
+			label.caption = "      " + label.caption;
+			break;
+		}
+
+		body.hidden = false;
 	}
 
 	updateOptionPanel();
@@ -65,7 +112,7 @@ function init(data)
  * @param option Structure containing the data to setup an option.
  * @param prefix Prefix to use when accessing control, for example "generalSetting" when the tickbox name is generalSettingTickbox[i].
  */
-function setupControl(option, i, category)
+function setupControl(option, i)
 {
 	var control;
 	var onUpdate;
@@ -76,11 +123,11 @@ function setupControl(option, i, category)
 	case "boolean":
 	case "invertedboolean":
 		// More space for the label
-		let text = Engine.GetGUIObjectByName(category + "Label[" + i + "]");
+		let text = Engine.GetGUIObjectByName("optionControlLabel[" + i + "]");
 		let size = text.size;
 		size.rright = 87;
 		text.size = size;
-		control = Engine.GetGUIObjectByName(category + "Tickbox[" + i + "]");
+		control = Engine.GetGUIObjectByName("optionControlTickbox[" + i + "]");
 		let checked;
 		let keyRenderer;
 
@@ -132,7 +179,7 @@ function setupControl(option, i, category)
 		control.onPress = onUpdate;
 		break;
 	case "slider":
-		control = Engine.GetGUIObjectByName(category + "Slider[" + i + "]");
+		control = Engine.GetGUIObjectByName("optionControlSlider[" + i + "]");
 		let value;
 		let callbackFunction;
 		let minvalue;
@@ -189,7 +236,7 @@ function setupControl(option, i, category)
 		break;
 	case "number":
 	case "string":
-		control = Engine.GetGUIObjectByName(category + "Input[" + i + "]");
+		control = Engine.GetGUIObjectByName("optionControlInput[" + i + "]");
 		let caption;
 		let functionBody;
 		let minval;
@@ -244,7 +291,7 @@ function setupControl(option, i, category)
 		control.onMouseLeave = onUpdate;
 		break;
 	case "dropdown":
-		control = Engine.GetGUIObjectByName(category + "Dropdown[" + i + "]");
+		control = Engine.GetGUIObjectByName("optionControlDropdown[" + i + "]");
 		control.onSelectionChange = function(){};  // just the time to setup the value
 		let config;
 
@@ -280,7 +327,7 @@ function setupControl(option, i, category)
 		break;
 	default:
 		warn("Unknown option type " + option.type + ", assuming string.");
-		control = Engine.GetGUIObjectByName(category + "Input[" + i + "]");
+		control = Engine.GetGUIObjectByName("optionControlInput[" + i + "]");
 		break;
 	}
 	control.hidden = false;
