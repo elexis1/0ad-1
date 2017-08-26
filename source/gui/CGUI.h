@@ -247,7 +247,7 @@ public:
 	bool GetPreDefinedColor(const CStr& name, CColor& Output) const;
 
 	shared_ptr<ScriptInterface> GetScriptInterface() { return m_ScriptInterface; };
-	jsval GetGlobalObject() { return m_ScriptInterface->GetGlobalObject(); };
+	JS::Value GetGlobalObject() { return m_ScriptInterface->GetGlobalObject(); };
 
 private:
 

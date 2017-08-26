@@ -134,7 +134,7 @@ public:
 	JSObject* CreateCustomObject(const std::string & typeName) const;
 	void DefineCustomObjectType(JSClass *clasp, JSNative constructor, uint minArgs, JSPropertySpec *ps, JSFunctionSpec *fs, JSPropertySpec *static_ps, JSFunctionSpec *static_fs);
 
-	jsval GetGlobalObject();
+	JS::Value GetGlobalObject();
 
 	JSClass* GetGlobalClass();
 
