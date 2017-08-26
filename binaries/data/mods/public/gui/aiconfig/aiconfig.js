@@ -1,12 +1,12 @@
 var g_PlayerSlot;
 
-const g_AIDescriptions = [{
+var g_AIDescriptions = ([{
 	"id": "",
 	"data": {
 		"name": translateWithContext("ai", "None"),
 		"description": translate("AI will be disabled for this player.")
 	}
-}].concat(g_Settings.AIDescriptions);
+}].concat(g_Settings.AIDescriptions));
 
 function init(settings)
 {

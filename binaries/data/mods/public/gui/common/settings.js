@@ -17,8 +17,9 @@ const g_SettingsDirectory = "simulation/data/settings/";
 /**
  * An object containing all values given by setting name.
  * Used by lobby, gamesetup, session, summary screen and replay menu.
+ * Allow mods to extend this object in external files.
  */
-const g_Settings = loadSettingsValues();
+var g_Settings = loadSettingsValues();
 
 /**
  * Loads and translates all values of all settings which
@@ -288,7 +289,7 @@ function prepareForDropdown(settingValues)
 	if (!settingValues)
 		return undefined;
 
-	var settings = { "Default": 0 };
+	let settings = { "Default": 0 };
 	for (let index in settingValues)
 	{
 		for (let property in settingValues[index])
@@ -317,7 +318,7 @@ function prepareForDropdown(settingValues)
  */
 function translateAIName(aiName)
 {
-	var description = g_Settings.AIDescriptions.find(ai => ai.id == aiName);
+	let description = g_Settings.AIDescriptions.find(ai => ai.id == aiName);
 	return description ? translate(description.data.name) : translateWithContext("AI name", "Unknown");
 }
 
@@ -328,7 +329,7 @@ function translateAIName(aiName)
  */
 function translateAIDifficulty(index)
 {
-	var difficulty = g_Settings.AIDifficulties[index];
+	let difficulty = g_Settings.AIDifficulties[index];
 	return difficulty ? difficulty.Title : translateWithContext("AI difficulty", "Unknown");
 }
 
@@ -340,7 +341,7 @@ function translateAIDifficulty(index)
  */
 function translateMapType(mapType)
 {
-	var type = g_Settings.MapTypes.find(t => t.Name == mapType);
+	let type = g_Settings.MapTypes.find(t => t.Name == mapType);
 	return type ? type.Title : translateWithContext("map type", "Unknown");
 }
 
@@ -352,7 +353,7 @@ function translateMapType(mapType)
  */
 function translateMapSize(tiles)
 {
-	var mapSize = g_Settings.MapSizes.find(mapSize => mapSize.Tiles == +tiles);
+	let mapSize = g_Settings.MapSizes.find(mapSize => mapSize.Tiles == +tiles);
 	return mapSize ? mapSize.Name : translateWithContext("map size", "Default");
 }
 
@@ -364,7 +365,7 @@ function translateMapSize(tiles)
  */
 function translatePopulationCapacity(population)
 {
-	var popCap = g_Settings.PopulationCapacities.find(p => p.Population == population);
+	let popCap = g_Settings.PopulationCapacities.find(p => p.Population == population);
 	return popCap ? popCap.Title : translateWithContext("population capacity", "Unknown");
 }
 
@@ -376,6 +377,6 @@ function translatePopulationCapacity(population)
  */
 function translateVictoryCondition(gameType)
 {
-	var vc = g_Settings.VictoryConditions.find(vc => vc.Name == gameType);
+	let vc = g_Settings.VictoryConditions.find(vc => vc.Name == gameType);
 	return vc ? vc.Title : translateWithContext("victory condition", "Unknown");
 }

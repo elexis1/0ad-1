@@ -23,7 +23,7 @@ var g_ResourceTitleFont = "sans-bold-16";
 /**
  * A random file will be played. TODO: more variety
  */
-const g_Ambient = [ "audio/ambient/dayscape/day_temperate_gen_03.ogg" ];
+var g_Ambient = ["audio/ambient/dayscape/day_temperate_gen_03.ogg"];
 
 /**
  * Map, player and match settings set in gamesetup.
@@ -101,7 +101,7 @@ var g_LastTickTime = Date.now();
 /**
  * Recalculate which units have their status bars shown with this frequency in milliseconds.
  */
-const g_StatusBarUpdate = 200;
+var g_StatusBarUpdate = 200;
 
 const g_CivData = loadCivData(false, true);
 
