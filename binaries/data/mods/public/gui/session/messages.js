@@ -464,7 +464,7 @@ function getCheatsData()
 		else
 			cheats[currentCheat.Name] = currentCheat.Data;
 	}
-	return cheats;
+	return deepfreeze(cheats);
 }
 
 /**

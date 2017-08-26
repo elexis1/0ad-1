@@ -308,7 +308,7 @@ function prepareForDropdown(settingValues)
 		if (settingValues[index].Default)
 			settings.Default = +index;
 	}
-	return settings;
+	return deepfreeze(settings);
 }
 
 /**

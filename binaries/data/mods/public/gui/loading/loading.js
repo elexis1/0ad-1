@@ -3,7 +3,7 @@ var g_EndPieceWidth = 16;
 
 function init(data)
 {
-	g_Data = data;
+	g_Data = deepfreeze(data);
 
 	Engine.SetCursor("cursor-wait");
 

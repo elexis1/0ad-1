@@ -1,7 +1,7 @@
 /**
  * Used for checking replay compatibility.
  */
-const g_EngineInfo = Engine.GetEngineInfo();
+const g_EngineInfo = deepfreeze(Engine.GetEngineInfo());
 
 /**
  * Needed for formatPlayerInfo to show the player civs in the details.
