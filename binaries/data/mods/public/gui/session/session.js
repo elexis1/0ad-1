@@ -103,10 +103,7 @@ var g_LastTickTime = Date.now();
  */
 const g_StatusBarUpdate = 200;
 
-/**
- * Not constant as we add "gaia".
- */
-var g_CivData = {};
+const g_CivData = loadCivData(false, true);
 
 /**
  * For restoring selection, order and filters when returning to the replay menu
@@ -276,9 +273,6 @@ function init(initData, hotloadData)
 	}
 
 	updatePlayerData();
-
-	g_CivData = loadCivData();
-	g_CivData.gaia = { "Code": "gaia", "Name": translate("Gaia") };
 
 	g_BarterSell = g_ResourceData.GetCodes()[0];
 

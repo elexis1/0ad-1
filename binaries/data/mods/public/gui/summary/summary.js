@@ -97,9 +97,12 @@ var g_SummaryTypes = {
 	}
 };
 
-const g_InfinitySymbol = "\u221E";
+/**
+ * Translation: Infinity character indicating a division by zero in the summary screen
+ */
+var g_InfinitySymbol = translate("\u221E");
 
-var g_CivData = loadCivData();
+const g_CivData = loadCivData(false, false);
 var g_Teams = [];
 
 // TODO set g_PlayerCount as playerCounters.length

@@ -60,7 +60,7 @@ var g_PlayerTeamList = prepareForDropdown([{
  * Offer users to select playable civs only.
  * Load unselectable civs as they could appear in scenario maps.
  */
-var g_CivData = loadCivData();
+const g_CivData = loadCivData(false, false);
 
 /**
  * Number of relics: [1, ..., NumCivs]

@@ -8,7 +8,7 @@ const g_AuraPath = "simulation/data/auras/";
  * Raw Data Caches.
  */
 var g_AuraData = {};
-var g_CivData = {};
+var g_CivData = loadCivData(true, false);
 var g_TemplateData = {};
 var g_TechnologyData = {};
 
