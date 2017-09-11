@@ -21,18 +21,20 @@
 
 #include "graphics/FontMetrics.h"
 #include "graphics/MapReader.h"
-#include "graphics/scripting/JSInterface_GameView.h"
-#include "gui/scripting/JSInterface_GUIManager.h"
-#include "gui/scripting/JSInterface_GUITypes.h"
-#include "i18n/scripting/JSInterface_L10n.h"
 #include "lib/sysdep/sysdep.h"
 #include "lib/utf8.h"
-#include "lobby/scripting/JSInterface_Lobby.h"
-#include "network/scripting/JSInterface_Network.h"
 #include "ps/Errors.h"
 #include "ps/GUID.h"
 #include "ps/GameSetup/Atlas.h"
 #include "ps/Hotkey.h"
+#include "tools/atlas/GameInterface/GameLoop.h"
+
+#include "graphics/scripting/JSInterface_GameView.h"
+#include "gui/scripting/JSInterface_GUIManager.h"
+#include "gui/scripting/JSInterface_GUITypes.h"
+#include "i18n/scripting/JSInterface_L10n.h"
+#include "lobby/scripting/JSInterface_Lobby.h"
+#include "network/scripting/JSInterface_Network.h"
 #include "ps/scripting/JSInterface_ConfigDB.h"
 #include "ps/scripting/JSInterface_Console.h"
 #include "ps/scripting/JSInterface_Debug.h"
@@ -44,7 +46,6 @@
 #include "renderer/scripting/JSInterface_Renderer.h"
 #include "simulation2/scripting/JSInterface_Simulation.h"
 #include "soundmanager/scripting/JSInterface_Sound.h"
-#include "tools/atlas/GameInterface/GameLoop.h"
 
 /*
  * This file defines a set of functions that are available to GUI scripts, to allow
@@ -108,12 +109,6 @@ CStrW GetSystemUsername(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
 	return sys_get_user_name();
 }
 
-// Cause the game to exit gracefully.
-// params:
-// returns:
-// notes:
-// - Exit happens after the current main loop iteration ends
-//   (since this only sets a flag telling it to end)
 void ExitProgram(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
 {
 	kill_mainloop();
@@ -133,29 +128,27 @@ int GetTextWidth(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const CStr& fon
 
 void GuiScriptingInit(ScriptInterface& scriptInterface)
 {
-	JSI_IGUIObject::init(scriptInterface);
 	JSI_GUITypes::init(scriptInterface);
+	JSI_IGUIObject::init(scriptInterface);
 
-	JSI_GUIManager::RegisterScriptFunctions(scriptInterface);
-	JSI_GameView::RegisterScriptFunctions(scriptInterface);
-	JSI_Renderer::RegisterScriptFunctions(scriptInterface);
-	JSI_Console::RegisterScriptFunctions(scriptInterface);
 	JSI_ConfigDB::RegisterScriptFunctions(scriptInterface);
+	JSI_Console::RegisterScriptFunctions(scriptInterface);
 	JSI_Debug::RegisterScriptFunctions(scriptInterface);
+	JSI_GUIManager::RegisterScriptFunctions(scriptInterface);
 	JSI_Game::RegisterScriptFunctions(scriptInterface);
-	JSI_Mod::RegisterScriptFunctions(scriptInterface);
-	JSI_Network::RegisterScriptFunctions(scriptInterface);
-	JSI_SavedGame::RegisterScriptFunctions(scriptInterface);
-	JSI_Sound::RegisterScriptFunctions(scriptInterface);
-	JSI_Simulation::RegisterScriptFunctions(scriptInterface);
+	JSI_GameView::RegisterScriptFunctions(scriptInterface);
 	JSI_L10n::RegisterScriptFunctions(scriptInterface);
 	JSI_Lobby::RegisterScriptFunctions(scriptInterface);
+	JSI_Mod::RegisterScriptFunctions(scriptInterface);
+	JSI_Network::RegisterScriptFunctions(scriptInterface);
+	JSI_Renderer::RegisterScriptFunctions(scriptInterface);
+	JSI_SavedGame::RegisterScriptFunctions(scriptInterface);
+	JSI_Simulation::RegisterScriptFunctions(scriptInterface);
+	JSI_Sound::RegisterScriptFunctions(scriptInterface);
 	JSI_VFS::RegisterScriptFunctions(scriptInterface);
 	JSI_VisualReplay::RegisterScriptFunctions(scriptInterface);
 
 	scriptInterface.RegisterFunction<JS::Value, VfsPath, &LoadMapSettings>("LoadMapSettings");
-
-	// Misc functions
 	scriptInterface.RegisterFunction<void, std::string, &OpenURL>("OpenURL");
 	scriptInterface.RegisterFunction<std::wstring, &GetMatchID>("GetMatchID");
 	scriptInterface.RegisterFunction<void, &RestartInAtlas>("RestartInAtlas");
