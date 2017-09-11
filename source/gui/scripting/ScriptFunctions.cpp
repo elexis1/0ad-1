@@ -31,7 +31,6 @@
 #include "network/scripting/JSInterface_Network.h"
 #include "ps/Errors.h"
 #include "ps/GUID.h"
-#include "ps/Game.h"
 #include "ps/GameSetup/Atlas.h"
 #include "ps/Hotkey.h"
 #include "ps/scripting/JSInterface_ConfigDB.h"
