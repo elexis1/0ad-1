@@ -20,7 +20,6 @@
 #include "scriptinterface/ScriptInterface.h"
 
 #include "graphics/FontMetrics.h"
-#include "graphics/GameView.h"
 #include "graphics/MapReader.h"
 #include "graphics/scripting/JSInterface_GameView.h"
 #include "gui/scripting/JSInterface_GUIManager.h"
