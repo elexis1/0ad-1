@@ -28,6 +28,7 @@
 #include "ps/GameSetup/Atlas.h"
 #include "ps/Hotkey.h"
 #include "tools/atlas/GameInterface/GameLoop.h"
+#include "gui/IGUIObject.h"
 
 #include "graphics/scripting/JSInterface_GameView.h"
 #include "gui/scripting/JSInterface_GUIManager.h"
