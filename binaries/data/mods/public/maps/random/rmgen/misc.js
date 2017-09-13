@@ -162,17 +162,17 @@ function paintRiver(args)
 			let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 			let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-			let s1 = devCoord1 - cu1 - 0.5 + halfWaterWidth;
-			let s2 = devCoord1 - cu2 - 0.5 - halfWaterWidth;
+			let m1 = devCoord1 - cu1 - 0.5 + halfWaterWidth;
+			let m2 = devCoord1 - cu2 - 0.5 - halfWaterWidth;
 
-			if (s1 > 0 && s2 < 0)
+			if (m1 > 0 && m2 < 0)
 			{
 				let height = args.waterHeight;
 
-				if (s1 < args.fadeDist)
-					height = args.someNumber - args.someOtherNumber * s1 / args.fadeDist;
-				else if (s2 > - args.fadeDist)
-					height = args.someNumber - args.someOtherNumber * (-s2) / args.fadeDist;
+				if (m1 < args.fadeDist)
+					height = args.someNumber - args.someOtherNumber * m1 / args.fadeDist;
+				else if (m2 > - args.fadeDist)
+					height = args.someNumber - args.someOtherNumber * (-m2) / args.fadeDist;
 
 				setHeight(ix, iz, height);
 
