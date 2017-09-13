@@ -207,15 +207,14 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let xk = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
 		if (getHeight(ix, iz) <= args.waterHeight ||
-		    xk <= cu1 + (1 - WATER_WIDTH) / 2 ||
-		    xk >= cu1 + (1 + WATER_WIDTH) / 2)
+		    xk <= cu1 + 0.5 - WATER_WIDTH / 2 ||
+		    xk >= cu1 + 0.5 + WATER_WIDTH / 2)
 			continue;
 
-		let s1 = cu1 + (1 + args.fadeDist - WATER_WIDTH) / 2 - xk;
-		let s2 = cu1 + (1 - args.fadeDist + WATER_WIDTH) / 2 - xk;
+		let s1 = cu1 + 0.5 + args.fadeDist / 2 - WATER_WIDTH / 2 - xk;
+		let s2 = cu1 + 0.5 - args.fadeDist / 2 + WATER_WIDTH / 2 - xk;
 
 		let height = args.waterHeight;
-
 		if (s1 > 0)
 			height = args.waterHeight + 10 * s1 / args.fadeDist;
 		else if (s2 < 0)
