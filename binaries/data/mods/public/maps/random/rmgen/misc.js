@@ -162,9 +162,9 @@ function paintRiver(args)
 				let height = args.waterHeight;
 
 				if (coord1 < f + args.fadeDist)
-					height = args.someNumber - args.someOtherNumber * (1 - (-coord1 + (f + args.fadeDist)) / args.fadeDist);
+					height = args.someNumber - args.someOtherNumber * (1 - (-coord1 + f + args.fadeDist) / args.fadeDist);
 				else if (coord1 > g - args.fadeDist)
-					height = args.someNumber - args.someOtherNumber * (1 - (coord1 - (g - args.fadeDist)) / args.fadeDist);
+					height = args.someNumber - args.someOtherNumber * (1 - (coord1 - g + args.fadeDist) / args.fadeDist);
 
 				setHeight(ix, iz, height);
 
