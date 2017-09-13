@@ -163,6 +163,7 @@ paintRiver({
 	"deviation": 0,
 	"someNumber": 3,
 	"someOtherNumber": 7,
+	"km": 20,
 	"waterHeight": -4,
 	"waterFunc": (ix, iz, h) =>
 	{

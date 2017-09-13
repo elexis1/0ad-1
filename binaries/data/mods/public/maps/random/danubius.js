@@ -412,7 +412,6 @@ var theta = randFloat(0, 0.8);
 var theta2 = randFloat(0, 1.2);
 var seed = randFloat(3, 5);
 var seed2 = randFloat(2, 6);
-let km = 30 / scaleByMapSize(35, 100);
 
 paintRiver({
 	"horizontal": false,
@@ -422,6 +421,7 @@ paintRiver({
 	"deviation": 0,
 	"someNumber": 2,
 	"someOtherNumber": 5,
+	"km": 30,
 	"waterHeight": -3,
 	"waterFunc": (ix, iz, h) =>
 	{

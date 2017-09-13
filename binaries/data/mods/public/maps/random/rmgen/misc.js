@@ -138,7 +138,7 @@ function paintRiver(args)
 	let seed1 = randFloat(2, 3);
 	let seed2 = randFloat(2, 3);
 
-	let km = 20 / scaleByMapSize(35, 160);
+	let km = args.km / scaleByMapSize(35, 160);
 	let halfWaterWidth = args.waterWidth / 2;
 	let mapSize = g_Map.size;
 

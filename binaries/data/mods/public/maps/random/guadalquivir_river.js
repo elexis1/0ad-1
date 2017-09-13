@@ -174,17 +174,8 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(20);
 
-log("Creating river");
-
-var km = 12 / scaleByMapSize(35, 160);
-var theta1 = randFloat(0, 1);
-var theta2 = theta1;
-var seed1 = randFloat(2,3);
-var seed2 = seed1;
-
 var shallowHeight = -1.5;
-
-var args = {
+paintRiver({
 	"horizontal": false,
 	"parallel": true,
 	"constraint": stayClasses(clLand, 0),
@@ -194,6 +185,7 @@ var args = {
 	"someOtherNumber": -5,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
+	"km": 12,
 	"waterFunc": (ix, iz, h) => {
 
 		addToClass(ix, iz, clRiver);
@@ -210,50 +202,7 @@ var args = {
 			addToClass(ix, iz, clShallow);
 		}
 	}
-};
-
-let halfWaterWidth = args.waterWidth / 2;
-
-for (let ix = 0; ix < mapSize; ++ix)
-	for (let iz = 0; iz < mapSize; ++iz)
-	{
-		if (args.constraint && !args.constraint.allows(ix, iz))
-			continue;
-
-		let x = ix / (mapSize + 1.0);
-		let z = iz / (mapSize + 1.0);
-
-		let coord1 = args.horizontal ? z : x;
-		let coord2 = args.horizontal ? x : z;
-
-		let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
-		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
-		if (args.parallel)
-			cu2 = cu1;
-
-		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
-		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
-
-		let m1 = -devCoord1 + cu1 + 0.5 - halfWaterWidth;
-		let m2 = -devCoord1 + cu2 + 0.5 + halfWaterWidth;
-
-		if (m1 < 0 && m2 > 0)
-		{
-			let s1 = m1 + args.fadeDist;
-			let s2 = m2 - args.fadeDist;
-
-			let height = args.waterHeight;
-			if (s1 > 0)
-				height = args.someNumber - args.someOtherNumber * (s1 - args.fadeDist) / args.fadeDist;
-			else if (s2 < 0)
-				height = args.someNumber - args.someOtherNumber * (-s2 - args.fadeDist) / args.fadeDist;
-
-			setHeight(ix, iz, height);
-
-			if (args.waterFunc)
-				args.waterFunc(ix, iz, height);
-		}
-	}
+});
 
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
