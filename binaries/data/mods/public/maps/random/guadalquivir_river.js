@@ -181,6 +181,7 @@ var theta1 = randFloat(0, 1);
 var theta2 = theta1;
 var seed1 = randFloat(2,3);
 var seed2 = seed1;
+
 var shallowHeight = -1.5;
 
 var args = {
@@ -194,8 +195,20 @@ var args = {
 	"deviation": 0.005,
 	"fadeDist": 0.025,
 	"waterFunc": (ix, iz, h) => {
+
 		addToClass(ix, iz, clRiver);
 		placeTerrain(ix, iz, tWater);
+
+		let z = iz / (mapSize + 1.0);
+
+		if (h < shallowHeight && (
+				z > 0.3 && z < 0.4 ||
+				z > 0.5 && z < 0.6 ||
+				z > 0.7 && z < 0.8))
+		{
+			setHeight(ix, iz, shallowHeight);
+			addToClass(ix, iz, clShallow);
+		}
 	}
 };
 
@@ -234,18 +247,6 @@ for (let ix = 0; ix < mapSize; ++ix)
 				height = args.someNumber - args.someOtherNumber * (s1 - args.fadeDist) / args.fadeDist;
 			else if (s2 < 0)
 				height = args.someNumber - args.someOtherNumber * (-s2 - args.fadeDist) / args.fadeDist;
-
-			let isShallowRange =
-				devCoord2 > 0.3 && devCoord2 < 0.4 ||
-				devCoord2 > 0.5 && devCoord2 < 0.6 ||
-				devCoord2 > 0.7 && devCoord2 < 0.8;
-
-			let isRiverBorder = s1 > 0 || s2 < 0;
-			if (isShallowRange && height < shallowHeight)
-			{
-				height = shallowHeight;
-				addToClass(ix, iz, clShallow);
-			}
 
 			setHeight(ix, iz, height);
 
@@ -321,7 +322,7 @@ createDecoration
  [avoidClasses(clHill, 1, clPlayer, 1, clDirt, 1, clRiver, 1), stayClasses(clLand, 6)]
 );
 
-// create water decoration in the shallow parts
+log("Create water decoration in the shallow parts");
 createDecoration
 (
  [[new SimpleObject(aReeds, 1,3, 0,1)],
