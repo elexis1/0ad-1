@@ -217,9 +217,9 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let height = args.waterHeight;
 
 		if (s1 > 0)
-			height += 10 * s1 / args.fadeDist;
+			height = args.waterHeight + 10 * s1 / args.fadeDist;
 		else if (s2 < 0)
-			height += 10 * (- s2) / args.fadeDist;
+			height = args.waterHeight + 10 * (- s2) / args.fadeDist;
 
 		let isShallowRange =
 			zk > 0.3 && zk < 0.4 ||
