@@ -218,9 +218,8 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let m1 = -devCoord1 + cu1 + 0.5 - halfWaterWidth;
 		let m2 = -devCoord1 + cu2 + 0.5 + halfWaterWidth;
 
-		if (0 <= m1 || 0 >= m2)
-			continue;
-
+		if (m1 < 0 && m2 > 0)
+		{
 		let s1 = m1 + args.fadeDist / 2;
 		let s2 = m2 - args.fadeDist / 2;
 
@@ -245,6 +244,7 @@ for (let ix = 0; ix < mapSize; ++ix)
 		setHeight(ix, iz, height);
 		addToClass(ix, iz, clRiver);
 		placeTerrain(ix, iz, tWater);
+		}
 	}
 
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
