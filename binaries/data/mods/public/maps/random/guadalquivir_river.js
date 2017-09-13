@@ -208,13 +208,16 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let zk = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 		let xk = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
+		let m1 = cu1 + 0.5 - halfWaterWidth - xk;
+		let m2 = cu1 + 0.5 + halfWaterWidth - xk;
+
 		if (getHeight(ix, iz) <= args.waterHeight ||
-		    xk <= cu1 + 0.5 - halfWaterWidth ||
-		    xk >= cu1 + 0.5 + halfWaterWidth)
+		    0 <= m1 ||
+		    0 >= m2)
 			continue;
 
-		let s1 = cu1 + 0.5 + args.fadeDist / 2 - halfWaterWidth - xk;
-		let s2 = cu1 + 0.5 - args.fadeDist / 2 + halfWaterWidth - xk;
+		let s1 = m1 + args.fadeDist / 2;
+		let s2 = m2 - args.fadeDist / 2;
 
 		let height = args.waterHeight;
 		if (s1 > 0)
