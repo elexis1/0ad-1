@@ -214,24 +214,24 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let s1 = cu1 + (1 + args.fadeDist - WATER_WIDTH) / 2 - xk;
 		let s2 = cu1 + (1 - args.fadeDist + WATER_WIDTH) / 2 - xk;
 
-		let h = args.waterHeight;
+		let height = args.waterHeight;
 
 		let isRiverBorder = s1 > 0 || s2 < 0;
 		if (isRiverBorder)
-			h += 200 * Math.abs(s1 > 0 ? s1 : s2);
+			height += 200 * Math.abs(s1 > 0 ? s1 : s2);
 
 		let isShallowRange =
 			zk > 0.3 && zk < 0.4 ||
 			zk > 0.5 && zk < 0.6 ||
 			zk > 0.7 && zk < 0.8;
 
-		if (isShallowRange && (h < shallowHeight || !isRiverBorder))
+		if (isShallowRange && (height < shallowHeight || !isRiverBorder))
 		{
-			h = shallowHeight;
+			height = shallowHeight;
 			addToClass(ix, iz, clShallow);
 		}
 
-		setHeight(ix, iz, h);
+		setHeight(ix, iz, height);
 		addToClass(ix, iz, clRiver);
 		placeTerrain(ix, iz, tWater);
 	}
