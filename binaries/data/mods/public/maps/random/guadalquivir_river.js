@@ -184,6 +184,7 @@ var seed2 = seed1;
 var shallowHeight = -1.5;
 
 var args = {
+	"horizontal": false,
 	"waterHeight": -3,
 	"waterWidth": 0.07,
 	"deviation": 0.005,
