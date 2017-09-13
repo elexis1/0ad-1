@@ -145,6 +145,9 @@ function paintRiver(args)
 	for (let ix = 0; ix < mapSize; ++ix)
 		for (let iz = 0; iz < mapSize; ++iz)
 		{
+			if (args.constraint && !args.constraint.allows(ix, iz))
+				continue;
+
 			let x = ix / (mapSize + 1.0);
 			let z = iz / (mapSize + 1.0);
 

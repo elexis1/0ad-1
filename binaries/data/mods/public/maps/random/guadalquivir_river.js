@@ -185,6 +185,7 @@ var shallowHeight = -1.5;
 
 var args = {
 	"horizontal": false,
+	"constraint": stayClasses(clLand, 0),
 	"waterHeight": -3,
 	"waterWidth": 0.07,
 	"deviation": 0.005,
@@ -196,6 +197,9 @@ let halfWaterWidth = args.waterWidth / 2;
 for (let ix = 0; ix < mapSize; ++ix)
 	for (let iz = 0; iz < mapSize; ++iz)
 	{
+		if (args.constraint && !args.constraint.allows(ix, iz))
+			continue;
+
 		let x = ix / (mapSize + 1.0);
 		let z = iz / (mapSize + 1.0);
 
@@ -211,9 +215,7 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let m1 = cu1 + 0.5 - halfWaterWidth - xk;
 		let m2 = cu1 + 0.5 + halfWaterWidth - xk;
 
-		if (getHeight(ix, iz) <= args.waterHeight ||
-		    0 <= m1 ||
-		    0 >= m2)
+		if (0 <= m1 || 0 >= m2)
 			continue;
 
 		let s1 = m1 + args.fadeDist / 2;
