@@ -176,10 +176,6 @@ for (var ix = 0; ix < mapSize; ix++)
 		var x = ix / (mapSize + 1.0);
 		var z = iz / (mapSize + 1.0);
 
-		var h = 0;
-		var distToWater = 0;
-
-		h = 32 * (z - 0.5);
 		if ((x < 0.25)||(x > 0.75))
 			addToClass(ix, iz, clDesert);
 
@@ -192,6 +188,7 @@ for (var ix = 0; ix < mapSize; ix++)
 		if (-3.0 >= getHeight(ix, iz))
 			continue;
 
+		var h;
 		if ((xk > cu+((1.0-WATER_WIDTH)/2))&&(xk < cu+((1.0+WATER_WIDTH)/2)))
 		{
 			if (xk < cu+((1.05-WATER_WIDTH)/2))
