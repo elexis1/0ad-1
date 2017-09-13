@@ -220,30 +220,30 @@ for (let ix = 0; ix < mapSize; ++ix)
 
 		if (m1 < 0 && m2 > 0)
 		{
-		let s1 = m1 + args.fadeDist / 2;
-		let s2 = m2 - args.fadeDist / 2;
+			let s1 = m1 + args.fadeDist / 2;
+			let s2 = m2 - args.fadeDist / 2;
 
-		let height = args.waterHeight;
-		if (s1 > 0)
-			height = args.waterHeight + 10 * s1 / args.fadeDist;
-		else if (s2 < 0)
-			height = args.waterHeight + 10 * (- s2) / args.fadeDist;
+			let height = args.waterHeight;
+			if (s1 > 0)
+				height = args.waterHeight + 10 * s1 / args.fadeDist;
+			else if (s2 < 0)
+				height = args.waterHeight + 10 * (- s2) / args.fadeDist;
 
-		let isShallowRange =
-			devCoord2 > 0.3 && devCoord2 < 0.4 ||
-			devCoord2 > 0.5 && devCoord2 < 0.6 ||
-			devCoord2 > 0.7 && devCoord2 < 0.8;
+			let isShallowRange =
+				devCoord2 > 0.3 && devCoord2 < 0.4 ||
+				devCoord2 > 0.5 && devCoord2 < 0.6 ||
+				devCoord2 > 0.7 && devCoord2 < 0.8;
 
-		let isRiverBorder = s1 > 0 || s2 < 0;
-		if (isShallowRange && (height < shallowHeight || !isRiverBorder))
-		{
-			height = shallowHeight;
-			addToClass(ix, iz, clShallow);
-		}
+			let isRiverBorder = s1 > 0 || s2 < 0;
+			if (isShallowRange && (height < shallowHeight || !isRiverBorder))
+			{
+				height = shallowHeight;
+				addToClass(ix, iz, clShallow);
+			}
 
-		setHeight(ix, iz, height);
-		addToClass(ix, iz, clRiver);
-		placeTerrain(ix, iz, tWater);
+			setHeight(ix, iz, height);
+			addToClass(ix, iz, clRiver);
+			placeTerrain(ix, iz, tWater);
 		}
 	}
 
