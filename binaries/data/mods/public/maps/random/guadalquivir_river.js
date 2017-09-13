@@ -185,6 +185,7 @@ var shallowHeight = -1.5;
 
 var args = {
 	"horizontal": false,
+	"parallel": true,
 	"constraint": stayClasses(clLand, 0),
 	"waterHeight": -3,
 	"waterWidth": 0.07,
@@ -208,12 +209,14 @@ for (let ix = 0; ix < mapSize; ++ix)
 
 		let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
 		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+		if (args.parallel)
+			cu2 = cu1;
 
 		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
 		let m1 = -devCoord1 + cu1 + 0.5 - halfWaterWidth;
-		let m2 = -devCoord1 + cu1 + 0.5 + halfWaterWidth;
+		let m2 = -devCoord1 + cu2 + 0.5 + halfWaterWidth;
 
 		if (0 <= m1 || 0 >= m2)
 			continue;

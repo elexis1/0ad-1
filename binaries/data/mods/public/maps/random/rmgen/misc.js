@@ -156,6 +156,8 @@ function paintRiver(args)
 
 			let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
 			let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+			if (args.parallel)
+				cu2 = cu1;
 
 			let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 			let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);

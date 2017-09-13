@@ -157,6 +157,7 @@ RMS.SetProgress(10);
 
 paintRiver({
 	"horizontal": true,
+	"parallel": false,
 	"waterWidth": 0.25,
 	"fadeDist": 0.02,
 	"deviation": 0,

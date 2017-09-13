@@ -416,6 +416,7 @@ let km = 30 / scaleByMapSize(35, 100);
 
 paintRiver({
 	"horizontal": false,
+	"parallel": false,
 	"waterWidth": waterWidth,
 	"fadeDist": 0.05,
 	"deviation": 0,
