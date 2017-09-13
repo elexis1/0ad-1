@@ -128,6 +128,52 @@ function rndRiver(f, seed)
 	return rndRa;
 }
 
+function paintRiver(args)
+{
+	log("Creating the river");
+
+	let theta1 = randFloat(0, 1);
+	let theta2 = randFloat(0, 1);
+
+	let seed1 = randFloat(2, 3);
+	let seed2 = randFloat(2, 3);
+
+	let km = 20 / scaleByMapSize(35, 160);
+	let halfWaterWidth = args.waterWidth / 2;
+	let mapSize = g_Map.size;
+
+	for (let ix = 0; ix < mapSize; ++ix)
+		for (let iz = 0; iz < mapSize; ++iz)
+		{
+			let x = ix / (mapSize + 1.0);
+			let z = iz / (mapSize + 1.0);
+
+			let coord1 = args.horizontal ? x : z;
+			let coord2 = args.horizontal ? z : x;
+
+			let cu1 = km * rndRiver(theta1 + coord2 * 0.5 * mapSize / 64, seed1);
+			let cu2 = km * rndRiver(theta2 + coord2 * 0.5 * mapSize / 64, seed2);
+
+			if (coord1 > cu1 + 0.5 - halfWaterWidth && coord1 < cu2 + 0.5 + halfWaterWidth)
+			{
+				let height;
+				if (coord1 < cu1 + 0.5 + args.fadeDist - halfWaterWidth)
+					height = args.someNumber - args.someOtherNumber * (1 - (-coord1 + (cu1 + 0.5 + args.fadeDist - halfWaterWidth)) / args.fadeDist);
+				else if (coord1 > cu2 + 0.5 - args.fadeDist + halfWaterWidth)
+					height = args.someNumber - args.someOtherNumber * (1 - (coord1 - (cu2 + 0.5 - args.fadeDist + halfWaterWidth)) / args.fadeDist);
+				else
+					height = args.waterHeight;
+
+				setHeight(ix, iz, height);
+
+				if (args.funcWater)
+					args.funcWater(ix, iz, height);
+			}
+			else if (args.funcLand)
+				args.funcLand(ix, iz);
+		}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // createStartingPlayerEntities
 //

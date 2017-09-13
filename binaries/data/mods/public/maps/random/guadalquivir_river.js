@@ -1,6 +1,6 @@
 RMS.LoadLibrary("rmgen");
 
-const tGrass = ["medit_grass_field_a", "medit_grass_field_b"];;
+const tGrass = ["medit_grass_field_a", "medit_grass_field_b"];
 const tForestFloorC = "medit_plants_dirt";
 const tForestFloorP = "medit_grass_shrubs";
 const tCliff = ["medit_cliff_grass", "medit_cliff_greek", "medit_cliff_greek_2", "medit_cliff_aegean", "medit_cliff_italia", "medit_cliff_italia_grass"];
@@ -36,8 +36,6 @@ const aRockMedium = "actor|geology/stone_granite_med.xml";
 const aBushMedium = "actor|props/flora/bush_medit_me.xml";
 const aBushSmall = "actor|props/flora/bush_medit_sm.xml";
 
-// terrain + entity (for painting)
-
 const pForestP = [tForestFloorP + TERRAIN_SEPARATOR + oPoplar, tForestFloorP];
 const pForestC = [tForestFloorC + TERRAIN_SEPARATOR + oCarob, tForestFloorC];
 
@@ -57,39 +55,26 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clSettlement = createTileClass();
 var clLand = createTileClass();
-var clUpperLand = createTileClass();
 var clRiver = createTileClass();
 var clShallow = createTileClass();
 
-//Create the continent body
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.7);
-var ix = round(fx);
-var iz = round(fz);
-
-var placer = new RectPlacer(0, floor(mapSize * 0.70), mapSize - 1, mapSize - 1);
-var terrainPainter = new LayeredPainter(
-	[tWater, tShore, tGrass],		// terrains
-	[4, 2]		// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	3,				// elevation
-	4				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clUpperLand)], null);
-
-var placer = new ChainPlacer(2, floor(scaleByMapSize(5, 12)), floor(scaleByMapSize(60, 700)), 1, ix, iz, 0, [floor(mapSize * 0.49)]);
-var terrainPainter = new LayeredPainter(
-	[tGrass, tGrass, tGrass],		// terrains
-	[4, 2]		// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	3,				// elevation
-	4				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand)], null);
+log("Create the continent body");
+createArea(
+	new ChainPlacer(
+		2,
+		Math.floor(scaleByMapSize(5, 12)),
+		Math.floor(scaleByMapSize(60, 700)),
+		1,
+		Math.floor(fractionToTiles(0.5)),
+		Math.floor(fractionToTiles(0.7)),
+		0,
+		[Math.floor(mapSize * 0.49)]),
+	[
+		new LayeredPainter([tGrass, tGrass, tGrass], [4, 2]),
+		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+		paintClass(clLand)
+	],
+	null);
 
 var playerIDs = primeSortAllPlayers();
 
@@ -116,10 +101,10 @@ for (var i = 0; i < numPlayers; i++)
 	var elevation = 20;
 
 	// get the x and z in tiles
-	fx = fractionToTiles(playerX[i]);
-	fz = fractionToTiles(playerZ[i]);
-	ix = round(fx);
-	iz = round(fz);
+	let fx = fractionToTiles(playerX[i]);
+	let fz = fractionToTiles(playerZ[i]);
+	let ix = Math.round(fx);
+	let iz = Math.round(fz);
 	addToClass(ix, iz, clPlayer);
 	addToClass(ix+5, iz, clPlayer);
 	addToClass(ix, iz+5, clPlayer);
@@ -128,7 +113,7 @@ for (var i = 0; i < numPlayers; i++)
 
 	// create the city patch
 	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
+	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
 	createArea(placer, painter, null);
 
@@ -193,65 +178,55 @@ const WATER_WIDTH = 0.07;
 
 log("Creating river");
 
+var km = 12 / scaleByMapSize(35, 160);
 var theta = randFloat(0, 1);
 var seed = randFloat(2,3);
+var fadeDist = 0.05;
+var deviation = 0.005;
 
-for (var ix = 0; ix < mapSize; ix++)
-	for (var iz = 0; iz < mapSize; iz++)
+var waterHeight = -3;
+var shallowHeight = -1.5;
+
+for (let ix = 0; ix < mapSize; ++ix)
+	for (let iz = 0; iz < mapSize; ++iz)
 	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
+		let x = ix / (mapSize + 1.0);
+		let z = iz / (mapSize + 1.0);
 
-		var h = 0;
-		var distToWater = 0;
+		let cu = km * rndRiver(theta + z * mapSize / 128, seed);
 
-		h = 32 * (z - 0.5);
+		let zk = z * randFloat(1 - deviation, 1 + deviation);
+		let xk = x * randFloat(1 - deviation, 1 + deviation);
 
-		// add the rough shape of the water
-		var km = 12/scaleByMapSize(35, 160);
-		var cu = km*rndRiver(theta+z*0.5*(mapSize/64),seed);
-		var zk = z*randFloat(0.995,1.005);
-		var xk = x*randFloat(0.995,1.005);
-		if (-3.0 < getHeight(ix, iz)){
-		if ((xk > cu+((1.0-WATER_WIDTH)/2))&&(xk < cu+((1.0+WATER_WIDTH)/2)))
+		if (getHeight(ix, iz) <= waterHeight ||
+		    xk <= cu + (1 - WATER_WIDTH) / 2 ||
+		    xk >= cu + (1 + WATER_WIDTH) / 2)
+			continue;
+
+		let s1 = cu + (1 + fadeDist - WATER_WIDTH) / 2 - xk;
+		let s2 = cu + (1 - fadeDist + WATER_WIDTH) / 2 - xk;
+
+		let h = waterHeight;
+
+		let isRiverBorder = s1 > 0 || s2 < 0;
+		if (isRiverBorder)
+			h += 200 * Math.abs(s1 > 0 ? s1 : s2);
+
+		let isShallowRange =
+			zk > 0.3 && zk < 0.4 ||
+			zk > 0.5 && zk < 0.6 ||
+			zk > 0.7 && zk < 0.8;
+
+		if (isShallowRange && (h < shallowHeight || !isRiverBorder))
 		{
-			if (xk < cu+((1.05-WATER_WIDTH)/2))
-			{
-				h = -3 + 200.0* abs(cu+((1.05-WATER_WIDTH)/2-xk));
-				if ((((zk>0.3)&&(zk<0.4))||((zk>0.5)&&(zk<0.6))||((zk>0.7)&&(zk<0.8)))&&(h<-1.5))
-				{
-					h=-1.5;
-					addToClass(ix, iz, clShallow);
-				}
+			h = shallowHeight;
+			addToClass(ix, iz, clShallow);
+		}
 
-			}
-			else if (xk > (cu+(0.95+WATER_WIDTH)/2))
-			{
-				h = -3 + 200.0*(xk-(cu+((0.95+WATER_WIDTH)/2)));
-				if ((((zk>0.3)&&(zk<0.4))||((zk>0.5)&&(zk<0.6))||((zk>0.7)&&(zk<0.8)))&&(h<-1.5))
-				{
-					h=-1.5;
-					addToClass(ix, iz, clShallow);
-				}
-			}
-			else
-			{
-				if (((zk>0.3)&&(zk<0.4))||((zk>0.5)&&(zk<0.6))||((zk>0.7)&&(zk<0.8))){
-					h = -1.5;
-					addToClass(ix, iz, clShallow);
-				}
-				else
-				{
-					h = -3.0;
-				}
-			}
-			setHeight(ix, iz, h);
-			addToClass(ix, iz, clRiver);
-			placeTerrain(ix, iz, tWater);
-		}
-		}
+		setHeight(ix, iz, h);
+		addToClass(ix, iz, clRiver);
+		placeTerrain(ix, iz, tWater);
 	}
-}
 
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);

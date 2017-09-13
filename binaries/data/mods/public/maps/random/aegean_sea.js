@@ -154,46 +154,21 @@ for (var i = 0; i < numPlayers; i++)
 
 	placeDefaultDecoratives(fx, fz, aBush1, clBaseResource, radius);
 }
-
 RMS.SetProgress(30);
 
-const WATER_WIDTH = 0.35;
-
-log("Creating the sea");
-var theta = randFloat(0, 1);
-var theta2 = randFloat(0, 1);
-var seed = randFloat(2,3);
-var seed2 = randFloat(2,3);
-for (var ix = 0; ix < mapSize; ix++)
-{
-	for (var iz = 0; iz < mapSize; iz++)
+paintRiver({
+	"horizontal": true,
+	"waterWidth": 0.35,
+	"fadeDist": 0.05,
+	"someNumber": 2,
+	"someOtherNumber": 5,
+	"waterHeight": -3,
+	"landFunc": (ix, iz, h) =>
 	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
-
-		// add the rough shape of the water
-		var km = 20/scaleByMapSize(35, 160);
-		var cu = km*rndRiver(theta+z*0.5*(mapSize/64),seed);
-		var cu2 = km*rndRiver(theta2+z*0.5*(mapSize/64),seed2);
-
-		var fadeDist = 0.05;
-
-		if ((x > cu + 0.5 - WATER_WIDTH/2) && (x < cu2 + 0.5 + WATER_WIDTH/2))
-		{
-			var h;
-			if (x < (cu + 0.5 + fadeDist - WATER_WIDTH/2))
-				h = 2 - 5.0 * (1 - ((cu + 0.5 + fadeDist - WATER_WIDTH/2) - x)/fadeDist);
-			else if (x > (cu2 + 0.5 - fadeDist + WATER_WIDTH/2))
-				h = 2 - 5.0 * (1 - (x - (cu2 + 0.5 - fadeDist + WATER_WIDTH/2))/fadeDist);
-			else
-				h = -3.0;
-
-			setHeight(ix, iz, h);
-			if (h < 0.7)
-				addToClass(ix, iz, clWater);
-		}
+		if (h < 0.7)
+			addToClass(ix, iz, clWater);
 	}
-}
+});
 
 paintTerrainBasedOnHeight(-20, 1, 0, tWater);
 paintTerrainBasedOnHeight(1, 2, 0, tShore);

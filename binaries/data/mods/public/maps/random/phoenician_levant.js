@@ -146,7 +146,7 @@ for (var i = 0; i < numPlayers; i++)
 RMS.SetProgress(30);
 
 log("Creating sea");
-
+// TODO: half-sea shit
 var theta = randFloat(0, 1);
 var seed = randFloat(2,3);
 for (var ix = 0; ix < mapSize; ix++)
