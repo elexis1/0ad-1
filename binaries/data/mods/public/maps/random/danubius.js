@@ -418,6 +418,7 @@ paintRiver({
 	"horizontal": false,
 	"waterWidth": waterWidth,
 	"fadeDist": 0.05,
+	"deviation": 0,
 	"someNumber": 2,
 	"someOtherNumber": 5,
 	"waterHeight": -3,

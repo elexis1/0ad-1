@@ -212,8 +212,8 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-		let m1 = cu1 + 0.5 - halfWaterWidth - devCoord1;
-		let m2 = cu1 + 0.5 + halfWaterWidth - devCoord1;
+		let m1 = -devCoord1 + cu1 + 0.5 - halfWaterWidth;
+		let m2 = -devCoord1 + cu1 + 0.5 + halfWaterWidth;
 
 		if (0 <= m1 || 0 >= m2)
 			continue;
