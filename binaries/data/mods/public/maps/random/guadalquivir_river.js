@@ -216,15 +216,17 @@ for (let ix = 0; ix < mapSize; ++ix)
 
 		let height = args.waterHeight;
 
-		let isRiverBorder = s1 > 0 || s2 < 0;
-		if (isRiverBorder)
-			height += 10 * Math.abs(s1 > 0 ? s1 : s2) / args.fadeDist;
+		if (s1 > 0)
+			height += 10 * s1 / args.fadeDist;
+		else if (s2 < 0)
+			height += 10 * (- s2) / args.fadeDist;
 
 		let isShallowRange =
 			zk > 0.3 && zk < 0.4 ||
 			zk > 0.5 && zk < 0.6 ||
 			zk > 0.7 && zk < 0.8;
 
+		let isRiverBorder = s1 > 0 || s2 < 0;
 		if (isShallowRange && (height < shallowHeight || !isRiverBorder))
 		{
 			height = shallowHeight;
