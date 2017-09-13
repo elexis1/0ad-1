@@ -174,8 +174,6 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(20);
 
-const WATER_WIDTH = 0.07;
-
 log("Creating river");
 
 var km = 12 / scaleByMapSize(35, 160);
@@ -187,9 +185,12 @@ var shallowHeight = -1.5;
 
 var args = {
 	"waterHeight": -3,
+	"waterWidth": 0.07,
 	"deviation": 0.005,
 	"fadeDist": 0.05
 };
+
+let halfWaterWidth = args.waterWidth / 2;
 
 for (let ix = 0; ix < mapSize; ++ix)
 	for (let iz = 0; iz < mapSize; ++iz)
@@ -207,12 +208,12 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let xk = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
 		if (getHeight(ix, iz) <= args.waterHeight ||
-		    xk <= cu1 + 0.5 - WATER_WIDTH / 2 ||
-		    xk >= cu1 + 0.5 + WATER_WIDTH / 2)
+		    xk <= cu1 + 0.5 - halfWaterWidth ||
+		    xk >= cu1 + 0.5 + halfWaterWidth)
 			continue;
 
-		let s1 = cu1 + 0.5 + args.fadeDist / 2 - WATER_WIDTH / 2 - xk;
-		let s2 = cu1 + 0.5 - args.fadeDist / 2 + WATER_WIDTH / 2 - xk;
+		let s1 = cu1 + 0.5 + args.fadeDist / 2 - halfWaterWidth - xk;
+		let s2 = cu1 + 0.5 - args.fadeDist / 2 + halfWaterWidth - xk;
 
 		let height = args.waterHeight;
 		if (s1 > 0)
