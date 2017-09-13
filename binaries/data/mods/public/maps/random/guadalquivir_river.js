@@ -179,8 +179,10 @@ const WATER_WIDTH = 0.07;
 log("Creating river");
 
 var km = 12 / scaleByMapSize(35, 160);
-var theta = randFloat(0, 1);
-var seed = randFloat(2,3);
+var theta1 = randFloat(0, 1);
+var theta2 = theta1;
+var seed1 = randFloat(2,3);
+var seed2 = seed1;
 var shallowHeight = -1.5;
 
 var args = {
@@ -195,18 +197,22 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let x = ix / (mapSize + 1.0);
 		let z = iz / (mapSize + 1.0);
 
-		let cu = km * rndRiver(theta + z * mapSize / 128, seed);
+		let coord1 = args.horizontal ? z : x;
+		let coord2 = args.horizontal ? x : z;
 
-		let zk = z * randFloat(1 - args.deviation, 1 + args.deviation);
-		let xk = x * randFloat(1 - args.deviation, 1 + args.deviation);
+		let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
+		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+
+		let zk = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let xk = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
 		if (getHeight(ix, iz) <= args.waterHeight ||
-		    xk <= cu + (1 - WATER_WIDTH) / 2 ||
-		    xk >= cu + (1 + WATER_WIDTH) / 2)
+		    xk <= cu1 + (1 - WATER_WIDTH) / 2 ||
+		    xk >= cu1 + (1 + WATER_WIDTH) / 2)
 			continue;
 
-		let s1 = cu + (1 + args.fadeDist - WATER_WIDTH) / 2 - xk;
-		let s2 = cu + (1 - args.fadeDist + WATER_WIDTH) / 2 - xk;
+		let s1 = cu1 + (1 + args.fadeDist - WATER_WIDTH) / 2 - xk;
+		let s2 = cu1 + (1 - args.fadeDist + WATER_WIDTH) / 2 - xk;
 
 		let h = args.waterHeight;
 
