@@ -166,11 +166,11 @@ function paintRiver(args)
 
 				setHeight(ix, iz, height);
 
-				if (args.funcWater)
-					args.funcWater(ix, iz, height);
+				if (args.waterFunc)
+					args.waterFunc(ix, iz, height);
 			}
-			else if (args.funcLand)
-				args.funcLand(ix, iz);
+			else if (args.landFunc)
+				args.landFunc(ix, iz);
 		}
 }
 

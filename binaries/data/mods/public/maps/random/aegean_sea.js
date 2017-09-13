@@ -163,7 +163,7 @@ paintRiver({
 	"someNumber": 2,
 	"someOtherNumber": 5,
 	"waterHeight": -3,
-	"landFunc": (ix, iz, h) =>
+	"waterFunc": (ix, iz, h) =>
 	{
 		if (h < 0.7)
 			addToClass(ix, iz, clWater);

@@ -311,13 +311,13 @@ else if (md == 3) //central sea
 		"someNumber": 3,
 		"someOtherNumber": 6,
 		"waterHeight": -3
-		"landFunc" (ix, iz, h) =>
+		"waterFunc" (ix, iz, h) =>
 		{
 			placeTerrain(ix, iz, h < -1.5 ? tWater : tShore);
 			if (h < 0)
 				addToClass(ix, iz, clWater);
 		},
-		"waterFunc": (ix, iz) =>
+		"landFunc": (ix, iz) =>
 		{
 			setHeight(ix, iz, 3.1);
 			addToClass(ix, iz, clLand);
