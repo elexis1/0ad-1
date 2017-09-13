@@ -151,8 +151,8 @@ function paintRiver(args)
 			let coord1 = args.horizontal ? x : z;
 			let coord2 = args.horizontal ? z : x;
 
-			let cu1 = km * rndRiver(theta1 + coord2 * 0.5 * mapSize / 64, seed1);
-			let cu2 = km * rndRiver(theta2 + coord2 * 0.5 * mapSize / 64, seed2);
+			let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
+			let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
 
 			if (coord1 > cu1 + 0.5 - halfWaterWidth && coord1 < cu2 + 0.5 + halfWaterWidth)
 			{
