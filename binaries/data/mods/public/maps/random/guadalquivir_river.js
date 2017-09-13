@@ -190,7 +190,7 @@ var args = {
 	"waterHeight": -3,
 	"waterWidth": 0.07,
 	"deviation": 0.005,
-	"fadeDist": 0.05,
+	"fadeDist": 0.025,
 	"waterFunc": (ix, iz, h) => {
 		addToClass(ix, iz, clRiver);
 		placeTerrain(ix, iz, tWater);
@@ -224,14 +224,14 @@ for (let ix = 0; ix < mapSize; ++ix)
 
 		if (m1 < 0 && m2 > 0)
 		{
-			let s1 = m1 + args.fadeDist / 2;
-			let s2 = m2 - args.fadeDist / 2;
+			let s1 = m1 + args.fadeDist;
+			let s2 = m2 - args.fadeDist;
 
 			let height = args.waterHeight;
 			if (s1 > 0)
-				height = args.waterHeight + 10 * s1 / args.fadeDist;
+				height = args.waterHeight + 5 * s1 / args.fadeDist;
 			else if (s2 < 0)
-				height = args.waterHeight + 10 * (- s2) / args.fadeDist;
+				height = args.waterHeight + 5 * (- s2) / args.fadeDist;
 
 			let isShallowRange =
 				devCoord2 > 0.3 && devCoord2 < 0.4 ||
