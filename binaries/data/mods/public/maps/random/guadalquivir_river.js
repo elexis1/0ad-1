@@ -209,11 +209,11 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
 		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
 
-		let zk = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
-		let xk = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-		let m1 = cu1 + 0.5 - halfWaterWidth - xk;
-		let m2 = cu1 + 0.5 + halfWaterWidth - xk;
+		let m1 = cu1 + 0.5 - halfWaterWidth - devCoord1;
+		let m2 = cu1 + 0.5 + halfWaterWidth - devCoord1;
 
 		if (0 <= m1 || 0 >= m2)
 			continue;
@@ -228,9 +228,9 @@ for (let ix = 0; ix < mapSize; ++ix)
 			height = args.waterHeight + 10 * (- s2) / args.fadeDist;
 
 		let isShallowRange =
-			zk > 0.3 && zk < 0.4 ||
-			zk > 0.5 && zk < 0.6 ||
-			zk > 0.7 && zk < 0.8;
+			devCoord2 > 0.3 && devCoord2 < 0.4 ||
+			devCoord2 > 0.5 && devCoord2 < 0.6 ||
+			devCoord2 > 0.7 && devCoord2 < 0.8;
 
 		let isRiverBorder = s1 > 0 || s2 < 0;
 		if (isShallowRange && (height < shallowHeight || !isRiverBorder))
