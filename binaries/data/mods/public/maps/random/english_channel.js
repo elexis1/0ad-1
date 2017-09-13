@@ -161,7 +161,7 @@ paintRiver({
 	"fadeDist": 0.02,
 	"someNumber": 3,
 	"someOtherNumber": 7,
-	"waterHeight": -4
+	"waterHeight": -4,
 	"waterFunc": (ix, iz, h) =>
 	{
 		placeTerrain(ix, iz, h < -1.5 ? tWater : tShore);

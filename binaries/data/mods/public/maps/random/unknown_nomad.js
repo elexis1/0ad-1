@@ -222,7 +222,7 @@ else if (md == 3) //central sea
 		"fadeDist": 0.05,
 		"someNumber": 3,
 		"someOtherNumber": 6,
-		"waterHeight": -3
+		"waterHeight": -3,
 		"landFunc" (ix, iz, h) =>
 		{
 			placeTerrain(ix, iz, h < -1.5 ? tWater : tShore);
