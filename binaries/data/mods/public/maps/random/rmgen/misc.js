@@ -154,13 +154,17 @@ function paintRiver(args)
 			let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
 			let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
 
-			if (coord1 > cu1 + 0.5 - halfWaterWidth && coord1 < cu2 + 0.5 + halfWaterWidth)
+			let f = cu1 + 0.5 - halfWaterWidth;
+			let g = cu2 + 0.5 + halfWaterWidth;
+
+			if (coord1 > f && coord1 < g)
 			{
 				let height = args.waterHeight;
-				if (coord1 < cu1 + 0.5 + args.fadeDist - halfWaterWidth)
-					height = args.someNumber - args.someOtherNumber * (1 - (-coord1 + (cu1 + 0.5 + args.fadeDist - halfWaterWidth)) / args.fadeDist);
-				else if (coord1 > cu2 + 0.5 - args.fadeDist + halfWaterWidth)
-					height = args.someNumber - args.someOtherNumber * (1 - (coord1 - (cu2 + 0.5 - args.fadeDist + halfWaterWidth)) / args.fadeDist);
+
+				if (coord1 < f + args.fadeDist)
+					height = args.someNumber - args.someOtherNumber * (1 - (-coord1 + (f + args.fadeDist)) / args.fadeDist);
+				else if (coord1 > g - args.fadeDist)
+					height = args.someNumber - args.someOtherNumber * (1 - (coord1 - (g - args.fadeDist)) / args.fadeDist);
 
 				setHeight(ix, iz, height);
 
