@@ -241,7 +241,7 @@ for (let ix = 0; ix < mapSize; ++ix)
 				devCoord2 > 0.7 && devCoord2 < 0.8;
 
 			let isRiverBorder = s1 > 0 || s2 < 0;
-			if (isShallowRange && (height < shallowHeight || !isRiverBorder))
+			if (isShallowRange && height < shallowHeight)
 			{
 				height = shallowHeight;
 				addToClass(ix, iz, clShallow);
