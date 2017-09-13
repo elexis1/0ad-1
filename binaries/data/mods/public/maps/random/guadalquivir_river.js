@@ -190,7 +190,11 @@ var args = {
 	"waterHeight": -3,
 	"waterWidth": 0.07,
 	"deviation": 0.005,
-	"fadeDist": 0.05
+	"fadeDist": 0.05,
+	"waterFunc": (ix, iz, h) => {
+		addToClass(ix, iz, clRiver);
+		placeTerrain(ix, iz, tWater);
+	}
 };
 
 let halfWaterWidth = args.waterWidth / 2;
@@ -242,8 +246,9 @@ for (let ix = 0; ix < mapSize; ++ix)
 			}
 
 			setHeight(ix, iz, height);
-			addToClass(ix, iz, clRiver);
-			placeTerrain(ix, iz, tWater);
+
+			if (args.waterFunc)
+				args.waterFunc(ix, iz, height);
 		}
 	}
 
