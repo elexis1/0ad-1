@@ -157,7 +157,7 @@ for (var i = 0; i < numPlayers; i++)
 RMS.SetProgress(30);
 
 paintRiver({
-	"horizontal": true,
+	"horizontal": false,
 	"waterWidth": 0.35,
 	"fadeDist": 0.05,
 	"someNumber": 2,

@@ -415,7 +415,7 @@ var seed2 = randFloat(2, 6);
 let km = 30 / scaleByMapSize(35, 100);
 
 paintRiver({
-	"horizontal": true,
+	"horizontal": false,
 	"waterWidth": waterWidth,
 	"fadeDist": 0.05,
 	"someNumber": 2,

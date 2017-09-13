@@ -148,8 +148,8 @@ function paintRiver(args)
 			let x = ix / (mapSize + 1.0);
 			let z = iz / (mapSize + 1.0);
 
-			let coord1 = args.horizontal ? x : z;
-			let coord2 = args.horizontal ? z : x;
+			let coord1 = args.horizontal ? z : x;
+			let coord2 = args.horizontal ? x : z;
 
 			let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
 			let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
