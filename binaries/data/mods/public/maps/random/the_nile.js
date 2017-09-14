@@ -225,7 +225,7 @@ for (var ix = 0; ix < mapSize; ix++)
 					++rifp;
 				}
 			}
-			else if (devcoord1 > (cu+(0.95+WATER_WIDTH)/2))
+			else if (devcoord1 > cu+ 0.5 - args.fadeDist/2 + WATER_WIDTH/2)
 			{
 				h = args.waterHeight + 200 * (devcoord1 - (cu + 0.5 - args.fadeDist/2 + halfWaterWidth));
 				if ((h < 0.1)&&(h>-0.2))
