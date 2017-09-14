@@ -197,12 +197,12 @@ var args = {
 	"waterHeight": -3,
 	"landFunc": (ix, iz, m1, m2) => {
 
+		// Paint desert
 		let x = ix / (mapSize + 1.0);
-		let z = iz / (mapSize + 1.0);
-
 		if (x < 0.25 || x > 0.75)
 			addToClass(ix, iz, clDesert);
 
+		// Paint river greenlands
 		for (let riv of river)
 			if (-m1 > -riv.right && -m1 < -riv.left ||
 				-m2 > riv.left && -m2 < riv.right)
@@ -213,9 +213,11 @@ var args = {
 	},
 	"waterFunc": (ix, iz, height) =>
 	{
+		// Paint shoreline
 		addToClass(ix, iz, clWater);
 		placeTerrain(ix, iz, tShore);
 
+		// Place river bushes
 		if (height <= -0.2 || height >= 0.1)
 			return;
 
