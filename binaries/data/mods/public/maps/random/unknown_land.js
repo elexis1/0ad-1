@@ -169,7 +169,7 @@ else if (md == 3) //central sea
 		}
 
 	paintRiver({
-		"horizontal": mdd1 == 1,
+		"horizontal": mdd1 != 1,
 		"parallel": false,
 		"offset": 0.5,
 		"waterWidth": randFloat(0.22, 0.3) + scaleByMapSize(1,4) / 20,
