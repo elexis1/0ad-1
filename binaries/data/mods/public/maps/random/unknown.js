@@ -303,7 +303,6 @@ else if (md == 3) //central sea
 			playerX[i] = playerPos[i];
 		}
 
-
 	paintRiver({
 		"horizontal": mdd1 != 1,
 		"parallel": false,
@@ -316,7 +315,7 @@ else if (md == 3) //central sea
 		"km128": 20,
 		"km256": 0,
 		"waterHeight": -3,
-		"waterFunc" (ix, iz, height) => {
+		"waterFunc": (ix, iz, height) => {
 			placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
 			if (height < 0)
 				addToClass(ix, iz, clWater);

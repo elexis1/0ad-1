@@ -200,7 +200,7 @@ paintRiver({
 	"km256": 50,
 	"waterHeight": -3,
 	"waterWidth": 0.1,
-	"waterFunc" (ix, iz, height) => {
+	"waterFunc": (ix, iz, height) => {
 
 		addToClass(ix, iz, clWater);
 		placeTerrain(ix, iz, tShore);
