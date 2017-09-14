@@ -190,6 +190,7 @@ const river = [
 
 var args = {
 	"horizontal": false,
+	"parallel": true,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
 	"km": 12,
@@ -238,16 +239,17 @@ for (var ix = 0; ix < mapSize; ix++)
 
 		let cu1 = km * rndRiver(theta1 + coord1 * mapSize / 128, seed1);
 		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+		//warn("1:" + cu1);
+		warn("2:" + cu1);
+		cu1 += 50 / scaleByMapSize(35, 100) * rndRiver(theta2 + coord2 * (mapSize/128)/2, seed2);
 		if (args.parallel)
 			cu2 = cu1;
-
-		cu1 += rndRiver(theta2 + coord2 * (mapSize/128)/2, seed2) * 50 / scaleByMapSize(35, 100);
 
 		let devcoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 		let devcoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
 		let m1 = -devcoord1 + cu1 + 0.5 - halfWaterWidth;
-		let m2 = -devcoord1 + cu1 + 0.5 + halfWaterWidth;
+		let m2 = -devcoord1 + cu2 + 0.5 + halfWaterWidth;
 
 		if (m1 < 0 && m2 > 0)
 		{
@@ -262,7 +264,8 @@ for (var ix = 0; ix < mapSize; ix++)
 
 			setHeight(ix, iz, height);
 
-			args.waterFunc(ix, iz, height);
+			if (args.waterFunc)
+				args.waterFunc(ix, iz, height);
 		}
 		else if (args.landFunc)
 			args.landFunc(ix, iz, m1, m2);
