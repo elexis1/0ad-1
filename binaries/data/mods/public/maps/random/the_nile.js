@@ -210,12 +210,13 @@ for (var ix = 0; ix < mapSize; ix++)
 			continue;
 
 		var h;
-		if (devcoord1 > cu+0.5-halfWaterWidth && devcoord1 < cu+ 0.5 + halfWaterWidth)
+		if (devcoord1 > cu + 0.5 - halfWaterWidth &&
+		    devcoord1 < cu + 0.5 + halfWaterWidth)
 		{
 			if (devcoord1 < cu+ 0.5 + args.fadeDist/2 -halfWaterWidth)
 			{
-				h = args.waterHeight + 200* abs(cu+0.5 + args.fadeDist/2 -halfWaterWidth-devcoord1);
-				if ((h < 0.1)&&(h>-0.2))
+				h = args.waterHeight + 200* abs(cu + 0.5 + args.fadeDist/2 - halfWaterWidth - devcoord1);
+				if (h < 0.1 && h > -0.2)
 				{
 					if (rifp%2 == 0)
 					{
@@ -225,9 +226,9 @@ for (var ix = 0; ix < mapSize; ix++)
 					++rifp;
 				}
 			}
-			else if (devcoord1 > cu+ 0.5 - args.fadeDist/2 + WATER_WIDTH/2)
+			else if (devcoord1 > cu + 0.5 - args.fadeDist/2 + WATER_WIDTH/2)
 			{
-				h = args.waterHeight + 200 * (devcoord1 - (cu + 0.5 - args.fadeDist/2 + halfWaterWidth));
+				h = args.waterHeight + 200 * (devcoord1 - cu - 0.5 + args.fadeDist/2 - halfWaterWidth));
 				if ((h < 0.1)&&(h>-0.2))
 				{
 					if (rifp2%2 == 0)
