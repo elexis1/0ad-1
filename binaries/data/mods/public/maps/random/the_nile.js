@@ -167,10 +167,10 @@ var theta1 = randFloat(0, 1);
 var seed1 = randFloat(2,3);
 var theta2 = randFloat(0, 1);
 var seed2 = randFloat(2,3);
-var rifp = 0;
+var plantID = 0;
 var plantFrequency = 2;
 
-const river = [
+const riverTextures = [
 	{
 		"left": 0,
 		"right": 0.04,
@@ -201,13 +201,11 @@ paintRiver({
 	"waterWidth": 0.1,
 	"landFunc": (ix, iz, m1, m2) => {
 
-		// Paint desert
 		let x = ix / (mapSize + 1.0);
 		if (x < 0.25 || x > 0.75)
 			addToClass(ix, iz, clDesert);
 
-		// Paint river greenlands
-		for (let riv of river)
+		for (let riv of riverTextures)
 			if (-m1 > -riv.right && -m1 < -riv.left ||
 				-m2 > riv.left && -m2 < riv.right)
 			{
@@ -217,7 +215,6 @@ paintRiver({
 	},
 	"waterFunc": (ix, iz, height) =>
 	{
-		// Paint shoreline
 		addToClass(ix, iz, clWater);
 		placeTerrain(ix, iz, tShore);
 
@@ -225,12 +222,12 @@ paintRiver({
 		if (height <= -0.2 || height >= 0.1)
 			return;
 
-		if (rifp % plantFrequency == 0)
+		if (plantID % plantFrequency == 0)
 		{
-			rifp = 0;
+			plantID = 0;
 			placeObject(ix, iz, aPlants, 0, randFloat(0, TWO_PI));
 		}
-		++rifp;
+		++plantID;
 	}
 });
 
