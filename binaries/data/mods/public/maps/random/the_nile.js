@@ -163,8 +163,8 @@ RMS.SetProgress(30);
 const WATER_WIDTH = 0.1;
 
 log("Creating river");
-var theta = randFloat(0, 1);
-var seed = randFloat(2,3);
+var theta1 = randFloat(0, 1);
+var seed1 = randFloat(2,3);
 var theta2 = randFloat(0, 1);
 var seed2 = randFloat(2,3);
 var rifp = 0;
@@ -172,28 +172,49 @@ var rifp2 = 0;
 // add the rough shape of the water
 var km = 12/scaleByMapSize(35, 160);
 
+var args = {
+	"horizontal": false,
+	"deviation": 0.005,
+	"waterHeight": -3,
+	"landFunc": (ix, iz, h) => {
+		let x = ix / (mapSize + 1.0);
+		let z = iz / (mapSize + 1.0);
+		if (x < 0.25 || x > 0.75)
+			addToClass(ix, iz, clDesert);
+	}
+}
+
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
 	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
+		let x = ix / (mapSize + 1.0);
+		let z = iz / (mapSize + 1.0);
 
-		if (x < 0.25 || x > 0.75)
-			addToClass(ix, iz, clDesert);
+		let coord2 = args.horizontal ? z : x;
+		let coord1 = args.horizontal ? x : z;
 
-		var cu = km*rndRiver(theta+z*0.5*(mapSize/64),seed)+(50/scaleByMapSize(35, 100))*rndRiver(theta2+z*0.5*(mapSize/128),seed2);
-		var zk = z*randFloat(0.995,1.005);
-		var xk = x*randFloat(0.995,1.005);
+		let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
 
-		if (-3.0 >= getHeight(ix, iz))
+		let cu = cu1 +  rndRiver(theta2 + z*(mapSize/128)/2, seed2) * 50 / scaleByMapSize(35, 100);
+
+		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
+
+		//var devCoord1 = z*randFloat(0.995,1.005);
+		//var devCoord2 = x*randFloat(0.995,1.005);
+
+		if (args.landFunc)
+			args.landFunc(ix, iz);
+
+		if (args.waterHeight >= getHeight(ix, iz))
 			continue;
 
 		var h;
-		if (xk > cu+0.5-WATER_WIDTH/2 && xk < cu+ 0.5 + WATER_WIDTH/2)
+		if (devCoord2 > cu+0.5-WATER_WIDTH/2 && devCoord2 < cu+ 0.5 + WATER_WIDTH/2)
 		{
-			if (xk < cu+((1.05-WATER_WIDTH)/2))
+			if (devCoord2 < cu+((1.05-WATER_WIDTH)/2))
 			{
-				h = -3 + 200.0* abs(cu+((1.05-WATER_WIDTH)/2-xk));
+				h = args.waterHeight + 200.0* abs(cu+((1.05-WATER_WIDTH)/2-devCoord2));
 				if ((h < 0.1)&&(h>-0.2))
 				{
 					if (rifp%2 == 0)
@@ -204,9 +225,9 @@ for (var ix = 0; ix < mapSize; ix++)
 					++rifp;
 				}
 			}
-			else if (xk > (cu+(0.95+WATER_WIDTH)/2))
+			else if (devCoord2 > (cu+(0.95+WATER_WIDTH)/2))
 			{
-				h = -3 + 200.0*(xk-(cu+((0.95+WATER_WIDTH)/2)));
+				h = args.waterHeight + 200.0*(devCoord2-(cu+((0.95+WATER_WIDTH)/2)));
 				if ((h < 0.1)&&(h>-0.2))
 				{
 					if (rifp2%2 == 0)
@@ -218,24 +239,24 @@ for (var ix = 0; ix < mapSize; ix++)
 				}
 			}
 			else
-				h = -3.0;
+				h = args.waterHeight;
 
 			setHeight(ix, iz, h);
 			addToClass(ix, iz, clWater);
 			placeTerrain(ix, iz, tShore);
 		}
 
-		if (((xk > cu+((1.0-WATER_WIDTH)/2)-0.04)&&(xk < cu+((1.0-WATER_WIDTH)/2)))||((xk > cu+((1.0+WATER_WIDTH)/2))&&(xk < cu+((1.0+WATER_WIDTH)/2) + 0.04)))
+		if (((devCoord2 > cu+((1.0-WATER_WIDTH)/2)-0.04)&&(devCoord2 < cu+((1.0-WATER_WIDTH)/2)))||((devCoord2 > cu+((1.0+WATER_WIDTH)/2))&&(devCoord2 < cu+((1.0+WATER_WIDTH)/2) + 0.04)))
 		{
 			placeTerrain(ix, iz, tLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (((xk > cu+((1.0-WATER_WIDTH)/2)-0.06)&&(xk < cu+((1.0-WATER_WIDTH)/2)-0.04))||((xk > cu+((1.0+WATER_WIDTH)/2)+0.04)&&(xk < cu+((1.0+WATER_WIDTH)/2) + 0.06)))
+		else if (((devCoord2 > cu+((1.0-WATER_WIDTH)/2)-0.06)&&(devCoord2 < cu+((1.0-WATER_WIDTH)/2)-0.04))||((devCoord2 > cu+((1.0+WATER_WIDTH)/2)+0.04)&&(devCoord2 < cu+((1.0+WATER_WIDTH)/2) + 0.06)))
 		{
 			placeTerrain(ix, iz, tSLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (((xk > cu+((1.0-WATER_WIDTH)/2)-0.09)&&(xk < cu+((1.0-WATER_WIDTH)/2)-0.06))||((xk > cu+((1.0+WATER_WIDTH)/2)+0.06)&&(xk < cu+((1.0+WATER_WIDTH)/2) + 0.09)))
+		else if (((devCoord2 > cu+((1.0-WATER_WIDTH)/2)-0.09)&&(devCoord2 < cu+((1.0-WATER_WIDTH)/2)-0.06))||((devCoord2 > cu+((1.0+WATER_WIDTH)/2)+0.06)&&(devCoord2 < cu+((1.0+WATER_WIDTH)/2) + 0.09)))
 		{
 			placeTerrain(ix, iz, tSDry);
 			addToClass(ix, iz, clShore);
