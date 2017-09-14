@@ -408,14 +408,9 @@ for (let i = 0; i < numPlayers; ++i)
 RMS.SetProgress(20);
 
 log("Creating the river");
-var theta = randFloat(0, 0.8);
-var theta2 = randFloat(0, 1.2);
-var seed = randFloat(3, 5);
-var seed2 = randFloat(2, 6);
-
 paintRiver({
 	"horizontal": false,
-	"parallel": false,
+	"parallel": true,
 	"waterWidth": waterWidth,
 	"fadeDist": 0.05,
 	"deviation": 0,
