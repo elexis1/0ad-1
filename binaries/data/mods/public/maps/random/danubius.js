@@ -434,9 +434,10 @@ paintRiver({
 	},
 	"landFunc": (ix, iz, m1, m2) =>
 	{
-		if (ix < cu1 + 0.5 - waterWidth / 2)
+		if (m1 > 0)
 			addToClass(ix, iz, clLand[0]);
-		if (ix > cu2 + 0.5 + waterWidth / 2)
+
+		if (m2 < 0)
 			addToClass(ix, iz, clLand[1]);
 	}
 });
