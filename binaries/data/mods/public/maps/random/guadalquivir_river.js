@@ -188,8 +188,7 @@ paintRiver({
 	"fadeDist": 0.025,
 	"km128": 12,
 	"km256": 0,
-	"waterFunc": (ix, iz, height) =>
-
+	"waterFunc": (ix, iz, height) => {
 		addToClass(ix, iz, clRiver);
 		placeTerrain(ix, iz, tWater);
 
