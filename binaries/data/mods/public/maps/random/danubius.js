@@ -411,6 +411,7 @@ log("Creating the river");
 paintRiver({
 	"horizontal": false,
 	"parallel": true,
+	"offset": 0.5,
 	"waterWidth": waterWidth,
 	"fadeDist": 0.05,
 	"deviation": 0,

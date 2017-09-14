@@ -191,6 +191,7 @@ const riverTextures = [
 paintRiver({
 	"horizontal": false,
 	"parallel": true,
+	"offset": 0.5,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
 	"someOtherNumber": 5,

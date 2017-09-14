@@ -156,20 +156,21 @@ function paintRiver(args)
 			let coord1 = args.horizontal ? z : x;
 			let coord2 = args.horizontal ? x : z;
 
+			// Compute curvature offset of the river at this place
 			let cu1 = km128 * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
 			let cu2 = km128 * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
 
 			cu1 += km256 * rndRiver(theta2 + coord2 * mapSize/256, seed2);
 			cu2 += km256 * rndRiver(theta2 + coord2 * mapSize/256, seed2);
-
 			if (args.parallel)
 				cu2 = cu1;
 
+			// Fuzz the river border
 			let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 			let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-			let m1 = -devCoord1 + cu1 + 0.5 - halfWaterWidth;
-			let m2 = -devCoord1 + cu2 + 0.5 + halfWaterWidth;
+			let m1 = -devCoord1 + cu1 + args.offset - halfWaterWidth;
+			let m2 = -devCoord1 + cu2 + args.offset + halfWaterWidth;
 
 			if (m1 < 0 && m2 > 0)
 			{
