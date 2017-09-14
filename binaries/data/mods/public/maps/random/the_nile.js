@@ -219,6 +219,8 @@ for (var ix = 0; ix < mapSize; ix++)
 			else if (s2 < 0)
 				height = args.waterHeight - 200 * s2;
 
+			setHeight(ix, iz, height);
+
 			if (height < 0.1 && height > -0.2)
 			{
 				if (rifp%2 == 0)
@@ -229,7 +231,6 @@ for (var ix = 0; ix < mapSize; ix++)
 				++rifp;
 			}
 
-			setHeight(ix, iz, height);
 			addToClass(ix, iz, clWater);
 			placeTerrain(ix, iz, tShore);
 		}
