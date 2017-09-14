@@ -236,9 +236,12 @@ for (var ix = 0; ix < mapSize; ix++)
 		let coord1 = args.horizontal ? z : x;
 		let coord2 = args.horizontal ? x : z;
 
-		let cu_help = km * rndRiver(theta1 + coord1 * mapSize / 128, seed1);
+		let cu1 = km * rndRiver(theta1 + coord1 * mapSize / 128, seed1);
+		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+		if (args.parallel)
+			cu2 = cu1;
 
-		let cu1 = cu_help +  rndRiver(theta2 + z*(mapSize/128)/2, seed2) * 50 / scaleByMapSize(35, 100);
+		cu1 += rndRiver(theta2 + coord2 * (mapSize/128)/2, seed2) * 50 / scaleByMapSize(35, 100);
 
 		let devcoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 		let devcoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
