@@ -186,14 +186,14 @@ paintRiver({
 	"deviation": 0.005,
 	"fadeDist": 0.025,
 	"km": 12,
-	"waterFunc": (ix, iz, h) => {
+	"waterFunc": (ix, iz, height) =>
 
 		addToClass(ix, iz, clRiver);
 		placeTerrain(ix, iz, tWater);
 
 		let z = iz / (mapSize + 1.0);
 
-		if (h < shallowHeight && (
+		if (height < shallowHeight && (
 				z > 0.3 && z < 0.4 ||
 				z > 0.5 && z < 0.6 ||
 				z > 0.7 && z < 0.8))

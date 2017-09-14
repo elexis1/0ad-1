@@ -209,7 +209,8 @@ var args = {
 				addToClass(ix, iz, clShore);
 			}
 	},
-	"waterFunc": (ix, iz, height) => {
+	"waterFunc": (ix, iz, height) =>
+	{
 		if (height < 0.1 && height > -0.2)
 		{
 			if (rifp % plantFrequency == 0)
