@@ -203,14 +203,11 @@ for (var ix = 0; ix < mapSize; ix++)
 		let devcoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 		let devcoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-		if (args.landFunc)
-			args.landFunc(ix, iz);
-
-		if (args.waterHeight >= getHeight(ix, iz))
-			continue;
-
 		let m1 = -devcoord1 + cu1 + 0.5 - halfWaterWidth;
 		let m2 = -devcoord1 + cu1 + 0.5 + halfWaterWidth;
+
+		if (args.landFunc)
+			args.landFunc(ix, iz);
 
 		if (0 > m1 && 0 < m2)
 		{
