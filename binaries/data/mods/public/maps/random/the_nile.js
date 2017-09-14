@@ -168,6 +168,7 @@ var seed1 = randFloat(2,3);
 var theta2 = randFloat(0, 1);
 var seed2 = randFloat(2,3);
 var rifp = 0;
+var plantFrequency = 2;
 
 var args = {
 	"horizontal": false,
@@ -175,13 +176,27 @@ var args = {
 	"fadeDist": 0.025,
 	"km": 12,
 	"waterHeight": -3,
-	"landFunc": (ix, iz, h) => {
+	"landFunc": (ix, iz, height) => {
 		let x = ix / (mapSize + 1.0);
 		let z = iz / (mapSize + 1.0);
 		if (x < 0.25 || x > 0.75)
 			addToClass(ix, iz, clDesert);
+	},
+	"waterFunc": (ix, iz, height) => {
+		if (height < 0.1 && height > -0.2)
+		{
+			if (rifp % plantFrequency == 0)
+			{
+				rifp = 0;
+				placeObject(ix, iz, aPlants, 0, randFloat(0, TWO_PI));
+			}
+			++rifp;
+		}
+
+		addToClass(ix, iz, clWater);
+		placeTerrain(ix, iz, tShore);
 	}
-}
+};
 
 let km = args.km / scaleByMapSize(35, 160);
 let halfWaterWidth = WATER_WIDTH / 2;
@@ -221,18 +236,7 @@ for (var ix = 0; ix < mapSize; ix++)
 
 			setHeight(ix, iz, height);
 
-			if (height < 0.1 && height > -0.2)
-			{
-				if (rifp%2 == 0)
-				{
-					rifp = 0;
-					placeObject(ix, iz, aPlants, 0, randFloat(0,TWO_PI));
-				}
-				++rifp;
-			}
-
-			addToClass(ix, iz, clWater);
-			placeTerrain(ix, iz, tShore);
+			args.waterFunc(ix, iz, height);
 		}
 
 		if (((devcoord1 > cu1+((1.0-WATER_WIDTH)/2)-0.04)&&(devcoord1 < cu1+((1.0-WATER_WIDTH)/2)))||((devcoord1 > cu1+((1.0+WATER_WIDTH)/2))&&(devcoord1 < cu1+((1.0+WATER_WIDTH)/2) + 0.04)))
