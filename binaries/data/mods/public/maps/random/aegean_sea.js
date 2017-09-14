@@ -172,6 +172,8 @@ paintRiver({
 
 		if (height < 0.7)
 			addToClass(ix, iz, clWater);
+	},
+	"landFunc": (ix, iz, m1, m2) => {
 	}
 });
 
