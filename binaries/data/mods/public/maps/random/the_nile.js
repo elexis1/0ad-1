@@ -193,6 +193,8 @@ var args = {
 	"parallel": true,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
+	"someOtherNumber": 5,
+	"someNumber": -3 + 5, //waterHeight - someOtherNumber,
 	"km128": 12,
 	"km256": 50,
 	"waterHeight": -3,
@@ -271,9 +273,9 @@ for (let ix = 0; ix < mapSize; ++ix)
 			let height = args.waterHeight;
 
 			if (s1 > 0)
-				height = args.waterHeight + 200 * s1;
+				height = args.someNumber - args.someOtherNumber * -m1 / args.fadeDist;
 			else if (s2 < 0)
-				height = args.waterHeight - 200 * s2;
+				height = args.someNumber - args.someOtherNumber * m2 / args.fadeDist;
 
 			setHeight(ix, iz, height);
 
