@@ -180,14 +180,12 @@ else if (md == 3) //central sea
 		"km128": 20,
 		"km256": 0,
 		"waterHeight": -3,
-		"waterFunc" (ix, iz, h) =>
-		{
-			placeTerrain(ix, iz, h < -1.5 ? tWater : tShore);
-			if (h < 0)
+		"waterFunc" (ix, iz, height) => {
+			placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
+			if (height < 0)
 				addToClass(ix, iz, clWater);
 		},
-		"landFunc": (ix, iz, m1, m2) =>
-		{
+		"landFunc": (ix, iz, m1, m2) => {
 			setHeight(ix, iz, 3.1);
 			addToClass(ix, iz, clLand);
 		}

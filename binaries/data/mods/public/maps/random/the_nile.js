@@ -200,22 +200,8 @@ paintRiver({
 	"km256": 50,
 	"waterHeight": -3,
 	"waterWidth": 0.1,
-	"landFunc": (ix, iz, m1, m2) => {
+	"waterFunc" (ix, iz, height) => {
 
-		let x = ix / (mapSize + 1.0);
-		if (x < 0.25 || x > 0.75)
-			addToClass(ix, iz, clDesert);
-
-		for (let riv of riverTextures)
-			if (-m1 > -riv.right && -m1 < -riv.left ||
-				-m2 > riv.left && -m2 < riv.right)
-			{
-				placeTerrain(ix, iz, riv.tileClass);
-				addToClass(ix, iz, clShore);
-			}
-	},
-	"waterFunc": (ix, iz, height) =>
-	{
 		addToClass(ix, iz, clWater);
 		placeTerrain(ix, iz, tShore);
 
@@ -229,6 +215,20 @@ paintRiver({
 			placeObject(ix, iz, aPlants, 0, randFloat(0, TWO_PI));
 		}
 		++plantID;
+	},
+	"landFunc": (ix, iz, m1, m2) => {
+
+		let x = ix / (mapSize + 1.0);
+		if (x < 0.25 || x > 0.75)
+			addToClass(ix, iz, clDesert);
+
+		for (let riv of riverTextures)
+			if (-m1 > -riv.right && -m1 < -riv.left ||
+				-m2 > riv.left && -m2 < riv.right)
+			{
+				placeTerrain(ix, iz, riv.tileClass);
+				addToClass(ix, iz, clShore);
+			}
 	}
 });
 

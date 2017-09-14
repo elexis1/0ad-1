@@ -159,9 +159,6 @@ paintRiver({
 	"km256": 0,
 	"waterHeight": -3,
 	"waterWidth": 0.5,
-	"landFunc": (ix, iz, m1, m2) => {
-		addToClass(ix, iz, clHighlands);
-	},
 	"waterFunc": (ix, iz, height) => {
 
 		addToClass(ix, iz, clWater);
@@ -170,6 +167,9 @@ paintRiver({
 			placeTerrain(ix, iz, tWater);
 		else
 			placeTerrain(ix, iz, tShore);
+	},
+	"landFunc": (ix, iz, m1, m2) => {
+		addToClass(ix, iz, clHighlands);
 	}
 });
 

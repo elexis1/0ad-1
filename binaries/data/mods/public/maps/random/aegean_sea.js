@@ -168,8 +168,8 @@ paintRiver({
 	"km128": 20,
 	"km256": 0,
 	"waterHeight": -3,
-	"waterFunc": (ix, iz, height) =>
-	{
+	"waterFunc" (ix, iz, height) => {
+
 		if (height < 0.7)
 			addToClass(ix, iz, clWater);
 	}

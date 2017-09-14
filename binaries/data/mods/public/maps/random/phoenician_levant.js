@@ -157,8 +157,6 @@ paintRiver({
 	"km256": 0,
 	"waterHeight": -3,
 	"waterWidth": 1,
-	"landFunc": (ix, iz, m1, m2) => {
-	},
 	"waterFunc": (ix, iz, height) => {
 
 		if (height < 0)
@@ -168,6 +166,8 @@ paintRiver({
 			placeTerrain(ix, iz, tWater);
 		else
 			placeTerrain(ix, iz, tShore);
+	}
+	"landFunc": (ix, iz, m1, m2) => {
 	}
 });
 

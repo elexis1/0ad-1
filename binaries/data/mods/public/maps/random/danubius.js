@@ -420,8 +420,8 @@ paintRiver({
 	"km128": 30,
 	"km256": 0,
 	"waterHeight": -3,
-	"waterFunc": (ix, iz, height) =>
-	{
+	"waterFunc": (ix, iz, height) => {
+
 		if (height < 0.7)
 			addToClass(ix, iz, clWater);
 
@@ -429,8 +429,8 @@ paintRiver({
 		if (0 < height && height < 1 && iz > ShorelineDistance && iz < mapSize - ShorelineDistance)
 			addToClass(ix, iz, clShore[ix < mapSize / 2 ? 0 : 1]);
 	},
-	"landFunc": (ix, iz, m1, m2) =>
-	{
+	"landFunc": (ix, iz, m1, m2) => {
+
 		if (m1 > 0)
 			addToClass(ix, iz, clLand[0]);
 
