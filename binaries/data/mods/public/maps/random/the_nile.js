@@ -168,14 +168,12 @@ var seed1 = randFloat(2,3);
 var theta2 = randFloat(0, 1);
 var seed2 = randFloat(2,3);
 var rifp = 0;
-var rifp2 = 0;
-// add the rough shape of the water
-var km = 12/scaleByMapSize(35, 160);
 
 var args = {
 	"horizontal": false,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
+	"km": 12,
 	"waterHeight": -3,
 	"landFunc": (ix, iz, h) => {
 		let x = ix / (mapSize + 1.0);
@@ -185,6 +183,7 @@ var args = {
 	}
 }
 
+let km = args.km / scaleByMapSize(35, 160);
 let halfWaterWidth = WATER_WIDTH / 2;
 
 for (var ix = 0; ix < mapSize; ix++)
@@ -234,12 +233,12 @@ for (var ix = 0; ix < mapSize; ix++)
 				height = args.waterHeight - 200 * s2;
 				if (height < 0.1 && height > -0.2)
 				{
-					if (rifp2%2 == 0)
+					if (rifp%2 == 0)
 					{
-						rifp2 = 0;
+						rifp = 0;
 						placeObject(ix, iz, aPlants, 0, randFloat(0,TWO_PI));
 					}
-					++rifp2;
+					++rifp;
 				}
 			}
 
