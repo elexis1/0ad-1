@@ -215,31 +215,19 @@ for (var ix = 0; ix < mapSize; ix++)
 
 			let height = args.waterHeight;
 			if (s1 > 0)
-			{
 				height = args.waterHeight + 200 * s1;
-
-				if (height < 0.1 && height > -0.2)
-				{
-					if (rifp%2 == 0)
-					{
-						rifp = 0;
-						placeObject(ix, iz, aPlants, 0, randFloat(0,TWO_PI));
-					}
-					++rifp;
-				}
-			}
 			else if (s2 < 0)
-			{
 				height = args.waterHeight - 200 * s2;
-				if (height < 0.1 && height > -0.2)
+
+			if (s1 > 0 || s2 < 0)
+			if (height < 0.1 && height > -0.2)
+			{
+				if (rifp%2 == 0)
 				{
-					if (rifp%2 == 0)
-					{
-						rifp = 0;
-						placeObject(ix, iz, aPlants, 0, randFloat(0,TWO_PI));
-					}
-					++rifp;
+					rifp = 0;
+					placeObject(ix, iz, aPlants, 0, randFloat(0,TWO_PI));
 				}
+				++rifp;
 			}
 
 			setHeight(ix, iz, height);
