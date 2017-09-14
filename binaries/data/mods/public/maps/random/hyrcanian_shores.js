@@ -161,7 +161,8 @@ paintRiver({
 	"waterWidth": 0.5,
 	"waterFunc": (ix, iz, height) => {
 
-		addToClass(ix, iz, clWater);
+		if (height < 0)
+			addToClass(ix, iz, clWater);
 
 		if (height < -1.5)
 			placeTerrain(ix, iz, tWater);
