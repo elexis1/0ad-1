@@ -169,7 +169,7 @@ paintRiver({
 	{
 		placeTerrain(ix, iz, h < -1.5 ? tWater : tShore);
 	},
-	"landFunc": (ix, iz) =>
+	"landFunc": (ix, iz, m1, m2) =>
 	{
 		setHeight(ix, iz, 3.1);
 	}

@@ -183,7 +183,7 @@ function paintRiver(args)
 					args.waterFunc(ix, iz, height);
 			}
 			else if (args.landFunc)
-				args.landFunc(ix, iz);
+				args.landFunc(ix, iz, m1, m2);
 		}
 }
 

@@ -228,9 +228,12 @@ var args = {
 let km = args.km / scaleByMapSize(35, 160);
 let halfWaterWidth = WATER_WIDTH / 2;
 
-for (var ix = 0; ix < mapSize; ix++)
-	for (var iz = 0; iz < mapSize; iz++)
+for (let ix = 0; ix < mapSize; ++ix)
+	for (let iz = 0; iz < mapSize; ++iz)
 	{
+		if (args.constraint && !args.constraint.allows(ix, iz))
+			continue;
+
 		let x = ix / (mapSize + 1.0);
 		let z = iz / (mapSize + 1.0);
 
@@ -239,17 +242,15 @@ for (var ix = 0; ix < mapSize; ix++)
 
 		let cu1 = km * rndRiver(theta1 + coord1 * mapSize / 128, seed1);
 		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
-		//warn("1:" + cu1);
-		warn("2:" + cu1);
 		cu1 += 50 / scaleByMapSize(35, 100) * rndRiver(theta2 + coord2 * (mapSize/128)/2, seed2);
 		if (args.parallel)
 			cu2 = cu1;
 
-		let devcoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
-		let devcoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-		let m1 = -devcoord1 + cu1 + 0.5 - halfWaterWidth;
-		let m2 = -devcoord1 + cu2 + 0.5 + halfWaterWidth;
+		let m1 = -devCoord1 + cu1 + 0.5 - halfWaterWidth;
+		let m2 = -devCoord1 + cu2 + 0.5 + halfWaterWidth;
 
 		if (m1 < 0 && m2 > 0)
 		{
@@ -257,6 +258,7 @@ for (var ix = 0; ix < mapSize; ix++)
 			let s2 = m2 - args.fadeDist;
 
 			let height = args.waterHeight;
+
 			if (s1 > 0)
 				height = args.waterHeight + 200 * s1;
 			else if (s2 < 0)
@@ -270,6 +272,7 @@ for (var ix = 0; ix < mapSize; ix++)
 		else if (args.landFunc)
 			args.landFunc(ix, iz, m1, m2);
 	}
+
 RMS.SetProgress(40);
 
 log("Creating bumps...");
