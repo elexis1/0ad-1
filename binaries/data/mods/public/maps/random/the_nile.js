@@ -217,12 +217,12 @@ for (var ix = 0; ix < mapSize; ix++)
 			let s1 = m1 + args.fadeDist;
 			let s2 = m2 - args.fadeDist;
 
-			let h = args.waterHeight;
+			let height = args.waterHeight;
 			if (0 < s1)
 			{
-				h = args.waterHeight + 200 * s1;
+				height = args.waterHeight + 200 * s1;
 
-				if (h < 0.1 && h > -0.2)
+				if (height < 0.1 && height > -0.2)
 				{
 					if (rifp%2 == 0)
 					{
@@ -234,8 +234,8 @@ for (var ix = 0; ix < mapSize; ix++)
 			}
 			else if (s2 < 0)
 			{
-				h = args.waterHeight - 200 * s2;
-				if (h < 0.1 && h > -0.2)
+				height = args.waterHeight - 200 * s2;
+				if (height < 0.1 && height > -0.2)
 				{
 					if (rifp2%2 == 0)
 					{
@@ -246,7 +246,7 @@ for (var ix = 0; ix < mapSize; ix++)
 				}
 			}
 
-			setHeight(ix, iz, h);
+			setHeight(ix, iz, height);
 			addToClass(ix, iz, clWater);
 			placeTerrain(ix, iz, tShore);
 		}
