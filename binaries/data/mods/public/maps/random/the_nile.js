@@ -188,7 +188,7 @@ const river = [
 	}
 ];
 
-var args = {
+paintRiver({
 	"horizontal": false,
 	"parallel": true,
 	"deviation": 0.005,
@@ -198,6 +198,7 @@ var args = {
 	"km128": 12,
 	"km256": 50,
 	"waterHeight": -3,
+	"waterWidth": 0.1,
 	"landFunc": (ix, iz, m1, m2) => {
 
 		// Paint desert
@@ -231,60 +232,7 @@ var args = {
 		}
 		++rifp;
 	}
-};
-
-let halfWaterWidth = WATER_WIDTH / 2;
-
-let km128 = args.km128 / scaleByMapSize(35, 160);
-let km256 = args.km256 / scaleByMapSize(35, 100);
-
-for (let ix = 0; ix < mapSize; ++ix)
-	for (let iz = 0; iz < mapSize; ++iz)
-	{
-		if (args.constraint && !args.constraint.allows(ix, iz))
-			continue;
-
-		let x = ix / (mapSize + 1.0);
-		let z = iz / (mapSize + 1.0);
-
-		let coord1 = args.horizontal ? z : x;
-		let coord2 = args.horizontal ? x : z;
-
-		let cu1 = km128 * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
-		let cu2 = km128 * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
-
-		cu1 += km256 * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
-		cu2 += km256 * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
-
-		if (args.parallel)
-			cu2 = cu1;
-
-		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
-		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
-
-		let m1 = -devCoord1 + cu1 + 0.5 - halfWaterWidth;
-		let m2 = -devCoord1 + cu2 + 0.5 + halfWaterWidth;
-
-		if (m1 < 0 && m2 > 0)
-		{
-			let s1 = m1 + args.fadeDist;
-			let s2 = m2 - args.fadeDist;
-
-			let height = args.waterHeight;
-
-			if (s1 > 0)
-				height = args.someNumber - args.someOtherNumber * -m1 / args.fadeDist;
-			else if (s2 < 0)
-				height = args.someNumber - args.someOtherNumber * m2 / args.fadeDist;
-
-			setHeight(ix, iz, height);
-
-			if (args.waterFunc)
-				args.waterFunc(ix, iz, height);
-		}
-		else if (args.landFunc)
-			args.landFunc(ix, iz, m1, m2);
-	}
+});
 
 RMS.SetProgress(40);
 
