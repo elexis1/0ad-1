@@ -138,7 +138,9 @@ function paintRiver(args)
 	let seed1 = randFloat(2, 3);
 	let seed2 = randFloat(2, 3);
 
-	let km = args.km / scaleByMapSize(35, 160);
+	let km1 = args.km1 / scaleByMapSize(35, 160);
+	let km2 = args.km2 / scaleByMapSize(35, 100);
+
 	let halfWaterWidth = args.waterWidth / 2;
 	let mapSize = g_Map.size;
 
@@ -154,8 +156,12 @@ function paintRiver(args)
 			let coord1 = args.horizontal ? z : x;
 			let coord2 = args.horizontal ? x : z;
 
-			let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
-			let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+			let cu1 = km1 * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
+			let cu2 = km1 * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+
+			cu1 += km2 * rndRiver(theta2 + coord2 * mapSize/256, seed2);
+			cu2 += km2 * rndRiver(theta2 + coord2 * mapSize/256, seed2);
+
 			if (args.parallel)
 				cu2 = cu1;
 

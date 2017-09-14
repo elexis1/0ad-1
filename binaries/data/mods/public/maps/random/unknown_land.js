@@ -176,7 +176,8 @@ else if (md == 3) //central sea
 		"deviation": 0,
 		"someNumber": 3,
 		"someOtherNumber": 6,
-		"km": 20,
+		"km1": 20,
+		"km2": 0,
 		"waterHeight": -3,
 		"waterFunc" (ix, iz, h) =>
 		{

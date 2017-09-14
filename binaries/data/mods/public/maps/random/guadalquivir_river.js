@@ -185,7 +185,8 @@ paintRiver({
 	"someOtherNumber": 5,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
-	"km": 12,
+	"km1": 12,
+	"km2": 0,
 	"waterFunc": (ix, iz, height) =>
 
 		addToClass(ix, iz, clRiver);

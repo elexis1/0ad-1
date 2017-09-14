@@ -193,7 +193,8 @@ var args = {
 	"parallel": true,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
-	"km": 12,
+	"km1": 12,
+	"km2": 50,
 	"waterHeight": -3,
 	"landFunc": (ix, iz, m1, m2) => {
 
@@ -230,8 +231,10 @@ var args = {
 	}
 };
 
-let km = args.km / scaleByMapSize(35, 160);
 let halfWaterWidth = WATER_WIDTH / 2;
+
+let km1 = args.km1 / scaleByMapSize(35, 160);
+let km2 = args.km2 / scaleByMapSize(35, 100);
 
 for (let ix = 0; ix < mapSize; ++ix)
 	for (let iz = 0; iz < mapSize; ++iz)
@@ -245,9 +248,12 @@ for (let ix = 0; ix < mapSize; ++ix)
 		let coord1 = args.horizontal ? z : x;
 		let coord2 = args.horizontal ? x : z;
 
-		let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
-		let cu2 = km * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
-		cu1 += 50 / scaleByMapSize(35, 100) * rndRiver(theta2 + coord2 * (mapSize/128)/2, seed2);
+		let cu1 = km1 * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
+		let cu2 = km1 * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+
+		cu1 += km2 * rndRiver(theta2 + coord2 * mapSize/256, seed2);
+		cu2 += km2 * rndRiver(theta2 + coord2 * mapSize/256, seed2);
+
 		if (args.parallel)
 			cu2 = cu1;
 
