@@ -219,7 +219,6 @@ for (var ix = 0; ix < mapSize; ix++)
 			else if (s2 < 0)
 				height = args.waterHeight - 200 * s2;
 
-			if (s1 > 0 || s2 < 0)
 			if (height < 0.1 && height > -0.2)
 			{
 				if (rifp%2 == 0)
