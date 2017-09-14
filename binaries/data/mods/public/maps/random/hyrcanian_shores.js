@@ -146,42 +146,33 @@ for (var i = 0; i < numPlayers; i++)
 }
 RMS.SetProgress(10);
 
-log("Creating sea and northern hills...");
-var theta = randFloat(0, 1);
-var seed = randFloat(2,3);
-for (var ix = 0; ix < mapSize; ix++)
-	for (var iz = 0; iz < mapSize; iz++)
-	{
-		var x = ix / (mapSize + 1.0);
-		var z = iz / (mapSize + 1.0);
+paintRiver({
+	"horizontal": true,
+	"parallel": true,
+	"offset": 0.75,
+	"deviation": 0,
+	"fadeDist": 0.05,
+	"offset": 1,
+	"someNumber": 1,
+	"someOtherNumber": 4,
+	"km128": 20,
+	"km256": 0,
+	"waterHeight": -3,
+	"waterWidth": 0.5,
+	"landFunc": (ix, iz, m1, m2) => {
+		addToClass(ix, iz, clHighlands);
+	},
+	"waterFunc": (ix, iz, height) => {
 
-		// add the rough shape of the water
-		var km = 20/scaleByMapSize(35, 160);
-		var cu = km*rndRiver(theta+x*0.5*(mapSize/64),seed);
+		addToClass(ix, iz, clWater);
 
-		var fadeDist = 0.05;
-
-		if (z < 0.25)
-			addToClass(ix, iz, clHighlands);
-
-		if (z > cu + 0.75)
-		{
-			var h;
-			if ((z < (cu + 0.75 + fadeDist))&&(z > (cu + 0.75)))
-				h = 1 - 4.0 * (1 - ((cu + 0.75 + fadeDist) - z)/fadeDist);
-			else
-				h = -3.0;
-
-			if (h < -1.5)
-				placeTerrain(ix, iz, tWater);
-			else
-				placeTerrain(ix, iz, tShore);
-
-			setHeight(ix, iz, h);
-			if (h < 0)
-				addToClass(ix, iz, clWater);
-		}
+		if (height < -1.5)
+			placeTerrain(ix, iz, tWater);
+		else
+			placeTerrain(ix, iz, tShore);
 	}
+});
+
 RMS.SetProgress(20);
 
 log("Creating fish...");
