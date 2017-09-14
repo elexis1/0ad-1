@@ -209,13 +209,13 @@ for (var ix = 0; ix < mapSize; ix++)
 		if (args.landFunc)
 			args.landFunc(ix, iz);
 
-		if (0 > m1 && 0 < m2)
+		if (m1 < 0 && m2 > 0)
 		{
 			let s1 = m1 + args.fadeDist;
 			let s2 = m2 - args.fadeDist;
 
 			let height = args.waterHeight;
-			if (0 < s1)
+			if (s1 > 0)
 			{
 				height = args.waterHeight + 200 * s1;
 
