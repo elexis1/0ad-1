@@ -170,6 +170,24 @@ var seed2 = randFloat(2,3);
 var rifp = 0;
 var plantFrequency = 2;
 
+const river = [
+	{
+		"left": 0,
+		"right": 0.04,
+		"tileClass": tLush
+	},
+	{
+		"left": 0.04,
+		"right": 0.06,
+		"tileClass": tSLush
+	},
+	{
+		"left": 0.06,
+		"right": 0.09,
+		"tileClass": tSDry
+	}
+];
+
 var args = {
 	"horizontal": false,
 	"deviation": 0.005,
@@ -239,23 +257,14 @@ for (var ix = 0; ix < mapSize; ix++)
 			args.waterFunc(ix, iz, height);
 		}
 
-		if (-m1 > -0.04 && -m1 < 0 ||
-			-m2 > 0 && -m2 < 0.04)
+		for (let riv of river)
 		{
-			placeTerrain(ix, iz, tLush);
-			addToClass(ix, iz, clShore);
-		}
-		else if (-m1 > -0.06 && -m1 < -0.04  ||
-		         -m2 > 0.04  && -m2 < 0.06)
-		{
-			placeTerrain(ix, iz, tSLush);
-			addToClass(ix, iz, clShore);
-		}
-		else if (-m1 > -0.09 && -m1 < -0.06 ||
-		         -m2 >  0.06 && -m2 < 0.09)
-		{
-			placeTerrain(ix, iz, tSDry);
-			addToClass(ix, iz, clShore);
+			if (-m1 > -riv.right && -m1 < -riv.left ||
+				-m2 > riv.left && -m2 < riv.right)
+			{
+				placeTerrain(ix, iz, riv.tileClass);
+				addToClass(ix, iz, clShore);
+			}
 		}
 	}
 RMS.SetProgress(40);
