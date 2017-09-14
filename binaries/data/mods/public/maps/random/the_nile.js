@@ -194,11 +194,19 @@ var args = {
 	"fadeDist": 0.025,
 	"km": 12,
 	"waterHeight": -3,
-	"landFunc": (ix, iz, height) => {
+	"landFunc": (ix, iz, m1, m2) => {
 		let x = ix / (mapSize + 1.0);
 		let z = iz / (mapSize + 1.0);
 		if (x < 0.25 || x > 0.75)
 			addToClass(ix, iz, clDesert);
+
+		for (let riv of river)
+			if (-m1 > -riv.right && -m1 < -riv.left ||
+				-m2 > riv.left && -m2 < riv.right)
+			{
+				placeTerrain(ix, iz, riv.tileClass);
+				addToClass(ix, iz, clShore);
+			}
 	},
 	"waterFunc": (ix, iz, height) => {
 		if (height < 0.1 && height > -0.2)
@@ -238,9 +246,6 @@ for (var ix = 0; ix < mapSize; ix++)
 		let m1 = -devcoord1 + cu1 + 0.5 - halfWaterWidth;
 		let m2 = -devcoord1 + cu1 + 0.5 + halfWaterWidth;
 
-		if (args.landFunc)
-			args.landFunc(ix, iz);
-
 		if (m1 < 0 && m2 > 0)
 		{
 			let s1 = m1 + args.fadeDist;
@@ -256,16 +261,8 @@ for (var ix = 0; ix < mapSize; ix++)
 
 			args.waterFunc(ix, iz, height);
 		}
-		else
-		for (let riv of river)
-		{
-			if (-m1 > -riv.right && -m1 < -riv.left ||
-				-m2 > riv.left && -m2 < riv.right)
-			{
-				placeTerrain(ix, iz, riv.tileClass);
-				addToClass(ix, iz, clShore);
-			}
-		}
+		else if (args.landFunc)
+			args.landFunc(ix, iz, m1, m2);
 	}
 RMS.SetProgress(40);
 
