@@ -190,18 +190,18 @@ for (var ix = 0; ix < mapSize; ix++)
 		let x = ix / (mapSize + 1.0);
 		let z = iz / (mapSize + 1.0);
 
-		let coord2 = args.horizontal ? z : x;
-		let coord1 = args.horizontal ? x : z;
+		let coord1 = args.horizontal ? z : x;
+		let coord2 = args.horizontal ? x : z;
 
-		let cu1 = km * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
+		let cu1 = km * rndRiver(theta1 + coord1 * mapSize / 128, seed1);
 
 		let cu = cu1 +  rndRiver(theta2 + z*(mapSize/128)/2, seed2) * 50 / scaleByMapSize(35, 100);
 
-		let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
-		let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let devcoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
+		let devcoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-		//var devCoord1 = z*randFloat(0.995,1.005);
-		//var devCoord2 = x*randFloat(0.995,1.005);
+		//var devcoord2 = z*randFloat(0.995,1.005);
+		//var devcoord1 = x*randFloat(0.995,1.005);
 
 		if (args.landFunc)
 			args.landFunc(ix, iz);
@@ -210,11 +210,11 @@ for (var ix = 0; ix < mapSize; ix++)
 			continue;
 
 		var h;
-		if (devCoord2 > cu+0.5-WATER_WIDTH/2 && devCoord2 < cu+ 0.5 + WATER_WIDTH/2)
+		if (devcoord1 > cu+0.5-WATER_WIDTH/2 && devcoord1 < cu+ 0.5 + WATER_WIDTH/2)
 		{
-			if (devCoord2 < cu+((1.05-WATER_WIDTH)/2))
+			if (devcoord1 < cu+((1.05-WATER_WIDTH)/2))
 			{
-				h = args.waterHeight + 200.0* abs(cu+((1.05-WATER_WIDTH)/2-devCoord2));
+				h = args.waterHeight + 200.0* abs(cu+((1.05-WATER_WIDTH)/2-devcoord1));
 				if ((h < 0.1)&&(h>-0.2))
 				{
 					if (rifp%2 == 0)
@@ -225,9 +225,9 @@ for (var ix = 0; ix < mapSize; ix++)
 					++rifp;
 				}
 			}
-			else if (devCoord2 > (cu+(0.95+WATER_WIDTH)/2))
+			else if (devcoord1 > (cu+(0.95+WATER_WIDTH)/2))
 			{
-				h = args.waterHeight + 200.0*(devCoord2-(cu+((0.95+WATER_WIDTH)/2)));
+				h = args.waterHeight + 200.0*(devcoord1-(cu+((0.95+WATER_WIDTH)/2)));
 				if ((h < 0.1)&&(h>-0.2))
 				{
 					if (rifp2%2 == 0)
@@ -246,17 +246,17 @@ for (var ix = 0; ix < mapSize; ix++)
 			placeTerrain(ix, iz, tShore);
 		}
 
-		if (((devCoord2 > cu+((1.0-WATER_WIDTH)/2)-0.04)&&(devCoord2 < cu+((1.0-WATER_WIDTH)/2)))||((devCoord2 > cu+((1.0+WATER_WIDTH)/2))&&(devCoord2 < cu+((1.0+WATER_WIDTH)/2) + 0.04)))
+		if (((devcoord1 > cu+((1.0-WATER_WIDTH)/2)-0.04)&&(devcoord1 < cu+((1.0-WATER_WIDTH)/2)))||((devcoord1 > cu+((1.0+WATER_WIDTH)/2))&&(devcoord1 < cu+((1.0+WATER_WIDTH)/2) + 0.04)))
 		{
 			placeTerrain(ix, iz, tLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (((devCoord2 > cu+((1.0-WATER_WIDTH)/2)-0.06)&&(devCoord2 < cu+((1.0-WATER_WIDTH)/2)-0.04))||((devCoord2 > cu+((1.0+WATER_WIDTH)/2)+0.04)&&(devCoord2 < cu+((1.0+WATER_WIDTH)/2) + 0.06)))
+		else if (((devcoord1 > cu+((1.0-WATER_WIDTH)/2)-0.06)&&(devcoord1 < cu+((1.0-WATER_WIDTH)/2)-0.04))||((devcoord1 > cu+((1.0+WATER_WIDTH)/2)+0.04)&&(devcoord1 < cu+((1.0+WATER_WIDTH)/2) + 0.06)))
 		{
 			placeTerrain(ix, iz, tSLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (((devCoord2 > cu+((1.0-WATER_WIDTH)/2)-0.09)&&(devCoord2 < cu+((1.0-WATER_WIDTH)/2)-0.06))||((devCoord2 > cu+((1.0+WATER_WIDTH)/2)+0.06)&&(devCoord2 < cu+((1.0+WATER_WIDTH)/2) + 0.09)))
+		else if (((devcoord1 > cu+((1.0-WATER_WIDTH)/2)-0.09)&&(devcoord1 < cu+((1.0-WATER_WIDTH)/2)-0.06))||((devcoord1 > cu+((1.0+WATER_WIDTH)/2)+0.06)&&(devcoord1 < cu+((1.0+WATER_WIDTH)/2) + 0.09)))
 		{
 			placeTerrain(ix, iz, tSDry);
 			addToClass(ix, iz, clShore);
