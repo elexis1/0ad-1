@@ -239,23 +239,20 @@ for (var ix = 0; ix < mapSize; ix++)
 			args.waterFunc(ix, iz, height);
 		}
 
-		let i = devcoord1 - (cu1 + 0.5 - halfWaterWidth);
-		let k = devcoord1 - (cu1 + 0.5 + halfWaterWidth);
-
-		if (i > -0.04 && i < 0 ||
-			k > 0 && k < 0.04)
+		if (-m1 > -0.04 && -m1 < 0 ||
+			-m2 > 0 && -m2 < 0.04)
 		{
 			placeTerrain(ix, iz, tLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (i > -0.06 && i < -0.04  ||
-		         k > 0.04  && k < 0.06)
+		else if (-m1 > -0.06 && -m1 < -0.04  ||
+		         -m2 > 0.04  && -m2 < 0.06)
 		{
 			placeTerrain(ix, iz, tSLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (i > -0.09 && i < -0.06 ||
-		         k >  0.06 && k < 0.09)
+		else if (-m1 > -0.09 && -m1 < -0.06 ||
+		         -m2 >  0.06 && -m2 < 0.09)
 		{
 			placeTerrain(ix, iz, tSDry);
 			addToClass(ix, iz, clShore);
