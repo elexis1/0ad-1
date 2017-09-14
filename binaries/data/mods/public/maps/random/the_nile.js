@@ -175,7 +175,7 @@ var km = 12/scaleByMapSize(35, 160);
 var args = {
 	"horizontal": false,
 	"deviation": 0.005,
-	"fadeDist": 0.05,
+	"fadeDist": 0.025,
 	"waterHeight": -3,
 	"landFunc": (ix, iz, h) => {
 		let x = ix / (mapSize + 1.0);
@@ -209,16 +209,18 @@ for (var ix = 0; ix < mapSize; ix++)
 		if (args.waterHeight >= getHeight(ix, iz))
 			continue;
 
-		if (devcoord1 > cu1 + 0.5 - halfWaterWidth &&
-		    devcoord1 < cu1 + 0.5 + halfWaterWidth)
+		let m1 = -devcoord1 + cu1 + 0.5 - halfWaterWidth;
+		let m2 = -devcoord1 + cu1 + 0.5 + halfWaterWidth;
+
+		if (0 > m1 && 0 < m2)
 		{
-			let m =   cu1 + 0.5 - halfWaterWidth + args.fadeDist/2 - devcoord1;
-			let n = -(cu1 + 0.5 + halfWaterWidth - args.fadeDist/2 - devcoord1);
+			let s1 =   m1 + args.fadeDist;
+			let s2 = -(m2 - args.fadeDist);
 
 			let h = args.waterHeight;
-			if (0 < m)
+			if (0 < s1)
 			{
-				h = args.waterHeight + 200 * m;
+				h = args.waterHeight + 200 * s1;
 
 				if (h < 0.1 && h > -0.2)
 				{
@@ -230,9 +232,9 @@ for (var ix = 0; ix < mapSize; ix++)
 					++rifp;
 				}
 			}
-			else if (n > 0)
+			else if (s2 > 0)
 			{
-				h = args.waterHeight + 200 * n;
+				h = args.waterHeight + 200 * s2;
 				if (h < 0.1 && h > -0.2)
 				{
 					if (rifp2%2 == 0)
