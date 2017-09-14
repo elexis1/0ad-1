@@ -182,7 +182,6 @@ paintRiver({
 	"constraint": stayClasses(clLand, 0),
 	"waterHeight": -3,
 	"waterWidth": 0.07,
-	"someNumber": -3 + 5,
 	"someOtherNumber": 5,
 	"deviation": 0.005,
 	"fadeDist": 0.025,

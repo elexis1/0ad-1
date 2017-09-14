@@ -151,7 +151,6 @@ paintRiver({
 	"offset": 0,
 	"deviation": 0,
 	"fadeDist": 0.05,
-	"someNumber": 1,
 	"someOtherNumber": 4,
 	"km128": 20,
 	"km256": 0,

@@ -163,7 +163,6 @@ paintRiver({
 	"waterWidth": 0.35,
 	"fadeDist": 0.05,
 	"deviation": 0,
-	"someNumber": 2,
 	"someOtherNumber": 5,
 	"km128": 20,
 	"km256": 0,

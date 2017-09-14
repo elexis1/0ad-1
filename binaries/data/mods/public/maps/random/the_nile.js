@@ -195,7 +195,6 @@ paintRiver({
 	"deviation": 0.005,
 	"fadeDist": 0.025,
 	"someOtherNumber": 5,
-	"someNumber": -3 + 5, //waterHeight - someOtherNumber,
 	"km128": 12,
 	"km256": 50,
 	"waterHeight": -3,
