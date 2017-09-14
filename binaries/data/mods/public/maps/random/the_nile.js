@@ -239,17 +239,23 @@ for (var ix = 0; ix < mapSize; ix++)
 			args.waterFunc(ix, iz, height);
 		}
 
-		if (((devcoord1 > cu1+((1.0-WATER_WIDTH)/2)-0.04)&&(devcoord1 < cu1+((1.0-WATER_WIDTH)/2)))||((devcoord1 > cu1+((1.0+WATER_WIDTH)/2))&&(devcoord1 < cu1+((1.0+WATER_WIDTH)/2) + 0.04)))
+		let i = devcoord1 - (cu1 + 0.5 - halfWaterWidth);
+		let k = devcoord1 - (cu1 + 0.5 + halfWaterWidth);
+
+		if (i > -0.04 && i < 0 ||
+			k > 0 && k < 0.04)
 		{
 			placeTerrain(ix, iz, tLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (((devcoord1 > cu1+((1.0-WATER_WIDTH)/2)-0.06)&&(devcoord1 < cu1+((1.0-WATER_WIDTH)/2)-0.04))||((devcoord1 > cu1+((1.0+WATER_WIDTH)/2)+0.04)&&(devcoord1 < cu1+((1.0+WATER_WIDTH)/2) + 0.06)))
+		else if (i > -0.06 && i < -0.04  ||
+		         k > 0.04  && k < 0.06)
 		{
 			placeTerrain(ix, iz, tSLush);
 			addToClass(ix, iz, clShore);
 		}
-		else if (((devcoord1 > cu1+((1.0-WATER_WIDTH)/2)-0.09)&&(devcoord1 < cu1+((1.0-WATER_WIDTH)/2)-0.06))||((devcoord1 > cu1+((1.0+WATER_WIDTH)/2)+0.06)&&(devcoord1 < cu1+((1.0+WATER_WIDTH)/2) + 0.09)))
+		else if (i > -0.09 && i < -0.06 ||
+		         k >  0.06 && k < 0.09)
 		{
 			placeTerrain(ix, iz, tSDry);
 			addToClass(ix, iz, clShore);
