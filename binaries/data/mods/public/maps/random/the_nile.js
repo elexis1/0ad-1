@@ -169,6 +169,8 @@ var theta2 = randFloat(0, 1);
 var seed2 = randFloat(2,3);
 var rifp = 0;
 var rifp2 = 0;
+// add the rough shape of the water
+var km = 12/scaleByMapSize(35, 160);
 
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
@@ -176,11 +178,9 @@ for (var ix = 0; ix < mapSize; ix++)
 		var x = ix / (mapSize + 1.0);
 		var z = iz / (mapSize + 1.0);
 
-		if ((x < 0.25)||(x > 0.75))
+		if (x < 0.25 || x > 0.75)
 			addToClass(ix, iz, clDesert);
 
-		// add the rough shape of the water
-		var km = 12/scaleByMapSize(35, 160);
 		var cu = km*rndRiver(theta+z*0.5*(mapSize/64),seed)+(50/scaleByMapSize(35, 100))*rndRiver(theta2+z*0.5*(mapSize/128),seed2);
 		var zk = z*randFloat(0.995,1.005);
 		var xk = x*randFloat(0.995,1.005);
@@ -189,7 +189,7 @@ for (var ix = 0; ix < mapSize; ix++)
 			continue;
 
 		var h;
-		if ((xk > cu+((1.0-WATER_WIDTH)/2))&&(xk < cu+((1.0+WATER_WIDTH)/2)))
+		if (xk > cu+0.5-WATER_WIDTH/2 && xk < cu+ 0.5 + WATER_WIDTH/2)
 		{
 			if (xk < cu+((1.05-WATER_WIDTH)/2))
 			{
