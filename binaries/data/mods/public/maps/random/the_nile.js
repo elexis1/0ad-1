@@ -256,7 +256,7 @@ for (var ix = 0; ix < mapSize; ix++)
 
 			args.waterFunc(ix, iz, height);
 		}
-
+		else
 		for (let riv of river)
 		{
 			if (-m1 > -riv.right && -m1 < -riv.left ||
