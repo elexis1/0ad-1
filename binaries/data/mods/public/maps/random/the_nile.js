@@ -175,6 +175,7 @@ var km = 12/scaleByMapSize(35, 160);
 var args = {
 	"horizontal": false,
 	"deviation": 0.005,
+	"fadeDist": 0.05,
 	"waterHeight": -3,
 	"landFunc": (ix, iz, h) => {
 		let x = ix / (mapSize + 1.0);
@@ -183,6 +184,8 @@ var args = {
 			addToClass(ix, iz, clDesert);
 	}
 }
+
+let halfWaterWidth = WATER_WIDTH / 2;
 
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
@@ -200,9 +203,6 @@ for (var ix = 0; ix < mapSize; ix++)
 		let devcoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 		let devcoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-		//var devcoord2 = z*randFloat(0.995,1.005);
-		//var devcoord1 = x*randFloat(0.995,1.005);
-
 		if (args.landFunc)
 			args.landFunc(ix, iz);
 
@@ -210,11 +210,11 @@ for (var ix = 0; ix < mapSize; ix++)
 			continue;
 
 		var h;
-		if (devcoord1 > cu+0.5-WATER_WIDTH/2 && devcoord1 < cu+ 0.5 + WATER_WIDTH/2)
+		if (devcoord1 > cu+0.5-halfWaterWidth && devcoord1 < cu+ 0.5 + halfWaterWidth)
 		{
-			if (devcoord1 < cu+((1.05-WATER_WIDTH)/2))
+			if (devcoord1 < cu+ 0.5 + args.fadeDist/2 -halfWaterWidth)
 			{
-				h = args.waterHeight + 200.0* abs(cu+((1.05-WATER_WIDTH)/2-devcoord1));
+				h = args.waterHeight + 200* abs(cu+0.5 + args.fadeDist/2 -halfWaterWidth-devcoord1);
 				if ((h < 0.1)&&(h>-0.2))
 				{
 					if (rifp%2 == 0)
@@ -227,7 +227,7 @@ for (var ix = 0; ix < mapSize; ix++)
 			}
 			else if (devcoord1 > (cu+(0.95+WATER_WIDTH)/2))
 			{
-				h = args.waterHeight + 200.0*(devcoord1-(cu+((0.95+WATER_WIDTH)/2)));
+				h = args.waterHeight + 200 * (devcoord1 - (cu + 0.5 - args.fadeDist/2 + halfWaterWidth));
 				if ((h < 0.1)&&(h>-0.2))
 				{
 					if (rifp2%2 == 0)
