@@ -214,8 +214,8 @@ for (var ix = 0; ix < mapSize; ix++)
 
 		if (0 > m1 && 0 < m2)
 		{
-			let s1 =   m1 + args.fadeDist;
-			let s2 = -(m2 - args.fadeDist);
+			let s1 = m1 + args.fadeDist;
+			let s2 = m2 - args.fadeDist;
 
 			let h = args.waterHeight;
 			if (0 < s1)
@@ -232,9 +232,9 @@ for (var ix = 0; ix < mapSize; ix++)
 					++rifp;
 				}
 			}
-			else if (s2 > 0)
+			else if (s2 < 0)
 			{
-				h = args.waterHeight + 200 * s2;
+				h = args.waterHeight - 200 * s2;
 				if (h < 0.1 && h > -0.2)
 				{
 					if (rifp2%2 == 0)
