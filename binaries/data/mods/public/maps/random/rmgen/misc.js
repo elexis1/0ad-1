@@ -141,7 +141,6 @@ function paintRiver(args)
 	let km128 = args.km128 / scaleByMapSize(35, 160);
 	let km256 = args.km256 / scaleByMapSize(35, 100);
 
-	let halfWaterWidth = args.waterWidth / 2;
 	let mapSize = g_Map.size;
 
 	for (let ix = 0; ix < mapSize; ++ix)
@@ -169,8 +168,8 @@ function paintRiver(args)
 			let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 			let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-			let m1 = -devCoord1 + cu1 + args.offset - halfWaterWidth;
-			let m2 = -devCoord1 + cu2 + args.offset + halfWaterWidth;
+			let m1 = -devCoord1 + cu1 + args.position - args.width / 2;
+			let m2 = -devCoord1 + cu2 + args.position + args.width / 2;
 
 			if (m1 < 0 && m2 > 0)
 			{

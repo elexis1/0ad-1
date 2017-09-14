@@ -148,14 +148,14 @@ RMS.SetProgress(30);
 paintRiver({
 	"horizontal": false,
 	"parallel": true,
-	"offset": 0,
+	"position": 0,
+	"width": 1,
 	"deviation": 0,
 	"fadeDist": 0.05,
 	"someOtherNumber": 4,
 	"km128": 20,
 	"km256": 0,
 	"waterHeight": -3,
-	"waterWidth": 1,
 	"waterFunc": (ix, iz, height) => {
 
 		if (height < 0)

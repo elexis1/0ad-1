@@ -40,8 +40,6 @@ const aBushSmall = "actor|props/flora/bush_medit_sm_lush.xml";
 const pForestD = [tGrassDForest + TERRAIN_SEPARATOR + oPoplar, tGrassDForest];
 const pForestP = [tGrassPForest + TERRAIN_SEPARATOR + oOak, tGrassPForest];
 
-const WATER_WIDTH = 0.25;
-
 InitMap();
 
 const numPlayers = getNumPlayers();
@@ -149,15 +147,14 @@ RMS.SetProgress(10);
 paintRiver({
 	"horizontal": true,
 	"parallel": true,
-	"offset": 0.75,
+	"position": 1,
+	"width": 0.5,
 	"deviation": 0,
 	"fadeDist": 0.05,
-	"offset": 1,
 	"someOtherNumber": 4,
 	"km128": 20,
 	"km256": 0,
 	"waterHeight": -3,
-	"waterWidth": 0.5,
 	"waterFunc": (ix, iz, height) => {
 
 		if (height < 0)

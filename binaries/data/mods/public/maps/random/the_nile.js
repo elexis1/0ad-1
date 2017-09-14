@@ -160,16 +160,6 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(30);
 
-const WATER_WIDTH = 0.1;
-
-log("Creating river");
-var theta1 = randFloat(0, 1);
-var seed1 = randFloat(2,3);
-var theta2 = randFloat(0, 1);
-var seed2 = randFloat(2,3);
-var plantID = 0;
-var plantFrequency = 2;
-
 const riverTextures = [
 	{
 		"left": 0,
@@ -188,17 +178,21 @@ const riverTextures = [
 	}
 ];
 
+const plantFrequency = 2;
+
+var plantID = 0;
+
 paintRiver({
 	"horizontal": false,
 	"parallel": true,
-	"offset": 0.5,
+	"position": 0.5,
+	"width": 0.1,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
 	"someOtherNumber": 5,
 	"km128": 12,
 	"km256": 50,
 	"waterHeight": -3,
-	"waterWidth": 0.1,
 	"waterFunc": (ix, iz, height) => {
 
 		addToClass(ix, iz, clWater);
