@@ -196,8 +196,10 @@ var args = {
 	"km": 12,
 	"waterHeight": -3,
 	"landFunc": (ix, iz, m1, m2) => {
+
 		let x = ix / (mapSize + 1.0);
 		let z = iz / (mapSize + 1.0);
+
 		if (x < 0.25 || x > 0.75)
 			addToClass(ix, iz, clDesert);
 
@@ -211,18 +213,18 @@ var args = {
 	},
 	"waterFunc": (ix, iz, height) =>
 	{
-		if (height < 0.1 && height > -0.2)
-		{
-			if (rifp % plantFrequency == 0)
-			{
-				rifp = 0;
-				placeObject(ix, iz, aPlants, 0, randFloat(0, TWO_PI));
-			}
-			++rifp;
-		}
-
 		addToClass(ix, iz, clWater);
 		placeTerrain(ix, iz, tShore);
+
+		if (height <= -0.2 || height >= 0.1)
+			return;
+
+		if (rifp % plantFrequency == 0)
+		{
+			rifp = 0;
+			placeObject(ix, iz, aPlants, 0, randFloat(0, TWO_PI));
+		}
+		++rifp;
 	}
 };
 
