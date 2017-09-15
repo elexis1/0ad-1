@@ -189,10 +189,10 @@ paintRiver({
 	"width": 0.1,
 	"deviation": 0.005,
 	"fadeDist": 0.025,
-	"someOtherNumber": 5,
+	"waterHeight": -3,
+	"someHeight": 5,
 	"km128": 12,
 	"km256": 50,
-	"waterHeight": -3,
 	"waterFunc": (ix, iz, height) => {
 
 		addToClass(ix, iz, clWater);

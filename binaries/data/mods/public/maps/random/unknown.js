@@ -310,10 +310,10 @@ else if (md == 3) //central sea
 		"width": randFloat(0.22, 0.3) + scaleByMapSize(1,4) / 20,
 		"fadeDist": 0.05,
 		"deviation": 0,
-		"someOtherNumber": 6,
+		"waterHeight": -3,
+		"someHeight": 6,
 		"km128": 20,
 		"km256": 0,
-		"waterHeight": -3,
 		"waterFunc": (ix, iz, height) => {
 			placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
 			if (height < 0)

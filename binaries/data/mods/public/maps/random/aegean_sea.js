@@ -163,10 +163,10 @@ paintRiver({
 	"width": 0.35,
 	"fadeDist": 0.05,
 	"deviation": 0,
-	"someOtherNumber": 5,
+	"waterHeight": -3,
+	"someHeight": 5,
 	"km128": 20,
 	"km256": 0,
-	"waterHeight": -3,
 	"waterFunc": (ix, iz, height) => {
 
 		if (height < 0.7)
