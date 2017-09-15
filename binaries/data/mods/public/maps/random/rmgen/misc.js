@@ -307,6 +307,22 @@ function placeDefaultChicken(playerX, playerZ, tileClass, constraint = undefined
 		}
 }
 
+function placeDefaultBerries(fx, fz, clBaseResource, oBerryBush, dist = 12)
+{
+	let angle = randFloat(0, 2 * PI);
+
+	createObjectGroup(
+		new SimpleGroup(
+			[new SimpleObject(oBerryBush, 5, 5, 0, 3)],
+			true,
+			clBaseResource,
+			Math.round(fx + dist * Math.cos(angle)),
+			Math.round(fz + dist * Math.sin(angle))),
+		0);
+
+	return angle;
+}
+
 /**
  * Typically used for placing grass tufts around the civic centers.
  */
