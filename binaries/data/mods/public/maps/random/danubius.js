@@ -417,8 +417,8 @@ paintRiver({
 	"deviation": 0,
 	"waterHeight": -3,
 	"landHeight": 2,
-	"km128": 30,
-	"km256": 0,
+	"meanderShort": 30,
+	"meanderLong": 0,
 	"waterFunc": (ix, iz, height) => {
 
 		if (height < 0.7)

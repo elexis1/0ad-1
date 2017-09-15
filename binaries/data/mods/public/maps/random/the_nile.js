@@ -191,8 +191,8 @@ paintRiver({
 	"deviation": 0.005,
 	"waterHeight": -3,
 	"landHeight": 2,
-	"km128": 12,
-	"km256": 50,
+	"meanderShort": 12,
+	"meanderLong": 50,
 	"waterFunc": (ix, iz, height) => {
 
 		addToClass(ix, iz, clWater);

@@ -128,6 +128,10 @@ function rndRiver(f, seed)
 	return rndRa;
 }
 
+/**
+ * 
+ * @param args
+ */
 function paintRiver(args)
 {
 	log("Creating the river");
@@ -138,8 +142,8 @@ function paintRiver(args)
 	let seed1 = randFloat(2, 3);
 	let seed2 = randFloat(2, 3);
 
-	let km128 = args.km128 / scaleByMapSize(35, 160);
-	let km256 = args.km256 / scaleByMapSize(35, 100);
+	let meanderShort = args.meanderShort / scaleByMapSize(35, 160);
+	let meanderLong = args.meanderLong / scaleByMapSize(35, 100);
 
 	let mapSize = g_Map.size;
 
@@ -155,12 +159,12 @@ function paintRiver(args)
 			let coord1 = args.horizontal ? z : x;
 			let coord2 = args.horizontal ? x : z;
 
-			// Compute curvature offset of the river at this place
-			let cu1 = km128 * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
-			let cu2 = km128 * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
+			// River curve at this place
+			let cu1 = meanderShort * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
+			let cu2 = meanderShort * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
 
-			cu1 += km256 * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
-			cu2 += km256 * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
+			cu1 += meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
+			cu2 += meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
 			if (args.parallel)
 				cu2 = cu1;
 

@@ -177,8 +177,8 @@ else if (md == 3) //central sea
 		"deviation": 0,
 		"waterHeight": -3,
 		"landHeight": 3,
-		"km128": 20,
-		"km256": 0,
+		"meanderShort": 20,
+		"meanderLong": 0,
 		"waterFunc": (ix, iz, height) => {
 			placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
 			if (height < 0)
