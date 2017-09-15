@@ -166,8 +166,6 @@ paintRiver({
 		else
 			placeTerrain(ix, iz, tShore);
 	}
-	"landFunc": (ix, iz, m1, m2) => {
-	}
 });
 
 RMS.SetProgress(40);
