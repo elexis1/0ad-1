@@ -164,7 +164,7 @@ paintRiver({
 	"fadeDist": 0.05,
 	"deviation": 0,
 	"waterHeight": -3,
-	"someHeight": 5,
+	"landHeight": 2,
 	"km128": 20,
 	"km256": 0,
 	"waterFunc": (ix, iz, height) => {

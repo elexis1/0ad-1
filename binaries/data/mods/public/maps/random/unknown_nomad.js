@@ -224,7 +224,7 @@ else if (md == 3) //central sea
 		"fadeDist": 0.05,
 		"deviation": 0,
 		"waterHeight": -3,
-		"someHeight": 6,
+		"landHeight": 3,
 		"km128": 20,
 		"km256": 0,
 		"waterFunc": (ix, iz, height) => {
