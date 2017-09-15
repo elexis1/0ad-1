@@ -160,7 +160,7 @@ paintRiver({
 	"parallel": false,
 	"position": 0.5,
 	"width": 0.25,
-	"fadeDist": 0.02,
+	"fadeDist": 0.01,
 	"deviation": 0,
 	"waterHeight": -4,
 	"landHeight": 3,
