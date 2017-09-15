@@ -165,7 +165,7 @@ paintRiver({
 		else
 			placeTerrain(ix, iz, tShore);
 	},
-	"landFunc": (ix, iz, m1, m2) => {
+	"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
 		addToClass(ix, iz, clHighlands);
 	}
 });

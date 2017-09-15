@@ -129,8 +129,21 @@ function rndRiver(f, seed)
 }
 
 /**
- * 
- * @param args
+ * Creates a meandering river at the given location and width.
+ * Optionally calls a function on the affected tiles.
+ *
+ * @property horizontal - Whether the river is horizontal or vertical
+ * @property parallel - Whether the shorelines should be parallel or meander separately.
+ * @property position - Location of the river. Number between 0 and 1.
+ * @property width - Size between the two shorelines. Number between 0 and 1.
+ * @property fadeDist - Size of the shoreline.
+ * @property deviation - Fuzz effect on the shoreline if greater than 0.
+ * @property waterHeight - Ground height of the riverbed.
+ * @proeprty landHeight - Ground height of the end of the shoreline.
+ * @property meanderShort - Strength of frequent meanders.
+ * @property meanderLong - Strength of less frequent meanders.
+ * @property waterFunc - Optional function called on water tiles, providing ix, iz, height.
+ * @property landFunc - Optional function called on land tiles, providing ix, iz, shoreDist1, shoreDist2.
  */
 function paintRiver(args)
 {
@@ -172,20 +185,17 @@ function paintRiver(args)
 			let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
 			let devCoord2 = coord2 * randFloat(1 - args.deviation, 1 + args.deviation);
 
-			let m1 = -devCoord1 + cu1 + args.position - args.width / 2;
-			let m2 = -devCoord1 + cu2 + args.position + args.width / 2;
+			let shoreDist1 = -devCoord1 + cu1 + args.position - args.width / 2;
+			let shoreDist2 = -devCoord1 + cu2 + args.position + args.width / 2;
 
-			if (m1 < 0 && m2 > 0)
+			if (shoreDist1 < 0 && shoreDist2 > 0)
 			{
-				let s1 = m1 + args.fadeDist;
-				let s2 = m2 - args.fadeDist;
-
 				let height = args.waterHeight;
 
-				if (s1 > 0)
-					height = args.landHeight * (1 + m1 / args.fadeDist);
-				else if (s2 < 0)
-					height = args.landHeight * (1 - m2 / args.fadeDist);
+				if (shoreDist1 > -args.fadeDist)
+					height = args.landHeight * (1 + shoreDist1 / args.fadeDist);
+				else if (shoreDist2 < args.fadeDist)
+					height = args.landHeight * (1 - shoreDist2 / args.fadeDist);
 
 				setHeight(ix, iz, height);
 
@@ -193,7 +203,7 @@ function paintRiver(args)
 					args.waterFunc(ix, iz, height);
 			}
 			else if (args.landFunc)
-				args.landFunc(ix, iz, m1, m2);
+				args.landFunc(ix, iz, shoreDist1, shoreDist2);
 		}
 }
 

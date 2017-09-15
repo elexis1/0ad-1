@@ -141,11 +141,14 @@ for (var i = 0; i < numPlayers; i++)
 
 RMS.SetProgress(15);
 
+const waterPos = 0.31;
+const mountainPos = 0.69;
+
 paintRiver({
 	"horizontal": false,
 	"parallel": false,
 	"position": 0,
-	"width": 0.62,
+	"width": 2 * waterPos,
 	"fadeDist": 0.025,
 	"deviation": 0,
 	"waterHeight": -5,
@@ -155,8 +158,8 @@ paintRiver({
 	"waterFunc": (ix, iz, height) => {
 		addToClass(ix, iz, clWater);
 	},
-	"landFunc": (ix, iz, m1, m2) => {
-		if (ix > 0.69 * mapSize)
+	"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
+		if (ix > mountainPos * mapSize)
 			addToClass(ix, iz, clMountains)
 	}
 });

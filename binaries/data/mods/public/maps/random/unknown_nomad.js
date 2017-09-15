@@ -232,7 +232,7 @@ else if (md == 3) //central sea
 			if (height < 0)
 				addToClass(ix, iz, clWater);
 		},
-		"landFunc": (ix, iz, m1, m2) => {
+		"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
 			setHeight(ix, iz, 3.1);
 			addToClass(ix, iz, clLand);
 		}

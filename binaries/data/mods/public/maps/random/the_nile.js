@@ -209,15 +209,15 @@ paintRiver({
 		}
 		++plantID;
 	},
-	"landFunc": (ix, iz, m1, m2) => {
+	"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
 
 		let x = ix / (mapSize + 1.0);
 		if (x < 0.25 || x > 0.75)
 			addToClass(ix, iz, clDesert);
 
 		for (let riv of riverTextures)
-			if (-m1 > -riv.right && -m1 < -riv.left ||
-				-m2 > riv.left && -m2 < riv.right)
+			if (-shoreDist1 > -riv.right && -shoreDist1 < -riv.left ||
+				-shoreDist2 > riv.left && -shoreDist2 < riv.right)
 			{
 				placeTerrain(ix, iz, riv.tileClass);
 				addToClass(ix, iz, clShore);
