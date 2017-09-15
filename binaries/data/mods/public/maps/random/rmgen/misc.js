@@ -193,9 +193,9 @@ function paintRiver(args)
 				let height = args.waterHeight;
 
 				if (shoreDist1 > -args.fadeDist)
-					height = args.landHeight * (1 + shoreDist1 / args.fadeDist);
+					height += (args.landHeight - args.waterHeight) * (1 + shoreDist1 / args.fadeDist);
 				else if (shoreDist2 < args.fadeDist)
-					height = args.landHeight * (1 - shoreDist2 / args.fadeDist);
+					height += (args.landHeight - args.waterHeight) * (1 - shoreDist2 / args.fadeDist);
 
 				setHeight(ix, iz, height);
 
