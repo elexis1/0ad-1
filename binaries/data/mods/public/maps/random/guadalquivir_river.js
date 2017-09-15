@@ -178,13 +178,13 @@ var shallowHeight = -1.5;
 paintRiver({
 	"horizontal": false,
 	"parallel": true,
+	"constraint": stayClasses(clLand, 0),
 	"position": 0.5,
 	"width": 0.07,
-	"constraint": stayClasses(clLand, 0),
+	"fadeDist": 0.025,
+	"deviation": 0.005,
 	"waterHeight": -3,
 	"someHeight": 5,
-	"deviation": 0.005,
-	"fadeDist": 0.025,
 	"km128": 12,
 	"km256": 0,
 	"waterFunc": (ix, iz, height) => {

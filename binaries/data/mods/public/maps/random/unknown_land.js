@@ -172,7 +172,7 @@ else if (md == 3) //central sea
 		"horizontal": mdd1 != 1,
 		"parallel": false,
 		"position": 0.5,
-		"width": randFloat(0.22, 0.3) + scaleByMapSize(1,4) / 20,
+		"width": randFloat(0.22, 0.3) + scaleByMapSize(1, 4) / 20,
 		"fadeDist": 0.05,
 		"deviation": 0,
 		"waterHeight": -3,
