@@ -74,10 +74,7 @@ function rndRiver(f, seed)
 	for (var rndRx=0; rndRx<=floor(f); rndRx++)
 		rndRw = 10*(rndRw-floor(rndRw));
 
-	if (rndRx%2==0)
-		var rndRs = -1;
-	else
-		var rndRs = 1;
+	var rndRs = rndRx % 2 ? 1 : -1;
 
 	rndRe = (floor(rndRw))%5;
 
@@ -215,15 +212,18 @@ function createStartingPlayerEntities(fx, fz, playerid, civEntities, orientation
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function placeCivDefaultEntities(fx, fz, playerid, kwargs = {})
 {
-	// Unpack kwargs
 	var iberWall = 'walls';
+
 	if (getMapSize() <= 128)
 		iberWall = false;
+
 	if ('iberWall' in kwargs)
-		iberWall = kwargs['iberWall'];
+		iberWall = kwargs.iberWall;
+
 	var orientation = BUILDING_ORIENTATION;
 	if ('orientation' in kwargs)
-		orientation = kwargs['orientation'];
+		orientation = kwargs.orientation;
+
 	// Place default civ starting entities
 	var civ = getCivCode(playerid-1);
 	var civEntities = getStartingEntities(playerid-1);
@@ -643,8 +643,6 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 
 		var radius2 = radius * radius;
 		var dx, dz, distance2;
-
-		//log (uneval([sx, sz, lx, lz]));
 
 		for (var ix = sx; ix <= lx; ++ix)
 		{
