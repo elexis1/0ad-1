@@ -423,9 +423,6 @@ function unPaintTileClassBasedOnHeight(minHeight, maxHeight, mode, tileclass)
 	});
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// getTIPIADBON
-//
 //	"get The Intended Point In A Direction Based On Height"
 //	gets the N'th point with a specific height in a line and returns it as a [x, y] array
 //	startPoint: [x, y] array defining the start point
@@ -433,38 +430,43 @@ function unPaintTileClassBasedOnHeight(minHeight, maxHeight, mode, tileclass)
 //	heightRange: [min, max] array defining the range which the height of the intended point can be. includes both "min" and "max"
 //  step: how much tile units per turn should the search go. more value means faster but less accurate
 //  n: how many points to skip before ending the search. skips """n-1 points""".
-//
-///////////////////////////////////////////////////////////////////////////////////////////
-
 function getTIPIADBON(startPoint, endPoint, heightRange, step, n)
 {
-	var stepX = step*(endPoint[0]-startPoint[0])/(sqrt((endPoint[0]-startPoint[0])*(endPoint[0]-startPoint[0]) + step*(endPoint[1]-startPoint[1])*(endPoint[1]-startPoint[1])));
-	var stepY = step*(endPoint[1]-startPoint[1])/(sqrt((endPoint[0]-startPoint[0])*(endPoint[0]-startPoint[0]) + step*(endPoint[1]-startPoint[1])*(endPoint[1]-startPoint[1])));
-	var y = startPoint[1];
-	var checked = 0;
-	for (var x = startPoint[0]; true; x += stepX)
+	let X = endPoint[0] - startPoint[0];
+	let Y = endPoint[1] - startPoint[1];
+
+	let M = Math.sqrt(Math.pow(X, 2) + step * Math.pow(Y, 2));
+
+	let stepX = step * X / M;
+	let stepY = step * Y / M;
+
+	let y = startPoint[1];
+	let checked = 0;
+
+	for (let x = startPoint[0]; true; x += stepX)
 	{
-		if ((floor(x) < g_Map.size)||(floor(y) < g_Map.size))
+		let ix = Math.floor(x);
+		let iy = Math.floor(y);
+
+		if (ix < g_Map.size || iy < g_Map.size)
 		{
-			if ((g_Map.getHeight(floor(x), floor(y)) <= heightRange[1])&&(g_Map.getHeight(floor(x), floor(y)) >= heightRange[0]))
-			{
+			if (g_Map.getHeight(ix, iy) <= heightRange[1] &&
+			    g_Map.getHeight(ix, iy) >= heightRange[0])
 				++checked;
-			}
+
 			if (checked >= n)
-			{
 				return [x, y];
-			}
 		}
+
 		y += stepY;
-		if ((y > endPoint[1])&&(stepY>0))
-			break;
-		if ((y < endPoint[1])&&(stepY<0))
-			break;
-		if ((x > endPoint[1])&&(stepX>0))
-			break;
-		if ((x < endPoint[1])&&(stepX<0))
-			break;
+
+		if (y > endPoint[1] && stepY > 0 ||
+		    y < endPoint[1] && stepY < 0 ||
+		    x > endPoint[1] && stepX > 0 ||
+		    x < endPoint[1] && stepX < 0)
+			return undefined;
 	}
+
 	return undefined;
 }
 
@@ -519,32 +521,25 @@ function checkIfIntersect (x1, y1, x2, y2, x3, y3, x4, y4, width)
 	return false;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// distanceOfPointFromLine
-//
-//	returns the distance of a point from a line
-//	x1, y1, x2, y2: determine the position of the line
-//	x3, y3: determine the position of the point
-//
-///////////////////////////////////////////////////////////////////////////////////////////
-
-function distanceOfPointFromLine (x1, y1, x2, y2, x3, y3)
+/**
+ * Returns the distance of a point from a line.
+ */
+function distanceOfPointFromLine(line_x1, line_y1, line_x2, line_y2, point_x, point_y)
 {
-	if (x1 == x2)
-	{
-		return Math.abs(x3 - x1);
-	}
-	else if (y1 == y2)
-	{
-		return Math.abs(y3 - y1);
-	}
-	else
-	{
-		var m = (y1 - y2) / (x1 - x2);
-		var b = y1 - m * x1;
-		var m2 = sqrt(m * m + 1);
-		return Math.abs((y3 - x3 * m - b)/m2);
-	}
+	let width_x = line_x1 - line_x2;
+	let width_y = line_y1 - line_y2;
+
+	if (!width_x)
+		return Math.abs(point_x - x1);
+
+	if (!width_y)
+		return Math.abs(point_y - y1);
+
+	let inclination = width_y / width_x;
+	let intercept = line_y1 - inclination * line_x1;
+	let inclination2 = Math.sqrt(inclination * inclination + 1);
+
+	return Math.abs((point_y - point_x * inclination - intercept) / inclination2);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
