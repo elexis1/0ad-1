@@ -1,6 +1,3 @@
-/////////////////////////////////////////////////////////////////////////////////////////
-//	passageMaker
-//
 //	Function for creating shallow water between two given points by changing the height of all tiles in
 //	the path with height less than or equal to "maxheight" to "height"
 //
@@ -12,16 +9,13 @@
 //	smooth:		smooth elevation in borders
 //	tileclass:		(Optianal) - Adds those tiles to the class given
 //	terrain:		(Optional) - Changes the texture of the elevated land
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-
 function passageMaker(x1, z1, x2, z2, width, maxheight, height, smooth, tileclass, terrain, riverheight)
 {
 	var tchm = TILE_CENTERED_HEIGHT_MAP;
 	TILE_CENTERED_HEIGHT_MAP = true;
 	var mapSize = g_Map.size;
+
 	for (var ix = 0; ix < mapSize; ix++)
-	{
 		for (var iz = 0; iz < mapSize; iz++)
 		{
 			var a = z1-z2;
@@ -31,45 +25,31 @@ function passageMaker(x1, z1, x2, z2, width, maxheight, height, smooth, tileclas
 			var k = (a*ix + b*iz + c)/(a*a + b*b);
 			var my = iz-(b*k);
 			var inline = 0;
+
 			if (b == 0)
 			{
 				dis = abs(ix-x1);
 				if ((iz <= Math.max(z1,z2))&&(iz >= Math.min(z1,z2)))
-				{
 					inline = 1;
-				}
 			}
-			else
+			else if ((my <= Math.max(z1,z2))&&(my >= Math.min(z1,z2)))
+				inline = 1;
+
+			if (dis <= width && inline && g_Map.getHeight(ix, iz) <= maxheight)
 			{
-				if ((my <= Math.max(z1,z2))&&(my >= Math.min(z1,z2)))
-				{
-					inline = 1;
-				}
-			}
-			if ((dis <= width)&&(inline))
-			{
-				if(g_Map.getHeight(ix, iz) <= maxheight)
-				{
-					if (dis > width - smooth)
-					{
-						g_Map.setHeight(ix, iz, ((width - dis)*(height)+(riverheight)*(smooth - width + dis))/(smooth));
-					}
-					else if (dis <= width - smooth)
-					{
-						g_Map.setHeight(ix, iz, height);
-					}
-					if (tileclass !== undefined)
-					{
-						addToClass(ix, iz, tileclass);
-					}
-					if (terrain !== undefined)
-					{
-						placeTerrain(ix, iz, terrain);
-					}
-				}
+				if (dis > width - smooth)
+					g_Map.setHeight(ix, iz, ((width - dis)*(height)+(riverheight)*(smooth - width + dis))/(smooth));
+				else if (dis <= width - smooth)
+					g_Map.setHeight(ix, iz, height);
+
+				if (tileclass !== undefined)
+					addToClass(ix, iz, tileclass);
+
+				if (terrain !== undefined)
+					placeTerrain(ix, iz, terrain);
 			}
 		}
-	}
+
 	TILE_CENTERED_HEIGHT_MAP = tchm;
 }
 
@@ -84,7 +64,6 @@ function passageMaker(x1, z1, x2, z2, width, maxheight, height, smooth, tileclas
 //	seed:	Random Seed: Best to implement is to use randFloat()
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 function rndRiver(f, seed)
 {
 	var rndRq = seed;
@@ -93,38 +72,26 @@ function rndRiver(f, seed)
 	var rndRr = f-floor(f);
 	var rndRa = 0;
 	for (var rndRx=0; rndRx<=floor(f); rndRx++)
-	{
 		rndRw = 10*(rndRw-floor(rndRw));
-	}
+
 	if (rndRx%2==0)
-	{
 		var rndRs = -1;
-	}
 	else
-	{
 		var rndRs = 1;
-	}
+
 	rndRe = (floor(rndRw))%5;
+
 	if (rndRe==0)
-	{
 		rndRa = (rndRs)*2.3*(rndRr)*(rndRr-1)*(rndRr-0.5)*(rndRr-0.5);
-	}
 	else if (rndRe==1)
-	{
 		rndRa = (rndRs)*2.6*(rndRr)*(rndRr-1)*(rndRr-0.3)*(rndRr-0.7);
-	}
 	else if (rndRe==2)
-	{
 		rndRa = (rndRs)*22*(rndRr)*(rndRr-1)*(rndRr-0.2)*(rndRr-0.3)*(rndRr-0.3)*(rndRr-0.8);
-	}
 	else if (rndRe==3)
-	{
 		rndRa = (rndRs)*180*(rndRr)*(rndRr-1)*(rndRr-0.2)*(rndRr-0.2)*(rndRr-0.4)*(rndRr-0.6)*(rndRr-0.6)*(rndRr-0.8);
-	}
 	else if (rndRe==4)
-	{
 		rndRa = (rndRs)*2.6*(rndRr)*(rndRr-1)*(rndRr-0.5)*(rndRr-0.7);
-	}
+
 	return rndRa;
 }
 
