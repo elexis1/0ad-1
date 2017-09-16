@@ -59,9 +59,7 @@ PathPlacer.prototype.place = function(constraint)
 	// Generate random offsets
 	var ctrlVals = new Float32Array(numSteps);		//float32
 	for (var j = 1; j < (numSteps-1); ++j)
-	{
 		ctrlVals[j] = randFloat(-offset, offset);
-	}
 
 	// Interpolate for smoothed 1D noise
 	var noise = new Float32Array(totalSteps+1);		//float32
@@ -164,9 +162,7 @@ PathPlacer.prototype.place = function(constraint)
 						}
 					}
 					else
-					{
 						failed++;
-					}
 				}
 			};
 
@@ -179,30 +175,18 @@ PathPlacer.prototype.place = function(constraint)
 			var dx3 = (C.z != B.z) ? ((C.x - B.x) / (C.z - B.z)) : 0;
 
 			if (A.z == B.z)
-			{
 				fillLine(A.z, A.x, B.x);
-			}
 			else
-			{
 				for (var z = A.z; z <= B.z; z++)
-				{
 					fillLine(z, A.x + dx1*(z - A.z), A.x + dx2*(z - A.z));
-				}
-			}
+
 			if (B.z == C.z)
-			{
 				fillLine(B.z, B.x, C.x);
-			}
 			else
-			{
 				for (var z = B.z + 1; z < C.z; z++)
-				{
 					fillLine(z, B.x + dx3*(z - B.z), A.x + dx2*(z - A.z));
-				}
-			}
 		}
 	}
 
 	return ((failed > this.width*this.failfraction*dist) ? undefined : retVec);
 };
-

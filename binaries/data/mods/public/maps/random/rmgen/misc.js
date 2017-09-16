@@ -1,6 +1,3 @@
-/////////////////////////////////////////////////////////////////////////////////////////
-//	passageMaker
-//
 //	Function for creating shallow water between two given points by changing the height of all tiles in
 //	the path with height less than or equal to "maxheight" to "height"
 //
@@ -12,16 +9,13 @@
 //	smooth:		smooth elevation in borders
 //	tileclass:		(Optianal) - Adds those tiles to the class given
 //	terrain:		(Optional) - Changes the texture of the elevated land
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-
 function passageMaker(x1, z1, x2, z2, width, maxheight, height, smooth, tileclass, terrain, riverheight)
 {
 	var tchm = TILE_CENTERED_HEIGHT_MAP;
 	TILE_CENTERED_HEIGHT_MAP = true;
 	var mapSize = g_Map.size;
+
 	for (var ix = 0; ix < mapSize; ix++)
-	{
 		for (var iz = 0; iz < mapSize; iz++)
 		{
 			var a = z1-z2;
@@ -31,45 +25,31 @@ function passageMaker(x1, z1, x2, z2, width, maxheight, height, smooth, tileclas
 			var k = (a*ix + b*iz + c)/(a*a + b*b);
 			var my = iz-(b*k);
 			var inline = 0;
+
 			if (b == 0)
 			{
 				dis = abs(ix-x1);
-				if ((iz <= Math.max(z1,z2))&&(iz >= Math.min(z1,z2)))
-				{
+				if (iz <= Math.max(z1,z2) && iz >= Math.min(z1, z2))
 					inline = 1;
-				}
 			}
-			else
+			else if (my <= Math.max(z1, z2) && my >= Math.min(z1, z2))
+				inline = 1;
+
+			if (dis <= width && inline && g_Map.getHeight(ix, iz) <= maxheight)
 			{
-				if ((my <= Math.max(z1,z2))&&(my >= Math.min(z1,z2)))
-				{
-					inline = 1;
-				}
-			}
-			if ((dis <= width)&&(inline))
-			{
-				if(g_Map.getHeight(ix, iz) <= maxheight)
-				{
-					if (dis > width - smooth)
-					{
-						g_Map.setHeight(ix, iz, ((width - dis)*(height)+(riverheight)*(smooth - width + dis))/(smooth));
-					}
-					else if (dis <= width - smooth)
-					{
-						g_Map.setHeight(ix, iz, height);
-					}
-					if (tileclass !== undefined)
-					{
-						addToClass(ix, iz, tileclass);
-					}
-					if (terrain !== undefined)
-					{
-						placeTerrain(ix, iz, terrain);
-					}
-				}
+				if (dis > width - smooth)
+					g_Map.setHeight(ix, iz, ((width - dis)*(height)+(riverheight)*(smooth - width + dis))/(smooth));
+				else if (dis <= width - smooth)
+					g_Map.setHeight(ix, iz, height);
+
+				if (tileclass !== undefined)
+					addToClass(ix, iz, tileclass);
+
+				if (terrain !== undefined)
+					placeTerrain(ix, iz, terrain);
 			}
 		}
-	}
+
 	TILE_CENTERED_HEIGHT_MAP = tchm;
 }
 
@@ -83,8 +63,9 @@ function passageMaker(x1, z1, x2, z2, width, maxheight, height, smooth, tileclas
 //	f:	Input: Same as angle in a sine function
 //	seed:	Random Seed: Best to implement is to use randFloat()
 //
+// This is a performance-heavy function!
+//
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 function rndRiver(f, seed)
 {
 	var rndRq = seed;
@@ -93,38 +74,23 @@ function rndRiver(f, seed)
 	var rndRr = f-floor(f);
 	var rndRa = 0;
 	for (var rndRx=0; rndRx<=floor(f); rndRx++)
-	{
 		rndRw = 10*(rndRw-floor(rndRw));
-	}
-	if (rndRx%2==0)
-	{
-		var rndRs = -1;
-	}
-	else
-	{
-		var rndRs = 1;
-	}
+
+	var rndRs = rndRx % 2 ? 1 : -1;
+
 	rndRe = (floor(rndRw))%5;
+
 	if (rndRe==0)
-	{
 		rndRa = (rndRs)*2.3*(rndRr)*(rndRr-1)*(rndRr-0.5)*(rndRr-0.5);
-	}
 	else if (rndRe==1)
-	{
 		rndRa = (rndRs)*2.6*(rndRr)*(rndRr-1)*(rndRr-0.3)*(rndRr-0.7);
-	}
 	else if (rndRe==2)
-	{
 		rndRa = (rndRs)*22*(rndRr)*(rndRr-1)*(rndRr-0.2)*(rndRr-0.3)*(rndRr-0.3)*(rndRr-0.8);
-	}
 	else if (rndRe==3)
-	{
 		rndRa = (rndRs)*180*(rndRr)*(rndRr-1)*(rndRr-0.2)*(rndRr-0.2)*(rndRr-0.4)*(rndRr-0.6)*(rndRr-0.6)*(rndRr-0.8);
-	}
 	else if (rndRe==4)
-	{
 		rndRa = (rndRs)*2.6*(rndRr)*(rndRr-1)*(rndRr-0.5)*(rndRr-0.7);
-	}
+
 	return rndRa;
 }
 
@@ -174,12 +140,9 @@ function paintRiver(args)
 
 			// River curve at this place
 			let cu1 = meanderShort * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
-			let cu2 = meanderShort * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
-
-			cu1 += meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
-			cu2 += meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
-			if (args.parallel)
-				cu2 = cu1;
+			let cu2 = args.parallel ? cu1 :
+				meanderShort * rndRiver(theta2 + coord2 * mapSize / 128, seed2) +
+				meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
 
 			// Fuzz the river border
 			let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
@@ -248,15 +211,18 @@ function createStartingPlayerEntities(fx, fz, playerid, civEntities, orientation
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function placeCivDefaultEntities(fx, fz, playerid, kwargs = {})
 {
-	// Unpack kwargs
 	var iberWall = 'walls';
+
 	if (getMapSize() <= 128)
 		iberWall = false;
+
 	if ('iberWall' in kwargs)
-		iberWall = kwargs['iberWall'];
+		iberWall = kwargs.iberWall;
+
 	var orientation = BUILDING_ORIENTATION;
 	if ('orientation' in kwargs)
-		orientation = kwargs['orientation'];
+		orientation = kwargs.orientation;
+
 	// Place default civ starting entities
 	var civ = getCivCode(playerid-1);
 	var civEntities = getStartingEntities(playerid-1);
@@ -363,9 +329,6 @@ function unPaintTileClassBasedOnHeight(minHeight, maxHeight, mode, tileclass)
 	});
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// getTIPIADBON
-//
 //	"get The Intended Point In A Direction Based On Height"
 //	gets the N'th point with a specific height in a line and returns it as a [x, y] array
 //	startPoint: [x, y] array defining the start point
@@ -373,38 +336,48 @@ function unPaintTileClassBasedOnHeight(minHeight, maxHeight, mode, tileclass)
 //	heightRange: [min, max] array defining the range which the height of the intended point can be. includes both "min" and "max"
 //  step: how much tile units per turn should the search go. more value means faster but less accurate
 //  n: how many points to skip before ending the search. skips """n-1 points""".
-//
-///////////////////////////////////////////////////////////////////////////////////////////
-
 function getTIPIADBON(startPoint, endPoint, heightRange, step, n)
 {
-	var stepX = step*(endPoint[0]-startPoint[0])/(sqrt((endPoint[0]-startPoint[0])*(endPoint[0]-startPoint[0]) + step*(endPoint[1]-startPoint[1])*(endPoint[1]-startPoint[1])));
-	var stepY = step*(endPoint[1]-startPoint[1])/(sqrt((endPoint[0]-startPoint[0])*(endPoint[0]-startPoint[0]) + step*(endPoint[1]-startPoint[1])*(endPoint[1]-startPoint[1])));
-	var y = startPoint[1];
-	var checked = 0;
-	for (var x = startPoint[0]; true; x += stepX)
+	let X = endPoint[0] - startPoint[0];
+	let Y = endPoint[1] - startPoint[1];
+
+	if (!X && !Y)
 	{
-		if ((floor(x) < g_Map.size)||(floor(y) < g_Map.size))
-		{
-			if ((g_Map.getHeight(floor(x), floor(y)) <= heightRange[1])&&(g_Map.getHeight(floor(x), floor(y)) >= heightRange[0]))
-			{
-				++checked;
-			}
-			if (checked >= n)
-			{
-				return [x, y];
-			}
-		}
-		y += stepY;
-		if ((y > endPoint[1])&&(stepY>0))
-			break;
-		if ((y < endPoint[1])&&(stepY<0))
-			break;
-		if ((x > endPoint[1])&&(stepX>0))
-			break;
-		if ((x < endPoint[1])&&(stepX<0))
-			break;
+		error("getTIPIADBON startPoint and endPoint are identical! " + new Error().stack);
+		return undefined;
 	}
+
+	let M = Math.sqrt(Math.pow(X, 2) + step * Math.pow(Y, 2));
+	let stepX = step * X / M;
+	let stepY = step * Y / M;
+
+	let y = startPoint[1];
+	let checked = 0;
+
+	for (let x = startPoint[0]; true; x += stepX)
+	{
+		let ix = Math.floor(x);
+		let iy = Math.floor(y);
+
+		if (ix < g_Map.size || iy < g_Map.size)
+		{
+			if (g_Map.getHeight(ix, iy) <= heightRange[1] &&
+			    g_Map.getHeight(ix, iy) >= heightRange[0])
+				++checked;
+
+			if (checked >= n)
+				return [x, y];
+		}
+
+		y += stepY;
+
+		if (y > endPoint[1] && stepY > 0 ||
+		    y < endPoint[1] && stepY < 0 ||
+		    x > endPoint[1] && stepX > 0 ||
+		    x < endPoint[1] && stepX < 0)
+			return undefined;
+	}
+
 	return undefined;
 }
 
@@ -459,32 +432,23 @@ function checkIfIntersect (x1, y1, x2, y2, x3, y3, x4, y4, width)
 	return false;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// distanceOfPointFromLine
-//
-//	returns the distance of a point from a line
-//	x1, y1, x2, y2: determine the position of the line
-//	x3, y3: determine the position of the point
-//
-///////////////////////////////////////////////////////////////////////////////////////////
-
-function distanceOfPointFromLine (x1, y1, x2, y2, x3, y3)
+/**
+ * Returns the distance of a point from a line.
+ */
+function distanceOfPointFromLine(line_x1, line_y1, line_x2, line_y2, point_x, point_y)
 {
-	if (x1 == x2)
-	{
-		return Math.abs(x3 - x1);
-	}
-	else if (y1 == y2)
-	{
-		return Math.abs(y3 - y1);
-	}
-	else
-	{
-		var m = (y1 - y2) / (x1 - x2);
-		var b = y1 - m * x1;
-		var m2 = sqrt(m * m + 1);
-		return Math.abs((y3 - x3 * m - b)/m2);
-	}
+	let width_x = line_x1 - line_x2;
+	if (!width_x)
+		return Math.abs(point_x - line_x1);
+
+	let width_y = line_y1 - line_y2;
+	if (!width_y)
+		return Math.abs(point_y - line_y1);
+
+	let inclination = width_y / width_x;
+	let intercept = line_y1 - inclination * line_x1;
+
+	return Math.abs((point_y - point_x * inclination - intercept) / Math.sqrt(inclination * inclination + 1));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -621,8 +585,6 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 
 		var radius2 = radius * radius;
 		var dx, dz, distance2;
-
-		//log (uneval([sx, sz, lx, lz]));
 
 		for (var ix = sx; ix <= lx; ++ix)
 		{
@@ -787,7 +749,7 @@ function createVolcano(fx, fz, tileClass, terrainTexture, lavaTextures, smoke, e
 	let ix = Math.round(fractionToTiles(fx));
 	let iz = Math.round(fractionToTiles(fz));
 
-	let baseSize = mapArea / scaleByMapSize(1, 8);
+	let baseSize = Math.pow(getMapSize(), 2) / scaleByMapSize(1, 8);
 
 	let coherence = 0.7;
 	let smoothness = 0.05;
