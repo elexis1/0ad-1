@@ -111,7 +111,6 @@ for (var i = 0; i < numIslands; ++i)
 	var gbeach = 2;
 	var elevation = 3;
 
-	// get the x and z in tiles
 	var fx = fractionToTiles(islandX[i]);
 	var fz = fractionToTiles(islandZ[i]);
 	var ix = round(fx);
@@ -139,7 +138,6 @@ for (var i=0; i < numIslands; i++)
 	var gbeach = 2;
 	var elevation = 3;
 
-	// get the x and z in tiles
 	var fx = fractionToTiles(islandX[i]);
 	var fz = fractionToTiles(islandZ[i]);
 	var ix = round(fx);

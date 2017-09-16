@@ -71,7 +71,6 @@ for (var i = 0; i < numPlayers; i++)
 	var cliffRadius = 2;
 	var elevation = 20;
 
-	// get the x and z in tiles
 	var fx = fractionToTiles((i + 1) / (numPlayers + 1));
 	var fz = fractionToTiles(0.4 + 0.2 * (i % 2));
 	var ix = round(fx);

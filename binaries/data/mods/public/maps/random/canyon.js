@@ -97,7 +97,6 @@ for (var i = 0; i < numPlayers; i++)
 	var cliffRadius = 2;
 	var elevation = 20;
 	var hillSize = PI * radius * radius;
-	// get the x and z in tiles
 	fx = fractionToTiles(playerX[i]);
 	fz = fractionToTiles(playerZ[i]);
 	ix = round(fx);

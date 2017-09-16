@@ -291,7 +291,6 @@ for (var i = 0; i < numPlayers; i++)
 
 	var radius = 23;
 
-	// get the x and z in tiles
 	fx = playerX[i];
 	fz = playerZ[i];
 

@@ -45,7 +45,6 @@ for (var i = 0; i < numPlayers; i++)
 
 	var radius = scaleByMapSize(15,25);
 
-	// get the x and z in tiles
 	var fx = fractionToTiles(playerX[i]);
 	var fz = fractionToTiles(playerZ[i]);
 	var ix = round(fx);

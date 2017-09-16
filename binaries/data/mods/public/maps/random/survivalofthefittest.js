@@ -95,7 +95,6 @@ for (let i = 0; i < numPlayers; ++i)
 	addToClass(ax, az, clPlayer);
 	addToClass(round(fractionToTiles((attackerX[i] + playerX[i]) / 2)), round(fractionToTiles((attackerZ[i] + playerZ[i]) / 2)), clPlayer);
 
-	// get the x and z in tiles
 	let fx = fractionToTiles(playerX[i]);
 	let fz = fractionToTiles(playerZ[i]);
 	let ix = round(fx);

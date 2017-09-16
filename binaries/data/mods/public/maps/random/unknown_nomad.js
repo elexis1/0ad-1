@@ -1120,7 +1120,6 @@ for (var i = 0; i < numPlayers; ++i)
 	var id = playerIDs[i];
 	log("Creating units for player " + id + "...");
 
-	// get the x and z in tiles
 	var ix = playerX[i];
 	var iz = playerZ[i];
 	var civEntities = getStartingEntities(id-1);

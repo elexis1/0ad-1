@@ -100,7 +100,6 @@ for (var i = 0; i < numPlayers; i++)
 	var cliffRadius = 2;
 	var elevation = 20;
 
-	// get the x and z in tiles
 	let fx = fractionToTiles(playerX[i]);
 	let fz = fractionToTiles(playerZ[i]);
 	let ix = Math.round(fx);
