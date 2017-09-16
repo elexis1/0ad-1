@@ -75,7 +75,7 @@ for (var i = 0; i < numPlayers; i++)
 
 	placeDefaultChicken(fx, fz, clBaseResource);
 
-	var bbAngle = placeDefaultBerries(fx, fz, clBaseResource, oBerryBush, 12);
+	placeDefaultBerries(fx, fz, clBaseResource, oBerryBush, 12);
 
 	// create metal mine
 	var mAngle = bbAngle;

@@ -284,6 +284,15 @@ function placeCivDefaultEntities(fx, fz, playerid, kwargs = {})
 	}
 }
 
+function placeDefaultStartingResources(args)
+{
+	placeDefaultChicken
+	placeDefaultBerries
+	createDefaultMetalMine
+	createStartingTrees
+	placeDefaultDecoratives(args.fx, args.fz, args.decorative, clBaseResource, radius);
+}
+
 function placeDefaultChicken(playerX, playerZ, tileClass, constraint = undefined, template = "gaia/fauna_chicken")
 {
 	for (let j = 0; j < 2; ++j)
@@ -321,6 +330,41 @@ function placeDefaultBerries(fx, fz, clBaseResource, oBerryBush, dist = 12)
 		0);
 
 	return angle;
+}
+
+function createDefaultMetalMine()
+{
+	// create metal mine
+	var mAngle = bbAngle;
+	while(abs(mAngle - bbAngle) < PI/3)
+	{
+		mAngle = randFloat(0, TWO_PI);
+	}
+	var mDist = 12;
+	var mX = round(fx + mDist * cos(mAngle));
+	var mZ = round(fz + mDist * sin(mAngle));
+	group = new SimpleGroup(
+		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
+		true, clBaseResource, mX, mZ
+	);
+	createObjectGroup(group, 0);
+}
+
+function createStartingTrees()
+{
+	var hillSize = PI * radius * radius;
+	var num = floor(hillSize / 100);
+	var tAngle = randFloat(-PI/3, 4*PI/3);
+	var tDist = randFloat(11, 13);
+	var tX = round(fx + tDist * cos(tAngle));
+	var tZ = round(fz + tDist * sin(tAngle));
+	createObjectGroup(
+		new SimpleGroup(
+			[new SimpleObject(oPoplar, num, num, 0,5)],
+			false, clBaseResource, tX, tZ
+		),
+		0,
+		avoidClasses(clBaseResource,2));
 }
 
 /**
