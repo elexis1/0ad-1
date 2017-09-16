@@ -29,13 +29,7 @@ function AndConstraint(constraints)
 
 AndConstraint.prototype.allows = function(x, z)
 {
-	for (var i=0; i < this.constraints.length; ++i)
-	{
-		if (!this.constraints[i].allows(x, z))
-			return false;
-	}
-
-	return true;
+	return this.constraints.every(constraint => constraint.allows(x, z));
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -133,6 +127,6 @@ function BorderTileClassConstraint(tileClassID, distanceInside, distanceOutside)
 
 BorderTileClassConstraint.prototype.allows = function(x, z)
 {
-	return (this.tileClass.countMembersInRadius(x, z, this.distanceOutside) > 0
-		&& this.tileClass.countNonMembersInRadius(x, z, this.distanceInside) > 0);
+	return (this.tileClass.countMembersInRadius(x, z, this.distanceOutside) > 0 &&
+	        this.tileClass.countNonMembersInRadius(x, z, this.distanceInside) > 0);
 };
