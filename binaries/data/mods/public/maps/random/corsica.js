@@ -30,7 +30,6 @@ var tCreekWater = "medit_sea_coral_plants";
 var ePine = "gaia/flora_tree_aleppo_pine";
 var ePalmTall = "gaia/flora_tree_cretan_date_palm_tall";
 var eFanPalm = "gaia/flora_tree_medit_fan_palm";
-var eCypress = "gaia/flora_tree_cypress";
 var eApple = "gaia/flora_tree_apple";
 var eBush = "gaia/flora_bush_berry";
 var eFish = "gaia/fauna_fish";
@@ -169,16 +168,21 @@ for (var island = 0; island <= 1; island++)
 		var angle = PI*island + i*(PI/(nbCreeks*2));
 		if (swap)
 			angle += PI/2;
-		fx = radius * cos(angle);
-		fz = radius * sin(angle);
-		fx = round(islandX[island] + fx);
-		fz = round(islandZ[island] + fz);
 
-		var size = randBool() ? randFloat(10, 50) : scaleByMapSize(75, 100) + randFloat(0, 20);
-		var placer = new ClumpPlacer(size, 0.4, 0.01, 10, fx,fz);
-		var terrainPainter = new TerrainPainter(tSteepCliffs);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -5,0);	// base height is -10
-		createArea(placer, [terrainPainter, paintClass(clCreek), elevationPainter], null);
+		createArea(
+			new ClumpPlacer(
+				randBool() ? randFloat(10, 50) : scaleByMapSize(75, 100) + randFloat(0, 20),
+				0.4,
+				0.01,
+				10,
+				Math.round(islandX[island] + radius * Math.cos(angle)),
+				Math.round(islandZ[island] + radius * Math.sin(angle))),
+			[
+				new TerrainPainter(tSteepCliffs),
+				paintClass(clCreek),
+				new SmoothElevationPainter(ELEVATION_SET, -5,0) // base height is -10
+			],
+			null);
 	}
 
 var nbBeaches = scaleByMapSize(2,5);
@@ -225,9 +229,8 @@ createArea( placer, [elevationPainter],  null);
 
 log("Creating players");
 var playerIDs = sortAllPlayers();
-
-var playerX = [];
-var playerZ = [];
+var fx = [];
+var fz = [];
 var playerAngle = [];
 
 var island = 0;
@@ -268,8 +271,8 @@ for (var i = 0;i < onCorsica.length; i++)
 	if (swap)
 		angle += PI/2;
 	playerAngle[onCorsica[i]] = angle;
-	playerX[onCorsica[i]] = round( CorsicaX + fractionToTiles(0.36*cos(angle)));
-	playerZ[onCorsica[i]] = round( fractionToTiles(1 + 0.36*sin(angle)));
+	fx[onCorsica[i]] = Math.round(CorsicaX + fractionToTiles(0.36 * Math.cos(angle)));
+	fz[onCorsica[i]] = Math.round(fractionToTiles(1 + 0.36 * Math.sin(angle)));
 }
 for (var i = 0;i < onSardinia.length; i++)
 {
@@ -277,68 +280,64 @@ for (var i = 0;i < onSardinia.length; i++)
 	if (swap)
 		angle += PI/2;
 	playerAngle[onSardinia[i]] = angle;
-	playerX[onSardinia[i]] = round( SardiniaX + fractionToTiles(0.36*cos(angle)));
-	playerZ[onSardinia[i]] = round( fractionToTiles(0 + 0.36*sin(angle)));
+	fx[onSardinia[i]] = Math.round(SardiniaX + fractionToTiles(0.36 * Math.cos(angle)));
+	fz[onSardinia[i]] = Math.round(fractionToTiles(0.36 * Math.sin(angle)));
 }
 
-var placer = undefined;
-var fx = 0; var fz = 0;
-var ix =0; var iz = 0;
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, fx.map(f => tilesToFraction(f)), fz.map(f => tilesToFraction(f))],
+	// playerTileClass set below
+	"baseResourceClass": clBaseResource,
+	//iberWall': false TODO
+	"chicken": {
+	},
+	"berries": {
+		"template": eBush
+	},
+	"metal": {
+		"template": eMetalMine
+	},
+	"stone": {
+		"template": eStoneMine
+	}
+	// trees below
+	// no decoratives
+});
+
 for (var i = 0; i < numPlayers; i++)
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
 	var radius = 23;
 
-	fx = playerX[i];
-	fz = playerZ[i];
-
 	// let's create a nice platform
-	var placer = new ClumpPlacer(PI*radius*radius, 0.95, 0.3, 10, fx,fz);
+	var placer = new ClumpPlacer(PI*radius*radius, 0.95, 0.3, 10, fx[i],fz[i]);
 	var PlayerArea = createArea(placer, [paintClass(clPlayer)], null);
 
 	// create the city patch
 	var cityRadius = radius/4;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.8, 0.3, 10, fx, fz);
+	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.8, 0.3, 10, fx[i], fz[i]);
 	var painter = new LayeredPainter([tRoadWild,tRoad],[1]);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, getHeight(fx,fz),10);
+	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, getHeight(fx[i], fz[i]),10);
 	createArea(placer, [painter,paintClass(clSettlement),elevationPainter], null);
 
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': false });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, 2 * PI);
-	var bbDist = 11;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(eBush, 5,5, 1,2)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	// this makes sure it's created on the same level as the player.
-	var mAngle = randFloat(playerAngle[i] + PI/2,playerAngle[i] + PI/3);
-	var mDist = 18;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(eMetalMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3), new SimpleObject(ePine, 0,1, 3,3)], true, clBaseResource, mX, mZ );
-	createObjectGroup(group, 0);
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/5);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(eStoneMine, 1,1, 0,2),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3), new SimpleObject(ePine, 0,1, 3,3)], true, clBaseResource, mX, mZ );
-	createObjectGroup(group, 0);
-
-	group = new SimpleGroup([new SimpleObject(ePine, 1,3, 1,4),new SimpleObject(ePalmTall, 0,1, 1,4),new SimpleObject(eFanPalm, 0,1, 0,2)], true, clForest);
-	createObjectGroupsDeprecated(group, 0, [avoidClasses(clBaseResource,3, clSettlement,0), stayClasses(clPlayer,1)], 150, 1000);
+	// Starting trees
+	createObjectGroupsDeprecated(
+		new SimpleGroup(
+			[
+				new SimpleObject(ePine, 1, 3, 1, 4),
+				new SimpleObject(ePalmTall, 0, 1, 1, 4),
+				new SimpleObject(eFanPalm, 0, 1, 0, 2)
+			],
+			true,
+			clForest),
+		0,
+		[
+			avoidClasses(
+				clBaseResource, 4,
+				clSettlement,0),
+			stayClasses(clPlayer,1)
+		],
+		150,
+		1000)
 }
 
 RMS.SetProgress(40);
@@ -504,7 +503,7 @@ for (var sandx = 0; sandx < mapSize; sandx++) {
 RMS.SetProgress(65);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(eStoneMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
+var group = new SimpleGroup([new SimpleObject(eStoneMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
 createObjectGroupsDeprecated(group, 0,[stayClasses(clCorsica, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
 createObjectGroupsDeprecated(group, 0,[stayClasses(clSardinia, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
 
