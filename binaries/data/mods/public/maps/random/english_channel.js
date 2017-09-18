@@ -62,8 +62,8 @@ var clSettlement = createTileClass();
 var clShallow = createTileClass();
 
 var [playerIDs, playerX, playerZ] = placePlayersRiver(true, (i, playerPos) => ({
-	playerPos,
-	0.6 * (i % 2) + 0.2
+	0.6 * (i % 2) + 0.2,
+	playerPos
 }));
 
 for (var i = 0; i < numPlayers; i++)

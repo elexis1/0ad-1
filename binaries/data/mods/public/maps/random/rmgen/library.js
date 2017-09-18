@@ -457,7 +457,7 @@ function placePlayersRiver(horizontal, func)
 
 		let pos = func(i, ((i - 1 + offsetDivident) / 2 + 1) / ((numPlayers + offsetDivisor) / 2 + 1));
 
-		[playerX[i], playerZ[i]] = horizontal ? pos : pos.reverse();
+		[playerX[i], playerZ[i]] = horizontal ? pos.reverse() : pos;
 	}
 
 	return [playerIDs, playerX, playerZ];

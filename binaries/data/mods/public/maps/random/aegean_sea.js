@@ -67,7 +67,7 @@ var clIsland = createTileClass();
 var clCorals = createTileClass();
 
 placeDefaultPlayerBases({
-	"playerPlacement": placePlayersRiver(true, (i, pos) => [
+	"playerPlacement": placePlayersRiver(false, (i, pos) => [
 		0.6 * (i % 2) + 0.2,
 		pos
 	]),
