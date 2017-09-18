@@ -270,26 +270,6 @@ function placeDefaultPlayerBase(args, i)
 	let fx = fractionToTiles(playerX[i]);
 	let fz = fractionToTiles(playerZ[i]);
 
-	let func = (param, baseFunc) => {
-		if (!args[param])
-			return;
-
-		let arg = clone(args[param]);
-		arg.fx = fx;
-		arg.fz = fz;
-		arg.tileClass = args.baseResourceClass;
-		/*arg.constraint = size => new AndConstraint([
-				arg.constraint || new NullConstraint(),
-				avoidClasses(arg.tileClass, size)]);
-*/
-		arg.constraint = avoidClasses(arg.tileClass, 4);
-
-		arg.get = (property, defaultVal) => arg[property] === undefined ? defaultVal : arg[property];
-
-		//deepfreeze(arg)
-		baseFunc(arg);
-	};
-
 	placeCivDefaultEntities(fx, fz, playerIDs[i]);
 
 	if (args.playerTileClass)
@@ -298,14 +278,32 @@ function placeDefaultPlayerBase(args, i)
 	// With 50% chance place the two mines in proximity
 	//let maxAngle = 2 * Math.PI * (randBool() ? 1 : 0.2);
 	//let startingAngle;
-	func("metal", createDefaultMine);
-	func("stone", createDefaultMine);
 
-	func("cityPatch", placeDefaultCityPatch);
-	func("chicken", placeDefaultChicken);
-	func("trees", placeDefaultTrees);
-	func("berries", placeDefaultBerries);
-	func("decoratives", placeDefaultDecoratives);
+	// Create the largest objects first
+	let defaultBaseFunctions = {
+		"cityPatch": placeDefaultCityPatch,
+		"trees": placeDefaultTrees,
+		"metal": createDefaultMine,
+		"stone": createDefaultMine,
+		"berries": placeDefaultBerries,
+		"chicken": placeDefaultChicken,
+		"decoratives": placeDefaultDecoratives
+	};
+
+	for (let baseFuncID in defaultBaseFunctions)
+	{
+		if (!args[baseFuncID])
+			continue;
+
+		let args2 = clone(args[baseFuncID]);
+		args2.playerID = playerIDs[i];
+		args2.playerX = playerX[i];
+		args2.playerZ = playerZ[i];
+		args2.baseResourceClass = args.baseResourceClass;
+		args2.baseResourceConstraint = avoidClasses(args.baseResourceClass, 4);
+
+		defaultBaseFunctions[baseFuncID](args2);
+	}
 }
 
 function getDefaultPlayerTerritoryRadius()
@@ -318,8 +316,22 @@ function getDefaultPlayerTerritoryArea()
 	return Math.PI * Math.pow(getDefaultPlayerTerritoryRadius(), 2);
 }
 
+function getDefaultBaseArgs(args)
+{
+	return [
+		(property, defaultVal) => args[property] === undefined ? defaultVal : args[property],
+		fractionToTiles(args.playerX),
+		fractionToTiles(args.playerZ)
+	];
+}
+
+/**
+ * @property tileClass - optionally mark the entire city patch with a tile class
+ */
 function placeDefaultCityPatch(args)
 {
+	let [get, fx, fz] = getDefaultBaseArgs(args);
+
 	let painters = [
 		new LayeredPainter([args.innerTerrain, args.innerTerrain], [1])
 	];
@@ -329,67 +341,71 @@ function placeDefaultCityPatch(args)
 
 	createArea(
 		new ClumpPlacer(
-			Math.floor(args.get("areaFactor", 1 / 9) * getDefaultPlayerTerritoryArea()),
-			args.get("coherence", 0.6),
-			args.get("smoothness", 0.3),
-			args.get("failFraction", 10),
-			Math.round(args.fx),
-			Math.round(args.fz)),
+			Math.floor(get("areaFactor", 1 / 9) * getDefaultPlayerTerritoryArea()),
+			get("coherence", 0.6),
+			get("smoothness", 0.3),
+			get("failFraction", 10),
+			Math.round(fx),
+			Math.round(fz)),
 		painters,
 		null);
 }
 
 function placeDefaultChicken(args)
 {
-	for (let j = 0; j < args.get("count", 2); ++j)
-		for (let tries = 0; tries < args.get("maxTries", 30); ++tries)
+	let [get, fx, fz] = getDefaultBaseArgs(args);
+
+	for (let j = 0; j < get("count", 2); ++j)
+		for (let tries = 0; tries < get("maxTries", 30); ++tries)
 		{
 			let angle = randFloat(0, 2 * Math.PI);
 			if (createObjectGroup(
 				new SimpleGroup(
-					[new SimpleObject(args.get("template", "gaia/fauna_chicken"), 5, 5, 0, args.get("count", 2))],
+					[new SimpleObject(get("template", "gaia/fauna_chicken"), 5, 5, 0, get("count", 2))],
 					true,
-					args.get("tileClass", 2),
-					Math.round(args.fx + args.get("dist", 9) * Math.cos(angle)),
-					Math.round(args.fz + args.get("dist", 9) * Math.sin(angle))),
+					args.baseResourceClass,
+					Math.round(fx + get("dist", 9) * Math.cos(angle)),
+					Math.round(fz + get("dist", 9) * Math.sin(angle))),
 				0,
-				args.constraint))
+				args.baseResourceConstraint))
 				break;
 		}
 }
 
 function placeDefaultBerries(args)
 {
-	for (let tries = 0; tries < args.get("maxTries", 30); ++tries)
+	let [get, fx, fz] = getDefaultBaseArgs(args);
+	for (let tries = 0; tries < get("maxTries", 30); ++tries)
 	{
 		let angle = randFloat(0, 2 * Math.PI);
 		if (createObjectGroup(
 			new SimpleGroup(
 				[new SimpleObject(
-					args.get("template", "gaia/flora_bush_berry"),
-					args.get("minCount", 5),
-					args.get("maxCount", 5),
-					args.get("maxDist", 1),
-					args.get("maxDist", 3))
+					get("template", "gaia/flora_bush_berry"),
+					get("minCount", 5),
+					get("maxCount", 5),
+					get("maxDist", 1),
+					get("maxDist", 3))
 				],
 				true,
-				args.tileClass,
-				Math.round(args.fx + args.get("dist", 12) * Math.cos(angle)),
-				Math.round(args.fz + args.get("dist", 12) * Math.sin(angle))),
+				args.baseResourceClass,
+				Math.round(fx + get("dist", 12) * Math.cos(angle)),
+				Math.round(fz + get("dist", 12) * Math.sin(angle))),
 			0,
-			args.constraint))
+			args.baseResourceConstraint))
 			return;
 	}
 }
 
 function createDefaultMine(args)
 {
+	let [get, fx, fz] = getDefaultBaseArgs(args);
 	//args.get("startingAngle", randFloat(0, 2 * Math.PI))
 	//args.get("minAngle", Math.PI / 3)
 	//args.get("maxAngle", Math.PI * 2)
 
-	//warn(uneval(typeof (args.constraint.allows)));
-	for (let tries = 0; tries < args.get("maxTries", 30); ++tries)
+	//warn(uneval(typeof (args.baseResourceConstraint.allows)));
+	for (let tries = 0; tries < get("maxTries", 30); ++tries)
 	{
 		let angle = randFloat(0, 2 * Math.PI);
 		//do
@@ -401,38 +417,34 @@ function createDefaultMine(args)
 			new SimpleGroup(
 				[new SimpleObject(args.template, 1, 1, 0, 0)],
 				true,
-				args.tileClass,
-				Math.round(args.fx + args.get("dist", 12) * Math.cos(angle)),
-				Math.round(args.fz + args.get("dist", 12) * Math.sin(angle))),
+				args.baseResourceClass,
+				Math.round(fx + get("dist", 12) * Math.cos(angle)),
+				Math.round(fz + get("dist", 12) * Math.sin(angle))),
 			0,
-			args.constraint))
+			args.baseResourceConstraint))
 			return;
 	}
 }
 
 function placeDefaultTrees(args)
 {
-	let num = Math.floor(args.get("areaFactor", 1 / 60) * getDefaultPlayerTerritoryArea());
+	let [get, fx, fz] = getDefaultBaseArgs(args);
+	let num = Math.floor(get("areaFactor", 1 / 60) * getDefaultPlayerTerritoryArea());
 
-	if (false)
-	for (let k in args)
-		if (k != "get" && k != "constraint")
-			warn(k + ":" + uneval(args[k]));
-
-	for (let x = 0; x < args.get("maxTries", 30); ++x)
+	for (let x = 0; x < get("maxTries", 30); ++x)
 	{
 		let angle = randFloat(0, 2 * Math.PI);
-		let dist = randFloat(args.get("minDist", 11), args.get("maxDist", 13));
+		let dist = randFloat(get("minDist", 11), get("maxDist", 13));
 
 		if (createObjectGroup(
 			new SimpleGroup(
-				[new SimpleObject(args.template, num, num, args.get("minDistGroup", 1), args.get("maxDistGroup", 3))],
+				[new SimpleObject(args.template, num, num, get("minDistGroup", 1), get("maxDistGroup", 3))],
 				false,
-				args.tileClass,
-				Math.round(args.fx + dist * Math.cos(angle)),
-				Math.round(args.fz + dist * Math.sin(angle))),
+				args.baseResourceClass,
+				Math.round(fx + dist * Math.cos(angle)),
+				Math.round(fz + dist * Math.sin(angle))),
 			0,
-			args.constraint))
+			args.baseResourceConstraint))
 			return;
 	}
 }
@@ -442,32 +454,33 @@ function placeDefaultTrees(args)
  */
 function placeDefaultDecoratives(args)
 {
+	let [get, fx, fz] = getDefaultBaseArgs(args);
 	let radius = getDefaultPlayerTerritoryArea();
 
-	for (let i = 0; i < args.get("areaFactor", 1 / 250) * radius; ++i)
-		for (let x = 0; x < args.get("maxTries", 30); ++x)
+	for (let i = 0; i < get("areaFactor", 1 / 250) * radius; ++i)
+		for (let x = 0; x < get("maxTries", 30); ++x)
 		{
 			let angle = randFloat(0, 2 * PI);
-			let dist = radius - randIntInclusive(args.get("maxDist", 5), args.get("maxDist", 5));
+			let dist = radius - randIntInclusive(get("maxDist", 5), get("maxDist", 5));
 
 			if (createObjectGroup(
 				new SimpleGroup(
 					[new SimpleObject(
 						args.template,
-						args.get("minCount", 2),
-						args.get("maxCount", 5),
+						get("minCount", 2),
+						get("maxCount", 5),
 						0,
 						1,
 						-Math.PI/8,
 						Math.PI/8)
 					],
 					false,
-					args.tileClass,
-					Math.round(args.fx + dist * Math.cos(angle)),
-					Math.round(args.fz + dist * Math.sin(angle))
+					args.baseResourceClass,
+					Math.round(fx + dist * Math.cos(angle)),
+					Math.round(fz + dist * Math.sin(angle))
 				),
 				0,
-				avoidClasses(args.tileClass, 3)))
+				avoidClasses(args.baseResourceClass, 3)))
 				break;
 		}
 }
