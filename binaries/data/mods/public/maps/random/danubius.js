@@ -314,7 +314,7 @@ if (gallicCC)
 }
 RMS.SetProgress(10);
 
-var playerPos = placePlayersRiver(false, (i, pos) => [
+var [playerIDs, playerX, playerZ] = placePlayersRiver(false, (i, pos) => [
 	0.6 * (i % 2) + 0.2,
 	pos
 ]);

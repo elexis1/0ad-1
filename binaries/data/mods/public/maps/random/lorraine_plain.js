@@ -58,7 +58,7 @@ var clBaseResource = createTileClass();
 var clSettlement = createTileClass();
 var clShallow = createTileClass();
 
-var playerPos = placePlayersRiver(false, (i, pos) => [
+var [playerIDs, playerX, playerZ] = placePlayersRiver(false, (i, pos) => [
 	0.5 * (i % 2) + 0.25,
 	pos
 ]);

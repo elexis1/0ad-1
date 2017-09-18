@@ -77,7 +77,7 @@ createArea(
 	null);
 
 // TODO: manual
-var playerPos = placePlayersRiver((i, pos) => {
+var [playerIDs, playerX, playerZ] = placePlayersRiver((i, pos) => {
 	let angle = -0.23 * (i + (i % 2)) * 2 * Math.PI / numPlayers - (i % 2) * Math.PI / 2;
 	return [
 		0.5 + 0.35 * Math.cos(angle),

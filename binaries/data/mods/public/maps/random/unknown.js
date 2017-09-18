@@ -280,7 +280,7 @@ else if (md == 3) //central sea
 {
 	var mdd1 = randIntInclusive(1,2);
 
-	var playerPos = placePlayersRiver(mdd1 != 1, (i, pos) => [
+	var [playerIDs, playerX, playerZ] = placePlayersRiver(mdd1 != 1, (i, pos) => [
 		0.6 * (i % 2) + 0.2,
 		pos
 	]);
@@ -379,7 +379,7 @@ else if (md == 4) //central river
 
 	var mdd1 = randIntInclusive(1,2);
 
-	var playerPos = placePlayersRiver(mdd1 != 1, (i, pos) => [
+	var [playerIDs, playerX, playerZ] = placePlayersRiver(mdd1 != 1, (i, pos) => [
 		0.5 * (i % 2) + 0.25,
 		pos
 	]);

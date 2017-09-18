@@ -72,7 +72,7 @@ var clPond = createTileClass();
 var clShore = createTileClass();
 var clTreasure = createTileClass();
 
-var playerPos = placePlayersRiver(false, (i, pos) => [
+var [playerIDs, playerX, playerZ] = placePlayersRiver(false, (i, pos) => [
 	0.4 * (i % 2) + 0.3,
 	pos
 ]);
