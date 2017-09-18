@@ -272,7 +272,7 @@ function placeDefaultPlayerBase(args, i)
 
 	placeCivDefaultEntities(fx, fz, playerIDs[i]);
 
-	if (args.playerTileClass)
+	if (args.playerTileClass !== undefined)
 		addCivicCenterAreaToClass(Math.round(fx), Math.round(fz), args.playerTileClass);
 
 	// With 50% chance place the two mines in proximity
