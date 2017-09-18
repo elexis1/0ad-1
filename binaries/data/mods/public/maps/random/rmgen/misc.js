@@ -500,7 +500,7 @@ function distanceOfPointFromLine(line_x1, line_y1, line_x2, line_y2, point_x, po
 		return Math.abs(point_x - x1);
 
 	if (!width_y)
-		return Math.abs(point_y - y1);
+		return Math.abs(point_y - line_y1);
 
 	let inclination = width_y / width_x;
 	let intercept = line_y1 - inclination * line_x1;
