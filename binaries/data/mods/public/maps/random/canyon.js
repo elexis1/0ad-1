@@ -17,7 +17,6 @@ const tRoadWild = g_Terrains.roadWild;
 const tTier4Terrain = g_Terrains.tier4Terrain;
 const tShoreBlend = g_Terrains.shoreBlend;
 const tShore = g_Terrains.shore;
-const tWater = g_Terrains.water;
 
 const oTree1 = g_Gaia.tree1;
 const oTree2 = g_Gaia.tree2;
@@ -94,7 +93,7 @@ for (let i in playerIDs)
 	let meh = 1/4 * Math.PI * Math.pow(scaleByMapSize(18, 32), 2);
 
 	var placer = new ClumpPlacer(meh, 0.6, 0.3, 10, fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]));
-	var painter = new LayeredPainter([tWater, tMainTerrain], [1]);
+	var painter = new LayeredPainter([tMainTerrain, tMainTerrain], [1]);
 	createArea(placer, [painter, paintClass(clPlayer)], null);
 }
 

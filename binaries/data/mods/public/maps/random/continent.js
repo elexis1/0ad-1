@@ -63,102 +63,70 @@ var clLand = createTileClass();
 
 initTerrain(tWater);
 
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.5);
-ix = round(fx);
-iz = round(fz);
-
-var placer = new ChainPlacer(2, floor(scaleByMapSize(5, 12)), floor(scaleByMapSize(60, 700)), 1, ix, iz, 0, [floor(mapSize * 0.33)]);
-var terrainPainter = new LayeredPainter(
-	[tMainTerrain, tMainTerrain],		// terrains
-	[3]		// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	3,				// elevation
-	4				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand)], null);
+log("Creating continent...");
+createArea(
+	new ChainPlacer(
+		2,
+		Math.floor(scaleByMapSize(5, 12)),
+		Math.floor(scaleByMapSize(60, 700)),
+		1,
+		Math.round(fractionToTiles(0.5)),
+		Math.round(fractionToTiles(0.5)),
+		0,
+		[Math.floor(mapSize * 0.33)]),
+	[
+		new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
+		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+		paintClass(clLand)
+	],
+	null);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement(0.25);
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
+for (let i in playerIDs)
+	createArea(
+		new ChainPlacer(
+			2,
+			Math.floor(scaleByMapSize(5, 9)),
+			Math.floor(scaleByMapSize(5, 20)),
+			1,
+			Math.round(fractionToTiles(playerX[i])),
+			Math.round(fractionToTiles(playerZ[i])),
+			0,
+			[Math.floor(scaleByMapSize(23, 50))]),
+		[
+			new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+			paintClass(clLand)
+		],
+		null);
 
-	var radius = scaleByMapSize(15,25);
-	var cliffRadius = 2;
-	var elevation = 20;
-
-	fx = fractionToTiles(playerX[i]);
-	fz = fractionToTiles(playerZ[i]);
-	ix = round(fx);
-	iz = round(fz);
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	var placer = new ChainPlacer(2, floor(scaleByMapSize(5, 9)), floor(scaleByMapSize(5, 20)), 1, ix, iz, 0, [floor(scaleByMapSize(23, 50))]);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		3,				// elevation
-		4				// blend radius
-	);
-	createArea(placer, [elevationPainter, paintClass(clLand)], null);
-
-	placeCivDefaultEntities(fx, fz, id);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oFruitBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	// cityPatch comes later
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oTree1,
+		"areaFactor": 1/300,
+		"maxDistGroup": 5,
+		"minDist": 12,
+		"maxDist": 13
+	},
+	"decoratives": {
+		"template": aGrassShort
 	}
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(0, TWO_PI);
-	var tDist = randFloat(12, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oTree1, num, num, 0,3)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
-}
+});
 
 RMS.SetProgress(20);
 
@@ -166,19 +134,13 @@ paintTerrainBasedOnHeight(3, 4, 3, tMainTerrain);
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 
-for (var i = 0; i < numPlayers; ++i)
-{
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	// create the city patch
-	var cityRadius = radius/3;
-	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-}
+for (let i in playerIDs)
+	placeDefaultCityPatch({
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad,
+		"playerX": playerX[i],
+		"playerZ": playerZ[i]
+	});
 
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);
 
