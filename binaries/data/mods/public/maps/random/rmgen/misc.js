@@ -320,6 +320,13 @@ function getDefaultPlayerTerritoryArea()
 
 function placeDefaultCityPatch(args)
 {
+	let painters = [
+		new LayeredPainter([args.innerTerrain, args.innerTerrain], [1])
+	];
+
+	if (args.tileClass !== undefined)
+		painters.push(paintClass(args.tileClass));
+
 	createArea(
 		new ClumpPlacer(
 			Math.floor(args.get("areaFactor", 1 / 9) * getDefaultPlayerTerritoryArea()),
@@ -328,7 +335,7 @@ function placeDefaultCityPatch(args)
 			args.get("failFraction", 10),
 			Math.round(args.fx),
 			Math.round(args.fz)),
-		new LayeredPainter([args.innerTerrain, args.innerTerrain], [1]),
+		painters,
 		null);
 }
 
