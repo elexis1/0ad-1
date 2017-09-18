@@ -145,25 +145,12 @@ if (md == 2) //continent
 //********************************************************************************************************
 else if (md == 3) //central sea
 {
-	var playerIDs = primeSortAllPlayers();
-	var playerPos = placePlayersRiver();
-	var playerX = [];
-	var playerZ = [];
-	var playerAngle = [];
-
 	var mdd1 = randIntInclusive(1,2);
-	if (mdd1 == 1) //vertical
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerZ[i] = playerPos[i];
-			playerX[i] = 0.2 + 0.6*(i%2);
-		}
-	else //horizontal
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerZ[i] = 0.2 + 0.6*(i%2);
-			playerX[i] = playerPos[i];
-		}
+
+	var playerPos = placePlayersRiver(mdd1 != 1, (i, pos) => [
+		0.6 * (i % 2) + 0.2,
+		pos
+	]);
 
 	paintRiver({
 		"horizontal": mdd1 != 1,
@@ -254,27 +241,12 @@ else if (md == 4) //central river
 				setHeight(ix, iz, 3);
 		}
 	}
-
-	var playerIDs = primeSortAllPlayers();
-	var playerPos = placePlayersRiver();
-
-	var playerX = [];
-	var playerZ = [];
-	var playerAngle = [];
-
 	var mdd1 = randIntInclusive(1,2);
-	if (mdd1 == 1) //horizontal
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerZ[i] = 0.25 + 0.5*(i%2);
-			playerX[i] = playerPos[i];
-		}
-	else //vertical
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerZ[i] = playerPos[i];
-			playerX[i] = 0.25 + 0.5*(i%2);
-		}
+
+	var playerPos = placePlayersRiver(mdd1 != 1, (i, pos) => [
+		0.6 * (i % 2) + 0.2,
+		pos
+	]);
 
 	log("Creating the main river");
 

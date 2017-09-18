@@ -1,3 +1,5 @@
+// TODO: iberWall': 'towers
+
 //	Function for creating shallow water between two given points by changing the height of all tiles in
 //	the path with height less than or equal to "maxheight" to "height"
 //
@@ -251,108 +253,216 @@ function placeCivDefaultEntities(fx, fz, playerid, kwargs = {})
 	}
 }
 
-function placeDefaultStartingResources(args)
+function placeDefaultPlayerBases(args)
 {
-	placeDefaultChicken
-	placeDefaultBerries
-	createDefaultMetalMine
-	createStartingTrees
-	placeDefaultDecoratives(args.fx, args.fz, args.decorative, clBaseResource, radius);
+	for (let i = 0; i < getNumPlayers(); ++i)
+		placeDefaultPlayerBase(args, i);
 }
 
-function placeDefaultChicken(playerX, playerZ, tileClass, constraint = undefined, template = "gaia/fauna_chicken")
+function placeDefaultPlayerBase(args, i)
 {
-	for (let j = 0; j < 2; ++j)
-		for (var tries = 0; tries < 10; ++tries)
+	deepfreeze(args);
+
+	let [playerIDs, playerX, playerZ] = args.playerPlacement;
+
+	log("Creating base for player " + playerIDs[i] + "...");
+
+	let fx = fractionToTiles(playerX[i]);
+	let fz = fractionToTiles(playerZ[i]);
+
+	let func = (param, baseFunc) => {
+		if (!args[param])
+			return;
+
+		let arg = clone(args[param]);
+		arg.fx = fx;
+		arg.fz = fz;
+		arg.tileClass = args.baseResourceClass;
+		/*arg.constraint = size => new AndConstraint([
+				arg.constraint || new NullConstraint(),
+				avoidClasses(arg.tileClass, size)]);
+*/
+		arg.constraint = avoidClasses(arg.tileClass, 4);
+
+		arg.get = (property, defaultVal) => arg[property] === undefined ? defaultVal : arg[property];
+
+		//deepfreeze(arg)
+		baseFunc(arg);
+	};
+
+	placeCivDefaultEntities(fx, fz, playerIDs[i]);
+
+	if (args.playerTileClass)
+		addCivicCenterAreaToClass(Math.round(fx), Math.round(fz), args.playerTileClass);
+
+	// With 50% chance place the two mines in proximity
+	//let maxAngle = 2 * Math.PI * (randBool() ? 1 : 0.2);
+	//let startingAngle;
+	func("metal", createDefaultMine);
+	func("stone", createDefaultMine);
+
+	func("cityPatch", placeDefaultCityPatch);
+	func("chicken", placeDefaultChicken);
+	func("trees", placeDefaultTrees);
+	func("berries", placeDefaultBerries);
+	func("decoratives", placeDefaultDecoratives);
+}
+
+function getInitialPlayerTerritoryRadius()
+{
+	return scaleByMapSize(15, 25);
+}
+
+function getInitialPlayerTerritoryArea()
+{
+	return Math.PI * Math.pow(getInitialPlayerTerritoryRadius(), 2);
+}
+
+function placeDefaultCityPatch(args)
+{
+	createArea(
+		new ClumpPlacer(
+			Math.floor(args.get("radiusFactor", 1 / 9) * getInitialPlayerTerritoryArea()),
+			args.get("coherence", 0.6),
+			args.get("smoothness", 0.3),
+			args.get("failFraction", 10),
+			Math.round(args.fx),
+			Math.round(args.fz)),
+		new LayeredPainter([args.innerTerrain, args.innerTerrain], [1]),
+		null);
+}
+
+function placeDefaultChicken(args)
+{
+	for (let j = 0; j < args.get("count", 2); ++j)
+		for (let tries = 0; tries < args.get("maxTries", 30); ++tries)
 		{
-			let aAngle = randFloat(0, TWO_PI);
-
-			// Roman and ptolemian civic centers have a big footprint!
-			let aDist = 9;
-
-			let aX = round(playerX + aDist * cos(aAngle));
-			let aZ = round(playerZ + aDist * sin(aAngle));
-
-			let group = new SimpleGroup(
-				[new SimpleObject(template, 5,5, 0,2)],
-				true, tileClass, aX, aZ
-			);
-
-			if (createObjectGroup(group, 0, constraint))
+			let angle = randFloat(0, 2 * Math.PI);
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(args.get("template", "gaia/fauna_chicken"), 5, 5, 0, args.get("count", 2))],
+					true,
+					args.get("tileClass", 2),
+					Math.round(args.fx + args.get("dist", 9) * Math.cos(angle)),
+					Math.round(args.fz + args.get("dist", 9) * Math.sin(angle))),
+				0,
+				args.constraint))
 				break;
 		}
 }
 
-function placeDefaultBerries(fx, fz, clBaseResource, oBerryBush, dist = 12)
+function placeDefaultBerries(args)
 {
-	let angle = randFloat(0, 2 * PI);
-
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oBerryBush, 5, 5, 0, 3)],
-			true,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))),
-		0);
-
-	return angle;
-}
-
-function createDefaultMetalMine()
-{
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
+	for (let tries = 0; tries < args.get("maxTries", 30); ++tries)
 	{
-		mAngle = randFloat(0, TWO_PI);
+		let angle = randFloat(0, 2 * Math.PI);
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(
+					args.get("template", "gaia/flora_bush_berry"),
+					args.get("minCount", 5),
+					args.get("maxCount", 5),
+					args.get("maxDist", 1),
+					args.get("maxDist", 3))
+				],
+				true,
+				args.tileClass,
+				Math.round(args.fx + args.get("dist", 12) * Math.cos(angle)),
+				Math.round(args.fz + args.get("dist", 12) * Math.sin(angle))),
+			0,
+			args.constraint))
+			return;
 	}
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
 }
 
-function createStartingTrees()
+function createDefaultMine(args)
 {
-	var hillSize = PI * radius * radius;
-	var num = floor(hillSize / 100);
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oPoplar, num, num, 0,5)],
-			false, clBaseResource, tX, tZ
-		),
-		0,
-		avoidClasses(clBaseResource,2));
+	//args.get("startingAngle", randFloat(0, 2 * Math.PI))
+	//args.get("minAngle", Math.PI / 3)
+	//args.get("maxAngle", Math.PI * 2)
+
+	//warn(uneval(typeof (args.constraint.allows)));
+	for (let tries = 0; tries < args.get("maxTries", 30); ++tries)
+	{
+		let angle = randFloat(0, 2 * Math.PI);
+		//do
+		//	angle = randFloat(0, 2 * Math.PI);
+		//while (maxAngle && Math.abs(angle - startingAngle) > maxAngle ||
+		//       minAngle && Math.abs(angle - startingAngle) < minAngle)
+
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(args.template, 1, 1, 0, 0)],
+				true,
+				args.tileClass,
+				Math.round(args.fx + args.get("dist", 12) * Math.cos(angle)),
+				Math.round(args.fz + args.get("dist", 12) * Math.sin(angle))),
+			0,
+			args.constraint))
+			return;
+	}
+}
+
+function placeDefaultTrees(args)
+{
+	let num = Math.floor(args.get("radiusFactor", 1 / 60) * getInitialPlayerTerritoryArea());
+
+	if (false)
+	for (let k in args)
+		if (k != "get" && k != "constraint")
+			warn(k + ":" + uneval(args[k]));
+
+	for (let x = 0; x < args.get("maxTries", 30); ++x)
+	{
+		let angle = randFloat(0, 2 * Math.PI);
+		let dist = randFloat(args.get("minDist", 11), args.get("maxDist", 13));
+
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(args.template, num, num, args.get("minDistGroup", 1), args.get("maxDistGroup", 3))],
+				false,
+				args.tileClass,
+				Math.round(args.fx + dist * Math.cos(angle)),
+				Math.round(args.fz + dist * Math.sin(angle))),
+			0,
+			args.constraint))
+			return;
+	}
 }
 
 /**
  * Typically used for placing grass tufts around the civic centers.
  */
-function placeDefaultDecoratives(playerX, playerZ, template, tileclass, radius, constraint = undefined)
+function placeDefaultDecoratives(args)
 {
-	for (let i = 0; i < PI * radius * radius / 250; ++i)
-	{
-		let angle = randFloat(0, 2 * PI);
-		let dist = radius - randIntInclusive(5, 11);
+	let radius = getInitialPlayerTerritoryArea();
 
-		createObjectGroup(
-			new SimpleGroup(
-				[new SimpleObject(template, 2, 5, 0, 1, -PI/8, PI/8)],
-				false,
-				tileclass,
-				Math.round(playerX + dist * Math.cos(angle)),
-				Math.round(playerZ + dist * Math.sin(angle))
-			), 0, constraint);
-	}
+	for (let i = 0; i < args.get("radiusFactor", 1 / 250) * radius; ++i)
+		for (let x = 0; x < args.get("maxTries", 30); ++x)
+		{
+			let angle = randFloat(0, 2 * PI);
+			let dist = radius - randIntInclusive(args.get("maxDist", 5), args.get("maxDist", 5));
+
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(
+						args.template,
+						args.get("minCount", 2),
+						args.get("maxCount", 5),
+						0,
+						1,
+						-Math.PI/8,
+						Math.PI/8)
+					],
+					false,
+					args.tileClass,
+					Math.round(args.fx + dist * Math.cos(angle)),
+					Math.round(args.fz + dist * Math.sin(angle))
+				),
+				0,
+				avoidClasses(args.tileClass, 3)))
+				break;
+		}
 }
 
 function modifyTilesBasedOnHeight(minHeight, maxHeight, mode, func)
@@ -494,19 +604,17 @@ function checkIfIntersect (x1, y1, x2, y2, x3, y3, x4, y4, width)
 function distanceOfPointFromLine(line_x1, line_y1, line_x2, line_y2, point_x, point_y)
 {
 	let width_x = line_x1 - line_x2;
-	let width_y = line_y1 - line_y2;
-
 	if (!width_x)
-		return Math.abs(point_x - x1);
+		return Math.abs(point_x - line_x1);
 
+	let width_y = line_y1 - line_y2;
 	if (!width_y)
 		return Math.abs(point_y - line_y1);
 
 	let inclination = width_y / width_x;
 	let intercept = line_y1 - inclination * line_x1;
-	let inclination2 = Math.sqrt(inclination * inclination + 1);
 
-	return Math.abs((point_y - point_x * inclination - intercept) / inclination2);
+	return Math.abs((point_y - point_x * inclination - intercept) / Math.sqrt(inclination * inclination + 1));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

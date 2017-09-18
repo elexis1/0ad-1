@@ -72,16 +72,10 @@ var clPond = createTileClass();
 var clShore = createTileClass();
 var clTreasure = createTileClass();
 
-var playerIDs = primeSortAllPlayers();
-var playerPos = placePlayersRiver();
-var playerX = [];
-var playerZ = [];
-
-for (var i = 0; i < numPlayers; i++)
-{
-	playerZ[i] = playerPos[i];
-	playerX[i] = 0.30 + 0.4*(i%2);
-}
+var playerPos = placePlayersRiver(false, (i, pos) => [
+	0.4 * (i % 2) + 0.3,
+	pos
+]);
 
 for (var i = 0; i < numPlayers; i++)
 {

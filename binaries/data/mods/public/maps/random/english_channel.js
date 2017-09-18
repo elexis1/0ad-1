@@ -61,17 +61,10 @@ var clBaseResource = createTileClass();
 var clSettlement = createTileClass();
 var clShallow = createTileClass();
 
-var playerIDs = primeSortAllPlayers();
-var playerPos = placePlayersRiver();
-
-var playerX = [];
-var playerZ = [];
-
-for (var i = 0; i < numPlayers; i++)
-{
-	playerZ[i] = 0.2 + 0.6*(i%2);
-	playerX[i] = playerPos[i];
-}
+var playerPos = placePlayersRiver(true, (i, playerPos) => ({
+	playerPos,
+	0.6 * (i % 2) + 0.2
+}));
 
 for (var i = 0; i < numPlayers; i++)
 {

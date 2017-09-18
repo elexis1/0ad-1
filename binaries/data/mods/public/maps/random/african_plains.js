@@ -58,62 +58,40 @@ initTerrain(tPrimary);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
-for (var i = 0; i < numPlayers; ++i)
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tPrimary,
+		"outerTerrain": tCitytiles
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"trees": {
+		"template": oBaobab,
+		"radiusFactor": 1/300
+	},
+	"decoratives": {
+		"template": aBush1
+	}
+});
+
+for (let i in playerX)
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	var radius = scaleByMapSize(15,25);
-
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// create the city patch
-	var cityRadius = radius/3;
-	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tPrimary,tCitytiles], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id);
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	var bbAngle = placeDefaultBerries(fx, fz, clBaseResource, oBerryBush, 12);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while (abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
+	let mAngle += randFloat(PI/8, PI/4);
+	let mX = Math.round(playerX[i] + 12 * Math.cos(mAngle));
+	mlet Z = Math.round(playerZ[i] + 12 * Math.sin(mAngle));
 	createStoneMineFormation(mX, mZ, tDirt4);
-	addToClass(mX, mZ, clPlayer);
-
-	// create starting trees
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oBaobab, 2,7)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
+	addToClass(mX, mZ, clBaseResource);
 }
+
 RMS.SetProgress(20);
 
 createHills([tDirt2, tCliff, tGrassShrubs], avoidClasses(clPlayer, 35, clForest, 20, clHill, 20, clWater, 2), clHill, scaleByMapSize(5, 8));

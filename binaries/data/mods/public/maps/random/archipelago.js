@@ -47,6 +47,8 @@ const aBushSmall = g_Decoratives.bushSmall;
 const pForest1 = [tForestFloor2 + TERRAIN_SEPARATOR + oTree1, tForestFloor2 + TERRAIN_SEPARATOR + oTree2, tForestFloor2];
 const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TERRAIN_SEPARATOR + oTree5, tForestFloor1];
 
+const shoreRadius = 4;
+
 InitMap();
 
 const numPlayers = getNumPlayers();
@@ -66,50 +68,55 @@ var clLand = createTileClass();
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
-for (var i = 0; i < numPlayers; i++)
+// Create player islands
+for (let i in playerIDs)
+	createArea(
+		new ChainPlacer(
+			2,
+			Math.floor(scaleByMapSize(5, 10)),
+			Math.floor(scaleByMapSize(25, 60)),
+			1,
+			Math.floor(playerX[i]),
+			Math.floor(playerZ[i]),
+			0,
+			[Math.floor(radius)]),
+		[
+			new LayeredPainter([tMainTerrain , tMainTerrain, tMainTerrain], [1, shoreRadius]),
+			new SmoothElevationPainter(ELEVATION_SET, 3, shoreRadius),
+			paintClass(clPlayer)
+		],
+		null);
+
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oPine,
+		"radiusFactor": 1/100 * scaleByMapSize(22,31) ...
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
+
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	var radius = scaleByMapSize(22,31);
-	var shoreRadius = 4;
-	var elevation = 3;
-
-	var hillSize = PI * radius * radius;
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	// create the main island
-	var placer = new ChainPlacer(2, floor(scaleByMapSize(5, 10)), floor(scaleByMapSize(25, 60)), 1, ix, iz, 0, [floor(radius)]);
-	var terrainPainter = new LayeredPainter(
-		[tMainTerrain , tMainTerrain, tMainTerrain],		// terrains
-		[1, shoreRadius]		// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		elevation,				// elevation
-		shoreRadius				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clPlayer)], null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oFruitBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create woods
+	// create wood treasure
 	var bbAngle = randFloat(0, TWO_PI);
 	var bbDist = 13;
 	var bbX = round(fx + bbDist * cos(bbAngle));
@@ -119,44 +126,6 @@ for (var i = 0; i < numPlayers; i++)
 		true, clBaseResource, bbX, bbZ
 	);
 	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = floor(hillSize / 100);
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oTree1, num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
 log("Creating islands...");

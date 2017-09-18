@@ -76,20 +76,14 @@ createArea(
 	],
 	null);
 
-var playerIDs = primeSortAllPlayers();
-
-// place players
-var playerX = [];
-var playerZ = [];
-var playerAngle = [];
-
-var startAngle = 0;
-for (var i = 0; i < numPlayers; i++)
-{
-	playerAngle[i] = startAngle - 0.23*(i+(i%2))*TWO_PI/numPlayers - (i%2)*PI/2;
-	playerX[i] = 0.5 + 0.35*cos(playerAngle[i]);
-	playerZ[i] = 0.7 + 0.35*sin(playerAngle[i]);
-}
+// TODO: manual
+var playerPos = placePlayersRiver((i, pos) => {
+	let angle = -0.23 * (i + (i % 2)) * 2 * Math.PI / numPlayers - (i % 2) * Math.PI / 2;
+	return [
+		0.5 + 0.35 * Math.cos(angle),
+		0.7 + 0.35 * Math.sin(angle)
+	];
+});
 
 for (var i = 0; i < numPlayers; i++)
 {
