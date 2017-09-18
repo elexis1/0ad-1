@@ -86,6 +86,8 @@ var playerIDs = sortAllPlayers();
 //array holding starting islands based on number of players
 var startingPlaces=[[0],[0,3],[0,2,4],[0,1,3,4],[0,1,2,3,4],[0,1,2,3,4,5]];
 
+var elevation = 3;
+
 var numIslands = Math.max(6, numPlayers);
 var islandX = [];
 var islandZ = [];
@@ -106,15 +108,8 @@ for (var i = 0; i < numIslands; ++i)
 {
 	var radius = scaleByMapSize(15,40);
 	var coral=scaleByMapSize(1,5);
-	var wet = 3;
-	var dry = 1;
-	var gbeach = 2;
-	var elevation = 3;
-
-	var fx = fractionToTiles(islandX[i]);
-	var fz = fractionToTiles(islandZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
+	var ix = round(fractionToTiles(islandX[i]));
+	var iz = round(fractionToTiles(islandZ[i]));
 
 	var islandSize = PI*radius*radius;
 	var islandBottom=PI*(radius+coral)*(radius+coral);
@@ -133,78 +128,51 @@ for (var i=0; i < numIslands; i++)
 
 	var radius = scaleByMapSize(15,40);
 	var coral=scaleByMapSize(2,5);
-	var wet = 3;
-	var dry = 1;
-	var gbeach = 2;
-	var elevation = 3;
-
-	var fx = fractionToTiles(islandX[i]);
-	var fz = fractionToTiles(islandZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
 
 	var islandSize = PI*radius*radius;
 	var islandBottom=PI*(radius+coral)*(radius+coral);
 
-	// create island
-	var placer = new ClumpPlacer(islandSize, .7, .1, 10, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tOceanCoral,tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
-		[1, wet, dry, 1, gbeach]
-	);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, elevation, 5);
-	var temp = createArea(placer, [terrainPainter, paintClass(clPlayer), elevationPainter],avoidClasses(clPlayer,0));
-	areas.push(temp);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 10;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(12, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oPalm, num, num, 0,3)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
+	areas.push(
+		createArea(
+			new ClumpPlacer(
+				islandSize,
+				0.7,
+				0.1,
+				10,
+				Math.round(fractionToTiles(islandX[i])),
+				Math.round(fractionToTiles(islandZ[i]))),
+			[
+				new LayeredPainter(
+					[tOceanCoral, tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
+					[1, 3, 1, 1, 2]
+				),
+				new SmoothElevationPainter(ELEVATION_SET, elevation, 5),
+				paintClass(clPlayer)
+			],
+			avoidClasses(clPlayer,0)));
 }
+
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, islandX, islandZ],
+	// playerTileClass already painted
+	"baseResourceClass": clBaseResource,
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oPalm,
+		"areaFactor": 1/300
+	}
+	// no decoratives
+});
 RMS.SetProgress(15);
 
 log("Populating islands ...");
@@ -226,8 +194,6 @@ for (let i = 0; i < numIslands; ++i)
 		var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
 		var painter = new LayeredPainter([tGrass, tCity], [1]);
 		createArea(placer, [painter,paintClass(clCity)], null);
-
-		placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
 
 		++nPlayer;
 	}
@@ -254,10 +220,6 @@ for (var i = 0; i < nCenter; ++i)
 
 	var radius = scaleByMapSize(15,30);
 	var coral= 2;
-	var wet = 3;
-	var dry = 1;
-	var gbeach = 2;
-	var elevation = 3;
 
 	var islandSize = PI*radius*radius;
 	var islandBottom=PI*(radius+coral)*(radius+coral);
@@ -274,7 +236,7 @@ for (var i = 0; i < nCenter; ++i)
 	var placer = new ClumpPlacer(islandSize, .7, .1, 10, ix, iz);
 	var terrainPainter = new LayeredPainter(
 		[tOceanCoral,tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
-		[1, wet, dry, 1, gbeach]
+		[1, 3, 1, 1, 2]
 	);
 	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, elevation, 5);
 	var temp = createArea(placer, [terrainPainter, paintClass(clIsland), elevationPainter],avoidClasses(clPlayer,0));
@@ -336,14 +298,14 @@ for (var i = 0; i < types.length; ++i)
 	createAreasInAreas(
 		placer,
 		[painter, paintClass(clForest)],
-		avoidClasses(clCity, 1, clWater, 3, clForest, 3, clHill, 1),
+		avoidClasses(clCity, 1, clWater, 3, clForest, 3, clHill, 1, clBaseResource, 4),
 		num, 20, areas
 	);
 }
 RMS.SetProgress(42);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroupsByAreasDeprecated(group, 0,
 	[avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 5, clRock, 6)],
 	scaleByMapSize(4,16), 200, areas
@@ -401,7 +363,7 @@ for (let tree of [oCarob, oBeech, oLombardyPoplar, oLombardyPoplar, oPine])
 	createObjectGroupsByAreasDeprecated(
 		new SimpleGroup([new SimpleObject(tree, 1,1, 0,1)], true, clForest),
 		0,
-		avoidClasses(clWater, 2, clForest, 2, clCity, 3, clBaseResource, 1, clRock, 6, clMetal, 6, clPlayer, 1, clHill, 1),
+		avoidClasses(clWater, 2, clForest, 2, clCity, 3, clBaseResource, 4, clRock, 6, clMetal, 6, clPlayer, 1, clHill, 1),
 		scaleByMapSize(2, 38), 50, areas
 	);
 RMS.SetProgress(66);
@@ -412,7 +374,7 @@ group = new SimpleGroup(
 	true
 );
 createObjectGroupsByAreasDeprecated(group, 0,
-	avoidClasses(clWater, 2, clForest, 2, clCity, 3, clBaseResource, 1, clRock, 6, clMetal, 6, clPlayer, 1, clHill, 1),
+	avoidClasses(clWater, 2, clForest, 2, clCity, 3, clBaseResource, 4, clRock, 6, clMetal, 6, clPlayer, 1, clHill, 1),
 	scaleByMapSize(5, 75), 50, areas
 );
 RMS.SetProgress(70);
@@ -423,7 +385,7 @@ group = new SimpleGroup(
 	true
 );
 createObjectGroupsByAreasDeprecated(group, 0,
-	avoidClasses(clWater, 2, clForest, 1, clCity, 0, clBaseResource, 1, clRock, 6, clMetal, 6, clPlayer, 1, clHill, 1),
+	avoidClasses(clWater, 2, clForest, 1, clCity, 0, clBaseResource, 4, clRock, 6, clMetal, 6, clPlayer, 1, clHill, 1),
 	scaleByMapSize(5, 75), 50, areas
 );
 RMS.SetProgress(74);
