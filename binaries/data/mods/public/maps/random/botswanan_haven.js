@@ -78,7 +78,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oBaobab,
-		"radiusFactor": 1/100,
+		"areaFactor": 1/100,
 		"minDistGroup": 4,
 		"maxDistGroup": 7,
 		"minDist": 14,

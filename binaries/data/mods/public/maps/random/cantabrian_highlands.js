@@ -63,7 +63,7 @@ var clSettlement = createTileClass();
 var hillElevation = 20;
 var cliffRadius = 2;
 
-var rampDist = getInitialPlayerTerritoryRadius();
+var rampDist = getDefaultPlayerTerritoryRadius();
 var rampLength = 15;
 var rampWidth = 12;
 var rampSomething = 3;
@@ -77,7 +77,7 @@ for (let i = 0; i < numPlayers; ++i)
 	let fz = fractionToTiles(playerZ[i]);
 
 	createArea(
-		new ClumpPlacer(getInitialPlayerTerritoryArea(), 0.95, 0.6, 10, Math.round(fx), Math.round(fz)),
+		new ClumpPlacer(getDefaultPlayerTerritoryArea(), 0.95, 0.6, 10, Math.round(fx), Math.round(fz)),
 		[
 			new LayeredPainter([tCliff, tHill], [cliffRadius]),
 			new SmoothElevationPainter(ELEVATION_SET, hillElevation, cliffRadius),
@@ -122,7 +122,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oOak,
-		"radiusFactor": 1/300,
+		"areaFactor": 1/300,
 		"maxDistGroup": 5
 	},
 	"decoratives": {

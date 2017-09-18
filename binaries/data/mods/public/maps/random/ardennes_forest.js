@@ -137,7 +137,7 @@ placeDefaultPlayerBases({
 	"cityPatch": {
 		"innerTerrain": tCity,
 		"outerTerrain": tCity,
-		"radiusFactor": 1/12
+		"areaFactor": 1/12
 	},
 	"chicken": {
 		"template": oPig
@@ -155,7 +155,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oOak,
-		"radiusFactor": 1/600
+		"areaFactor": 1/600
 	}
 	// no decoratives
 });

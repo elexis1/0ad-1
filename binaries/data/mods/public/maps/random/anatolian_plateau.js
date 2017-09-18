@@ -66,7 +66,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPoplar,
-		"radiusFactor": 1/100,
+		"areaFactor": 1/100,
 		"maxDistGroup": 5
 	},
 	"decoratives": {

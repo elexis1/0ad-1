@@ -308,21 +308,21 @@ function placeDefaultPlayerBase(args, i)
 	func("decoratives", placeDefaultDecoratives);
 }
 
-function getInitialPlayerTerritoryRadius()
+function getDefaultPlayerTerritoryRadius()
 {
 	return scaleByMapSize(15, 25);
 }
 
-function getInitialPlayerTerritoryArea()
+function getDefaultPlayerTerritoryArea()
 {
-	return Math.PI * Math.pow(getInitialPlayerTerritoryRadius(), 2);
+	return Math.PI * Math.pow(getDefaultPlayerTerritoryRadius(), 2);
 }
 
 function placeDefaultCityPatch(args)
 {
 	createArea(
 		new ClumpPlacer(
-			Math.floor(args.get("radiusFactor", 1 / 9) * getInitialPlayerTerritoryArea()),
+			Math.floor(args.get("areaFactor", 1 / 9) * getDefaultPlayerTerritoryArea()),
 			args.get("coherence", 0.6),
 			args.get("smoothness", 0.3),
 			args.get("failFraction", 10),
@@ -405,7 +405,7 @@ function createDefaultMine(args)
 
 function placeDefaultTrees(args)
 {
-	let num = Math.floor(args.get("radiusFactor", 1 / 60) * getInitialPlayerTerritoryArea());
+	let num = Math.floor(args.get("areaFactor", 1 / 60) * getDefaultPlayerTerritoryArea());
 
 	if (false)
 	for (let k in args)
@@ -435,9 +435,9 @@ function placeDefaultTrees(args)
  */
 function placeDefaultDecoratives(args)
 {
-	let radius = getInitialPlayerTerritoryArea();
+	let radius = getDefaultPlayerTerritoryArea();
 
-	for (let i = 0; i < args.get("radiusFactor", 1 / 250) * radius; ++i)
+	for (let i = 0; i < args.get("areaFactor", 1 / 250) * radius; ++i)
 		for (let x = 0; x < args.get("maxTries", 30); ++x)
 		{
 			let angle = randFloat(0, 2 * PI);

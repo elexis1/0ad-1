@@ -123,7 +123,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPine,
-		"radiusFactor": 1/100
+		"areaFactor": 1/100
 	},
 	"decoratives": {
 		"template": aGrassShort
