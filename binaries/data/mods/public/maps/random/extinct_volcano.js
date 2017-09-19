@@ -82,12 +82,9 @@ var ccMountainHeight = 25;
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
+log("Creating CC mountains...")
 for (let i = 0; i < numPlayers; ++i)
 {
-	let id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-	let radius = scaleByMapSize(15, 25);
-
 	let fx = fractionToTiles(playerX[i]);
 	let fz = fractionToTiles(playerZ[i]);
 	let ix = Math.round(fx);
@@ -107,83 +104,43 @@ for (let i = 0; i < numPlayers; ++i)
 		14);
 
 	// Flatten the initial CC area
-	let hillSize = PI * radius * radius;
 	createArea(
-		new ClumpPlacer(hillSize, 0.95, 0.6, 10, ix, iz),
+		new ClumpPlacer(getDefaultPlayerTerritoryArea(), 0.95, 0.6, 10, ix, iz),
 		[
-			new LayeredPainter([tHillVeryDark, tHillMedium1], [radius]),
-			new SmoothElevationPainter(ELEVATION_SET, ccMountainHeight, radius),
+			new LayeredPainter([tHillVeryDark, tHillMedium1], [getDefaultPlayerTerritoryRadius()]),
+			new SmoothElevationPainter(ELEVATION_SET, ccMountainHeight, getDefaultPlayerTerritoryRadius()),
 			paintClass(clPlayer)
 		],
 		null);
-
-	// Create the city patch
-	let cityRadius = radius / 3;
-	createArea(
-		new ClumpPlacer(PI * cityRadius * cityRadius, 0.6, 0.3, 10, ix, iz),
-		new LayeredPainter([tRoadWild, tRoad], [1]),
-		null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	// Create metal mine
-	let mAngle = randFloat(0, 2 * PI);
-	let mDist = 12;
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oMetalLarge, 1, 1, 0, 0)],
-			true,
-			clBaseResource,
-			Math.round(fx + mDist * Math.cos(mAngle)),
-			Math.round(fz + mDist * Math.sin(mAngle))),
-		0);
-
-	// Create stone mines
-	mAngle += randFloat(PI/4, PI/3);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oStoneLarge, 1, 1, 0, 2)],
-			true,
-			clBaseResource,
-			Math.round(fx + mDist * Math.cos(mAngle)),
-			Math.round(fz + mDist * Math.sin(mAngle))),
-		0);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// Create berry bushes
-	mAngle += randFloat(PI/4, PI/2);
-	let bbDist = 12;
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oFruitBush, 5, 5, 0, 3)],
-			true,
-			clBaseResource,
-			Math.round(fx + bbDist * Math.cos(mAngle)),
-			Math.round(fz + bbDist * Math.sin(mAngle))),
-		0);
-
-	// Create starting trees
-	let num = Math.floor(hillSize / 60);
-	let tries = 20;
-	for (let x = 0; x < tries; ++x)
-	{
-		let tAngle = randFloat(0, 2 * PI);
-		let tDist = randFloat(10, 12);
-		if (createObjectGroup(
-			new SimpleGroup(
-				[new SimpleObject(oTree2, num, num, 0, 3)],
-				false,
-				clBaseResource,
-				Math.round(fx + tDist * Math.cos(tAngle)),
-				Math.round(fz + tDist * Math.sin(tAngle))),
-			0,
-			avoidClasses(clBaseResource, 3)))
-		{
-			break;
-		}
-	}
 }
+
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// playerTileClass already marked above
+	// TODO 'iberWall': 'towers'
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oTree2
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
 RMS.SetProgress(15);
 
 createVolcano(0.5, 0.5, clHill, tHillVeryDark, undefined, false, ELEVATION_SET);
