@@ -333,7 +333,7 @@ function placeDefaultCityPatch(args)
 	let [get, fx, fz] = getDefaultBaseArgs(args);
 
 	let painters = [
-		new LayeredPainter([args.innerTerrain, args.innerTerrain], [1])
+		new LayeredPainter([args.innerTerrain, args.outerTerrain], [1])
 	];
 
 	if (args.tileClass !== undefined)
