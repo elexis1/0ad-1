@@ -155,92 +155,46 @@ for (var i = 0; i < numPlayers; i++)
 	playerZ[i] = 0.5 + 0.35*sin(playerAngle[i]);
 }
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	var radius = scaleByMapSize(15,25);
-	var cliffRadius = 2;
-	var elevation = 20;
-
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	ix = round(fx);
-	iz = round(fz);
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// create the city patch
-	var cityRadius = radius/3;
-	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	var bbAngle = placeDefaultBerries(fx, fz, clBaseResource, oBerryBush, 12);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oPine,
+		"areaFactor": 1/900
+	},
+	"decoratives": {
+		"template": aGrassShort
 	}
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oPine, num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
-}
-
+});
 RMS.SetProgress(20);
 
 //create the gulf
-
 if (random_terrain == 3)
-{
 	var seaHeight = 0;
-}
 else
-{
 	var seaHeight = -3;
-}
 
 //create the upper part
-
 var fx = fractionToTiles(0.5);
 var fz = fractionToTiles(0.5);
-ix = round(fx);
-iz = round(fz);
+var ix = round(fx);
+var iz = round(fz);
 
 var lSize = 1;
 
@@ -380,7 +334,7 @@ createDecoration
   multiplier * scaleByMapSize(13, 200),
   multiplier * scaleByMapSize(13, 200)
  ],
- avoidClasses(clWater, 0, clForest, 0, clPlayer, 0, clHill, 0)
+ avoidClasses(clWater, 0, clForest, 0, clPlayer, 5, clHill, 0, clBaseResource, 5)
 );
 
 RMS.SetProgress(75);
