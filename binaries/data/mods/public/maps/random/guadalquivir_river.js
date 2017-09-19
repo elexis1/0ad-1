@@ -76,91 +76,45 @@ createArea(
 	],
 	null);
 
-// TODO: manual
-var [playerIDs, playerX, playerZ] = placePlayersRiver((i, pos) => {
-	let angle = -0.23 * (i + (i % 2)) * 2 * Math.PI / numPlayers - (i % 2) * Math.PI / 2;
-	return [
-		0.5 + 0.35 * Math.cos(angle),
-		0.7 + 0.35 * Math.sin(angle)
-	];
-});
+var playerIDs = primeSortAllPlayers();
+var playerX = [];
+var playerZ = [];
 
-for (var i = 0; i < numPlayers; i++)
+for (let i = 0; i < numPlayers; ++i)
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	var radius = scaleByMapSize(15,25);
-	var cliffRadius = 2;
-	var elevation = 20;
-
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-	let ix = Math.round(fx);
-	let iz = Math.round(fz);
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// create the city patch
-	var cityRadius = radius/3;
-	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': false });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 8;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
-	}
-	var mDist = 10;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oPoplar, num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
+	let angle = -0.23 * (i + (i % 2)) * 2 * Math.PI / numPlayers - (i % 2) * Math.PI / 2;
+	playerX[i] = 0.5 + 0.35 * Math.cos(angle),
+	playerZ[i] = 0.7 + 0.35 * Math.sin(angle)
 }
 
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// TODO 'iberWall': false
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oPoplar,
+		"areaFactor": 1/300
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
 RMS.SetProgress(20);
 
 var shallowHeight = -1.5;
@@ -218,7 +172,7 @@ log("Creating grass patches...");
 createPatches(
  [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)],
  tGrassPatch,
- [avoidClasses(clForest, 0, clHill, 0, clDirt, 3, clPlayer, 8, clRiver, 1), stayClasses(clLand, 7)]
+ [avoidClasses(clForest, 0, clHill, 0, clDirt, 3, clPlayer, 8, clRiver, 1, clBaseResource, 4), stayClasses(clLand, 7)]
 );
 
 RMS.SetProgress(55);
@@ -257,7 +211,7 @@ createDecoration
   scaleByMapSize(13, 200),
   scaleByMapSize(13, 200)
  ],
- [avoidClasses(clHill, 1, clPlayer, 1, clDirt, 1, clRiver, 1), stayClasses(clLand, 6)]
+ [avoidClasses(clHill, 1, clPlayer, 6, clDirt, 1, clRiver, 1, clBaseResource, 4), stayClasses(clLand, 6)]
 );
 
 log("Create water decoration in the shallow parts");
