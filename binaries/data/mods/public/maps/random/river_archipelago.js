@@ -78,6 +78,7 @@ stripWidthsRight = stripWidthsRight.map(strip => [1 - strip[1], 1 - strip[0]]);
 var stripWidths = stripWidthsLeft.concat(stripWidthsRight);
 var playerPos = [playerPosLeft, 1 - playerPosLeft];
 
+log("Creating strips...");
 for (let i = 0; i < stripWidths.length; ++i)
 {
 	clStrip[i] = createTileClass();
@@ -101,106 +102,69 @@ for (let i = 0; i < stripWidths.length; ++i)
 }
 RMS.SetProgress(20);
 
+var radius = scaleByMapSize(12, 20);
 var playerIDs = sortAllPlayers();
+var playerX = [];
+var playerZ = [];
 
 // Either left vs right or top vs bottom
 var leftVSRight = randBool();
-
 for (let i = 0; i < numPlayers; ++i)
 {
-	let playerX;
-	let playerZ;
-
 	if (leftVSRight)
 	{
 		let left = i < numPlayers / 2;
-		playerX = playerPos[left ? 0 : 1];
-		playerZ = 2 * (left ? i + 1 : numPlayers - i - 0.5) / (numPlayers + 1 + numPlayers % 2);
+		playerX[i] = playerPos[left ? 0 : 1];
+		playerZ[i] = 2 * (left ? i + 1 : numPlayers - i - 0.5) / (numPlayers + 1 + numPlayers % 2);
 	}
 	else
 	{
-		playerX = playerPos[i % 2];
-		playerZ = (i + 1) / (numPlayers + 1);
+		playerX[i] = playerPos[i % 2];
+		playerZ[i] = (i + 1) / (numPlayers + 1);
 	}
 
-	log("Creating base for player " + playerIDs[i] + "...");
-	let radius = scaleByMapSize(12, 20);
+	let ix = Math.round(fractionToTiles(playerX[i]));
+	let iz = Math.round(fractionToTiles(playerZ[i]));
 
-	let fx = fractionToTiles(playerX);
-	let fz = fractionToTiles(playerZ);
-	let ix = Math.round(fx);
-	let iz = Math.round(fz);
-
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// Create the main island
+	// Ensure player territory
 	createArea(
 		new ChainPlacer(1, 6, 40, 1, ix, iz, 0, [Math.floor(radius)]),
 		[
 			new LayeredPainter([tGrass, tGrass, tGrass], [1, 4]),
 			new SmoothElevationPainter(ELEVATION_SET, 3, 4),
 			paintClass(clPlayerTerritory)
-		], null);
-
-	// Create the city patch
-	let cityRadius = radius / 3;
-	createArea(
-		new ClumpPlacer(PI * cityRadius * cityRadius, 0.6, 0.3, 10, ix, iz),
-		new LayeredPainter([tRoadWild, tRoad], [1]),
+		],
 		null);
-
-	placeCivDefaultEntities(fx, fz, playerIDs[i],  { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource, undefined, oPeacock);
-
-	// Create berry bushes
-	let angle = randFloat(0, 2 * PI);
-	let dist = 12;
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oBush, 5, 5, 0, 3)],
-			true,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))),
-		0);
-
-	// Create metal mine
-	angle += randFloat(PI/8, PI/4);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oMetalLarge, 1, 1, 0, 0)],
-			true,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))),
-		0);
-
-	// Create stone mines
-	angle += randFloat(PI/8, PI/4);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oStoneLarge, 1, 1, 0, 2)],
-			true,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))),
-		0);
-
-	// Create starting trees
-	let num = 40;
-	let tAngle = randFloat(-PI/3, 4*PI/3);
-	let tDist = randFloat(12, 13);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oTree, num, num, 0, 3)],
-			false,
-			clBaseResource,
-			Math.round(fx + tDist * Math.cos(tAngle)),
-			Math.round(fz + tDist * Math.sin(tAngle))),
-		0,
-		avoidClasses(clBaseResource, 2));
 }
+
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	// TODO 'iberWall': 'towers'
+	// TODO scaleByMapSize(12, 20)
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+		"template": oPeacock
+	},
+	"berries": {
+		"template": oBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oTree,
+		"count" : 40 // TODO
+	}
+	// No decoratives
+});
 RMS.SetProgress(35);
 
 log("Creating gaia...");
