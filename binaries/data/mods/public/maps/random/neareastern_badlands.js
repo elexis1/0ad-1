@@ -8,10 +8,8 @@ const tFineSand = "desert_sand_smooth";
 const tCliff = ["desert_cliff_badlands", "desert_cliff_badlands_2"];
 const tForestFloor = "desert_forestfloor_palms";
 const tGrass = "desert_grass_a";
-const tGrassSand50 = "desert_grass_a_sand";
 const tGrassSand25 = "desert_grass_a_stones";
 const tDirt = "desert_dirt_rough";
-const tDirtCracks = "desert_dirt_cracks";
 const tShore = "desert_shore_stones";
 const tWaterDeep = "desert_shore_stones_wet";
 
@@ -43,12 +41,9 @@ InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
-const mapArea = mapSize*mapSize;
 
 var clPlayer = createTileClass();
 var clHill1 = createTileClass();
-var clHill2 = createTileClass();
-var clHill3 = createTileClass();
 var clForest = createTileClass();
 var clPatch = createTileClass();
 var clRock = createTileClass();
@@ -179,13 +174,17 @@ for (var i = 0; i < num; ++i)
 		++r;
 	} while (!constraint.allows(gx,gz) && r < halfSize);
 
-	group = new RandomGroup(
-		[	new SimpleObject(oGiraffe, 2,4, 0,3),		// select from these groups randomly
-			new SimpleObject(oWildebeest, 3,5, 0,3),
-			new SimpleObject(oGazelle, 5,7, 0,3)
-		], true, clFood, gx, gz
-	);
-	createObjectGroup(group, 0);
+	createObjectGroup(
+		new RandomGroup(
+			[	new SimpleObject(oGiraffe, 2,4, 0,3),
+				new SimpleObject(oWildebeest, 3,5, 0,3),
+				new SimpleObject(oGazelle, 5,7, 0,3)
+			],
+			true,
+			clFood,
+			gx,
+			gz),
+		0);
 }
 
 constraint = new AndConstraint([borderClasses(clForest, 15, 0), avoidClasses(clFood, 5)]);
@@ -238,15 +237,14 @@ for (var i = 0; i < tempAreas.length; ++i)
 RMS.SetProgress(45);
 
 log("Creating decorative rocks...");
-group = new SimpleGroup(
-	[new RandomObject([aDecorativeRock, aBush2, aBush3], 3,8, 0,2)],
-	true
-);
-createObjectGroupsByAreasDeprecated(group, 0,
+createObjectGroupsByAreasDeprecated(
+	new SimpleGroup(
+		[new RandomObject([aDecorativeRock, aBush2, aBush3], 3,8, 0,2)],
+		true),
+	0,
 	borderClasses(clHill1, 0, 3),
 	scaleByMapSize(40,200), 50,
-	hillAreas
-);
+	hillAreas);
 
 RMS.SetProgress(50);
 
@@ -310,7 +308,7 @@ createAreas(placer, [painter, paintClass(clForest)],
 RMS.SetProgress(70);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill1, 1)],
 	scaleByMapSize(4,16), 100
