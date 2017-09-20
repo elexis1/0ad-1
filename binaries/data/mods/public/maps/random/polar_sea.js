@@ -48,52 +48,14 @@ var clForest = createTileClass();
 initTerrain(tPrimary);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
-
-RMS.SetProgress(20);
-
 for (let i = 0; i < numPlayers; ++i)
 {
-	let id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
 	let fx = fractionToTiles(playerX[i]);
 	let fz = fractionToTiles(playerZ[i]);
 	let ix = Math.round(fx);
 	let iz = Math.round(fz);
 
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// Create the city patch
-	let cityRadius = scaleByMapSize(15,25)/3;
-	let placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	let painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource, undefined, oMuskox);
-
-	// Create metal mine
-	let mAngle = randFloat(0, TWO_PI);
-	let mDist = 12;
-	let mX = Math.round(fx + mDist * Math.cos(mAngle));
-	let mZ = Math.round(fz + mDist * Math.sin(mAngle));
-	let group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1, 1, 0, 0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// Create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = Math.round(fx + mDist * Math.cos(mAngle));
-	mZ = Math.round(fz + mDist * Math.sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1, 1, 0, 2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
+	// TODO:
 	// Create wood treasure
 	mAngle += PI/4;
 	let bbX = Math.round(fx + mDist * Math.cos(mAngle));
@@ -105,6 +67,7 @@ for (let i = 0; i < numPlayers; ++i)
 			avoidClasses(clBaseResource, 4)
 		), 0);
 
+	// TODO:
 	// Create market
 	mAngle += PI/4;
 	placeObject(
@@ -114,6 +77,30 @@ for (let i = 0; i < numPlayers; ++i)
 		id,
 		BUILDING_ORIENTATION);
 }
+
+placeDefaultPlayerBases({
+	"playerPlacement": radialPlayerPlacement(),
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	// TODO: 'iberWall': 'towers'
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+		"template": oMuskox
+	},
+	// No berries, no trees
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
 RMS.SetProgress(30);
 
 log("Creating central lake...");
