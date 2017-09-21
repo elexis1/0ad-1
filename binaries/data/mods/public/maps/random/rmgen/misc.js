@@ -455,13 +455,12 @@ function placeDefaultTrees(args)
 function placeDefaultDecoratives(args)
 {
 	let [get, fx, fz] = getDefaultBaseArgs(args);
-	let radius = getDefaultPlayerTerritoryArea();
 
-	for (let i = 0; i < get("areaFactor", 1 / 250) * radius; ++i)
+	for (let i = 0; i < get("areaFactor", 1 / 250) * getDefaultPlayerTerritoryArea(); ++i)
 		for (let x = 0; x < get("maxTries", 30); ++x)
 		{
 			let angle = randFloat(0, 2 * PI);
-			let dist = radius - randIntInclusive(get("maxDist", 5), get("maxDist", 5));
+			let dist = getDefaultPlayerTerritoryRadius() - randIntInclusive(get("minDist", 5), get("maxDist", 11));
 
 			if (createObjectGroup(
 				new SimpleGroup(
