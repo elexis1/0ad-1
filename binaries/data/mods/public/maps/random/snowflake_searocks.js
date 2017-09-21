@@ -1463,91 +1463,53 @@ for (var m = 0; m < numIslands; m++){
 
 for (var i = 0; i < numPlayers; i++)
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
 	var fx = fractionToTiles(playerX[i]);
 	var fz = fractionToTiles(playerZ[i]);
 	var ix = round(fx);
 	var iz = round(fz);
-		IslandX[i]=ix;
-		IslandZ[i]=iz;
-	// calculate size based on the radius
-	var hillSize = PI * radius * radius;
 
-	// create the hill
-	var placer = new ClumpPlacer(hillSize, 0.95, 0.6, 10, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tCliff, tHill],		// terrains
-		[cliffRadius]		// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		elevation,				// elevation
-		cliffRadius				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clPlayer)], null);
+	IslandX[i] = ix;
+	IslandZ[i] = iz;
 
-	// create the city patch
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 10;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oFruitBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = radius - 4;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = floor(hillSize / 60);
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = 11;
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oTree1, num, num, 0,4)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, [avoidClasses(clBaseResource,2), stayClasses(clPlayer, 3)]);
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
+	createArea(
+		new ClumpPlacer(Math.PI * Math.pow(radius, 2), 0.95, 0.6, 10, ix, iz),
+		[
+			new LayeredPainter([tCliff, tHill], [cliffRadius]),
+			new SmoothElevationPainter(ELEVATION_SET, elevation, cliffRadius),
+			paintClass(clPlayer)
+		],
+		null);
 }
 
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// TODO 'iberWall': 'towers'
+	// playerTileClass already marked above
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oTree1,
+		"areaFactor": 1/60,
+		"constraint": stayClasses(clPlayer, 3) // TODO
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
 RMS.SetProgress(30);
 
 //Create connectors
@@ -1627,7 +1589,7 @@ var num = floor(size / types.length);
 for (var i = 0; i < types.length; ++i)
 {
 	placer = new ClumpPlacer(numForest / num, 0.1, 0.1, 1);
-	painter = new LayeredPainter(
+	var painter = new LayeredPainter(
 		types[i],		// terrains
 		[2]											// widths
 		);
@@ -1641,7 +1603,7 @@ for (var i = 0; i < types.length; ++i)
 RMS.SetProgress(55);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1), stayClasses(clLand, 5)],
 	5*scaleByMapSize(4,16), 100
