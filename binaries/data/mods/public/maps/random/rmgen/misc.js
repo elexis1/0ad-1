@@ -261,7 +261,7 @@ function placeDefaultPlayerBases(args)
 
 function placeDefaultPlayerBase(args, i)
 {
-	deepfreeze(args);
+	// Can't deepfreeze(args) as one of the arguments is a function
 
 	let [playerIDs, playerX, playerZ] = args.playerPlacement;
 
@@ -326,6 +326,18 @@ function getDefaultBaseArgs(args)
 	];
 }
 
+function placeDefaultCityPatches(args)
+{
+	for (let i = 0; i < getNumPlayers(); ++i)
+	{
+		let args2 = clone(args);
+		args2.playerID = args.playerIDs[i];
+		args2.playerX = args.playerX[i];
+		args2.playerZ = args.playerZ[i];
+		placeDefaultCityPatch(args2);
+	}
+}
+
 /**
  * @property tileClass - optionally mark the entire city patch with a tile class
  */
@@ -337,8 +349,8 @@ function placeDefaultCityPatch(args)
 		new LayeredPainter([args.innerTerrain, args.outerTerrain], [1])
 	];
 
-	if (args.tileClass !== undefined)
-		painters.push(paintClass(args.tileClass));
+	if (args.painters)
+		painters = painters.concat(args.painters);
 
 	createArea(
 		new ClumpPlacer(

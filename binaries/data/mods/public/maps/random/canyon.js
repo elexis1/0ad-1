@@ -66,47 +66,21 @@ var clLand = createTileClass();
 
 initTerrain(tMainTerrain);
 
-log("Creating player areas...");
-var playerRadius = scaleByMapSize(18, 32);
-var areaFactor = Math.pow(playerRadius / getDefaultPlayerTerritoryRadius(), 2);
-
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
-for (let i in playerIDs)
-	createArea(
-		new ClumpPlacer(
-			Math.PI * Math.pow(playerRadius, 2),
-			0.65,
-			0.1,
-			10,
-			Math.round(fractionToTiles(playerX[i])),
-			Math.round(fractionToTiles(playerZ[i]))),
-		[
-		    new LayeredPainter([tMainTerrain, tMainTerrain], [2]),
-		    new SmoothElevationPainter(ELEVATION_SET, 3, 2),
-		    paintClass(clLand)
-		],
-		null);
-
-// TODO: delete this city patch!
-for (let i in playerIDs)
-{
-	let meh = 1/4 * Math.PI * Math.pow(scaleByMapSize(18, 32), 2);
-
-	var placer = new ClumpPlacer(meh, 0.6, 0.3, 10, fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]));
-	var painter = new LayeredPainter([tMainTerrain, tMainTerrain], [1]);
-	createArea(placer, [painter, paintClass(clPlayer)], null);
-}
 
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
-	"ci5tyPatch": {
+	"cityPatch": {
 		"innerTerrain": tMainTerrain,
 		"outerTerrain": tMainTerrain,
-		//"tileClass": clPlayer
 		"radius": scaleByMapSize(18, 32),
-		"radiusFactor": 1/2
+		"radiusFactor": 1/2,
+		"painters": [
+		    new SmoothElevationPainter(ELEVATION_SET, 3, 2),
+		    paintClass(clLand)
+		]
 	},
 	"chicken": {
 	},

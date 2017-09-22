@@ -329,27 +329,19 @@ for (var ix = 0; ix < mapSize; ix++)
 	}
 RMS.SetProgress(30);
 
-for (let i = 0; i < numPlayers; ++i)
-{
-	var ix = Math.round(fractionToTiles(playerX[i]));
-	var iz = Math.round(fractionToTiles(playerZ[i]));
-
-	// create the city patch, flatten area under TC
-	var cityRadius = 11;
-	createArea(
-		new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz),
-		[
-			new LayeredPainter([tGrass, tCity], [4]),
-			new SmoothElevationPainter(ELEVATION_SET, 5, 2)
-		],
-        null);
-}
-
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
-	// cityPatch created above
+	"cityPatch": {
+		"radius": 11,
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad,
+		"painters": [
+			new LayeredPainter([tGrass, tCity], [4]),
+			new SmoothElevationPainter(ELEVATION_SET, 5, 2)
+		]
+	},
 	"chicken": {
 	},
 	"berries": {

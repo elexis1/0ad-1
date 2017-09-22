@@ -137,9 +137,11 @@ placeDefaultPlayerBases({
 	"cityPatch": {
 		"innerTerrain": tCity,
 		"outerTerrain": tCity,
-		"tileClass": clPlayer
 		"radiusFactor": 1/30,
 		"smoothness": 0.05,
+		"painters": [
+			paintClass(clPlayer)
+		]
 	},
 	"chicken": {
 		"template": oPig

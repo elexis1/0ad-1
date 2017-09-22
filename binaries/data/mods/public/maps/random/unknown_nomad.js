@@ -1177,15 +1177,14 @@ for (var i = 0; i < numPlayers; ++i)
 	}
 }
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var radius = scaleByMapSize(18,32);
-	var ix = playerX[i];
-	var iz = playerZ[i];
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	createArea(placer, paintClass(clPlayer), null);
-}
+placeDefaultCityPatches({
+	"playerX": playerX,
+	"playerY": playerY,
+	"radius": scaleByMapSize(18, 32),
+	"painters": [
+		paintClass(clPlayer)
+	]
+});
 
 log("Creating bumps...");
 placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);

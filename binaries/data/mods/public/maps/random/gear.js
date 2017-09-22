@@ -257,13 +257,12 @@ paintTerrainBasedOnHeight(2, 5, 1, tMainTerrain);
 paintTileClassBasedOnHeight(-6, 0.5, 1, clWater);
 unPaintTileClassBasedOnHeight(0.5, 10, 1, clWater);
 
-for (let i = 0; i < numPlayers; ++i)
-	placeDefaultCityPatch({
-		"playerX": playerX[i],
-		"playerZ": playerZ[i],
-		"innerTerrain": tRoadWild,
-		"outerTerrain": tRoad
-	});
+placeDefaultCityPatches({
+	"playerX": playerX,
+	"playerZ": playerZ,
+	"innerTerrain": tRoadWild,
+	"outerTerrain": tRoad
+});
 
 if (randBool())
 	createHills([tMainTerrain, tCliff, tHill], avoidClasses(clPlayer, 20, clHill, 15, clWater, 2), clHill, scaleByMapSize(1, 4) * numPlayers);

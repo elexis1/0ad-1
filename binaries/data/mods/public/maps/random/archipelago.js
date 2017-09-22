@@ -146,19 +146,15 @@ paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 
-//creating the city patches for the players
-for (var i = 0; i < numPlayers; i++)
-{
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-	// create the city patch
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-}
+placeDefaultCityPatches({
+	"playerX": playerX,
+	"playerY": playerY,
+	"radius": scaleByMapSize(22, 31),
+	"painters": [
+		paintClass(clPlayer),
+		new LayeredPainter([tRoadWild, tRoad], [1])
+	]
+});
 
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);
 

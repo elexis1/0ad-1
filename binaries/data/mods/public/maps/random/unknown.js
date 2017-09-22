@@ -437,17 +437,14 @@ else if (md == 4) //central river
 
 	if (randBool())
 	{
-		for (var i = 0; i < numPlayers; i++)
-		{
-			var fx = fractionToTiles(playerX[i]);
-			var fz = fractionToTiles(playerZ[i]);
-			var ix = round(fx);
-			var iz = round(fz);
-			// create the city patch
-			var cityRadius = scaleByMapSize(17,29)/3;
-			placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-			createArea(placer, paintClass(clPlayer), null);
-		}
+		placeDefaultCityPatches({
+			"playerX": playerX,
+			"playerY": playerY,
+			"radius": scaleByMapSize(17, 29)
+			"painters": [
+				paintClass(clPlayer)
+			]
+		});
 
 		log("Creating tributaries");
 
@@ -902,17 +899,14 @@ else if (md == 7) //gulf
 		playerZ[i] = 0.5 + 0.35*sin(playerAngle[i]);
 	}
 
-	for (var i = 0; i < numPlayers; i++)
-	{
-		var fx = fractionToTiles(playerX[i]);
-		var fz = fractionToTiles(playerZ[i]);
-		var ix = round(fx);
-		var iz = round(fz);
-		// create the city patch
-		var cityRadius = scaleByMapSize(17,29)/3;
-		placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-		createArea(placer, paintClass(clPlayer), null);
-	}
+	placeDefaultCityPatches({
+		"playerX": playerX,
+		"playerY": playerY,
+		"radius": scaleByMapSize(17, 29),
+		"painters": [
+			paintClass(clPlayer)
+		]
+	});
 
 	fx = fractionToTiles(0.5);
 	fz = fractionToTiles(0.5);
@@ -987,17 +981,14 @@ else if (md == 8) //lakes
 		}
 	}
 
-	for (var i = 0; i < numPlayers; i++)
-	{
-		var fx = fractionToTiles(playerX[i]);
-		var fz = fractionToTiles(playerZ[i]);
-		var ix = round(fx);
-		var iz = round(fz);
-		// create the city patch
-		var cityRadius = scaleByMapSize(17,29)/3;
-		placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-		createArea(placer, paintClass(clPlayer), null);
-	}
+	placeDefaultCityPatches({
+		"playerX": playerX,
+		"playerY": playerY,
+		"radius": scaleByMapSize(17, 29),
+		"painters": [
+			paintClass(clPlayer)
+		]
+	});
 
 	log("Creating lakes...");
 	placer = new ClumpPlacer(scaleByMapSize(160, 700), 0.2, 0.1, 1);
@@ -1322,18 +1313,15 @@ for (var i = 0; i < numPlayers; i++)
 	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 }
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-	// create the city patch
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, [painter, paintClass(clPlayer)], null);
-}
+placeDefaultCityPatches({
+	"playerX": playerX,
+	"playerY": playerY,
+	"radius": scaleByMapSize(17, 29),
+	"painters": [
+		paintClass(clPlayer),
+		new LayeredPainter([tRoadWild, tRoad], [1])
+	]
+});
 
 log("Creating bumps...");
 placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);

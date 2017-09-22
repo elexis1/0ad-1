@@ -180,23 +180,16 @@ log("Populating islands ...");
 var nPlayer = 0;
 for (let i = 0; i < numIslands; ++i)
 	if (numPlayers >= 6 || i == startingPlaces[numPlayers-1][nPlayer])
-	{
-		var id = playerIDs[nPlayer];
-
-		// Get the x and z in tiles
-		var fx = fractionToTiles(islandX[i]);
-		var fz = fractionToTiles(islandZ[i]);
-		var ix = round(fx);
-		var iz = round(fz);
-
-		// Create city patch
-		var cityRadius = 6;
-		var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-		var painter = new LayeredPainter([tGrass, tCity], [1]);
-		createArea(placer, [painter,paintClass(clCity)], null);
-
-		++nPlayer;
-	}
+		placeDefaultCityPatch({
+			"playerID": nPlayer++,
+			"playerX": islandX,
+			"playerY": islandZ,
+			"radius": 6,
+			"painters": [
+				new LayeredPainter([tGrass, tCity], [1]),
+				paintClass(clPlayer)
+			]
+		});
 RMS.SetProgress(20);
 
 // get the x and z in tiles

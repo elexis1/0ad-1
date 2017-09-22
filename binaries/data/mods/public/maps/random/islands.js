@@ -253,18 +253,15 @@ for (var i = 0; i < numIslands; ++i)
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-	// create the city patch
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-}
+placeDefaultCityPatches({
+	"playerX": playerX,
+	"playerY": playerY,
+	"radius": radius,
+	"painters": [
+		paintClass(clPlayer),
+		new LayeredPainter([tRoadWild, tRoad], [1])
+	]
+});
 
 log("Creating bumps...");
 placer = new ClumpPlacer(scaleByMapSize(20, 50), 0.3, 0.06, 1);

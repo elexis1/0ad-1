@@ -132,13 +132,12 @@ paintTerrainBasedOnHeight(1, 2.4, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 paintTileClassBasedOnHeight(-6, 0, 1, clWater);
 
-for (let i = 0; i < numPlayers; ++i)
-	placeDefaultCityPatch({
-		"playerX": playerX[i],
-		"playerZ": playerZ[i],
-		"innerTerrain": tRoadWild,
-		"outerTerrain": tRoad
-	});
+placeDefaultCityPatch({
+	"playerX": playerX,
+	"playerZ": playerZ,
+	"innerTerrain": tRoadWild,
+	"outerTerrain": tRoad
+});
 
 createBumps(avoidClasses(clWater, 2, clPlayer, 20));
 

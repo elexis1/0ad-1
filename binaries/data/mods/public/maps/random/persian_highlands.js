@@ -77,7 +77,9 @@ placeDefaultPlayerBases({
 	"cityPatch": {
 		"innerTerrain": tCity,
 		"outerTerrain": tCity,
-		"tileClass": clPlayer
+		"painters": [
+			paintClass(clPlayer)
+		]
 	},
 	"chicken": {
 	},
