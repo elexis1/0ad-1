@@ -118,7 +118,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oTree1,
-		"areaFactor": 1/300,
+		"radiusFactor": 1/15,
 		"maxDistGroup": 5,
 		"minDist": 12,
 		"maxDist": 13

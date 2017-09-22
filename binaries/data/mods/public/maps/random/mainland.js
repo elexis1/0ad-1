@@ -83,7 +83,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oTree1,
-		"areaFactor": 1/100, // TODO: 5 trees
+		"radiusFactor": 1/10, // TODO: 5 trees
 		"maxDistGroup": 5
 	},
 	"decoratives": {

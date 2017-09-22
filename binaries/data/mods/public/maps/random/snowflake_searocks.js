@@ -1502,8 +1502,7 @@ placeDefaultPlayerBases({
 		"template": oStoneLarge
 	},
 	"trees": {
-		"template": oTree1,
-		"areaFactor": 1/60,
+		"template": oTree1
 		"constraint": stayClasses(clPlayer, 3) // TODO
 	},
 	"decoratives": {

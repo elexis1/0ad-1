@@ -323,7 +323,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPine,
-		"areaFactor": 1/100,
+		"radiusFactor": 1/10,
 		"maxDistGroup": 5
 	},
 	"decoratives": {

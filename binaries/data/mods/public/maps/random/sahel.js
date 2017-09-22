@@ -63,7 +63,7 @@ placeDefaultPlayerBases({
 	// TODO: stone mine formation
 	"trees": {
 		"template": oBaobab,
-		"areaFactor": 1/300,
+		"radiusFactor": 1/15,
 	}
 	// No decoratives
 });

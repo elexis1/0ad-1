@@ -341,7 +341,7 @@ function placeDefaultCityPatch(args)
 
 	createArea(
 		new ClumpPlacer(
-			Math.floor(get("areaFactor", 1 / 9) * getDefaultPlayerTerritoryArea()),
+			Math.floor(Math.PI * Math.pow(get("radiusFactor", 1 / 3) * get("radius", getDefaultPlayerTerritoryRadius()), 2)),
 			get("coherence", 0.6),
 			get("smoothness", 0.3),
 			get("failFraction", 10),
@@ -426,10 +426,30 @@ function createDefaultMine(args)
 	}
 }
 
+function createDefaultStoneMineFormation(args)
+{
+	let [get, fx, fz] = getDefaultBaseArgs(args);
+
+	for (let tries = 0; tries < get("maxTries", 30); ++tries)
+	{
+		let angle = randFloat(0, Math.PI * 2);
+	
+		let x = Math.round(fx + get("dist", 12) * Math.cos(angle));
+		let z = Math.round(fz + get("dist", 12) * Math.sin(angle));
+
+		if (args.baseResourceConstraint && !args.baseResourceConstraint.allows(x, z))
+			continue;
+
+		createStoneMineFormation(x, z, args.terrain)
+		addToClass(x, z, args.baseResourceClass);
+		break;
+	}
+}
+
 function placeDefaultTrees(args)
 {
 	let [get, fx, fz] = getDefaultBaseArgs(args);
-	let num = Math.floor(get("areaFactor", 1 / 60) * getDefaultPlayerTerritoryArea());
+	let num = Math.floor(Math.PI * Math.pow(get("radiusFactor", 1 / 7.5) * get("radius", getDefaultPlayerTerritoryRadius()), 2));
 
 	for (let x = 0; x < get("maxTries", 30); ++x)
 	{
@@ -456,7 +476,7 @@ function placeDefaultDecoratives(args)
 {
 	let [get, fx, fz] = getDefaultBaseArgs(args);
 
-	for (let i = 0; i < get("areaFactor", 1 / 250) * getDefaultPlayerTerritoryArea(); ++i)
+	for (let i = 0; i < Math.PI * Math.pow(get("radiusFactor", 1 / 15) * getDefaultPlayerTerritoryRadius(), 2); ++i)
 		for (let x = 0; x < get("maxTries", 30); ++x)
 		{
 			let angle = randFloat(0, 2 * PI);

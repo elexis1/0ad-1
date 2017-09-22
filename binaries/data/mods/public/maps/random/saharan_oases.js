@@ -88,7 +88,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oSDatePalm,
-		"areaFactor": 1/100,
+		"radiusFactor": 1/10,
 	},
 	"decoratives": {
 		"template": aBush1

@@ -76,11 +76,9 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oBaobab,
-		"areaFactor": 1/300
-	},
-	"decoratives": {
-		"template": aBush1
+		"radiusFactor": 1/15
 	}
+	// No decoratives
 });
 
 for (let i in playerX)

@@ -66,14 +66,13 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPoplar,
-		"areaFactor": 1/100,
-		"maxDistGroup": 5
+		"radiusFactor": 1/10,
+		"maxDistGroup": 5 //TODO?
 	},
 	"decoratives": {
 		"template": aGrassShort
 	}
 });
-
 RMS.SetProgress(20);
 
 log("Creating bumps...");

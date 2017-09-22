@@ -96,7 +96,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oDatePalm,
-		"areaFactor": 1/100,
+		"radiusFactor": 1/10,
 		"count": 2 //TODO
 	},
 	"decoratives": {

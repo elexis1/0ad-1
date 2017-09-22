@@ -108,7 +108,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPine,
-		"areaFactor": 1/100 * scaleByMapSize(22,31) ...
+		"radiusFactor": 1/10 * scaleByMapSize(22,31) ...
 	},
 	"decoratives": {
 		"template": aGrassShort

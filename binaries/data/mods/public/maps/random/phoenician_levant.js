@@ -91,7 +91,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oCarob,
-		"areaFactor": 1/100 // Count 2 TODO
+		"radiusFactor": 1/10 // Count 2 TODO
 	},
 	"decoratives": {
 		"template": aBush1

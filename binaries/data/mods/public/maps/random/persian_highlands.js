@@ -94,7 +94,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oOak,
-		"areaFactor": 1/300, // TODO: 3
+		"radiusFactor": 1/15, // TODO: 3
 	}
 	// No decoratives
 });

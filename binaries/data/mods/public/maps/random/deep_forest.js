@@ -109,7 +109,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": "gaia/flora_tree_oak_large",
-		"areaFactor": 1/900
+		"radiusFactor": 1/30
 	}
 });
 

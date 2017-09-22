@@ -169,7 +169,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPalm,
-		"areaFactor": 1/300
+		"radiusFactor": 1/15
 	}
 	// no decoratives
 });

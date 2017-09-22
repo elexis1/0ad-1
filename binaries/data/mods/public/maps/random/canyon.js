@@ -104,8 +104,9 @@ placeDefaultPlayerBases({
 	"ci5tyPatch": {
 		"innerTerrain": tMainTerrain,
 		"outerTerrain": tMainTerrain,
-		//"areaFactor": areaFactor/4,
 		//"tileClass": clPlayer
+		"radius": scaleByMapSize(18, 32),
+		"radiusFactor": 1/2
 	},
 	"chicken": {
 	},
@@ -122,7 +123,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oTree1,
-		"areaFactor": areaFactor / 100,
+		"radiusFactor": 1/10,
 		"maxDistGroup": 4
 	},
 	"decoratives": {

@@ -130,7 +130,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oTree2,
-		"areaFactor": 1/25,
+		"radiusFactor": 1/5,
 		"maxDistGroup": 7
 	},
 	"decoratives": {

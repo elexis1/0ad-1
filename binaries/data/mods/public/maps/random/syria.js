@@ -111,7 +111,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": pickRandom([oPalm, oTamarix]),
-		"areaFactor": 1/600,
+		"radiusFactor": 1/25,
 		"num": 3 //TODO
 	}
 	// No decoratives

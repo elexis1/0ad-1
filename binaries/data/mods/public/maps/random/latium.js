@@ -364,7 +364,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPalm,
-		"areaFactor": 1/100, // 5
+		"radiusFactor": 1/10, // 5
 		"maxDistGroup": 5,
 		//"constraint": avoidClasses(clCliff, 1) // TODO
 	}

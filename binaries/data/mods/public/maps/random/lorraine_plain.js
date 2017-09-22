@@ -101,7 +101,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oOak,
-		"areaFactor": 1/100, // 3 trees
+		"radiusFactor": 1/10, // 3 trees
 		"maxDistGroup": 5
 	},
 	"decoratives": {
