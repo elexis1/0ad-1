@@ -83,8 +83,7 @@ placeDefaultPlayerBases({
 		"template": oStoneLarge
 	},
 	"trees": {
-		"template": oTree,
-		"areaFactor": 1/60
+		"template": oTree
 	}
 	// No decoratives
 });
