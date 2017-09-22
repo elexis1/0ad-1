@@ -147,6 +147,7 @@ for (var i = 0; i < numPlayers; i++)
 		placer = new ClumpPlacer(70, 1.0, 0.5, 10,forestX,forestY);
 		painter = new LayeredPainter(types, [0] );
 	} while (createArea( placer, [painter, paintClass(clBaseResource)], avoidClasses(clBaseResource, 0) ) === undefined);
+
 	// creating the water patch explaining the forest
 	do {
 		var watAngle = forestAngle + randFloat((PI/3), (5*PI/3));

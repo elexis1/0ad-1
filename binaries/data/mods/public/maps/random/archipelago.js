@@ -68,7 +68,7 @@ var clLand = createTileClass();
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
-// Create player islands
+log("Creating player islands...");
 for (let i in playerIDs)
 	createArea(
 		new ChainPlacer(
