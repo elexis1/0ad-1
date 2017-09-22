@@ -6,7 +6,10 @@ const CELL_SIZE = 4;
 const HEIGHT_UNITS_PER_METRE = 92;
 const MIN_MAP_SIZE = 128;
 const MAX_MAP_SIZE = 512;
+
+// TODO: Shouldn't have to keep in sync with CCmpRangeManager::LosIsOffWorld, CCmpPathfinder::UpdateGrid,TerrainUpdateHelper
 const MAP_BORDER_WIDTH = 3;
+
 const FALLBACK_CIV = "athen";
 /**
  * Constants needed for heightmap_manipulation.js
@@ -280,7 +283,7 @@ function createSimpleTerrain(terrain)
 
 function placeObject(x, z, type, player, angle)
 {
-	if (g_Map.validT(x, z, MAP_BORDER_WIDTH))
+	if (g_Map.validT(x, z))
 		g_Map.addObject(new Entity(type, player, x, z, angle));
 }
 
