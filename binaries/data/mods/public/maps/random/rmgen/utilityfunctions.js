@@ -173,20 +173,21 @@ function createMines(mines, constraint, tileclass, count)
 /**
  * Places 8 stone mines in a small circular shape.
  */
-function createStoneMineFormation(x, z, tileclass)
+function createStoneMineFormation(x, z, terrain)
 {
-	var placer = new ChainPlacer(1, 2, 2, 1, x, z, undefined, [5]);
-	var painter = new TerrainPainter(tileclass);
-	createArea(placer, painter, null);
+	createArea(
+		new ChainPlacer(1, 2, 2, 1, x, z, undefined, [5]),
+		new TerrainPainter(terrain),
+		null);
 
-	var bbAngle = randFloat(0, TWO_PI);
-	const bbDist = 2.5;
+	let bbAngle = randFloat(0, TWO_PI);
+	let dist = 2.5;
 
-	for (var i = 0; i < 8; ++i)
+	for (let i = 0; i < 8; ++i)
 	{
 		placeObject(
-			Math.round(x + randFloat(bbDist, bbDist + 1) * Math.cos(bbAngle)),
-			Math.round(z + randFloat(bbDist, bbDist + 1) * Math.sin(bbAngle)),
+			Math.round(x + randFloat(dist, dist + 1) * Math.cos(bbAngle)),
+			Math.round(z + randFloat(dist, dist + 1) * Math.sin(bbAngle)),
 			oStoneSmall,
 			0,
 			randFloat(0, 2 * PI));

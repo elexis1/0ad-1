@@ -60,7 +60,9 @@ placeDefaultPlayerBases({
 	"metal": {
 		"template": oMetalLarge
 	},
-	// TODO: stone mine formation
+	"stone_formation": {
+		"terrain": tDirt4
+	},
 	"trees": {
 		"template": oBaobab,
 		"radiusFactor": 1/15,

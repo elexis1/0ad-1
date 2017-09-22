@@ -74,22 +74,15 @@ placeDefaultPlayerBases({
 	"metal": {
 		"template": oMetalLarge
 	},
+	"stone_formation": {
+		"terrain": tDirt4
+	},
 	"trees": {
 		"template": oBaobab,
 		"radiusFactor": 1/15
 	}
 	// No decoratives
 });
-
-for (let i in playerX)
-{
-	let mAngle += randFloat(PI/8, PI/4);
-	let mX = Math.round(playerX[i] + 12 * Math.cos(mAngle));
-	mlet Z = Math.round(playerZ[i] + 12 * Math.sin(mAngle));
-	createStoneMineFormation(mX, mZ, tDirt4);
-	addToClass(mX, mZ, clBaseResource);
-}
-
 RMS.SetProgress(20);
 
 createHills([tDirt2, tCliff, tGrassShrubs], avoidClasses(clPlayer, 35, clForest, 20, clHill, 20, clWater, 2), clHill, scaleByMapSize(5, 8));

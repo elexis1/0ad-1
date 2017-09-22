@@ -285,6 +285,7 @@ function placeDefaultPlayerBase(args, i)
 		"trees": placeDefaultTrees,
 		"metal": createDefaultMine,
 		"stone": createDefaultMine,
+		"stone_formation": createDefaultStoneMineFormation,
 		"berries": placeDefaultBerries,
 		"chicken": placeDefaultChicken,
 		"decoratives": placeDefaultDecoratives
