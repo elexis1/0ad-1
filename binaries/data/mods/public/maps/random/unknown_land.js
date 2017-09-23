@@ -447,24 +447,21 @@ else if (md == 6) //edge seas
 		}
 	}
 
-	var mdd1 = randIntInclusive(1,2);
-
 	var playerIDs = sortAllPlayers();
-
-	// place players
 	var playerX = [];
 	var playerZ = [];
 	var playerPos = [];
+	let horizontal = randBool();
 
 	for (var i = 0; i < numPlayers; i++)
 	{
 		playerPos[i] = (i + 1) / (numPlayers + 1);
-		if (mdd1 == 1) //horizontal
+		if (horizontal)
 		{
 			playerX[i] = playerPos[i];
 			playerZ[i] = 0.4 + 0.2*(i%2);
 		}
-		else //vertical
+		else
 		{
 			playerX[i] = 0.4 + 0.2*(i%2);
 			playerZ[i] = playerPos[i];
@@ -478,112 +475,28 @@ else if (md == 6) //edge seas
 		addCivicCenterAreaToClass(ix, iz, clPlayer);
 	}
 
-	var mdd2 = randIntInclusive(1,3);
-	var fadedistance = 7;
-
-	if (mdd1 == 1)
-	{
-		if ((mdd2 == 1)||(mdd2 == 3))
-		{
-			var distance = randFloat(0., 0.1);
-			for (var ix = 0; ix < mapSize; ix++)
-			{
-				for (var iz = 0; iz < mapSize; iz++)
-				{
-					if (iz > (0.69+distance) * mapSize)
-					{
-						if (iz < (0.69+distance) * mapSize + fadedistance)
-						{
-							setHeight(ix, iz, 3 - 7 * (iz - (0.69+distance) * mapSize) / fadedistance);
-							if (3 - 7 * (iz - (0.69+distance) * mapSize) / fadedistance < 0.5)
-								addToClass(ix, iz, clWater);
-						}
-						else
-						{
-							setHeight(ix, iz, -4);
-							addToClass(ix, iz, clWater);
-						}
-					}
+	for (let locations of pickRandom([["first"], ["second"], ["first", "second"]]))
+		for (let location of locations)
+			paintRiver({
+				"horizontal": horizontal,
+				"parallel": false,
+				"position": (location == "first" ? 0 : 1) + (location == "first" ? +1 : -1) * randFloat(0, scaleByMapSize(0, 0.1)),
+				"width": 0.61,
+				"fadeDist": 0.015,
+				"deviation": 0,
+				"waterHeight": -4,
+				"landHeight": 3,
+				"meanderShort": 0,
+				"meanderLong": 0,
+				"waterFunc": (ix, iz, height) => {
+					placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
+					addToClass(ix, iz, clWater);
+				},
+				"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
+					if (getHeight(ix, iz) < 0.5)
+						addToClass(ix, iz, clWater);
 				}
-
-			}
-		}
-		if ((mdd2 == 2)||(mdd2 == 3))
-		{
-			var distance = randFloat(0., 0.1);
-			for (var ix = 0; ix < mapSize; ix++)
-			{
-				for (var iz = 0; iz < mapSize; iz++)
-				{
-					if (iz < (0.31-distance) * mapSize)
-					{
-						if (iz > (0.31-distance) * mapSize - fadedistance)
-						{
-							setHeight(ix, iz, 3 - 7 * ((0.31-distance) * mapSize - iz) / fadedistance);
-							if (3 - 7 * ((0.31-distance) * mapSize - iz) / fadedistance < 0.5)
-								addToClass(ix, iz, clWater);
-						}
-						else
-						{
-							setHeight(ix, iz, -4);
-							addToClass(ix, iz, clWater);
-						}
-					}
-				}
-			}
-		}
-	}
-	else //vertical
-	{
-		if ((mdd2 == 1)||(mdd2 == 3))
-		{
-			var distance = randFloat(0., 0.1);
-			for (var ix = 0; ix < mapSize; ix++)
-			{
-				for (var iz = 0; iz < mapSize; iz++)
-				{
-					if (ix > (0.69+distance) * mapSize)
-					{
-						if (ix < (0.69+distance) * mapSize + fadedistance)
-						{
-							setHeight(ix, iz, 3 - 7 * (ix - (0.69+distance) * mapSize) / fadedistance);
-							if (3 - 7 * (ix - (0.69+distance) * mapSize) / fadedistance < 0.5)
-								addToClass(ix, iz, clWater);
-						}
-						else
-						{
-							setHeight(ix, iz, -4);
-							addToClass(ix, iz, clWater);
-						}
-					}
-				}
-			}
-		}
-		if ((mdd2 == 2)||(mdd2 == 3))
-		{
-			var distance = randFloat(0., 0.1);
-			for (var ix = 0; ix < mapSize; ix++)
-			{
-				for (var iz = 0; iz < mapSize; iz++)
-				{
-					if (ix < (0.31-distance) * mapSize)
-					{
-						if (ix > (0.31-distance) * mapSize - fadedistance)
-						{
-							setHeight(ix, iz, 3 - 7 * ((0.31-distance) * mapSize - ix) / fadedistance);
-							if (3 - 7 * ((0.31-distance) * mapSize - ix) / fadedistance < 0.5)
-								addToClass(ix, iz, clWater);
-						}
-						else
-						{
-							setHeight(ix, iz, -4);
-							addToClass(ix, iz, clWater);
-						}
-					}
-				}
-			}
-		}
-	}
+			});
 
 	log("Creating shore jaggedness...");
 	placer = new ChainPlacer(2, floor(scaleByMapSize(4, 6)), 3, 1);
