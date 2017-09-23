@@ -965,8 +965,10 @@ for (var i = 0; i < numPlayers; ++i)
 }
 
 placeDefaultCityPatches({
+	"playerIDs": playerIDs,
 	"playerX": playerX,
-	"playerY": playerY,
+	"playerZ": playerZ,
+	// No innerTerrain, outerTerrain, only mark the tileclass
 	"radius": scaleByMapSize(18, 32),
 	"painters": [
 		paintClass(clPlayer)

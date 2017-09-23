@@ -299,8 +299,10 @@ else if (md == 4) //central river
 	if (randBool())
 	{
 		placeDefaultCityPatches({
+			"playerIDs": playerIDs,
 			"playerX": playerX,
-			"playerY": playerY,
+			"playerZ": playerZ,
+			// No innerTerrain, outerTerrain, only mark the tileclass
 			"radius": scaleByMapSize(17, 29),
 			"painters": [
 				paintClass(clPlayer)
@@ -470,8 +472,10 @@ else if (md == 7) //gulf
 	}
 
 	placeDefaultCityPatches({
+		"playerIDs": playerIDs,
 		"playerX": playerX,
-		"playerY": playerY,
+		"playerZ": playerZ,
+		// No innerTerrain, outerTerrain, only mark the tileclass
 		"radius": scaleByMapSize(17, 29),
 		"painters": [
 			paintClass(clPlayer)
@@ -552,8 +556,10 @@ else if (md == 8) //lakes
 	}
 
 	placeDefaultCityPatches({
+		"playerIDs": playerIDs,
 		"playerX": playerX,
-		"playerY": playerY,
+		"playerZ": playerZ,
+		// No innerTerrain, outerTerrain, only mark the tileclass
 		"radius": scaleByMapSize(17, 29),
 		"painters": [
 			paintClass(clPlayer)
