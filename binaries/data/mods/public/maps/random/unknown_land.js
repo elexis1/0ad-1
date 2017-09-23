@@ -1,5 +1,6 @@
 RMS.LoadLibrary("rmgen");
 RMS.LoadLibrary("rmbiome");
+RMS.LoadLibrary("unknown");
 
 TILE_CENTERED_HEIGHT_MAP = true;
 
@@ -436,127 +437,7 @@ else if (md == 5) //rivers and lake
 //********************************************************************************************************
 else if (md == 6) //edge seas
 {
-
-	for (var ix = 0; ix < mapSize; ix++)
-	{
-		for (var iz = 0; iz < mapSize; iz++)
-		{
-			var x = ix / (mapSize + 1.0);
-			var z = iz / (mapSize + 1.0);
-				setHeight(ix, iz, 3);
-		}
-	}
-
-	var playerIDs = sortAllPlayers();
-	var playerX = [];
-	var playerZ = [];
-	var playerPos = [];
-	let horizontal = randBool();
-
-	for (var i = 0; i < numPlayers; i++)
-	{
-		playerPos[i] = (i + 1) / (numPlayers + 1);
-		if (horizontal)
-		{
-			playerX[i] = playerPos[i];
-			playerZ[i] = 0.4 + 0.2*(i%2);
-		}
-		else
-		{
-			playerX[i] = 0.4 + 0.2*(i%2);
-			playerZ[i] = playerPos[i];
-		}
-
-		var fx = fractionToTiles(playerX[i]);
-		var fz = fractionToTiles(playerZ[i]);
-		var ix = round(fx);
-		var iz = round(fz);
-
-		addCivicCenterAreaToClass(ix, iz, clPlayer);
-	}
-
-	for (let location of pickRandom([["first"], ["second"], ["first", "second"]]))
-		paintRiver({
-			"horizontal": horizontal,
-			"parallel": false,
-			"position": (location == "first" ? 0 : 1) + (location == "first" ? +1 : -1) * randFloat(0, scaleByMapSize(0, 0.1)),
-			"width": 0.61,
-			"fadeDist": 0.015,
-			"deviation": 0,
-			"waterHeight": -4,
-			"landHeight": 3,
-			"meanderShort": 0,
-			"meanderLong": 0,
-			"waterFunc": (ix, iz, height) => {
-				placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
-				addToClass(ix, iz, clWater);
-			},
-			"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
-				if (getHeight(ix, iz) < 0.5)
-					addToClass(ix, iz, clWater);
-			}
-		});
-
-	log("Creating shore jaggedness...");
-	placer = new ChainPlacer(2, floor(scaleByMapSize(4, 6)), 3, 1);
-	terrainPainter = new LayeredPainter(
-		[tCliff, tHill],		// terrains
-		[2]								// widths
-	);
-	elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -5, 4);
-	createAreas(
-		placer,
-		[terrainPainter, elevationPainter, paintClass(clWater)],
-		[avoidClasses(clPlayer, 20), borderClasses(clWater, 6, 4)],
-		scaleByMapSize(7, 130) * 2, 150
-	);
-
-	placer = new ChainPlacer(2, floor(scaleByMapSize(4, 6)), 3, 1);
-	terrainPainter = new LayeredPainter(
-		[tCliff, tHill],		// terrains
-		[2]								// widths
-	);
-	elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 3, 4);
-	createAreas(
-		placer,
-		[terrainPainter, elevationPainter, unPaintClass(clWater)],
-		borderClasses(clWater, 4, 7),
-		scaleByMapSize(12, 130) * 2, 150
-	);
-
-	var mdd3 = randIntInclusive(1,5);
-	if (mdd3 == 1)
-	{
-		log("Creating islands...");
-		placer = new ChainPlacer(floor(scaleByMapSize(4, 7)), floor(scaleByMapSize(7, 10)), floor(scaleByMapSize(16, 40)), 0.07);
-		terrainPainter = new LayeredPainter(
-			[tMainTerrain, tMainTerrain],		// terrains
-			[2]								// widths
-		);
-		elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 3.1, 4);
-		createAreas(
-			placer,
-			[terrainPainter, elevationPainter, paintClass(clLand)],
-			avoidClasses(clLand, 3, clPlayer, 3),
-			scaleByMapSize(2, 5)*randIntInclusive(8,14)
-		);
-	}
-	else if (mdd3 == 2)
-	{
-		log("Creating extentions...");
-		placer = new ChainPlacer(floor(scaleByMapSize(4, 7)), floor(scaleByMapSize(7, 10)), floor(scaleByMapSize(16, 40)), 0.07);
-		terrainPainter = new LayeredPainter(
-			[tMainTerrain, tMainTerrain],		// terrains
-			[2]								// widths
-		);
-		elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 3.1, 4);
-		createAreas(
-			placer,
-			[terrainPainter, elevationPainter, paintClass(clLand)],
-			null,
-			scaleByMapSize(2, 5)*randIntInclusive(8,14)
-		);
-	}
+	var [playerIDs, playerX, playerZ] = unknownEdgeSeas(true);
 }
 //********************************************************************************************************
 else if (md == 7) //gulf
