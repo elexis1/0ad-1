@@ -379,7 +379,7 @@ else if (md == 4) //central river
 
 	var mdd1 = randIntInclusive(1,2);
 
-	var [playerIDs, playerX, playerZ] = placePlayersRiver(mdd1 != 1, (i, pos) => [
+	var [playerIDs, playerX, playerZ] = placePlayersRiver(mdd1 != 2, (i, pos) => [
 		0.5 * (i % 2) + 0.25,
 		pos
 	]);
