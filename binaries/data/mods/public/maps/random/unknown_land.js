@@ -475,28 +475,27 @@ else if (md == 6) //edge seas
 		addCivicCenterAreaToClass(ix, iz, clPlayer);
 	}
 
-	for (let locations of pickRandom([["first"], ["second"], ["first", "second"]]))
-		for (let location of locations)
-			paintRiver({
-				"horizontal": horizontal,
-				"parallel": false,
-				"position": (location == "first" ? 0 : 1) + (location == "first" ? +1 : -1) * randFloat(0, scaleByMapSize(0, 0.1)),
-				"width": 0.61,
-				"fadeDist": 0.015,
-				"deviation": 0,
-				"waterHeight": -4,
-				"landHeight": 3,
-				"meanderShort": 0,
-				"meanderLong": 0,
-				"waterFunc": (ix, iz, height) => {
-					placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
+	for (let location of pickRandom([["first"], ["second"], ["first", "second"]]))
+		paintRiver({
+			"horizontal": horizontal,
+			"parallel": false,
+			"position": (location == "first" ? 0 : 1) + (location == "first" ? +1 : -1) * randFloat(0, scaleByMapSize(0, 0.1)),
+			"width": 0.61,
+			"fadeDist": 0.015,
+			"deviation": 0,
+			"waterHeight": -4,
+			"landHeight": 3,
+			"meanderShort": 0,
+			"meanderLong": 0,
+			"waterFunc": (ix, iz, height) => {
+				placeTerrain(ix, iz, height < -1.5 ? tWater : tShore);
+				addToClass(ix, iz, clWater);
+			},
+			"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
+				if (getHeight(ix, iz) < 0.5)
 					addToClass(ix, iz, clWater);
-				},
-				"landFunc": (ix, iz, shoreDist1, shoreDist2) => {
-					if (getHeight(ix, iz) < 0.5)
-						addToClass(ix, iz, clWater);
-				}
-			});
+			}
+		});
 
 	log("Creating shore jaggedness...");
 	placer = new ChainPlacer(2, floor(scaleByMapSize(4, 6)), 3, 1);
