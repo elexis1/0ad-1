@@ -21,7 +21,6 @@ var oFish = "gaia/fauna_fish";
 var oStoneLarge = "gaia/geology_stonemine_medit_quarry";
 var oStoneSmall = "gaia/geology_stone_alpine_a";
 var oMetalLarge = "gaia/geology_metal_desert_badlands_slabs";
-var oWood = "gaia/special_treasure_wood";
 
 var aRockLarge = "actor|geology/stone_granite_med.xml";
 var aRockMedium = "actor|geology/stone_granite_med.xml";
@@ -48,38 +47,22 @@ var clForest = createTileClass();
 initTerrain(tPrimary);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
+
+// Create markets
+let mDist = 12;
 for (let i = 0; i < numPlayers; ++i)
 {
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-	let ix = Math.round(fx);
-	let iz = Math.round(fz);
+	let mAngle = randFloat(0, 2 * Math.PI);
 
-	// TODO:
-	// Create wood treasure
-	mAngle += PI/4;
-	let bbX = Math.round(fx + mDist * Math.cos(mAngle));
-	let bbZ = Math.round(fz + mDist * Math.sin(mAngle));
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oWood, 14,14, 0,3)],
-			true, clBaseResource, bbX, bbZ,
-			avoidClasses(clBaseResource, 4)
-		), 0);
+	let x = Math.round(fractionToTiles(playerX[i]) + mDist * Math.cos(mAngle));
+	let z = Math.round(fractionToTiles(playerZ[i]) + mDist * Math.sin(mAngle));
 
-	// TODO:
-	// Create market
-	mAngle += PI/4;
-	placeObject(
-		Math.round(fx + mDist * Math.cos(mAngle)),
-		Math.round(fz + mDist * Math.sin(mAngle)),
-		"structures/" + getCivCode(id-1) + "_market",
-		id,
-		BUILDING_ORIENTATION);
+	placeObject(x, z, "structures/" + getCivCode(playerIDs[i] - 1) + "_market", playerIDs[i], BUILDING_ORIENTATION);
+	addCivicCenterAreaToClass(x, z, clBaseResource);
 }
 
 placeDefaultPlayerBases({
-	"playerPlacement": radialPlayerPlacement(),
+	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	// TODO: 'iberWall': 'towers'
@@ -90,16 +73,21 @@ placeDefaultPlayerBases({
 	"chicken": {
 		"template": oMuskox
 	},
-	// No berries, no trees
+	// No berries, no trees, no decoratives
 	"metal": {
 		"template": oMetalLarge
 	},
 	"stone": {
 		"template": oStoneLarge
 	},
-	"decoratives": {
-		"template": aGrassShort
-	}
+	"treasures": {
+		"types": [
+			{
+				"template": "gaia/special_treasure_wood",
+				"count": 14
+			}
+		]
+	},
 });
 RMS.SetProgress(30);
 
