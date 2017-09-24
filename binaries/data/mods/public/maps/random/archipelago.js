@@ -33,7 +33,6 @@ const oSecondaryHuntableAnimal = g_Gaia.secondaryHuntableAnimal;
 const oStoneLarge = g_Gaia.stoneLarge;
 const oStoneSmall = g_Gaia.stoneSmall;
 const oMetalLarge = g_Gaia.metalLarge;
-const oWood = "gaia/special_treasure_wood";
 
 const aGrass = g_Decoratives.grass;
 const aGrassShort = g_Decoratives.grassShort;
@@ -67,19 +66,20 @@ var clSettlement = createTileClass();
 var clLand = createTileClass();
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
+var islandRadius = scaleByMapSize(22, 31);
 
 log("Creating player islands...");
-for (let i in playerIDs)
+for (let i = 0; i < numPlayers; ++i)
 	createArea(
 		new ChainPlacer(
 			2,
 			Math.floor(scaleByMapSize(5, 10)),
 			Math.floor(scaleByMapSize(25, 60)),
 			1,
-			Math.floor(playerX[i]),
-			Math.floor(playerZ[i]),
+			Math.floor(fractionToTiles(playerX[i])),
+			Math.floor(fractionToTiles(playerZ[i])),
 			0,
-			[Math.floor(radius)]),
+			[Math.floor(islandRadius)]),
 		[
 			new LayeredPainter([tMainTerrain , tMainTerrain, tMainTerrain], [1, shoreRadius]),
 			new SmoothElevationPainter(ELEVATION_SET, 3, shoreRadius),
@@ -89,12 +89,9 @@ for (let i in playerIDs)
 
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
-	"playerTileClass": clPlayer,
+	// playerTileClass marked above
 	"baseResourceClass": clBaseResource,
-	"cityPatch": {
-		"innerTerrain": tRoadWild,
-		"outerTerrain": tRoad
-	},
+	// cityPatch painted below
 	"chicken": {
 	},
 	"berries": {
@@ -106,27 +103,23 @@ placeDefaultPlayerBases({
 	"stone": {
 		"template": oStoneLarge
 	},
+	"treasures": {
+		"types": [
+			{
+				"template": "gaia/special_treasure_wood",
+				"count": 14
+			}
+		]
+	},
 	"trees": {
-		"template": oPine,
-		"radiusFactor": 1/10 * scaleByMapSize(22,31) ...
+		"template": oTree1,
+		"radius": islandRadius,
+		"radiusFactor": 1/10
 	},
 	"decoratives": {
 		"template": aGrassShort
 	}
 });
-
-{
-	// create wood treasure
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 13;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oWood, 14,14, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-}
 
 log("Creating islands...");
 createAreas(
@@ -144,13 +137,12 @@ paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 
 placeDefaultCityPatches({
+	"playerIDs": playerIDs,
 	"playerX": playerX,
-	"playerY": playerY,
-	"radius": scaleByMapSize(22, 31),
-	"painters": [
-		paintClass(clPlayer),
-		new LayeredPainter([tRoadWild, tRoad], [1])
-	]
+	"playerZ": playerZ,
+	"innerTerrain": tRoadWild,
+	"outerTerrain": tRoad,
+	"radius": islandRadius
 });
 
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);
