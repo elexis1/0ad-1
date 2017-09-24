@@ -63,8 +63,7 @@ var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
 var mapArea = mapSize*mapSize;
 
-var clCorsica = createTileClass();
-var clSardinia = createTileClass();
+var clIsland = createTileClass();
 var clCreek = createTileClass();
 
 var clWater = createTileClass();
@@ -91,81 +90,62 @@ initTerrain(tVeryDeepWater);
 
 var swap = randBool();
 
-log("Creating Corsica");
+var nbCreeks = scaleByMapSize(6, 15);
+var nbSubIsland = 5;
+var nbBeaches = scaleByMapSize(2, 5);
+var beachSmallRadius = fractionToTiles(0.45);
+var beachBigRadius = fractionToTiles(0.57);
+var nbPassagesIsland = scaleByMapSize(1, 4);
+
+log("Creating Corsica and Sardinia");
 var CorsicaX = fractionToTiles(0.99);
-var CorsicaZ = fractionToTiles(0.9);
-if (swap)
-	CorsicaX = fractionToTiles(0.01);
-
-// Okay so the thing here is that we'll make a sort of jagged circle. To achieve this, I'll make a few islands
-// that will basically be put together
-// first, let's make a big round island in the corner.
-// okay so actually subdivided cleverly to make it work and give jagedness with the multiple islands
-var llx = round(CorsicaX);
-var llz = round(CorsicaZ);
-// okay so the circle reaches close to a third of the map
-var placer = new ClumpPlacer(fractionToSize(0.3)*1.8, 1.0, 0.5, 10, llx, llz);
-var terrainPainter = new LayeredPainter([tCliffs, tGrass], [2] );
-var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 5,0);
-createArea(placer, [terrainPainter, paintClass(clCorsica), elevationPainter], null);
-var nbSubIsland = 5;	// actually 5+1
-for (var i = 0; i <= nbSubIsland; i++)
-{
-	// radius is "sqrt(this.size / PI)"... so in my case it's "sqrt(fractionofSize(0.33)*2.0/PI), about 0.64, sqrt-ed
-	//Let's round down.
-	// only from π to 3π/2
-	var angle = (i * (-PI/(nbSubIsland*2)) + PI);
-	if (!swap)
-		angle *= -1;
-	var llx = round (CorsicaX + sqrt(fractionToSize(0.3)*0.55)*sin(angle));
-	var llz = round (CorsicaZ + sqrt(fractionToSize(0.3)*0.55)*cos(angle));
-	var placer = new ClumpPlacer(fractionToSize(0.05)/2, 0.6, 0.03, 10, llx, llz);
-	var terrainPainter = new LayeredPainter([tCliffs, tGrass], [2] );
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 5,1);
-	createArea(placer, [terrainPainter, paintClass(clCorsica), elevationPainter], null);
-}
-RMS.SetProgress(10);
-
-log("Creating Sardinia");
 var SardiniaX = fractionToTiles(0.01);
-var SardiniaZ = fractionToTiles(0.1);
 if (swap)
-	SardiniaX = fractionToTiles(0.99);
+	[CorsicaX, SardiniaX] = [SardiniaX, CorsicaX];
 
-var llx = round(SardiniaX);
-var llz = round(SardiniaZ);
-// okay so the circle reaches close to a third of the map
-var placer = new ClumpPlacer(fractionToSize(0.3)*1.8, 1.0, 0.5, 10, llx, llz);
-var terrainPainter = new LayeredPainter([tCliffs, tGrass], [2] );
-var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 5,0);
-createArea(placer, [terrainPainter, paintClass(clSardinia), elevationPainter], null);
-// same as Corsica on the other side
-for (var i = 0; i <= nbSubIsland; i++)
+var islandX = [SardiniaX, CorsicaX];
+var islandZ = [fractionToTiles(0.1), fractionToTiles(0.9)];
+
+for (let island = 0; island < 2; ++island)
 {
-	var angle = (i * (-PI/(nbSubIsland*2)));
-	if (!swap)
-		angle *= -1;
-	var llx = round (SardiniaX + sqrt(fractionToSize(0.3)*0.55)*sin(angle));
-	var llz = round (SardiniaZ + sqrt(fractionToSize(0.3)*0.55)*cos(angle));
-	var placer = new ClumpPlacer(fractionToSize(0.05)/2, 0.6, 0.03, 10, llx, llz);
-	var terrainPainter = new LayeredPainter([tCliffs, tGrass], [2] );
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 5,1);
-	createArea(placer, [terrainPainter, paintClass(clSardinia), elevationPainter], null);
-}
+	log("Creating island area...");
+	createArea(
+		new ClumpPlacer(fractionToSize(0.3) * 1.8, 1.0, 0.5, 10, Math.round(islandX[island]), Math.round(islandZ[island])),
+		[
+			new LayeredPainter([tCliffs, tGrass], [2]),
+			paintClass(clIsland),
+			new SmoothElevationPainter(ELEVATION_SET, 5,0)
+		],
+		null);
 
-log("Creating Creeks");
-
-// okay so now let's make some cleverly designed creeks: this creates a very jagged relief, looks good
-var nbCreeks = scaleByMapSize(6,15);
-// inCorsica first
-var islandX = [SardiniaX,CorsicaX];
-var islandZ = [SardiniaZ,CorsicaZ];
-// first: the creeks
-for (var island = 0; island <= 1; island++)
-	for (var i = 0; i <= nbCreeks; i++)
+	log("Creating subislands...");
+	for (let i = 0; i < nbSubIsland + 1; ++i)
 	{
-		var radius = fractionToTiles(randFloat(0.49, 0.55));
-		var angle = PI*island + i*(PI/(nbCreeks*2));
+		let angle = Math.PI * (island - i / (nbSubIsland * 2));
+		if (!swap)
+			angle *= -1;
+
+		createArea(
+			new ClumpPlacer(
+				fractionToSize(0.05) / 2,
+				0.6,
+				0.03,
+				10,
+				Math.round(islandX[island] + Math.sqrt(fractionToSize(0.3) * 0.55) * Math.sin(angle)),
+				Math.round(islandZ[island] + Math.sqrt(fractionToSize(0.3) * 0.55) * Math.cos(angle))),
+			[
+				new LayeredPainter([tCliffs, tGrass], [2]),
+				paintClass(clIsland),
+	            new SmoothElevationPainter(ELEVATION_SET, 5,1)
+			],
+			null);
+	}
+
+	log("Creating Creeks");
+	for (let i = 0; i < nbCreeks + 1; ++i)
+	{
+		let radius = fractionToTiles(randFloat(0.49, 0.55));
+		let angle = Math.PI * (island + i * (1 / (nbCreeks * 2)));
 		if (swap)
 			angle += PI/2;
 
@@ -180,112 +160,118 @@ for (var island = 0; island <= 1; island++)
 			[
 				new TerrainPainter(tSteepCliffs),
 				paintClass(clCreek),
-				new SmoothElevationPainter(ELEVATION_SET, -5,0) // base height is -10
+				new SmoothElevationPainter(ELEVATION_SET, -5, 0)
 			],
 			null);
 	}
 
-var nbBeaches = scaleByMapSize(2,5);
-for (var island = 0; island <= 1; island++)
-{
-	for (var i = 0; i <= nbBeaches; i++)
+	log("Creating beaches...");
+	for (let i = 0; i < nbBeaches + 1; ++i)
 	{
-		var smallRadius = fractionToTiles( 0.45);
-		var bigRadius = fractionToTiles( 0.57);
-		var angle = PI*island + i*(PI/(nbBeaches*2.5)) + PI/(nbBeaches*6) + randFloat(-PI/(nbBeaches*7),PI/(nbBeaches*7));
+		let angle = Math.PI * (island + (i / (nbBeaches * 2.5)) + 1 / (nbBeaches * 6) + randFloat(-1, 1) / (nbBeaches * 7));
 		if (swap)
-			angle += PI/2;
-		var startX = smallRadius * cos(angle);
-		var startZ = smallRadius * sin(angle);
-		startX = round(islandX[island] + startX);
-		startZ = round(islandZ[island] + startZ);
+			angle += Math.PI / 2;
 
-		var endX = bigRadius * cos(angle);
-		var endZ = bigRadius * sin(angle);
-		endX = round(islandX[island] + endX);
-		endZ = round(islandZ[island] + endZ);
+		let startX = Math.round(islandX[island] + beachSmallRadius * Math.cos(angle));
+		let startZ = Math.round(islandZ[island] + beachSmallRadius * Math.sin(angle));
 
-		var placer = new ClumpPlacer(130, 0.7, 0.8, 10, round((startX+endX*3)/4),round((startZ+endZ*3)/4));
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -1,5);	// base height is -10
-		createArea(placer, [elevationPainter], null);
+		let endX = Math.round(islandX[island] + beachBigRadius * Math.cos(angle));
+		let endZ = Math.round(islandZ[island] + beachBigRadius * Math.sin(angle));
 
-		startX = Math.max(0, Math.min(startX, mapSize));
-		startZ = Math.max(0, Math.min(startZ, mapSize));
-		endX = Math.max(0, Math.min(endX, mapSize));
-		endZ = Math.max(0, Math.min(endZ, mapSize));
+		createArea(
+			new ClumpPlacer(130, 0.7, 0.8, 10, Math.round((startX + endX * 3) / 4), Math.round((startZ + endZ * 3) / 4)),
+			[new SmoothElevationPainter(ELEVATION_SET, -1, 5)],
+			null);
 
-		straightPassageMaker(startX, startZ,endX,endZ, 25, 18, 4,clShore,null);
+		straightPassageMaker(
+			Math.max(0, Math.min(startX, mapSize)),
+			Math.max(0, Math.min(startZ, mapSize)),
+			Math.max(0, Math.min(endX, mapSize)),
+			Math.max(0, Math.min(endZ, mapSize)),
+			25,
+			18,
+			4,
+			clShore,
+			null);
 	}
+
+	log("Creating Main Relief");
+	createArea(
+		new ClumpPlacer(
+			fractionToSize(0.3) * 1.8,
+			1,
+			0.2,
+			4,
+			Math.round((islandX[island] * 5 + fractionToTiles(0.5)) / 6.0),
+			Math.round(fractionToTiles(island ? 0.8 : 0.2))),
+		[new SmoothElevationPainter(ELEVATION_MODIFY, 30, fractionToTiles(0.45))],
+		null);
 }
-RMS.SetProgress(20);
 
-log("Creating Main Relief");
-placer = new ClumpPlacer(fractionToSize(0.3)*1.8, 1.0, 0.2, 4,round((CorsicaX * 5 + fractionToTiles(0.5)) / 6.0),round(fractionToTiles(0.8)));
-elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, 30,fractionToTiles(0.45));
-createArea( placer, [elevationPainter],  null);
-placer = new ClumpPlacer(fractionToSize(0.3)*1.8, 1.0, 0.2, 4,round((SardiniaX * 5 + fractionToTiles(0.5)) / 6.0),round(fractionToTiles(0.2)));
-elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, 30,fractionToTiles(0.45));
-createArea( placer, [elevationPainter],  null);
+RMS.SetProgress(30);
 
-log("Creating players");
-var playerIDs = sortAllPlayers();
-var fx = [];
-var fz = [];
-var playerAngle = [];
-
+log("Determine players per island...");
 var island = 0;
 var formerTeam = getPlayerTeam(0);
-var onCorsica = [];
-var onSardinia = [];
+var onIsland = [[], []];
+
 for (let o = 0; o < numPlayers; ++o)
 {
 	if (getPlayerTeam(o) === formerTeam && formerTeam !== -1)
 	{
 		// same island
 		if (island === 0)
-			onCorsica.push(o);
+			onIsland[1].push(o);
 		else
-			onSardinia.push(o);
+			onIsland[0].push(o);
 	}
 	else if (getPlayerTeam(o) !== -1)
 	{
 		if (island === 0)
 		{
 			island = 1;
-			onSardinia.push(o);
+			onIsland[0].push(o);
 		}
 		else
 		{
 			island = 0;
-			onCorsica.push(o);
+			onIsland[1].push(o);
 		}
 	}
 	else
 	{
-		// okay now the less crowded:
-		if (onCorsica.length > onSardinia.length)
-			onSardinia.push(o);
+		// Now the less crowded:
+		if (onIsland[1].length > onIsland[0].length)
+			onIsland[0].push(o);
 		else
-			onCorsica.push(o);
+			onIsland[1].push(o);
 	}
 	formerTeam = getPlayerTeam(o);
 }
 
 // Determine player locations
-for (let [island, x, sAngle] of [[onCorsica, CorsicaX, 1], [onSardinia, SardiniaX, 0]])
-	for (let i = 0; i < island.length; ++i)
+var fx = [];
+var fz = [];
+var playerAngle = [];
+for (let island = 0; island < 2; ++island)
+{
+	let pi = onIsland[island];
+
+	for (let i = 0; i < pi.length; ++i)
 	{
-		let angle = Math.PI * (i / (2 * island.length) + 1 / (4 * island.length) + sAngle);
+		let angle = Math.PI * (i / (2 * pi.length) + 1 / (4 * pi.length) + island);
 		if (swap)
 			angle += Math.PI / 2;
 
-		playerAngle[island[i]] = angle;
-		fx[island[i]] = Math.round(x + fractionToTiles(0.36 * Math.cos(angle)));
-		fz[island[i]] = Math.round(fractionToTiles(sAngle + 0.36 * Math.sin(angle)));
+		let p = pi[i];
+		playerAngle[p] = angle;
+		fx[p] = Math.round(islandX[island] + fractionToTiles(0.36 * Math.cos(angle)));
+		fz[p] = Math.round(fractionToTiles(island + 0.36 * Math.sin(angle)));
 	}
+}
 
 placeDefaultPlayerBases({
-	"playerPlacement": [playerIDs, fx.map(f => tilesToFraction(f)), fz.map(f => tilesToFraction(f))],
+	"playerPlacement": [sortAllPlayers(), fx.map(f => tilesToFraction(f)), fz.map(f => tilesToFraction(f))],
 	// playerTileClass set below
 	"baseResourceClass": clBaseResource,
 	//iberWall': false TODO
@@ -316,7 +302,7 @@ for (let i = 0; i < numPlayers; ++i)
 
 	// create the city patch
 	var cityRadius = radius/4;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.8, 0.3, 10, fx[i], fz[i]);
+	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.8, 0.3, 10, fx[i], fz[i]);
 	var painter = new LayeredPainter([tRoadWild,tRoad],[1]);
 	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, getHeight(fx[i], fz[i]),10);
 	createArea(placer, [painter,paintClass(clSettlement),elevationPainter], null);
@@ -344,16 +330,11 @@ for (let i = 0; i < numPlayers; ++i)
 RMS.SetProgress(40);
 
 log("Creating Corsica and Sardinia...");
-var SardX = round((SardiniaX * 5 + fractionToTiles(0.5))/6.0);
-var SardZ = round(fractionToTiles(0.1));
-
-var CorsX = round((CorsicaX * 5 + fractionToTiles(0.5)) / 6.0);
-var CorsZ = round(fractionToTiles(0.9));
-
-var nbPassagesIsland = scaleByMapSize(1, 4);
-
-for (let [x, z, sAngle] of [[CorsX, CorsZ, 1], [SardX, SardZ, 0]])
+for (let island = 0; island < 2; ++island)
 {
+	let x = Math.round((islandX[island] * 5 + fractionToTiles(0.5)) / 6.0);
+	let z = Math.round(islandZ[island]);
+
 	log("Creating first level plateau");
 	createArea(
 		new ClumpPlacer(fractionToSize(0.18) * 1.8, 0.95, 0.02, 4, x, z),
@@ -375,7 +356,7 @@ for (let [x, z, sAngle] of [[CorsX, CorsZ, 1], [SardX, SardZ, 0]])
 		for (let i = 0; i < nbPassagesIsland; ++i)
 		{
 			let radius = Math.sqrt(fractionToSize(0.1) / Math.PI) + 2; //TODO +2!??!?
-			let angle = Math.PI * (i / (2 * nbPassagesIsland) + 1 / (4 * nbPassagesIsland) + sAngle);
+			let angle = Math.PI * (i / (2 * nbPassagesIsland) + 1 / (4 * nbPassagesIsland) + island);
 			if (swap)
 				angle += Math.PI / 2;
 
@@ -396,7 +377,7 @@ for (let [x, z, sAngle] of [[CorsX, CorsZ, 1], [SardX, SardZ, 0]])
 	for (let i = 0; i <= 3; ++i)
 	{
 		let radius = Math.sqrt(fractionToSize(0.18) * 1.8 / Math.PI) + 2;
-		let angle = Math.PI * (i / 7 + 1 / 9 + sAngle);
+		let angle = Math.PI * (i / 7 + 1 / 9 + island);
 		if (swap)
 			angle += Math.PI / 2;
 
@@ -415,15 +396,19 @@ for (let [x, z, sAngle] of [[CorsX, CorsZ, 1], [SardX, SardZ, 0]])
 RMS.SetProgress(50);
 
 log("Creating bumps");
-placer = new ClumpPlacer(70, 0.6, 0.1, 4);
-elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, 2,3);
-createAreas( placer, [elevationPainter],  [avoidClasses(clPlayer,2,clPassage, 2), stayClasses(clCorsica,2)],scaleByMapSize(20,100), 5 );
-createAreas( placer, [elevationPainter],  [avoidClasses(clPlayer,2,clPassage, 2), stayClasses(clSardinia,2)],scaleByMapSize(20,100), 5 );
+createAreas(
+	new ClumpPlacer(70, 0.6, 0.1, 4),
+	[new SmoothElevationPainter(ELEVATION_MODIFY, 2,3)],
+	[avoidClasses(clPlayer, 2, clPassage, 2), stayClasses(clIsland, 2)],
+	2 * scaleByMapSize(20, 100), 5);
 
 log("Creating anti bumps");
-placer = new ClumpPlacer(120, 0.3, 0.1, 4);
-elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, -5,6);
-createAreas( placer, [elevationPainter],  [avoidClasses(clPlayer,2,clPassage, 2,clCorsica,2,clSardinia,2)],scaleByMapSize(20,100), 5 );
+createAreas(
+	new ClumpPlacer(120, 0.3, 0.1, 4),
+	[new SmoothElevationPainter(ELEVATION_MODIFY, -5, 6)],
+	[avoidClasses(clPlayer, 2, clPassage, 2, clIsland, 2, clIsland, 2)],
+	scaleByMapSize(20,100),
+	5);
 
 log("Repainting");
 var terrTop = createTerrain(tMountainTop);
@@ -510,13 +495,11 @@ RMS.SetProgress(65);
 
 log("Creating stone mines...");
 var group = new SimpleGroup([new SimpleObject(eStoneMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
-createObjectGroupsDeprecated(group, 0,[stayClasses(clCorsica, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
-createObjectGroupsDeprecated(group, 0,[stayClasses(clSardinia, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
+createObjectGroupsDeprecated(group, 0,[stayClasses(clIsland, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)], scaleByMapSize(6,25), 1000);
 
 log("Creating metal mines...");
 group = new SimpleGroup([new SimpleObject(eMetalMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
-createObjectGroupsDeprecated(group, 0,[avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1),stayClasses(clCorsica, 1)],  scaleByMapSize(6,25), 1000  );
-createObjectGroupsDeprecated(group, 0,[avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1),stayClasses(clSardinia, 1)],  scaleByMapSize(6,25), 1000  );
+createObjectGroupsDeprecated(group, 0,[avoidClasses(clWater, 3, clPlayer, 2, clBaseResource, 2, clCliffs,1), stayClasses(clIsland, 1)], scaleByMapSize(6,25), 1000);
 
 log("Creating grass patches...");
 placer = new ClumpPlacer(20, 0.3, 0.06, 0.5);
@@ -525,8 +508,7 @@ createAreas( placer, [painter,paintClass(clForest)], avoidClasses(clWater, 1,clP
 
 log("Creating forests...");
 var TreeGroup = new SimpleGroup([new SimpleObject(ePine, 3,6, 1,3),new SimpleObject(ePalmTall, 1,3, 1,3),new SimpleObject(eFanPalm, 0,2, 0,2),new SimpleObject(eApple, 0,1, 1,2)], true, clForest);
-createObjectGroupsDeprecated(TreeGroup, 0, [avoidClasses(clWater, 1, clForest, 0,clPlayer, 0,clBaseResource, 2,clCliffs,2), stayClasses(clCorsica, 3)],  scaleByMapSize(350,2500), 100 );
-createObjectGroupsDeprecated(TreeGroup, 0, [avoidClasses(clWater, 1, clForest, 0,clPlayer, 0,clBaseResource, 2,clCliffs,2), stayClasses(clSardinia, 3)],  scaleByMapSize(350,2500), 100 );
+createObjectGroupsDeprecated(TreeGroup, 0, [avoidClasses(clWater, 1, clForest, 0,clPlayer, 0,clBaseResource, 2,clCliffs,2), stayClasses(clIsland, 3)],  scaleByMapSize(350,2500), 100 );
 
 RMS.SetProgress(75);
 
