@@ -129,18 +129,15 @@ placeDefaultPlayerBases({
 }
 
 log("Creating islands...");
-placer = new ChainPlacer(floor(scaleByMapSize(4, 8)), floor(scaleByMapSize(8, 14)), floor(scaleByMapSize(25, 60)), 0.07, undefined, undefined, scaleByMapSize(30,70));
-terrainPainter = new LayeredPainter(
-	[tMainTerrain, tMainTerrain],		// terrains
-	[2]								// widths
-);
-elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 3, 4);
 createAreas(
-	placer,
-	[terrainPainter, elevationPainter, paintClass(clLand)],
+	new ChainPlacer(floor(scaleByMapSize(4, 8)), floor(scaleByMapSize(8, 14)), floor(scaleByMapSize(25, 60)), 0.07, undefined, undefined, scaleByMapSize(30,70)),
+	[
+		new LayeredPainter([tMainTerrain, tMainTerrain], [2]),
+		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+		paintClass(clLand)
+	],
 	null,
-	scaleByMapSize(1, 5) * randIntInclusive(5, 10)
-);
+	scaleByMapSize(1, 5) * randIntInclusive(5, 10));
 
 paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
