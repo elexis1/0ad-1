@@ -65,6 +65,8 @@ function passageMaker(x1, z1, x2, z2, width, maxheight, height, smooth, tileclas
 //	f:	Input: Same as angle in a sine function
 //	seed:	Random Seed: Best to implement is to use randFloat()
 //
+// This is a performance-heavy function!
+//
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function rndRiver(f, seed)
 {
@@ -140,12 +142,9 @@ function paintRiver(args)
 
 			// River curve at this place
 			let cu1 = meanderShort * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
-			let cu2 = meanderShort * rndRiver(theta2 + coord2 * mapSize / 128, seed2);
-
-			cu1 += meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
-			cu2 += meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
-			if (args.parallel)
-				cu2 = cu1;
+			let cu2 = args.parallel ? cu1 :
+				meanderShort * rndRiver(theta2 + coord2 * mapSize / 128, seed2) +
+				meanderLong * rndRiver(theta2 + coord2 * mapSize / 256, seed2);
 
 			// Fuzz the river border
 			let devCoord1 = coord1 * randFloat(1 - args.deviation, 1 + args.deviation);
