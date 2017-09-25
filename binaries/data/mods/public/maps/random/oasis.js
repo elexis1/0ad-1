@@ -58,97 +58,29 @@ initTerrain(tSand);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
-var placer = undefined;
-var fx = 0; var fz = 0;
-var ix =0; var iz = 0;
-for (var i = 0; i < numPlayers; i++)
+log("Creating small oasis near the players...")
+var forestDist = getDefaultPlayerTerritoryRadius() * 1.2;
+for (let i = 0; i < numPlayers; ++i)
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
+	let fx = fractionToTiles(playerX[i]);
+	let fz = fractionToTiles(playerZ[i]);
 
-	var radius = scaleByMapSize(15,25);
-	var elevation = 20;
-
-	fx = fractionToTiles(playerX[i]);
-	fz = fractionToTiles(playerZ[i]);
-	ix = round(fx);
-	iz = round(fz);
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// create the city patch
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(eBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
-	}
-	var mDist = radius*1.3;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(eMetalMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3),new SimpleObject(ePalmShort, 2,2, 2,3),new SimpleObject(ePalmTall, 1,1, 2,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-	mX = round(fx + mDist*1.5 * cos(mAngle + PI/1.578));
-	mZ = round(fz + mDist*1.5 * sin(mAngle + PI/1.578));
-	group = new SimpleGroup(
-							[new SimpleObject(eMetalMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3),new SimpleObject(ePalmShort, 2,2, 2,3),new SimpleObject(ePalmTall, 1,1, 2,2)],
-							true, clBaseResource, mX, mZ
-							);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(eStoneMine, 1,1, 0,2),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3),new SimpleObject(ePalmShort, 2,2, 2,3),new SimpleObject(ePalmTall, 1,1, 2,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-	mX = round(fx + mDist * 1.4 * cos(mAngle - PI /2.46));
-	mZ = round(fz + mDist * 1.4 * sin(mAngle - PI /2.46));
-	group = new SimpleGroup(
-							[new SimpleObject(eStoneMine, 1,1, 0,2),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 3,3),new SimpleObject(ePalmShort, 2,2, 3,3),new SimpleObject(ePalmTall, 1,1, 3,3)],
-							true, clBaseResource, mX, mZ
-							);
-	createObjectGroup(group, 0);
 	// Create starting batches of wood
-	var types = [tForestFloor, pForestMain];	// some variation
-	var forestX = 0;
-	var forestY = 0;
-	var forestAngle = 0;
+	let forestX = 0;
+	let forestY = 0;
+	let forestAngle = 0
+	let placer;
+	let painter;
 	do {
-		forestAngle = mAngle + randFloat(PI/2, (2*PI)/3);
-		var forestDist = radius * 1.2;
+		forestAngle = randFloat(PI/2, (2*PI)/3);
 		forestX = round(fx + forestDist * cos(forestAngle));
 		forestY = round(fz + forestDist * sin(forestAngle));
-		placer = new ClumpPlacer(70, 1.0, 0.5, 10,forestX,forestY);
-		painter = new LayeredPainter(types, [0] );
-	} while (createArea( placer, [painter, paintClass(clBaseResource)], avoidClasses(clBaseResource, 0) ) === undefined);
+		placer = new ClumpPlacer(70, 1, 0.5, 10,forestX, forestY);
+		painter = new LayeredPainter([tForestFloor, pForestMain], [0]);
+	} while (!createArea(placer, [painter, paintClass(clBaseResource)], avoidClasses(clBaseResource, 0)));
 
-	// creating the water patch explaining the forest
+	// Creating the water patch explaining the forest
+	let group;
 	do {
 		var watAngle = forestAngle + randFloat((PI/3), (5*PI/3));
 		var watX = round(forestX + 6 * cos(watAngle));
@@ -163,6 +95,36 @@ for (var i = 0; i < numPlayers; i++)
 	} while (!createArea(placer, [terrainPainter, painter], avoidClasses(clBaseResource, 0)));
 }
 RMS.SetProgress(20);
+
+var mineTrees = shuffleArray([aBushA, aBushB, ePalmShort, ePalmTall]).map(t => new SimpleObject(t, 1, 1, 3, 4));
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad,
+		"painters": [
+			paintClass(clPlayer)
+		]
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": eBush
+	},
+	"metal": {
+		"template": eMetalMine,
+		"groupElements": mineTrees
+	},
+	"stone": {
+		"template": eStoneMine,
+		"groupElements": mineTrees
+	}
+	// Starting trees were set above
+	// No decoratives
+});
+RMS.SetProgress(35);
 
 log("Creating bumps...");
 createAreas(
