@@ -2,7 +2,7 @@ RMS.LoadLibrary("rmgen");
 RMS.LoadLibrary("rmbiome");
 RMS.LoadLibrary("unknown");
 
-unknownMap(true, true);
-unknownObjects();
+createUnknownMap(true, true);
+createUnknownObjects();
 
 ExportMap();

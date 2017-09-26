@@ -2,7 +2,14 @@ RMS.LoadLibrary("rmgen");
 RMS.LoadLibrary("rmbiome");
 RMS.LoadLibrary("unknown");
 
-unknownMap(false, true);
+var treasureTemplates = {
+	"food": "gaia/special_treasure_food_jars",
+	"wood": "gaia/special_treasure_wood",
+	"stone": "gaia/special_treasure_stone",
+	"metal": "gaia/special_treasure_metal"
+};
+
+createUnknownMap(false, true);
 
 var playerIDs = sortAllPlayers();
 var playerX = [];
@@ -10,13 +17,10 @@ var playerZ = [];
 
 var distmin = Math.pow(scaleByMapSize(60, 240), 2);
 
-var naval = false; // TODO
-
 for (var i = 0; i < numPlayers; i++)
 {
 	var placableArea = [];
 	for (var mx = 0; mx < mapSize; mx++)
-	{
 		for (var mz = 0; mz < mapSize; mz++)
 		{
 			if (!g_Map.validT(mx, mz, 3))
@@ -32,12 +36,9 @@ for (var i = 0; i < numPlayers; i++)
 			if (g_Map.getHeight(mx, mz) >= 3 && g_Map.getHeight(mx, mz) <= 3.12)
 				placableArea.push([mx, mz]);
 		}
-	}
 
 	if (!placableArea.length)
-	{
 		for (var mx = 0; mx < mapSize; ++mx)
-		{
 			for (var mz = 0; mz < mapSize; mz++)
 			{
 				if (!g_Map.validT(mx, mz, 3))
@@ -53,8 +54,6 @@ for (var i = 0; i < numPlayers; i++)
 				if (g_Map.getHeight(mx, mz) >= 3 && g_Map.getHeight(mx, mz) <= 3.12)
 					placableArea.push([mx, mz]);
 			}
-		}
-	}
 
 	if (!placableArea.length)
 		for (var mx = 0; mx < mapSize; ++mx)
@@ -65,9 +64,9 @@ for (var i = 0; i < numPlayers; i++)
 	[playerX[i], playerZ[i]] = pickRandom(placableArea);
 }
 
-for (var i = 0; i < numPlayers; ++i)
+for (let i = 0; i < numPlayers; ++i)
 {
-	var id = playerIDs[i];
+	let id = playerIDs[i];
 	log("Creating units for player " + id + "...");
 
 	var ix = playerX[i];
@@ -89,47 +88,33 @@ for (var i = 0; i < numPlayers; ++i)
 		angle += TWO_PI / 3;
 	}
 
-	if (naval)  // maps without water, so we must have enough resources to build a cc
+	log("Ensure resources for a civic center...")
+	let ccCost = RMS.GetTemplate("structures/" + getCivCode(id - 1) + "_civil_centre").Cost.Resources;
+	let treasures = [];
+	for (let resourceType in ccCost)
 	{
-		if (g_MapSettings.StartingResources < 500)
-		{
-			var loop = (g_MapSettings.StartingResources < 200) ? 2 : 1;
-			for (let l = 0; l < loop; ++l)
-			{
-				var angle = randFloat(0, TWO_PI);
-				var rad = randFloat(3, 5);
-				var jx = ix + rad * cos(angle);
-				var jz = iz + rad * sin(angle);
-				placeObject(jx, jz, "gaia/special_treasure_wood", 0, randFloat(0, TWO_PI));
-				var angle = randFloat(0, TWO_PI);
-				var rad = randFloat(3, 5);
-				var jx = ix + rad * cos(angle);
-				var jz = iz + rad * sin(angle);
-				placeObject(jx, jz, "gaia/special_treasure_stone", 0, randFloat(0, TWO_PI));
-				var angle = randFloat(0, TWO_PI);
-				var rad = randFloat(3, 5);
-				var jx = ix + rad * cos(angle);
-				var jz = iz + rad * sin(angle);
-				placeObject(jx, jz, "gaia/special_treasure_metal", 0, randFloat(0, TWO_PI));
-			}
-		}
+		let treasureTemplate = treasureTemplates[resourceType];
+		treasures.push({
+			"template": treasureTemplate,
+			"count": Math.max(0, Math.ceil((ccCost[resourceType] - (g_MapSettings.StartingResources || 0)) / RMS.GetTemplate(treasureTemplate).ResourceSupply.Amount)),
+			"minDist": 3,
+			"maxDist": 5
+		});
 	}
-	else    // we must have enough resources to build a dock
-	{
-		if (g_MapSettings.StartingResources < 200)
-		{
-			var angle = randFloat(0, TWO_PI);
-			var rad = randFloat(3, 5);
-			var jx = ix + rad * cos(angle);
-			var jz = iz + rad * sin(angle);
-			placeObject(jx, jz, "gaia/special_treasure_wood", 0, randFloat(0, TWO_PI));
-		}
-	}
+
+	createDefaultTreasure({
+		"playerID": playerIDs[i],
+		"playerX": tilesToFraction(playerX[i]),
+		"playerZ": tilesToFraction(playerZ[i]),
+		"baseResourceClass": clBaseResource,
+		"types": treasures
+	});
 }
 
-// Only marks the spawn area as clPlayer
+// Mark the spawn area as clPlayer
 placeDefaultCityPatches({
 	"playerIDs": playerIDs,
+	// Don't paint terrain
 	"playerX": playerX,
 	"playerZ": playerZ,
 	"radius": scaleByMapSize(18, 32),
@@ -138,6 +123,6 @@ placeDefaultCityPatches({
 	]
 });
 
-unknownObjects();
+createUnknownObjects();
 
 ExportMap();
