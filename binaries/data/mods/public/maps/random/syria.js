@@ -87,6 +87,8 @@ for (let i = 0; i < numPlayers; ++i)
 }
 RMS.SetProgress(10);
 
+var mineBushes = new RandomObject(aBushes, 2, 4, 2, 3);
+
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	// playerTileClass marked above
@@ -103,11 +105,11 @@ placeDefaultPlayerBases({
 	},
 	"metal": {
 		"template": oMetalLarge,
-		//"template_2": aBushes // TODO
+		"groupElements": [mineBushes]
 	},
 	"stone": {
 		"template": oStoneLarge,
-		//"templaet2": aBushes // TODO
+		"groupElements": [mineBushes]
 	},
 	"trees": {
 		"template": pickRandom([oPalm, oTamarix]),
@@ -190,21 +192,21 @@ for (let size of [scaleByMapSize(6, 30), scaleByMapSize(10, 50), scaleByMapSize(
 RMS.SetProgress(70);
 
 log("Creating stone mines...");
-var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4), mineBushes], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clGrass, 1)],
 	scaleByMapSize(2,8), 100
 );
 
 log("Creating small stone quarries...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
+group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3), mineBushes], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clGrass, 1)],
 	scaleByMapSize(2,8), 100
 );
 
 log("Creating metal mines...");
-group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clMetal);
+group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4), mineBushes], true, clMetal);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clMetal, 10, clRock, 5, clHill, 1, clGrass, 1)],
 	scaleByMapSize(2,8), 100
