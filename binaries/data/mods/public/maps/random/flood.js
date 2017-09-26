@@ -111,7 +111,7 @@ for (let i = 0; i < numPlayers; ++i)
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
-	// TODO "iberWall": false
+	"iberWalls": false,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {
 		"innerTerrain": tRoadWild,

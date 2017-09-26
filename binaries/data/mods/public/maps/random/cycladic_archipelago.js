@@ -156,6 +156,7 @@ placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, islandX, islandZ],
 	// playerTileClass already painted
 	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
 	"chicken": {
 	},
 	"berries": {

@@ -319,7 +319,7 @@ placeDefaultPlayerBases({
 		0.6 * (i % 2) + 0.2,
 		pos
 	]),
-	// TODO 'iberWall': false
+	"iberWalls": false,
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {

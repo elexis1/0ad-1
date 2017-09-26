@@ -279,7 +279,7 @@ function unknownContinent(civicCenter, allowNaval)
 			scaleByMapSize(7, 130) * 2,
 			150);
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -358,7 +358,7 @@ function unknownCentralSea(civicCenter, allowNaval)
 			scaleByMapSize(2, 5) * randIntInclusive(8, 14));
 	}
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -479,7 +479,7 @@ function unknownCentralRiver(civicCenter, allowNaval)
 		}
 	}
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -592,7 +592,7 @@ function unknownRiversAndLake(civicCenter)
 			null);
 	}
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -685,7 +685,7 @@ function unknownEdgeSeas(civicCenter, allowNaval)
 			scaleByMapSize(2, 5) * randIntInclusive(8, 14));
 	}
 
-	return [sortAllPlayers(), playerX, playerZ, false, true];
+	return [sortAllPlayers(), playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -740,7 +740,7 @@ function unknownGulf(civicCenter, allowNaval)
 			],
 			avoidClasses(clPlayer, scaleByMapSize(15, 25)));
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -778,7 +778,7 @@ function unknownLakes(civicCenter, allowNaval)
 		[avoidClasses(clPlayer, 12), randBool() ? avoidClasses(clWater, 8) : new NullConstraint()],
 		scaleByMapSize(5, 16));
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -857,7 +857,7 @@ function unknownPasses(civicCenter, allowNaval)
 			],
 			null);
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -922,7 +922,7 @@ function unknownLowlands(civicCenter, allowNaval)
 			],
 			null);
 
-	return [playerIDs, playerX, playerZ, false, true];
+	return [playerIDs, playerX, playerZ, false, "walls"];
 }
 
 /**
@@ -931,7 +931,7 @@ function unknownLowlands(civicCenter, allowNaval)
 function unknownMainland(civicCenter, allowNaval)
 {
 	initHeight(3);
-	return [...radialPlayerPlacement(), false, true];
+	return [...radialPlayerPlacement(), false, "walls"];
 }
 
 function paintUnknownMapBasedOnHeight()

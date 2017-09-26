@@ -1483,9 +1483,9 @@ for (var i = 0; i < numPlayers; i++)
 
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
-	// TODO 'iberWall': 'towers'
 	// playerTileClass already marked above
 	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
 		"outerTerrain": tRoad

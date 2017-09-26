@@ -89,7 +89,7 @@ for (let i = 0; i < numPlayers; ++i)
 
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
-	// TODO 'iberWall': false
+	"iberWalls": false,
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {

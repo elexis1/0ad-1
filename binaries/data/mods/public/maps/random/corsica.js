@@ -331,7 +331,7 @@ placeDefaultPlayerBases({
 			paintClass(clSettlement)
 		]
 	},
-	//iberWall': false TODO
+	"iberWalls": false,
 	"chicken": {
 	},
 	"berries": {

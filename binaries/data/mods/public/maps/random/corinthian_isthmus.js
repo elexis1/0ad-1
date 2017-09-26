@@ -117,7 +117,7 @@ placeDefaultPlayerBases({
     ]),
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
-	// TODO iberWall': 'towers
+	"iberWalls": "towers",
 	"cityPatch": {
 		"innerTerrain": tCityPlaza,
 		"outerTerrain": tCity

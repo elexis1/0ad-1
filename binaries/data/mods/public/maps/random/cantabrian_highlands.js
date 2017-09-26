@@ -104,7 +104,7 @@ placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
-	'iberWall': false, // TODO
+	"iberWalls": false,
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
 		"outerTerrain": tRoad

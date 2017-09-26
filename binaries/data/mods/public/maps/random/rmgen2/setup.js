@@ -164,13 +164,13 @@ function addBases(type = "radial", distance = 0.3, groupedDistance = 0.05)
  * @param {Object} player - contains id, angle, x, z
  * @param {boolean} walls - Whether or not iberian gets starting walls
  */
-function createBase(player, walls = true)
+function createBase(player, walls = "walls")
 {
-	// TODO: { 'iberWall': walls && g_MapInfo.mapSize > 192 }
 	placeDefaultPlayerBase({
 		"playerID": player.id,
 		"playerX": player.x,
 		"playerZ": player.z,
+		"iberWalls": g_MapInfo.mapSize > 192 && walls,
 		"playerTileClass": g_TileClasses.player,
 		"baseResourceClass": g_TileClasses.baseResource,
 		"cityPatch": {

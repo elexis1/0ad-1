@@ -91,6 +91,7 @@ placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	// playerTileClass marked above
 	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
 	// cityPatch painted below
 	"chicken": {
 	},

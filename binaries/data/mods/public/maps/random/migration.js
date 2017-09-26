@@ -80,7 +80,7 @@ placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
-	// TODO: 'iberWall': false
+	"iberWalls": false,
 	// No city patch
 	"chicken": {
 	},

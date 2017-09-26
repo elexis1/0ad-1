@@ -1,5 +1,3 @@
-// TODO: iberWall': 'towers
-
 //	Function for creating shallow water between two given points by changing the height of all tiles in
 //	the path with height less than or equal to "maxheight" to "height"
 //

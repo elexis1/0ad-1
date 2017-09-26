@@ -65,7 +65,7 @@ placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
-	// TODO: 'iberWall': 'towers'
+	"iberWalls": "towers",
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
 		"outerTerrain": tRoad
