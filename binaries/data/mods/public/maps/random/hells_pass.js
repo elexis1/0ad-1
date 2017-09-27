@@ -241,9 +241,6 @@ function placeBarriers()
 	{
 		var tang = g_MapInfo.startAngle + (i + 0.5) * TWO_PI / g_MapInfo.teams.length;
 
-		var fx = fractionToTiles(0.5);
-		var fz = fractionToTiles(0.5);
-
 		var mStartCo = 0.07;
 		var mStopCo = 0.42;
 		var mSize = 8;

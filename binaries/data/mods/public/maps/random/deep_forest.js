@@ -10,7 +10,6 @@ var clBaseResource = createTileClass();
 
 var templateStone = "gaia/geology_stone_temperate";
 var templateStoneMine = "gaia/geology_stonemine_temperate_quarry";
-var templateMetal = "gaia/geology_metal_temperate";
 var templateMetalMine = "gaia/geology_metal_temperate_slabs";
 
 var terrainWood = ['temp_grass_mossy|gaia/flora_tree_oak', 'temp_forestfloor_pine|gaia/flora_tree_pine', 'temp_mud_plants|gaia/flora_tree_dead',
@@ -119,7 +118,6 @@ RMS.SetProgress(10);
 var doublePaths = true;
 if (numPlayers > 4)
 	doublePaths = false;
-var doublePathMayPlayers = 4;
 if (doublePaths == true)
 	var maxI = numPlayers+1;
 else

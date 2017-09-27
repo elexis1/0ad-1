@@ -75,12 +75,6 @@ let clLand = createTileClass();
 
 initTerrain(tWater);
 
-// some constants
-let radius = scaleByMapSize(15, 25);
-
-let fx = fractionToTiles(0.5);
-let fz = fractionToTiles(0.5);
-
 let startAngle = randFloat(0, TWO_PI);
 
 // Group players by team

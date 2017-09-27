@@ -3,7 +3,6 @@ RMS.LoadLibrary("rmgen");
 const tGrass1 = "savanna_grass_a";
 const tDirt1 = "savanna_dirt_a";
 const tDirt4 = "savanna_dirt_b";
-const tCityTiles = "savanna_tile_a_dirt_red";
 const tShore = "savanna_riparian_bank";
 const tWater = "savanna_riparian_wet";
 
@@ -16,7 +15,6 @@ const oFish = "gaia/fauna_fish";
 const oElephant = "gaia/fauna_elephant_asian";
 const oElephantInfant = "gaia/fauna_elephant_asian_infant";
 const oBoar = "gaia/fauna_boar";
-const oStoneSmall = "gaia/geology_stone_savanna_small";
 const oMetalLarge = "gaia/geology_metal_savanna_slabs";
 
 const aBush = "actor|props/flora/bush_medit_sm_dry.xml";
