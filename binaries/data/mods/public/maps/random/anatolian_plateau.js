@@ -67,7 +67,7 @@ placeDefaultPlayerBases({
 	"trees": {
 		"template": oPoplar,
 		"radiusFactor": 1/10,
-		"maxDistGroup": 5 //TODO?
+		"maxDistGroup": 5
 	},
 	"decoratives": {
 		"template": aGrassShort

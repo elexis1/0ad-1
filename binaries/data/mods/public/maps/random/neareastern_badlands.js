@@ -72,7 +72,9 @@ placeDefaultPlayerBases({
 	"cityPatch": {
 		"innerTerrain": tCity,
 		"outerTerrain": tCityPlaza,
-		"radius": 10 // TODO
+		"width": 3,
+		"radius": 10,
+		"radiusFactor": 1
 	},
 	"chicken": {
 	},

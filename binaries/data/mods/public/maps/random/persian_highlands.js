@@ -71,6 +71,8 @@ var clCP = createTileClass();
 
 initTerrain(tDirtMain);
 
+var mineBushes = shuffleArray(aBushes).map(t => new SimpleObject(t, 1, 1, 3, 4));
+
 placeDefaultPlayerBases({
 	"playerPlacement": radialPlayerPlacement(),
 	"baseResourceClass": clBaseResource,
@@ -88,15 +90,15 @@ placeDefaultPlayerBases({
 	},
 	"metal": {
 		"template": oMetalLarge,
-		"template_surroundings": aBushes // TODO
+		"groupElements": mineBushes
 	},
 	"stone": {
 		"template": oStoneLarge,
-		"template_surroundings": aBushes
+		"groupElements": mineBushes
 	},
 	"trees": {
 		"template": oOak,
-		"radiusFactor": 1/15, // TODO: 3
+		"radiusFactor": 1/20
 	}
 	// No decoratives
 });

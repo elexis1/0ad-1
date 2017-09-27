@@ -1485,6 +1485,7 @@ placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	// playerTileClass already marked above
 	"baseResourceClass": clBaseResource,
+	"baseResourceConstraint": stayClasses(clPlayer, 4),
 	"iberWalls": "towers",
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
@@ -1502,8 +1503,10 @@ placeDefaultPlayerBases({
 		"template": oStoneLarge
 	},
 	"trees": {
-		"template": oTree1
-		"constraint": stayClasses(clPlayer, 3) // TODO
+		"template": oTree1,
+		"radiusFactor": 1/10,
+		"minDistGroup": 1,
+		"maxDistGroup": 3
 	},
 	"decoratives": {
 		"template": aGrassShort

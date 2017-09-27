@@ -333,12 +333,13 @@ placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
+	"baseResourceConstraint": avoidClasses(clCliff, 4),
 	"cityPatch": {
 		"radius": 11,
-		"innerTerrain": tRoadWild,
-		"outerTerrain": tRoad,
+		"innerTerrain": tGrass,
+		"outerTerrain": tCity,
+		"width": 4,
 		"painters": [
-			new LayeredPainter([tGrass, tCity], [4]),
 			new SmoothElevationPainter(ELEVATION_SET, 5, 2)
 		]
 	},
@@ -356,9 +357,9 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oPalm,
-		"radiusFactor": 1/10, // 5
+		"radiusFactor": 1/15,
+		"minDistGroup": 3,
 		"maxDistGroup": 5,
-		//"constraint": avoidClasses(clCliff, 1) // TODO
 	}
 	// No decoratives
 });

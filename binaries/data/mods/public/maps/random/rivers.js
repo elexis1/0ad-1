@@ -105,8 +105,8 @@ placeDefaultPlayerBases({
 		"template": oStoneLarge
 	},
 	"trees": {
-		"template": oTree1
-		// TODO COUnt 2
+		"template": oTree1,
+		"radiusFactor": 1/20
 	},
 	"decoratives": {
 		"template": aGrassShort

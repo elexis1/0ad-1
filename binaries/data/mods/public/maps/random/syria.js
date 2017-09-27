@@ -96,7 +96,9 @@ placeDefaultPlayerBases({
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
 		"outerTerrain": tRoad,
-		// radius: 10 TODO
+		"radius": 10,
+		"radiusFactor": 1,
+		"width": 3
 	},
 	"chicken": {
 	},
@@ -113,8 +115,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": pickRandom([oPalm, oTamarix]),
-		"radiusFactor": 1/25,
-		"num": 3 //TODO
+		"radiusFactor": 1/15
 	}
 	// No decoratives
 });

@@ -178,8 +178,7 @@ function createBase(player, walls = "walls")
 			"outerTerrain": g_Terrains.road,
 			"painters": [
 				paintClass(g_TileClasses.player)
-			],
-			"radiusFactor": Math.sqrt(1/3)
+			]
 		},
 		"chicken": {
 			"template": g_Gaia.chicken
@@ -195,10 +194,7 @@ function createBase(player, walls = "walls")
 		},
 		"trees": {
 			"template": g_Gaia.tree1,
-			"radiusFactor": 1/10,
-			"count": currentBiome() == "savanna" ? 5 : 15, //TODO
-			"minDistGroup": 1,
-			"maxDistGroup": 3
+			"radiusFactor": currentBiome() == "savanna" ? 1/15 : 1/5
 		},
 		"decoratives": {
 			"template": g_Decoratives.grassShort

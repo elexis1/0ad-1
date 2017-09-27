@@ -142,10 +142,10 @@ placeDefaultPlayerBases({
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"iberWalls": "towers",
-	// TODO scaleByMapSize(12, 20)
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
-		"outerTerrain": tRoad
+		"outerTerrain": tRoad,
+		"radius": radius
 	},
 	"chicken": {
 		"template": oPeacock
@@ -161,7 +161,8 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oTree,
-		"count" : 40 // TODO
+		"radius": radius,
+		"radiusFactor": 1/5
 	}
 	// No decoratives
 });
