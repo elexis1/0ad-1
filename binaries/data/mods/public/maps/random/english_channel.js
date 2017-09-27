@@ -281,7 +281,7 @@ createDecoration
   scaleByMapSize(13, 200),
   scaleByMapSize(13, 200)
  ],
- avoidClasses(clWater, 1, clForest, 0, clPlayer, 0, clHill, 0)
+ avoidClasses(clWater, 1, clForest, 0, clPlayer, 6, clHill, 0)
 );
 
 // create water decoration in the shallow parts

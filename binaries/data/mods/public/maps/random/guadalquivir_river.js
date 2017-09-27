@@ -225,7 +225,7 @@ log("Creating grass patches...");
 createPatches(
  [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)],
  tGrassPatch,
- [avoidClasses(clForest, 0, clHill, 0, clDirt, 3, clPlayer, 8, clRiver, 1), stayClasses(clLand, 7)]
+ [avoidClasses(clForest, 0, clHill, 0, clDirt, 3, clPlayer, 8, clRiver, 1, clBaseResource, 4), stayClasses(clLand, 7)]
 );
 
 RMS.SetProgress(55);
@@ -264,7 +264,7 @@ createDecoration
   scaleByMapSize(13, 200),
   scaleByMapSize(13, 200)
  ],
- [avoidClasses(clHill, 1, clPlayer, 1, clDirt, 1, clRiver, 1), stayClasses(clLand, 6)]
+ [avoidClasses(clHill, 1, clPlayer, 6, clDirt, 1, clRiver, 1, clBaseResource, 4), stayClasses(clLand, 6)]
 );
 
 log("Create water decoration in the shallow parts");

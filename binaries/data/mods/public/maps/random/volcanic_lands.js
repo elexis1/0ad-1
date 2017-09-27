@@ -206,21 +206,21 @@ for (var i = 0; i < sizes.length; i++)
 log("Creating stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroupsDeprecated(group, 0,
-	avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1),
+	avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clBaseResource, 6),
 	scaleByMapSize(4,16), 100
 );
 
 log("Creating small stone mines...");
 group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3)], true, clRock);
 createObjectGroupsDeprecated(group, 0,
-	avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1),
+	avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clBaseResource, 6),
 	scaleByMapSize(4,16), 100
 );
 
 log("Creating metal mines...");
 group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4)], true, clMetal);
 createObjectGroupsDeprecated(group, 0,
-	avoidClasses(clForest, 1, clPlayer, 10, clMetal, 10, clRock, 5, clHill, 1),
+	avoidClasses(clForest, 1, clPlayer, 10, clMetal, 10, clRock, 5, clHill, 1, clBaseResource, 6),
 	scaleByMapSize(4,16), 100
 );
 

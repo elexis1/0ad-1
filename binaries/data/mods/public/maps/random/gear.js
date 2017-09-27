@@ -401,7 +401,7 @@ createDecoration
   planetm * scaleByMapSize(13, 200),
   planetm * scaleByMapSize(13, 200)
  ],
- avoidClasses(clWater, 0, clForest, 0, clPlayer, 0, clHill, 0)
+ avoidClasses(clWater, 0, clForest, 0, clPlayer, 5, clHill, 0, clBaseResource, 4)
 );
 
 RMS.SetProgress(70);
