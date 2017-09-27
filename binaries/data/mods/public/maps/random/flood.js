@@ -15,8 +15,8 @@ const tRoadWild = g_Terrains.roadWild;
 const tTier4Terrain = g_Terrains.tier4Terrain;
 const tShore = g_Terrains.shore;
 const tWater = g_Terrains.water;
-let tHill = g_Terrains.hill;
-let tDirt = g_Terrains.dirt;
+const tHill = g_Terrains.hill;
+const tDirt = g_Terrains.dirt;
 
 if (currentBiome() == "temperate")
 {
@@ -58,16 +58,16 @@ const mapSize = getMapSize();
 const mapArea = mapSize * mapSize;
 const centerOfMap = mapSize / 2;
 
-let clPlayer = createTileClass();
-let clHill = createTileClass();
-let clMountain = createTileClass();
-let clForest = createTileClass();
-let clWater = createTileClass();
-let clDirt = createTileClass();
-let clRock = createTileClass();
-let clMetal = createTileClass();
-let clFood = createTileClass();
-let clBaseResource = createTileClass();
+const clPlayer = createTileClass();
+const clHill = createTileClass();
+const clMountain = createTileClass();
+const clForest = createTileClass();
+const clWater = createTileClass();
+const clDirt = createTileClass();
+const clRock = createTileClass();
+const clMetal = createTileClass();
+const clFood = createTileClass();
+const clBaseResource = createTileClass();
 
 initTerrain(tWater);
 
