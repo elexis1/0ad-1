@@ -561,8 +561,13 @@ function getTIPIADBON(startPoint, endPoint, heightRange, step, n)
 	let X = endPoint[0] - startPoint[0];
 	let Y = endPoint[1] - startPoint[1];
 
-	let M = Math.sqrt(Math.pow(X, 2) + step * Math.pow(Y, 2));
+	if (!X && !Y)
+	{
+		error("getTIPIADBON startPoint and endPoint are identical! " + new Error().stack);
+		return undefined;
+	}
 
+	let M = Math.sqrt(Math.pow(X, 2) + step * Math.pow(Y, 2));
 	let stepX = step * X / M;
 	let stepY = step * Y / M;
 
