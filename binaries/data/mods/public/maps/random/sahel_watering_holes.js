@@ -381,19 +381,14 @@ createObjectGroupsDeprecated(group, 0,
 RMS.SetProgress(85);
 
 log("Creating straggler trees...");
-var types = [oBaobab, oBaobab, oBaobab, oFig];	// some variation
+var types = [oBaobab, oBaobab, oBaobab, oFig];
 var num = floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup(
-		[new SimpleObject(types[i], 1,1, 0,3)],
-		true, clForest
-	);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1,1, 0,3)], true, clForest),
+		0,
 		avoidClasses(clWater, 5, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6),
-		num
-	);
-}
+		num);
 
 var planetm = 4;
 log("Creating small grass tufts...");

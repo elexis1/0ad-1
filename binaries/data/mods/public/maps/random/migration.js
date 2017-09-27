@@ -101,9 +101,6 @@ placeDefaultPlayerBases({
 	}
 });
 
-var shoreRadius = 4;
-var elevation = 3; // TODO: same in all files
-
 for (lt i = 0; i < numPlayers; ++i)
 {
 	let fx = fractionToTiles(playerX[i]);
@@ -114,8 +111,8 @@ for (lt i = 0; i < numPlayers; ++i)
 	createArea(
 		new ClumpPlacer(getDefaultPlayerTerritoryArea(), 0.8, 0.1, 10, ix, iz),
 		[
-			new LayeredPainter([tWater , tShore, tMainTerrain], [1, shoreRadius]),
-			new SmoothElevationPainter(ELEVATION_SET, elevation, shoreRadius),
+			new LayeredPainter([tWater , tShore, tMainTerrain], [1, 4]),
+			new SmoothElevationPainter(ELEVATION_SET, 3, 4),
 			paintClass(clPlayer)
 		],
 		null);
@@ -153,7 +150,7 @@ createArea(
 	new ClumpPlacer(mapArea * 0.50, 0.8, 0.08, 10,  Math.round(fractionToTiles(0.12)), Math.round(fractionToTiles(0.5))),
 	[
 		new LayeredPainter([tWater, tShore, tMainTerrain], [4, 2]),
-		new SmoothElevationPainter(ELEVATION_SET, elevation, shoreRadius),
+		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
 		paintClass(clLand)
 	],
 	avoidClasses(clPlayer, 8));
@@ -366,17 +363,12 @@ RMS.SetProgress(82);
 log("Creating straggler trees...");
 var types = [oTree1, oTree2, oTree4, oTree3];
 var num = floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup(
-		[new SimpleObject(types[i], 1,1, 0,3)],
-		true, clForest
-	);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup(Object(type, 1,1, 0,3)], true, clForest),
+		0,
 		[avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6), stayClasses(clLand, 9)],
-		num
-	);
-}
+		num);
 RMS.SetProgress(86);
 
 var planetm = currentBiome() == "tropic" ? 8 : 1;

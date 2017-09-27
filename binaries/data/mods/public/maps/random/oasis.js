@@ -175,7 +175,7 @@ if (mapSize > 150 && randBool())
 		new PathPlacer(px, py, pex, pey, scaleByMapSize(7, 18), 0.4, 1, 0.2, 0),
 		[
 			new TerrainPainter(tSand),
-			new SmoothElevationPainter(ELEVATION_MODIFY, 4, 5 ),
+			new SmoothElevationPainter(ELEVATION_MODIFY, 4, 5),
 			paintClass(clPassage)
 		],
 		null);

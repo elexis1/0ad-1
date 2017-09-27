@@ -40,7 +40,6 @@ const aBush4 = "actor|props/flora/bush_medit_me.xml";
 const aBushes = [aBush1, aBush2, aBush3, aBush4];
 const aDecorativeRock = "actor|geology/stone_granite_med.xml";
 
-// terrain + entity (for painting)
 const pForest = [tForestFloor, tForestFloor + TERRAIN_SEPARATOR + oCarob, tForestFloor + TERRAIN_SEPARATOR + oDatePalm, tForestFloor + TERRAIN_SEPARATOR + oSDatePalm, tForestFloor];
 
 InitMap();
@@ -61,48 +60,63 @@ var clSettlement = createTileClass();
 var clGrass = createTileClass();
 var clHill = createTileClass();
 
+var waterHeight = -4;
+var landHeigh = 3;
+
+var riverX1 = fractionToTiles(0.5 + Math.cos(3 * Math.PI / 4));
+var riverZ1 = fractionToTiles(0.5 + Math.sin(3 * Math.PI / 4));
+var riverX2 = fractionToTiles(0.5 + Math.cos(-Math.PI / 4));
+var riverZ2 = fractionToTiles(0.5 + Math.sin(-Math.PI / 4));
+var riverSize = Math.floor(Math.PI * Math.pow(scaleByMapSize(15, 70) / 2, 2));
+
 log("Creating the main river");
-var placer = new PathPlacer(fractionToTiles(0.5 + cos(3 * PI / 4)), fractionToTiles(0.5 + sin(3 * PI / 4)), fractionToTiles(0.5 + cos(- PI / 4)), fractionToTiles(0.5 + sin(- PI / 4)), scaleByMapSize(15,70), 0.2, 3*(scaleByMapSize(5,15)), 0.04, 0.01);
-var terrainPainter = new LayeredPainter(
-	[tShore, tWater, tWater],		// terrains
-	[1, 3]								// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	-4,				// elevation
-	4				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter], null);
+createArea(
+	new PathPlacer(riverX1, riverZ1, riverX2, riverZ2, scaleByMapSize(15, 70), 0.2, 15 * scaleByMapSize(1, 3), 0.04, 0.01),
+	[
+		new LayeredPainter([tShore, tWater, tWater], [1, 3]),
+		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4)
+	],
+	null);
 
-placer = new ClumpPlacer(floor(PI*scaleByMapSize(15,70)*scaleByMapSize(15,70)/4), 0.95, 0.6, 10, fractionToTiles(0.5 + cos(3 * PI / 4))+3, fractionToTiles(0.5 + sin(3 * PI / 4))-3);
-var painter = new LayeredPainter([tWater, tWater], [1]);
-var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -4, 4);
-createArea(placer, [painter, elevationPainter], null);
+createArea(
+	new ClumpPlacer(riverSize, 0.95, 0.6, 10, riverX1 + 3, riverZ1 - 3),
+	[
+		new LayeredPainter([tWater, tWater], [1]),
+		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4)
+	],
+	null);
 
-placer = new ClumpPlacer(floor(PI*scaleByMapSize(15,70)*scaleByMapSize(15,70)/4), 0.95, 0.6, 10, fractionToTiles(0.5 + cos(- PI / 4))-3, fractionToTiles(0.5 + sin(- PI / 4))+3);
-var painter = new LayeredPainter([tWater, tWater], [1]);
-var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -4, 4);
-createArea(placer, [painter, elevationPainter], null);
+createArea(
+	new ClumpPlacer(riverSize, 0.95, 0.6, 10, riverX2 - 3, riverZ2 + 3),
+	[
+		new LayeredPainter([tWater, tWater], [1]),
+		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4)
+	],
+	null);
 
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
-	{
-		if ((ix + iz < scaleByMapSize(6,30) + mapSize)&&(ix + iz > - scaleByMapSize(6,30) + mapSize))
-			if ((ix - iz < mapSize / 2)||(ix - iz > mapSize / 2))
-				setHeight(ix, iz, -4);
-	}
+		if (ix + iz < scaleByMapSize(6, 30) + mapSize &&
+		    ix + iz > -scaleByMapSize(6, 30) + mapSize &&
+		    ix - iz < mapSize / 2 || ix - iz > mapSize / 2)
+				setHeight(ix, iz, waterHeight);
 
-var placer = new PathPlacer(fractionToTiles(0.5 + cos(5 * PI / 4)), fractionToTiles(0.5 + sin(5 * PI / 4)), fractionToTiles(0.5 + cos( PI / 4)), fractionToTiles(0.5 + sin( PI / 4)), scaleByMapSize(10,30), 0.5, 3*(scaleByMapSize(1,4)), 0.1, 0.01);
-var terrainPainter = new LayeredPainter(
-	[tShore, tGrass],		// terrains
-	[2]								// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	3,				// elevation
-	4				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter], null);
+createArea(
+	new PathPlacer(
+		fractionToTiles(0.5 + Math.cos(5 * Math.PI / 4)),
+		fractionToTiles(0.5 + Math.sin(5 * Math.PI / 4)),
+		fractionToTiles(0.5 + Math.cos(Math.PI / 4)),
+		fractionToTiles(0.5 + Math.sin(Math.PI / 4)),
+		scaleByMapSize(10, 30),
+		0.5,
+		3 * scaleByMapSize(1, 4),
+		0.1,
+		0.01),
+	[
+		new LayeredPainter([tShore, tGrass], [2]),
+		new SmoothElevationPainter(ELEVATION_SET, landHeight, 4)
+	],
+	null);
 
 paintTerrainBasedOnHeight(-6, 1, 1, tWater);
 paintTerrainBasedOnHeight(1, 2, 1, tShore);
@@ -252,8 +266,9 @@ createFood
 RMS.SetProgress(90);
 
 log("Creating straggler trees...");
-var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];	// some variation
-createStragglerTrees(types, avoidClasses(clForest, 1, clWater, 2, clPlayer, 5, clBaseResource, 6, clMetal, 6, clHill, 1));
+createStragglerTrees(
+	[oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress],
+	avoidClasses(clForest, 1, clWater, 2, clPlayer, 5, clBaseResource, 6, clMetal, 6, clHill, 1));
 
 setSkySet("sunny");
 setSunColor(0.917, 0.828, 0.734);

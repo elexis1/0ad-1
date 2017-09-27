@@ -164,7 +164,7 @@ log("Creating forests...");
 var types = [
 	[[tSnowA, tSnowA, tSnowA, tSnowA, pForestD], [tSnowA, tSnowA, tSnowA, pForestD]],
 	[[tSnowA, tSnowA, tSnowA, tSnowA, pForestS], [tSnowA, tSnowA, tSnowA, pForestS]]
-];	// some variation
+];
 
 var size = numForest / (scaleByMapSize(3,6) * numPlayers);
 
@@ -242,19 +242,14 @@ createObjectGroupsDeprecated(group, 0,
 RMS.SetProgress(95);
 
 log("Creating straggler trees...");
-var types = [oPine];	// some variation
+var types = [oPine];
 var num = floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup(
-		[new SimpleObject(types[i], 1,1, 0,3)],
-		true, clForest
-	);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1, 1, 0, 3)], true, clForest),
+		0,
 		avoidClasses(clWater, 5, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6),
-		num
-	);
-}
+		num);
 
 log("Creating deer...");
 group = new SimpleGroup(

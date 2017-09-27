@@ -122,32 +122,51 @@ for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 	var sign = randBool() ? 1 : -1;
 	var tang = sign * PI * randFloat(0.2, 0.8);
 	var cDistance = sign * 0.05;
+	let someRadius = scaleByMapSize(10, 20);
 
-	var point = getTIPIADBON([fractionToTiles(cLocation), fractionToTiles(0.5 + cDistance)], [fractionToTiles(cLocation), fractionToTiles(0.5 - cDistance)], [-6, -1.5], 0.5, 4, 0.01);
-	if (point !== undefined)
-	{
-		var placer = new PathPlacer(floor(point[0]), floor(point[1]), floor(fractionToTiles(0.5 + 0.49*cos(tang))), floor(fractionToTiles(0.5 + 0.49*sin(tang))), scaleByMapSize(10,20), 0.4, 3*(scaleByMapSize(1,4)), 0.1, 0.05);
-		var terrainPainter = new LayeredPainter(
-			[tShore, tWater, tWater],		// terrains
-			[1, 3]								// widths
-		);
-		var elevationPainter = new SmoothElevationPainter(
-			ELEVATION_SET,			// type
-			-4,				// elevation
-			4				// blend radius
-		);
-		var success = createArea(placer, [terrainPainter, elevationPainter, paintClass(clWater)], avoidClasses(clPlayer, 8, clWater, 3, clShallow, 2));
-		if (success !== undefined)
-		{
-			placer = new ClumpPlacer(floor(PI*scaleByMapSize(10,20)*scaleByMapSize(10,20)/4), 0.95, 0.6, 10, fractionToTiles(0.5 + 0.49*cos(tang)), fractionToTiles(0.5 + 0.49*sin(tang)));
-			var painter = new LayeredPainter(
-				[tShore, tWater, tWater],		// terrains
-				[1, 3]								// widths);
-			);
-			var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -3, 3);
-			createArea(placer, [painter, elevationPainter], avoidClasses(clPlayer, 23));
-		}
-	}
+	let point = getTIPIADBON(
+		[fractionToTiles(cLocation), fractionToTiles(0.5 + cDistance)],
+		[fractionToTiles(cLocation), fractionToTiles(0.5 - cDistance)],
+		[-6, -1.5],
+		0.5,
+		4,
+		0.01);
+
+	if (!point)
+		continue;
+
+	if (!createArea(
+		new PathPlacer(
+			Math.floor(point[0]),
+			Math.floor(point[1]),
+			Math.floor(fractionToTiles(0.5 + 0.49 * Math.cos(tang))),
+			Math.floor(fractionToTiles(0.5 + 0.49 * Math.sin(tang))),
+			someRadius,
+			0.4,
+			3 * scaleByMapSize(1, 4),
+			0.1,
+			0.05),
+		[
+			new LayeredPainter([tShore, tWater, tWater], [1, 3]),
+			new SmoothElevationPainter(ELEVATION_SET, -4, 4),
+			paintClass(clWater)
+		],
+		avoidClasses(clPlayer, 8, clWater, 3, clShallow, 2)))
+		continue;
+
+	createArea(
+		new ClumpPlacer(
+			Math.floor(Math.PI * Math.pow(someRadius / 2, 2)),
+			0.95,
+			0.6,
+			10,
+			fractionToTiles(0.5 + 0.49 * Math.cos(tang)),
+			fractionToTiles(0.5 + 0.49 * Math.sin(tang))),
+		[
+			new LayeredPainter([tShore, tWater, tWater], [1, 3]),
+			new SmoothElevationPainter(ELEVATION_SET, -3, 3)
+		],
+		avoidClasses(clPlayer, 23));
 }
 
 passageMaker(round(fractionToTiles(0.2)), round(fractionToTiles(0.25)), round(fractionToTiles(0.8)), round(fractionToTiles(0.25)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
@@ -275,8 +294,9 @@ createFood
 );
 
 log("Creating straggler trees...");
-var types = [oBeech, oPoplar, oApple];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 8, clMetal, 6, clRock, 6));
+createStragglerTrees(
+	[oBeech, oPoplar, oApple],
+	avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 8, clMetal, 6, clRock, 6));
 
 setSkySet("cirrus");
 setWaterColor(0.114, 0.192, 0.463);

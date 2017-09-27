@@ -346,19 +346,14 @@ createObjectGroupsDeprecated(group, 0,
 );
 
 log("Creating straggler trees...");
-var types = [oOak, oBeech];	// some variation
+var types = [oOak, oBeech];
 var num = floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup(
-		[new SimpleObject(types[i], 1,1, 0,3)],
-		true, clForest
-	);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1, 1, 0, 3)], true, clForest),
+		0,
 		avoidClasses(clWater, 1, clForest, 7, clHill, 1, clPlayer, 5, clMetal, 6, clRock, 6),
-		num
-	);
-}
+		num);
 
 log("Creating small grass tufts...");
 group = new SimpleGroup(

@@ -258,8 +258,13 @@ createFood
 RMS.SetProgress(85);
 
 log("Creating straggler trees...");
-var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
-createStragglerTrees(types, [avoidClasses(clForest, 7, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6), stayClasses(clLand, 7)]);
+createStragglerTrees(
+	[oTree1, oTree2, oTree4, oTree3],
+	[
+		avoidClasses(clForest, 7, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6),
+		stayClasses(clLand, 7)
+	]);
+
 setWaterWaviness(1.0);
 setWaterType("ocean");
 

@@ -235,10 +235,9 @@ createAreas(
 RMS.SetProgress(50);
 
 log("Creating grass patches...");
-var sizes = [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)];
-for (var i = 0; i < sizes.length; i++)
+for (let size of [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)])
 	createAreas(
-		new ClumpPlacer(sizes[i], 0.3, 0.06, 0.5),
+		new ClumpPlacer(size, 0.3, 0.06, 0.5),
 		[
 			new LayeredPainter(
 				[[tGrass, tGrassSand50], [tGrassSand50, tGrassSand25], [tGrassSand25, tGrass]],
@@ -250,10 +249,9 @@ for (var i = 0; i < sizes.length; i++)
 RMS.SetProgress(55);
 
 log("Creating dirt patches...");
-var sizes = [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)];
-for (var i = 0; i < sizes.length; i++)
+for (let size of [scaleByMapSize(3, 48), scaleByMapSize(5, 84), scaleByMapSize(8, 128)])
 	createAreas(
-		new ClumpPlacer(sizes[i], 0.3, 0.06, 0.5),
+		new ClumpPlacer(size, 0.3, 0.06, 0.5),
 		[
 			new LayeredPainter(
 				[[tDirt, tDirtCracks], [tDirt, tFineSand], [tDirtCracks, tFineSand]],
@@ -369,39 +367,33 @@ createObjectGroupsDeprecated(group, 0,
 RMS.SetProgress(90);
 
 log("Creating straggler trees...");
-var types = [oDatePalm, oSDatePalm];	// some variation
+var types = [oDatePalm, oSDatePalm];
 var num = floor(0.5 * numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup([new SimpleObject(types[i], 1,1, 0,0)], true);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1, 1, 0, 0)], true),
+		0,
 		avoidClasses(clForest, 0, clWater, 1, clPlayer, 20, clMetal, 6, clDesert, 1, clTreasure, 2, clPond, 1),
-		num
-	);
-}
+		num);
 
-var types = [oDatePalm, oSDatePalm];	// some variation
+var types = [oDatePalm, oSDatePalm];
 var num = floor(0.1 * numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup([new SimpleObject(types[i], 1,1, 0,0)], true);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1,1, 0,0)], true),
+		0,
 		avoidClasses(clForest, 0, clWater, 1, clPlayer, 20, clMetal, 6, clTreasure, 2),
-		num
-	);
-}
+		num);
 
 log("Creating straggler trees...");
-var types = [oDatePalm, oSDatePalm];	// some variation
+var types = [oDatePalm, oSDatePalm];
 var num = floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup([new SimpleObject(types[i], 1,1, 0,0)], true);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1, 1, 0, 0)], true),
+		0,
 		borderClasses(clPond, 1, 4),
-		num
-	);
-}
+		num);
 
 log("Creating obelisks");
 group = new SimpleGroup(

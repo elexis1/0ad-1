@@ -497,15 +497,18 @@ var terrainPainter = new TerrainPainter(tGrassSpecific);
 createAreas( placer, [painter,terrainPainter, paintClass(clHill)],  avoidClasses(clWater, 5, clPlayer, 20, clBaseResource, 6, clPyrenneans, 2), scaleByMapSize(5, 35) );
 
 log("Creating forests...");
-var types = [ [tForestTransition,pForestLandVeryLight, pForestLandLight, pForestLand]];
+var types = [[tForestTransition, pForestLandVeryLight, pForestLandLight, pForestLand]];
 var size = scaleByMapSize(40,115)*PI;
 var num = floor(scaleByMapSize(8,40) / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	placer = new ClumpPlacer(size, 0.2, 0.1, 1);
-	painter = new LayeredPainter( types[i], [scaleByMapSize(1,2),scaleByMapSize(3,6),scaleByMapSize(3,6)] );
-	createAreas( placer, [painter, paintClass(clForest)], avoidClasses(clPlayer, 20, clPyrenneans,0, clForest, 7, clWater, 2), num);
-}
+for (let type of types)
+	createAreas(
+		new ClumpPlacer(size, 0.2, 0.1, 1),
+		[
+			new LayeredPainter(type, [scaleByMapSize(1, 2), scaleByMapSize(3, 6), scaleByMapSize(3, 6)]),
+			paintClass(clForest)
+		],
+		avoidClasses(clPlayer, 20, clPyrenneans,0, clForest, 7, clWater, 2),
+		num);
 RMS.SetProgress(60);
 
 log("Creating lone trees...");
@@ -594,19 +597,20 @@ for (var x = 0; x < mapSize; x++) {
 	}
 }
 log("Creating dirt patches...");
-var sizes = [scaleByMapSize(3, 20), scaleByMapSize(5, 40), scaleByMapSize(8, 60)];
-for (var i = 0; i < sizes.length; i++)
-{
-	placer = new ClumpPlacer(sizes[i], 0.3, 0.06, 0.5);
-	painter = new TerrainPainter(tDirtyGrass);
-	createAreas( placer, [painter, paintClass(clDirt)], avoidClasses(clWater, 3, clForest, 0, clPyrenneans,5, clHill, 0, clDirt, 5, clPlayer, 6), scaleByMapSize(15, 45) );
-}
+for (let size of [scaleByMapSize(3, 20), scaleByMapSize(5, 40), scaleByMapSize(8, 60)])
+	createAreas(
+		new ClumpPlacer(size, 0.3, 0.06, 0.5),
+		[
+			new TerrainPainter(tDirtyGrass),
+			paintClass(clDirt)
+		],
+		avoidClasses(clWater, 3, clForest, 0, clPyrenneans,5, clHill, 0, clDirt, 5, clPlayer, 6),
+		scaleByMapSize(15, 45));
 
 log("Creating grass patches...");
-var sizes = [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)];
-for (var i = 0; i < sizes.length; i++)
+for (let size of [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)])
 {
-	placer = new ClumpPlacer(sizes[i], 0.3, 0.06, 0.5);
+	placer = new ClumpPlacer(size, 0.3, 0.06, 0.5);
 	painter = new TerrainPainter(tLushGrass);
 	createAreas( placer, [painter,paintClass(clLush)], avoidClasses(clWater, 3, clForest, 0, clPyrenneans,5, clHill, 0, clDirt, 5, clPlayer, 6), scaleByMapSize(15, 45) );
 }

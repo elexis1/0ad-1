@@ -97,7 +97,6 @@ placeDefaultPlayerBases({
 RMS.SetProgress(20);
 
 log("Creating the lake...")
-const lSize = sqrt(sqrt(sqrt(scaleByMapSize(1, 6))));
 createArea(
 	new ChainPlacer(
 		2,
@@ -107,7 +106,7 @@ createArea(
 		Math.round(fractionToTiles(0.5)),
 		Math.round(fractionToTiles(0.5)),
 		0,
-		[Math.floor(mapSize * 0.17 * lSize)]),
+		[Math.floor(mapSize * 0.17 * Math.pow(scaleByMapSize(1, 6), 1/8))]),
 	[
 		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
 		new SmoothElevationPainter(ELEVATION_SET, -3, 4),
@@ -254,8 +253,10 @@ createFood
 
 RMS.SetProgress(85);
 
-var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 5, clForest, 7, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
+createStragglerTrees(
+	[oTree1, oTree2, oTree4, oTree3],
+	avoidClasses(clWater, 5, clForest, 7, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
+
 setWaterWaviness(4.0);
 setWaterType("lake");
 

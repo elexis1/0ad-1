@@ -310,28 +310,24 @@ createObjectGroupsDeprecated(group, 0,
 RMS.SetProgress(90);
 
 log("Creating straggler trees...");
-var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];	// some variation
+var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];
 var num = floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup([new SimpleObject(types[i], 1,1, 0,0)], true);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1,1, 0,0)], true),
+		0,
 		avoidClasses(clForest, 0, clWater, 1, clPlayer, 8, clMetal, 6, clHill, 1),
-		num
-	);
-}
+		num);
 
 log("Creating straggler trees...");
-var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];	// some variation
+var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];
 var num = 3*floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup([new SimpleObject(types[i], 1,1, 0,0)], true);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1,1, 0,0)], true),
+		0,
 		stayClasses(clIsland, 9),
-		num
-	);
-}
+		num);
 
 setSkySet("sunny");
 setSunColor(0.917, 0.828, 0.734);

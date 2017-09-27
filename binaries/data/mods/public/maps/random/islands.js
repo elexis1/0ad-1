@@ -288,11 +288,11 @@ if (currentBiome() != "savanna")
 {
 	var size = numForest / (scaleByMapSize(3,6) * numPlayers);
 	var num = floor(size / types.length);
-	for (var i = 0; i < types.length; ++i)
+	for (let type of types)
 		createAreas(
 			new ChainPlacer(1, floor(scaleByMapSize(3, 5)), numForest / (num * floor(scaleByMapSize(2,5))), 0.5),
 			[
-				new LayeredPainter(types[i], [2]),
+				new LayeredPainter(type, [2]),
 				paintClass(clForest)
 			],
 			[avoidClasses(clPlayer, 0, clForest, 10, clHill, 0), stayClasses(clLand, 6)],
@@ -413,19 +413,14 @@ createObjectGroupsDeprecated(group, 0,
 RMS.SetProgress(85);
 
 log("Creating straggler trees...");
-var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
+var types = [oTree1, oTree2, oTree4, oTree3];
 var num = floor(numStragglers / types.length);
-for (var i = 0; i < types.length; ++i)
-{
-	group = new SimpleGroup(
-		[new SimpleObject(types[i], 1,1, 0,3)],
-		true, clForest
-	);
-	createObjectGroupsDeprecated(group, 0,
+for (let type of types)
+	createObjectGroupsDeprecated(
+		new SimpleGroup([new SimpleObject(type, 1,1, 0,3)], true, clForest),
+		0,
 		[avoidClasses(clForest, 1, clHill, 1, clPlayer, 0, clMetal, 6, clRock, 6), stayClasses(clLand, 6)],
-		num
-	);
-}
+		num);
 
 var planetm = 1;
 if (currentBiome() == "tropic")
