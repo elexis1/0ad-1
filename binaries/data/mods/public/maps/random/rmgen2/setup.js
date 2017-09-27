@@ -117,11 +117,6 @@ function pickSize(sizes)
  */
 function resetTerrain(terrain, tc, elevation)
 {
-	g_MapInfo.mapSize = getMapSize();
-	g_MapInfo.mapArea = g_MapInfo.mapSize * g_MapInfo.mapSize;
-	g_MapInfo.centerOfMap = Math.floor(g_MapInfo.mapSize / 2);
-	g_MapInfo.mapRadius = -PI / 4;
-
 	var placer = new ClumpPlacer(g_MapInfo.mapArea, 1, 1, 1, g_MapInfo.centerOfMap, g_MapInfo.centerOfMap);
 	var terrainPainter = new LayeredPainter([terrain], []);
 	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, elevation, 1);
@@ -634,6 +629,9 @@ function initMapSettings()
 	g_MapInfo = {
 		"numPlayers": numPlayers,
 		"teams": getTeams(numPlayers),
-		"startAngle": randFloat(0, TWO_PI)
+		"startAngle": randFloat(0, TWO_PI),
+		"mapSize": getMapSize(),
+		"mapArea": Math.pow(getMapSize(), 2),
+		"centerOfMap": Math.floor(getMapSize() / 2)
 	};
 }
