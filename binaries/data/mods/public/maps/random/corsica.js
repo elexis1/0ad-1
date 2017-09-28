@@ -169,16 +169,21 @@ for (var island = 0; island <= 1; island++)
 		var angle = PI*island + i*(PI/(nbCreeks*2));
 		if (swap)
 			angle += PI/2;
-		fx = radius * cos(angle);
-		fz = radius * sin(angle);
-		fx = round(islandX[island] + fx);
-		fz = round(islandZ[island] + fz);
 
-		var size = randBool() ? randFloat(10, 50) : scaleByMapSize(75, 100) + randFloat(0, 20);
-		var placer = new ClumpPlacer(size, 0.4, 0.01, 10, fx,fz);
-		var terrainPainter = new TerrainPainter(tSteepCliffs);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, -5,0);	// base height is -10
-		createArea(placer, [terrainPainter, paintClass(clCreek), elevationPainter], null);
+		createArea(
+			new ClumpPlacer(
+				randBool() ? randFloat(10, 50) : scaleByMapSize(75, 100) + randFloat(0, 20),
+				0.4,
+				0.01,
+				10,
+				Math.round(islandX[island] + radius * Math.cos(angle)),
+				Math.round(islandZ[island] + radius * Math.sin(angle))),
+			[
+				new TerrainPainter(tSteepCliffs),
+				paintClass(clCreek),
+				new SmoothElevationPainter(ELEVATION_SET, -5,0) // base height is -10
+			],
+			null);
 	}
 
 var nbBeaches = scaleByMapSize(2,5);
@@ -234,7 +239,7 @@ var island = 0;
 var formerTeam = getPlayerTeam(0);
 var onCorsica = [];
 var onSardinia = [];
-for (var o = 0; o < numPlayers; o++)
+for (let o = 0; o < numPlayers; ++o)
 {
 	if (getPlayerTeam(o) === formerTeam && formerTeam !== -1)
 	{
@@ -243,16 +248,22 @@ for (var o = 0; o < numPlayers; o++)
 			onCorsica.push(o);
 		else
 			onSardinia.push(o);
-	} else if (getPlayerTeam(o) !== -1){
+	}
+	else if (getPlayerTeam(o) !== -1)
+	{
 		if (island === 0)
 		{
 			island = 1;
 			onSardinia.push(o);
-		} else {
+		}
+		else
+		{
 			island = 0;
 			onCorsica.push(o);
 		}
-	} else {
+	}
+	else
+	{
 		// okay now the less crowded:
 		if (onCorsica.length > onSardinia.length)
 			onSardinia.push(o);
@@ -261,6 +272,7 @@ for (var o = 0; o < numPlayers; o++)
 	}
 	formerTeam = getPlayerTeam(o);
 }
+
 // le'ts place the players in a circle around the island.
 for (var i = 0;i < onCorsica.length; i++)
 {
@@ -420,16 +432,24 @@ for (var i = 0; i <= 3; i++) {
 }
 RMS.SetProgress(50);
 
-log ("creating bumps");
-placer = new ClumpPlacer(70, 0.6, 0.1, 4);
-elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, 2,3);
-createAreas( placer, [elevationPainter],  [avoidClasses(clPlayer,2,clPassage, 2), stayClasses(clCorsica,2)],scaleByMapSize(20,100), 5 );
-createAreas( placer, [elevationPainter],  [avoidClasses(clPlayer,2,clPassage, 2), stayClasses(clSardinia,2)],scaleByMapSize(20,100), 5 );
+log("Creating bumps");
+createAreas(
+	new ClumpPlacer(70, 0.6, 0.1, 4),
+	[new SmoothElevationPainter(ELEVATION_MODIFY, heightOffsetBumps, 3)],
+	[
+		stayClasses(clIsland, 2),
+		avoidClasses(clPlayer, 6, clPassage, 2)
+	],
+	scaleByMapSize(20, 100),
+	5);
 
-log ("creating anti bumps");
-placer = new ClumpPlacer(120, 0.3, 0.1, 4);
-elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, -5,6);
-createAreas( placer, [elevationPainter],  [avoidClasses(clPlayer,2,clPassage, 2,clCorsica,2,clSardinia,2)],scaleByMapSize(20,100), 5 );
+log("Creating anti bumps");
+createAreas(
+	new ClumpPlacer(120, 0.3, 0.1, 4),
+	[new SmoothElevationPainter(ELEVATION_MODIFY, heightOffsetAntiBumps, 6)],
+	avoidClasses(clPlayer, 6, clPassage, 2, clIsland, 2),
+	scaleByMapSize(20, 100),
+	5);
 
 log("Repainting");
 var terrTop = createTerrain(tMountainTop);
@@ -445,126 +465,243 @@ var terrDark = createTerrain(tVeryDeepWater);
 var terrSand = createTerrain(tShore);
 var terrWetSand = createTerrain(tShoreBlend);
 var terrSandTransition = createTerrain(tSandTransition);
-// first pass: who's water?
-for (var sandx = 0; sandx < mapSize; sandx++)
-	for (var sandz = 0; sandz < mapSize; sandz++)
-		if (getHeight(sandx,sandz) < 0)
-			addToClass(sandx,sandz,clWater);
 
-// second pass: who's not water
-for (var sandx = 0; sandx < mapSize; sandx++) {
-	for (var sandz = 0; sandz < mapSize; sandz++) {
-		if (getTileClass(clSettlement).countMembersInRadius(sandx,sandz,2) === 0)
+// Mark water
+for (let sandx = 0; sandx < mapSize; ++sandx)
+	for (let sandz = 0; sandz < mapSize; ++sandz)
+		if (getHeight(sandx, sandz) < 0)
+			addToClass(sandx, sandz, clWater);
+
+// Mark land
+for (let sandx = 0; sandx < mapSize; ++sandx)
+	for (let sandz = 0; sandz < mapSize; ++sandz)
+	{
+		if (getTileClass(clSettlement).countMembersInRadius(sandx, sandz, 2))
+			continue;
+
+		let height = getHeight(sandx, sandz);
+		let heightDiff = getHeightDiff(sandx, sandz);
+
+		if (height >= 0.5 && height < 1.5 && getTileClass(clShore).countMembersInRadius(sandx, sandz, 2) > 0)
 		{
-			var height = getHeight(sandx,sandz);
-			var heightDiff = getHeightDiff(sandx,sandz);
-			if (height >= 0.5 && height < 1.5 /*&& getTileClass(clWater).countMembersInRadius(sandx,sandz,3) > 0 */ && getTileClass(clShore).countMembersInRadius(sandx,sandz,2) > 0)
+			terrSandTransition.place(sandx,sandz);
+		}
+		else if (height >= 1 && getTileClass(clWater).countMembersInRadius(sandx, sandz, 3) == 0)
+		{
+			// paint hills or cliffs depending on terrain elevation difference
+			if (height > 17 && getTileClass(clPassage).countMembersInRadius(sandx, sandz, 2) == 0)
 			{
-				terrSandTransition.place(sandx,sandz);
-			} else if (height >= 1 && getTileClass(clWater).countMembersInRadius(sandx,sandz,3) == 0)
+				if (heightDiff < 5)
+					terrHill.place(sandx, sandz);
+				else if (heightDiff < 10)
+					terrMount.place(sandx, sandz);
+			} else
+				terrGrass.place(sandx, sandz);
+
+			if (height > 25 && heightDiff >= 10 && getTileClass(clPassage).countMembersInRadius(sandx, sandz,2) == 0)
 			{
-				// paint hills or cliffs depending on terrain elevation difference
-				if (height > 17 && getTileClass(clPassage).countMembersInRadius(sandx,sandz,2) == 0)
-				{
-					if (heightDiff < 5)
-						terrHill.place(sandx,sandz);
-					else if(heightDiff < 10)
-						terrMount.place(sandx,sandz);
-				} else {
-					terrGrass.place(sandx,sandz);
-				}
-				if (height > 25 && heightDiff >= 10 && getTileClass(clPassage).countMembersInRadius(sandx,sandz,2) == 0) {
-					terrSteepCliff.place(sandx,sandz);
-					addToClass(sandx,sandz,clCliffs);
-				} else if(heightDiff >= 10 && getTileClass(clPassage).countMembersInRadius(sandx,sandz,2) == 0) {
-					terrCliff.place(sandx,sandz);
-					addToClass(sandx,sandz,clCliffs);
-				}
-			} else {
-				if (height >= 0 && heightDiff >= 9) {
-					terrCliff.place(sandx,sandz);
-					addToClass(sandx,sandz,clCliffs);
-				} else if (height >= -0.75 && height < 1.5 && heightDiff < 9) {
-						terrSand.place(sandx,sandz);
-				} else if (height >= -3  && height < -0.75 && heightDiff < 9) {
-					terrWetSand.place(sandx,sandz);
-				}  else if (height >= -6  && height < -3 && heightDiff < 9) {
-					terrShallow.place(sandx,sandz);
-				} else if (height > -10  && height < -6 && heightDiff < 6) {
-					terrDeep.place(sandx,sandz);
-				}
-				if (heightDiff >= 9) {
-					terrCliff.place(sandx,sandz);
-					addToClass(sandx,sandz,clCliffs);
-				}
+				terrSteepCliff.place(sandx, sandz);
+				addToClass(sandx, sandz, clCliffs);
+			}
+			else if (heightDiff >= 10 && getTileClass(clPassage).countMembersInRadius(sandx, sandz, 2) == 0)
+			{
+				terrCliff.place(sandx, sandz);
+				addToClass(sandx, sandz, clCliffs);
+			}
+		}
+		else
+		{
+			if (height >= 0 && heightDiff >= 9)
+			{
+				terrCliff.place(sandx, sandz);
+				addToClass(sandx, sandz, clCliffs);
+			}
+			else if (height >= -0.75 && height < 1.5 && heightDiff < 9)
+				terrSand.place(sandx, sandz);
+			else if (height >= -3  && height < -0.75 && heightDiff < 9)
+				terrWetSand.place(sandx, sandz);
+			else if (height >= -6  && height < -3 && heightDiff < 9)
+				terrShallow.place(sandx, sandz);
+			else if (height > -10  && height < -6 && heightDiff < 6)
+				terrDeep.place(sandx, sandz);
+
+			if (heightDiff >= 9)
+			{
+				terrCliff.place(sandx, sandz);
+				addToClass(sandx, sandz, clCliffs);
 			}
 		}
 	}
-}
 
 RMS.SetProgress(65);
 
-log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(eStoneMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
-createObjectGroupsDeprecated(group, 0,[stayClasses(clCorsica, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
-createObjectGroupsDeprecated(group, 0,[stayClasses(clSardinia, 1),avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1)],  scaleByMapSize(6,25), 1000  );
-
-log("Creating metal mines...");
-group = new SimpleGroup([new SimpleObject(eMetalMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3)], true, clBaseResource);
-createObjectGroupsDeprecated(group, 0,[avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1),stayClasses(clCorsica, 1)],  scaleByMapSize(6,25), 1000  );
-createObjectGroupsDeprecated(group, 0,[avoidClasses(clWater, 3, clPlayer,2 , clBaseResource, 2,clCliffs,1),stayClasses(clSardinia, 1)],  scaleByMapSize(6,25), 1000  );
+log("Creating mines...");
+for (let mine of [eMetalMine, eStoneMine])
+	createObjectGroupsDeprecated(
+		new SimpleGroup(
+			[
+				new SimpleObject(mine, 1,1, 0,0),
+				new SimpleObject(aBushB, 1,1, 2,2),
+				new SimpleObject(aBushA, 0,2, 1,3)
+			],
+			true,
+			clBaseResource),
+		0,
+		[
+			stayClasses(clIsland, 1),
+			avoidClasses(
+				clWater, 3,
+				clPlayer, 6,
+				clBaseResource, 4,
+				clCliffs, 1)
+		],
+		scaleByMapSize(6, 25),
+		1000);
 
 log("Creating grass patches...");
-placer = new ClumpPlacer(20, 0.3, 0.06, 0.5);
-painter = new TerrainPainter(tLushGrass);
-createAreas( placer, [painter,paintClass(clForest)], avoidClasses(clWater, 1,clPlayer, 0,clBaseResource, 3,clCliffs,1), scaleByMapSize(10, 40) );
+createAreas(
+	new ClumpPlacer(20, 0.3, 0.06, 0.5),
+	[
+		new TerrainPainter(tLushGrass),
+		paintClass(clForest)
+	],
+	avoidClasses(
+		clWater, 1,
+		clPlayer, 6,
+		clBaseResource, 3,
+		clCliffs, 1),
+	scaleByMapSize(10, 40));
 
-log ("creating forests");
-var TreeGroup = new SimpleGroup([new SimpleObject(ePine, 3,6, 1,3),new SimpleObject(ePalmTall, 1,3, 1,3),new SimpleObject(eFanPalm, 0,2, 0,2),new SimpleObject(eApple, 0,1, 1,2)], true, clForest);
-createObjectGroupsDeprecated(TreeGroup, 0, [avoidClasses(clWater, 1, clForest, 0,clPlayer, 0,clBaseResource, 2,clCliffs,2), stayClasses(clCorsica, 3)],  scaleByMapSize(350,2500), 100 );
-createObjectGroupsDeprecated(TreeGroup, 0, [avoidClasses(clWater, 1, clForest, 0,clPlayer, 0,clBaseResource, 2,clCliffs,2), stayClasses(clSardinia, 3)],  scaleByMapSize(350,2500), 100 );
+log("Creating forests...");
+createObjectGroupsDeprecated(
+	new SimpleGroup(
+		[
+			new SimpleObject(ePine, 3, 6, 1, 3),
+			new SimpleObject(ePalmTall, 1, 3, 1, 3),
+			new SimpleObject(eFanPalm, 0, 2, 0, 2),
+			new SimpleObject(eApple, 0, 1, 1, 2)
+		],
+		true,
+		clForest),
+	0,
+	[
+		stayClasses(clIsland, 3),
+		avoidClasses(
+			clWater, 1,
+			clForest, 0,
+			clPlayer, 6,
+			clBaseResource, 4,
+			clCliffs, 2)
+	],
+	scaleByMapSize(350, 2500),
+	100);
 
 RMS.SetProgress(75);
 
 log("Creating small decorative rocks...");
-group = new SimpleGroup( [new SimpleObject(aRock, 1,3, 0,1),new SimpleObject(aStandingStone, 0,2, 0,3)], true );
-createObjectGroupsDeprecated( group, 0, avoidClasses(clWater, 0, clForest, 0, clPlayer, 0,clBaseResource, 0, clPassage, 2),
-	scaleByMapSize(16, 262), 50
-);
+createObjectGroupsDeprecated(
+	new SimpleGroup(
+		[
+			new SimpleObject(aRock, 1, 3, 0, 1),
+			new SimpleObject(aStandingStone, 0, 2, 0, 3)
+		],
+		true),
+	0,
+	avoidClasses(
+		clWater, 0,
+		clForest, 0,
+		clPlayer, 6,
+		clBaseResource, 4,
+		clPassage, 2),
+	scaleByMapSize(16, 262),
+	50);
 
 log("Creating large decorative rocks...");
-group = new SimpleGroup( [new SimpleObject(aLargeRock, 1,2, 0,1), new SimpleObject(aRock, 1,3, 0,2)], true
-);
-createObjectGroupsDeprecated( group, 0, avoidClasses(clWater, 0, clForest, 0, clPlayer, 0,clBaseResource, 0, clPassage, 2),
-	scaleByMapSize(8, 131), 50
-);
-createObjectGroupsDeprecated( group, 0, borderClasses(clWater, 5,10), scaleByMapSize(100,800), 500);
+var rocksGroup = new SimpleGroup(
+	[
+		new SimpleObject(aLargeRock, 1, 2, 0, 1),
+		new SimpleObject(aRock, 1, 3, 0, 2)
+	],
+	true);
 
-log("Creating beautification...");
-group = new SimpleGroup( [new SimpleObject(aPlantA, 3,7, 0,3),new SimpleObject(aPlantB, 3,6, 0,3),new SimpleObject(aPlantC, 1,4, 0,4)], true );
-createObjectGroupsDeprecated( group, 0, avoidClasses(clWater, 0,clBaseResource, 0, clShore,3), scaleByMapSize(100, 600), 50  );
-group = new SimpleGroup( [new SimpleObject(aPlantB, 5,20, 0,5),new SimpleObject(aPlantC, 4,10, 0,4)], true );
-createObjectGroupsDeprecated( group, 0, avoidClasses(clWater, 0,clBaseResource, 0, clShore,3), scaleByMapSize(100, 600), 50  );
+createObjectGroupsDeprecated(
+	rocksGroup,
+	0,
+	avoidClasses(
+		clWater, 0,
+		clForest, 0,
+		clPlayer, 6,
+		clBaseResource, 4,
+		clPassage, 2),
+	scaleByMapSize(8, 131),
+	50);
+
+createObjectGroupsDeprecated(
+	rocksGroup,
+	0,
+	borderClasses(clWater, 5, 10),
+	scaleByMapSize(100, 800),
+	500);
+
+log("Creating decorative plants...");
+var plantGroups = [
+	new SimpleGroup(
+		[
+			new SimpleObject(aPlantA, 3, 7, 0, 3),
+			new SimpleObject(aPlantB, 3,6, 0, 3),
+			new SimpleObject(aPlantC, 1,4, 0, 4)
+		],
+		true),
+	new SimpleGroup(
+		[
+			new SimpleObject(aPlantB, 5, 20, 0, 5),
+			new SimpleObject(aPlantC, 4,10, 0,4)
+		],
+		true)
+];
+for (let group of plantGroups)
+	createObjectGroupsDeprecated(
+		group,
+		0,
+		avoidClasses(
+			clWater, 0,
+			clBaseResource, 4,
+			clShore,3),
+		scaleByMapSize(100, 600),
+		50);
 
 RMS.SetProgress(80);
 
 log("Creating animals...");
-group = new SimpleGroup( [new SimpleObject(ePig, 2,4, 0,3)] );
-createObjectGroupsDeprecated( group, 0, avoidClasses(clWater, 3,clBaseResource, 0), scaleByMapSize(20, 100), 50  );
+createObjectGroupsDeprecated(
+	new SimpleGroup([new SimpleObject(ePig, 2,4, 0,3)]),
+	0,
+	avoidClasses(
+		clWater, 3,
+		clBaseResource, 4,
+		clPlayer, 6),
+	scaleByMapSize(20, 100),
+	50);
 
-group = new SimpleGroup( [new SimpleObject(eFish, 1,2, 0,3)] );
-createObjectGroupsDeprecated( group, 0, [avoidClasses(clCreek,3,clShore,3),stayClasses(clWater, 3)], scaleByMapSize(50, 150), 100  );
+log("Creating fish...");
+createObjectGroupsDeprecated(
+	new SimpleGroup([new SimpleObject(eFish, 1,2, 0,3)]),
+	0,
+	[
+		stayClasses(clWater, 3),
+		avoidClasses(clCreek, 3, clShore, 3)
+	],
+	scaleByMapSize(50, 150),
+	100);
 
 RMS.SetProgress(95);
 
 setSkySet(pickRandom(["cumulus", "sunny"]));
 
-setSunColor(0.8,0.66,0.48);
+setSunColor(0.8, 0.66, 0.48);
 setSunElevation(0.828932);
-if (!swap)
-	setSunRotation(6.3*PI/8);
-else
-	setSunRotation(2.3*PI/8);
+setSunRotation((swapAngle ? 0.288 : 0.788) * Math.PI);
+
 setTerrainAmbientColor(0.564706,0.543726,0.419608);
 setUnitsAmbientColor(0.53,0.55,0.45);
 setWaterColor(0.2,0.294,0.49);
@@ -589,11 +726,14 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 	{
 		var ix = ((stepNB-step)*x1 + x2*step) / stepNB;
 		var iz = ((stepNB-step)*z1 + z2*step) / stepNB;
+
 		// 5 at star/end, and 0 at the center
 		var width = (abs(step - stepNB/2.0) *startWidth + (stepNB/2 - abs(step - stepNB/2.0)) * centerWidth ) / (stepNB/2);
 		var oldDirection = [x2-x1, z2-z1];
+
 		// let's get the perpendicular direction
 		var direction = [ -oldDirection[1],oldDirection[0] ];
+
 		if (abs(direction[0]) > abs(direction[1]))
 		{
 			direction[1] = direction[1] / abs(direction[0]);
@@ -601,13 +741,16 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 				direction[0] = 1;
 			else
 				direction[0] = -1;
-		} else {
+		}
+		else
+		{
 			direction[0] = direction[0] / abs(direction[1]);
 			if (direction[1] > 0)
 				direction[1] = 1;
 			else
 				direction[1] = -1;
 		}
+
 		for (var po = -Math.floor(width/2.0); po <= Math.floor(width/2.0); po+=0.5)
 		{
 			var rx = po*direction[0];
@@ -615,6 +758,7 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 
 			var relativeWidth = abs(po / Math.floor(width/2));
 			var targetHeight = ((stepNB-step)*startHeight + finishHeight*step) / stepNB;
+
 			if (round(ix + rx) < mapSize && round(iz + rz) < mapSize && round(ix + rx) >= 0 && round(iz + rz) >= 0)
 			{
 				// smoothing the sides
@@ -626,14 +770,17 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 				}
 
 				g_Map.setHeight(round(ix + rx), round(iz + rz), targetHeight);
+
 				if (tileclass !== null)
 					addToClass(round(ix + rx), round(iz + rz), tileclass);
+
 				if (terrain !== null)
 					placeTerrain(round(ix + rx), round(iz + rz), terrain);
 			}
 		}
 	}
 }
+
 // no need for preliminary rounding
 function getHeightDiff(x1, z1)
 {

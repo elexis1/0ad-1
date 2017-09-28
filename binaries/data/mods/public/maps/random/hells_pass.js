@@ -267,10 +267,23 @@ function placeBarriers()
 		}
 
 		// place barrier
-		var placer = new PathPlacer(fractionToTiles(0.5 + mStartCo * cos(tang)), fractionToTiles(0.5 + mStartCo * sin(tang)), fractionToTiles(0.5 + mStopCo * cos(tang)), fractionToTiles(0.5 + mStopCo * sin(tang)), scaleByMapSize(14, mSize), mWaviness, 0.1, mOffset, mTaper);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, spineTerrain], [2]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 30, 2);
-		createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.spine)], avoidClasses(g_TileClasses.player, 5, g_TileClasses.baseResource, 5));
+		createArea(
+			new PathPlacer(
+				fractionToTiles(0.5 + mStartCo * Math.cos(tang)),
+				fractionToTiles(0.5 + mStartCo * Math.sin(tang)),
+				fractionToTiles(0.5 + mStopCo * Math.cos(tang)),
+				fractionToTiles(0.5 + mStopCo * Math.sin(tang)),
+				scaleByMapSize(14, mSize),
+				mWaviness,
+				0.1,
+				mOffset,
+				mTaper),
+			[
+				new LayeredPainter([g_Terrains.cliff, spineTerrain], [2]),
+				new SmoothElevationPainter(ELEVATION_SET, 30, 2),
+				paintClass(g_TileClasses.spine)
+			],
+			avoidClasses(g_TileClasses.player, 5, g_TileClasses.baseResource, 5));
 	}
 
 	addElements([

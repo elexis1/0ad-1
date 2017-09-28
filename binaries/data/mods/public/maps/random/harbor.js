@@ -251,8 +251,6 @@ ExportMap();
 
 function addCenterLake()
 {
-	let lSize = sqrt(sqrt(sqrt(scaleByMapSize(1, 6))));
-
 	createArea(
 		new ChainPlacer(
 			2,
@@ -262,7 +260,7 @@ function addCenterLake()
 			g_MapInfo.centerOfMap,
 			g_MapInfo.centerOfMap,
 			0,
-			[floor(g_MapInfo.mapSize * 0.17 * lSize)]
+			[Math.floor(g_MapInfo.mapSize * 0.17 * Math.pow(scaleByMapSize(1, 6), 1/8)))]
 		),
 		[
 			new LayeredPainter(

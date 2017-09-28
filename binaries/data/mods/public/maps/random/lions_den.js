@@ -432,18 +432,24 @@ function createSunkenTerrain(players)
 	}
 
 	// Create central valley
-	var placer = new ClumpPlacer(g_MapInfo.mapArea * 0.26, 1, 1, 1, g_MapInfo.centerOfMap, g_MapInfo.centerOfMap);
-	var terrainPainter = new LayeredPainter([g_Terrains.cliff, lower], [3]);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 0, 3);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.valley)]);
+	createArea(
+		new ClumpPlacer(g_MapInfo.mapArea * 0.26, 1, 1, 1, g_MapInfo.centerOfMap, g_MapInfo.centerOfMap),
+		[
+			new LayeredPainter([g_Terrains.cliff, lower], [3]),
+			new SmoothElevationPainter(ELEVATION_SET, 0, 3),
+			paintClass(g_TileClasses.valley)
+		]);
 
 	// Create the center hill
-	var placer = new ClumpPlacer(g_MapInfo.mapArea * 0.14, 1, 1, 1, g_MapInfo.centerOfMap, g_MapInfo.centerOfMap);
-	var terrainPainter = new LayeredPainter([g_Terrains.cliff, topTerrain], [3]);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, g_MapInfo.mapHeight, 3);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.mountain)]);
+	createArea(
+		new ClumpPlacer(g_MapInfo.mapArea * 0.14, 1, 1, 1, g_MapInfo.centerOfMap, g_MapInfo.centerOfMap),
+		[
+			new LayeredPainter([g_Terrains.cliff, topTerrain], [3]),
+			new SmoothElevationPainter(ELEVATION_SET, g_MapInfo.mapHeight, 3),
+			paintClass(g_TileClasses.mountain)
+		]);
 
-	for(var i = 0; i < players.length; ++i)
+	for (var i = 0; i < players.length; ++i)
 	{
 		var playerAngle = g_MapInfo.startAngle + i * TWO_PI / g_MapInfo.numPlayers;
 		var pX = round(fractionToTiles(0.5 + 0.4 * cos(playerAngle)));
@@ -460,36 +466,52 @@ function createSunkenTerrain(players)
 		var nextZ = round(fractionToTiles(0.5 + nRoad * sin(nextPlayerAngle)));
 
 		// Create path to expansion
-		var placer = new PathPlacer(pX, pZ, expX, expZ, scaleByMapSize(12, 12), 0.7, 0.5, 0.1, -1);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, middle, road], [3, 4]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 10, 3);
-		createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.step)]);
+		createArea(
+			new PathPlacer(pX, pZ, expX, expZ, scaleByMapSize(12, 12), 0.7, 0.5, 0.1, -1),
+			[
+				new LayeredPainter([g_Terrains.cliff, middle, road], [3, 4]),
+				new SmoothElevationPainter(ELEVATION_SET, 10, 3),
+				paintClass(g_TileClasses.step)
+			]);
 
 		// Create path to neighbor
-		var placer = new PathPlacer(rearX, rearZ, nextX, nextZ, scaleByMapSize(19, 19), 0.4, 0.5, 0.1, -0.6);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, middle, road], [3, 6]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 10, 3);
-		createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.step)]);
+		createArea(
+			new PathPlacer(rearX, rearZ, nextX, nextZ, scaleByMapSize(19, 19), 0.4, 0.5, 0.1, -0.6),
+			[
+				new LayeredPainter([g_Terrains.cliff, middle, road], [3, 6]),
+				new SmoothElevationPainter(ELEVATION_SET, 10, 3),
+				paintClass(g_TileClasses.step)
+			]);
 
 		// Create path to neighbor
-		var placer = new PathPlacer(rearX, rearZ, preX, preZ, scaleByMapSize(19, 19), 0.4, 0.5, 0.1, -0.6);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, middle, road], [3, 6]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 10, 3);
-		createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.step)]);
+		createArea(
+			new PathPlacer(rearX, rearZ, preX, preZ, scaleByMapSize(19, 19), 0.4, 0.5, 0.1, -0.6),
+			[
+				new LayeredPainter([g_Terrains.cliff, middle, road], [3, 6]),
+				new SmoothElevationPainter(ELEVATION_SET, 10, 3),
+				paintClass(g_TileClasses.step)
+			]);
 
 		// Create the den
-		var placer = new ClumpPlacer(g_MapInfo.mapArea * 0.03, 0.9, 0.3, 1, pX, pZ);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, base], [3]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 15, 3);
-		createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.valley)]);
+		createArea(
+			new ClumpPlacer(g_MapInfo.mapArea * 0.03, 0.9, 0.3, 1, pX, pZ),
+			[
+				new LayeredPainter([g_Terrains.cliff, base], [3]),
+				new SmoothElevationPainter(ELEVATION_SET, 15, 3),
+				paintClass(g_TileClasses.valley)
+			]);
 
 		// Create the expansion
-		var placer = new ClumpPlacer(expSize, 0.9, 0.3, 1, expX, expZ);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, base], [3]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 15, 3);
-		var area = createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.settlement)], [avoidClasses(g_TileClasses.settlement, 2)]);
-		var unpainter = new TileClassUnPainter(new TileClass(g_MapInfo.mapSize, g_TileClasses.mountain));
-		unpainter.paint(area);
+		var area = createArea(
+				new ClumpPlacer(expSize, 0.9, 0.3, 1, expX, expZ),
+				[
+					new LayeredPainter([g_Terrains.cliff, base], [3]),
+					new SmoothElevationPainter(ELEVATION_SET, 15, 3),
+					paintClass(g_TileClasses.settlement)
+				],
+				[avoidClasses(g_TileClasses.settlement, 2)]);
+
+		(new TileClassUnPainter(new TileClass(g_MapInfo.mapSize, g_TileClasses.mountain))).paint(area);
 	}
 
 	// Create the neighbor expansions
@@ -500,9 +522,12 @@ function createSunkenTerrain(players)
 		var nextZ = round(fractionToTiles(0.5 + nExp * sin(nextPlayerAngle)));
 
 		// Create the neightbor expansion
-		var placer = new ClumpPlacer(expSize, 0.9, 0.3, 1, nextX, nextZ);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, lower], [3]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 0, 3);
-		var area = createArea(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.settlement)]);
+		createArea(
+			new ClumpPlacer(expSize, 0.9, 0.3, 1, nextX, nextZ),
+			[
+				new LayeredPainter([g_Terrains.cliff, lower], [3]),
+				new SmoothElevationPainter(ELEVATION_SET, 0, 3),
+				paintClass(g_TileClasses.settlement)
+			]);
 	}
 }

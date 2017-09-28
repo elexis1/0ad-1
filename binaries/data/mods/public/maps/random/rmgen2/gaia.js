@@ -41,15 +41,15 @@ function addBluffs(constraint, size, deviation, fill)
 	{
 		var offset = getRandomDeviation(size, deviation);
 
-		var pMinSize = Math.floor(minSize * offset);
-		var pMaxSize = Math.floor(maxSize * offset);
-		var pSpread = Math.floor(spread * offset);
-		var pElevation = Math.floor(elevation * offset);
-
-		var placer = new ChainPlacer(pMinSize, pMaxSize, pSpread, 0.5);
-		var terrainPainter = new LayeredPainter([g_Terrains.cliff, g_Terrains.mainTerrain, constrastTerrain], [2, 3]);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, pElevation, 2);
-		var rendered = createAreas(placer, [terrainPainter, elevationPainter, paintClass(g_TileClasses.bluff)], constraint, 1);
+		var rendered = createAreas(
+			new ChainPlacer(Math.floor(minSize * offset), Math.floor(maxSize * offset), Math.floor(spread * offset), 0.5),
+			[
+				new LayeredPainter([g_Terrains.cliff, g_Terrains.mainTerrain, constrastTerrain], [2, 3]),
+				new SmoothElevationPainter(ELEVATION_MODIFY, Math.floor(elevation * offset), 2),
+				paintClass(g_TileClasses.bluff)
+			],
+			constraint,
+			1);
 
 		// Find the bounding box of the bluff
 		if (rendered[0] === undefined)
@@ -401,19 +401,20 @@ function addElevation(constraint, el)
 		var pElevation = Math.floor(elevation * offset);
 
 		pElevation = Math.max(el.minElevation, Math.min(pElevation, el.maxElevation));
-
 		pMinSize = Math.min(pMinSize, pMaxSize);
 		pMaxSize = Math.min(pMaxSize, el.maxSize);
 		pMinSize = Math.max(pMaxSize, el.minSize);
-
 		pSmooth = Math.max(pSmooth, 1);
 
-		var pWidths = widths.concat(pSmooth);
-
-		var placer = new ChainPlacer(pMinSize, pMaxSize, pSpread, 0.5);
-		var terrainPainter = new LayeredPainter(el.painter, [pWidths]);
-		var elevationPainter = new SmoothElevationPainter(elType, pElevation, pSmooth);
-		createAreas(placer, [terrainPainter, elevationPainter, paintClass(el.class)], constraint, 1);
+		createAreas(
+			new ChainPlacer(pMinSize, pMaxSize, pSpread, 0.5),
+			[
+				new LayeredPainter(el.painter, [widths.concat(pSmooth)]),
+				new SmoothElevationPainter(elType, pElevation, pSmooth),
+				paintClass(el.class)
+			],
+			constraint,
+			1);
 	}
 }
 
@@ -511,28 +512,29 @@ function addLayeredPatches(constraint, size, deviation, fill)
 		scaleByMapSize(8, 21)
 	];
 
-	for (var i = 0; i < sizes.length; ++i)
+	for (let size of sizes)
 	{
 		var offset = getRandomDeviation(size, deviation);
 		var patchMinRadius = Math.floor(minRadius * offset);
 		var patchMaxRadius = Math.floor(maxRadius * offset);
-		var patchSize = Math.floor(sizes[i] * offset);
+		var patchSize = Math.floor(size * offset);
 		var patchCount = count * offset;
 
-		if (patchMinRadius > patchMaxRadius)
-			patchMinRadius = patchMaxRadius;
-
-		var placer = new ChainPlacer(patchMinRadius, patchMaxRadius, patchSize, 0.5);
-		var painter = new LayeredPainter(
+		createAreas(
+			new ChainPlacer(Math.min(patchMinRadius, patchMaxRadius), patchMaxRadius, patchSize, 0.5),
 			[
-				[g_Terrains.mainTerrain, g_Terrains.tier1Terrain],
-				[g_Terrains.tier1Terrain, g_Terrains.tier2Terrain],
-				[g_Terrains.tier2Terrain, g_Terrains.tier3Terrain],
-				[g_Terrains.tier4Terrain]
+				new LayeredPainter(
+					[
+						[g_Terrains.mainTerrain, g_Terrains.tier1Terrain],
+						[g_Terrains.tier1Terrain, g_Terrains.tier2Terrain],
+						[g_Terrains.tier2Terrain, g_Terrains.tier3Terrain],
+						[g_Terrains.tier4Terrain]
+					],
+					[1, 1]),
+				paintClass(g_TileClasses.dirt)
 			],
-			[1, 1] // widths
-		);
-		createAreas(placer, [painter, paintClass(g_TileClasses.dirt)], constraint, patchCount);
+			constraint,
+			patchCount);
 	}
 }
 
@@ -590,24 +592,19 @@ function addPlateaus(constraint, size, deviation, fill)
 
 	for (var i = 0; i < 40; ++i)
 	{
-		var placer = new ChainPlacer(3, 15, 1, 0.5);
-		var terrainPainter = new LayeredPainter([plateauTile, plateauTile], [3]);
 		var hillElevation = randIntInclusive(4, 18);
-		var elevationPainter = new SmoothElevationPainter(ELEVATION_MODIFY, hillElevation, hillElevation - 2);
-
 		createAreas(
-			placer,
+			new ChainPlacer(3, 15, 1, 0.5),
 			[
-				terrainPainter,
-				elevationPainter,
+				new LayeredPainter([plateauTile, plateauTile], [3]),
+				new SmoothElevationPainter(ELEVATION_MODIFY, hillElevation, hillElevation - 2),
 				paintClass(g_TileClasses.hill)
 			],
 			[
 				avoidClasses(g_TileClasses.hill, 7),
 				stayClasses(g_TileClasses.plateau, 7)
 			],
-			1
-		);
+			1);
 	}
 
 	addElements([
@@ -839,16 +836,17 @@ function addForests(constraint, size, deviation, fill)
 		]
 	];
 
-	for (var i = 0; i < types.length; ++i)
+	for (let type of types)
 	{
-		var offset = getRandomDeviation(size, deviation);
-		var minSize = floor(scaleByMapSize(3, 5) * offset);
-		var maxSize = Math.floor(scaleByMapSize(50, 50) * offset);
-		var forestCount = scaleByMapSize(10, 10) * fill;
-
-		var placer = new ChainPlacer(1, minSize, maxSize, 0.5);
-		var painter = new LayeredPainter(types[i], [2]);
-		createAreas(placer, [painter, paintClass(g_TileClasses.forest)], constraint, forestCount);
+		let offset = getRandomDeviation(size, deviation);
+		createAreas(
+			new ChainPlacer(1, Math.floor(scaleByMapSize(3, 5) * offset), Math.floor(50 * offset), 0.5),
+			[
+				new LayeredPainter(type, [2]),
+				paintClass(g_TileClasses.forest)
+			],
+			constraint,
+			scaleByMapSize(10, 10) * fill);
 	}
 }
 

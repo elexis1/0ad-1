@@ -117,10 +117,13 @@ function pickSize(sizes)
  */
 function resetTerrain(terrain, tc, elevation)
 {
-	var placer = new ClumpPlacer(g_MapInfo.mapArea, 1, 1, 1, g_MapInfo.centerOfMap, g_MapInfo.centerOfMap);
-	var terrainPainter = new LayeredPainter([terrain], []);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, elevation, 1);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(tc)], null);
+	createArea(
+		new ClumpPlacer(g_MapInfo.mapArea, 1, 1, 1, g_MapInfo.centerOfMap, g_MapInfo.centerOfMap),
+		[
+			new LayeredPainter([terrain], []),
+			new SmoothElevationPainter(ELEVATION_SET, elevation, 1),
+			paintClass(tc)
+		], null);
 
 	g_MapInfo.mapHeight = elevation;
 }
