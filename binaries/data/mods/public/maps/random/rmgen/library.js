@@ -298,6 +298,11 @@ function initTerrain(tileClass)
 	g_Map.initTerrain(createTerrain(tileClass));
 }
 
+function initHeight(height)
+{
+	g_Map.initHeight(height);
+}
+
 function isCircularMap()
 {
 	return !!g_MapSettings.CircularMap;
