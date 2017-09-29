@@ -517,34 +517,39 @@ function createDefaultTreasures(args)
 	defaultBaseFunctionForEachPlayer(createDefaultTreasure, args);
 }
 
-function createDefaultTreasure(types)
+function createDefaultTreasure(args)
 {
 	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
 
-	for (let resourceTypeArgs of types)
-		createDefaultTreasureType(args, fx, fz, args.baseResourceClass);
-}
-
-function createDefaultTreasureType(resourceTypeArgs, fx, fz, baseResourceClass)
-{
-	let get = getDefaultBaseArgs(resourceTypeArgs)[0];
-	for (let x = 0; x < get("maxTries", 30); ++x)
+	for (let resourceTypeArgs of args.types)
 	{
-		let angle = randFloat(0, 2 * Math.PI);
-		let dist = randFloat(get("minDist", 11), get("maxDist", 13));
+		// TODO: this is broken
+		[get, _, _, baseResourceConstraint] = getDefaultBaseArgs(resourceTypeArgs);
 
-		if (createObjectGroup(
-			new SimpleGroup(
-				[new SimpleObject(resourceTypeArgs.template, get("count", 14), get("count", 14), get("minDistGroup", 1), get("maxDistGroup", 3))],
-				false,
-				baseResourceClass,
-				Math.round(fx + dist * Math.cos(angle)),
-				Math.round(fz + dist * Math.sin(angle))),
-			0,
-			baseResourceConstraint))
-			return;
+		let success = false;
+		for (let tries = 0; tries < get("maxTries", 30); ++tries)
+		{
+			let angle = randFloat(0, 2 * Math.PI);
+			let dist = randFloat(get("minDist", 11), get("maxDist", 13));
+	
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(resourceTypeArgs.template, get("count", 14), get("count", 14), get("minDistGroup", 1), get("maxDistGroup", 3))],
+					false,
+					args.baseResourceClass,
+					Math.round(fx + dist * Math.cos(angle)),
+					Math.round(fz + dist * Math.sin(angle))),
+				0,
+				baseResourceConstraint))
+			{
+				success = true;
+				break;
+			}
+		}
+
+		if (!success)
+			error("Could not place treasure " + args.template + " for player " + args.playerID);
 	}
-	error("Could not place treasure " + args.template + " for player " + args.playerID);
 }
 
 /**

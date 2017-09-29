@@ -102,12 +102,13 @@ for (let i = 0; i < numPlayers; ++i)
 		});
 	}
 
-	for (let treasure of treasures)
-		for (let i = 0; i < treasure.count; ++i)
-		{
-			let dist = randFloat(treasure.minDist, treasure.maxDist);
-			placeObject(ix + dist * Math.cos(angle), iz + dist * Math.sin(angle), treasure.template, 0, randFloat(0, TWO_PI));
-		}
+    createDefaultTreasure({
+        "playerID": playerIDs[i],
+        "playerX": tilesToFraction(playerX[i]),
+        "playerZ": tilesToFraction(playerZ[i]),
+        "baseResourceClass": clBaseResource,
+        "types": treasures
+    });
 }
 
 markUnknownPlayerTerritory(playerX, playerZ);
