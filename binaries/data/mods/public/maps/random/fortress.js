@@ -64,6 +64,7 @@ var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
 for (var i=0; i < numPlayers; i++)
 {
+	log("Creating base for player " + playerIDs[i] + "...");
 	playerX[i] *= mapSize;
 	playerZ[i] *= mapSize;
 

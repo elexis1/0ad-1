@@ -57,93 +57,70 @@ var clGrass = createTileClass();
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
-for (var i = 0; i < numPlayers; i++)
+for (let i = 0; i < numPlayers; ++i)
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	// scale radius of player area by map size
-	var radius = scaleByMapSize(15,25);
-
-	// get the x and z in tiles
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	// calculate size based on the radius
-	var size = PI * radius * radius;
+	let ix = Math.round(fractionToTiles(playerX[i]));
+	let iz = Math.round(fractionToTiles(playerZ[i]));
 
 	// create the player area
-	var placer = new ClumpPlacer(size, 0.9, 0.5, 10, ix, iz);
-	createArea(placer, paintClass(clPlayer), null);
+	createArea(
+		new ClumpPlacer(getDefaultPlayerTerritoryArea(), 0.9, 0.5, 10, ix, iz),
+		paintClass(clPlayer),
+		null);
 
 	// create the grass patches
-	var grassRadius = floor(scaleByMapSize(16 ,30));
-	placer = new ChainPlacer(2, floor(scaleByMapSize(5, 12)), floor(scaleByMapSize(25, 60)), 1, ix, iz, 0, [grassRadius]);
-	var painter = new LayeredPainter([tGrassSands, tGrass], [3]);
-	createArea(placer, [painter, paintClass(clGrass)], null);
-
-	// create the city patch
-	var cityRadius = 10;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [3]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
-	}
-	var mDist = 11;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0), new RandomObject(aBushes, 2,4, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2), new RandomObject(aBushes, 2,4, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 3;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(pickRandom([oPalm, oTamarix]), num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
+	createArea(
+		new ChainPlacer(
+			2,
+			Math.floor(scaleByMapSize(5, 12)),
+			Math.floor(scaleByMapSize(25, 60)),
+			1,
+			ix,
+			iz,
+			0,
+			[Math.floor(scaleByMapSize(16 ,30))]),
+		[
+			new LayeredPainter([tGrassSands, tGrass], [3]),
+			paintClass(clGrass)
+		],
+		null);
 }
-
 RMS.SetProgress(10);
+
+var mineBushes = new RandomObject(aBushes, 2, 4, 2, 3);
+
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// playerTileClass marked above
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad,
+		"radius": 10,
+		"radiusFactor": 1,
+		"width": 3
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBush
+	},
+	"metal": {
+		"template": oMetalLarge,
+		"groupElements": [mineBushes]
+	},
+	"stone": {
+		"template": oStoneLarge,
+		"groupElements": [mineBushes]
+	},
+	"trees": {
+		"template": pickRandom([oPalm, oTamarix]),
+		"radiusFactor": 1/15
+	}
+	// No decoratives
+});
+
+RMS.SetProgress(20);
 
 log("Creating bumps...");
 createAreas(
@@ -216,21 +193,21 @@ for (let size of [scaleByMapSize(6, 30), scaleByMapSize(10, 50), scaleByMapSize(
 RMS.SetProgress(70);
 
 log("Creating stone mines...");
-var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0, 2, 0, 4), new SimpleObject(oStoneLarge, 1, 1, 0,4), new RandomObject(aBushes, 2, 4, 0, 2)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0, 2, 0, 4), new SimpleObject(oStoneLarge, 1, 1, 0, 4), mineBushes], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clGrass, 1)],
 	scaleByMapSize(2,8), 100
 );
 
 log("Creating small stone quarries...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3), new RandomObject(aBushes, 2,4, 0,2)], true, clRock);
+group = new SimpleGroup([new SimpleObject(oStoneSmall, 2,5, 1,3), mineBushes], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1, clGrass, 1)],
 	scaleByMapSize(2,8), 100
 );
 
 log("Creating metal mines...");
-group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4), new RandomObject(aBushes, 2,4, 0,2)], true, clMetal);
+group = new SimpleGroup([new SimpleObject(oMetalLarge, 1,1, 0,4), mineBushes], true, clMetal);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clMetal, 10, clRock, 5, clHill, 1, clGrass, 1)],
 	scaleByMapSize(2,8), 100

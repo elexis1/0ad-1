@@ -74,98 +74,47 @@ iz = round(fz);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	var radius = scaleByMapSize(18,32);
-	var cliffRadius = 2;
-	var elevation = 20;
-	var hillSize = PI * radius * radius;
-	// get the x and z in tiles
-	fx = fractionToTiles(playerX[i]);
-	fz = fractionToTiles(playerZ[i]);
-	ix = round(fx);
-	iz = round(fz);
-	// create the hill
-	var placer = new ClumpPlacer(hillSize, 0.65, 0.1, 10, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tMainTerrain, tMainTerrain],		// terrains
-		[cliffRadius]		// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		3,				// elevation
-		cliffRadius				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand)], null);
-
-	placeCivDefaultEntities(fx, fz, id);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oFruitBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tMainTerrain,
+		"outerTerrain": tMainTerrain,
+		"radius": scaleByMapSize(18, 32),
+		"radiusFactor": 1/2,
+		"painters": [
+		    new SmoothElevationPainter(ELEVATION_SET, 3, 2),
+		    paintClass(clLand)
+		]
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge,
+		"dist": 11
+	},
+	"stone": {
+		"template": oStoneLarge,
+		"dist": 11
+	},
+	"trees": {
+		"template": oTree1,
+		"radiusFactor": 1/10,
+		"maxDistGroup": 4
+	},
+	"decoratives": {
+		"template": aGrassShort
 	}
-	var mDist = 11;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-	var hillSize = PI * radius * radius;
-	// create starting trees
-	var num = floor(hillSize / 100);
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = 12;
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oTree1, num, num, 0,4)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
-
-	// create the city patch
-	var cityRadius = radius/2;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]));
-	var painter = new LayeredPainter([tMainTerrain, tMainTerrain], [1]);
-	createArea(placer, [painter, paintClass(clPlayer)], null);
-
-}
+});
 
 log("Creating center area...");
 var center = Math.round(fractionToTiles(0.5));
 var lSize = Math.pow(scaleByMapSize(1, 6), 1/8);
+
 createArea(
 	new ClumpPlacer(mapArea * 0.065 * lSize, 0.7, 0.1, 10, center, center),
 	[
@@ -387,7 +336,7 @@ createDecoration
 );
 
 log("Creating actor trees...");
-group = new SimpleGroup(
+var group = new SimpleGroup(
 	[new SimpleObject(aTree, 1,1, 0,1)],
 	true
 );

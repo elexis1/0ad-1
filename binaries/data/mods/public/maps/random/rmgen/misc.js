@@ -250,48 +250,336 @@ function placeCivDefaultEntities(fx, fz, playerid, kwargs = {})
 	}
 }
 
-function placeDefaultChicken(playerX, playerZ, tileClass, constraint = undefined, template = "gaia/fauna_chicken")
+function placeDefaultPlayerBases(args)
 {
-	for (let j = 0; j < 2; ++j)
-		for (var tries = 0; tries < 10; ++tries)
+	let [playerIDs, playerX, playerZ] = args.playerPlacement;
+
+	for (let i = 0; i < getNumPlayers(); ++i)
+	{
+		args.playerID = playerIDs[i];
+		args.playerX = playerX[i];
+		args.playerZ = playerZ[i];
+		placeDefaultPlayerBase(args);
+	}
+}
+
+function placeDefaultPlayerBase(args)
+{
+	log("Creating base for player " + args.playerID + "...");
+
+	let fx = fractionToTiles(args.playerX);
+	let fz = fractionToTiles(args.playerZ);
+
+	placeCivDefaultEntities(fx, fz, args.playerID, { "iberWall": args.iberWalls || "walls"});
+
+	if (args.playerTileClass !== undefined)
+		addCivicCenterAreaToClass(Math.round(fx), Math.round(fz), args.playerTileClass);
+
+	// TODO: With 50% chance place the two mines in proximity
+	//let maxAngle = 2 * Math.PI * (randBool() ? 1 : 0.2);
+	//let startingAngle;
+
+	let defaultBaseFunctions = {
+		// Possibly mark player class first
+		"cityPatch": placeDefaultCityPatch,
+		// Create the largest and most important objects first
+		"trees": placeDefaultTrees,
+		"metal": createDefaultMine,
+		"stone": createDefaultMine,
+		"stone_formation": createDefaultStoneMineFormation,
+		"treasures": createDefaultTreasure,
+		"berries": placeDefaultBerries,
+		"chicken": placeDefaultChicken,
+		"decoratives": placeDefaultDecoratives
+	};
+
+	for (let baseFuncID in defaultBaseFunctions)
+	{
+		if (!args[baseFuncID])
+			continue;
+
+		let args2 = args[baseFuncID];
+
+		// Copy some global arguments to the arguments for each function
+		for(let prop of ["playerID", "playerX", "playerZ", "baseResourceClass", "baseResourceConstraint"])
+			args2[prop] = args[prop];
+
+		defaultBaseFunctions[baseFuncID](args2);
+	}
+}
+
+function getDefaultPlayerTerritoryRadius()
+{
+	return scaleByMapSize(15, 25);
+}
+
+function getDefaultPlayerTerritoryArea()
+{
+	return Math.PI * Math.pow(getDefaultPlayerTerritoryRadius(), 2);
+}
+
+function getDefaultBaseArgs(args)
+{
+	let baseResourceConstraint = avoidClasses(args.baseResourceClass, 4);
+
+	if (args.baseResourceConstraint)
+		baseResourceConstraint = new AndConstraint([baseResourceConstraint, args.baseResourceConstraint]);
+
+	return [
+		(property, defaultVal) => args[property] === undefined ? defaultVal : args[property],
+		fractionToTiles(args.playerX || 0),
+		fractionToTiles(args.playerZ || 0),
+		baseResourceConstraint
+	];
+}
+
+/**
+ * Execute the given base function for each player at the player location.
+ */
+function defaultBaseFunctionForEachPlayer(func, args, uncloneableProperties = [])
+{
+	for (let i = 0; i < getNumPlayers(); ++i)
+	{
+		let args2 = {};
+
+		for (let prop in args)
+			args2[prop] = uncloneableProperties.indexOf(prop) != -1 ? args[prop] : clone(args[prop]);
+
+		args2.playerID = args.playerIDs[i];
+		args2.playerX = args.playerX[i];
+		args2.playerZ = args.playerZ[i];
+
+		func(args2);
+	}
+}
+
+function placeDefaultCityPatches(args)
+{
+	defaultBaseFunctionForEachPlayer(placeDefaultCityPatch, args, ["painters"]);
+}
+
+/**
+ * @property tileClass - optionally mark the entire city patch with a tile class
+ */
+function placeDefaultCityPatch(args)
+{
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
+
+	let painters = [];
+
+	if (args.innerTerrain && args.outerTerrain)
+		painters.push(new LayeredPainter([args.innerTerrain, args.outerTerrain], [get("width", 1)]));
+
+	if (args.painters)
+		painters = painters.concat(args.painters);
+
+	createArea(
+		new ClumpPlacer(
+			Math.floor(Math.PI * Math.pow(get("radiusFactor", 1/3) * get("radius", getDefaultPlayerTerritoryRadius()), 2)),
+			get("coherence", 0.6),
+			get("smoothness", 0.3),
+			get("failFraction", 10),
+			Math.round(fx),
+			Math.round(fz)),
+		painters,
+		null);
+}
+
+function placeDefaultChicken(args)
+{
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
+
+	for (let j = 0; j < get("count", 2); ++j)
+		for (let tries = 0; tries < get("maxTries", 30); ++tries)
 		{
-			let aAngle = randFloat(0, TWO_PI);
-
-			// Roman and ptolemian civic centers have a big footprint!
-			let aDist = 9;
-
-			let aX = round(playerX + aDist * cos(aAngle));
-			let aZ = round(playerZ + aDist * sin(aAngle));
-
-			let group = new SimpleGroup(
-				[new SimpleObject(template, 5,5, 0,2)],
-				true, tileClass, aX, aZ
-			);
-
-			if (createObjectGroup(group, 0, constraint))
-				break;
+			let angle = randFloat(0, 2 * Math.PI);
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(get("template", "gaia/fauna_chicken"), 5, 5, 0, get("count", 2))],
+					true,
+					args.baseResourceClass,
+					Math.round(fx + get("dist", 9) * Math.cos(angle)),
+					Math.round(fz + get("dist", 9) * Math.sin(angle))),
+				0,
+				baseResourceConstraint))
+				return;
 		}
+	error("Could not place chicken for player " + args.playerID);
+}
+
+function placeDefaultBerries(args)
+{
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
+	for (let tries = 0; tries < get("maxTries", 30); ++tries)
+	{
+		let angle = randFloat(0, 2 * Math.PI);
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(
+					get("template", "gaia/flora_bush_berry"),
+					get("minCount", 5),
+					get("maxCount", 5),
+					get("maxDist", 1),
+					get("maxDist", 3))
+				],
+				true,
+				args.baseResourceClass,
+				Math.round(fx + get("dist", 12) * Math.cos(angle)),
+				Math.round(fz + get("dist", 12) * Math.sin(angle))),
+			0,
+			baseResourceConstraint))
+			return;
+	}
+	error("Could not place berries for player " + args.playerID);
+}
+
+function createDefaultMine(args)
+{
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
+	//args.get("startingAngle", randFloat(0, 2 * Math.PI))
+	//args.get("minAngle", Math.PI / 3)
+	//args.get("maxAngle", Math.PI * 2)
+
+	let groupElements = [new SimpleObject(args.template, 1, 1, 0, 0)];
+
+	if (args.groupElements)
+		groupElements = groupElements.concat(args.groupElements);
+
+	for (let tries = 0; tries < get("maxTries", 30); ++tries)
+	{
+		let angle = randFloat(0, 2 * Math.PI);
+		//do
+		//	angle = randFloat(0, 2 * Math.PI);
+		//while (maxAngle && Math.abs(angle - startingAngle) > maxAngle ||
+		//       minAngle && Math.abs(angle - startingAngle) < minAngle)
+
+		if (createObjectGroup(
+			new SimpleGroup(
+				groupElements,
+				true,
+				args.baseResourceClass,
+				Math.round(fx + get("dist", 12) * Math.cos(angle)),
+				Math.round(fz + get("dist", 12) * Math.sin(angle))),
+			0,
+			baseResourceConstraint))
+			return;
+	}
+	error("Could not mine " + args.template + " for player " + args.playerID);
+}
+
+function createDefaultStoneMineFormation(args)
+{
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
+
+	for (let tries = 0; tries < get("maxTries", 30); ++tries)
+	{
+		let angle = randFloat(0, Math.PI * 2);
+	
+		let x = Math.round(fx + get("dist", 12) * Math.cos(angle));
+		let z = Math.round(fz + get("dist", 12) * Math.sin(angle));
+
+		if (!baseResourceConstraint.constraint.allows(x, z))
+			continue;
+
+		createStoneMineFormation(x, z, args.terrain)
+		addToClass(x, z, args.baseResourceClass);
+		return;
+	}
+	error("Could not place stone mine formation for player " + args.playerID);
+}
+
+function placeDefaultTrees(args)
+{
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
+	let num = Math.floor(Math.PI * Math.pow(get("radiusFactor", 1 / 7.5) * get("radius", getDefaultPlayerTerritoryRadius()), 2));
+
+	for (let x = 0; x < get("maxTries", 30); ++x)
+	{
+		let angle = randFloat(0, 2 * Math.PI);
+		let dist = randFloat(get("minDist", 11), get("maxDist", 13));
+
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(args.template, num, num, get("minDistGroup", 1), get("maxDistGroup", 4))],
+				false,
+				args.baseResourceClass,
+				Math.round(fx + dist * Math.cos(angle)),
+				Math.round(fz + dist * Math.sin(angle))),
+			0,
+			baseResourceConstraint))
+			return;
+	}
+	error("Could not place starting trees for player " + args.playerID);
+}
+
+function createDefaultTreasures(args)
+{
+	defaultBaseFunctionForEachPlayer(createDefaultTreasure, args);
+}
+
+function createDefaultTreasure(types)
+{
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
+
+	for (let resourceTypeArgs of types)
+		createDefaultTreasureType(args, fx, fz, args.baseResourceClass);
+}
+
+function createDefaultTreasureType(resourceTypeArgs, fx, fz, baseResourceClass)
+{
+	let get = getDefaultBaseArgs(resourceTypeArgs)[0];
+	for (let x = 0; x < get("maxTries", 30); ++x)
+	{
+		let angle = randFloat(0, 2 * Math.PI);
+		let dist = randFloat(get("minDist", 11), get("maxDist", 13));
+
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(resourceTypeArgs.template, get("count", 14), get("count", 14), get("minDistGroup", 1), get("maxDistGroup", 3))],
+				false,
+				baseResourceClass,
+				Math.round(fx + dist * Math.cos(angle)),
+				Math.round(fz + dist * Math.sin(angle))),
+			0,
+			baseResourceConstraint))
+			return;
+	}
+	error("Could not place treasure " + args.template + " for player " + args.playerID);
 }
 
 /**
  * Typically used for placing grass tufts around the civic centers.
  */
-function placeDefaultDecoratives(playerX, playerZ, template, tileclass, radius, constraint = undefined)
+function placeDefaultDecoratives(args)
 {
-	for (let i = 0; i < PI * radius * radius / 250; ++i)
-	{
-		let angle = randFloat(0, 2 * PI);
-		let dist = radius - randIntInclusive(5, 11);
+	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
 
-		createObjectGroup(
-			new SimpleGroup(
-				[new SimpleObject(template, 2, 5, 0, 1, -PI/8, PI/8)],
-				false,
-				tileclass,
-				Math.round(playerX + dist * Math.cos(angle)),
-				Math.round(playerZ + dist * Math.sin(angle))
-			), 0, constraint);
-	}
+	for (let i = 0; i < Math.PI * Math.pow(get("radiusFactor", 1 / 15) * getDefaultPlayerTerritoryRadius(), 2); ++i)
+		for (let x = 0; x < get("maxTries", 30); ++x)
+		{
+			let angle = randFloat(0, 2 * PI);
+			let dist = randIntInclusive(get("minDist", 6), get("maxDist", 11));
+
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(
+						args.template,
+						get("minCount", 2),
+						get("maxCount", 5),
+						0,
+						1)
+					],
+					false,
+					args.baseResourceClass,
+					Math.round(fx + dist * Math.cos(angle)),
+					Math.round(fz + dist * Math.sin(angle))
+				),
+				0,
+				baseResourceConstraint))
+				return;
+		}
+
+	error("Could not place decoratives for player " + args.playerID);
 }
 
 function modifyTilesBasedOnHeight(minHeight, maxHeight, mode, func)

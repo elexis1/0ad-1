@@ -447,9 +447,12 @@ function radialPlayerPlacement(percentRadius = 0.35)
  * For example [0.2, 0.2, 0.4, 0.4, 0.6, 0.6, 0.8, 0.8] for a 4v4 or
  * [0.25, 0.33, 0.5, 0.67, 0.75] for a 2v3.
  */
-function placePlayersRiver()
+function placePlayersRiver(horizontal, func)
 {
-	let playerPos = [];
+	let playerIDs = primeSortAllPlayers();
+	let playerX = [];
+	let playerZ = [];
+
 	let numPlayers = getNumPlayers();
 	let numPlayersEven = numPlayers % 2 == 0;
 
@@ -460,10 +463,12 @@ function placePlayersRiver()
 		let offsetDivident = numPlayersEven || currentPlayerEven ? (i + 1) % 2 : 0;
 		let offsetDivisor = numPlayersEven ? 0 : currentPlayerEven ? +1 : -1;
 
-		playerPos[i] = ((i - 1 + offsetDivident) / 2 + 1) / ((numPlayers + offsetDivisor) / 2 + 1);
+		let pos = func(i, ((i - 1 + offsetDivident) / 2 + 1) / ((numPlayers + offsetDivisor) / 2 + 1));
+
+		[playerX[i], playerZ[i]] = horizontal ? pos.reverse() : pos;
 	}
 
-	return playerPos;
+	return [playerIDs, playerX, playerZ];
 }
 
 function getStartingEntities(player)

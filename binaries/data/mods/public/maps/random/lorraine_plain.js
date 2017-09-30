@@ -57,99 +57,57 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clSettlement = createTileClass();
 var clShallow = createTileClass();
+
 var riverHeight = -4;
 
-var playerIDs = primeSortAllPlayers();
-var playerPos = placePlayersRiver();
+var [playerIDs, playerX, playerZ] = placePlayersRiver(true, (i, pos) => [
+	0.5 * (i % 2) + 0.25,
+	pos
+]);
 
-var playerX = [];
-var playerZ = [];
+log("Marking player territory...");
+// Prevents initial mines to be placed in the tributaries
+for (let i = 0; i < numPlayers; ++i)
+	createArea(
+		new ClumpPlacer(
+			getDefaultPlayerTerritoryArea() / 4,
+			0.9,
+			0.5,
+			10,
+			Math.round(fractionToTiles(playerX[i])),
+			Math.round(fractionToTiles(playerZ[i]))),
+		paintClass(clPlayer),
+		null);
 
-for (var i = 0; i < numPlayers; i++)
-{
-	playerZ[i] = 0.25 + 0.5*(i%2);
-	playerX[i] = playerPos[i];
-}
-
-for (var i = 0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	// scale radius of player area by map size
-	var radius = scaleByMapSize(15,25);
-
-	// get the x and z in tiles
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	// calculate size based on the radius
-	var size = PI * radius * radius / 4;
-
-	// create the player area
-	var placer = new ClumpPlacer(size, 0.9, 0.5, 10, ix, iz);
-	createArea(placer, paintClass(clPlayer), null);
-
-	// create the city patch
-	var cityRadius = 10;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [3]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// playerTileClass marked above
+	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oOak,
+		"radiusFactor": 1/10, // 3 trees
+		"maxDistGroup": 5
+	},
+	"decoratives": {
+		"template": aGrassShort
 	}
-	var mDist = 11;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0), new SimpleObject(aGrass, 2,4, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2), new SimpleObject(aGrass, 2,4, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 3;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oOak, num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-}
+});
 
 log("Creating the main river...");
 createArea(
