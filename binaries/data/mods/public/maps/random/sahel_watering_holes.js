@@ -95,7 +95,6 @@ for (var m = 0; m < numPlayers; m++)
 			fractionToTiles(0.5 + 0.15 * Math.cos(tang)),
 			fractionToTiles(0.5 + 0.15 * Math.sin(tang))),
 		[
-			new LayeredPainter([tShore, tWater, tWater], [1, 3]),
 			new SmoothElevationPainter(ELEVATION_SET, -4, 4),
 			paintClass(clWater)
 		],
@@ -128,7 +127,6 @@ for (var m = 0; m < numPlayers; m++)
 			fractionToTiles(0.5 + 0.49 * Math.cos(tang)),
 			fractionToTiles(0.5 + 0.49 * Math.sin(tang))),
 		[
-			new LayeredPainter([tWater, tWater], [1]),
 			new SmoothElevationPainter(ELEVATION_SET, -4, 4),
 			paintClass(clWater)
 		],

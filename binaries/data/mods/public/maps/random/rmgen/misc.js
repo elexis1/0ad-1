@@ -1,3 +1,10 @@
+const nomadTreasureTemplates = {
+	"food": "gaia/special_treasure_food_jars",
+	"wood": "gaia/special_treasure_wood",
+	"stone": "gaia/special_treasure_stone",
+	"metal": "gaia/special_treasure_metal"
+};
+
 //	Function for creating shallow water between two given points by changing the height of all tiles in
 //	the path with height less than or equal to "maxheight" to "height"
 //
@@ -250,6 +257,56 @@ function placeCivDefaultEntities(fx, fz, playerid, kwargs = {})
 	}
 }
 
+function placeCivDefaultEntitiesNomad(playerIDs, playerX, playerZ, treasure)
+{
+	for (let i = 0; i < getNumPlayers(); ++i)
+	{
+		log("Creating units for player " + playerIDs[i] + "...");
+
+		let civEntities = getStartingUnits(playerIDs[i] - 1);
+		let angle = randFloat(0, TWO_PI);
+
+		for (let j = 0; j < civEntities.length; ++j)
+		{
+			let count = civEntities[j].Count || 1;
+			let jx = fractionToTiles(playerX[i]) + Math.cos(angle);
+			let jz = fractionToTiles(playerZ[i]) + Math.sin(angle);
+			let kAngle = randFloat(0, 2 * Math.PI);
+
+			for (let k = 0; k < count; ++k)
+			{
+				let ang = kAngle + k / count * 2 * Math.PI;
+				placeObject(jx + Math.cos(ang), jz + Math.sin(ang), civEntities[j].Template, playerIDs[i], randFloat(0, 2 * Math.PI));
+			}
+			angle += 2/3 * Math.PI;
+		}
+
+		if (!treasure)
+			continue;
+
+		log("Ensure resources for a civic center...")
+		let ccCost = RMS.GetTemplate("structures/" + getCivCode(playerIDs[i] - 1) + "_civil_centre").Cost.Resources;
+		let treasures = [];
+		for (let resourceType in ccCost)
+		{
+			let treasureTemplate = nomadTreasureTemplates[resourceType];
+			treasures.push({
+				"template": treasureTemplate,
+				"count": Math.max(0, Math.ceil((ccCost[resourceType] - (g_MapSettings.StartingResources || 0)) / RMS.GetTemplate(treasureTemplate).ResourceSupply.Amount)),
+				"minDist": 3,
+				"maxDist": 5
+			});
+		}
+	    createDefaultTreasure({
+	        "playerID": playerIDs[i],
+	        "playerX": playerX[i],
+	        "playerZ": playerZ[i],
+	        "baseResourceClass": clBaseResource,
+	        "types": treasures
+	    });
+	}
+}
+
 function placeDefaultPlayerBases(args)
 {
 	let [playerIDs, playerX, playerZ] = args.playerPlacement;
@@ -270,7 +327,9 @@ function placeDefaultPlayerBase(args)
 	let fx = fractionToTiles(args.playerX);
 	let fz = fractionToTiles(args.playerZ);
 
-	placeCivDefaultEntities(fx, fz, args.playerID, { "iberWall": args.iberWalls || "walls"});
+	placeCivDefaultEntities(fx, fz, args.playerID, {
+		"iberWall": args.iberWalls !== undefined ? args.iberWalls : "walls"
+	});
 
 	if (args.playerTileClass !== undefined)
 		addCivicCenterAreaToClass(Math.round(fx), Math.round(fz), args.playerTileClass);
@@ -293,6 +352,7 @@ function placeDefaultPlayerBase(args)
 		"decoratives": placeDefaultDecoratives
 	};
 
+	// TODO: defaultBaseFunctionForEachPlayer ?
 	for (let baseFuncID in defaultBaseFunctions)
 	{
 		if (!args[baseFuncID])
@@ -320,15 +380,15 @@ function getDefaultPlayerTerritoryArea()
 
 function getDefaultBaseArgs(args)
 {
-	let baseResourceConstraint = avoidClasses(args.baseResourceClass, 4);
+	let baseResourceConstraint = args.baseResourceClass && avoidClasses(args.baseResourceClass, 4);
 
 	if (args.baseResourceConstraint)
 		baseResourceConstraint = new AndConstraint([baseResourceConstraint, args.baseResourceConstraint]);
 
 	return [
 		(property, defaultVal) => args[property] === undefined ? defaultVal : args[property],
-		fractionToTiles(args.playerX || 0),
-		fractionToTiles(args.playerZ || 0),
+		fractionToTiles(args.playerX),
+		fractionToTiles(args.playerZ),
 		baseResourceConstraint
 	];
 }
@@ -345,7 +405,9 @@ function defaultBaseFunctionForEachPlayer(func, args, uncloneableProperties = []
 		for (let prop in args)
 			args2[prop] = uncloneableProperties.indexOf(prop) != -1 ? args[prop] : clone(args[prop]);
 
-		args2.playerID = args.playerIDs[i];
+		if (args.playerIDs)
+			args2.playerID = args.playerIDs[i];
+
 		args2.playerX = args.playerX[i];
 		args2.playerZ = args.playerZ[i];
 
@@ -478,7 +540,7 @@ function createDefaultStoneMineFormation(args)
 		let x = Math.round(fx + get("dist", 12) * Math.cos(angle));
 		let z = Math.round(fz + get("dist", 12) * Math.sin(angle));
 
-		if (!baseResourceConstraint.constraint.allows(x, z))
+		if (!baseResourceConstraint.allows(x, z))
 			continue;
 
 		createStoneMineFormation(x, z, args.terrain)
@@ -520,7 +582,7 @@ function createDefaultTreasures(args)
 function createDefaultTreasure(args)
 {
 	let [get, fx, fz, baseResourceConstraint] = getDefaultBaseArgs(args);
-
+/*
 	for (let resourceTypeArgs of args.types)
 	{
 		// TODO: this is broken
@@ -549,7 +611,7 @@ function createDefaultTreasure(args)
 
 		if (!success)
 			error("Could not place treasure " + args.template + " for player " + args.playerID);
-	}
+	}*/
 }
 
 /**

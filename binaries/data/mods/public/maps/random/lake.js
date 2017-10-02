@@ -59,11 +59,50 @@ initTerrain(tMainTerrain);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
 
+log("Preventing water in player territory...");
+for (let i = 0; i < numPlayers; ++i)
+	addCivicCenterAreaToClass(
+		Math.round(fractionToTiles(playerX[i])),
+		Math.round(fractionToTiles(playerZ[i])),
+		clPlayer);
+
+log("Creating the lake...")
+createArea(
+	new ChainPlacer(
+		2,
+		Math.floor(scaleByMapSize(5, 16)),
+		Math.floor(scaleByMapSize(35, 200)),
+		1,
+		Math.round(fractionToTiles(0.5)),
+		Math.round(fractionToTiles(0.5)),
+		0,
+		[Math.floor(mapSize * 0.17 * Math.pow(scaleByMapSize(1, 6), 1/8))]),
+	[
+		new SmoothElevationPainter(ELEVATION_SET, -3, 4),
+		paintClass(clWater)
+	],
+	avoidClasses(clPlayer, 20));
+
+log("Creating more shore jaggedness...");
+createAreas(
+	new ChainPlacer(2, Math.floor(scaleByMapSize(4, 6)), 3, 1),
+	[
+		new LayeredPainter([tCliff, tHill], [2]),
+		unPaintClass(clWater)
+	],
+	borderClasses(clWater, 4, 7),
+	scaleByMapSize(12, 130) * 2,
+	150);
+
+paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
+paintTerrainBasedOnHeight(1, 2.4, 0, tShore);
+paintTerrainBasedOnHeight(-8, 1, 2, tWater);
+paintTileClassBasedOnHeight(-6, 0, 1, clWater);
+
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
-	"playerTileClass": clPlayer,
+	// playerTileClass marked above
 	"baseResourceClass": clBaseResource,
-	// City patch created below
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
 		"outerTerrain": tRoad
@@ -89,48 +128,6 @@ placeDefaultPlayerBases({
 	}
 });
 RMS.SetProgress(20);
-
-log("Creating the lake...")
-createArea(
-	new ChainPlacer(
-		2,
-		Math.floor(scaleByMapSize(5, 16)),
-		Math.floor(scaleByMapSize(35, 200)),
-		1,
-		Math.round(fractionToTiles(0.5)),
-		Math.round(fractionToTiles(0.5)),
-		0,
-		[Math.floor(mapSize * 0.17 * Math.pow(scaleByMapSize(1, 6), 1/8))]),
-	[
-		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
-		new SmoothElevationPainter(ELEVATION_SET, -3, 4),
-		paintClass(clWater)
-	],
-	avoidClasses(clPlayer, 20));
-
-log("Creating more shore jaggedness...");
-createAreas(
-	new ChainPlacer(2, Math.floor(scaleByMapSize(4, 6)), 3, 1),
-	[
-		new LayeredPainter([tCliff, tHill], [2]),
-		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
-		unPaintClass(clWater)
-	],
-	borderClasses(clWater, 4, 7),
-	scaleByMapSize(12, 130) * 2, 150
-);
-
-paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
-paintTerrainBasedOnHeight(1, 2.4, 0, tShore);
-paintTerrainBasedOnHeight(-8, 1, 2, tWater);
-paintTileClassBasedOnHeight(-6, 0, 1, clWater);
-
-placeDefaultCityPatch({
-	"playerX": playerX,
-	"playerZ": playerZ,
-	"innerTerrain": tRoadWild,
-	"outerTerrain": tRoad
-});
 
 createBumps(avoidClasses(clWater, 2, clPlayer, 20));
 

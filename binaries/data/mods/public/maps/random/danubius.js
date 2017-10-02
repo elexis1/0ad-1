@@ -312,10 +312,7 @@ if (gallicCC)
 RMS.SetProgress(10);
 
 placeDefaultPlayerBases({
-	"playerPlacement": placePlayersRiver(false, (i, pos) => [
-		0.6 * (i % 2) + 0.2,
-		pos
-	]),
+	"playerPlacement": placePlayersRiver(false, 0.6, 0),
 	"iberWalls": false,
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,

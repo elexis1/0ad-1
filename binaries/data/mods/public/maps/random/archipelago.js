@@ -31,6 +31,7 @@ const oSecondaryHuntableAnimal = g_Gaia.secondaryHuntableAnimal;
 const oStoneLarge = g_Gaia.stoneLarge;
 const oStoneSmall = g_Gaia.stoneSmall;
 const oMetalLarge = g_Gaia.metalLarge;
+const oWoodTreasure = "gaia/special_treasure_wood";
 
 const aGrass = g_Decoratives.grass;
 const aGrassShort = g_Decoratives.grassShort;
@@ -57,6 +58,8 @@ var clBaseResource = createTileClass();
 var clLand = createTileClass();
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
+
+var landHeight = 3;
 var islandRadius = scaleByMapSize(22, 31);
 
 log("Creating player islands...");
@@ -72,18 +75,42 @@ for (let i = 0; i < numPlayers; ++i)
 			0,
 			[Math.floor(islandRadius)]),
 		[
-			new LayeredPainter([tMainTerrain , tMainTerrain, tMainTerrain], [1, 4]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+			new SmoothElevationPainter(ELEVATION_SET, landHeight, 4),
 			paintClass(clPlayer)
 		],
 		null);
+
+log("Creating random islands...");
+createAreas(
+	new ChainPlacer(
+		Math.floor(scaleByMapSize(4, 8)),
+		Math.floor(scaleByMapSize(8, 14)),
+		Math.floor(scaleByMapSize(25, 60)),
+		0.07,
+		undefined,
+		undefined,
+		scaleByMapSize(30, 70)),
+	[
+		new SmoothElevationPainter(ELEVATION_SET, landHeight, 4),
+		paintClass(clLand)
+	],
+	null,
+	scaleByMapSize(1, 5) * randIntInclusive(5, 10));
+
+paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
+paintTerrainBasedOnHeight(1, 3, 0, tShore);
+paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	// playerTileClass marked above
 	"baseResourceClass": clBaseResource,
 	"iberWalls": "towers",
-	// cityPatch painted below
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad,
+		"radius": islandRadius
+	},
 	"chicken": {
 	},
 	"berries": {
@@ -98,7 +125,7 @@ placeDefaultPlayerBases({
 	"treasures": {
 		"types": [
 			{
-				"template": "gaia/special_treasure_wood",
+				"template": oWoodTreasure,
 				"count": 14
 			}
 		]
@@ -111,30 +138,6 @@ placeDefaultPlayerBases({
 	"decoratives": {
 		"template": aGrassShort
 	}
-});
-
-log("Creating islands...");
-createAreas(
-	new ChainPlacer(floor(scaleByMapSize(4, 8)), floor(scaleByMapSize(8, 14)), floor(scaleByMapSize(25, 60)), 0.07, undefined, undefined, scaleByMapSize(30,70)),
-	[
-		new LayeredPainter([tMainTerrain, tMainTerrain], [2]),
-		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
-		paintClass(clLand)
-	],
-	null,
-	scaleByMapSize(1, 5) * randIntInclusive(5, 10));
-
-paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
-paintTerrainBasedOnHeight(1, 3, 0, tShore);
-paintTerrainBasedOnHeight(-8, 1, 2, tWater);
-
-placeDefaultCityPatches({
-	"playerIDs": playerIDs,
-	"playerX": playerX,
-	"playerZ": playerZ,
-	"innerTerrain": tRoadWild,
-	"outerTerrain": tRoad,
-	"radius": islandRadius
 });
 
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);

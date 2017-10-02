@@ -2,7 +2,10 @@ RMS.LoadLibrary("rmgen");
 RMS.LoadLibrary("rmbiome");
 RMS.LoadLibrary("unknown");
 
-createUnknownMap(true, false);
+var playerBases = true;
+var allowNaval = false;
+
+createUnknownMap();
 createUnknownObjects();
 
 ExportMap();

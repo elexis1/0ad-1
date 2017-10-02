@@ -50,15 +50,11 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clShallow = createTileClass();
 
-var riverHeight = -4;
+var waterHeight = -4;
 
-var [playerIDs, playerX, playerZ] = placePlayersRiver(true, (i, pos) => [
-	0.5 * (i % 2) + 0.25,
-	pos
-]);
+var [playerIDs, playerX, playerZ] = placePlayersRiver(true, 0.5, 0);
 
-log("Marking player territory...");
-// Prevents initial mines to be placed in the tributaries
+log("Preventing initial mines to be placed in the tributaries...");
 for (let i = 0; i < numPlayers; ++i)
 	createArea(
 		new ClumpPlacer(
@@ -93,7 +89,7 @@ placeDefaultPlayerBases({
 	},
 	"trees": {
 		"template": oOak,
-		"radiusFactor": 1/10, // 3 trees
+		"radiusFactor": 1/10,
 		"maxDistGroup": 5
 	},
 	"decoratives": {
@@ -102,22 +98,19 @@ placeDefaultPlayerBases({
 });
 
 log("Creating the main river...");
+var river1 = [1, fractionToTiles(0.5)];
+var river2 = [fractionToTiles(0.99), fractionToTiles(0.5)];
 createArea(
-	new PathPlacer(
-		1,
-		fractionToTiles(0.5),
-		fractionToTiles(0.99),
-		fractionToTiles(0.5),
-		scaleByMapSize(10,20),
-		0.5,
-		3 * scaleByMapSize(1,4),
-		0.1,
-		0.01),
-	[
-		new LayeredPainter([tShore, tWater, tWater], [1, 3]),
-		new SmoothElevationPainter(ELEVATION_SET, riverHeight, 4)
-	],
+	new PathPlacer(...river1, ...river2, scaleByMapSize(10, 20), 0.5, 3 * scaleByMapSize(1, 4), 0.1, 0.01),
+	new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4),
 	avoidClasses(clPlayer, 4));
+
+log("Creating small puddles at the map border to ensure players being separated...");
+for (let [fx, fz] of [river1, river2])
+	createArea(
+		new ClumpPlacer(Math.floor(Math.PI * Math.pow(scaleByMapSize(5, 10), 2)), 0.95, 0.6, 10, fx, fz),
+		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 2),
+		avoidClasses(clPlayer, 8));
 
 log("Creating the shallows of the main river...");
 for (let i = 0; i <= randIntInclusive(3, scaleByMapSize(4, 6)); ++i)
@@ -134,15 +127,16 @@ for (let i = 0; i <= randIntInclusive(3, scaleByMapSize(4, 6)); ++i)
 		2,
 		clShallow,
 		undefined,
-		riverHeight);
+		waterHeight);
 }
 
+// TODO: tributary code is duplicated!
 log("Creating tributaries...");
 var riverWidth = scaleByMapSize(10, 20);
 for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 {
+	log("Determining tributary destination...");
 	let cLocation = randFloat(0.05, 0.95);
-
 	let sign = randBool() ? 1 : -1;
 	let tang = sign * PI * randFloat(0.2, 0.8);
 	let cDistance = sign * 0.05;
@@ -161,6 +155,7 @@ for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 	let fx = fractionToTiles(0.5 + 0.49 * Math.cos(tang));
 	let fz = fractionToTiles(0.5 + 0.49 * Math.sin(tang));
 
+	log("Creating tributary river...");
 	let success = createArea(
 		new PathPlacer(
 			Math.floor(point[0]),
@@ -173,8 +168,7 @@ for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 			0.1,
 			0.05),
 		[
-			new LayeredPainter([tShore, tWater, tWater], [1, 3]),
-			new SmoothElevationPainter(ELEVATION_SET, riverHeight, 4),
+			new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4),
 			paintClass(clWater)
 		],
 		avoidClasses(clPlayer, 3, clWater, 3, clShallow, 2));
@@ -182,15 +176,14 @@ for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 	if (success === undefined)
 		continue;
 
+	log("Creating small puddles at the map border to ensure players being separated...");
 	createArea(
 		new ClumpPlacer(Math.floor(Math.PI * Math.pow(riverWidth, 2) / 4), 0.95, 0.6, 10, fx, fz),
-		[
-			new LayeredPainter([tWater, tWater], [1]),
-			new SmoothElevationPainter(ELEVATION_SET, riverHeight, 2)
-		],
+		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 2),
 		avoidClasses(clPlayer, 3));
 }
 
+log("Creating shallows to make tributaries passable...");
 for (let coord of [0.25, 0.75])
 	passageMaker(
 		Math.floor(fractionToTiles(0.2)),
@@ -203,7 +196,7 @@ for (let coord of [0.25, 0.75])
 		2,
 		clShallow,
 		undefined,
-		riverHeight);
+		waterHeight);
 
 paintTerrainBasedOnHeight(-5, 1, 1, tWater);
 paintTerrainBasedOnHeight(1, 2, 1, pForestR);

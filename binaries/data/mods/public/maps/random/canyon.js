@@ -57,51 +57,31 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clLand = createTileClass();
 
+var landHeight = 3;
+var hillHeight = 30;
+
 initTerrain(tMainTerrain);
 
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.5);
-ix = round(fx);
-iz = round(fz);
-
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
+var baseRadius = scaleByMapSize(18, 32);
 
-placeDefaultPlayerBases({
-	"playerPlacement": [playerIDs, playerX, playerZ],
-	"playerTileClass": clPlayer,
-	"baseResourceClass": clBaseResource,
-	"cityPatch": {
-		"innerTerrain": tMainTerrain,
-		"outerTerrain": tMainTerrain,
-		"radius": scaleByMapSize(18, 32),
-		"radiusFactor": 1/2,
-		"painters": [
-		    new SmoothElevationPainter(ELEVATION_SET, 3, 2),
-		    paintClass(clLand)
-		]
-	},
-	"chicken": {
-	},
-	"berries": {
-		"template": oFruitBush
-	},
-	"metal": {
-		"template": oMetalLarge,
-		"dist": 11
-	},
-	"stone": {
-		"template": oStoneLarge,
-		"dist": 11
-	},
-	"trees": {
-		"template": oTree1,
-		"radiusFactor": 1/10,
-		"maxDistGroup": 4
-	},
-	"decoratives": {
-		"template": aGrassShort
-	}
-});
+log("Reserving space for the players, their initial forests and some less space therein without trees...");
+for (let i = 0; i < numPlayers; ++i)
+	for (let j = 0; j < 2; ++j)
+	createArea(
+		new ClumpPlacer(
+			Math.PI * Math.pow(baseRadius / (j == 0 ? 1 : 2), 2),
+			0.65,
+			0.1,
+			10,
+			Math.round(fractionToTiles(playerX[i])),
+			Math.round(fractionToTiles(playerZ[i]))),
+		[
+			new LayeredPainter([tMainTerrain, tMainTerrain], [2]),
+			new SmoothElevationPainter(ELEVATION_SET, landHeight, 2),
+			paintClass(j == 0 ? clLand : clPlayer)
+		],
+		null);
 
 log("Creating center area...");
 var center = Math.round(fractionToTiles(0.5));
@@ -111,17 +91,14 @@ createArea(
 	new ClumpPlacer(mapArea * 0.065 * lSize, 0.7, 0.1, 10, center, center),
 	[
 	    new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
-	    new SmoothElevationPainter(ELEVATION_SET, 3, 3),
+	    new SmoothElevationPainter(ELEVATION_SET, landHeight, 3),
 		paintClass(clLand)
 	],
 	null);
 
 createArea(
 	new ClumpPlacer(150, 0.6, 0.3, 10, center, center),
-	[
-		new LayeredPainter([tRoad, tRoad], [1]),
-		paintClass(clHill)
-	],
+	paintClass(clHill),
 	null);
 
 log("Creating hills...");
@@ -138,13 +115,12 @@ for (let i = 0; i < scaleByMapSize(9, 16); ++i)
 			0.1,
 			0),
 		[
-			new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
-			new SmoothElevationPainter(ELEVATION_SET, 30, 3),
+			new SmoothElevationPainter(ELEVATION_SET, hillHeight, 3),
 			paintClass(clHill2)
 		],
 		avoidClasses(clPlayer, 6, clHill2, 3, clHill, 2));
 
-for (let g = 0; g < scaleByMapSize(5,30); ++g)
+for (let g = 0; g < scaleByMapSize(5, 30); ++g)
 {
 	var tx = randIntInclusive(1, mapSize - 1);
 	var tz = randIntInclusive(1, mapSize - 1);
@@ -153,7 +129,7 @@ for (let g = 0; g < scaleByMapSize(5,30); ++g)
 		new ClumpPlacer(mapArea * 0.01 * lSize, 0.7, 0.1, 10, tx, tz),
 		[
 			new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 3),
+			new SmoothElevationPainter(ELEVATION_SET, landHeight, 3),
 			paintClass(clLand)
 		],
 		avoidClasses(clLand, 6));
@@ -189,7 +165,7 @@ for (let g = 0; g < scaleByMapSize(5,30); ++g)
 			new PathPlacer(tx, tz, mapSize * playerX[p1], mapSize * playerZ[p1], scaleByMapSize(11, 17), 0.4, 3 * scaleByMapSize(1, 4), 0.1, 0.1),
 			[
 				new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
-				new SmoothElevationPainter(ELEVATION_SET, 3, 3),
+				new SmoothElevationPainter(ELEVATION_SET, landHeight, 3),
 				paintClass(clLand)
 			],
 			null);
@@ -199,7 +175,7 @@ for (let g = 0; g < scaleByMapSize(5,30); ++g)
 				new PathPlacer(tx, tz, mapSize * playerX[p2], mapSize * playerZ[p2], scaleByMapSize(11, 17), 0.4, 3 * scaleByMapSize(1, 4), 0.1, 0.1),
 				[
 					new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
-					new SmoothElevationPainter(ELEVATION_SET, 3, 3),
+					new SmoothElevationPainter(ELEVATION_SET, landHeight, 3),
 					paintClass(clLand)
 				],
 				null);
@@ -208,44 +184,65 @@ for (let g = 0; g < scaleByMapSize(5,30); ++g)
 
 for (let i = 0; i < numPlayers; ++i)
 {
-	let placer = i + 1 == numPlayers ?
-			new PathPlacer(fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]), fractionToTiles(playerX[0]), fractionToTiles(playerZ[0]), scaleByMapSize(8, 13), 0.4, 3 * scaleByMapSize(1, 4), 0.1, 0);
-			new PathPlacer(fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]), fractionToTiles(playerX[i+1]), fractionToTiles(playerZ[i+1]), scaleByMapSize(8, 13), 0.4, 3 * scaleByMapSize(1, 4), 0.1, 0);
-
-	createArea(
-		placer,
-		[
-			new LayeredPainter([tRoadWild, tRoad], [1]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 2),
-			paintClass(clLand),
-			paintClass(clHill)
-		],
-		null);
-
-	createArea(
-		new PathPlacer(fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]), fractionToTiles(0.5), fractionToTiles(0.5), scaleByMapSize(8,13), 0.4, 3 * scaleByMapSize(1, 4), 0.1, 0),
-		[
-			new LayeredPainter([tRoadWild, tRoad], [1]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 2),
-			paintClass(clLand),
-			paintClass(clHill)
-		],
-		null);
-
-	// create the city patch
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, fractionToTiles(playerX[i]), fractionToTiles(playerZ[i]));
-	var painter = new LayeredPainter([tRoad, tRoad], [1]);
-	createArea(placer, [painter, paintClass(clPlayer)], null);
+	log("Creating path from player to center and to neighbor...");
+	let neighbor = i + 1 < numPlayers ? i + 1 : 0;
+	for (let [x, z] of [[playerX[neighbor], playerZ[neighbor]], [0.5, 0.5]])
+		createArea(
+			new PathPlacer(
+				fractionToTiles(playerX[i]),
+				fractionToTiles(playerZ[i]),
+				fractionToTiles(x),
+				fractionToTiles(z),
+				scaleByMapSize(8, 13),
+				0.4,
+				3 * scaleByMapSize(1, 4),
+				0.1,
+				0),
+			[
+				new LayeredPainter([tRoadWild, tRoad], [1]),
+				new SmoothElevationPainter(ELEVATION_SET, landHeight, 2),
+				paintClass(clLand),
+				paintClass(clHill)
+			],
+			null);
 }
 
 createArea(
-	new ClumpPlacer(150, 0.6, 0.3, 10, fractionToTiles(0.5), fractionToTiles(0.5)),
-	[
-		new LayeredPainter([tRoad, tRoad], [1]),
-		paintClass(clHill)
-	],
+	new ClumpPlacer(150, 0.6, 0.3, 10, center, center),
+	new LayeredPainter([tRoad, tRoad], [1]),
 	null);
+
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// playerTileClass already marked above
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoad,
+		"outerTerrain": tRoad,
+		"radius": baseRadius
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge,
+		"dist": 11
+	},
+	"stone": {
+		"template": oStoneLarge,
+		"dist": 11
+	},
+	"trees": {
+		"template": oTree1,
+		"radiusFactor": 1/10,
+		"maxDistGroup": 4
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
 
 RMS.SetProgress(20);
 
@@ -375,12 +372,10 @@ createStragglerTrees(
 	]);
 
 log("Creating treasures...");
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.5);
 for (let i = 0; i < randIntInclusive(3, 8); ++i)
 {
-	placeObject(fx + randFloat(-7, 7), fz + randFloat(-7, 7), oWood, 0, randFloat(0, 2 * PI));
-	placeObject(fx + randFloat(-7, 7), fz + randFloat(-7, 7), oFood, 0, randFloat(0, 2 * PI));
+	placeObject(center + randFloat(-7, 7), center + randFloat(-7, 7), oWood, 0, randFloat(0, 2 * PI));
+	placeObject(center + randFloat(-7, 7), center + randFloat(-7, 7), oFood, 0, randFloat(0, 2 * PI));
 }
 
 ExportMap();

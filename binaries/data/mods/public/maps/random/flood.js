@@ -15,16 +15,15 @@ const tRoadWild = g_Terrains.roadWild;
 const tTier4Terrain = g_Terrains.tier4Terrain;
 const tShore = g_Terrains.shore;
 const tWater = g_Terrains.water;
-const tHill = g_Terrains.hill;
-const tDirt = g_Terrains.dirt;
 
+var tHill = g_Terrains.hill;
+var tDirt = g_Terrains.dirt;
 if (currentBiome() == "temperate")
 {
 	tDirt = ["medit_shrubs_a", "grass_field"];
 	tHill = ["grass_field", "peat_temp"];
 }
 
-// Gaia entities
 const oTree1 = g_Gaia.tree1;
 const oTree2 = g_Gaia.tree2;
 const oTree3 = g_Gaia.tree3;
@@ -37,7 +36,6 @@ const oSecondaryHuntableAnimal = g_Gaia.secondaryHuntableAnimal;
 const oStoneLarge = g_Gaia.stoneLarge;
 const oMetalLarge = g_Gaia.metalLarge;
 
-// Decorative props
 const aGrass = g_Decoratives.grass;
 const aGrassShort = g_Decoratives.grassShort;
 const aRockLarge = g_Decoratives.rockLarge;
@@ -50,15 +48,6 @@ const pForest2 = [tForestFloor1 + TERRAIN_SEPARATOR + oTree4, tForestFloor1 + TE
 
 InitMap();
 
-const radius = getDefaultPlayerTerritoryRadius();
-const landHeight = 2;
-const shoreRadius = 6;
-
-const numPlayers = getNumPlayers();
-const mapSize = getMapSize();
-const mapArea = mapSize * mapSize;
-const centerOfMap = mapSize / 2;
-
 const clPlayer = createTileClass();
 const clHill = createTileClass();
 const clMountain = createTileClass();
@@ -70,6 +59,15 @@ const clMetal = createTileClass();
 const clFood = createTileClass();
 const clBaseResource = createTileClass();
 
+const numPlayers = getNumPlayers();
+const mapSize = getMapSize();
+const mapArea = mapSize * mapSize;
+const centerOfMap = mapSize / 2;
+
+const landHeight = 2;
+const waterHeight = getMapBaseHeight();
+const shoreRadius = 6;
+
 initTerrain(tWater);
 
 log("Creating the water...");
@@ -78,14 +76,13 @@ createArea(
 	new ClumpPlacer(mapArea * 1, 1, 1, 1, center, center),
 	[
 		new LayeredPainter([tWater, tWater, tShore], [1, 4]),
-		new SmoothElevationPainter(ELEVATION_SET, getMapBaseHeight(), 2),
+		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 2),
 		paintClass(clWater)
 	],
 	avoidClasses(clPlayer, 5));
 
-var [playerIDs, playerX, playerZ] = radialPlayerPlacement(0.38);
-
 log("Creating player islands...")
+var [playerIDs, playerX, playerZ] = radialPlayerPlacement(0.38);
 for (let i = 0; i < numPlayers; ++i)
 	createArea(
 		new ClumpPlacer(
@@ -240,12 +237,12 @@ createForests(
 	...rBiomeTreeCount(0.7));
 
 log("Creating straggeler trees...");
-createStragglerTrees(
-	[oTree1, oTree2, oTree4, oTree3],
-	[avoidClasses(clBaseResource, 2, clMetal, 6, clRock, 3, clMountain, 2, clPlayer, 25), stayClasses(clHill, 6)]);
+let types = [oTree1, oTree2, oTree4, oTree3];
+createStragglerTrees(types, [avoidClasses(clBaseResource, 2, clMetal, 6, clRock, 3, clMountain, 2, clPlayer, 25), stayClasses(clHill, 6)]);
 RMS.SetProgress(65);
 
 log("Creating dirt patches...");
+var numb = currentBiome() == "savanna" ? 3 : 1;
 for (let size of [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8, 21)])
 	createAreas(
 		new ChainPlacer(1, Math.floor(scaleByMapSize(3, 5)), size, 0.5),
@@ -254,11 +251,11 @@ for (let size of [scaleByMapSize(3, 6), scaleByMapSize(5, 10), scaleByMapSize(8,
 			paintClass(clDirt)
 		],
 		avoidClasses(clForest, 0, clMountain, 0, clDirt, 5, clPlayer, 10),
-		currentBiome() == "savanna" ? 3 : 1 * scaleByMapSize(15, 45));
+		numb * scaleByMapSize(15, 45));
 
 log("Painting shorelines...");
-paintTerrainBasedOnHeight(1, 2, 0, tMainTerrain);
-paintTerrainBasedOnHeight(getMapBaseHeight(), 1, 3, tTier1Terrain);
+paintTerrainBasedOnHeight(1, landHeight, 0, tMainTerrain);
+paintTerrainBasedOnHeight(waterHeight, 1, 3, tTier1Terrain);
 
 log("Creating grass patches...");
 for (let size of [scaleByMapSize(2, 4), scaleByMapSize(3, 7), scaleByMapSize(5, 15)])

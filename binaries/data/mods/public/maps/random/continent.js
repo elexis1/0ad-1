@@ -14,6 +14,7 @@ const tHill = g_Terrains.hill;
 const tRoad = g_Terrains.road;
 const tRoadWild = g_Terrains.roadWild;
 const tTier4Terrain = g_Terrains.tier4Terrain;
+const tShore = g_Terrains.shore;
 const tWater = g_Terrains.water;
 
 const oTree1 = g_Gaia.tree1;
@@ -54,8 +55,6 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clLand = createTileClass();
 
-initTerrain(tWater);
-
 log("Creating continent...");
 createArea(
 	new ChainPlacer(
@@ -68,7 +67,6 @@ createArea(
 		0,
 		[Math.floor(mapSize * 0.33)]),
 	[
-		new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
 		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
 		paintClass(clLand)
 	],
@@ -76,7 +74,7 @@ createArea(
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement(0.25);
 
-for (let i in playerIDs)
+for (let i in playerIDs) // TODO: delete these
 	createArea(
 		new ChainPlacer(
 			2,
@@ -93,11 +91,18 @@ for (let i in playerIDs)
 		],
 		null);
 
+paintTerrainBasedOnHeight(3, 4, 3, tMainTerrain);
+paintTerrainBasedOnHeight(1, 3, 0, tShore);
+paintTerrainBasedOnHeight(-8, 1, 2, tWater);
+
 placeDefaultPlayerBases({
 	"playerPlacement": [playerIDs, playerX, playerZ],
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
-	// cityPatch comes later
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
 	"chicken": {
 	},
 	"berries": {
@@ -120,19 +125,7 @@ placeDefaultPlayerBases({
 		"template": aGrassShort
 	}
 });
-
 RMS.SetProgress(20);
-
-paintTerrainBasedOnHeight(3, 4, 3, tMainTerrain);
-paintTerrainBasedOnHeight(1, 3, 0, tShore);
-paintTerrainBasedOnHeight(-8, 1, 2, tWater);
-
-placeDefaultCityPatches({
-	"innerTerrain": tRoadWild,
-	"outerTerrain": tRoad,
-	"playerX": playerX,
-	"playerZ": playerZ
-});
 
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);
 

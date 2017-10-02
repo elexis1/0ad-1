@@ -48,18 +48,8 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clMountains = createTileClass();
 
-var playerIDs = sortAllPlayers();
-var playerX = [];
-var playerZ = [];
-
-for (let i = 0; i < numPlayers; ++i)
-{
-	playerX[i] = 0.45 + 0.2 * (i % 2);
-	playerZ[i] = (i + 1) / (numPlayers + 1);
-}
-
 placeDefaultPlayerBases({
-	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerPlacement": placePlayersLine(false, 0.55, 0.2),
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {

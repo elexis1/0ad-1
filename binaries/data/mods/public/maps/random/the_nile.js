@@ -62,10 +62,7 @@ var clShore = createTileClass();
 var clTreasure = createTileClass();
 
 placeDefaultPlayerBases({
-	"playerPlacement": placePlayersRiver(false, (i, pos) => [
-		0.4 * (i % 2) + 0.3,
-		pos
-	]),
+	"playerPlacement": placePlayersRiver(false, 0.4, 0),
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {

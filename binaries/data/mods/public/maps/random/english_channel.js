@@ -55,10 +55,7 @@ var clBaseResource = createTileClass();
 var clShallow = createTileClass();
 
 placeDefaultPlayerBases({
-	"playerPlacement": placePlayersRiver(true, (i, playerPos) => [
-		0.6 * (i % 2) + 0.2,
-		playerPos
-	]),
+	"playerPlacement": placePlayersRiver(true, 0.6, 0),
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {
@@ -107,7 +104,7 @@ paintRiver({
 
 RMS.SetProgress(20);
 
-log("Creating rivers");
+log("Creating tributaries...");
 for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 {
 	var cLocation = randFloat(0.05, 0.95);
@@ -140,13 +137,13 @@ for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 			0.1,
 			0.05),
 		[
-			new LayeredPainter([tShore, tWater, tWater], [1, 3]),
 			new SmoothElevationPainter(ELEVATION_SET, -4, 4),
 			paintClass(clWater)
 		],
 		avoidClasses(clPlayer, 8, clWater, 3, clShallow, 2)))
 		continue;
 
+	log("Creating small puddles at the map border to ensure players being separated...");
 	createArea(
 		new ClumpPlacer(
 			Math.floor(Math.PI * Math.pow(someRadius / 2, 2)),
@@ -155,15 +152,24 @@ for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
 			10,
 			fractionToTiles(0.5 + 0.49 * Math.cos(tang)),
 			fractionToTiles(0.5 + 0.49 * Math.sin(tang))),
-		[
-			new LayeredPainter([tShore, tWater, tWater], [1, 3]),
-			new SmoothElevationPainter(ELEVATION_SET, -3, 3)
-		],
+		new SmoothElevationPainter(ELEVATION_SET, -3, 3),
 		avoidClasses(clPlayer, 23));
 }
 
-passageMaker(round(fractionToTiles(0.2)), round(fractionToTiles(0.25)), round(fractionToTiles(0.8)), round(fractionToTiles(0.25)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
-passageMaker(round(fractionToTiles(0.2)), round(fractionToTiles(0.75)), round(fractionToTiles(0.8)), round(fractionToTiles(0.75)), scaleByMapSize(4,8), -2, -2, 2, clShallow, undefined, -4);
+log("Creating shallows in tributaries...");
+for (let z of [0.25, 0.75])
+	passageMaker(
+		Math.round(fractionToTiles(0.2)),
+		Math.round(fractionToTiles(z)),
+		Math.round(fractionToTiles(0.8)),
+		Math.round(fractionToTiles(z)),
+		scaleByMapSize(4, 8),
+		-2,
+		-2,
+		2,
+		clShallow,
+		undefined,
+		-4);
 
 paintTerrainBasedOnHeight(-5, 1, 1, tWater);
 paintTerrainBasedOnHeight(1, 3, 1, tShore);

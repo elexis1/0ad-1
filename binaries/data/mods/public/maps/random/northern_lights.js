@@ -41,25 +41,15 @@ var clMetal = createTileClass();
 var clFood = createTileClass();
 var clBaseResource = createTileClass();
 
-var playerIDs = sortAllPlayers();
-var playerX = [];
-var playerZ = [];
-
-for (let i = 0; i < numPlayers; ++i)
-{
-	playerX[i] = (i + 1) / (numPlayers + 1);
-	playerZ[i] = 0.35 + 0.2 * (i % 2);
-}
-
 placeDefaultPlayerBases({
-	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerPlacement": placePlayersLine(true, 0.45, 0.2),
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {
 		"innerTerrain": tRoadWild,
 		"outerTerrain": tRoad
 	},
-	// No chicken, nor berries
+	// No chicken, no berries
 	"metal": {
 		"template": oMetalLarge
 	},

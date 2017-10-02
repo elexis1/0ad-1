@@ -1,3 +1,5 @@
+// delete weird useless loop that were wrong if it werent useless
+
 RMS.LoadLibrary("rmgen");
 
 TILE_CENTERED_HEIGHT_MAP = true;
@@ -57,61 +59,41 @@ var clBaseResource = createTileClass();
 var clGrass = createTileClass();
 var clHill = createTileClass();
 
+var landHeight = 3;
 var waterHeight = -4;
 
-var riverX1 = fractionToTiles(0.5 + Math.cos(3 * Math.PI / 4));
-var riverZ1 = fractionToTiles(0.5 + Math.sin(3 * Math.PI / 4));
-var riverX2 = fractionToTiles(0.5 + Math.cos(-Math.PI / 4));
-var riverZ2 = fractionToTiles(0.5 + Math.sin(-Math.PI / 4));
+var riverAngle = randFloat(0, 2 * Math.PI);
 var riverSize = Math.floor(Math.PI * Math.pow(scaleByMapSize(15, 70) / 2, 2));
 
+var riv1 = [0, 0.5];
+var riv2 = [1, 0.5];
+
 log("Creating the main river");
+var [riverX1, riverZ1] = rotateCoordinates(...riv1, riverAngle).map(f => fractionToTiles(f));
+var [riverX2, riverZ2] = rotateCoordinates(...riv2, riverAngle).map(f => fractionToTiles(f));
 createArea(
 	new PathPlacer(riverX1, riverZ1, riverX2, riverZ2, scaleByMapSize(15, 70), 0.2, 15 * scaleByMapSize(1, 3), 0.04, 0.01),
-	[
-		new LayeredPainter([tShore, tWater, tWater], [1, 3]),
-		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4)
-	],
+	new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4),
 	null);
 
-createArea(
-	new ClumpPlacer(riverSize, 0.95, 0.6, 10, riverX1 + 3, riverZ1 - 3),
-	[
-		new LayeredPainter([tWater, tWater], [1]),
-		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4)
-	],
-	null);
+log("Creating small puddles at the map border to ensure players being separated...");
+for (let [x, z] of [[riverX1, riverZ1], [riverX2, riverZ2]])
+	createArea(
+		new ClumpPlacer(riverSize, 0.95, 0.6, 10, x, z),
+		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4),
+		null);
 
-createArea(
-	new ClumpPlacer(riverSize, 0.95, 0.6, 10, riverX2 - 3, riverZ2 + 3),
-	[
-		new LayeredPainter([tWater, tWater], [1]),
-		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4)
-	],
-	null);
-
-for (var ix = 0; ix < mapSize; ix++)
-	for (var iz = 0; iz < mapSize; iz++)
-		if (ix + iz < scaleByMapSize(6, 30) + mapSize &&
-		    ix + iz > -scaleByMapSize(6, 30) + mapSize &&
-		    ix - iz < mapSize / 2 || ix - iz > mapSize / 2)
-				setHeight(ix, iz, waterHeight);
-
+log("Creating passage connecting the two riversides...");
 createArea(
 	new PathPlacer(
-		fractionToTiles(0.5 + Math.cos(5 * Math.PI / 4)),
-		fractionToTiles(0.5 + Math.sin(5 * Math.PI / 4)),
-		fractionToTiles(0.5 + Math.cos(Math.PI / 4)),
-		fractionToTiles(0.5 + Math.sin(Math.PI / 4)),
+		...rotateCoordinates(...riv1, riverAngle + Math.PI/2).map(f => fractionToTiles(f)),
+		...rotateCoordinates(...riv2, riverAngle + Math.PI/2).map(f => fractionToTiles(f)),
 		scaleByMapSize(10, 30),
 		0.5,
 		3 * scaleByMapSize(1, 4),
 		0.1,
 		0.01),
-	[
-		new LayeredPainter([tShore, tGrass], [2]),
-		new SmoothElevationPainter(ELEVATION_SET, 3, 4)
-	],
+	new SmoothElevationPainter(ELEVATION_SET, landHeight, 4),
 	null);
 
 paintTerrainBasedOnHeight(-6, 1, 1, tWater);
@@ -121,10 +103,7 @@ paintTerrainBasedOnHeight(2, 5, 1, tGrass);
 paintTileClassBasedOnHeight(-6, 0.5, 1, clWater);
 
 placeDefaultPlayerBases({
-	"playerPlacement": placePlayersRiver(true, (i, pos) => [
-		Math.sqrt(0.5) * (0.6 * (i % 2) + 0.2 - pos) + 0.5,
-		Math.sqrt(0.5) * (0.6 * (i % 2) - 0.8 + pos) + 0.5
-    ]),
+	"playerPlacement": placePlayersRiver(true, 0.6, riverAngle),
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"iberWalls": "towers",

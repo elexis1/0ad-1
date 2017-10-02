@@ -55,12 +55,15 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clLand = createTileClass();
 
+var landHeight = 3;
+
 var playerIDs = sortAllPlayers();
 
 var playerX = [];
 var playerZ = [];
 var playerAngle = [];
 
+// TODO: gulf placement
 var startAngle = 4/7 * Math.PI;
 for (let i = 0; i < numPlayers; ++i)
 {
@@ -102,26 +105,27 @@ placeDefaultPlayerBases({
 	}
 });
 
-for (lt i = 0; i < numPlayers; ++i)
+for (let i = 0; i < numPlayers; ++i)
 {
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-	let ix = round(fx);
-	let iz = round(fz);
+	let ix = Math.round(fractionToTiles(playerX[i]));
+	let iz = Math.round(fractionToTiles(playerZ[i]));
 
+	log("Creating player island...");
 	createArea(
 		new ClumpPlacer(getDefaultPlayerTerritoryArea(), 0.8, 0.1, 10, ix, iz),
 		[
-			new LayeredPainter([tWater , tShore, tMainTerrain], [1, 4]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+			new LayeredPainter([tWater, tShore, tMainTerrain], [1, 4]),
+			new SmoothElevationPainter(ELEVATION_SET, landHeight, 4),
 			paintClass(clPlayer)
 		],
 		null);
 
+	// TODO: duplicated!
+	log("Creating player dock...");
 	let dockLocation = getTIPIADBON([ix, iz], [mapSize / 2, mapSize / 2], [-3 , 2.6], 0.5, 3);
 	if (dockLocation === undefined)
 	{
-		warn("Could not place dock for player " + playerIDs[i])
+		warn("Could not place dock for player " + playerIDs[i]);
 		continue;
 	}
 
@@ -139,7 +143,7 @@ createArea(
 	new ClumpPlacer(mapArea * 0.50, 0.8, 0.08, 10,  Math.round(fractionToTiles(0.12)), Math.round(fractionToTiles(0.5))),
 	[
 		new LayeredPainter([tWater, tShore, tMainTerrain], [4, 2]),
-		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+		new SmoothElevationPainter(ELEVATION_SET, landHeight, 4),
 		paintClass(clLand)
 	],
 	avoidClasses(clPlayer, 8));
@@ -150,10 +154,13 @@ createAreas(
 	new ClumpPlacer(scaleByMapSize(15, 80), 0.2, 0.1, 1),
 	[
 		new LayeredPainter([tMainTerrain, tMainTerrain], [2]),
-		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+		new SmoothElevationPainter(ELEVATION_SET, landHeight, 4),
 		paintClass(clLand)
 	],
-	[borderClasses(clLand, 6, 3), avoidClasses(clPlayer, 8)],
+	[
+		borderClasses(clLand, 6, 3),
+		avoidClasses(clPlayer, 8)
+	],
 	scaleByMapSize(2, 15) * 20,
 	150);
 
@@ -354,7 +361,7 @@ var types = [oTree1, oTree2, oTree4, oTree3];
 var num = floor(numStragglers / types.length);
 for (let type of types)
 	createObjectGroupsDeprecated(
-		new SimpleGroup(Object(type, 1,1, 0,3)], true, clForest),
+		new SimpleGroup([new SimpleObject(type, 1, 1, 0, 3)], true, clForest),
 		0,
 		[avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6), stayClasses(clLand, 9)],
 		num);

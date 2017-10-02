@@ -1,3 +1,4 @@
+// Group city patch and base generation
 RMS.LoadLibrary("rmgen");
 RMS.LoadLibrary("rmbiome");
 
@@ -57,13 +58,17 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clLand = createTileClass();
 
-var radius = scaleByMapSize(20, 29);
-
+var playerRadius = scaleByMapSize(20, 29);
 var [playerIDs, playerX, playerZ, playerAngle] = radialPlayerPlacement();
 
 for (let i = 0; i < numPlayers; ++i)
+{
+	let ix = Math.round(fractionToTiles(playerX[i]));
+	let iz = Math.round(fractionToTiles(playerZ[i]));
+
+	log("Creating player island...");
 	createArea(
-		new ClumpPlacer(Math.PI * Math.pow(radius, 2), 0.8, 0.1, 10, Math.round(fractionToTiles(playerX[i])), Math.round(fractionToTiles(playerZ[i]))),
+		new ClumpPlacer(Math.PI * Math.pow(playerRadius, 2), 0.8, 0.1, 10, ix, iz),
 		[
 			new LayeredPainter([tMainTerrain , tMainTerrain, tMainTerrain], [1, 6]),
 			new SmoothElevationPainter(ELEVATION_SET, 3, 6),
@@ -71,47 +76,7 @@ for (let i = 0; i < numPlayers; ++i)
 		],
 		null);
 
-placeDefaultPlayerBases({
-	"playerPlacement": [playerIDs, playerX, playerZ],
-	// playerTileClass marked above
-	"baseResourceClass": clBaseResource,
-	"iberWalls": "towers",
-	// cityPatch below
-	"chicken": {
-	},
-	"berries": {
-		"template": oFruitBush
-	},
-	"metal": {
-		"template": oMetalLarge
-	},
-	"stone": {
-		"template": oStoneLarge
-	},
-	"treasures": {
-  		"types": [
-			{
-				"template": "gaia/special_treasure_wood",
-				"count": 14
-			}
-		]
-	},
-	"trees": {
-		"template": oTree1,
-		"radius": radius,
-		"radiusFactor": 1/20,
-		"maxDistGroup": 5
-	},
-	"decoratives": {
-		"template": aGrassShort
-	}
-});
-
-for (let i = 0; i < numPlayers; ++i)
-{
-	let ix = Math.round(fractionToTiles(playerX[i]));
-	let iz = Math.round(fractionToTiles(playerZ[i]));
-
+	log("Creating player dock...");
 	let dockLocation = getTIPIADBON([ix, iz], [mapSize / 2, mapSize / 2], [-3 , 2.6], 0.5, 3);
 	if (dockLocation !== undefined)
 		placeObject(dockLocation[0], dockLocation[1], "structures/" + getCivCode(playerIDs[i] - 1) + "_dock", playerIDs[i], playerAngle[i] + Math.PI);
@@ -132,8 +97,7 @@ var chosenPoint;
 var landAreaLen;
 
 log("Creating big islands...");
-var numIslands = scaleByMapSize(4, 14);
-for (var i = 0; i < numIslands; ++i)
+for (let i = 0; i < scaleByMapSize(4, 14); ++i)
 {
 	landAreaLen = landAreas.length;
 	if (!landAreaLen)
@@ -141,7 +105,6 @@ for (var i = 0; i < numIslands; ++i)
 
 	chosenPoint = pickRandom(landAreas);
 
-	// create big islands
 	var newIsland = createAreas(
 		new ChainPlacer(
 			Math.floor(scaleByMapSize(4, 8)),
@@ -163,9 +126,9 @@ for (var i = 0; i < numIslands; ++i)
 	if (newIsland && newIsland.length)
 	{
 		var n = 0;
-		for (var j = 0; j < landAreaLen; ++j)
+		for (var j = 0; j < landAreas.length; ++j)
 		{
-			var x = landAreas[j][0], z = landAreas[j][1];
+			let [x, z] = landAreas[j];
 			if (playerConstraint.allows(x, z) && landConstraint.allows(x, z))
 				landAreas[n++] = landAreas[j];
 		}
@@ -177,8 +140,7 @@ playerConstraint = new AvoidTileClassConstraint(clPlayer, floor(scaleByMapSize(9
 landConstraint = new AvoidTileClassConstraint(clLand, floor(scaleByMapSize(9,12)));
 
 log("Creating small islands...");
-numIslands = scaleByMapSize(6, 18) * scaleByMapSize(1,3);
-for (var i = 0; i < numIslands; ++i)
+for (let i = 0; i < 6 * Math.pow(scaleByMapSize(1, 3), 2); ++i)
 {
 	landAreaLen = landAreas.length;
 	if (!landAreaLen)
@@ -209,7 +171,7 @@ for (var i = 0; i < numIslands; ++i)
 		var temp = [];
 		for (var j = 0; j < landAreaLen; ++j)
 		{
-			var x = landAreas[j][0], z = landAreas[j][1];
+			let [x, z] = landAreas[j];
 			if (playerConstraint.allows(x, z) && landConstraint.allows(x, z))
 					temp.push([x, z]);
 		}
@@ -219,16 +181,44 @@ for (var i = 0; i < numIslands; ++i)
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 
-placeDefaultCityPatches({
-	"playerIDs": playerIDs,
-	"playerX": playerX,
-	"playerZ": playerZ,
-	"radius": radius,
-	"innerTerrain": tRoadWild,
-	"outerTerrain": tRoad,
-	"painters": [
-		paintClass(clPlayer)
-	]
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// playerTileClass marked above
+	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
+	"cityPatch": {
+		"radius": playerRadius,
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"treasures": {
+		"types": [
+			{
+				"template": "gaia/special_treasure_wood",
+				"count": 14
+			}
+		]
+	},
+	"trees": {
+		"template": oTree1,
+		"radius": playerRadius,
+		"radiusFactor": 1/20,
+		"maxDistGroup": 5
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
 });
 
 log("Creating bumps...");

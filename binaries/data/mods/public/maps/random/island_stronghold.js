@@ -63,22 +63,25 @@ InitMap();
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 
-let clPlayer = createTileClass();
-let clHill = createTileClass();
-let clForest = createTileClass();
-let clDirt = createTileClass();
-let clRock = createTileClass();
-let clMetal = createTileClass();
-let clFood = createTileClass();
-let clBaseResource = createTileClass();
-let clLand = createTileClass();
+const clPlayer = createTileClass();
+const clHill = createTileClass();
+const clForest = createTileClass();
+const clDirt = createTileClass();
+const clRock = createTileClass();
+const clMetal = createTileClass();
+const clFood = createTileClass();
+const clBaseResource = createTileClass();
+const clLand = createTileClass();
+
+const shoreRadius = 6;
+const landHeight = 3;
 
 initTerrain(tWater);
 
-let startAngle = randFloat(0, TWO_PI);
+var startAngle = randFloat(0, TWO_PI);
 
 // Group players by team
-let teams = [];
+var teams = [];
 for (let i = 0; i < numPlayers; ++i)
 {
 	let team = getPlayerTeam(i);
@@ -107,14 +110,9 @@ for (let i = 0; i < numPlayers; ++i)
 }
 
 // Get number of used team IDs
-let numTeams = teams.filter(team => team).length;
+var numTeams = teams.filter(team => team).length;
 
-RMS.SetProgress(10);
-
-let shoreRadius = 6;
-let elevation = 3;
-let teamNo = 0;
-
+var teamNo = 0;
 for (let i = 0; i < teams.length; ++i)
 {
 	if (!teams[i])
@@ -138,7 +136,7 @@ for (let i = 0; i < teams.length; ++i)
 			new ChainPlacer(2, Math.floor(scaleByMapSize(5, 11)), Math.floor(scaleByMapSize(60, 250)), 1, ix, iz, 0, [Math.floor(mapSize * 0.01)]),
 			[
 				new LayeredPainter([tMainTerrain, tMainTerrain, tMainTerrain], [1, shoreRadius]),
-				new SmoothElevationPainter(ELEVATION_SET, elevation, shoreRadius),
+				new SmoothElevationPainter(ELEVATION_SET, landHeight, shoreRadius),
 				paintClass(clLand)
 			],
 			null);
@@ -176,7 +174,18 @@ for (let i = 0; i < teams.length; ++i)
 	{
 		let [playerAngle, fx, fz, ix, iz] = getPlayerTileCoordinates(p, i, fractionX, fractionZ);
 
-		placeDefaultChicken(fx, fz, clBaseResource, [stayClasses(clLand, 5)]);
+		let playerID = teams[i][p];
+
+		placeDefaultChicken({
+			"playerID": playerID,
+			"playerX": tilesToFraction(fx),
+			"playerZ": tilesToFraction(fz),
+			"baseResourceClass": clBaseResource,
+			"baseResourceConstraint": stayClasses(clLand, 5)
+		});
+
+		// TODO: this stronghold placement code with fixed angles for resources works much better than
+		// the rmgen2 code because it doesn't place starting resources between allies
 
 		// create initial berry bushes
 		let bbAngle = randFloat(PI, PI*1.5);
@@ -221,7 +230,6 @@ for (let i = 0; i < teams.length; ++i)
 		createObjectGroup(group, 0, [avoidClasses(clBaseResource, 2, clHill, 1, clPlayer, 10), stayClasses(clLand, 5)]);
 	}
 }
-*/
 
 RMS.SetProgress(40);
 
@@ -249,7 +257,7 @@ for (let i = 0; i < numIslands; ++i)
 		new ChainPlacer(Math.floor(scaleByMapSize(4, 8)), Math.floor(scaleByMapSize(8, 14)), Math.floor(scaleByMapSize(25, 60)), 0.07, chosenPoint[0], chosenPoint[1], scaleByMapSize(30, 70)),
 		[
 			new LayeredPainter([tMainTerrain, tMainTerrain], [2]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 6),
+			new SmoothElevationPainter(ELEVATION_SET, landHeight, 6),
 			paintClass(clLand)
 		],
 		avoidClasses(clLand, 3, clPlayer, 3),
@@ -287,7 +295,7 @@ for (let i = 0; i < numIslands; ++i)
 		new ChainPlacer(Math.floor(scaleByMapSize(4, 7)), Math.floor(scaleByMapSize(7, 10)), Math.floor(scaleByMapSize(16, 40)), 0.07, chosenPoint[0], chosenPoint[1], scaleByMapSize(22, 40)),
 		[
 			new LayeredPainter([tMainTerrain, tMainTerrain], [2]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 6),
+			new SmoothElevationPainter(ELEVATION_SET, landHeight, 6),
 			paintClass(clLand)
 		],
 		avoidClasses(clLand, 3, clPlayer, 3),
@@ -317,7 +325,7 @@ for (let i = 0; i < 5; ++i)
 
 // repaint clLand to compensate for smoothing
 unPaintTileClassBasedOnHeight(-10, 10, 3, clLand);
-paintTileClassBasedOnHeight(0, 5, 3, clLand);
+paintTileClassBasedOnHeight(0, 5, 3, clLand); // TODO: some of them unused?
 
 RMS.SetProgress(85);
 
@@ -348,7 +356,7 @@ createForests(
 
 log("Creating hills...");
 createAreas(
-	new ChainPlacer(1, floor(scaleByMapSize(4, 6)), Math.floor(ByMapSize(16, 40)), 0.5),
+	new ChainPlacer(1, Math.floor(scaleByMapSize(4, 6)), Math.floor(scaleByMapSize(16, 40)), 0.5),
 	[
 		new LayeredPainter([tCliff, tHill], [2]),
 		new SmoothElevationPainter(ELEVATION_SET, 18, 2),

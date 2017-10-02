@@ -48,8 +48,6 @@ const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = mapSize*mapSize;
 
-log(mapSize);
-
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clForest = createTileClass();
@@ -64,33 +62,7 @@ initTerrain(tMainTerrain);
 
 var [playerIDs, playerX, playerZ, playerAngle, startAngle] = radialPlayerPlacement();
 
-placeDefaultPlayerBases({
-	"playerPlacement": [playerIDs, playerX, playerZ],
-	"playerTileClass": clPlayer,
-	"baseResourceClass": clBaseResource,
-	"iberWalls": "towers",
-	// cityPatch drawn below
-	"chicken": {
-	},
-	"berries": {
-		"template": oFruitBush
-	},
-	"metal": {
-		"template": oMetalLarge
-	},
-	"stone": {
-		"template": oStoneLarge
-	},
-	"trees": {
-		"template": oTree1,
-		"radiusFactor": 1/15
-	},
-	"decoratives": {
-		"template": aGrassShort
-	}
-});
-RMS.SetProgress(20);
-
+log("Determining number of rivers between players...");
 var split = 1;
 if (mapSize == 128 && numPlayers <= 2)
 	split = 2;
@@ -131,17 +103,11 @@ else if (mapSize == 448)
 		split = 2;
 }
 
-var ix = Math.round(fractionToTiles(0.5));
-var iz = Math.round(fractionToTiles(0.5));
-
 log ("Creating big circular lake...");
+var center = Math.round(fractionToTiles(0.5));
 createArea(
-	new ClumpPlacer(mapArea * 0.23, 1, 1, 10, ix, iz),
-	[
-		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
-		new SmoothElevationPainter(ELEVATION_SET, -3, 4),
-		paintClass(clWater)
-	],
+	new ClumpPlacer(mapArea * 0.23, 1, 1, 10, center, center),
+	new SmoothElevationPainter(ELEVATION_SET, -3, 4),
 	null);
 
 for (let m = 0; m < numPlayers * split; ++m)
@@ -159,14 +125,10 @@ for (let m = 0; m < numPlayers * split; ++m)
 			3 * scaleByMapSize(1, 3),
 			0.2,
 			0.05),
-		[
-		    new LayeredPainter([tShore, tWater, tWater], [1, 3]),
-		    new SmoothElevationPainter(ELEVATION_SET, -4, 4),
-		    paintClass(clWater)
-	    ],
+		new SmoothElevationPainter(ELEVATION_SET, -4, 4),
 	    avoidClasses(clPlayer, 5));
 
-	log("Create path from the player to the center...");
+	log("Create path from the island to the center...");
 	angle = startAngle + m * 2 * Math.PI / (numPlayers * split);
 	createArea(
 		new PathPlacer(
@@ -179,64 +141,67 @@ for (let m = 0; m < numPlayers * split; ++m)
 			3 * scaleByMapSize(1, 3),
 			0.2,
 			0.05),
-		[
-			new LayeredPainter([tWater, tShore, tMainTerrain], [1, 3]),
-			new SmoothElevationPainter(ELEVATION_SET, 3, 4)
-		],
+		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
 		null);
 }
 
 log("Creating ring of land connecting players...");
 createArea(
-	new ClumpPlacer(mapArea * 0.15, 1, 1, 10, ix, iz),
-	[
-		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
-		new SmoothElevationPainter(ELEVATION_SET, 4, 4),
-		unPaintClass(clWater)
-	],
+	new ClumpPlacer(mapArea * 0.15, 1, 1, 10, center, center),
+	new SmoothElevationPainter(ELEVATION_SET, 4, 4),
 	null);
 
 log("Creating ring of water separating the central hill from the ring...");
 createArea(
-	new ClumpPlacer(mapArea * 0.09, 1, 1, 10, ix, iz),
-	[
-		new LayeredPainter([tShore, tWater, tWater], [1, 3]),
-		new SmoothElevationPainter(ELEVATION_SET, -2, 3),
-		paintClass(clWater)
-	],
+	new ClumpPlacer(mapArea * 0.09, 1, 1, 10, center, center),
+	new SmoothElevationPainter(ELEVATION_SET, -2, 3),
 	null);
 
 log("Creating central island...");
 createArea(
-	new ClumpPlacer(Math.pow(mapSize - 50, 2) * 0.09, 1, 1, 10, ix, iz),
-	[
-		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
-		new SmoothElevationPainter(ELEVATION_SET, 4, 3),
-		unPaintClass(clWater)
-	],
+	new ClumpPlacer(Math.pow(mapSize - 50, 2) * 0.09, 1, 1, 10, center, center),
+	new SmoothElevationPainter(ELEVATION_SET, 4, 3),
 	null);
 
 log("Creating hill on the central island...");
 createArea(
-	new ClumpPlacer(Math.pow(scaleByMapSize(6, 18), 2) * 22, 1, 1, 10, ix, iz),
-	[
-		new LayeredPainter([tMainTerrain, tMainTerrain], [1]),
-		new SmoothElevationPainter(ELEVATION_SET, 20, 8)
-	],
+	new ClumpPlacer(Math.pow(scaleByMapSize(6, 18), 2) * 22, 1, 1, 10, center, center),
+	new SmoothElevationPainter(ELEVATION_SET, 20, 8),
 	null);
 
 paintTerrainBasedOnHeight(-6, 1, 1, tWater);
 paintTerrainBasedOnHeight(1, 2, 1, tShore);
-paintTerrainBasedOnHeight(2, 5, 1, tMainTerrain);
+paintTerrainBasedOnHeight(2, 21, 1, tMainTerrain);
 
 paintTileClassBasedOnHeight(-6, 0.5, 1, clWater);
-unPaintTileClassBasedOnHeight(0.5, 10, 1, clWater);
 
-placeDefaultCityPatches({
-	"playerX": playerX,
-	"playerZ": playerZ,
-	"innerTerrain": tRoadWild,
-	"outerTerrain": tRoad
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"metal": {
+		"template": oMetalLarge
+	},
+	"stone": {
+		"template": oStoneLarge
+	},
+	"trees": {
+		"template": oTree1,
+		"radiusFactor": 1/15
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
 });
 
 if (randBool())

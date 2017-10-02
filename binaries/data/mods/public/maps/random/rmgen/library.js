@@ -424,8 +424,6 @@ function primeSortAllPlayers()
 
 function radialPlayerPlacement(percentRadius = 0.35)
 {
-	let playerIDs = sortAllPlayers();
-
 	let playerX = [];
 	let playerZ = [];
 	let playerAngle = [];
@@ -439,7 +437,7 @@ function radialPlayerPlacement(percentRadius = 0.35)
 		playerZ[i] = 0.5 + percentRadius * Math.sin(playerAngle[i]);
 	}
 
-	return [playerIDs, playerX, playerZ, playerAngle, startAngle];
+	return [sortAllPlayers(), playerX, playerZ, playerAngle, startAngle];
 }
 
 /**
@@ -447,9 +445,8 @@ function radialPlayerPlacement(percentRadius = 0.35)
  * For example [0.2, 0.2, 0.4, 0.4, 0.6, 0.6, 0.8, 0.8] for a 4v4 or
  * [0.25, 0.33, 0.5, 0.67, 0.75] for a 2v3.
  */
-function placePlayersRiver(horizontal, func)
+function placePlayersRiver(horizontal, width, angle)
 {
-	let playerIDs = primeSortAllPlayers();
 	let playerX = [];
 	let playerZ = [];
 
@@ -463,25 +460,117 @@ function placePlayersRiver(horizontal, func)
 		let offsetDivident = numPlayersEven || currentPlayerEven ? (i + 1) % 2 : 0;
 		let offsetDivisor = numPlayersEven ? 0 : currentPlayerEven ? +1 : -1;
 
-		let pos = func(i, ((i - 1 + offsetDivident) / 2 + 1) / ((numPlayers + offsetDivisor) / 2 + 1));
+		let pos = [
+			width * (i % 2) + (1 - width) / 2,
+			((i - 1 + offsetDivident) / 2 + 1) / ((numPlayers + offsetDivisor) / 2 + 1)
+		];
 
 		[playerX[i], playerZ[i]] = horizontal ? pos.reverse() : pos;
 	}
 
-	return [playerIDs, playerX, playerZ];
+	[playerX, playerZ] = rotatePlayerCoordinates(playerX, playerZ, angle);
+
+	return [primeSortAllPlayers(), playerX, playerZ];
 }
 
-function getStartingEntities(player)
+/***
+ * Places players in a row of 2 players width.
+ */
+function placePlayersLine(horizontal, center, width)
 {
-	let civ = getCivCode(player);
+	let playerX = [];
+	let playerZ = [];
+	let numPlayers = getNumPlayers();
+
+	for (let i = 0; i < numPlayers; ++i)
+	{
+		playerX[i] = (i + 1) / (numPlayers + 1);
+		playerZ[i] = center + width * (i % 2 - 1/2);
+
+		if (!horizontal)
+			[playerX[i], playerZ[i]] = [playerZ[i], playerX[i]];
+	}
+
+	return [sortAllPlayers(), playerX, playerZ];
+}
+
+/**
+ * Determines random starting positions for nomad units, ensuring a minimum distance
+ * between players and that isValid is true for the starting positions.
+ */
+function placePlayersNomad(isValid)
+{
+	let minDist = Math.pow(scaleByMapSize(60, 240), 2);
+
+	let playerX = [];
+	let playerZ = [];
+	let numPlayers = getNumPlayers();
+
+	log("Finding nomad spawn points that are far enough away from other players...");
+	for (let i = 0; i < numPlayers; ++i)
+	{
+		let placableArea = [];
+
+		// Try shorter distance between players if needed
+		for (let distFactor of [1, 1/4, 0])
+		{
+			for (let ix = 0; ix < mapSize; ++ix)
+				for (let iz = 0; iz < mapSize; ++iz)
+				{
+					if (!g_Map.validT(ix, iz, 3) || !isValid(ix, iz))
+						continue;
+
+					let placable = true;
+					for (let otherPlayer = 0; otherPlayer < i; ++otherPlayer)
+						if (Math.pow(playerX[otherPlayer] - ix, 2) + Math.pow(playerZ[otherPlayer] - iz, 2) < minDist * distFactor)
+							placable = false;
+
+					if (placable)
+						placableArea.push([ix, iz]);
+				}
+
+			if (placableArea.length)
+				break;
+		}
+
+		[playerX[i], playerZ[i]] = pickRandom(placableArea);
+	}
+
+	return [sortAllPlayers(), playerX.map(t => tilesToFraction(t)), playerZ.map(t => tilesToFraction(t))];
+}
+
+function rotateCoordinates(x, z, angle, centerX = 0.5, centerZ = 0.5)
+{
+	return [
+		Math.cos(angle) * (x - centerX) - Math.sin(angle) * (z - centerZ) + centerX,
+		Math.sin(angle) * (x - centerX) + Math.cos(angle) * (z - centerZ) + centerZ
+	];
+}
+
+function rotatePlayerCoordinates(playerX, playerZ, angle, centerX = 0.5, centerZ = 0.5)
+{
+	for (let i = 0; i < getNumPlayers(); ++i)
+		[playerX[i], playerZ[i]] = rotateCoordinates(playerX[i], playerZ[i], angle, centerX, centerZ);
+
+	return [playerX, playerZ];
+}
+
+function getStartingEntities(playerID)
+{
+	let civ = getCivCode(playerID);
 
 	if (!g_CivData[civ] || !g_CivData[civ].StartEntities || !g_CivData[civ].StartEntities.length)
 	{
-		warn("Invalid or unimplemented civ '"+civ+"' specified, falling back to '" + FALLBACK_CIV + "'");
+		warn("Invalid or unimplemented civ '" + civ + "' specified, falling back to '" + FALLBACK_CIV + "'");
 		civ = FALLBACK_CIV;
 	}
 
 	return g_CivData[civ].StartEntities;
+}
+
+function getStartingUnits(playerID)
+{
+	return getStartingEntities(playerID).filter(ent => ent.Template.startsWith("units/"));
 }
 
 function getHeight(x, z)

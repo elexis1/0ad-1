@@ -130,8 +130,9 @@ initTerrain(tPrimary);
 var playerIDs = sortAllPlayers();
 var playerX = [];
 var playerZ = [];
-var startAngle = -Math.PI / 6;
+var startAngle = -Math.PI / 6; // TODO: fully randomize
 
+// TODO: gulf placement function
 for (let i = 0; i < numPlayers; ++i)
 {
 	let playerAngle = startAngle + 2/3 * Math.PI *

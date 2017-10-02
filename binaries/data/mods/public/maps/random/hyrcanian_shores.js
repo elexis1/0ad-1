@@ -54,18 +54,8 @@ var clSea = createTileClass();
 var clHighlands = createTileClass();
 var clFlatlands = createTileClass();
 
-var playerIDs = sortAllPlayers();
-var playerX = [];
-var playerZ = [];
-
-for (let i = 0; i < numPlayers; ++i)
-{
-	playerX[i] = (i + 1) / (numPlayers + 1);
-	playerZ[i] = 0.4 + 0.2 * (i % 2);
-}
-
 placeDefaultPlayerBases({
-	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerPlacement": placePlayersLine(true, 0.5, 0.2),
 	"playerTileClass": clPlayer,
 	"baseResourceClass": clBaseResource,
 	"cityPatch": {
@@ -219,7 +209,7 @@ for (let size of [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5
 RMS.SetProgress(80);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clWater, 0, clForest, 1, clPlayer, 20, clRock, 10, clSea, 2, clHill, 2)],
 	scaleByMapSize(4,16), 100
