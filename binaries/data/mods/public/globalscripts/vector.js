@@ -70,12 +70,8 @@ Vector2D.prototype.normalize = function()
  */
 Vector2D.prototype.rotate = function(a)
 {
-	var sin = Math.sin(a);
-	var cos = Math.cos(a);
-	var x = this.x * cos + this.y * sin;
-	var y = this.y * cos - this.x * sin;
-	this.x = x;
-	this.y = y;
+	this.x = this.x * Math.cos(a) + this.y * Math.sin(a);
+	this.y = this.y * Math.cos(a) - this.x * Math.sin(a);
 	return this;
 };
 
@@ -121,9 +117,7 @@ Vector2D.prototype.compareLength = function(v)
 
 Vector2D.prototype.distanceToSquared = function(v)
 {
-	var dx = this.x - v.x;
-	var dy = this.y - v.y;
-	return dx * dx + dy * dy;
+	return Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2);
 };
 
 Vector2D.prototype.distanceTo = function(v)
