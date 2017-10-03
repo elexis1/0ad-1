@@ -169,3 +169,41 @@ TileClass.prototype.countNonMembersInRadius = function(cx, cy, radius)
 {
 	return this.countInRadius(cx, cy, radius, false);
 };
+
+/**
+ * Add point to given class by id
+ */
+function addToClass(x, z, id)
+{
+	let tileClass = getTileClass(id);
+
+	if (tileClass !== null)
+		tileClass.add(x, z);
+}
+
+/**
+ * Remove point from the given class by id
+ */
+function removeFromClass(x, z, id)
+{
+	let tileClass = getTileClass(id);
+
+	if (tileClass !== null)
+		tileClass.remove(x, z);
+}
+
+/**
+ * Checks if the given tile is in class "id"
+ */
+function checkIfInClass(x, z, id)
+{
+	let tileClass = getTileClass(id);
+	if (tileClass === null)
+		return 0;
+
+	let members = tileClass.countMembersInRadius(x, z, 1);
+	if (members === null)
+		return 0;
+
+	return members;
+}
