@@ -89,7 +89,7 @@ for (let island = 0; island < 2; ++island)
 
 	log("Creating island area...");
 	createArea(
-		new ClumpPlacer(fractionToSize(0.3) * 1.8, 1, 0.5, 10, Math.round(fx), Math.round(fz)),
+		new ClumpPlacer(fractionToArea(0.3) * 1.8, 1, 0.5, 10, Math.round(fx), Math.round(fz)),
 		[
 			new LayeredPainter([tCliffs, tGrass], [2]),
 			new SmoothElevationPainter(ELEVATION_SET, heightMain, 0),
@@ -106,12 +106,12 @@ for (let island = 0; island < 2; ++island)
 
 		createArea(
 			new ClumpPlacer(
-				fractionToSize(0.05) / 2,
+				fractionToArea(0.05) / 2,
 				0.6,
 				0.03,
 				10,
-				Math.round(fx + Math.sqrt(fractionToSize(0.3) * 0.55) * Math.sin(angle)),
-				Math.round(fz + Math.sqrt(fractionToSize(0.3) * 0.55) * Math.cos(angle))),
+				Math.round(fx + Math.sqrt(fractionToArea(0.3) * 0.55) * Math.sin(angle)),
+				Math.round(fz + Math.sqrt(fractionToArea(0.3) * 0.55) * Math.cos(angle))),
 			[
 				new LayeredPainter([tCliffs, tGrass], [2]),
 				new SmoothElevationPainter(ELEVATION_SET, heightMain, 1),
@@ -174,20 +174,20 @@ for (let island = 0; island < 2; ++island)
 
 	log("Creating main relief");
 	createArea(
-		new ClumpPlacer(fractionToSize(0.3) * 1.8, 1, 0.2, 4, x, z),
+		new ClumpPlacer(fractionToArea(0.54), 1, 0.2, 4, x, z),
 		new SmoothElevationPainter(ELEVATION_MODIFY, heightOffsetMainRelief, fractionToTiles(0.45)),
 		null);
 
 	log("Creating first level plateau");
 	createArea(
-		new ClumpPlacer(fractionToSize(0.18) * 1.8, 0.95, 0.02, 4, x, z),
+		new ClumpPlacer(fractionToArea(0.324), 0.95, 0.02, 4, x, z),
 		new SmoothElevationPainter(ELEVATION_MODIFY, heightOffsetLevel1, 1),
 		null);
 
 	log("Creating first level passages...");
 	for (let i = 0; i <= 3; ++i)
 	{
-		let radius = Math.sqrt(fractionToSize(0.18) * 1.8 / Math.PI) + 2;
+		let radius = Math.sqrt(fractionToArea(0.324) / Math.PI) + 2;
 		let angle = Math.PI * (i / 7 + 1 / 9 + island) + swapAngle;
 
 		straightPassageMaker(
@@ -206,7 +206,7 @@ for (let island = 0; island < 2; ++island)
 	{
 		log("Creating second level plateau");
 		createArea(
-			new ClumpPlacer(fractionToSize(0.1), 0.98, 0.04, 4, x, z),
+			new ClumpPlacer(fractionToArea(0.1), 0.98, 0.04, 4, x, z),
 			[
 				new LayeredPainter([tCliffs, tGrass], [2]),
 				new SmoothElevationPainter(ELEVATION_MODIFY, heightOffsetLevel2, 1)
@@ -216,7 +216,7 @@ for (let island = 0; island < 2; ++island)
 		log("Creating second level passages...");
 		for (let i = 0; i < nbPassagesIsland; ++i)
 		{
-			let radius = Math.sqrt(fractionToSize(0.1) / Math.PI) + 2;
+			let radius = Math.sqrt(fractionToArea(0.1) / Math.PI) + 2;
 			let angle = Math.PI * (i / (2 * nbPassagesIsland) + 1 / (4 * nbPassagesIsland) + island) + swapAngle;
 
 			straightPassageMaker(

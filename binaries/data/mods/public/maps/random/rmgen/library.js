@@ -17,31 +17,6 @@ const MAX_HEIGHT = MAX_HEIGHT_RANGE - SEA_LEVEL;
 // Default angle for buildings
 const BUILDING_ORIENTATION = - PI / 4;
 
-function fractionToTiles(f)
-{
-	return g_Map.size * f;
-}
-
-function tilesToFraction(t)
-{
-	return t / g_Map.size;
-}
-
-function fractionToSize(f)
-{
-	return getMapArea() * f;
-}
-
-function sizeToFraction(s)
-{
-	return s / getMapArea();
-}
-
-function scaleByMapSize(min, max)
-{
-	return min + (max - min) * (g_Map.size - MIN_MAP_SIZE) / (MAX_MAP_SIZE - MIN_MAP_SIZE);
-}
-
 function cos(x)
 {
 	return Math.cos(x);
@@ -59,11 +34,6 @@ function abs(x) {
 function round(x)
 {
 	return Math.round(x);
-}
-
-function lerp(a, b, t)
-{
-	return a + (b-a) * t;
 }
 
 function sqrt(x)
@@ -126,7 +96,7 @@ function retryPlacing(placeFunc, placeArgs, retryFactor, amount, getResult, beha
  */
 function randomizePlacerCoordinates(placer, halfMapSize)
 {
-	if (!!g_MapSettings.CircularMap)
+	if (isCircularMap())
 	{
 		// Polar coordinates
 		// Uniformly distributed on the disk
@@ -138,8 +108,8 @@ function randomizePlacerCoordinates(placer, halfMapSize)
 	else
 	{
 		// Rectangular coordinates
-		placer.x = randIntExclusive(0, g_Map.size);
-		placer.z = randIntExclusive(0, g_Map.size);
+		placer.x = randIntExclusive(0, getMapSize());
+		placer.z = randIntExclusive(0, getMapSize());
 	}
 }
 
@@ -173,14 +143,14 @@ function createAreas(centeredPlacer, painter, constraint, amount, retryFactor = 
 {
 	let placeFunc = function (args) {
 		randomizePlacerCoordinates(args.placer, args.halfMapSize);
-		return g_Map.createArea(args.placer, args.painter, args.constraint);
+		return createArea(args.placer, args.painter, args.constraint);
 	};
 
 	let args = {
 		"placer": centeredPlacer,
 		"painter": painter,
 		"constraint": constraint,
-		"halfMapSize": g_Map.size / 2
+		"halfMapSize": getMapSize() / 2
 	};
 
 	return retryPlacing(placeFunc, args, retryFactor, amount, true, behaveDeprecated);
@@ -197,7 +167,7 @@ function createAreasInAreas(centeredPlacer, painter, constraint, amount, retryFa
 
 	let placeFunc = function (args) {
 		randomizePlacerCoordinatesFromAreas(args.placer, args.areas);
-		return g_Map.createArea(args.placer, args.painter, args.constraint);
+		return createArea(args.placer, args.painter, args.constraint);
 	};
 
 	let args = {
@@ -205,7 +175,7 @@ function createAreasInAreas(centeredPlacer, painter, constraint, amount, retryFa
 		"painter": painter,
 		"constraint": constraint,
 		"areas": areas,
-		"halfMapSize": g_Map.size / 2
+		"halfMapSize": getMapSize() / 2
 	};
 
 	return retryPlacing(placeFunc, args, retryFactor, amount, true, behaveDeprecated);
@@ -256,45 +226,6 @@ function createObjectGroupsByAreas(placer, player, constraint, amount, retryFact
 	return retryPlacing(placeFunc, args, retryFactor, amount, false, behaveDeprecated);
 }
 
-function createTerrain(terrain)
-{
-	if (!(terrain instanceof Array))
-		return createSimpleTerrain(terrain);
-
-	return new RandomTerrain(terrain.map(t => createTerrain(t)));
-}
-
-function createSimpleTerrain(terrain)
-{
-	if (typeof(terrain) != "string")
-		throw new Error("createSimpleTerrain expects string as input, received " + uneval(terrain));
-
-	// Split string by pipe | character, this allows specifying terrain + tree type in single string
-	let params = terrain.split(TERRAIN_SEPARATOR, 2);
-
-	if (params.length != 2)
-		return new SimpleTerrain(terrain);
-
-	return new SimpleTerrain(params[0], params[1]);
-}
-
-function placeObject(x, z, type, player, angle)
-{
-	if (g_Map.validT(x, z))
-		g_Map.addObject(new Entity(type, player, x, z, angle));
-}
-
-function placeTerrain(x, z, terrain)
-{
-	// convert terrain param into terrain object
-	g_Map.placeTerrain(x, z, createTerrain(terrain));
-}
-
-function initTerrain(tileClass)
-{
-	g_Map.initTerrain(createTerrain(tileClass));
-}
-
 function isCircularMap()
 {
 	return !!g_MapSettings.CircularMap;
@@ -303,39 +234,6 @@ function isCircularMap()
 function getMapBaseHeight()
 {
 	return g_MapSettings.BaseHeight;
-}
-
-function createTileClass()
-{
-	return g_Map.createTileClass();
-}
-
-function getTileClass(id)
-{
-	if (!g_Map.validClass(id))
-		return undefined;
-
-	return g_Map.tileClasses[id];
-}
-
-function createArea(placer, painter, constraint)
-{
-	return g_Map.createArea(placer, painter, constraint);
-}
-
-function createObjectGroup(placer, player, constraint)
-{
-	return g_Map.createObjectGroup(placer, player, constraint);
-}
-
-function getMapSize()
-{
-	return g_Map.size;
-}
-
-function getMapArea()
-{
-	return g_Map.size * g_Map.size;
 }
 
 function getNumPlayers()
@@ -471,122 +369,6 @@ function getStartingEntities(player)
 	return g_CivData[civ].StartEntities;
 }
 
-function getHeight(x, z)
-{
-	return g_Map.getHeight(x, z);
-}
-
-function setHeight(x, z, height)
-{
-	g_Map.setHeight(x, z, height);
-}
-
-/**
- *	Utility functions for classes
- */
-
-/**
- * Add point to given class by id
- */
-function addToClass(x, z, id)
-{
-	let tileClass = getTileClass(id);
-
-	if (tileClass !== null)
-		tileClass.add(x, z);
-}
-
-/**
- * Remove point from the given class by id
- */
-function removeFromClass(x, z, id)
-{
-	let tileClass = getTileClass(id);
-
-	if (tileClass !== null)
-		tileClass.remove(x, z);
-}
-
-/**
- * Create a painter for the given class
- */
-function paintClass(id)
-{
-	return new TileClassPainter(getTileClass(id));
-}
-
-/**
- * Create a painter for the given class
- */
-function unPaintClass(id)
-{
-	return new TileClassUnPainter(getTileClass(id));
-}
-
-/**
- * Create an avoid constraint for the given classes by the given distances
- */
-function avoidClasses(/*class1, dist1, class2, dist2, etc*/)
-{
-	let ar = [];
-	for (let i = 0; i < arguments.length/2; ++i)
-		ar.push(new AvoidTileClassConstraint(arguments[2*i], arguments[2*i+1]));
-
-	// Return single constraint
-	if (ar.length == 1)
-		return ar[0];
-
-	return new AndConstraint(ar);
-}
-
-/**
- * Create a stay constraint for the given classes by the given distances
- */
-function stayClasses(/*class1, dist1, class2, dist2, etc*/)
-{
-	let ar = [];
-	for (let i = 0; i < arguments.length/2; ++i)
-		ar.push(new StayInTileClassConstraint(arguments[2*i], arguments[2*i+1]));
-
-	// Return single constraint
-	if (ar.length == 1)
-		return ar[0];
-
-	return new AndConstraint(ar);
-}
-
-/**
- * Create a border constraint for the given classes by the given distances
- */
-function borderClasses(/*class1, idist1, odist1, class2, idist2, odist2, etc*/)
-{
-	let ar = [];
-	for (let i = 0; i < arguments.length/3; ++i)
-		ar.push(new BorderTileClassConstraint(arguments[3*i], arguments[3*i+1], arguments[3*i+2]));
-
-	// Return single constraint
-	if (ar.length == 1)
-		return ar[0];
-
-	return new AndConstraint(ar);
-}
-
-/**
- * Checks if the given tile is in class "id"
- */
-function checkIfInClass(x, z, id)
-{
-	let tileClass = getTileClass(id);
-	if (tileClass === null)
-		return 0;
-
-	let members = tileClass.countMembersInRadius(x, z, 1);
-	if (members === null)
-		return 0;
-
-	return members;
-}
-
 /**
  * Returns the angle of the vector between point 1 and point 2.
  * The angle is counterclockwise from the positive x axis.
@@ -605,11 +387,6 @@ function getGradient(x1, z1, x2, z2)
 		return 0;
 
 	return (z1-z2)/(x1-x2);
-}
-
-function getTerrainTexture(x, y)
-{
-	return g_Map.getTexture(x, y);
 }
 
 function addCivicCenterAreaToClass(ix, iz, tileClass)

@@ -88,7 +88,7 @@ Map.prototype.validT = function(x, z, distance = 0)
 {
 	distance += MAP_BORDER_WIDTH;
 
-	if (g_MapSettings.CircularMap)
+	if (isCircularMap())
 	{
 		let halfSize = Math.floor(this.size / 2);
 		return Math.round(Math.euclidDistance2D(x, z, halfSize, halfSize)) < halfSize - distance - 1;
@@ -325,3 +325,101 @@ Map.prototype.getMapData = function()
 
 	return data;
 };
+
+/**
+ * Global helpers simplifying API access.
+ */
+
+function placeObject(x, z, type, player, angle)
+{
+	if (g_Map.validT(x, z))
+		g_Map.addObject(new Entity(type, player, x, z, angle));
+}
+
+function placeTerrain(x, z, terrain)
+{
+	g_Map.placeTerrain(x, z, createTerrain(terrain));
+}
+
+function initTerrain(tileClass)
+{
+	g_Map.initTerrain(createTerrain(tileClass));
+}
+
+function initHeight(height)
+{
+	g_Map.initHeight(height);
+}
+
+function createTileClass()
+{
+	return g_Map.createTileClass();
+}
+
+function getTileClass(id)
+{
+	if (!g_Map.validClass(id))
+		return undefined;
+
+	return g_Map.tileClasses[id];
+}
+
+function createArea(placer, painter, constraint)
+{
+	return g_Map.createArea(placer, painter, constraint);
+}
+
+function createObjectGroup(placer, player, constraint)
+{
+	return g_Map.createObjectGroup(placer, player, constraint);
+}
+
+function getMapSize()
+{
+	return g_Map.size;
+}
+
+function getMapArea()
+{
+	return Math.square(g_Map.size);
+}
+
+function fractionToTiles(fraction)
+{
+	return g_Map.size * fraction;
+}
+
+function tilesToFraction(tiles)
+{
+	return tiles / g_Map.size;
+}
+
+function fractionToArea(fraction)
+{
+	return getMapArea() * fraction;
+}
+
+function areaToFraction(area)
+{
+	return area / getMapArea();
+}
+
+function scaleByMapSize(min, max)
+{
+	return min + (max - min) * (g_Map.size - MIN_MAP_SIZE) / (MAX_MAP_SIZE - MIN_MAP_SIZE);
+}
+
+function getHeight(x, z)
+{
+	return g_Map.getHeight(x, z);
+}
+
+function setHeight(x, z, height)
+{
+	g_Map.setHeight(x, z, height);
+}
+
+function getTerrainTexture(x, y)
+{
+	return g_Map.getTexture(x, y);
+}
