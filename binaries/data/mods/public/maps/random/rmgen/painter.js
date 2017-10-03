@@ -367,3 +367,19 @@ TileClassUnPainter.prototype.paint = function(area)
 	for (let pt of area.points)
 		this.tileClass.remove(pt.x, pt.z);
 };
+
+/**
+ * Create a painter for the given class
+ */
+function paintClass(id)
+{
+	return new TileClassPainter(getTileClass(id));
+}
+
+/**
+ * Create a painter for the given class
+ */
+function unPaintClass(id)
+{
+	return new TileClassUnPainter(getTileClass(id));
+}

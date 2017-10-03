@@ -1,4 +1,3 @@
-
 ///////////////////////////////////////////////////////////////////////////
 //	NullConstraint
 //
@@ -130,3 +129,48 @@ BorderTileClassConstraint.prototype.allows = function(x, z)
 	return this.tileClass.countMembersInRadius(x, z, this.distanceOutside) > 0 &&
 	       this.tileClass.countNonMembersInRadius(x, z, this.distanceInside) > 0;
 };
+
+/**
+ * Create an avoid constraint for the given classes by the given distances
+ */
+function avoidClasses(/*class1, dist1, class2, dist2, etc*/)
+{
+	let ar = [];
+	for (let i = 0; i < arguments.length / 2; ++i)
+		ar.push(new AvoidTileClassConstraint(arguments[2 * i], arguments[2 * i + 1]));
+
+	if (ar.length == 1)
+		return ar[0];
+
+	return new AndConstraint(ar);
+}
+
+/**
+ * Create a stay constraint for the given classes by the given distances
+ */
+function stayClasses(/*class1, dist1, class2, dist2, etc*/)
+{
+	let ar = [];
+	for (let i = 0; i < arguments.length / 2; ++i)
+		ar.push(new StayInTileClassConstraint(arguments[2 * i], arguments[2 * i + 1]));
+
+	if (ar.length == 1)
+		return ar[0];
+
+	return new AndConstraint(ar);
+}
+
+/**
+ * Create a border constraint for the given classes by the given distances
+ */
+function borderClasses(/*class1, idist1, odist1, class2, idist2, odist2, etc*/)
+{
+	let ar = [];
+	for (let i = 0; i < arguments.length / 3; ++i)
+		ar.push(new BorderTileClassConstraint(arguments[3 * i], arguments[3 * i + 1], arguments[3 * i + 2]));
+
+	if (ar.length == 1)
+		return ar[0];
+
+	return new AndConstraint(ar);
+}
