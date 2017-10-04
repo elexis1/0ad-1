@@ -63,6 +63,13 @@ Map.prototype.initTerrain = function(baseTerrain)
 			baseTerrain.place(i, j);
 };
 
+Map.prototype.initHeight = function(height)
+{
+	for (let i = 0; i < this.size; ++i)
+		for (let j = 0; j < this.size; ++j)
+			this.height[i][j] = height;
+};
+
 // Return ID of texture (by name)
 Map.prototype.getTextureID = function(texture)
 {
