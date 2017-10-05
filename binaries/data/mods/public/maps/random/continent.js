@@ -212,8 +212,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- [avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clHill, 1), stayClasses(clLand, 6)]
-);
+ [avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clHill, 1), stayClasses(clLand, 6)],
+ clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -290,8 +290,14 @@ createFood
 RMS.SetProgress(85);
 
 log("Creating straggler trees...");
-var types = [oTree1, oTree2, oTree4, oTree3];	// some variation
-createStragglerTrees(types, [avoidClasses(clForest, 7, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6), stayClasses(clLand, 7)]);
+createStragglerTrees(
+	[oTree1, oTree2, oTree4, oTree3],
+	[
+		avoidClasses(clForest, 7, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6),
+		stayClasses(clLand, 7)
+	],
+	clForest);
+
 setWaterWaviness(1.0);
 setWaterType("ocean");
 

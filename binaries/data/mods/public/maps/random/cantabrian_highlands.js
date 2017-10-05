@@ -240,8 +240,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- avoidClasses(clWater, 0, clForest, 1, clPlayer, 5, clRock, 10, clHill, 1)
-);
+ avoidClasses(clWater, 0, clForest, 1, clPlayer, 5, clRock, 10, clHill, 1),
+ clRock);
 RMS.SetProgress(55);
 
 log("Creating metal mines...");
@@ -300,8 +300,10 @@ createFood
 RMS.SetProgress(85);
 
 log("Creating metal mines...");
-var types = [oOak, oOakLarge, oPine, oApple];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6));
+createStragglerTrees(
+	[oOak, oOakLarge, oPine, oApple],
+	avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6),
+	clForest);
 RMS.SetProgress(90);
 
 setSkySet("cirrus");

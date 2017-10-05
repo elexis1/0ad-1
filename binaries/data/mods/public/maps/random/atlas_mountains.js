@@ -167,8 +167,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- avoidClasses(clForest, 1, clPlayer, 20, clMetal, 10, clRock, 5, clHill, 2)
-);
+ avoidClasses(clForest, 1, clPlayer, 20, clMetal, 10, clRock, 5, clHill, 2),
+ clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -246,8 +246,10 @@ createObjectGroupsDeprecated(group, 0,
 
 RMS.SetProgress(80);
 
-var types = [oCarob, oAleppoPine];	// some variation
-createStragglerTrees(types, avoidClasses(clForest, 1, clHill, 1, clPlayer, 10, clMetal, 6, clRock, 6, clTreasure, 4));
+createStragglerTrees(
+	[oCarob, oAleppoPine],
+	avoidClasses(clForest, 1, clHill, 1, clPlayer, 10, clMetal, 6, clRock, 6, clTreasure, 4),
+	clForest);
 
 log("Creating hill trees...");
 var types = [aCarob, aAleppoPine];

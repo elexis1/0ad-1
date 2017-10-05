@@ -273,8 +273,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- avoidClasses(clWater, 2, clForest, 1, clPlayer, 20, clRock, 10, clHill, 2)
-);
+ avoidClasses(clWater, 2, clForest, 1, clPlayer, 20, clRock, 10, clHill, 2),
+ clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -353,8 +353,10 @@ createFood
 );
 
 log("Creating straggler trees...");
-var types = [oBeech, oPoplar, oApple];	// some variation
-createStragglerTrees(types, avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 8, clMetal, 6, clRock, 6));
+createStragglerTrees(
+	[oBeech, oPoplar, oApple],
+	avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 8, clMetal, 6, clRock, 6),
+	clForest);
 
 setSkySet("cirrus");
 setWaterColor(0.114, 0.192, 0.463);

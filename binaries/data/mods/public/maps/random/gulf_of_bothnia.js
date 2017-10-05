@@ -297,8 +297,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clRock, 10, clHill, 1)
-);
+ avoidClasses(clWater, 3, clForest, 1, clPlayer, 20, clRock, 10, clHill, 1),
+ clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -330,49 +330,38 @@ createDecoration(
 	 avoidClasses(clWater, 0, clForest, 0, clPlayer, 5, clHill, 0, clBaseResource, 5));
 RMS.SetProgress(75);
 
-createFood
-(
- [
-  [new SimpleObject(oDeer, 5,7, 0,4)],
-  [new SimpleObject(oRabbit, 2,3, 0,2)]
- ],
- [
-  3 * numPlayers,
-  3 * numPlayers
- ],
- avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 20)
-);
+createFood(
+	[
+		[new SimpleObject(oDeer, 5, 7, 0, 4)],
+		[new SimpleObject(oRabbit, 2, 3, 0, 2)]
+	],
+	[
+		3 * numPlayers,
+		3 * numPlayers
+	],
+	avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 20),
+	clFood);
 
-createFood
-(
- [
-  [new SimpleObject(oBerryBush, 5,7, 0,4)]
- ],
- [
-  randIntInclusive(1, 4) * numPlayers + 2
- ],
- avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 10)
-);
+createFood(
+	[[new SimpleObject(oBerryBush, 5, 7, 0, 4)]],
+	[randIntInclusive(1, 4) * numPlayers + 2],
+	avoidClasses(clWater, 3, clForest, 0, clPlayer, 20, clHill, 1, clFood, 10),
+	clFood);
 
-if (random_terrain !== 3)
-{
-		createFood
-	(
-	 [
-	  [new SimpleObject(oFish, 2,3, 0,2)]
-	 ],
-	 [
-	  25 * numPlayers
-	 ],
-	 [avoidClasses(clFood, 20), stayClasses(clWater, 6)]
-	);
-}
+if (random_terrain != 3)
+	createFood(
+		[[new SimpleObject(oFish, 2, 3, 0, 2)]],
+		[25 * numPlayers],
+		[avoidClasses(clFood, 20), stayClasses(clWater, 6)],
+		clFood);
 
 RMS.SetProgress(85);
 
 log("Creating straggler trees...");
-var types = [oPine];
-createStragglerTrees(types, avoidClasses(clWater, 3, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6));
+createStragglerTrees(
+	[oPine],
+	avoidClasses(clWater, 3, clForest, 1, clHill, 1, clPlayer, 12, clMetal, 6, clRock, 6),
+	clForest);
 
 setSkySet("stormy");
 setSunRotation(randFloat(0, TWO_PI));
