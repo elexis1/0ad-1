@@ -242,8 +242,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- stayClasses(clIsland, 4)
-);
+ stayClasses(clIsland, 4),
+ clRock);
 
 log("Creating island metal mines...");
 createMines(
@@ -260,8 +260,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clWater, 1, clHill, 1)
-);
+ avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clWater, 1, clHill, 1),
+ clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -330,11 +330,15 @@ RMS.SetProgress(90);
 var types = [oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress];
 createStragglerTrees(
 	types,
-	avoidClasses(clForest, 1, clWater, 2, clPlayer, 12, clMetal, 6, clHill, 1));
+	avoidClasses(clForest, 1, clWater, 2, clPlayer, 12, clMetal, 6, clHill, 1),
+	clForest);
 
 log("Creating straggler island trees...");
 g_numStragglerTrees *= 10;
-createStragglerTrees(types, stayClasses(clIsland, 4));
+createStragglerTrees(
+	types,
+	stayClasses(clIsland, 4),
+	clForest);
 
 setSkySet("cumulus");
 setSunColor(0.866667, 0.776471, 0.486275);

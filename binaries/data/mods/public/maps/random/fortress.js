@@ -252,8 +252,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- avoidClasses(clWater, 0, clForest, 1, clPlayer, 5, clRock, 10, clHill, 1)
-);
+ avoidClasses(clWater, 0, clForest, 1, clPlayer, 5, clRock, 10, clHill, 1),
+ clRock);
 RMS.SetProgress(65);
 
 log("Creating metal mines...");
@@ -315,7 +315,8 @@ RMS.SetProgress(90);
 log("Creating straggler trees...");
 createStragglerTrees(
 	[oOak, oBeech, oPine],
-	avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6));
+	avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 1, clMetal, 6, clRock, 6),
+	clForest);
 RMS.SetProgress(95);
 
 setSkySet("sunny");
