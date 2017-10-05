@@ -225,7 +225,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- [avoidClasses(clForest, 1, clPlayer, 7, clRock, 10, clHill, 1), stayClasses(clLand, 6)]
+ [avoidClasses(clForest, 1, clPlayer, 7, clRock, 10, clHill, 1), stayClasses(clLand, 6)],
+ clRock
 );
 
 log("Creating metal mines...");
@@ -238,7 +239,6 @@ createMines(
 );
 RMS.SetProgress(65);
 
-log("Creating decoration...");
 var planetm = currentBiome() == "tropic" ? 8 : 1;
 createDecoration
 (
@@ -259,7 +259,6 @@ createDecoration
 );
 RMS.SetProgress(70);
 
-log("Creating animals...");
 createFood
 (
  [
@@ -274,7 +273,6 @@ createFood
 );
 RMS.SetProgress(75);
 
-log("Creating fruits...");
 createFood
 (
  [
@@ -287,7 +285,6 @@ createFood
 );
 RMS.SetProgress(80);
 
-log("Creating fish...");
 createFood
 (
  [
@@ -304,7 +301,8 @@ RMS.SetProgress(85);
 log("Creating straggler trees...");
 createStragglerTrees(
 	[oTree1, oTree2, oTree4, oTree3],
-	[avoidClasses(clForest, 7, clHill, 1, clPlayer, 3, clMetal, 6, clRock, 6), stayClasses(clLand, 7)]);
+	[avoidClasses(clForest, 7, clHill, 1, clPlayer, 3, clMetal, 6, clRock, 6), stayClasses(clLand, 7)],
+	clForest);
 
 setWaterWaviness(4.0);
 setWaterType("ocean");
