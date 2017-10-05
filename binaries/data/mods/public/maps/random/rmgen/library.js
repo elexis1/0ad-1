@@ -1,5 +1,16 @@
+//TODO: delete these proxies and use the prototype
 const PI = Math.PI;
 const TWO_PI = 2 * Math.PI;
+const sin = Math.sin;
+const cos = Math.cos;
+const sqrt = Math.sqrt;
+const min = Math.min;
+const max = Math.max;
+const floor = Math.floor;
+const ceil = Math.ceil;
+const round = Math.round;
+const abs = Math.abs;
+
 const TERRAIN_SEPARATOR = "|";
 const SEA_LEVEL = 20.0;
 const CELL_SIZE = 4;
