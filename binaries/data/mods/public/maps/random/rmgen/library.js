@@ -1,5 +1,16 @@
+//TODO: delete these proxies and use the prototype
 const PI = Math.PI;
 const TWO_PI = 2 * Math.PI;
+const sin = Math.sin;
+const cos = Math.cos;
+const sqrt = Math.sqrt;
+const min = Math.min;
+const max = Math.max;
+const floor = Math.floor;
+const ceil = Math.ceil;
+const round = Math.round;
+const abs = Math.abs;
+
 const TERRAIN_SEPARATOR = "|";
 const SEA_LEVEL = 20.0;
 const CELL_SIZE = 4;
@@ -43,55 +54,6 @@ function sizeToFraction(s)
 function scaleByMapSize(min, max)
 {
 	return min + (max - min) * (g_Map.size - MIN_MAP_SIZE) / (MAX_MAP_SIZE - MIN_MAP_SIZE);
-}
-
-function cos(x)
-{
-	return Math.cos(x);
-}
-
-function sin(x)
-{
-	return Math.sin(x);
-}
-
-function abs(x) {
-	return Math.abs(x);
-}
-
-function round(x)
-{
-	return Math.round(x);
-}
-
-function lerp(a, b, t)
-{
-	return a + (b-a) * t;
-}
-
-function sqrt(x)
-{
-	return Math.sqrt(x);
-}
-
-function ceil(x)
-{
-	return Math.ceil(x);
-}
-
-function floor(x)
-{
-	return Math.floor(x);
-}
-
-function max(a, b)
-{
-	return a > b ? a : b;
-}
-
-function min(a, b)
-{
-	return a < b ? a : b;
 }
 
 /**
