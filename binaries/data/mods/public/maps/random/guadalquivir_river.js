@@ -230,8 +230,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- [avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clHill, 1, clRiver, 1), stayClasses(clLand, 5)]
-);
+ [avoidClasses(clForest, 1, clPlayer, 20, clRock, 10, clHill, 1, clRiver, 1), stayClasses(clLand, 5)],
+ clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -316,7 +316,8 @@ RMS.SetProgress(85);
 log("Creating straggler trees...");
 createStragglerTrees(
 	[oPoplar, oCarob, oApple],
-	[avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6, clRiver, 1), stayClasses(clLand, 7)]);
+	[avoidClasses(clForest, 1, clHill, 1, clPlayer, 9, clMetal, 6, clRock, 6, clRiver, 1), stayClasses(clLand, 7)],
+	clForest);
 
 setSkySet("cumulus");
 setWaterColor(0.2,0.312,0.522);

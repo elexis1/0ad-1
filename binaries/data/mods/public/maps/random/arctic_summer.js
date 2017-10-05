@@ -240,7 +240,8 @@ createMines(
 		clForest, 1,
 		clPlayer, 20,
 		clRock, 18,
-		clHill, 1));
+		clHill, 1),
+	clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -294,7 +295,8 @@ createFood(
 	avoidClasses(
 		clFood, 20,
 		clHill, 5,
-		clWater, 5));
+		clWater, 5),
+	clFood);
 
 createFood
 (
@@ -309,7 +311,8 @@ createFood
 	[
 		avoidClasses(clFood, 20),
 		stayClasses(clWater, 6)
-	]);
+	],
+	clFood);
 
 createFood
 (
@@ -324,7 +327,8 @@ createFood
 		clForest, 0,
 		clPlayer, 20,
 		clHill, 1,
-		clFood, 10));
+		clFood, 10),
+	clFood);
 
 createFood(
 	[
@@ -336,7 +340,8 @@ createFood(
 	[
 		avoidClasses(clFood, 20),
 		stayClasses(clWater, 6)
-	]);
+	],
+	clFood);
 
 RMS.SetProgress(85);
 
@@ -348,7 +353,8 @@ createStragglerTrees(
 		clHill, 1,
 		clPlayer, 12,
 		clMetal, 4,
-		clRock, 4));
+		clRock, 4),
+	clForest);
 
 setSkySet("sunset 1");
 setSunRotation(randFloat(0, 2 * PI));

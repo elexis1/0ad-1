@@ -201,8 +201,8 @@ log("Creating stone mines...");
 		[new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
 		[new SimpleObject(oStoneSmall, 2,5, 1,3)]
 	],
-	avoidClasses(clWater, 3, clPlayer, 20, clRock, 18, clHill, 2)
-);
+	avoidClasses(clWater, 3, clPlayer, 20, clRock, 18, clHill, 2),
+	clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -250,8 +250,8 @@ createFood(
 		5 * numPlayers,
 		12 * numPlayers
 	],
-	avoidClasses(clPlayer, 35, clFood, 16, clWater, 2, clMetal, 4, clRock, 4, clHill, 2)
-);
+	avoidClasses(clPlayer, 35, clFood, 16, clWater, 2, clMetal, 4, clRock, 4, clHill, 2),
+	clFood);
 
 createFood(
 	[
@@ -262,8 +262,8 @@ createFood(
 		scaleByMapSize(1, 6) * 3,
 		scaleByMapSize(1, 6) * 3,
 	],
-	[avoidClasses(clFood, 20, clHill, 5), stayClasses(clWater, 6)]
-);
+	[avoidClasses(clFood, 20, clHill, 5), stayClasses(clWater, 6)],
+	clFood);
 
 createFood(
 	[
@@ -272,8 +272,8 @@ createFood(
 	[
 		100
 	],
-	[avoidClasses(clFood, 12, clHill, 5), stayClasses(clWater, 6)]
-);
+	[avoidClasses(clFood, 12, clHill, 5), stayClasses(clWater, 6)],
+	clFood);
 RMS.SetProgress(85);
 
 // Create trigger points where wolves spawn

@@ -238,6 +238,7 @@ createDecoration(
 log("Creating straggler trees...");
 createStragglerTrees(
 	[oTree1, oTree2, oTree4, oTree3],
-	[avoidClasses(clForest, 7, clHill, 1, clPlayer, 9), stayClasses(clLand, 7)]);
+	[avoidClasses(clForest, 7, clHill, 1, clPlayer, 9), stayClasses(clLand, 7)],
+	clForest);
 
 ExportMap();

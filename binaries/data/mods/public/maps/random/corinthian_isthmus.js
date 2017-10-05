@@ -232,8 +232,8 @@ createMines(
   [new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)],
   [new SimpleObject(oStoneSmall, 2,5, 1,3)]
  ],
- avoidClasses(clForest, 4, clPlayer, 15, clRock, 10, clWater, 4, clHill, 4)
-);
+ avoidClasses(clForest, 4, clPlayer, 15, clRock, 10, clWater, 4, clHill, 4),
+ clRock);
 
 log("Creating metal mines...");
 createMines(
@@ -302,7 +302,8 @@ RMS.SetProgress(90);
 log("Creating straggler trees...");
 createStragglerTrees(
 	[oDatePalm, oSDatePalm, oCarob, oFanPalm, oPoplar, oCypress],
-	avoidClasses(clForest, 1, clWater, 2, clPlayer, 8, clBaseResource, 6, clMetal, 6, clRock, 6, clHill, 1));
+	avoidClasses(clForest, 1, clWater, 2, clPlayer, 8, clBaseResource, 6, clMetal, 6, clRock, 6, clHill, 1),
+	clForest);
 
 setSkySet("sunny");
 setSunColor(0.917, 0.828, 0.734);
