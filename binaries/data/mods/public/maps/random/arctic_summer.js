@@ -32,7 +32,7 @@ var oFish = "gaia/fauna_fish";
 var oStoneLarge = "gaia/geology_stonemine_alpine_quarry";
 var oStoneSmall = "gaia/geology_stone_alpine_a";
 var oMetalLarge = "gaia/geology_metal_alpine_slabs";
-var oWood = "gaia/special_treasure_wood";
+var oWoodTreasure = "gaia/special_treasure_wood";
 
 var aRockLarge = "actor|geology/stone_granite_med.xml";
 var aRockMedium = "actor|geology/stone_granite_med.xml";
@@ -53,98 +53,41 @@ var clMetal = createTileClass();
 var clFood = createTileClass();
 var clBaseResource = createTileClass();
 
-var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
-
-for (let i = 0; i < numPlayers; i++)
-{
-	log("Creating base for player " + playerIDs[i]);
-	let radius = scaleByMapSize(15, 25);
-
-	// Get the x and z in tiles
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-	let ix = Math.round(fx);
-	let iz = Math.round(fz);
-
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// Create the city patch
-	let cityRadius = radius / 3;
-	createArea(
-		new ClumpPlacer(PI * cityRadius * cityRadius, 0.6, 0.3, 10, ix, iz),
-		new LayeredPainter([tPrimary, tSecondary], [1]),
-		null);
-
-	placeCivDefaultEntities(fx, fz, playerIDs[i]);
-
-	placeDefaultChicken(fx, fz, clBaseResource, undefined, oRabbit);
-
-	// Create berry bushes
-	let bbAngle = randFloat(0, 2 * PI);
-	let bbDist = 12;
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oBerryBush, 5, 5, 0, 3)],
-			true,
-			clBaseResource,
-			Math.round(fx + bbDist * Math.cos(bbAngle)),
-			Math.round(fz + bbDist * Math.sin(bbAngle))),
-		0);
-
-	// Create metal mine
-	let mAngle = bbAngle + randFloat(PI / 3, PI);
-	let mDist = 12;
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oMetalLarge, 1, 1, 0, 0)],
-			true,
-			clBaseResource,
-			Math.round(fx + mDist * Math.cos(mAngle)),
-			Math.round(fz + mDist * Math.sin(mAngle))),
-		0);
-
-	// Create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oStoneLarge, 1, 1, 0, 2)],
-			true,
-			clBaseResource,
-			Math.round(fx + mDist * Math.cos(mAngle)),
-			Math.round(fz + mDist * Math.sin(mAngle))),
-		0);
-
-	// Create wood treasure
-	mAngle += randFloat(PI/4, PI/6);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oWood, 10, 10, 0, 3)],
-			true,
-			clBaseResource,
-			Math.round(fx + bbDist * Math.cos(mAngle)),
-			Math.round(fz + bbDist * Math.sin(mAngle)),
-			avoidClasses(clBaseResource, 4)),
-		0);
-
-	// Create starting trees
-	for (let i = 0; i < 10; ++i)
-	{
-		let tAngle = mAngle + randFloat(PI/3, PI/4);
-		let tDist = randFloat(10, 12);
-		if (createObjectGroup(
-			new SimpleGroup(
-				[new SimpleObject(oBush, 20, 20, 0, 3)],
-				false,
-				clBaseResource,
-				Math.round(fx + tDist * Math.cos(tAngle)),
-				Math.round(fz + tDist * Math.sin(tAngle))),
-			0,
-			avoidClasses(clBaseResource, 4)))
-		{
-			break;
-		}
+placeDefaultPlayerBases({
+	"playerPlacement": placePlayersRadial(),
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tPrimary,
+		"outerTerrain": tSecondary
+	},
+	"chicken": {
+		"template": oRabbit
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"treasures": {
+		"types": [
+			{
+				"template": oWoodTreasure,
+				"count": 10
+			}
+		]
+	},
+	"trees": {
+		"template": oBush,
+		"radiusFactor": 1/10,
+		"maxDistGroup": 5
 	}
-}
+	// No decoratives
+});
 RMS.SetProgress(20);
 
 log("Creating hills...");

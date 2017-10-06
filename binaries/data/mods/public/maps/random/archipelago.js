@@ -31,7 +31,7 @@ const oSecondaryHuntableAnimal = g_Gaia.secondaryHuntableAnimal;
 const oStoneLarge = g_Gaia.stoneLarge;
 const oStoneSmall = g_Gaia.stoneSmall;
 const oMetalLarge = g_Gaia.metalLarge;
-const oWood = "gaia/special_treasure_wood";
+const oWoodTreasure = "gaia/special_treasure_wood";
 
 const aGrass = g_Decoratives.grass;
 const aGrassShort = g_Decoratives.grassShort;
@@ -57,103 +57,30 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clLand = createTileClass();
 
-var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
+var [playerIDs, playerX, playerZ] = placePlayersRadial();
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
+var landHeight = 3;
+var islandRadius = scaleByMapSize(22, 31);
 
-	var radius = scaleByMapSize(22,31);
-	var shoreRadius = 4;
-	var elevation = 3;
+log("Creating player islands...");
+for (let i = 0; i < numPlayers; ++i)
+	createArea(
+		new ChainPlacer(
+			2,
+			Math.floor(scaleByMapSize(5, 10)),
+			Math.floor(scaleByMapSize(25, 60)),
+			1,
+			Math.floor(fractionToTiles(playerX[i])),
+			Math.floor(fractionToTiles(playerZ[i])),
+			0,
+			[Math.floor(islandRadius)]),
+		[
+			new SmoothElevationPainter(ELEVATION_SET, landHeight, 4),
+			paintClass(clPlayer)
+		],
+		null);
 
-	var hillSize = PI * radius * radius;
-	// get the x and z in tiles
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	// create the main island
-	var placer = new ChainPlacer(2, floor(scaleByMapSize(5, 10)), floor(scaleByMapSize(25, 60)), 1, ix, iz, 0, [floor(radius)]);
-	var terrainPainter = new LayeredPainter(
-		[tMainTerrain , tMainTerrain, tMainTerrain],		// terrains
-		[1, shoreRadius]		// widths
-	);
-	var elevationPainter = new SmoothElevationPainter(
-		ELEVATION_SET,			// type
-		elevation,				// elevation
-		shoreRadius				// blend radius
-	);
-	createArea(placer, [terrainPainter, elevationPainter, paintClass(clPlayer)], null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oFruitBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create woods
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 13;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oWood, 14,14, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = floor(hillSize / 100);
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oTree1, num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
-}
-
-log("Creating islands...");
+log("Creating random islands...");
 createAreas(
 	new ChainPlacer(
 		Math.floor(scaleByMapSize(4, 8)),
@@ -174,19 +101,44 @@ paintTerrainBasedOnHeight(2.4, 3.4, 3, tMainTerrain);
 paintTerrainBasedOnHeight(1, 3, 0, tShore);
 paintTerrainBasedOnHeight(-8, 1, 2, tWater);
 
-//creating the city patches for the players
-for (var i = 0; i < numPlayers; i++)
-{
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-	// create the city patch
-	var cityRadius = radius/3;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-}
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// playerTileClass marked above
+	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad,
+		"radius": islandRadius
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"treasures": {
+		"types": [
+			{
+				"template": oWoodTreasure,
+				"count": 14
+			}
+		]
+	},
+	"trees": {
+		"template": oTree1,
+		"radius": islandRadius,
+		"radiusFactor": 1/10
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
 
 createBumps([avoidClasses(clPlayer, 10), stayClasses(clLand, 5)]);
 

@@ -127,97 +127,43 @@ var clBaseResource = createTileClass();
 
 initTerrain(tPrimary);
 
-var playerIDs = sortAllPlayers();
 var playerX = [];
 var playerZ = [];
-var startAngle = -Math.PI / 6;
 
 for (let i = 0; i < numPlayers; ++i)
 {
-	let playerAngle = startAngle + 2/3 * Math.PI *
-		(numPlayers == 1 ? 1 : 2 * i / (numPlayers - 1));
-
-	playerX[i] = 0.5 + 0.35 * Math.cos(playerAngle);
-	playerZ[i] = 0.5 + 0.35 * Math.sin(playerAngle);
+	let angle = Math.PI * (-1/6 + 2/3 * (numPlayers == 1 ? 1 : 2 * i / (numPlayers - 1)));
+	playerX[i] = 0.5 + 0.35 * Math.cos(angle);
+	playerZ[i] = 0.5 + 0.35 * Math.sin(angle);
 }
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	var radius = scaleByMapSize(15,25);
-	var cliffRadius = 2;
-	var elevation = 20;
-
-	// get the x and z in tiles
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// create the city patch
-	var cityRadius = radius/3;
-	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
+placeDefaultPlayerBases({
+	"playerPlacement": [sortAllPlayers(), playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"trees": {
+		"template": oPine,
+		"radiusFactor": 1/30
+	},
+	"decoratives": {
+		"template": aGrassShort
 	}
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oPine, num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
-}
-
+});
 RMS.SetProgress(20);
 
 log("Creating the gulf...");

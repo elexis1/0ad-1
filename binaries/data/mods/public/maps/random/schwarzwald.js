@@ -178,7 +178,7 @@ for (var i=0; i < numPlayers; i++)
 
 	rectangularSmoothToHeight({"x": x,"y": z} , 20, 20, playerHeight, 0.8);
 
-	placeCivDefaultEntities(x, z, i+1, { 'iberWall': false });
+	placeCivDefaultStartingEntities(x, z, i + 1, false);
 
 	// Place base texture
 	var placer = new ClumpPlacer(2*baseRadius*baseRadius, 2/3, 1/8, 10, x, z);

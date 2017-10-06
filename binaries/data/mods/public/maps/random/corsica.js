@@ -292,64 +292,32 @@ for (let island = 0; island < 2; ++island)
 	}
 }
 
-for (var i = 0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	var radius = 23;
-
-	// get the x and z in tiles
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-
-	// let's create a nice platform
-	var placer = new ClumpPlacer(PI*radius*radius, 0.95, 0.3, 10, fx,fz);
-	var PlayerArea = createArea(placer, [paintClass(clPlayer)], null);
-
-	// create the city patch
-	var cityRadius = radius/4;
-	placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.8, 0.3, 10, fx, fz);
-	var painter = new LayeredPainter([tRoadWild,tRoad],[1]);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, getHeight(Math.round(fx), Math.round(fz)),10);
-	createArea(placer, [painter,paintClass(clSettlement),elevationPainter], null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': false });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, 2 * PI);
-	var bbDist = 11;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(eBush, 5,5, 1,2)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	// this makes sure it's created on the same level as the player.
-	var mAngle = randFloat(playerAngle[i] + PI/2,playerAngle[i] + PI/3);
-	var mDist = 18;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(eMetalMine, 1,1, 0,0),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3), new SimpleObject(ePine, 0,1, 3,3)], true, clBaseResource, mX, mZ );
-	createObjectGroup(group, 0);
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/5);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(eStoneMine, 1,1, 0,2),new SimpleObject(aBushB, 1,1, 2,2), new SimpleObject(aBushA, 0,2, 1,3), new SimpleObject(ePine, 0,1, 3,3)], true, clBaseResource, mX, mZ );
-	createObjectGroup(group, 0);
-
-	group = new SimpleGroup([new SimpleObject(ePine, 1,3, 1,4),new SimpleObject(ePalmTall, 0,1, 1,4),new SimpleObject(eFanPalm, 0,1, 0,2)], true, clForest);
-	createObjectGroupsDeprecated(group, 0, [avoidClasses(clBaseResource,3, clSettlement,0), stayClasses(clPlayer,1)], 150, 1000);
-}
-
+placeDefaultPlayerBases({
+	"playerPlacement": [sortAllPlayers(), playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad,
+		"coherence": 0.8,
+		"painters": [
+			paintClass(clSettlement)
+		]
+	},
+	"iberWalls": false,
+	"chicken": {
+	},
+	"berries": {
+		"template": eBush
+	},
+	"mines": {
+		"types": [
+			{ "template": eMetalMine },
+			{ "template": eStoneMine }
+		]
+	},
+	// Sufficient starting trees around, no decoratives
+});
 RMS.SetProgress(40);
 
 log("Creating bumps");
