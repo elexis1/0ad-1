@@ -45,6 +45,7 @@ const numPlayers = getNumPlayers();
 var clPlayer = createTileClass();
 var clHill = createTileClass();
 var clForest = createTileClass();
+// Only used for tributary rivers!
 var clWater = createTileClass();
 var clDirt = createTileClass();
 var clRock = createTileClass();
@@ -52,6 +53,8 @@ var clMetal = createTileClass();
 var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clShallow = createTileClass();
+
+var waterHeight = -4;
 
 var playerIDs = primeSortAllPlayers();
 var playerPos = placePlayersRiver();
@@ -150,7 +153,7 @@ paintRiver({
 	"width": 0.25,
 	"fadeDist": 0.01,
 	"deviation": 0,
-	"waterHeight": -4,
+	"waterHeight": waterHeight,
 	"landHeight": 3,
 	"meanderShort": 20,
 	"meanderLong": 0,
@@ -161,75 +164,18 @@ paintRiver({
 		setHeight(ix, iz, 3.1);
 	}
 });
-
 RMS.SetProgress(20);
 
-log("Creating tributaries...");
-for (let i = 0; i <= randIntInclusive(8, scaleByMapSize(12, 20)); ++i)
-{
-	var cLocation = randFloat(0.05, 0.95);
-
-	var sign = randBool() ? 1 : -1;
-	var tang = sign * PI * randFloat(0.2, 0.8);
-	var cDistance = sign * 0.05;
-	let someRadius = scaleByMapSize(10, 20);
-
-	let point = getTIPIADBON(
-		[fractionToTiles(cLocation), fractionToTiles(0.5 + cDistance)],
-		[fractionToTiles(cLocation), fractionToTiles(0.5 - cDistance)],
-		[-6, -1.5],
-		0.5,
-		4,
-		0.01);
-
-	if (!point)
-		continue;
-
-	if (!createArea(
-		new PathPlacer(
-			Math.floor(point[0]),
-			Math.floor(point[1]),
-			Math.floor(fractionToTiles(0.5 + 0.49 * Math.cos(tang))),
-			Math.floor(fractionToTiles(0.5 + 0.49 * Math.sin(tang))),
-			someRadius,
-			0.4,
-			3 * scaleByMapSize(1, 4),
-			0.1,
-			0.05),
-		[
-			new SmoothElevationPainter(ELEVATION_SET, -4, 4),
-			paintClass(clWater)
-		],
-		avoidClasses(clPlayer, 8, clWater, 3, clShallow, 2)))
-		continue;
-
-	log("Creating small puddles at the map border to ensure players being separated...");
-	createArea(
-		new ClumpPlacer(
-			Math.floor(Math.PI * Math.pow(someRadius / 2, 2)),
-			0.95,
-			0.6,
-			10,
-			fractionToTiles(0.5 + 0.49 * Math.cos(tang)),
-			fractionToTiles(0.5 + 0.49 * Math.sin(tang))),
-		new SmoothElevationPainter(ELEVATION_SET, -3, 3),
-		avoidClasses(clPlayer, 23));
-}
-
-log("Creating shallows in tributaries...");
-for (let z of [0.25, 0.75])
-	passageMaker(
-		Math.round(fractionToTiles(0.2)),
-		Math.round(fractionToTiles(z)),
-		Math.round(fractionToTiles(0.8)),
-		Math.round(fractionToTiles(z)),
-		scaleByMapSize(4, 8),
-		-2,
-		-2,
-		2,
-		clShallow,
-		undefined,
-		-4);
+createTributaries(
+	true,
+	randIntInclusive(9, scaleByMapSize(13, 21)),
+	scaleByMapSize(10, 20),
+	waterHeight,
+	[-6, -1.5],
+	0.2 * Math.PI,
+	clWater,
+	clShallow,
+	avoidClasses(clPlayer, 8, clBaseResource, 4));
 
 paintTerrainBasedOnHeight(-5, 1, 1, tWater);
 paintTerrainBasedOnHeight(1, 3, 1, tShore);
