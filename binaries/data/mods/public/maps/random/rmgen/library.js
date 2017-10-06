@@ -236,27 +236,3 @@ function getPlayerTeam(player)
 
 	return g_MapSettings.PlayerData[player+1].Team;
 }
-
-/**
- * Returns an array of percent numbers indicating the player location on river maps.
- * For example [0.2, 0.2, 0.4, 0.4, 0.6, 0.6, 0.8, 0.8] for a 4v4 or
- * [0.25, 0.33, 0.5, 0.67, 0.75] for a 2v3.
- */
-function placePlayersRiver()
-{
-	let playerPos = [];
-	let numPlayers = getNumPlayers();
-	let numPlayersEven = numPlayers % 2 == 0;
-
-	for (let i = 0; i < numPlayers; ++i)
-	{
-		let currentPlayerEven = i % 2 == 0;
-
-		let offsetDivident = numPlayersEven || currentPlayerEven ? (i + 1) % 2 : 0;
-		let offsetDivisor = numPlayersEven ? 0 : currentPlayerEven ? +1 : -1;
-
-		playerPos[i] = ((i - 1 + offsetDivident) / 2 + 1) / ((numPlayers + offsetDivisor) / 2 + 1);
-	}
-
-	return playerPos;
-}

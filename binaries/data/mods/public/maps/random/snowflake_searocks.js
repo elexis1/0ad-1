@@ -60,7 +60,7 @@ const islandBetweenPlayerAndCenterDist = 0.16;
 const islandBetweenPlayerAndCenterRadius = 0.81;
 const centralIslandRadius = 0.36;
 
-var [playerIDs, playerX, playerZ, unusedIslandAngle, startAngle] = radialPlayerPlacement();
+var [playerIDs, playerX, playerZ, unusedIslandAngle, startAngle] = placePlayersRadial();
 
 var numIslands = 0;
 var isConnected = [];
@@ -217,81 +217,46 @@ else if (mapSize <= 320)
 else
 	createSnowflakeSearockWithCenter(numPlayers < 6 ? "large1" : "large2");
 
-for (var i = 0; i < numPlayers; ++i)
+log("Creating player islands...");
+for (let i = 0; i < numPlayers; ++i)
 {
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
+	IslandX[i] = Math.round(fractionToTiles(playerX[i]));
+	IslandZ[i] = Math.round(fractionToTiles(playerZ[i]));
 
-	// get the x and z in tiles
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	IslandX[i] = ix;
-	IslandZ[i] = iz;
-
-	let hillSize = createIsland(i, 1, clPlayer);
-
-	// create the city patch
-	var cityRadius = playerIslandRadius/3;
-	var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 10;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oFruitBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = playerIslandRadius - 4;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = floor(hillSize / 60);
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = 11;
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oTree1, num, num, 0,4)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, [avoidClasses(clBaseResource,2), stayClasses(clPlayer, 3)]);
-
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, playerIslandRadius);
+	createIsland(i, 1, clPlayer);
 }
+
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	// playerTileClass already marked above
+	"baseResourceClass": clBaseResource,
+	"baseResourceConstraint": stayClasses(clPlayer, 4),
+	"iberWalls": "towers",
+	"cityPatch": {
+		"innerTerrain": tRoadWild,
+		"outerTerrain": tRoad
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oFruitBush
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"trees": {
+		"template": oTree1,
+		"radiusFactor": 1/10,
+		"minDistGroup": 1,
+		"maxDistGroup": 3
+	},
+	"decoratives": {
+		"template": aGrassShort
+	}
+});
 RMS.SetProgress(30);
 
 // Create connectors
@@ -379,7 +344,7 @@ for (let type of types)
 RMS.SetProgress(55);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroupsDeprecated(group, 0,
 	[avoidClasses(clForest, 1, clPlayer, 10, clRock, 10, clHill, 1), stayClasses(clLand, 5)],
 	5*scaleByMapSize(4,16), 100

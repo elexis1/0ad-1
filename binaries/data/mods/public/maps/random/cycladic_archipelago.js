@@ -61,188 +61,113 @@ var clMetal = createTileClass();
 var clFood = createTileClass();
 var clBaseResource = createTileClass();
 
-var playerIDs = sortAllPlayers();
-
 //array holding starting islands based on number of players
 var startingPlaces=[[0],[0,3],[0,2,4],[0,1,3,4],[0,1,2,3,4],[0,1,2,3,4,5]];
 
+var startAngle = randFloat(0, 2 * Math.PI);
 var numIslands = Math.max(6, numPlayers);
 var islandX = [];
 var islandZ = [];
-var islandAngle = [];
 
-//holds all land areas
 var areas = [];
 
-var startAngle = randFloat(0, 2 * PI);
-for (var i=0; i < numIslands; i++)
-{
-	islandAngle[i] = startAngle + i*2*PI/numIslands;
-	islandX[i] = 0.5 + 0.39*cos(islandAngle[i]);
-	islandZ[i] = 0.5 + 0.39*sin(islandAngle[i]);
-}
+var nPlayer = 0;
+var playerX = [];
+var playerZ = [];
 
-for (var i = 0; i < numIslands; ++i)
+function createCycladicArchipelagoIsland(ix, iz, tileClass, radius, coralRadius)
 {
-	var ix = round(fractionToTiles(islandX[i]));
-	var iz = round(fractionToTiles(islandZ[i]));
-
+	log("Creating deep ocean rocks...");
 	createArea(
 		new ClumpPlacer(Math.PI * Math.pow(scaleByMapSize(15, 40) + scaleByMapSize(1, 5), 2), 0.7, 0.1, 10, ix, iz),
 		[
 			new LayeredPainter([tOceanRockDeep, tOceanCoral], [5]),
 			paintClass(clCoral)
 		],
-		avoidClasses(clCoral, 0));
-}
-
-for (var i=0; i < numIslands; i++)
-{
-	log("Creating base Island " + (i + 1) + "...");
-	areas.push(
-		createArea(
-			new ClumpPlacer(
-				Math.PI * Math.pow(scaleByMapSize(15, 40), 2),
-				0.7,
-				0.1,
-				10,
-				Math.round(fractionToTiles(islandX[i])),
-				Math.round(fractionToTiles(islandZ[i]))),
-			[
-				new LayeredPainter(
-					[tOceanCoral, tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
-					[1, 3, 1, 1, 2]
-				),
-				new SmoothElevationPainter(ELEVATION_SET, elevation, 5),
-				paintClass(clPlayer)
-			],
-			avoidClasses(clPlayer,0)));
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 10;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(12, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oPalm, num, num, 0,3)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-}
-RMS.SetProgress(15);
-
-log("Populating islands ...");
-//nPlayer is the player we are on i is the island we are on
-var nPlayer = 0;
-for (let i = 0; i < numIslands; ++i)
-	if (numPlayers >= 6 || i == startingPlaces[numPlayers-1][nPlayer])
-	{
-		var id = playerIDs[nPlayer];
-
-		// Get the x and z in tiles
-		var fx = fractionToTiles(islandX[i]);
-		var fz = fractionToTiles(islandZ[i]);
-		var ix = round(fx);
-		var iz = round(fz);
-
-		// Create city patch
-		var cityRadius = 6;
-		var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-		var painter = new LayeredPainter([tGrass, tCity], [1]);
-		createArea(placer, [painter,paintClass(clCity)], null);
-
-		placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-		++nPlayer;
-	}
-RMS.SetProgress(20);
-
-// get the x and z in tiles
-var nCenter = floor(scaleByMapSize(1,4));
-startAngle = randFloat(0, 2 * PI);
-for (var i = 0; i < nCenter; ++i)
-{
-	var fx = 0.5;
-	var fz = 0.5;
-
-	if (nCenter != 1)
-	{
-		let isangle = startAngle + i * 2 * PI / nCenter + randFloat(-PI/8, PI/8);
-		let dRadius = randFloat(0.1, 0.16);
-		fx = 0.5 + dRadius * cos(isangle);
-		fz = 0.5 + dRadius * sin(isangle);
-	}
-
-	var ix = round(fractionToTiles(fx));
-	var iz = round(fractionToTiles(fz));
-
-	var radius = scaleByMapSize(15,30);
-	var coral= 2;
-
-	var islandSize = PI*radius*radius;
-	var islandBottom=PI*(radius+coral)*(radius+coral);
-
-	// Create base
-	createArea(
-		new ClumpPlacer(islandBottom, 0.7, 0.1, 10, ix, iz),
-		[
-			new LayeredPainter([tOceanRockDeep, tOceanCoral], [5]),
-			paintClass(clCoral)
-		],
 		avoidClasses(clCoral, 0, clPlayer, 0));
 
-	// Create island
+	log("Creating island...");
 	areas.push(
 		createArea(
-			new ClumpPlacer(islandSize, 0.7, 0.1, 10, ix, iz),
+			new ClumpPlacer(Math.PI * Math.pow(scaleByMapSize(15, 40), 2), 0.7, 0.1, 10, ix, iz),
 			[
-				new LayeredPainter(
-					[tOceanCoral,tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
-					[1, 3, 1, 1, 2]),
-				paintClass(clIsland),
-				new SmoothElevationPainter(ELEVATION_SET, 3, 5)
+				new LayeredPainter([tOceanCoral, tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass], [1, 3, 1, 1, 2]),
+				new SmoothElevationPainter(ELEVATION_SET, 3, 5),
+				paintClass(tileClass)
 			],
-			avoidClasses(clPlayer, 0));
+			avoidClasses(clPlayer, 0)));
+}
+
+log("Creating player islands...");
+for (let i = 0; i < numIslands; ++i)
+{
+	let angle = startAngle + i * 2 * Math.PI / numIslands;
+	islandX[i] = 0.5 + 0.39 * Math.cos(angle);
+	islandZ[i] = 0.5 + 0.39 * Math.sin(angle);
+
+	// Determine which player resides on this island
+	if (numPlayers >= 6 || i == startingPlaces[numPlayers - 1][nPlayer])
+	{
+		[playerX[nPlayer], playerZ[nPlayer]] = [islandX[i], islandZ[i]];
+		++nPlayer;
+	}
+
+	createCycladicArchipelagoIsland(
+		Math.round(fractionToTiles(islandX[i])),
+		Math.round(fractionToTiles(islandZ[i])),
+		clPlayer,
+		scaleByMapSize(15, 40),
+		scaleByMapSize(1, 5));
+}
+
+log("Creating central islands...");
+var nCenter = Math.floor(scaleByMapSize(1, 4));
+startAngle = randFloat(0, 2 * PI);
+for (let i = 0; i < nCenter; ++i)
+{
+	let radius = randFloat(0.1, 0.16);
+	let angle = startAngle + Math.PI * (i * 2 / nCenter + randFloat(-1, 1) / 8);
+
+	createCycladicArchipelagoIsland(
+		Math.round(fractionToTiles(0.5 + radius * Math.cos(angle))),
+		Math.round(fractionToTiles(0.5 + radius * Math.sin(angle))),
+		clIsland,
+		scaleByMapSize(15, 30),
+		2);
 }
 RMS.SetProgress(30);
+
+placeDefaultPlayerBases({
+	"playerPlacement": [sortAllPlayers(), playerX, playerZ],
+	// playerTileClass already painted
+	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
+	"cityPatch": {
+		"radius": 18,
+		"innerTerrain": tGrass, // TODO: all of that is inverted, isnt it?
+		"outerTerrain": tCity,
+		"painters": [
+			paintClass(clCity)
+		]
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"trees": {
+		"template": oPalm,
+		"radiusFactor": 1/15
+	}
+	// No decoratives
+});
+RMS.SetProgress(20);
 
 log("Creating bumps...");
 createAreasInAreas(
@@ -268,7 +193,6 @@ createAreasInAreas(
 );
 RMS.SetProgress(38);
 
-// Find all water
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
 		if (getHeight(ix,iz) < 0)
@@ -296,7 +220,7 @@ for (let type of forestTypes)
 RMS.SetProgress(42);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroupsByAreasDeprecated(group, 0,
 	[avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 5, clRock, 6)],
 	scaleByMapSize(4,16), 200, areas

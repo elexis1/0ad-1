@@ -12,6 +12,14 @@ function getAngle(x1, z1, x2, z2)
 	return Math.atan2(z2 - z1, x2 - x1);
 }
 
+function rotateCoordinates(x, z, angle, centerX = 0.5, centerZ = 0.5)
+{
+	return [
+		Math.cos(angle) * (x - centerX) - Math.sin(angle) * (z - centerZ) + centerX,
+		Math.sin(angle) * (x - centerX) + Math.cos(angle) * (z - centerZ) + centerZ
+	];
+}
+
 /**
  * Returns the distance of a point from a line.
  */
