@@ -55,7 +55,7 @@ var clMetal = createTileClass();
 var clFood = createTileClass();
 var clBaseResource = createTileClass();
 
-var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
+var [playerIDs, playerX, playerZ] = placePlayersRadial();
 
 for (var i=0; i < numPlayers; i++)
 {

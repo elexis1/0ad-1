@@ -61,8 +61,6 @@ var clMetal = createTileClass();
 var clFood = createTileClass();
 var clBaseResource = createTileClass();
 
-var playerIDs = sortAllPlayers();
-
 //array holding starting islands based on number of players
 var startingPlaces=[[0],[0,3],[0,2,4],[0,1,3,4],[0,1,2,3,4],[0,1,2,3,4,5]];
 
@@ -125,6 +123,7 @@ for (let i = 0; i < numIslands; ++i)
 
 log("Creating central islands...");
 var nCenter = Math.floor(scaleByMapSize(1, 4));
+startAngle = randFloat(0, 2 * PI);
 for (let i = 0; i < nCenter; ++i)
 {
 	let radius = randFloat(0.1, 0.16);
@@ -137,85 +136,38 @@ for (let i = 0; i < nCenter; ++i)
 		scaleByMapSize(15, 30),
 		2);
 }
+RMS.SetProgress(30);
 
-for (let i = 0; i < numPlayers; ++i)
-{
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// create berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 10;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	var group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 5,5, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// create metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-		mAngle = randFloat(0, TWO_PI);
-
-	var mDist = 12;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(12, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oPalm, num, num, 0,3)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-}
-
-log("Populating islands ...");
-var nPlayer = 0;
-for (let i = 0; i < numIslands; ++i)
-	if (numPlayers >= 6 || i == startingPlaces[numPlayers-1][nPlayer])
-	{
-		var id = playerIDs[nPlayer];
-
-		// Get the x and z in tiles
-		var fx = fractionToTiles(islandX[i]);
-		var fz = fractionToTiles(islandZ[i]);
-		var ix = round(fx);
-		var iz = round(fz);
-
-		// Create city patch
-		var cityRadius = 6;
-		var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-		var painter = new LayeredPainter([tGrass, tCity], [1]);
-		createArea(placer, [painter,paintClass(clCity)], null);
-
-		placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-		++nPlayer;
+placeDefaultPlayerBases({
+	"playerPlacement": [sortAllPlayers(), playerX, playerZ],
+	// playerTileClass is clCity here and painted below
+	"baseResourceClass": clBaseResource,
+	"iberWalls": "towers",
+	"cityPatch": {
+		"radius": 18,
+		"innerTerrain": tGrass, // TODO: all of that is inverted, isnt it?
+		"outerTerrain": tCity,
+		"painters": [
+			paintClass(clCity)
+		]
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": oBerryBush
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"trees": {
+		"template": oPalm,
+		"radiusFactor": 1/15
 	}
+	// No decoratives
+});
 RMS.SetProgress(20);
 
 log("Creating bumps...");
@@ -269,7 +221,7 @@ for (let type of forestTypes)
 RMS.SetProgress(42);
 
 log("Creating stone mines...");
-group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
+var group = new SimpleGroup([new SimpleObject(oStoneSmall, 0,2, 0,4), new SimpleObject(oStoneLarge, 1,1, 0,4)], true, clRock);
 createObjectGroupsByAreasDeprecated(group, 0,
 	[avoidClasses(clWater, 1, clForest, 1, clHill, 1, clPlayer, 5, clRock, 6)],
 	scaleByMapSize(4,16), 200, areas

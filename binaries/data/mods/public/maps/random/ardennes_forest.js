@@ -90,8 +90,6 @@ for (var ix = 0; ix < mapSize; ix++)
 		}
 	}
 
-var [playerIDs, playerX, playerZ] = radialPlayerPlacement(0.3);
-
 function distanceToPlayers(x, z)
 {
 	var r = 10000;
@@ -119,81 +117,47 @@ function playerNearness(x, z)
 
 RMS.SetProgress(10);
 
-for (var i=0; i < numPlayers; i++)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
+var [playerIDs, playerX, playerZ] = placePlayersRadial(0.3);
 
-	// get the x and z in tiles
-	var fx = fractionToTiles(playerX[i]);
-	var fz = fractionToTiles(playerZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	placeCivDefaultEntities(fx, fz, id);
-
-	var citySize = 250;
-
-	var placer = new ClumpPlacer(citySize, 0.95, 0.3, 0.1, ix, iz);
-	createArea(placer, [paintClass(clPlayer)], null);
-
-	// Create the city patch
-	var placer = new ClumpPlacer(citySize * 0.4, 0.6, 0.05, 10, ix, iz);
-	var painter = new TerrainPainter([tCity]);
-	createArea(placer, painter, null);
-
-	// Create starter animals
-	placeDefaultChicken(fx, fz, clBaseResource, undefined, oPig);
-
-	// Create starter berry bushes
-	var bbAngle = randFloat(0, TWO_PI);
-	var bbDist = 12;
-	var bbX = round(fx + bbDist * cos(bbAngle));
-	var bbZ = round(fz + bbDist * sin(bbAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oBerryBush, 3,3, 0,3)],
-		true, clBaseResource, bbX, bbZ
-	);
-	createObjectGroup(group, 0);
-
-	// Create starter metal mine
-	var mAngle = bbAngle;
-	while(abs(mAngle - bbAngle) < PI/3)
-	{
-		mAngle = randFloat(0, TWO_PI);
+placeDefaultPlayerBases({
+	"playerPlacement": [playerIDs, playerX, playerZ],
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tCity,
+		"outerTerrain": tCity,
+		"radiusFactor": 1/30,
+		"smoothness": 0.05,
+		"painters": [
+			paintClass(clPlayer)
+		]
+	},
+	"chicken": {
+		"template": oPig
+	},
+	"berries": {
+		"template": oBerryBush,
+		"minCount": 3,
+		"maxCount": 3
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"trees": {
+		"template": oOak,
+		"radiusFactor": 1/15
 	}
-	var mDist = bbDist + 4;
-	var mX = round(fx + mDist * cos(mAngle));
-	var mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
+	// No decoratives
+});
 
-	// Create starter stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = round(fx + mDist * cos(mAngle));
-	mZ = round(fz + mDist * sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// create starting trees
-	var num = 2;
-	var tAngle = randFloat(-PI/3, 4*PI/3);
-	var tDist = randFloat(11, 13);
-	var tX = round(fx + tDist * cos(tAngle));
-	var tZ = round(fz + tDist * sin(tAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oOak, num, num, 0,5)],
-		false, clBaseResource, tX, tZ
-	);
-	createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-}
+for (let i = 0; i < numPlayers; ++i)
+	createArea(
+		new ClumpPlacer(250, 0.95, 0.3, 0.1, Math.floor(playerX[i]), Math.floor(playerZ[i])),
+		[paintClass(clPlayer)],
+		null);
 
 RMS.SetProgress(30);
 

@@ -141,7 +141,7 @@ for (let i = 0; i < teams.length; ++i)
 			],
 			null);
 
-		placeCivDefaultEntities(fx, fz, teams[i][p], { "iberWall": false });
+		placeCivDefaultStartingEntities(fx, fz, teams[i][p], false);
 	}
 
 	log("Create initial mines for team " + i);
@@ -174,7 +174,18 @@ for (let i = 0; i < teams.length; ++i)
 	{
 		let [playerAngle, fx, fz, ix, iz] = getPlayerTileCoordinates(p, i, fractionX, fractionZ);
 
-		placeDefaultChicken(fx, fz, clBaseResource, [stayClasses(clLand, 5)]);
+		let playerID = teams[i][p];
+
+		placeDefaultChicken({
+			"playerID": playerID,
+			"playerX": tilesToFraction(fx),
+			"playerZ": tilesToFraction(fz),
+			"baseResourceClass": clBaseResource,
+			"baseResourceConstraint": stayClasses(clLand, 5)
+		});
+
+		// TODO: this stronghold placement code with fixed angles for resources works much better than
+		// the rmgen2 code because it doesn't place starting resources between allies
 
 		// create initial berry bushes
 		let bbAngle = randFloat(PI, PI*1.5);
