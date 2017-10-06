@@ -42,6 +42,25 @@ function distanceOfPointFromLine(line_x1, line_y1, line_x2, line_y2, point_x, po
 }
 
 /**
+ * Get pointCount points equidistantly located on a circle.
+ */
+function distributePointsOnCircle(pointCount, startAngle, radius, centerX, centerZ)
+{
+	let x = [];
+	let z = [];
+	let angle = [];
+
+	for (let i = 0; i < pointCount; ++i)
+	{
+		angle[i] = startAngle + 2 * Math.PI * i / pointCount;
+		x[i] = centerX + radius * Math.cos(angle[i]);
+		z[i] = centerZ + radius * Math.sin(angle[i]);
+	}
+
+	return [x, z, angle];
+}
+
+/**
  * Determines wheather two lines with the given width intersect.
  */
 function checkIfIntersect(line1_x1, line1_y1, line1_x2, line1_y2, line2_x1, line2_y1, line2_x2, line2_y2, width)
