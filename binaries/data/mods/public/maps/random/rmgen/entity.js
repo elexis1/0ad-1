@@ -12,22 +12,21 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // TODO: support full position and rotation
-function Entity(templateName, player, x, z, orientation)
+function Entity(templateName, player, x, z, orientation = 0)
 {
-	// Get unique ID
 	this.id = g_Map.getEntityID();
 	this.templateName = templateName;
-	this.player = (player !== undefined ? player : 0);
+	this.player = player || 0;
 
-	// Map units (4.0 map units per 1.0 tile)
 	this.position = {
-		x: x * CELL_SIZE,
-		y: 0,
-		z: z * CELL_SIZE
+		"x": x * CELL_SIZE,
+		"y": 0,
+		"z": z * CELL_SIZE
 	};
+
 	this.rotation = {
-		x: 0,
-		y: (orientation !== undefined ? orientation : 0),
-		z: 0
+		"x": 0,
+		"y": orientation,
+		"z": 0
 	};
 }
