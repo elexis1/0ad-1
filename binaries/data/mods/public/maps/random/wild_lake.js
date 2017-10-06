@@ -655,7 +655,7 @@ RMS.SetProgress(55);
 for (let p = 0; p < playerIDs.length; ++p)
 {
 	let point = startLocations[p];
-	placeCivDefaultEntities(point.x, point.y, playerIDs[p], { "iberWall": g_Map.size > 192 });
+	placeCivDefaultStartingEntities(point.x, point.y, playerIDs[p], g_Map.size > 192 && "walls");
 	placeStartLocationResources(point);
 }
 
@@ -679,7 +679,7 @@ for (let i = 0; i < resourceSpots.length; ++i)
 	{
 		if (mercenaryCamps)
 		{
-			createStartingPlayerEntities(resourceSpots[i].x, resourceSpots[i].y, 0, mercenaryCampGuards[currentBiome()]);
+			placeStartingEntities(resourceSpots[i].x, resourceSpots[i].y, 0, mercenaryCampGuards[currentBiome()]);
 			rectangularSmoothToHeight(resourceSpots[i], 15, 15, g_Map.height[resourceSpots[i].x][resourceSpots[i].y], 0.5);
 			--mercenaryCamps;
 		}
