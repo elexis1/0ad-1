@@ -98,98 +98,7 @@ function createUnknownMap()
 
 	global["unknown" + pickRandom(funcs)]();
 	paintUnknownMapBasedOnHeight();
-
-	if (playerBases)
-		for (var i = 0; i < numPlayers; ++i)
-		{
-			var id = playerIDs[i];
-			log("Creating base for player " + id + "...");
-
-			var radius = scaleByMapSize(17,29);
-			var shoreRadius = 4;
-			var elevation = 3;
-
-			var hillSize = PI * radius * radius;
-			// get the x and z in tiles
-			var fx = fractionToTiles(playerX[i]);
-			var fz = fractionToTiles(playerZ[i]);
-			var ix = round(fx);
-			var iz = round(fz);
-
-			placeCivDefaultEntities(fx, fz, id, { "iberWall": iberianTowers });
-
-			placeDefaultChicken(fx, fz, clBaseResource);
-
-			// create berry bushes
-			var bbAngle = randFloat(0, TWO_PI);
-			var bbDist = 12;
-			var bbX = round(fx + bbDist * cos(bbAngle));
-			var bbZ = round(fz + bbDist * sin(bbAngle));
-			var group = new SimpleGroup(
-				[new SimpleObject(oFruitBush, 5,5, 0,3)],
-				true, clBaseResource, bbX, bbZ
-			);
-			createObjectGroup(group, 0);
-
-			if (treasures)
-			{
-				// create woods
-				var bbAngle = randFloat(0, TWO_PI);
-				var bbDist = 13;
-				var bbX = round(fx + bbDist * cos(bbAngle));
-				var bbZ = round(fz + bbDist * sin(bbAngle));
-				group = new SimpleGroup(
-					[new SimpleObject(oWoodTreasure, 14, 14, 0, 3)],
-					true, clBaseResource, bbX, bbZ
-				);
-				createObjectGroup(group, 0);
-			}
-
-			// create metal mine
-			var mAngle = bbAngle;
-			while(abs(mAngle - bbAngle) < PI/3)
-			{
-				mAngle = randFloat(0, TWO_PI);
-			}
-			var mDist = 12;
-			var mX = round(fx + mDist * cos(mAngle));
-			var mZ = round(fz + mDist * sin(mAngle));
-			group = new SimpleGroup(
-				[new SimpleObject(oMetalLarge, 1,1, 0,0)],
-				true, clBaseResource, mX, mZ
-			);
-			createObjectGroup(group, 0);
-
-			// create stone mines
-			mAngle += randFloat(PI/8, PI/4);
-			mX = round(fx + mDist * cos(mAngle));
-			mZ = round(fz + mDist * sin(mAngle));
-			group = new SimpleGroup(
-				[new SimpleObject(oStoneLarge, 1,1, 0,2)],
-				true, clBaseResource, mX, mZ
-			);
-			createObjectGroup(group, 0);
-			var hillSize = PI * radius * radius;
-			// create starting trees
-			var num = floor(hillSize / 100);
-			var tAngle = randFloat(-PI/3, 4*PI/3);
-			var tDist = randFloat(11, 13);
-			var tX = round(fx + tDist * cos(tAngle));
-			var tZ = round(fz + tDist * sin(tAngle));
-			group = new SimpleGroup(
-				[new SimpleObject(oTree1, num, num, 0,5)],
-				false, clBaseResource, tX, tZ
-			);
-			createObjectGroup(group, 0, avoidClasses(clBaseResource,2));
-
-			placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
-
-			// create the city patch
-			var cityRadius = radius/3;
-			var placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-			var painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-			createArea(placer, [painter, paintClass(clPlayer)], null);
-		}
+	createUnknownPlayerBases();
 }
 
 /**
@@ -200,8 +109,8 @@ function unknownArchipelago()
 	iberianTowers = "towers";
 	treasures = true;
 
-	if (playerBases)
-		[playerIDs, playerX, playerZ] = radialPlayerPlacement();
+	// Overwritten later in case of nomad
+	[playerIDs, playerX, playerZ] = placePlayersRadial();
 
 	let hillSize = diskArea(scaleByMapSize(17, 29));
 
@@ -283,7 +192,7 @@ function unknownContinent()
 {
 	let waterHeight = -5;
 
-	[playerIDs, playerX, playerZ] = radialPlayerPlacement(0.25);
+	[playerIDs, playerX, playerZ] = placePlayersRadial(0.25);
 
 	if (playerBases)
 	{
@@ -380,24 +289,7 @@ function unknownCentralSea()
 		}
 	});
 
-	var playerIDs = primeSortAllPlayers();
-	var playerPos = placePlayersRiver();
-
-	var playerX = [];
-	var playerZ = [];
-
-	if (horizontal)
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerX[i] = playerPos[i];
-			playerZ[i] = 0.2 + 0.6*(i%2);
-		}
-	else
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerX[i] = 0.2 + 0.6*(i%2);
-			playerZ[i] = playerPos[i];
-		}
+	[playerIDs, playerX, playerZ] = placePlayersRiver(horizontal, 0.6, 0.2, 0);
 
 	if (!allowNaval || randBool())
 	{
@@ -435,25 +327,7 @@ function unknownCentralRiver()
 
 	let horizontal = randBool();
 
-	var playerIDs = primeSortAllPlayers();
-	var playerPos = placePlayersRiver();
-
-	var playerX = [];
-	var playerZ = [];
-
-	if (horizontal)
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerZ[i] = 0.25 + 0.5*(i%2);
-			playerX[i] = playerPos[i];
-		}
-	else
-		for (var i = 0; i < numPlayers; i++)
-		{
-			playerZ[i] = playerPos[i];
-			playerX[i] = 0.25 + 0.5*(i%2);
-		}
-
+	[playerIDs, playerX, playerZ] = placePlayersRiver(horizontal, 0.5, 0.25, 0);
 
 	log("Creating the main river...");
 	let [coord1, coord2] = centralRiverCoordinates(horizontal);
@@ -549,7 +423,7 @@ function unknownRiversAndLake()
 	if (playerBases)
 	{
 		let playerAngle;
-		[playerIDs, playerX, playerZ, playerAngle, startAngle] = radialPlayerPlacement();
+		[playerIDs, playerX, playerZ, playerAngle, startAngle] = placePlayersRadial();
 		markUnknownPlayerTerritory(true);
 	}
 
@@ -630,14 +504,7 @@ function unknownEdgeSeas()
 	let horizontal = randBool();
 	if (playerBases)
 	{
-		for (let i = 0; i < numPlayers; i++)
-		{
-			let playerPos1 = (i + 1) / (numPlayers + 1);
-			let playerPos2 = 0.4 + 0.2 * (i % 2);
-
-			playerX[i] = horizontal ? playerPos1 : playerPos2;
-			playerZ[i] = horizontal ? playerPos2 : playerPos1;
-		}
+		[playerIDs, playerX, playerZ] = placePlayersLine(horizontal, 0.5, 0.2);
 		// Don't place the shoreline inside the CC, but possibly into the players territory
 		markUnknownPlayerTerritory(true);
 	}
@@ -711,7 +578,7 @@ function unknownLakes()
 
 	if (playerBases)
 	{
-		[playerIDs, playerX, playerZ] = radialPlayerPlacement();
+		[playerIDs, playerX, playerZ] = placePlayersRadial();
 		markUnknownPlayerTerritory(false);
 	}
 
@@ -737,7 +604,7 @@ function unknownPasses()
 
 	let playerAngle;
 	let startAngle;
-	[playerIDs, playerX, playerZ, playerAngle, startAngle] = radialPlayerPlacement();
+	[playerIDs, playerX, playerZ, playerAngle, startAngle] = placePlayersRadial();
 
 	let mid = Math.round(fractionToTiles(0.5));
 
@@ -815,7 +682,7 @@ function unknownLowlands()
 
 	let playerAngle;
 	let startAngle;
-	[playerIDs, playerX, playerZ, playerAngle, startAngle] = radialPlayerPlacement();
+	[playerIDs, playerX, playerZ, playerAngle, startAngle] = placePlayersRadial();
 
 	log("Creating some round player territory enclosed by the mountain...");
 	let split = 1;
@@ -873,7 +740,7 @@ function unknownLowlands()
 function unknownMainland()
 {
 	initHeight(3);
-	[playerIDs, playerX, playerZ] = radialPlayerPlacement();
+	[playerIDs, playerX, playerZ] = placePlayersRadial();
 }
 
 function centralRiverCoordinates(horizontal)
@@ -1195,4 +1062,49 @@ function createUnknownObjects()
 	setSkySet(pickRandom(["cirrus", "cumulus", "sunny", "sunny 1", "mountainous", "stratus"]));
 	setSunRotation(randFloat(0, 2 * Math.PI));
 	setSunElevation(Math.PI * randFloat(1/5, 1/3));
+}
+
+function createUnknownPlayerBases()
+{
+	if (!playerBases)
+		return;
+
+	placeDefaultPlayerBases({
+		"playerPlacement": [playerIDs, playerX, playerZ],
+		"iberianTowers": iberianTowers,
+		"baseResourceClass": clBaseResource,
+		"cityPatch": {
+			"innerTerrain": tRoadWild,
+			"outerTerrain": tRoad,
+			"painters": [
+				paintClass(clPlayer)
+			]
+		},
+		"chicken": {
+		},
+		"berries": {
+			"template": oFruitBush
+		},
+		"mines": {
+			"types": [
+				{ "template": oMetalLarge },
+				{ "template": oStoneLarge }
+			]
+		},
+		"treasures": {
+			"types": [
+				{
+					"template": oWoodTreasure,
+					"count": treasures ? 14 : 0
+				}
+			]
+		},
+		"trees": {
+			"template": oTree1,
+			"radiusFactor":1/10
+		},
+		"decoratives": {
+			"template": aGrassShort
+		}
+	});
 }

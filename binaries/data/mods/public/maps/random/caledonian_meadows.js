@@ -434,7 +434,7 @@ RMS.SetProgress(80);
 for (let p = 0; p < playerIDs.length; ++p)
 {
 	let point = startLocations[p];
-	placeCivDefaultEntities(point.x, point.y, playerIDs[p], { "iberWall": true });
+	placeCivDefaultStartingEntities(point.x, point.y, playerIDs[p], "walls");
 	placeStartLocationResources(startLocations[p]);
 }
 

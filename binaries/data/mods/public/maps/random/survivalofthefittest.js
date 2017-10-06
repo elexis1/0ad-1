@@ -70,54 +70,59 @@ createArea(
 	null);
 RMS.SetProgress(10);
 
-var [playerIDs, playerX, playerZ, playerAngle, startAngle] = radialPlayerPlacement(0.3);
+var [playerIDs, playerX, playerZ, playerAngle, startAngle] = placePlayersRadial(0.3);
 
-var attackerX = [];
-var attackerZ = [];
-
+log("Creating player bases...")
 for (let  i = 0; i < numPlayers; ++i)
 {
-	attackerX[i] = 0.5 + 0.45*cos(playerAngle[i]);
-	attackerZ[i] = 0.5 + 0.45*sin(playerAngle[i]);
-}
+	// Place the attacker spawning trigger point
+	let attackerX = 0.5 + 0.45 * Math.cos(playerAngle[i]);
+	let attackerZ = 0.5 + 0.45 * Math.sin(playerAngle[i]);
 
-for (let i = 0; i < numPlayers; ++i)
-{
-	var id = playerIDs[i];
-	log("Creating base for player " + id + "...");
+	let ax = Math.round(fractionToTiles(attackerX));
+	let az = Math.round(fractionToTiles(attackerZ));
 
-	var radius = scaleByMapSize(15, 25);
-
-	// place the attacker spawning trigger point
-	var ax = round(fractionToTiles(attackerX[i]));
-	var az = round(fractionToTiles(attackerZ[i]));
-	placeObject(ax, az, triggerPointAttacker, id, PI);
-	placeObject(ax, az, aWaypointFlag, 0, PI/2);
+	placeObject(ax, az, triggerPointAttacker, playerIDs[i], Math.PI);
+	placeObject(ax, az, aWaypointFlag, 0, Math.PI / 2);
 	addToClass(ax, az, clPlayer);
-	addToClass(round(fractionToTiles((attackerX[i] + playerX[i]) / 2)), round(fractionToTiles((attackerZ[i] + playerZ[i]) / 2)), clPlayer);
+	addToClass(
+		Math.round(fractionToTiles((attackerX + playerX[i]) / 2)),
+		Math.round(fractionToTiles((attackerZ + playerZ[i]) / 2)),
+		clPlayer);
 
-	// get the x and z in tiles
 	let fx = fractionToTiles(playerX[i]);
 	let fz = fractionToTiles(playerZ[i]);
-	let ix = round(fx);
-	let iz = round(fz);
+	let ix = Math.round(fx);
+	let iz = Math.round(fz);
 
+	// Place civic center
+	placeObject(fx, fz, oCivicCenter, playerIDs[i], BUILDING_ORIENTATION);
 	addCivicCenterAreaToClass(ix, iz, clPlayer);
 
-	// Place default civ starting entities
+	// Place some melee infantry
 	var uDist = 6;
 	var uSpace = 2;
-	placeObject(fx, fz, oCivicCenter, id, BUILDING_ORIENTATION);
 	var uAngle = BUILDING_ORIENTATION - PI / 2;
 	var count = 4;
-	for (let numberofentities = 0; numberofentities < count; ++numberofentities)
+	for (let i = 0; i < count; ++i)
 	{
-		var ux = fx + uDist * cos(uAngle) + numberofentities * uSpace * cos(uAngle + PI/2) - (0.75 * uSpace * floor(count / 2) * cos(uAngle + PI/2));
-		var uz = fz + uDist * sin(uAngle) + numberofentities * uSpace * sin(uAngle + PI/2) - (0.75 * uSpace * floor(count / 2) * sin(uAngle + PI/2));
-		placeObject(ux, uz, oCitizenInfantry, id, uAngle);
+		let angle = uAngle + Math.PI / 2;
+		let pos = i - 0.75 * Math.floor(count / 2)
+
+		placeObject(
+			fx + uDist * Math.cos(uAngle) + pos * uSpace * Math.cos(angle),
+			fz + uDist * Math.sin(uAngle) + pos * uSpace * Math.sin(angle),
+			oCitizenInfantry,
+			playerIDs[i],
+			uAngle);
 	}
 
-	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
+	placeDefaultDecoratives({
+		"playerX": playerX[i],
+		"playerZ": playerZ[i],
+		"template": aGrassShort,
+		"baseResourceClass": clBaseResource
+	});
 
 	var tang = startAngle + (i + 0.5) * 2 * PI / numPlayers;
 
@@ -140,10 +145,11 @@ for (let i = 0; i < numPlayers; ++i)
 		],
 		null);
 
+	// Place treasure seeker woman
 	var femaleLocation = getTIPIADBON([ix, iz], [mapSize / 2, mapSize / 2], [-3 , 3.5], 1, 3);
 	if (femaleLocation !== undefined)
 	{
-		placeObject(femaleLocation[0], femaleLocation[1], oTreasureSeeker, id, playerAngle[i] + PI);
+		placeObject(femaleLocation[0], femaleLocation[1], oTreasureSeeker, playerIDs[i], playerAngle[i] + Math.PI);
 		addToClass(floor(femaleLocation[0]), floor(femaleLocation[1]), clWomen);
 	}
 }

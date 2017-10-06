@@ -311,100 +311,40 @@ if (gallicCC)
 }
 RMS.SetProgress(10);
 
-var playerIDs = primeSortAllPlayers();
-var playerPos = placePlayersRiver();
-
-var playerX = [];
-var playerZ = [];
-
-for (let i = 0; i < numPlayers; ++i)
-{
-	playerZ[i] = playerPos[i];
-	playerX[i] = 0.2 + 0.6 * (i % 2);
-}
-
-for (let i = 0; i < numPlayers; ++i)
-{
-	let id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	let radius = scaleByMapSize(15, 25);
-
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-	let ix = Math.floor(fx);
-	let iz = Math.floor(fz);
-	addToClass(ix, iz, clPlayer);
-
-	// Create the city patch
-	let cityRadius = radius / 3;
-	createArea(
-		new ClumpPlacer(PI * cityRadius * cityRadius, 0.6, 0.3, 10, ix, iz),
-		new LayeredPainter([tShore, tRoad], [1]),
-		null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': false });
-
-	placeDefaultChicken(fx, fz, clBaseResource);
-
-	// Create berry bushes
-	let angle = randFloat(0, 2 * PI);
-	let dist = 10;
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oBerryBush, 5, 5, 0, 3)],
-			true,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))
-		),
-		0);
-
-	// Create metal mine
-	dist = scaleByMapSize(9, 14);
-	angle += randFloat(PI/4, PI/3);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oMetalLarge, 1, 1, 0, 0)],
-			true,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))
-		),
-		0);
-
-	// Create stone mines
-	angle += randFloat(PI/3, PI/2);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oStoneLarge, 1, 1, 0, 2)],
-			true,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))
-		),
-		0);
-
-	// Create starting trees
-	let num = 20;
-	angle += randFloat(-PI/3, PI * 4/3);
-	dist = randFloat(10, 14);
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oOak, num, num, 0, 5)],
-			false,
-			clBaseResource,
-			Math.round(fx + dist * Math.cos(angle)),
-			Math.round(fz + dist * Math.sin(angle))
-		),
-		0,
-		avoidClasses(clBaseResource, 4));
-
-	placeDefaultDecoratives(fx, fz, aBush1, clBaseResource, radius);
-}
+placeDefaultPlayerBases({
+	"playerPlacement": placePlayersRiver(false, 0.6, 0),
+	"iberWalls": false,
+	"playerTileClass": clPlayer,
+	"baseResourceClass": clBaseResource,
+	"cityPatch": {
+		"innerTerrain": tShore,
+		"outerTerrain": tRoad,
+		"radiusFactor": Math.sqrt(1/3)
+	},
+	"chicken": {
+	},
+	"berries": {
+		"template": aBush1
+	},
+	"mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		],
+		"dist": scaleByMapSize(9, 14)
+	},
+	"trees": {
+		"template": oOak,
+		"radiusFactor": 1/10,
+		"minDist": 10,
+		"maxDist": 14
+	},
+	"decoratives": {
+		"template": aBush1
+	}
+});
 RMS.SetProgress(20);
 
-log("Creating the river");
 paintRiver({
 	"horizontal": false,
 	"parallel": true,
