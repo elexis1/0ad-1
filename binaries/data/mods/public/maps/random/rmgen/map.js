@@ -404,9 +404,9 @@ function areaToFraction(area)
 	return area / getMapArea();
 }
 
-function scaleByMapSize(min, max)
+function scaleByMapSize(min, max, minMapSize = 128, maxMapSize = 512)
 {
-	return min + (max - min) * (g_Map.size - MIN_MAP_SIZE) / (MAX_MAP_SIZE - MIN_MAP_SIZE);
+	return min + (max - min) * (g_Map.size - minMapSize) / (maxMapSize - minMapSize);
 }
 
 function getHeight(x, z)
