@@ -274,7 +274,7 @@ setFogFactor(0.25);
 setFogColor(0.8, 0.7, 0.5);
 
 setSkySet("sunny");
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 setSunElevation(randFloat(PI/ 4, PI / 2));
 
 setWaterColor(0.223, 0.247, 0.2); // dark majestic blue

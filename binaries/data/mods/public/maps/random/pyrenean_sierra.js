@@ -86,7 +86,7 @@ const baseHeight = -6;
 setWaterHeight(8);
 
 // let's choose the angle of the pyreneans
-var MoutainAngle = randFloat(0,TWO_PI);
+var MoutainAngle = randFloat(0, 2 * Math.PI);
 var lololo = randFloat(-PI/12,-PI/12);	// used by oceans
 
 var baseHeights = [];
@@ -495,7 +495,7 @@ group = new SimpleGroup( [new SimpleObject(oFish, 2,3, 0,2)], true, clFood );
 createObjectGroupsDeprecated(group, 0, [avoidClasses(clFood, 15), stayClasses(clWater, 6)], 20 * numPlayers, 60 );
 
 setSunElevation(randFloat(PI/5, PI / 3));
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 
 setSkySet("cumulus");
 setSunColor(0.73,0.73,0.65);

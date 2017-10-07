@@ -295,7 +295,7 @@ createStragglerTrees(
 	clForest);
 
 setSkySet(pickRandom(["cirrus", "cumulus", "sunny"]));
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 setWaterColor(0.0, 0.047, 0.286);				// dark majestic blue
 setWaterTint(0.471, 0.776, 0.863);				// light blue
