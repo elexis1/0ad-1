@@ -269,7 +269,7 @@ for (let type of types)
 
 setSkySet("sunny");
 setSunElevation(PI / 8);
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 setSunColor(0.746, 0.718, 0.539);
 setWaterColor(0.292, 0.347, 0.691);
 setWaterTint(0.550, 0.543, 0.437);

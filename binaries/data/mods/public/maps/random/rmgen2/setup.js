@@ -333,7 +333,7 @@ function placeRandom(playerIDs)
 
 	for (let i = 0; i < getNumPlayers(); ++i)
 	{
-		var playerAngle = randFloat(0, TWO_PI);
+		var playerAngle = randFloat(0, 2 * Math.PI);
 
 		// Distance from the center of the map in percent
 		// Mapsize being used as a diameter, so 0.5 is the edge of the map
@@ -515,7 +515,7 @@ function randomPlayerPlacementAt(teamsArray, singleBases, strongholdBases, heigh
 
 			for (let p = 0; p < team.length; ++p)
 			{
-				let angle = startAngle + (p + 1) * TWO_PI / team.length;
+				let angle = startAngle + (p + 1) * 2 * Math.PI / team.length;
 
 				players[p] = {
 					"id": team[p].id,

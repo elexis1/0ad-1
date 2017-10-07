@@ -214,9 +214,9 @@ function placeMine(point, centerEntity,
 	]
 )
 {
-	placeObject(point.x, point.y, centerEntity, 0, randFloat(0, TWO_PI));
+	placeObject(point.x, point.y, centerEntity, 0, randFloat(0, 2 * Math.PI));
 	let quantity = randIntInclusive(11, 23);
-	let dAngle = TWO_PI / quantity;
+	let dAngle = 2 * Math.PI / quantity;
 	for (let i = 0; i < quantity; ++i)
 	{
 		let angle = dAngle * randFloat(i, i + 1);
@@ -242,7 +242,7 @@ function placeGrove(point,
 {
 	placeObject(point.x, point.y, pickRandom(["structures/gaul_outpost", "gaia/flora_tree_oak_new"]), 0, randFloat(0, 2 * PI));
 	let quantity = randIntInclusive(20, 30);
-	let dAngle = TWO_PI / quantity;
+	let dAngle = 2 * Math.PI / quantity;
 	for (let i = 0; i < quantity; ++i)
 	{
 		let angle = dAngle * randFloat(i, i + 1);
@@ -304,9 +304,9 @@ function placeCamp(point,
 	]
 )
 {
-	placeObject(point.x, point.y, centerEntity, 0, randFloat(0, TWO_PI));
+	placeObject(point.x, point.y, centerEntity, 0, randFloat(0, 2 * Math.PI));
 	let quantity = randIntInclusive(5, 11);
-	let dAngle = TWO_PI / quantity;
+	let dAngle = 2 * Math.PI / quantity;
 	for (let i = 0; i < quantity; ++i)
 	{
 		let angle = dAngle * randFloat(i, i + 1);
@@ -334,9 +334,9 @@ function placeStartLocationResources(
 		return averageDistToCC + randFloat(-dAverageDistToCC, dAverageDistToCC);
 	}
 
-	let currentAngle = randFloat(0, TWO_PI);
+	let currentAngle = randFloat(0, 2 * Math.PI);
 	// Stone
-	let dAngle = TWO_PI * 2 / 9;
+	let dAngle = 2 * Math.PI * 2 / 9;
 	let angle = currentAngle + randFloat(dAngle / 4, 3 * dAngle / 4);
 	placeMine({ "x": point.x + averageDistToCC * Math.cos(angle), "y": point.y + averageDistToCC * Math.sin(angle) }, g_Gaia.stoneLarge);
 
@@ -344,7 +344,7 @@ function placeStartLocationResources(
 
 	// Wood
 	let quantity = 80;
-	dAngle = TWO_PI / quantity / 3;
+	dAngle = 2 * Math.PI / quantity / 3;
 	for (let i = 0; i < quantity; ++i)
 	{
 		angle = currentAngle + randFloat(0, dAngle);
@@ -360,14 +360,14 @@ function placeStartLocationResources(
 	}
 
 	// Metal
-	dAngle = TWO_PI * 2 / 9;
+	dAngle = 2 * Math.PI * 2 / 9;
 	angle = currentAngle + randFloat(dAngle / 4, 3 * dAngle / 4);
 	placeMine({ "x": point.x + averageDistToCC * Math.cos(angle), "y": point.y + averageDistToCC * Math.sin(angle) }, g_Gaia.metalLarge);
 	currentAngle += dAngle;
 
 	// Berries and domestic animals
 	quantity = 15;
-	dAngle = TWO_PI / quantity * 2 / 9;
+	dAngle = 2 * Math.PI / quantity * 2 / 9;
 	for (let i = 0; i < quantity; ++i)
 	{
 		angle = currentAngle + randFloat(0, dAngle);

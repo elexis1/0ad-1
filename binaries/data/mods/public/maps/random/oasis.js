@@ -179,7 +179,7 @@ RMS.SetProgress(50);
 if (mapSize > 150 && randBool())
 {
 	log("Creating path though the oasis...");
-	var pAngle = randFloat(0, TWO_PI);
+	var pAngle = randFloat(0, 2 * Math.PI);
 	var px = round(fx) + round(fractionToTiles(0.13 * cos(pAngle)));
 	var py = round(fz) + round(fractionToTiles(0.13 * sin(pAngle)));
 	var pex = round(fx) + round(fractionToTiles(0.13 * -cos(pAngle)));
@@ -245,7 +245,7 @@ RMS.SetProgress(85);
 log("Creating Oasis Animals...");
 for (var p = 0; p < scaleByMapSize(5,30); p++)
 {
-	var aAngle = randFloat(0, TWO_PI);
+	var aAngle = randFloat(0, 2 * Math.PI);
 	var aDist = fractionToTiles(0.11);
 	var animX = round(fx + aDist * cos(aAngle));
 	var animY = round(fz + aDist * sin(aAngle));

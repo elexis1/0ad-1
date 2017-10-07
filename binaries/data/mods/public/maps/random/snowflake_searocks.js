@@ -486,7 +486,7 @@ createObjectGroupsDeprecated(group, 0,
 );
 
 setSkySet(pickRandom(["cirrus", "cumulus", "sunny"]));
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 
 ExportMap();

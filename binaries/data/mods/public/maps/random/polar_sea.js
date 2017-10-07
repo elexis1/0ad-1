@@ -277,7 +277,7 @@ else
 	setSunElevation(randFloat(PI/9, PI/7));
 }
 
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 
 setWaterColor(0.3, 0.3, 0.4);
 setWaterTint(0.75, 0.75, 0.75);

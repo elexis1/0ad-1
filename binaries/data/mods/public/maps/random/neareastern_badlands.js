@@ -142,7 +142,7 @@ var halfSize = mapSize/2;
 for (var i = 0; i < num; ++i)
 {
 	var r = 0;
-	var angle = TWO_PI / num * i;
+	var angle = 2 * Math.PI / num * i;
 	do {
 		// Work outward until constraint met
 		var gx = round(halfSize + r * cos(angle));
@@ -168,7 +168,7 @@ num = round(PI * oRadius / 16);
 for (var i = 0; i < num; ++i)
 {
 	var r = 0;
-	var angle = TWO_PI / num * i;
+	var angle = 2 * Math.PI / num * i;
 	do {
 		// Work outward until constraint met
 		var gx = round(halfSize + r * cos(angle));

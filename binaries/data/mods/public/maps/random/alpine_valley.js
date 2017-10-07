@@ -117,18 +117,18 @@ var edgesConncetedToPoints = [];
 //we want the points near the start locations be the first ones. hence we use two "for" blocks
 for (var i = 0; i < numPlayers; ++i)
 {
-	playerAngle[i] = startAngle + (i+0.5)*TWO_PI/numPlayers;
+	playerAngle[i] = startAngle + (i + 0.5) *  2 * Math.PI / numPlayers;
 	points.push([round(fractionToTiles(0.5 + 0.49 * cos(playerAngle[i]))), round(fractionToTiles(0.5 + 0.49 * sin(playerAngle[i])))]);
 }
 
 //the order of the other points doesn't matter
 for (var i = 0; i < numPlayers; ++i)
 {
-	playerAngle[i] = startAngle + (i+0.7)*TWO_PI/numPlayers;
-	points.push([round(fractionToTiles(0.5 + 0.34 * cos(playerAngle[i]))), round(fractionToTiles(0.5 + 0.34 * sin(playerAngle[i])))]);
-	playerAngle[i] = startAngle + (i+0.3)*TWO_PI/numPlayers;
-	points.push([round(fractionToTiles(0.5 + 0.34 * cos(playerAngle[i]))), round(fractionToTiles(0.5 + 0.34 * sin(playerAngle[i])))]);
-	playerAngle[i] = startAngle + (i+0.5)*TWO_PI/numPlayers;
+	playerAngle[i] = startAngle + (i + 0.7) * 2 * Math.PI / numPlayers;
+	points.push([round(fractionToTiles(0.5 + 0.34 * Math.cos(playerAngle[i]))), round(fractionToTiles(0.5 + 0.34 * sin(playerAngle[i])))]);
+	playerAngle[i] = startAngle + (i + 0.3) * 2 * Math.PI / numPlayers;
+	points.push([round(fractionToTiles(0.5 + 0.34 * Math.cos(playerAngle[i]))), round(fractionToTiles(0.5 + 0.34 * sin(playerAngle[i])))]);
+	playerAngle[i] = startAngle + (i + 0.5) * 2 * Math.PI / numPlayers;
 	points.push([round(fractionToTiles(0.5 + 0.18 * cos(playerAngle[i]))), round(fractionToTiles(0.5 + 0.18 * sin(playerAngle[i])))]);
 }
 
@@ -497,7 +497,7 @@ createObjectGroupsDeprecated(group, 0,
 );
 
 setSkySet(pickRandom(["cirrus", "cumulus", "sunny"]));
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 setSunElevation(randFloat(PI/ 5, PI / 3));
 setWaterColor(0.0, 0.047, 0.286);				// dark majestic blue
 setWaterTint(0.471, 0.776, 0.863);				// light blue

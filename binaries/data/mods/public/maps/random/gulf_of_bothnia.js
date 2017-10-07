@@ -310,7 +310,7 @@ createStragglerTrees(
 	clForest);
 
 setSkySet("stormy");
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 setSunElevation(randFloat(PI/ 6, PI / 4));
 
 setWaterColor(0.035,0.098,0.314);
