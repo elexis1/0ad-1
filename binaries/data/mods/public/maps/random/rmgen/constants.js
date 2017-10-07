@@ -5,7 +5,6 @@ const sqrt = Math.sqrt;
 const min = Math.min;
 const max = Math.max;
 const floor = Math.floor;
-const ceil = Math.ceil;
 const round = Math.round;
 const abs = Math.abs;
 

@@ -583,9 +583,9 @@ function placeLinearWall(startX, startY, targetX, targetY, wallPart, style, play
 		wallPartLength += wallStyles[style][wallPart[elementIndex]].width;
 	var numParts = 0;
 	if (endWithFirst)
-		numParts = ceil((totalLength - wallStyles[style][wallPart[0]].width) / wallPartLength);
+		numParts = Math.ceil((totalLength - wallStyles[style][wallPart[0]].width) / wallPartLength);
 	else
-		numParts = ceil(totalLength / wallPartLength);
+		numParts = Math.ceil(totalLength / wallPartLength);
 	// Setup scale factor
 	var scaleFactor = 1;
 	if (endWithFirst)
@@ -685,9 +685,9 @@ function placeCircularWall(centerX, centerY, radius, wallPart, style, playerId, 
 		wallPartLength += wallStyles[style][wallPart[elementIndex]].width;
 	var numParts = 0;
 	if (endWithFirst)
-		numParts = ceil((totalLength - wallStyles[style][wallPart[0]].width) / wallPartLength);
+		numParts = Math.ceil((totalLength - wallStyles[style][wallPart[0]].width) / wallPartLength);
 	else
-		numParts = ceil(totalLength / wallPartLength);
+		numParts = Math.ceil(totalLength / wallPartLength);
 
 	// Setup scale factor
 	var scaleFactor = 1;
@@ -898,7 +898,7 @@ function placeIrregularPolygonalWall(centerX, centerY, radius, cornerWallElement
 		var bestWallLength = 99999999;
 		// NOTE: This is not exactly like the length the wall will be in the end. Has to be tweaked...
 		var wallLength = getDistance(corners[i][0], corners[i][1], corners[(i+1)%numCorners][0], corners[(i+1)%numCorners][1]);
-		var numWallParts = ceil(wallLength/maxWallPartLength);
+		var numWallParts = Math.ceil(wallLength / maxWallPartLength);
 		for (var partIndex = 0; partIndex < wallPartsAssortment.length; partIndex++)
 		{
 			var linearWallLength = numWallParts*wallPartLengths[partIndex];
