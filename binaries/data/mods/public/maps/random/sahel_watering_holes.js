@@ -85,7 +85,7 @@ RMS.SetProgress(20);
 log ("Creating rivers...");
 for (var m = 0; m < numPlayers; m++)
 {
-	var tang = startAngle + (m + 0.5) * TWO_PI / numPlayers;
+	var tang = startAngle + (m + 0.5) * 2 * Math.PI / numPlayers;
 
 	createArea(
 		new ClumpPlacer(
@@ -417,7 +417,7 @@ createObjectGroupsDeprecated(group, 0,
 
 setSkySet("sunny");
 
-setSunRotation(randFloat(0, TWO_PI));
+setSunRotation(randFloat(0, 2 * Math.PI));
 setSunElevation(randFloat(PI/ 5, PI / 4));
 setWaterColor(0.478,0.42,0.384);				// greyish
 setWaterTint(0.58,0.22,0.067);				// reddish

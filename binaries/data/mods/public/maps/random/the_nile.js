@@ -137,7 +137,7 @@ paintRiver({
 		if (plantID % plantFrequency == 0)
 		{
 			plantID = 0;
-			placeObject(ix, iz, aPlants, 0, randFloat(0, TWO_PI));
+			placeObject(ix, iz, aPlants, 0, randFloat(0, 2 * Math.PI));
 		}
 		++plantID;
 	},
