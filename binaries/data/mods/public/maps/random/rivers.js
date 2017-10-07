@@ -168,7 +168,6 @@ for (let q = 0; q < numPlayers + 1; ++q)
 }
 
 log ("Creating rivers...");
-//checking all the tiles
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
 		for (var m = 0; m < numPlayers+1; m++)
@@ -182,16 +181,16 @@ for (var ix = 0; ix < mapSize; ix++)
 					//the coordinations for the point it's image is in.
 					var a = PZ[m]-PZ[n];
 					var b = PX[n]-PX[m];
-					var c = (PZ[m]*(PX[m]-PX[n]))-(PX[m]*(PZ[m]-PZ[n]));
-					var dis = abs(a*ix + b*iz + c)/sqrt(a*a + b*b);
-					if (abs(a*ix + b*iz + c) != 0)
-						var alamat = (a*ix + b*iz + c)/abs(a*ix + b*iz + c);
-					else
-						var alamat = 1;
+					var c = PZ[m] * (PX[m] - PX[n]) - PX[m] * (PZ[m] - PZ[n]);
+					let d = a * ix + b * iz + c;
+					let distance = Math.pow(a, 2) + Math.pow(b, 2);
+					let	dis = Math.abs(d) / Math.sqrt(distance);
 
-					var k = (a*ix + b*iz + c)/(a*a + b*b);
-					var y = iz-(b*k);
-					var xm = ix-(a*k);
+					let alamat = d == 0 ? 1 : Math.sign(d);
+					let k = d / distance;
+					let y = iz - b * k;
+					let xm = ix - a * k;
+
 					//this calculates which "part" of the river are we in now.
 					//used for the function rndRiver.
 					var sit = sqrt((PZ[n]-y)*(PZ[n]-y)+(PX[n]-xm)*(PX[n]-xm))/sqrt((PZ[n]-PZ[m])*(PZ[n]-PZ[m])+(PX[n]-PX[m])*(PX[n]-PX[m]));
