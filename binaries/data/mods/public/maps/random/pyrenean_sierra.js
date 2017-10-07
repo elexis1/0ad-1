@@ -354,7 +354,7 @@ for (var i = 0; i < NumOfIterations; i++)
 		var Formula = (1/(1 + Math.exp(FormX)));
 
 		// If we're too far from the border, we flatten
-		Formula *= (0.2 - Math.max(0,abs(0.5 - position) - 0.3)) * 5;
+		Formula *= 1 - 5 * Math.max(0, Math.abs(0.5 - position) - 0.3);
 
 		var randHeight = randFloat(-9,9) * Formula;
 

@@ -266,12 +266,13 @@ for (var ix = 0; ix < mapSize; ix++)
 			for (var n = 0; n < numIslands; n++)
 				if (isConnected[m][n] == 1)
 				{
-					var a = IslandZ[m]-IslandZ[n];
-					var b = IslandX[n]-IslandX[m];
-					var c = (IslandZ[m]*(IslandX[m]-IslandX[n]))-(IslandX[m]*(IslandZ[m]-IslandZ[n]));
-					var dis = abs(a*ix + b*iz + c)/sqrt(a*a + b*b);
-					var k = (a*ix + b*iz + c)/(a*a + b*b);
-					var y = iz-(b*k);
+					let a = IslandZ[m] - IslandZ[n];
+					let b = IslandX[n] - IslandX[m];
+					let c = IslandZ[m] * (IslandX[m] - IslandX[n]) - IslandX[m] * a;
+					let distance = Math.pow(a, 2) + Math.pow(b, 2);
+					let dis = Math.abs(a * ix + b * iz + c) / Math.sqrt(distance);
+					let k = (a * ix + b * iz + c) / distance;
+					let y = iz - b * k;
 
 					if (dis < 5 && y <= Math.max(IslandZ[m], IslandZ[n]) && y >= Math.min(IslandZ[m], IslandZ[n]))
 					{
