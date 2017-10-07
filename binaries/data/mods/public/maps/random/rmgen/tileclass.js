@@ -181,6 +181,13 @@ function addToClass(x, z, id)
 		tileClass.add(x, z);
 }
 
+function paintTileClassBasedOnHeight(minHeight, maxHeight, mode, tileclass)
+{
+	modifyTilesBasedOnHeight(minHeight, maxHeight, mode, (qx, qz) => {
+		addToClass(qx, qz, tileclass);
+	});
+}
+
 /**
  * Remove point from the given class by id
  */
@@ -190,6 +197,13 @@ function removeFromClass(x, z, id)
 
 	if (tileClass !== null)
 		tileClass.remove(x, z);
+}
+
+function unPaintTileClassBasedOnHeight(minHeight, maxHeight, mode, tileclass)
+{
+	modifyTilesBasedOnHeight(minHeight, maxHeight, mode, (qx, qz) => {
+		removeFromClass(qx, qz, tileclass);
+	});
 }
 
 /**
