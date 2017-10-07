@@ -141,7 +141,7 @@ for (var c = 0 ; c < numPlayers ; c++)
 {
 	//creating other points of the river and making them
 	// join the point in the center of the map
-	riverAngle[c] = startAngle + (((2 * c + 1) / (numPlayers * 2)) * TWO_PI );
+	riverAngle[c] = startAngle + (((2 * c + 1) / (numPlayers * 2)) * 2 * Math.PI );
 	PX[c] = round(fractionToTiles(0.5 + 0.5 * cos(riverAngle[c])));
 	PZ[c] = round(fractionToTiles(0.5 + 0.5 * sin(riverAngle[c])));
 	//log (playerIDs[c], ",,," ,playerIDs[0]);

@@ -499,6 +499,7 @@ function createSunkenTerrain()
 
 		log("Creating path from player to expansion...");
 		let expansionCoords = getCoords(expDist, i, expAngle);
+
 		createArea(
 			new PathPlacer(...playerCoords, ...expansionCoords, 12, 0.7, 0.5, 0.1, -1),
 			[

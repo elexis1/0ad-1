@@ -1,5 +1,4 @@
 const PI = Math.PI;
-const TWO_PI = 2 * Math.PI;
 const sin = Math.sin;
 const cos = Math.cos;
 const sqrt = Math.sqrt;
