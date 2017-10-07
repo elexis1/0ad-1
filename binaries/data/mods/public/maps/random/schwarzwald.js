@@ -361,7 +361,7 @@ for (var x = 0; x < mapSize; x++)
 
 		// Woods tile based
 		var tDensFactSL = max(min((minDistToSL - baseRadius) / baseRadius, 1), 0);
-		var tDensFactRad = abs((resourceRadius - radius) / resourceRadius);
+		let tDensFactRad = Math.abs((resourceRadius - radius) / resourceRadius);
 		var tDensActual = (maxTreeDensity * tDensFactSL * tDensFactRad)*0.75;
 
 		if (randBool(tDensActual) && radius < playableMapRadius)
