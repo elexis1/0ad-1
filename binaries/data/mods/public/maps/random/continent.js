@@ -55,24 +55,22 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clLand = createTileClass();
 
-initTerrain(tWater);
-
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.5);
-ix = round(fx);
-iz = round(fz);
-
-var placer = new ChainPlacer(2, floor(scaleByMapSize(5, 12)), floor(scaleByMapSize(60, 700)), 1, ix, iz, 0, [floor(mapSize * 0.33)]);
-var terrainPainter = new LayeredPainter(
-	[tMainTerrain, tMainTerrain],		// terrains
-	[3]		// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	3,				// elevation
-	4				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clLand)], null);
+log("Creating continent...");
+createArea(
+	new ChainPlacer(
+		2,
+		Math.floor(scaleByMapSize(5, 12)),
+		Math.floor(scaleByMapSize(60, 700)),
+		1,
+		Math.round(fractionToTiles(0.5)),
+		Math.round(fractionToTiles(0.5)),
+		0,
+		[Math.floor(mapSize * 0.33)]),
+	[
+		new SmoothElevationPainter(ELEVATION_SET, 3, 4),
+		paintClass(clLand)
+	],
+	null);
 
 var [playerIDs, playerX, playerZ] = radialPlayerPlacement(0.25);
 

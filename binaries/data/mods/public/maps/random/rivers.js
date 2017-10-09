@@ -65,24 +65,20 @@ var clShallow = createTileClass();
 
 initTerrain(tMainTerrain);
 
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.5);
-ix = round(fx);
-iz = round(fz);
-
-var lSize = sqrt(sqrt(sqrt(scaleByMapSize(1, 6))));
-
-var placer = new ClumpPlacer(mapArea * 0.01 * lSize, 0.7, 0.1, 10, ix, iz);
-var terrainPainter = new LayeredPainter(
-	[tShore, tWater, tWater, tWater],		// terrains
-	[1, 4, 2]		// widths
-);
-var elevationPainter = new SmoothElevationPainter(
-	ELEVATION_SET,			// type
-	-3,				// elevation
-	4				// blend radius
-);
-createArea(placer, [terrainPainter, elevationPainter, paintClass(clWater)], null);
+createArea(
+	new ClumpPlacer(
+		mapArea / 100 * Math.pow(scaleByMapSize(1, 6), 1/8),
+		0.7,
+		0.1,
+		10,
+		Math.round(fractionToTiles(0.5)),
+		Math.round(fractionToTiles(0.5))),
+	[
+		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
+		new SmoothElevationPainter(ELEVATION_SET, -3, 4),
+		paintClass(clWater)
+	],
+	null);
 
 var [playerIDs, playerX, playerZ, playerAngle, startAngle] = radialPlayerPlacement();
 
@@ -236,13 +232,10 @@ for (var ix = 0; ix < mapSize; ix++)
 					var c = (PZ[m]*(PX[m]-PX[n]))-(PX[m]*(PZ[m]-PZ[n]));
 					var dis = abs(a*ix + b*iz + c)/sqrt(a*a + b*b);
 					if (abs(a*ix + b*iz + c) != 0)
-					{
 						var alamat = (a*ix + b*iz + c)/abs(a*ix + b*iz + c);
-					}
 					else
-					{
 						var alamat = 1;
-					}
+
 					var k = (a*ix + b*iz + c)/(a*a + b*b);
 					var y = iz-(b*k);
 					var xm = ix-(a*k);
@@ -261,9 +254,8 @@ for (var ix = 0; ix < mapSize; ix++)
 								addToClass(ix, iz, clShallow);
 							}
 							else
-							{
 								var h = -3;
-							}
+
 							var t = tWater;
 							addToClass(ix, iz, clWater);
 						}
@@ -279,23 +271,16 @@ for (var ix = 0; ix < mapSize; ix++)
 									addToClass(ix, iz, clShallow);
 								}
 								else
-								{
 									var h = 2-(sbms-dis);
-								}
 							}
 							else
-							{
 								var h = 2-(sbms-dis);
-							}
+
 							//we must create shore lines for more beautiful terrain
 							if (sbms-dis<=2)
-							{
 								var t = tShore;
-							}
 							else
-							{
 								var t = tWater;
-							}
 							addToClass(ix, iz, clWater);
 						}
 						//we don't want to cause problems when river joins sea

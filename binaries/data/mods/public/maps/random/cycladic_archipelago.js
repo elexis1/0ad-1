@@ -84,59 +84,39 @@ for (var i=0; i < numIslands; i++)
 
 for (var i = 0; i < numIslands; ++i)
 {
-	var radius = scaleByMapSize(15,40);
-	var coral=scaleByMapSize(1,5);
-	var wet = 3;
-	var dry = 1;
-	var gbeach = 2;
-	var elevation = 3;
+	var ix = round(fractionToTiles(islandX[i]));
+	var iz = round(fractionToTiles(islandZ[i]));
 
-	// get the x and z in tiles
-	var fx = fractionToTiles(islandX[i]);
-	var fz = fractionToTiles(islandZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	var islandSize = PI*radius*radius;
-	var islandBottom=PI*(radius+coral)*(radius+coral);
-
-	//create base
-	var placer = new ClumpPlacer(islandBottom, .7, .1, 10, ix, iz);
-	var terrainPainter = new LayeredPainter([tOceanRockDeep, tOceanCoral], [5]);
-	createArea(placer, [terrainPainter, paintClass(clCoral)],avoidClasses(clCoral,0));
+	createArea(
+		new ClumpPlacer(Math.PI * Math.pow(scaleByMapSize(15, 40) + scaleByMapSize(1, 5), 2), 0.7, 0.1, 10, ix, iz),
+		[
+			new LayeredPainter([tOceanRockDeep, tOceanCoral], [5]),
+			paintClass(clCoral)
+		],
+		avoidClasses(clCoral, 0));
 }
 
-//create spoke islands
-//put down base resources and animals but do not populate
 for (var i=0; i < numIslands; i++)
 {
 	log("Creating base Island " + (i + 1) + "...");
-
-	var radius = scaleByMapSize(15,40);
-	var coral=scaleByMapSize(2,5);
-	var wet = 3;
-	var dry = 1;
-	var gbeach = 2;
-	var elevation = 3;
-
-	// get the x and z in tiles
-	var fx = fractionToTiles(islandX[i]);
-	var fz = fractionToTiles(islandZ[i]);
-	var ix = round(fx);
-	var iz = round(fz);
-
-	var islandSize = PI*radius*radius;
-	var islandBottom=PI*(radius+coral)*(radius+coral);
-
-	// create island
-	var placer = new ClumpPlacer(islandSize, .7, .1, 10, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tOceanCoral,tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
-		[1, wet, dry, 1, gbeach]
-	);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, elevation, 5);
-	var temp = createArea(placer, [terrainPainter, paintClass(clPlayer), elevationPainter],avoidClasses(clPlayer,0));
-	areas.push(temp);
+	areas.push(
+		createArea(
+			new ClumpPlacer(
+				Math.PI * Math.pow(scaleByMapSize(15, 40), 2),
+				0.7,
+				0.1,
+				10,
+				Math.round(fractionToTiles(islandX[i])),
+				Math.round(fractionToTiles(islandZ[i]))),
+			[
+				new LayeredPainter(
+					[tOceanCoral, tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
+					[1, 3, 1, 1, 2]
+				),
+				new SmoothElevationPainter(ELEVATION_SET, elevation, 5),
+				paintClass(clPlayer)
+			],
+			avoidClasses(clPlayer,0)));
 
 	placeDefaultChicken(fx, fz, clBaseResource);
 
@@ -236,57 +216,52 @@ for (var i = 0; i < nCenter; ++i)
 
 	var radius = scaleByMapSize(15,30);
 	var coral= 2;
-	var wet = 3;
-	var dry = 1;
-	var gbeach = 2;
-	var elevation = 3;
 
 	var islandSize = PI*radius*radius;
 	var islandBottom=PI*(radius+coral)*(radius+coral);
 
 	// Create base
-	var placer = new ClumpPlacer(islandBottom, .7, .1, 10, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tOceanRockDeep, tOceanCoral],
-		[5]
-	);
-	createArea(placer, [terrainPainter, paintClass(clCoral)],avoidClasses(clCoral,0,clPlayer,0));
+	createArea(
+		new ClumpPlacer(islandBottom, 0.7, 0.1, 10, ix, iz),
+		[
+			new LayeredPainter([tOceanRockDeep, tOceanCoral], [5]),
+			paintClass(clCoral)
+		],
+		avoidClasses(clCoral, 0, clPlayer, 0));
 
 	// Create island
-	var placer = new ClumpPlacer(islandSize, .7, .1, 10, ix, iz);
-	var terrainPainter = new LayeredPainter(
-		[tOceanCoral,tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
-		[1, wet, dry, 1, gbeach]
-	);
-	var elevationPainter = new SmoothElevationPainter(ELEVATION_SET, elevation, 5);
-	var temp = createArea(placer, [terrainPainter, paintClass(clIsland), elevationPainter],avoidClasses(clPlayer,0));
-
-	areas.push(temp);
+	areas.push(
+		createArea(
+			new ClumpPlacer(islandSize, 0.7, 0.1, 10, ix, iz),
+			[
+				new LayeredPainter(
+					[tOceanCoral,tBeachWet, tBeachDry, tBeach, tBeachBlend, tGrass],
+					[1, 3, 1, 1, 2]),
+				paintClass(clIsland),
+				new SmoothElevationPainter(ELEVATION_SET, 3, 5)
+			],
+			avoidClasses(clPlayer, 0));
 }
 RMS.SetProgress(30);
 
 log("Creating bumps...");
-placer = new ClumpPlacer(scaleByMapSize(20, 60), 0.3, 0.06, 1);
-painter = new SmoothElevationPainter(ELEVATION_MODIFY, 2, 3);
 createAreasInAreas(
-	placer,
-	painter,
+	new ClumpPlacer(scaleByMapSize(20, 60), 0.3, 0.06, 1),
+	new SmoothElevationPainter(ELEVATION_MODIFY, 2, 3),
 	avoidClasses(clCity, 0),
 	scaleByMapSize(25, 75),15,
-	areas
-);
+	areas);
+
 RMS.SetProgress(34);
 
 log("Creating hills...");
-placer = new ClumpPlacer(scaleByMapSize(20, 150), 0.2, 0.1, 1);
-terrainPainter = new LayeredPainter(
-	[tCliff, tCliffShrubs],		// terrains
-	[2]								// widths
-);
-elevationPainter = new SmoothElevationPainter(ELEVATION_SET, 12, 2);
 createAreasInAreas(
-	placer,
-	[terrainPainter, elevationPainter, paintClass(clHill)],
+	new ClumpPlacer(scaleByMapSize(20, 150), 0.2, 0.1, 1),
+	[
+		new LayeredPainter([tCliff, tCliffShrubs], [2]),
+		new SmoothElevationPainter(ELEVATION_SET, 12, 2),
+		paintClass(clHill)
+	],
 	avoidClasses(clCity, 15, clHill, 15),
 	scaleByMapSize(5, 30), 15,
 	areas
@@ -297,31 +272,27 @@ RMS.SetProgress(38);
 for (var ix = 0; ix < mapSize; ix++)
 	for (var iz = 0; iz < mapSize; iz++)
 		if (getHeight(ix,iz) < 0)
-			addToClass(ix,iz,clWater);
+			addToClass(ix, iz, clWater);
 
 log("Creating forests...");
-var types = [
+var forestTypes = [
 	[[tForestFloor, tGrass, pPalmForest], [tForestFloor, pPalmForest]],
 	[[tForestFloor, tGrass, pPineForest], [tForestFloor, pPineForest]],
 	[[tForestFloor, tGrass, pPoplarForest], [tForestFloor, pPoplarForest]],
 	[[tForestFloor, tGrass, pMainForest], [tForestFloor, pMainForest]]
-];	// some variation
-var size = 5; //size
-var num = scaleByMapSize(10, 64); //number
-for (var i = 0; i < types.length; ++i)
-{
-	placer = new ClumpPlacer(randIntInclusive(6, 17), 0.1, 0.1, 1);
-	painter = new LayeredPainter(
-		types[i],		// terrains
-		[2]											// widths
-		);
+];
+
+for (let type of forestTypes)
 	createAreasInAreas(
-		placer,
-		[painter, paintClass(clForest)],
-		avoidClasses(clCity, 1, clWater, 3, clForest, 3, clHill, 1),
-		num, 20, areas
-	);
-}
+		new ClumpPlacer(randIntInclusive(6, 17), 0.1, 0.1, 1),
+		[
+			new LayeredPainter(type, [2]),
+			paintClass(clForest)
+		],
+		avoidClasses(clCity, 1, clWater, 3, clForest, 3, clHill, 1, clBaseResource, 4),
+		scaleByMapSize(10, 64),
+		20,
+		areas);
 RMS.SetProgress(42);
 
 log("Creating stone mines...");
@@ -349,33 +320,31 @@ createObjectGroupsByAreasDeprecated(group, 0,
 RMS.SetProgress(54);
 
 log("Creating shrub patches...");
-var sizes = [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)];
-for (var i = 0; i < sizes.length; i++)
-{
-	placer = new ClumpPlacer(sizes[i], 0.3, 0.06, 0.5);
-	painter = new LayeredPainter([tBeachBlend,tGrassShrubs],[1]);
+for (let size of [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)])
 	createAreasInAreas(
-		placer,
-		[painter, paintClass(clDirt)],
+		new ClumpPlacer(size, 0.3, 0.06, 0.5),
+		[
+			new LayeredPainter([tBeachBlend, tGrassShrubs], [1]),
+			paintClass(clDirt)
+		],
 		avoidClasses(clWater, 3, clHill, 0, clDirt, 6, clCity, 0),
-		scaleByMapSize(4, 16), 20, areas
-	);
-}
+		scaleByMapSize(4, 16),
+		20,
+		areas);
 RMS.SetProgress(58);
 
 log("Creating grass patches...");
-var sizes = [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)];
-for (var i = 0; i < sizes.length; i++)
-{
-	placer = new ClumpPlacer(sizes[i], 0.3, 0.06, 0.5);
-	painter = new LayeredPainter([tGrassDry],[]);
+for (let size of [scaleByMapSize(2, 32), scaleByMapSize(3, 48), scaleByMapSize(5, 80)])
 	createAreasInAreas(
-		placer,
-		[painter, paintClass(clDirt)],
+		new ClumpPlacer(size, 0.3, 0.06, 0.5),
+		[
+			new LayeredPainter([tGrassDry], []),
+			paintClass(clDirt)
+		],
 		avoidClasses(clWater, 3, clHill, 0, clDirt, 6, clCity, 0),
-		scaleByMapSize(4, 16), 20, areas
-	);
-}
+		scaleByMapSize(4, 16),
+		20,
+		areas);
 RMS.SetProgress(62);
 
 log("Creating straggler trees...");
