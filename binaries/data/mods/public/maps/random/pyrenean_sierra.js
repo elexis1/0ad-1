@@ -458,19 +458,21 @@ for (var ix = 1; ix < mapSize-1; ix++)
 				size = 3;
 			else if (getTileClass(clPyrenneans).countInRadius(ix,iz,4,true) > 0)
 				size = 4;
+
 			var todivide = 0;
-			for (var xx = -size; xx <= size;xx++)
-				for (var yy = -size; yy <= size;yy++) {
-					if (g_Map.inMapBounds(ix + xx,iz + yy) && (xx != 0 || yy != 0)){
-						averageHeight += getHeight(ix + xx,iz + yy) / (abs(xx)+abs(yy));
-						todivide += 1/(abs(xx)+abs(yy));
+			for (let xx = -size; xx <= size; ++xx)
+				for (let yy = -size; yy <= size; ++yy)
+					if (g_Map.inMapBounds(ix + xx, iz + yy) && (xx || yy))
+					{
+						let coord = Math.abs(xx) + Math.abs(yy);
+						averageHeight += getHeight(ix + xx,iz + yy) / coord;
+						todivide += 1 / coord;
 					}
-				}
+
 			averageHeight += getHeight(ix,iz)*2;
 			averageHeight /= (todivide+2);
 
 			setHeight(ix,iz, averageHeight );
-			//baseHeights[ix][iz] = averageHeight;
 		}
 		if ( g_Map.inMapBounds(ix,iz) && getTileClass(clWater).countInRadius(ix,iz,4,true) > 0 && getTileClass(clWater).countInRadius(ix,iz,4) > 0 )
 			setHeight(ix,iz, getHeight(ix,iz) + randFloat(-1,1));

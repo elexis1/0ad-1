@@ -128,9 +128,8 @@ for (var ix = 0; ix <= mapSize; ix++)
 			h = max(-16.0, -28.0*(x-(1.0-WATER_WIDTH))/WATER_WIDTH);
 		else
 		{
-			distToWater = (0.5 - WATER_WIDTH - abs(x-0.5));
-			var u = 1 - abs(x-0.5) / (0.5-WATER_WIDTH);
-			h = 12*u;
+			distToWater = (0.5 - WATER_WIDTH - Math.abs(x - 0.5));
+			h = 12 * (1 - Math.abs(x - 0.5) / (0.5 - WATER_WIDTH));
 		}
 
 		// add some base noise
