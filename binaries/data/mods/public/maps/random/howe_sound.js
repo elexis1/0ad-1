@@ -12,9 +12,6 @@ setBiome("snowy");
 initTileClasses(["island"]);
 
 log("Initializing environment...");
-setSunColor(0.733, 0.746, 0.574);
-setSkySet("stratus");
-
 setWaterTint(0.388, 0.650, 0.661);
 setWaterColor(0.388, 0.650, 0.661);
 setWaterWaviness(8);
@@ -23,6 +20,8 @@ setWaterType("lake");
 
 setTerrainAmbientColor(0.349, 0.514, 0.671);
 
+setSunColor(0.733, 0.746, 0.574);
+setSkySet("stratus");
 setSunRotation(PI * -0.5);
 setSunElevation(PI/9);
 

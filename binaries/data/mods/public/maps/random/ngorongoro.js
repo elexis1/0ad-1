@@ -12,9 +12,6 @@ setBiome("savanna");
 initTileClasses(["eden", "highlands"]);
 
 log("Initializing environment...");
-
-setSunColor(0.733, 0.746, 0.574);
-
 setWaterHeight(18);
 setWaterTint(0.576, 0.541, 0.322);
 setWaterColor(0.521, 0.475, 0.322);
@@ -24,8 +21,9 @@ setWaterType("lake");
 
 setTerrainAmbientColor(0.521, 0.475, 0.322);
 
-setSunRotation(-1 * PI);
-setSunElevation(PI / 6.25);
+setSunColor(0.733, 0.746, 0.574);
+setSunRotation(-Math.PI);
+setSunElevation(Math.PI / 6.25);
 
 setFogFactor(0);
 setFogThickness(0);
