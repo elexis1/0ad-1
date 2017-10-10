@@ -8,7 +8,6 @@ RMS.LoadLibrary("rmbiome");
 InitMap();
 
 setBiome("savanna");
-initForestFloor();
 initTileClasses(["eden", "highlands"]);
 
 log("Initializing environment...");
@@ -62,7 +61,6 @@ g_Decoratives.rockLarge = "actor|geology/stone_savanna_med.xml";
 g_Decoratives.rockMedium = "actor|geology/stone_savanna_med.xml";
 g_Decoratives.bushMedium = "actor|props/flora/bush_desert_dry_a.xml";
 g_Decoratives.bushSmall = "actor|props/flora/bush_dry_a.xml";
-initForestFloor();
 RMS.SetProgress(5);
 
 log("Resetting terrain...");
@@ -389,7 +387,6 @@ RMS.SetProgress(70);
 
 g_Gaia.mainHuntableAnimal = "gaia/fauna_rhino";
 g_Gaia.secondaryHuntableAnimal =  "gaia/fauna_elephant_african_bush";
-initForestFloor();
 
 log("Render eden...");
 addElements([

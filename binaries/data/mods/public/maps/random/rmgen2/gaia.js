@@ -763,20 +763,33 @@ function addForests(constraint, size, deviation, fill)
 	if (currentBiome() == "savanna")
 		return;
 
-	var types = [
+	let forests = {
+			[
+				g_Terrains.forestFloor2 + TERRAIN_SEPARATOR + g_Gaia.tree1,
+				g_Terrains.forestFloor2 + TERRAIN_SEPARATOR + g_Gaia.tree2,
+				g_Terrains.forestFloor2
+			],
+			[
+				g_Terrains.forestFloor1 + TERRAIN_SEPARATOR + g_Gaia.tree4,
+				g_Terrains.forestFloor1 + TERRAIN_SEPARATOR + g_Gaia.tree5,
+				g_Terrains.forestFloor1
+			]
+		};
+
+	let types = [
 		[
-			[g_Terrains.forestFloor2, g_Terrains.mainTerrain, g_Forests.forest1],
-			[g_Terrains.forestFloor2, g_Forests.forest1]
+			[g_Terrains.forestFloor2, g_Terrains.mainTerrain, forests[0]],
+			[g_Terrains.forestFloor2, forests[0]]
 		],
 		[
-			[g_Terrains.forestFloor2, g_Terrains.mainTerrain, g_Forests.forest2],
-			[g_Terrains.forestFloor1, g_Forests.forest2]],
+			[g_Terrains.forestFloor2, g_Terrains.mainTerrain, forests[1]],
+			[g_Terrains.forestFloor1, forests[1]]],
 		[
-			[g_Terrains.forestFloor1, g_Terrains.mainTerrain, g_Forests.forest1],
-			[g_Terrains.forestFloor2, g_Forests.forest1]],
+			[g_Terrains.forestFloor1, g_Terrains.mainTerrain, forests[0]],
+			[g_Terrains.forestFloor2, forests[0]]],
 		[
-			[g_Terrains.forestFloor1, g_Terrains.mainTerrain, g_Forests.forest2],
-			[g_Terrains.forestFloor1, g_Forests.forest2]
+			[g_Terrains.forestFloor1, g_Terrains.mainTerrain, forests[1]],
+			[g_Terrains.forestFloor1, forests[1]]
 		]
 	];
 
