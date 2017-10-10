@@ -747,7 +747,6 @@ function PassMaker(x1, z1, x2, z2, startWidth, centerWidth, startElevation, cent
 		}
 	}
 }
-// no need for preliminary rounding
 function getHeightDifference(x1, z1)
 {
 	x1 = round(x1);
@@ -756,21 +755,24 @@ function getHeightDifference(x1, z1)
 
 	if (!g_Map.inMapBounds(x1,z1))
 		return 0;
-	// I wanna store the height difference with any neighbor
 
 	var toCheck = [ [-1,-1], [-1,0], [-1,1], [0,1], [1,1], [1,0], [1,-1], [0,-1] ];
 
 	var diff = 0;
 	var todiv = 0;
-	for (var i in toCheck) {
+
+	for (var i in toCheck)
+	{
 		var xx = round(x1 + toCheck[i][0]);
 		var zz = round(z1 + toCheck[i][1]);
-		if (g_Map.inMapBounds(xx,zz)) {
+
+		if (g_Map.inMapBounds(xx,zz))
+		{
 			diff += abs(getHeight(xx,zz) - height);
 			todiv++;
 		}
 	}
-	if (todiv > 0)
+	if (todiv)
 		diff /= todiv;
 	return diff;
 }

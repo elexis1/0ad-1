@@ -367,7 +367,7 @@ for (let sandx = 0; sandx < mapSize; ++sandx)
 			continue;
 
 		let height = getHeight(sandx, sandz);
-		let heightDiff = getHeightDiff(sandx, sandz);
+		let heightDiff = getHeightDifference(sandx, sandz);
 
 		if (height >= 0.5 && height < 1.5 && getTileClass(clShore).countMembersInRadius(sandx, sandz, 2) > 0)
 		{
@@ -667,26 +667,18 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 	}
 }
 
-// no need for preliminary rounding
-function getHeightDiff(x1, z1)
+function getHeightDifference(x1, z1)
 {
-	var height = getHeight(round(x1),round(z1));
-	var diff = 0;
-	if (z1 + 1 < mapSize)
-		diff += abs(getHeight(round(x1),round(z1+1)) - height);
-	if (x1 + 1 < mapSize && z1 + 1 < mapSize)
-		diff += abs(getHeight(round(x1+1),round(z1+1)) - height);
-	if (x1 + 1 < mapSize)
-		diff += abs(getHeight(round(x1+1),round(z1)) - height);
-	if (x1 + 1 < mapSize && z1 - 1 >= 0)
-		diff += abs(getHeight(round(x1+1),round(z1-1)) - height);
-	if (z1 - 1 >= 0)
-		diff += abs(getHeight(round(x1),round(z1-1)) - height);
-	if (x1 - 1 >= 0 && z1 - 1 >= 0)
-		diff += abs(getHeight(round(x1-1),round(z1-1)) - height);
-	if (x1 - 1 >= 0)
-		diff += abs(getHeight(round(x1-1),round(z1)) - height);
-	if (x1 - 1 >= 0 && z1 + 1 < mapSize)
-		diff += abs(getHeight(round(x1-1),round(z1+1)) - height);
+	if (!g_Map.inMapBounds(x1, z1))
+		return 0;
+
+	let height = getHeight(Math.round(x1), Math.round(z1));
+	let diff = 0;
+
+	for (let x of [-1, 0, 1])
+		for (let z of [-1, 0, 1])
+			if (x && z && inMapBounds(x1 +x, z1 + z))
+				diff += Math.abs(getHeight(Math.round(x1 + x),Math.round(z1 + z)) - height);
+
 	return diff;
 }
