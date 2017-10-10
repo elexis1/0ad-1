@@ -12,9 +12,6 @@ setBiome("alpine");
 initTileClasses(["shallowWater"]);
 
 log("Initializing environment...");
-
-setSunColor(0.733, 0.746, 0.574);
-
 setWaterTint(0.224, 0.271, 0.270);
 setWaterColor(0.224, 0.271, 0.270);
 setWaterWaviness(8);
@@ -23,6 +20,7 @@ setWaterType("lake");
 
 setTerrainAmbientColor(0.521, 0.475, 0.322);
 
+setSunColor(0.733, 0.746, 0.574);
 setSunRotation(-1 * PI);
 setSunElevation(PI / 6.25);
 

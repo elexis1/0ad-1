@@ -12,8 +12,6 @@ setBiome("mediterranean");
 initTileClasses(["decorative", "lava"]);
 
 log("Initializing environment...");
-setSunColor(0.8, 0.8, 0.8);
-
 setWaterTint(0.5, 0.5, 0.5);
 setWaterColor(0.3, 0.3, 0.3);
 setWaterWaviness(8);
@@ -23,6 +21,7 @@ setWaterType("lake");
 setTerrainAmbientColor(0.3, 0.3, 0.3);
 setUnitsAmbientColor(0.3, 0.3, 0.3);
 
+setSunColor(0.8, 0.8, 0.8);
 setSunRotation(-1 * PI);
 setSunElevation(PI / 6.25);
 

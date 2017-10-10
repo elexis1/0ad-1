@@ -12,7 +12,6 @@ initTileClasses(["island"]);
 
 log("Initializing environment...");
 
-setSunColor(0.733, 0.746, 0.574);
 setSkySet("cloudless");
 
 setWaterTint(0.37, 0.67, 0.73);
@@ -23,7 +22,8 @@ setWaterType("lake");
 
 setTerrainAmbientColor(0.521, 0.475, 0.322);
 
-setSunRotation(-1 * PI);
+setSunColor(0.733, 0.746, 0.574);
+setSunRotation(-Math.PI);
 setSunElevation(PI / 6.25);
 
 setFogFactor(0);
