@@ -610,15 +610,15 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 		var iz = ((stepNB-step)*z1 + z2*step) / stepNB;
 
 		// 5 at star/end, and 0 at the center
-		var width = (abs(step - stepNB/2.0) *startWidth + (stepNB/2 - abs(step - stepNB/2.0)) * centerWidth ) / (stepNB/2);
+		var width = (Math.abs(step - stepNB / 2) * startWidth + (stepNB / 2 - Math.abs(step - stepNB / 2)) * centerWidth) / (stepNB / 2);
 		var oldDirection = [x2-x1, z2-z1];
 
 		// let's get the perpendicular direction
 		var direction = [ -oldDirection[1],oldDirection[0] ];
 
-		if (abs(direction[0]) > abs(direction[1]))
+		if (Math.abs(direction[0]) > Math.abs(direction[1]))
 		{
-			direction[1] = direction[1] / abs(direction[0]);
+			direction[1] = direction[1] / Math.abs(direction[0]);
 			if (direction[0] > 0)
 				direction[0] = 1;
 			else
@@ -626,7 +626,7 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 		}
 		else
 		{
-			direction[0] = direction[0] / abs(direction[1]);
+			direction[0] = direction[0] / Math.abs(direction[1]);
 			if (direction[1] > 0)
 				direction[1] = 1;
 			else
@@ -643,10 +643,10 @@ function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, t
 			if (round(ix + rx) < mapSize && round(iz + rz) < mapSize && round(ix + rx) >= 0 && round(iz + rz) >= 0)
 			{
 				// smoothing the sides
-				if ( abs(abs(po) - abs(Math.floor(width/2.0))) < smooth)
+				if (Math.abs(Math.abs(po) - Math.abs(Math.floor(width / 2))) < smooth)
 				{
 					var localHeight = getHeight(round(ix + rx), round(iz + rz));
-					var localPart = smooth - abs(abs(po) - abs(Math.floor(width/2.0)));
+					var localPart = smooth - Math.abs(Math.abs(po) - Math.abs(Math.floor(width / 2)));
 					var targetHeight = (localHeight * localPart + targetHeight * (1/localPart) )/ (localPart + 1/localPart);
 				}
 
