@@ -93,12 +93,14 @@ MultiPainter.prototype.paint = function(area)
  * @param type - ELEVATION_MODIFY or ELEVATION_SET.
  * @param elevation - target height.
  * @param blendRadius - How steep the elevation change is.
+ * @param roughness - maximum random elevation difference applied.
  */
-function SmoothElevationPainter(type, elevation, blendRadius)
+function SmoothElevationPainter(type, elevation, blendRadius, roughness = 0)
 {
 	this.type = type;
 	this.elevation = elevation;
 	this.blendRadius = blendRadius;
+	this.roughness = roughness;
 
 	if (type != ELEVATION_SET && type != ELEVATION_MODIFY)
 		throw("SmoothElevationPainter: invalid type '" + type + "'");
@@ -156,7 +158,7 @@ SmoothElevationPainter.prototype.paint = function(area)
 			if (this.type == ELEVATION_SET)
 				newHeight[point.x][point.z] = (1 - a) * g_Map.height[point.x][point.z];
 
-			newHeight[point.x][point.z] += a * this.elevation;
+			newHeight[point.x][point.z] += a * this.elevation + randFloat(-1, 1) * this.roughness;
 		});
 
 	// Smooth everything out
