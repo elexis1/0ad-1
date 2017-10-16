@@ -1,26 +1,6 @@
-/////////////////////////////////////////////////////////////////////
-//	PointXZ
-//
-//	Class for representing 2D point in tile coordinates (X,Z)
-//
-/////////////////////////////////////////////////////////////////////
-
-function PointXZ(x, z)
+// TODO: replace with Vector2D?
+function PointXZ(x = 0, z = 0)
 {
-	this.x = (x !== undefined ? x : 0);
-	this.z = (z !== undefined ? z : 0);
-}
-
-/////////////////////////////////////////////////////////////////////
-//	Point3D
-//
-//	Class for representing generic 3D point
-//
-/////////////////////////////////////////////////////////////////////
-
-function Point3D(x, y, z)
-{
-	this.x = (x !== undefined ? x : 0);
-	this.y = (y !== undefined ? y : 0);
-	this.z = (z !== undefined ? z : 0);
+	this.x = x;
+	this.z = z;
 }

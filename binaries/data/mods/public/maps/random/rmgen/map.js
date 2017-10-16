@@ -205,8 +205,7 @@ Map.prototype.createArea = function(placer, painter, constraint)
 
 Map.prototype.createObjectGroup = function(placer, player, constraint)
 {
-	// Check for null constraint
-	if (constraint === undefined || constraint === null)
+	if (!constraint)
 		constraint = new NullConstraint();
 	else if (constraint instanceof Array)
 		constraint = new AndConstraint(constraint);
