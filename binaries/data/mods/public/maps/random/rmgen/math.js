@@ -1,3 +1,13 @@
+function getDistance(x1, z1, x2, z2)
+{
+	return Math.sqrt(getDistanceToSquared(x1, z1, x2, z2));
+}
+
+function getDistanceToSquared(x1, z1, x2, z2)
+{
+	return Math.pow(x1 - x2, 2) + Math.pow(z1 - z2, 2);
+}
+
 function rotateCoordinates(x, z, angle, centerX = 0.5, centerZ = 0.5)
 {
 	let sin = Math.sin(angle);
@@ -7,4 +17,19 @@ function rotateCoordinates(x, z, angle, centerX = 0.5, centerZ = 0.5)
 		cos * (x - centerX) - sin * (z - centerZ) + centerX,
 		sin * (x - centerX) + cos * (z - centerZ) + centerZ
 	];
+}
+
+function cubicInterpolation2(coords, v0, v1, v2, v3)
+{
+	let P = (v3 - v2) - (v0 - v1);
+	let Q = (v0 - v1) - P;
+	let R = v2 - v0;
+	let S = v1;
+
+	let interpolate = x => ((P * x + Q) * x + R) * x + S;
+
+	if (Array.isArray(coords))
+		return coords.map(interpolate);
+
+	return interpolate(coords);
 }

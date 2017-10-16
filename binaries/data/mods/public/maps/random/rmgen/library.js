@@ -588,14 +588,6 @@ function checkIfInClass(x, z, id)
 }
 
 /**
- * Returns the distance between 2 points
- */
-function getDistance(x1, z1, x2, z2)
-{
-	return Math.pow(Math.pow(x1 - x2, 2) + Math.pow(z1 - z2, 2), 1/2);
-}
-
-/**
  * Returns the angle of the vector between point 1 and point 2.
  * The angle is counterclockwise from the positive x axis.
  */
