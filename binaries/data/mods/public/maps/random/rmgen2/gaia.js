@@ -69,13 +69,13 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 
 		// If we can't access the bluff, try different angles
 		var retries = 0;
-		var bluffCat = 2;
-		while (bluffCat != 0 && retries < 5)
+		let bluffReachable = false;
+		while (!bluffReachable && retries < 5)
 		{
 			baseLine = findClearLine(bb, corners, angle, baseHeight);
 			endLine = findClearLine(bb, corners, opAngle, baseHeight);
 
-			bluffCat = unreachableBluff(bb, corners, baseLine, endLine);
+			bluffReachable = isBluffReachable(bb, corners, baseLine, endLine);
 			++angle;
 			if (angle > 3)
 				angle = 0;
@@ -88,7 +88,7 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 		}
 
 		// Inaccessible, turn it into a plateau
-		if (bluffCat > 0)
+		if (bluffReachable)
 		{
 			removeBluff(points);
 			continue;
@@ -912,18 +912,16 @@ function addStragglerTrees(constraint, size, deviation, fill)
 
 /**
  * Determine if the endline of the bluff is within the tilemap.
- *
- * @returns {Number} 0 if the bluff is reachable, otherwise a positive number
  */
-function unreachableBluff(bb, corners, baseLine, endLine)
+function isBluffReachable(bb, corners, baseLine, endLine)
 {
 	// If we couldn't find a slope line
-	if (typeof baseLine.midX === "undefined" || typeof endLine.midX === "undefined")
-		return 1;
+	if (baseLine.midX === undefined || endLine.midX === undefined)
+		return false;
 
-	// If the end points aren't on the tilemap
+	// If the end points aren't on the passable part of the tilemap
 	if (!g_Map.validT(endLine.x1, endLine.z1) && !g_Map.validT(endLine.x2, endLine.z2))
-		return 2;
+		return false;
 
 	var minTilesInGroup = 1;
 	var insideBluff = false;
@@ -947,7 +945,7 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 				insideBluff = true;
 
 			if (outsideBluff && valid)
-				return 3;
+				return false;
 		}
 
 		// We're expecting the end of the bluff
@@ -976,7 +974,7 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 				insideBluff = true;
 
 			if (outsideBluff && valid)
-				return 3;
+				return false;
 		}
 
 		// We're expecting the end of the bluff
@@ -984,8 +982,7 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 			outsideBluff = true;
 	}
 
-	// Bluff is reachable
-	return 0;
+	return true;
 }
 
 /**
@@ -993,8 +990,8 @@ function unreachableBluff(bb, corners, baseLine, endLine)
  */
 function removeBluff(points)
 {
-	for (var i = 0; i < points.length; ++i)
-		addToClass(points[i].x, points[i].z, g_TileClasses.mountain);
+	for (let point of points)
+		addToClass(point.x, point.z, g_TileClasses.mountain);
 }
 
 /**
@@ -1003,27 +1000,22 @@ function removeBluff(points)
 function createBoundingBox(points, corners)
 {
 	var bb = [];
+	// The heightmap grid has mapSize + 1 points (the tilemap grid has mapSize points)
 	var width = corners.maxX - corners.minX + 1;
 	var length = corners.maxZ - corners.minZ + 1;
 	for (var w = 0; w < width; ++w)
 	{
 		bb[w] = [];
 		for (var l = 0; l < length; ++l)
-		{
-			var curHeight = g_Map.getHeight(w + corners.minX, l + corners.minZ);
 			bb[w][l] = {
-				"height": curHeight,
+				"height": g_Map.getHeight(w + corners.minX, l + corners.minZ),
 				"isFeature": false
 			};
-		}
 	}
 
 	// Define the coordinates that represent the bluff
-	for (var p = 0; p < points.length; ++p)
-	{
-		var pt = points[p];
-		bb[pt.x - corners.minX][pt.z - corners.minZ].isFeature = true;
-	}
+	for (let point of points)
+		bb[point.x - corners.minX][point.z - corners.minZ].isFeature = true;
 
 	return bb;
 }
@@ -1129,6 +1121,7 @@ function findCorners(points)
 {
 	// Find the bounding box of the terrain feature
 	var mapSize = getMapSize();
+	// The heightmap grid has mapSize + 1 points (the tilemap grid has mapSize points)
 	var minX = mapSize + 1;
 	var minZ = mapSize + 1;
 	var maxX = -1;
