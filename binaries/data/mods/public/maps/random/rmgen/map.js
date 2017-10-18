@@ -235,8 +235,8 @@ Map.prototype.getExactHeight = function(x, z)
 {
 	let xi = Math.min(Math.floor(x), this.size);
 	let zi = Math.min(Math.floor(z), this.size);
-	let xf = x - xi;
-	let zf = z - zi;
+	let xf = x % 1;
+	let zf = z % 1;
 
 	let h00 = this.height[xi][zi];
 	let h01 = this.height[xi][zi + 1];
