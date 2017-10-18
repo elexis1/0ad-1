@@ -276,9 +276,6 @@ function createTributaries(horizontal, riverCount, riverWidth, waterHeight, heig
  */
 function passageMaker(x1, z1, x2, z2, width, maxHeight, shallowHeight, smooth, tileclass, terrain, riverHeight)
 {
-	let tileCentered = TILE_CENTERED_HEIGHT_MAP;
-	TILE_CENTERED_HEIGHT_MAP = true;
-
 	let mapSize = getMapSize();
 	let distance = getDistance(x1, z1, x2, z2);
 
@@ -319,8 +316,6 @@ function passageMaker(x1, z1, x2, z2, width, maxHeight, shallowHeight, smooth, t
 			if (terrain !== undefined)
 				placeTerrain(ix, iz, terrain);
 		}
-
-	TILE_CENTERED_HEIGHT_MAP = tileCentered;
 }
 
 /**
