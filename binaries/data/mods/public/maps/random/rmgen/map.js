@@ -104,13 +104,17 @@ Map.prototype.validT = function(x, z, distance = 0)
 		return x >= distance && z >= distance && x < this.size - distance && z < this.size - distance;
 };
 
-// Check bounds on tile map
+/**
+ * States wheather the given coordinates are within the boundaries of the tile map.
+ */
 Map.prototype.inMapBounds = function(x, z)
 {
 	return x >= 0 && z >= 0 && x < this.size && z < this.size;
 };
 
-// Check bounds on height map if TILE_CENTERED_HEIGHT_MAP==true then it's (size, size) otherwise (size + 1 by size + 1)
+/**
+ * States wheather the given coordinates are within the boundaries of the heightmap grid.
+ */
 Map.prototype.validH = function(x, z)
 {
 	if (x < 0 || z < 0)
@@ -120,7 +124,6 @@ Map.prototype.validH = function(x, z)
 	return x <= this.size && z <= this.size;
 };
 
-// Check bounds on tile class
 Map.prototype.validClass = function(c)
 {
 	return c >= 0 && c < this.tileClasses.length;

@@ -477,7 +477,6 @@ for (let p = 0; p < playerIDs.length; ++p)
 
 /**
  * Calculate tile centered height map after start position smoothing but before placing paths
- * This has nothing to to with TILE_CENTERED_HEIGHT_MAP which should be false!
  */
 let tchm = getTileCenteredHeightmap();
 
