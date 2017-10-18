@@ -1,8 +1,6 @@
 RMS.LoadLibrary("rmgen");
 RMS.LoadLibrary("common");
 
-//TILE_CENTERED_HEIGHT_MAP = true;
-
 const tCity = "medit_city_pavement";
 const tCityPlaza = "medit_city_pavement";
 const tHill = ["medit_dirt", "medit_dirt_b", "medit_dirt_c", "medit_rocks_grass", "medit_rocks_grass"];

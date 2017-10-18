@@ -319,7 +319,7 @@ for (let p = 0; p < playerIDs.length; ++p)
 /**
  * Add paths
  */
-let tchm = getTileCenteredHeightmap(); // Calculate tileCenteredHeightMap (This has nothing to to with TILE_CENTERED_HEIGHT_MAP which should be false)
+let tchm = getTileCenteredHeightmap();
 let pathPoints = [];
 let clPath = createTileClass();
 for (let i = 0; i < startLocations.length; ++i)

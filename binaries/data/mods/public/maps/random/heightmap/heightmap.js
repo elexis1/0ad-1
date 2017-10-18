@@ -4,11 +4,6 @@
  * A heightmapt is an array of width arrays of height floats
  * Width and height is normally mapSize+1 (Number of vertices is one bigger than number of tiles in each direction)
  * The default heightmap is g_Map.height (See the Map object)
- *
- * @warning - Ambiguous naming and potential confusion:
- * To use this library use TILE_CENTERED_HEIGHT_MAP = false (default)
- * Otherwise TILE_CENTERED_HEIGHT_MAP has nothing to do with any tile centered map in this library
- * @todo - TILE_CENTERED_HEIGHT_MAP should be removed and g_Map.height should never be tile centered
  */
 
 /**
