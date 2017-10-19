@@ -64,6 +64,9 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clShallow = createTileClass();
 
+var waterHeight = -3;
+var shallowHeight = -1;
+
 initTerrain(tMainTerrain);
 
 var [playerIDs, playerX, playerZ, playerAngle, startAngle] = placePlayersRadial();
@@ -98,153 +101,108 @@ placeDefaultPlayerBases({
 RMS.SetProgress(20);
 
 log("Creating central lake...");
+var centralLakeX = fractionToTiles(0.5);
+var centralLakeZ = fractionToTiles(0.5);
 createArea(
-	new ClumpPlacer(
-		mapArea / 100 * Math.pow(scaleByMapSize(1, 6), 1/8),
-		0.7,
-		0.1,
-		10,
-		Math.round(fractionToTiles(0.5)),
-		Math.round(fractionToTiles(0.5))),
-	[
-		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
-		new SmoothElevationPainter(ELEVATION_SET, -3, 4),
-		paintClass(clWater)
-	],
-	null);
+		new ClumpPlacer(
+			mapArea / 100 * Math.pow(scaleByMapSize(1, 6), 1/8),
+			0.7,
+			0.1,
+			10,
+			Math.round(centralLakeX),
+			Math.round(centralLakeZ)),
+		[
+			new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
+			new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4),
+			paintClass(clWater)
+		],
+		null);
 
-//init rivers
-var PX = [];
-var PZ = [];
-
-//isRiver actually tells us if two points must be joined by river
-var isRiver = [];
-for (let m = 0; m < numPlayers + 1; ++m)
+log("Creating rivers between opponents...");
+var [riverX, riverZ] = distributePointsOnCircle(numPlayers, startAngle + Math.PI / numPlayers, mapSize / 2, fractionToTiles(0.5), fractionToTiles(0.5));
+var meanderShort = scaleByMapSize(20, 60);
+for (let i = 0; i < numPlayers; ++i)
 {
-	isRiver[m] = [];
-	for (let n = 0; n < numPlayers + 1; ++n)
-		isRiver[m][n] = 0;
-}
+	if (areAllies(playerIDs[i] - 1, playerIDs[(i + 1) % numPlayers] - 1))
+		continue;
 
-//creating the first point in the center. all others are
-//connected to this one so all of our rivers join together
-//in the middle of the map
-var fx = fractionToTiles(0.5);
-var fz = fractionToTiles(0.5);
-var ix = round(fx);
-var iz = round(fz);
-PX[numPlayers]= fx;
-PZ[numPlayers]= fz;
+	let theta1 = randFloat(0, 1);
+	let seed1 = randFloat(2, 3);
 
-var riverAngle = [];
-for (var c = 0 ; c < numPlayers ; c++)
-{
-	//creating other points of the river and making them
-	// join the point in the center of the map
-	riverAngle[c] = startAngle + (((2 * c + 1) / (numPlayers * 2)) * 2 * Math.PI );
-	PX[c] = round(fractionToTiles(0.5 + 0.5 * cos(riverAngle[c])));
-	PZ[c] = round(fractionToTiles(0.5 + 0.5 * sin(riverAngle[c])));
-	//log (playerIDs[c], ",,," ,playerIDs[0]);
-	//isRiver[c][numPlayers]=1;
-	if ((c == numPlayers-1)&&(!areAllies(playerIDs[c]-1, playerIDs[0]-1)))
-		isRiver[c][numPlayers]=1;
-	else if ((c < numPlayers-1)&&(!areAllies(playerIDs[c]-1, playerIDs[c+1]-1)))
-		isRiver[c][numPlayers]=1;
-}
+	let shallowLocation = randFloat(0.2, 0.7);
+	let shallowWidth = randFloat(0.12, 0.21);
 
-//theta is the start value for rndRiver function. seed implies
-//the randomness. we must have one of these for each river we create.
-//shallowpoint and shallow length define the place and size of the shallow part
-var theta = [];
-var seed = [];
-var shallowpoint = [];
-var shallowlength = [];
-for (let q = 0; q < numPlayers + 1; ++q)
-{
-	theta[q]=randFloat(0, 1);
-	seed[q]=randFloat(2,3);
-	shallowpoint[q]=randFloat(0.2,0.7);
-	shallowlength[q]=randFloat(0.12,0.21);
-}
+	let riverBoundarySizeX = riverX[i] - centralLakeX;
+	let riverBoundarySizeZ = riverZ[i] - centralLakeZ;
+	let riverLength = getDistance(riverX[i], riverZ[i], centralLakeX, centralLakeZ);
 
-log ("Creating rivers...");
-for (var ix = 0; ix < mapSize; ix++)
-	for (var iz = 0; iz < mapSize; iz++)
-		for (var m = 0; m < numPlayers+1; m++)
-			for (var n = 0; n < numPlayers+1; n++)
+	for (let ix = 0; ix < mapSize; ++ix)
+		for (let iz = 0; iz < mapSize; ++iz)
+		{
+			let d = riverBoundarySizeX * (iz - centralLakeZ) - riverBoundarySizeZ * (ix - centralLakeX);
+			let	distanceToRiver = Math.abs(d) / riverLength;
+			let k = d / Math.square(riverLength);
+			let x = ix + riverBoundarySizeZ * k;
+			let z = iz - riverBoundarySizeX * k;
+
+			let coord2 = getDistance(riverX[i], riverZ[i], x, z) / riverLength;
+			let cu1 = scaleByMapSize(5, 15) + Math.sign(d || 1) * meanderShort * rndRiver(theta1 + coord2 * mapSize / 128, seed1);
+			let distanceToCurve = cu1 - distanceToRiver;
+
+			if (distanceToCurve < 0 || z < Math.min(riverZ[i], centralLakeZ) || z > Math.max(riverZ[i], centralLakeZ))
+				continue;
+
+			let someHeight = shallowHeight - waterHeight - distanceToCurve;
+			let inShallowArea = coord2 > shallowLocation && coord2 < shallowLocation + shallowWidth;
+
+			let height;
+			let terrain;
+			let tileclass;
+			if (distanceToCurve >= 5)
 			{
-				//checking if there is a river between those points
-				if(isRiver[m][n] == 1)
+				log("Creating the deep part of the river...");
+
+				if (inShallowArea)
 				{
-					//very important calculations. don't change anything. results
-					//"dis" which is the distance to the riverline and "y" and "xm" which are
-					//the coordinations for the point it's image is in.
-					var a = PZ[m]-PZ[n];
-					var b = PX[n]-PX[m];
-					var c = PZ[m] * (PX[m] - PX[n]) - PX[m] * (PZ[m] - PZ[n]);
-					let d = a * ix + b * iz + c;
-					let distance = Math.pow(a, 2) + Math.pow(b, 2);
-					let	dis = Math.abs(d) / Math.sqrt(distance);
-
-					let alamat = d == 0 ? 1 : Math.sign(d);
-					let k = d / distance;
-					let y = iz - b * k;
-					let xm = ix - a * k;
-
-					//this calculates which "part" of the river are we in now.
-					//used for the function rndRiver.
-					var sit = sqrt((PZ[n]-y)*(PZ[n]-y)+(PX[n]-xm)*(PX[n]-xm))/sqrt((PZ[n]-PZ[m])*(PZ[n]-PZ[m])+(PX[n]-PX[m])*(PX[n]-PX[m]));
-					var sbms = scaleByMapSize(5,15) + alamat * ( scaleByMapSize(20, 60) * rndRiver( theta[m] + sit * 0.5 * (mapSize/64) , seed[m]) );
-					if((dis < sbms)&&(y <= Math.max(PZ[m],PZ[n]))&&(y >= Math.min(PZ[m],PZ[n])))
-					{
-						//create the deep part of the river
-						if (dis <= sbms-5){
-							if ((sit > shallowpoint[m])&&(sit < shallowpoint[m]+shallowlength[m]))
-							{
-								//create the shallow part
-								var h = -1;
-								addToClass(ix, iz, clShallow);
-							}
-							else
-								var h = -3;
-
-							var t = tWater;
-							addToClass(ix, iz, clWater);
-						}
-						//creating the rough edges
-						else if (dis <= sbms)
-						{
-							if ((sit > shallowpoint[m])&&(sit < shallowpoint[m]+shallowlength[m]))
-							{
-								if (2-(sbms-dis)<-1)
-								{
-									//checking if there is shallow water here
-									var h = -1;
-									addToClass(ix, iz, clShallow);
-								}
-								else
-									var h = 2-(sbms-dis);
-							}
-							else
-								var h = 2-(sbms-dis);
-
-							//we must create shore lines for more beautiful terrain
-							if (sbms-dis<=2)
-								var t = tShore;
-							else
-								var t = tWater;
-							addToClass(ix, iz, clWater);
-						}
-						//we don't want to cause problems when river joins sea
-						if (getHeight(ix, iz)>h)
-						{
-							placeTerrain(ix, iz, t);
-							setHeight(ix, iz, h);
-						}
-					}
+					height = shallowHeight;
+					tileclass = clShallow;
 				}
+				else
+					height = waterHeight;
+
+				terrain = tWater;
+			}
+			else
+			{
+				log("Creating the rough edges...");
+				if (inShallowArea && someHeight < shallowHeight)
+				{
+					height = shallowHeight;
+					tileclass = clShallow;
+				}
+				else
+					height = someHeight;
+
+				if (someHeight >= 0)
+					terrain = tShore;
+				else
+					terrain = tWater;
 			}
 
+			addToClass(ix, iz, clWater);
+
+			if (getHeight(ix, iz) < height)
+				continue;
+
+			setHeight(ix, iz, height);
+
+			if (terrain)
+				placeTerrain(ix, iz, terrain);
+
+			if (tileclass)
+				addToClass(ix, iz, tileclass);
+		}
+}
 RMS.SetProgress(40);
 
 createBumps(avoidClasses(clWater, 2, clPlayer, 20));
