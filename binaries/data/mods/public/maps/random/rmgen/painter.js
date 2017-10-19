@@ -217,8 +217,8 @@ SmoothElevationPainter.prototype.paint = function(area)
 		if (!withinArea(areaID, point.x, point.z))
 			continue;
 
-		let count = 8;
-		let sum = 8 * newHeight[point.x][point.z];
+		let count = 0;
+		let sum = 0;
 
 		for (let dx = -1; dx <= 1; ++dx)
 		{
@@ -236,7 +236,7 @@ SmoothElevationPainter.prototype.paint = function(area)
 			}
 		}
 
-		g_Map.height[point.x][point.z] = sum / count;
+		g_Map.height[point.x][point.z] = (newHeight[point.x][point.z] + sum / count) / 2;
 	}
 };
 
