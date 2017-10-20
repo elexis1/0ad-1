@@ -2,6 +2,7 @@
 // Map Width: 80km
 
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 RMS.LoadLibrary("rmgen2");
 RMS.LoadLibrary("rmbiome");
 

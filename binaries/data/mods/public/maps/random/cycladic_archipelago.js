@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 const tOceanRockDeep = "medit_sea_coral_deep";
 const tOceanCoral = "medit_sea_coral_plants";

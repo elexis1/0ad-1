@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 var tGrass = ["medit_grass_field", "medit_grass_field_b", "temp_grass_c"];
 var tLushGrass = ["medit_grass_field","medit_grass_field_a"];

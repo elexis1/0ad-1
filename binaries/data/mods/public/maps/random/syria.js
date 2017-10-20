@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 //terrain textures
 const tMainDirt = ["desert_dirt_rocks_1", "desert_dirt_cracks"];

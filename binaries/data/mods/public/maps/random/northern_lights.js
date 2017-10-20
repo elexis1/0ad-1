@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 const tSnowA = ["polar_snow_b"];
 const tSnowB = "polar_ice_snow";
