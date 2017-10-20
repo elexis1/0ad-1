@@ -1,34 +1,18 @@
-//////////////////////////////////////////////////////////////////////
-//	Terrain
-//
-//	Abstract class for terrain placers
-//
-//////////////////////////////////////////////////////////////////////
-
 function Terrain() {}
 
 Terrain.prototype.place = function(x, z)
 {
-	// Clear old array
 	g_Map.terrainObjects[x][z] = undefined;
-
 	this.placeNew(x, z);
 };
 
 Terrain.prototype.placeNew = function() {};
 
-//////////////////////////////////////////////////////////////////////
-//	SimpleTerrain
-//
-//	Class for placing simple terrains
-//		(one texture and one tree per tile)
-//
-//	texture: Terrain texture name
-//	treeType: Optional template of the tree entity for this terrain
-//
-//////////////////////////////////////////////////////////////////////
-
-function SimpleTerrain(texture, treeType)
+/**
+ * Class for painting the given terrain texture.
+ * Optionally places an entity of the given template on each affected tile.
+ */
+function SimpleTerrain(texture, treeType = undefined)
 {
 	if (texture === undefined)
 		throw new Error("SimpleTerrain: texture not defined");
@@ -41,21 +25,16 @@ SimpleTerrain.prototype = new Terrain();
 SimpleTerrain.prototype.constructor = SimpleTerrain;
 SimpleTerrain.prototype.placeNew = function(x, z)
 {
-	if (this.treeType !== undefined && g_Map.validT(Math.round(x), Math.round(z)))
+	if (this.treeType !== undefined && g_Map.validT(x, z))
 		g_Map.terrainObjects[x][z] = new Entity(this.treeType, 0, x + 0.5, z + 0.5, randFloat(0, 2 * PI));
 
 	g_Map.texture[x][z] = g_Map.getTextureID(this.texture);
 };
 
-//////////////////////////////////////////////////////////////////////
-//	RandomTerrain
-//
-//	Class for placing random SimpleTerrains
-//
-//	terrains: Array of SimpleTerrain objects
-//
-//////////////////////////////////////////////////////////////////////
 
+/**
+ * Places one of the given terrains.
+ */
 function RandomTerrain(terrains)
 {
 	if (!(terrains instanceof Array) || !terrains.length)
