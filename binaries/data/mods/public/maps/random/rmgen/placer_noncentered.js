@@ -29,7 +29,7 @@ RectPlacer.prototype.place = function(constraint)
 	for (let x = this.x1; x < this.x2; ++x)
 		for (let z = this.z1; z < this.z2; ++z)
 			if (constraint.allows(x, z))
-				ret.push(new PointXZ(x, z));
+				ret.push({ "x": x, "z": z });
 			else
 				return undefined;
 
@@ -54,7 +54,7 @@ HeightPlacer.prototype.place = function(constraint)
 			if (g_Map.height[x][z] >= this.lowerBound &&
 			    g_Map.height[x][z] <= this.upperBound &&
 			    (!constraint || constraint.allows(x, z)))
-				ret.push(new PointXZ(x, z));
+				ret.push({ "x": x, "z": z });
 
 	return ret;
 };
@@ -159,15 +159,15 @@ PathPlacer.prototype.place = function(constraint)
 		let taperedWidth = (1 - t * this.tapering) * this.width / 2;
 
 		// Find slope of offset path
-		segments1.push(
-			new PointXZ(
-				Math.round(nx + ndz * taperedWidth),
-				Math.round(nz - ndx * taperedWidth)));
+		segments1.push({
+			"x": Math.round(nx + ndz * taperedWidth),
+			"z": Math.round(nz - ndx * taperedWidth)
+		});
 
-		segments2.push(
-			new PointXZ(
-				Math.round(nx2 - ndz * taperedWidth),
-				Math.round(nz2 + ndx * taperedWidth)));
+		segments2.push({
+			"x": Math.round(nx2 - ndz * taperedWidth),
+			"z": Math.round(nz2 + ndx * taperedWidth)
+		});
 	}
 
 	// Draw path segments
@@ -185,7 +185,7 @@ PathPlacer.prototype.place = function(constraint)
 			{
 				if (g_Map.inMapBounds(x, z) && !gotRet[x][z])
 				{
-					retVec.push(new PointXZ(x, z));
+					retVec.push({ "x": x, "z": z });
 					gotRet[x][z] = 1;
 				}
 			}

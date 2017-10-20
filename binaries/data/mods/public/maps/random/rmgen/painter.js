@@ -180,7 +180,7 @@ SmoothElevationPainter.prototype.paint = function(area)
 				{
 					newHeight[nx][nz] = g_Map.height[nx][nz];
 					gotHeightPt[nx][nz] = 1;
-					heightPoints.push(new PointXZ(nx, nz));
+					heightPoints.push({ "x": nx, "z": nz });
 				}
 			}
 		}
@@ -283,7 +283,7 @@ function breadthFirstSearchPaint(args)
 
 				saw[nx][nz] = 1;
 				dist[nx][nz] = 0;
-				pointQueue.push(new PointXZ(nx, nz));
+				pointQueue.push({"x": nx, "z": nz });
 			}
 		}
 
@@ -310,7 +310,7 @@ function breadthFirstSearchPaint(args)
 
 				saw[nx][nz] = 1;
 				dist[nx][nz] = distance + 1;
-				pointQueue.push(new PointXZ(nx, nz));
+				pointQueue.push({ "x": nx, "z": nz });
 			}
 		}
 	}
