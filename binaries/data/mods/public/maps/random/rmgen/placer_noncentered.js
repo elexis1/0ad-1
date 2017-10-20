@@ -37,6 +37,29 @@ RectPlacer.prototype.place = function(constraint)
 };
 
 /**
+ * The HeightPlacer provides all points meeting the constraint that have an elevation within the given boundaries.
+ */
+function HeightPlacer(lowerBound, upperBound)
+{
+    this.lowerBound = lowerBound;
+    this.upperBound = upperBound;
+}
+
+HeightPlacer.prototype.place = function(constraint)
+{
+	let mapSize = getMapSize();
+    let ret = [];
+	for (let x = 0; x < mapSize; ++x)
+		for (let z = 0; z < mapSize; ++z)
+			if (g_Map.height[x][z] >= this.lowerBound &&
+			    g_Map.height[x][z] <= this.upperBound &&
+			    (!constraint || constraint.allows(x, z)))
+				ret.push(new PointXZ(x, z));
+
+	return ret;
+};
+
+/**
  * A PathPlacer creates a winding path between two points.
  *
  * @param x1, z1 - Starting point of path.
