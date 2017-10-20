@@ -427,7 +427,7 @@ function getSlopeMap(inclineMap = getInclineMap(g_Map.height))
 		let max_y = inclineMap[x].length;
 		slopeMap[x] = new Float32Array(max_y);
 		for (let y = 0; y < max_y; ++y)
-			slopeMap[x][y] = Math.pow(inclineMap[x][y].x * inclineMap[x][y].x + inclineMap[x][y].y * inclineMap[x][y].y, 0.5);
+			slopeMap[x][y] = Math.sqrt(Math.square(inclineMap[x][y].x) + Math.square(inclineMap[x][y].y));
 	}
 	return slopeMap;
 }

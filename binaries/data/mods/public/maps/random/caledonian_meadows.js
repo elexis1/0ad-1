@@ -20,12 +20,12 @@ function placeRandomPathToHeight(
 		rectangularSmoothToHeight(position, width, width, targetHeight, strength, heightmap);
 		if (texture)
 		{
+			let painters = [new TerrainPainter(texture)];
 			if (tileClass !== undefined)
-				createArea(new ClumpPlacer(0.3 * width * width, 1, 1, 1, floor(position.x), floor(position.y)),
-					[new TerrainPainter(texture), paintClass(tileClass)]);
-			else
-				createArea(new ClumpPlacer(0.3 * width * width, 1, 1, 1, floor(position.x), floor(position.y)),
-					new TerrainPainter(texture));
+				painters.push(paintClass(tileClass));
+			createArea(
+				new ClumpPlacer(0.3 * Math.square(width), 1, 1, 1, Math.floor(position.x), Math.floor(position.y)),
+				painters);
 		}
 		pathPoints.push({ "x": position.x, "y": position.y, "dist": distance });
 		// Check for distance to target and setup for next loop if needed
