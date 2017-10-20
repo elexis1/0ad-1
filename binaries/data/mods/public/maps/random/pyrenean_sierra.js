@@ -81,7 +81,6 @@ var clWater = createTileClass();
 // Initial Terrain Creation
 // I'll use very basic noised sinusoidal functions to give the terrain a way aspect
 // It looks like we can't go higher than ≈ 75. Given this I'll lower the ground
-
 const baseHeight = -6;
 setWaterHeight(8);
 
@@ -147,148 +146,121 @@ placeDefaultPlayerBases({
 		"template": aGrassShort
 	}
 });
-
 RMS.SetProgress(30);
 
-log ("Creating the pyreneans...");
+log("Creating the pyreneans...");
+var MountainStartX = fractionToTiles(0.5) + Math.cos(MoutainAngle) * fractionToTiles(0.34);
+var MountainStartZ = fractionToTiles(0.5) + Math.sin(MoutainAngle) * fractionToTiles(0.34);
+var MountainEndX = fractionToTiles(0.5) - Math.cos(MoutainAngle) * fractionToTiles(0.34);
+var MountainEndZ = fractionToTiles(0.5) - Math.sin(MoutainAngle) * fractionToTiles(0.34);
 
-// This is the basic orientation of the pyreneans
-var MountainStartX = fractionToTiles(0.5) + cos(MoutainAngle)*fractionToTiles(0.34);
-var MountainStartZ = fractionToTiles(0.5) + sin(MoutainAngle)*fractionToTiles(0.34);
-var MountainEndX = fractionToTiles(0.5) - cos(MoutainAngle)*fractionToTiles(0.34);
-var MountainEndZ = fractionToTiles(0.5) - sin(MoutainAngle)*fractionToTiles(0.34);
-var MountainHeight = scaleByMapSize(50,65);
-// Number of peaks
-var NumOfIterations = scaleByMapSize(100,1000);
+var MountainHeight = scaleByMapSize(50, 65);
+var peakCount = scaleByMapSize(100, 1000);
+var MountainWidth = scaleByMapSize(15, 55);
 
-var randomNess = randFloat(-scaleByMapSize(1,12),scaleByMapSize(1,12));
+var randomness = randFloat(-1, 1) * scaleByMapSize(1, 12);
 
-for (var i = 0; i < NumOfIterations; i++)
+for (let i = 0; i < peakCount; ++i)
 {
-	RMS.SetProgress(45 * i/NumOfIterations + 30 * (1-i/NumOfIterations));
+	RMS.SetProgress(45 * i / peakCount + 30 * (1 - i / peakCount));
 
-	var position = i/NumOfIterations;
-	var width = scaleByMapSize(15,55);
+	let position = i / peakCount;
 
-	var randHeight2 = randFloat(0,10) + MountainHeight;
+	let randHeight2 = randFloat(0, 10) + MountainHeight;
 
-	for (var dist = 0; dist < width*3; dist++)
+	for (let dist = 0; dist < MountainWidth; dist += 1/3)
 	{
-		var okDist = dist/3;
-		var S1x = round((MountainStartX * (1-position) + MountainEndX*position) + randomNess*cos(position*3.14*4) + cos(MoutainAngle+PI/2)*okDist);
-		var S1z = round((MountainStartZ * (1-position) + MountainEndZ*position) + randomNess*sin(position*3.14*4) + sin(MoutainAngle+PI/2)*okDist);
-		var S2x = round((MountainStartX * (1-position) + MountainEndX*position) + randomNess*cos(position*3.14*4) + cos(MoutainAngle-PI/2)*okDist);
-		var S2z = round((MountainStartZ * (1-position) + MountainEndZ*position) + randomNess*sin(position*3.14*4) + sin(MoutainAngle-PI/2)*okDist);
+		// Sigmoid function
+		let f = 2 * (1 - dist / MountainWidth);
+		let FormX =
+			     (-f + 1.9)
+			- 4 * (f - randFloat(0.9, 1.1)) *
+			      (f - randFloat(0.9, 1.1)) *
+			      (f - randFloat(0.9, 1.1));
 
-		// complicated sigmoid
-		// Ranges is 0-1, FormX is 0-1 too.
-		var FormX = (-2*(1-okDist/width)+1.9) - 4*(2*(1-okDist/width)-randFloat(0.9,1.1))*(2*(1-okDist/width)-randFloat(0.9,1.1))*(2*(1-okDist/width)-randFloat(0.9,1.1));
-		var Formula = (1/(1 + Math.exp(FormX)));
+		let formula = 1 / (1 + Math.exp(FormX));
 
 		// If we're too far from the border, we flatten
-		Formula *= 1 - 5 * Math.max(0, Math.abs(0.5 - position) - 0.3);
+		formula *= 1 - 5 * Math.max(0, Math.abs(0.5 - position) - 0.3);
 
-		var randHeight = randFloat(-9,9) * Formula;
+		let randHeight = randFloat(-1, 1) * 9 * formula;
 
-		var height = baseHeights[S1x][S1z];
-		setHeight(S1x,S1z, height + randHeight2 * Formula + randHeight );
-		var height = baseHeights[S2x][S2z];
-		setHeight(S2x,S2z, height + randHeight2 * Formula + randHeight );
-		if (getHeight(S1x,S1z) > 15)
-			addToClass(S1x,S1z, clPyrenneans);
-		if (getHeight(S2x,S2z) > 15)
-			addToClass(S2x,S2z, clPyrenneans);
-	}
-}
-// Allright now slight smoothing (decreasing with height)
-for (var ix = 1; ix < mapSize-1; ix++)
-{
-	for (var iz = 1; iz < mapSize-1; iz++)
-	{
-		if (g_Map.inMapBounds(ix,iz) && checkIfInClass(ix,iz,clPyrenneans) ) {
-			var NB = getNeighborsHeight(ix,iz);
-			var index = 9/(1 + Math.max(0,getHeight(ix,iz)/7));
-			setHeight(ix,iz, (getHeight(ix,iz)*(9-index) + NB*index)/9 );
+		for (let i of [1, -1])
+		{
+			let x = Math.round((MountainStartX * (1 - position) + MountainEndX * position) + randomness * Math.cos(position * Math.PI * 4) + Math.cos(MoutainAngle + i * Math.PI / 2) * dist);
+			let z = Math.round((MountainStartZ * (1 - position) + MountainEndZ * position) + randomness * Math.sin(position * Math.PI * 4) + Math.sin(MoutainAngle + i * Math.PI / 2) * dist);
+
+			setHeight(x, z, baseHeights[x][z] + randHeight2 * formula + randHeight);
+			if (getHeight(x, z) > 15)
+				addToClass(x, z, clPyrenneans);
 		}
 	}
 }
+// Smoothing decreasing with height
+for (let ix = 1; ix < mapSize - 1; ++ix)
+	for (let iz = 1; iz < mapSize - 1; ++iz)
+	{
+		if (g_Map.inMapBounds(ix,iz) && checkIfInClass(ix, iz, clPyrenneans))
+		{
+			var NB = getNeighborsHeight(ix,iz);
+			var index = 9/(1 + Math.max(0,getHeight(ix,iz)/7));
+			setHeight(ix, iz, (getHeight(ix,iz) * (9 - index) + NB * index) / 9);
+		}
+	}
 RMS.SetProgress(48);
 
-// Okay so the mountains are pretty much here.
-// Making the passes
-
-var passWidth = scaleByMapSize(15,100) /1.8;
-var S1x = round((MountainStartX * (0.35) + MountainEndX*0.65) + cos(MoutainAngle+PI/2)*passWidth);
-var S1z = round((MountainStartZ * (0.35) + MountainEndZ*0.65) + sin(MoutainAngle+PI/2)*passWidth);
-var S2x = round((MountainStartX * (0.35) + MountainEndX*0.65) + cos(MoutainAngle-PI/2)*passWidth);
-var S2z = round((MountainStartZ * (0.35) + MountainEndZ*0.65) + sin(MoutainAngle-PI/2)*passWidth);
-PassMaker(S1x, S1z, S2x, S2z, 4, 7, (getHeight(S1x,S1z) + getHeight(S2x,S2z))/2.0, MountainHeight-25, 2, clPass);
-
-S1x = round((MountainStartX * (0.65) + MountainEndX*0.35) + cos(MoutainAngle+PI/2)*passWidth);
-S1z = round((MountainStartZ * (0.65) + MountainEndZ*0.35) + sin(MoutainAngle+PI/2)*passWidth);
-S2x = round((MountainStartX * (0.65) + MountainEndX*0.35) + cos(MoutainAngle-PI/2)*passWidth);
-S2z = round((MountainStartZ * (0.65) + MountainEndZ*0.35) + sin(MoutainAngle-PI/2)*passWidth);
-PassMaker(S1x, S1z, S2x, S2z, 4, 7, (getHeight(S1x,S1z) + getHeight(S2x,S2z))/2.0, MountainHeight-25, 2, clPass);
+log("Creating passages...");
+var passWidth = scaleByMapSize(15, 100) / 1.8;
+var passLocation = 0.35;
+for (let passLoc of [passLocation, 1 - passLocation])
+{
+	let S1x = Math.round((MountainStartX * passLoc + MountainEndX * (1 - passLoc)) + Math.cos(MoutainAngle + Math.PI / 2) * passWidth);
+	let S1z = Math.round((MountainStartZ * passLoc + MountainEndZ * (1 - passLoc)) + Math.sin(MoutainAngle + Math.PI / 2) * passWidth);
+	let S2x = Math.round((MountainStartX * passLoc + MountainEndX * (1 - passLoc)) + Math.cos(MoutainAngle - Math.PI / 2) * passWidth);
+	let S2z = Math.round((MountainStartZ * passLoc + MountainEndZ * (1 - passLoc)) + Math.sin(MoutainAngle - Math.PI / 2) * passWidth);
+	PassMaker(S1x, S1z, S2x, S2z, 4, 7, (getHeight(S1x, S1z) + getHeight(S2x, S2z)) / 2, MountainHeight - 25, 2, clPass);
+}
 
 RMS.SetProgress(50);
 
-// Smoothing the mountains
-for (var ix = 1; ix < mapSize-1; ix++)
-{
-	for (var iz = 1; iz < mapSize-1; iz++)
-	{
-		if ( g_Map.inMapBounds(ix,iz) && checkIfInClass(ix,iz,clPyrenneans) ) {
-			var NB = getNeighborsHeight(ix,iz);
-			var index = 9/(1 + Math.max(0,(getHeight(ix,iz)-10)/7));
-			setHeight(ix,iz, (getHeight(ix,iz)*(9-index) + NB*index)/9 );
-			baseHeights[ix][iz] = (getHeight(ix,iz)*(9-index) + NB*index)/9;
+log("Smoothing the mountains...");
+for (let ix = 1; ix < mapSize - 1; ++ix)
+	for (let iz = 1; iz < mapSize - 1; ++iz)
+		if (g_Map.inMapBounds(ix,iz) && checkIfInClass(ix, iz, clPyrenneans))
+		{
+			let index = 9 / (1 + Math.max(0, (getHeight(ix, iz) - 10) / 7));
+			setHeight(ix,iz, (getHeight(ix,iz) * (9 - index) + getNeighborsHeight(ix, iz) * index) / 9);
 		}
-	}
+
+log("Creating oceans...");
+for (let angle of [0, Math.PI])
+{
+	let OceanX = fractionToTiles(0.5) + Math.cos(angle + MoutainAngle + lololo) * fractionToTiles(0.48);
+	let OceanZ = fractionToTiles(0.5) + Math.sin(angle + MoutainAngle + lololo) * fractionToTiles(0.48);
+	createArea(
+		new ClumpPlacer(diskArea(fractionToTiles(0.18)), 0.9, 0.05, 10, OceanX, OceanZ),
+		[
+			paintClass(clWater),
+			new ElevationPainter(-22)
+		],
+		null);
 }
 
-log ("creating Oceans");
-// ALlright for hacky reasons I can't use a smooth Elevation Painter, that wouldn't work.
-// I'll use a harsh one, and then smooth it out
-var OceanX = fractionToTiles(0.5) + cos(MoutainAngle + lololo)*fractionToTiles(0.48);
-var OceanZ = fractionToTiles(0.5) + sin(MoutainAngle + lololo)*fractionToTiles(0.48);
-
-createArea(
-	new ClumpPlacer(diskArea(fractionToTiles(0.18)), 0.9, 0.05, 10, OceanX, OceanZ),
-	[
-		paintClass(clWater),
-		new ElevationPainter(-22)
-	],
-	null);
-
-OceanX = fractionToTiles(0.5) + cos(PI + MoutainAngle + lololo)*fractionToTiles(0.48);
-OceanZ = fractionToTiles(0.5) + sin(PI + MoutainAngle + lololo)*fractionToTiles(0.48);
-
-createArea(
-	new ClumpPlacer(diskArea(fractionToTiles(0.18)), 0.9, 0.05, 10, OceanX, OceanZ),
-	[
-		new ElevationPainter(-22),
-		paintClass(clWater)
-	],
-	null);
-
-// Smoothing around the water, then going a bit random
-for (var ix = 1; ix < mapSize-1; ix++)
-{
-	for (var iz = 1; iz < mapSize-1; iz++)
+log("Smooth only around the water...");
+for (let ix = 1; ix < mapSize - 1; ++ix)
+	for (let iz = 1; iz < mapSize - 1; ++iz)
 	{
-		if ( g_Map.inMapBounds(ix,iz) && getTileClass(clWater).countInRadius(ix,iz,5,true) > 0 ) {
-			// Allright smoothing
-			// I'll have to hack again.
-
+		if (g_Map.inMapBounds(ix,iz) && getTileClass(clWater).countInRadius(ix, iz, 5, true))
+		{
 			var averageHeight = 0;
 			var size = 5;
-			if (getTileClass(clPyrenneans).countInRadius(ix,iz,1,true) > 0)
+			if (getTileClass(clPyrenneans).countInRadius(ix,iz,1,true))
 				size = 1;
-			else if (getTileClass(clPyrenneans).countInRadius(ix,iz,2,true) > 0)
+			else if (getTileClass(clPyrenneans).countInRadius(ix,iz,2,true))
 				size = 2;
-			else if (getTileClass(clPyrenneans).countInRadius(ix,iz,3,true) > 0)
+			else if (getTileClass(clPyrenneans).countInRadius(ix,iz,3,true))
 				size = 3;
-			else if (getTileClass(clPyrenneans).countInRadius(ix,iz,4,true) > 0)
+			else if (getTileClass(clPyrenneans).countInRadius(ix,iz,4,true))
 				size = 4;
 
 			var todivide = 0;
@@ -301,18 +273,18 @@ for (var ix = 1; ix < mapSize-1; ix++)
 						todivide += 1 / coord;
 					}
 
-			averageHeight += getHeight(ix,iz)*2;
-			averageHeight /= (todivide+2);
+			averageHeight += getHeight(ix, iz) * 2;
+			averageHeight /= todivide + 2;
 
-			setHeight(ix,iz, averageHeight );
+			setHeight(ix, iz, averageHeight);
 		}
-		if ( g_Map.inMapBounds(ix,iz) && getTileClass(clWater).countInRadius(ix,iz,4,true) > 0 && getTileClass(clWater).countInRadius(ix,iz,4) > 0 )
+
+		if (g_Map.inMapBounds(ix, iz) && getTileClass(clWater).countInRadius(ix, iz, 4, true) && getTileClass(clWater).countInRadius(ix, iz, 4))
 			setHeight(ix,iz, getHeight(ix,iz) + randFloat(-1,1));
 	}
-}
 RMS.SetProgress(55);
 
-log ("Creating hills...");
+log("Creating hills...");
 createAreas(
 	new ClumpPlacer(scaleByMapSize(60, 120), 0.3, 0.06, 5),
 	[
