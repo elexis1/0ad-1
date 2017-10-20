@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 const tGrass = ["steppe_grass_a", "steppe_grass_b", "steppe_grass_c", "steppe_grass_d"];
 const tForestFloor = "steppe_grass_c";

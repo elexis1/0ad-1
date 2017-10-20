@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 var tPrimary = ["polar_snow_a"];
 var tCliff = ["polar_cliff_a", "polar_cliff_b", "polar_cliff_snow"];

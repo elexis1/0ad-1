@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 const tCity = "desert_city_tile_pers_dirt";
 
