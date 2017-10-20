@@ -126,7 +126,7 @@ Vector2D.prototype.compareLength = function(v)
 
 Vector2D.prototype.distanceToSquared = function(v)
 {
-	return Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2);
+	return Math.square(this.x - v.x) + Math.square(this.y - v.y);
 };
 
 Vector2D.prototype.distanceTo = function(v)
@@ -283,7 +283,7 @@ Vector3D.prototype.compareLength = function(v)
 
 Vector3D.prototype.distanceToSquared = function(v)
 {
-	return Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2) + Math.pow(this.z - v.z, 2);
+	return Math.square(this.x - v.x) + Math.square(this.y - v.y) + Math.square(this.z - v.z);
 };
 
 Vector3D.prototype.distanceTo = function(v)
@@ -293,7 +293,7 @@ Vector3D.prototype.distanceTo = function(v)
 
 Vector3D.prototype.horizDistanceToSquared = function(v)
 {
-	return Math.pow(this.x - v.x, 2) + Math.pow(this.z - v.z, 2);
+	return Math.square(this.x - v.x) + Math.square(this.z - v.z);
 };
 
 Vector3D.prototype.horizDistanceTo = function(v)

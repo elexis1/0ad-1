@@ -175,6 +175,14 @@ Math.pow = function(x, y)
 };
 
 /**
+ * Get the square of a number without repeating the value and without calling the slower Math.pow.
+ */
+Math.square = function(x)
+{
+	return x * x;
+};
+
+/**
  * Approximation of the exponential function, e raised to the power x
  */
 Math.exp = function(x)
