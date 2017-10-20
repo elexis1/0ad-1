@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 var tCity = "desert_city_tile";
 var tCityPlaza = "desert_city_tile_plaza";

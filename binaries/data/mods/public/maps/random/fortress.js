@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 const tGrass = ["temp_grass_aut", "temp_grass_aut", "temp_grass_d_aut"];
 const tForestFloor = "temp_grass_aut";

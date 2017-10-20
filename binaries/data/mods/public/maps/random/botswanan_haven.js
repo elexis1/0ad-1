@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 const tGrassA = "savanna_shrubs_a_wetseason";
 const tGrassB = "savanna_shrubs_a";

@@ -1,4 +1,5 @@
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 
 const tGrass = ["medit_grass_field_a", "medit_grass_field_b"];
 const tForestFloorC = "medit_plants_dirt";

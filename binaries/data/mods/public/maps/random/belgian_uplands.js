@@ -4,6 +4,7 @@ timeArray.push(Date.now());
 
 // Importing rmgen libraries
 RMS.LoadLibrary("rmgen");
+RMS.LoadLibrary("common");
 RMS.LoadLibrary("heightmap");
 
 InitMap();
