@@ -319,6 +319,58 @@ function createShallowsPassage(x1, z1, x2, z2, width, maxHeight, shallowHeight, 
 }
 
 /**
+ * Creates a smooth, passable path between between (startX, startZ) and (endX, endZ) with the given startWidth and endWidth.
+ * Paints the given tileclass and terrain.
+ */
+function createPassage(args)
+{
+	let mapSize = getMapSize();
+	let stepCount = getDistance(args.startX, args.startZ, args.endX, args.endZ) + 2;
+
+	let startY = args.startY !== undefined ? args.startY : getHeight(args.startX, args.startZ);
+	let endY = args.endY !== undefined ? args.endY : getHeight(args.endX, args.endZ);
+
+	for (let step = 0; step <= stepCount; step += 0.5)
+	{
+		let halfStepCount = stepCount / 2;
+		let stepCenter = Math.abs(step - halfStepCount);
+		let remainingSteps = stepCount - step;
+		let halfWidth = Math.floor((stepCenter * args.startWidth + (halfStepCount - stepCenter) * args.endWidth) / stepCount);
+		let ix = (args.startX * remainingSteps + args.endX * step) / stepCount;
+		let iz = (args.startZ * remainingSteps + args.endZ * step) / stepCount;
+
+		// perpendicular direction
+		let direction = [args.startZ - args.endZ, args.endX - args.startX];
+		if (Math.abs(direction[0]) > Math.abs(direction[1]))
+			direction.reverse();
+
+		for (let passageZ = -halfWidth; passageZ <= halfWidth; passageZ += 0.5)
+		{
+			let x = Math.round(ix + passageZ * direction[0] / Math.abs(direction[1]));
+			let z = Math.round(iz + passageZ * Math.sign(direction[1] || 1));
+
+			if (!g_Map.inMapBounds(x, z))
+				continue;
+
+			//let targetHeight = (stepCenter * startY + (halfStepCount - stepCenter) * endY) / halfStepCount;
+			let targetHeight = (remainingSteps * startY + endY * step) / stepCount;
+
+			let smoothDistance = args.smooth - Math.abs(Math.abs(passageZ) - halfWidth);
+			if (smoothDistance > 0)
+				targetHeight = (getHeight(x, z) * smoothDistance + targetHeight / smoothDistance) / (smoothDistance + 1 / smoothDistance);
+
+			g_Map.setHeight(x, z, targetHeight);
+
+			if (args.tileclass)
+				addToClass(x, z, args.tileclass);
+
+			if (args.terrain)
+				placeTerrain(x, z, args.terrain);
+		}
+	}
+}
+
+/**
  * Creates a ramp from (x1, y1) to (x2, y2).
  */
 function createRamp(x1, y1, x2, y2, minHeight, maxHeight, width, smoothLevel, mainTerrain, edgeTerrain, tileclass)
