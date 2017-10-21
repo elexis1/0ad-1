@@ -75,7 +75,7 @@ var heightOffsetLevel2 = 8;
 var heightOffsetBumps = 2;
 var heightOffsetAntiBumps = -5;
 
-log("Creating Corsica and Sardinia");
+log("Creating Corsica and Sardinia...");
 var islandX = [0.01, 0.99];
 var islandZ = [0.1, 0.9];
 
@@ -121,7 +121,7 @@ for (let island = 0; island < 2; ++island)
 			null);
 	}
 
-	log("Creating creeks");
+	log("Creating creeks...");
 	for (let i = 0; i < nbCreeks + 1; ++i)
 	{
 		let radius = fractionToTiles(randFloat(0.49, 0.55));
@@ -170,16 +170,16 @@ for (let island = 0; island < 2; ++island)
 			null);
 	}
 
-	let x = Math.round((fx * 5 + fractionToTiles(0.5)) / 6.0);
+	let x = Math.round((fx * 5 + fractionToTiles(0.5)) / 6);
 	let z = Math.round(fz);
 
-	log("Creating main relief");
+	log("Creating main relief...");
 	createArea(
 		new ClumpPlacer(fractionToArea(0.54), 1, 0.2, 4, x, z),
 		new SmoothElevationPainter(ELEVATION_MODIFY, heightOffsetMainRelief, fractionToTiles(0.45)),
 		null);
 
-	log("Creating first level plateau");
+	log("Creating first level plateau...");
 	createArea(
 		new ClumpPlacer(fractionToArea(0.324), 0.95, 0.02, 4, x, z),
 		new SmoothElevationPainter(ELEVATION_MODIFY, heightOffsetLevel1, 1),
@@ -205,7 +205,7 @@ for (let island = 0; island < 2; ++island)
 
 	if (mapSize > 150)
 	{
-		log("Creating second level plateau");
+		log("Creating second level plateau...");
 		createArea(
 			new ClumpPlacer(fractionToArea(0.1), 0.98, 0.04, 4, x, z),
 			[
