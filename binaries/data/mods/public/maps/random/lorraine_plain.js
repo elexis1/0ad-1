@@ -106,7 +106,7 @@ log("Creating the shallows of the main river...");
 for (let i = 0; i <= randIntInclusive(3, scaleByMapSize(4, 6)); ++i)
 {
 	let cLocation = Math.floor(fractionToTiles(randFloat(0.15, 0.85)));
-	passageMaker(
+	createShallowsPassage(
 		cLocation,
 		Math.floor(fractionToTiles(0.35)),
 		cLocation,
