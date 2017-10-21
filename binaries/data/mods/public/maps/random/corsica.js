@@ -158,16 +158,16 @@ for (let island = 0; island < 2; ++island)
 			[new SmoothElevationPainter(ELEVATION_SET, heightBeaches, 5)],
 			null);
 
-		straightPassageMaker(
-			Math.max(0, Math.min(startX, mapSize)),
-			Math.max(0, Math.min(startZ, mapSize)),
-			Math.max(0, Math.min(endX, mapSize)),
-			Math.max(0, Math.min(endZ, mapSize)),
-			25,
-			18,
-			4,
-			clShore,
-			null);
+		createPassage({
+			"startX": Math.max(0, Math.min(startX, mapSize)),
+			"startZ": Math.max(0, Math.min(startZ, mapSize)),
+			"endX": Math.max(0, Math.min(endX, mapSize)),
+			"endZ": Math.max(0, Math.min(endZ, mapSize)),
+			"startWidth": 25,
+			"endWidth": 18,
+			"smooth": 4,
+			"tileclass": clPassage
+		});
 	}
 
 	let x = Math.round((fx * 5 + fractionToTiles(0.5)) / 6);
@@ -190,17 +190,17 @@ for (let island = 0; island < 2; ++island)
 	{
 		let radius = Math.sqrt(fractionToArea(0.324) / Math.PI) + 2;
 		let angle = Math.PI * (i / 7 + 1 / 9 + island) + swapAngle;
-
-		straightPassageMaker(
-			Math.round(x + (radius + 7) * Math.cos(angle)),
-			Math.round(z + (radius + 7) * Math.sin(angle)),
-			Math.round(x + (radius - 5) * Math.cos(angle)),
-			Math.round(z + (radius - 5) * Math.sin(angle)),
-			4,
-			10,
-			3,
-			clPassage,
-			tGrass);
+		createPassage({
+			"startX": Math.round(x + (radius + 7) * Math.cos(angle)),
+			"startZ": Math.round(z + (radius + 7) * Math.sin(angle)),
+			"endX": Math.round(x + (radius - 5) * Math.cos(angle)),
+			"endZ": Math.round(z + (radius - 5) * Math.sin(angle)),
+			"startWidth": 4,
+			"endWidth": 10,
+			"smooth": 3,
+			"tileclass": clPassage,
+			"terrain": tGrass
+		});
 	}
 
 	if (mapSize > 150)
@@ -220,16 +220,17 @@ for (let island = 0; island < 2; ++island)
 			let radius = Math.sqrt(fractionToArea(0.1) / Math.PI) + 2;
 			let angle = Math.PI * (i / (2 * nbPassagesIsland) + 1 / (4 * nbPassagesIsland) + island) + swapAngle;
 
-			straightPassageMaker(
-				Math.round(x + (radius + 5) * Math.cos(angle)),
-				Math.round(z + (radius + 5) * Math.sin(angle)),
-				Math.round(x + (radius - 4) * Math.cos(angle)),
-				Math.round(z + (radius - 4) * Math.sin(angle)),
-				1,
-				6,
-				2,
-				clPassage,
-				tGrass);
+			createPassage({
+				"startX": Math.round(x + (radius + 5) * Math.cos(angle)),
+				"startZ": Math.round(z + (radius + 5) * Math.sin(angle)),
+				"endX": Math.round(x + (radius - 4) * Math.cos(angle)),
+				"endZ": Math.round(z + (radius - 4) * Math.sin(angle)),
+				"startWidth": 1,
+				"endWidth": 6,
+				"smooth": 2,
+				"tileclass": clPassage,
+				"terrain": tGrass
+			});
 		}
 	}
 }
@@ -592,75 +593,6 @@ setWaterMurkiness(0.72);
 setWaterWaviness(2.0);
 setWaterType("ocean");
 ExportMap();
-
-// this function will go from point [x1,z1] to point [x2,z2], while following a curve of width (starting-center-starting)
-// it can smooth on the side depending on "smooth", which is the distance of the smooth. Tileclass and Terrain set a tileclass/terrain
-// it effectively can create a smooth path from point [x1,z1] to point [x2,z2], ie Canyon, whatever.
-// note: NOT efficient for large distances: I'm widely oversampling
-function straightPassageMaker(x1, z1, x2, z2, startWidth, centerWidth, smooth, tileclass, terrain)
-{
-	var mapSize = g_Map.size;
-	var stepNB = sqrt((x2-x1)*(x2-x1) + (z2-z1)*(z2-z1)) + 2;
-
-	var startHeight = getHeight(x1,z1);
-	var finishHeight = getHeight(x2,z2);
-	for (var step = 0; step <= stepNB; step+=0.5)
-	{
-		var ix = ((stepNB-step)*x1 + x2*step) / stepNB;
-		var iz = ((stepNB-step)*z1 + z2*step) / stepNB;
-
-		// 5 at star/end, and 0 at the center
-		var width = (Math.abs(step - stepNB / 2) * startWidth + (stepNB / 2 - Math.abs(step - stepNB / 2)) * centerWidth) / (stepNB / 2);
-		var oldDirection = [x2-x1, z2-z1];
-
-		// let's get the perpendicular direction
-		var direction = [ -oldDirection[1],oldDirection[0] ];
-
-		if (Math.abs(direction[0]) > Math.abs(direction[1]))
-		{
-			direction[1] = direction[1] / Math.abs(direction[0]);
-			if (direction[0] > 0)
-				direction[0] = 1;
-			else
-				direction[0] = -1;
-		}
-		else
-		{
-			direction[0] = direction[0] / Math.abs(direction[1]);
-			if (direction[1] > 0)
-				direction[1] = 1;
-			else
-				direction[1] = -1;
-		}
-
-		for (var po = -Math.floor(width/2.0); po <= Math.floor(width/2.0); po+=0.5)
-		{
-			var rx = po*direction[0];
-			var rz = po*direction[1];
-
-			var targetHeight = ((stepNB-step)*startHeight + finishHeight*step) / stepNB;
-
-			if (round(ix + rx) < mapSize && round(iz + rz) < mapSize && round(ix + rx) >= 0 && round(iz + rz) >= 0)
-			{
-				// smoothing the sides
-				if (Math.abs(Math.abs(po) - Math.abs(Math.floor(width / 2))) < smooth)
-				{
-					var localHeight = getHeight(round(ix + rx), round(iz + rz));
-					var localPart = smooth - Math.abs(Math.abs(po) - Math.abs(Math.floor(width / 2)));
-					var targetHeight = (localHeight * localPart + targetHeight * (1/localPart) )/ (localPart + 1/localPart);
-				}
-
-				g_Map.setHeight(round(ix + rx), round(iz + rz), targetHeight);
-
-				if (tileclass !== null)
-					addToClass(round(ix + rx), round(iz + rz), tileclass);
-
-				if (terrain !== null)
-					placeTerrain(round(ix + rx), round(iz + rz), terrain);
-			}
-		}
-	}
-}
 
 function getHeightDifference(x1, z1)
 {
