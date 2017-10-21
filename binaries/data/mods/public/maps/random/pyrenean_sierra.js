@@ -214,13 +214,24 @@ var passWidth = scaleByMapSize(15, 100) / 1.8;
 var passLocation = 0.35;
 for (let passLoc of [passLocation, 1 - passLocation])
 {
-	let S1x = Math.round((MountainStartX * passLoc + MountainEndX * (1 - passLoc)) + Math.cos(MoutainAngle + Math.PI / 2) * passWidth);
-	let S1z = Math.round((MountainStartZ * passLoc + MountainEndZ * (1 - passLoc)) + Math.sin(MoutainAngle + Math.PI / 2) * passWidth);
-	let S2x = Math.round((MountainStartX * passLoc + MountainEndX * (1 - passLoc)) + Math.cos(MoutainAngle - Math.PI / 2) * passWidth);
-	let S2z = Math.round((MountainStartZ * passLoc + MountainEndZ * (1 - passLoc)) + Math.sin(MoutainAngle - Math.PI / 2) * passWidth);
-	PassMaker(S1x, S1z, S2x, S2z, 4, 7, (getHeight(S1x, S1z) + getHeight(S2x, S2z)) / 2, MountainHeight - 25, 2, clPass);
-}
+	let startX = Math.round((MountainStartX * passLoc + MountainEndX * (1 - passLoc)) + Math.cos(MoutainAngle + Math.PI / 2) * passWidth);
+	let startZ = Math.round((MountainStartZ * passLoc + MountainEndZ * (1 - passLoc)) + Math.sin(MoutainAngle + Math.PI / 2) * passWidth);
+	let endX = Math.round((MountainStartX * passLoc + MountainEndX * (1 - passLoc)) + Math.cos(MoutainAngle - Math.PI / 2) * passWidth);
+	let endZ = Math.round((MountainStartZ * passLoc + MountainEndZ * (1 - passLoc)) + Math.sin(MoutainAngle - Math.PI / 2) * passWidth);
 
+	createPassage({
+		"startX": startX,
+		"startZ": startZ,
+		"startY": (getHeight(startX, startZ) + getHeight(endX, endZ)) / 2,
+		"endX": endX,
+		"endZ": endZ,
+		"endY": MountainHeight - 25,
+		"startWidth": 4,
+		"endWidth": 7,
+		"smooth": 2,
+		"tileclass": clPass
+	});
+}
 RMS.SetProgress(50);
 
 log("Smoothing the mountains...");
@@ -478,64 +489,7 @@ function getNeighborsHeight(x1, z1)
 	height /= 8;
 	return height;
 }
-// Taken from Corsica vs Sardinia with tweaks
-function PassMaker(x1, z1, x2, z2, startWidth, centerWidth, startElevation, centerElevation, smooth, tileclass, terrain)
-{
-	var mapSize = g_Map.size;
-	var stepNB = sqrt((x2-x1)*(x2-x1) + (z2-z1)*(z2-z1)) + 2;
 
-	var startHeight = startElevation;
-	var finishHeight = centerElevation;
-
-	for (var step = 0; step <= stepNB; step+=0.5)
-	{
-		var ix = ((stepNB-step)*x1 + x2*step) / stepNB;
-		var iz = ((stepNB-step)*z1 + z2*step) / stepNB;
-
-		var width = (abs(step - stepNB/2.0) *startWidth + (stepNB/2 - abs(step - stepNB/2.0)) * centerWidth ) / (stepNB/2);
-
-		var oldDirection = [x2-x1, z2-z1];
-		// let's get the perpendicular direction
-		var direction = [ -oldDirection[1],oldDirection[0] ];
-		if (abs(direction[0]) > abs(direction[1]))
-		{
-			direction[1] = direction[1] / abs(direction[0]);
-			if (direction[0] > 0)
-				direction[0] = 1;
-			else
-				direction[0] = -1;
-		} else {
-			direction[0] = direction[0] / abs(direction[1]);
-			if (direction[1] > 0)
-				direction[1] = 1;
-			else
-				direction[1] = -1;
-		}
-		for (var po = -Math.floor(width/2.0); po <= Math.floor(width/2.0); po+=0.5)
-		{
-			var rx = po*direction[0];
-			var rz = po*direction[1];
-
-			var targetHeight = (abs(step - stepNB/2.0) *startHeight + (stepNB/2 - abs(step - stepNB/2.0)) * finishHeight ) / (stepNB/2);
-			if (round(ix + rx) < mapSize && round(iz + rz) < mapSize && round(ix + rx) >= 0 && round(iz + rz) >= 0)
-			{
-				// smoothing the sides
-				if ( abs(abs(po) - abs(Math.floor(width/2.0))) < smooth)
-				{
-					var localHeight = getHeight(round(ix + rx), round(iz + rz));
-					var localPart = smooth - abs(abs(po) - abs(Math.floor(width/2.0)));
-					var targetHeight = (localHeight * localPart + targetHeight * (1/localPart) )/ (localPart + 1/localPart);
-				}
-
-				g_Map.setHeight(round(ix + rx), round(iz + rz), targetHeight);
-				if (tileclass != null)
-					addToClass(round(ix + rx), round(iz + rz), tileclass);
-				if (terrain != null)
-					placeTerrain(round(ix + rx), round(iz + rz), terrain);
-			}
-		}
-	}
-}
 function getHeightDifference(x1, z1)
 {
 	x1 = round(x1);
