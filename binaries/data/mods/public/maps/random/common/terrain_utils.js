@@ -267,14 +267,14 @@ function createTributaries(horizontal, riverCount, riverWidth, waterHeight, heig
 				m2.reverse();
 			}
 
-			passageMaker(...m1, ...m2, scaleByMapSize(4, 8), -2, -2, 2, shallowTileClass, undefined, waterHeight);
+			createShallowsPassage(...m1, ...m2, scaleByMapSize(4, 8), -2, -2, 2, shallowTileClass, undefined, waterHeight);
 		}
 }
 
 /**
  * Create shallow water between (x1, z1) and (x2, z2) of tiles below maxHeight.
  */
-function passageMaker(x1, z1, x2, z2, width, maxHeight, shallowHeight, smooth, tileclass, terrain, riverHeight)
+function createShallowsPassage(x1, z1, x2, z2, width, maxHeight, shallowHeight, smooth, tileclass, terrain, riverHeight)
 {
 	let mapSize = getMapSize();
 	let distance = getDistance(x1, z1, x2, z2);
