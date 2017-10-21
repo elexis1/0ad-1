@@ -356,7 +356,7 @@ function unknownCentralRiver()
 				x1.reverse();
 				x2.reverse();
 			}
-			passageMaker(...x1, ...x2, scaleByMapSize(4, 8), -2, -2, 2, clShallow, undefined, waterHeight);
+			createShallowsPassage(...x1, ...x2, scaleByMapSize(4, 8), -2, -2, 2, clShallow, undefined, waterHeight);
 		}
 	}
 

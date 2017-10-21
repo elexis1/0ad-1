@@ -120,7 +120,7 @@ for (let i = 0; i < numPlayers; ++i)
 		avoidClasses(clPlayer, 5));
 
 	log("Creating shallows...");
-	passageMaker(
+	createShallowsPassage(
 		Math.round(fractionToTiles(playerX[i])),
 		Math.round(fractionToTiles(playerZ[i])),
 		Math.round(fractionToTiles(playerX[neighborID])),
