@@ -3,68 +3,58 @@
  * The center is determined by the x and z property which can be modified externally, typically by createAreas.
  */
 
-/////////////////////////////////////////////////////////////////////////////////////////
-//	ClumpPlacer
-//
-//	Class for generating a roughly circular clump of points
-//
-//	size: The average number of points in the clump
-//	coherence: How much the radius of the clump varies (1.0 = circle, 0.0 = very random)
-//	smoothness: How smooth the border of the clump is (1.0 = few "peaks", 0.0 = very jagged)
-//	failfraction: Percentage of place attempts allowed to fail (optional)
-//	x, z: Tile coordinates of placer center (optional)
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-
-function ClumpPlacer(size, coherence, smoothness, failFraction, x, z)
+/**
+ * The ClumpPlacer generates a roughly circular clump of points.
+ *
+ * @param size - The average number of points in the clump.
+ * @param coherence - How much the radius of the clump varies (1 = circle, 0 = very random).
+ * @param smoothness - How smooth the border of the clump is (1 = few peaks, 0 = very jagged).
+ * @param failfraction - Percentage of place attempts allowed to fail.
+ */
+function ClumpPlacer(size, coherence, smoothness, failFraction = 0, x = -1, z = -1)
 {
 	this.size = size;
 	this.coherence = coherence;
 	this.smoothness = smoothness;
-	this.failFraction = failFraction !== undefined ? failFraction : 0;
-	this.x = x !== undefined ? x : -1;
-	this.z = z !== undefined ? z : -1;
+	this.failFraction = failFraction;
+	this.x = x;
+	this.z = z;
 }
 
 ClumpPlacer.prototype.place = function(constraint)
 {
-	// Preliminary bounds check
 	if (!g_Map.inMapBounds(this.x, this.z) || !constraint.allows(this.x, this.z))
 		return undefined;
 
-	var retVec = [];
-
-	var size = getMapSize();
-	var gotRet = new Array(size).fill(0).map(p => new Uint8Array(size)); // booleans
-	var radius = sqrt(this.size / PI);
-	var perim = 4 * radius * 2 * PI;
-	var intPerim = ceil(perim);
-
-	var ctrlPts = 1 + Math.floor(1.0/Math.max(this.smoothness,1.0/intPerim));
-
-	if (ctrlPts > radius * 2 * PI)
-		ctrlPts = Math.floor(radius * 2 * PI) + 1;
-
-	var noise = new Float32Array(intPerim);			//float32
-	var ctrlCoords = new Float32Array(ctrlPts+1);	//float32
-	var ctrlVals = new Float32Array(ctrlPts+1);		//float32
+	let clumpRadius = Math.sqrt(this.size / Math.PI);
+	let perim = clumpRadius * 8 * Math.PI;
+	let intPerim = Math.ceil(perim);
+	let noise = new Float32Array(intPerim);
 
 	// Generate some interpolated noise
-	for (var i=0; i < ctrlPts; i++)
+	let ctrlPts = 1 + Math.floor(Math.min(1 / Math.max(this.smoothness, 1 / intPerim), clumpRadius * 2 * Math.PI));
+	let ctrlCoords = new Float32Array(ctrlPts + 1);
+	let ctrlVals = new Float32Array(ctrlPts + 1);
+
+	for (let i = 0; i < ctrlPts; ++i)
 	{
 		ctrlCoords[i] = i * perim / ctrlPts;
 		ctrlVals[i] = randFloat(0, 2);
 	}
 
-	var c = 0;
-	var looped = 0;
-	for (var i=0; i < intPerim; i++)
+	let mapSize = getMapSize();
+	let retVec = [];
+	let gotRet = new Array(mapSize).fill(0).map(p => new Uint8Array(mapSize));
+
+	let c = 0;
+	let looped = false;
+	for (let i = 0; i < intPerim; ++i)
 	{
-		if (ctrlCoords[(c+1) % ctrlPts] < i && !looped)
+		if (ctrlCoords[(c + 1) % ctrlPts] < i && !looped)
 		{
-			c = (c+1) % ctrlPts;
-			if (c == ctrlPts-1)
-				looped = 1;
+			c = (c + 1) % ctrlPts;
+			if (c + 1 == ctrlPts)
+				looped = true;
 		}
 
 		noise[i] = cubicInterpolation(
@@ -76,116 +66,101 @@ ClumpPlacer.prototype.place = function(constraint)
 			ctrlVals[(c + 2) % ctrlPts]);
 	}
 
-	var failed = 0;
-	for (var p=0; p < intPerim; p++)
+	let failed = 0;
+	for (let p = 0; p < intPerim; ++p)
 	{
-		var th = 2 * PI * p / perim;
-		var r = radius * (1 + (1-this.coherence)*noise[p]);
-		var s = sin(th);
-		var c = cos(th);
-		var xx = this.x;
-		var yy = this.z;
+		let angle = 2 * Math.PI * p / perim;
+		let sin = Math.sin(angle);
+		let cos = Math.cos(angle);
 
-		for (var k=0; k < ceil(r); k++)
+		let x = this.x;
+		let y = this.z;
+
+		for (let k = 0; k < Math.ceil(clumpRadius * (1 + (1 - this.coherence) * noise[p])); ++k)
 		{
-			var i = Math.floor(xx);
-			var j = Math.floor(yy);
+			let i = Math.floor(x);
+			let j = Math.floor(y);
+
 			if (g_Map.inMapBounds(i, j) && constraint.allows(i, j))
 			{
 				if (!gotRet[i][j])
 				{
-					// Only include each point once
 					gotRet[i][j] = 1;
 					retVec.push(new PointXZ(i, j));
 				}
 			}
 			else
-				failed++;
+				++failed;
 
-			xx += s;
-			yy += c;
+			x += sin;
+			y += cos;
 		}
 	}
 
-	return failed > this.size * this.failFraction ? undefined : retVec;
+	if (failed > this.size * this.failFraction)
+		return undefined;
+
+	return retVec;
 };
 
-/////////////////////////////////////////////////////////////////////////////////////////
-//	Chain Placer
-//
-//	Class for generating a more random clump of points it randomly creates circles around the edges of the current clump
-//
-//	minRadius: minimum radius of the circles
-//	maxRadius: maximum radius of the circles
-//	numCircles: the number of the circles
-//	failfraction: Percentage of place attempts allowed to fail (optional)
-//	x, z: Tile coordinates of placer center (optional)
-//  fcc: Farthest circle center (optional)
-//  q: a list containing numbers. each time if the list still contains values, pops one from the end and uses it as the radius (optional)
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-
-function ChainPlacer(minRadius, maxRadius, numCircles, failFraction, x, z, fcc, q)
+/**
+ * The ChainPlacer generates a more random clump of points (random circles around the edges of the current clump).
+ *
+ * @param minRadius, maxRadius - size of the circles.
+ * @param numCircles - number of circles.
+ * @param failFraction - Percentage of place attempts allowed to fail.
+ * @param x, z - Tile coordinates of placer center
+ * @param farthestCircleCenter
+ * @param radiusQueue
+ */
+function ChainPlacer(minRadius, maxRadius, numCircles, failFraction = 0, x = -1, z = -1, farthestCircleCenter = 0, radiusQueue = [])
 {
-	this.minRadius = minRadius;
+	this.minRadius = Math.min(Math.max(1, minRadius), maxRadius);
 	this.maxRadius = maxRadius;
 	this.numCircles = numCircles;
-	this.failFraction = failFraction !== undefined ? failFraction : 0;
-	this.x = x !== undefined ? x : -1;
-	this.z = z !== undefined ? z : -1;
-	this.fcc = fcc !== undefined ? fcc : 0;
-	this.q = q !== undefined ? q : [];
+	this.failFraction = failFraction;
+	this.x = x;
+	this.z = z;
+	this.farthestCircleCenter = farthestCircleCenter;
+	this.radiusQueue = radiusQueue;
 }
 
 ChainPlacer.prototype.place = function(constraint)
 {
-	// Preliminary bounds check
 	if (!g_Map.inMapBounds(this.x, this.z) || !constraint.allows(this.x, this.z))
 		return undefined;
 
-	var retVec = [];
-	var size = getMapSize();
-	var failed = 0, count = 0;
-	var queueEmpty = !this.q.length;
+	let retVec = [];
+	let mapSize = getMapSize();
+	let failed = 0;
+	let count = 0;
 
-	var gotRet = new Array(size).fill(0).map(p => new Array(size).fill(-1));
-	--size;
+	let gotRet = new Array(mapSize).fill(0).map(p => new Array(mapSize).fill(-1));
+	--mapSize;
 
-	this.minRadius = Math.min(this.maxRadius, Math.max(this.minRadius, 1));
-
-	var edges = [[this.x, this.z]];
-	for (var i = 0; i < this.numCircles; ++i)
+	let edges = [[this.x, this.z]];
+	for (let i = 0; i < this.numCircles; ++i)
 	{
-		var [cx, cz] = pickRandom(edges);
-		if (queueEmpty)
-			var radius = randIntInclusive(this.minRadius, this.maxRadius);
-		else
-		{
-			var radius = this.q.pop();
-			queueEmpty = !this.q.length;
-		}
+		let radius =
+			this.radiusQueue.length ?
+				this.radiusQueue.pop() :
+				randIntInclusive(this.minRadius, this.maxRadius);
 
-		var sx = cx - radius, lx = cx + radius;
-		var sz = cz - radius, lz = cz + radius;
+		let radius2 = radius * radius;
+		let [cx, cz] = pickRandom(edges);
 
-		sx = Math.max(0, sx);
-		sz = Math.max(0, sz);
-		lx = Math.min(lx, size);
-		lz = Math.min(lz, size);
+		let left = Math.max(0, cx - radius);
+		let top = Math.max(0, cz - radius);
+		let right = Math.min(cx + radius, mapSize);
+		let bottom = Math.min(cz + radius, mapSize);
 
-		var radius2 = radius * radius;
-		var dx, dz;
-
-		for (var ix = sx; ix <= lx; ++ix)
-			for (var iz = sz; iz <= lz; ++ iz)
-			{
-				dx = ix - cx;
-				dz = iz - cz;
-				if (dx * dx + dz * dz <= radius2)
+		for (let ix = left; ix <= right; ++ix)
+			for (let iz = top; iz <= bottom; ++iz)
+				if (Math.euclidDistance2DSquared(ix, iz, cx, cz) <= radius2)
 				{
 					if (g_Map.inMapBounds(ix, iz) && constraint.allows(ix, iz))
 					{
-						var state = gotRet[ix][iz];
+						let state = gotRet[ix][iz];
 						if (state == -1)
 						{
 							retVec.push(new PointXZ(ix, iz));
@@ -193,11 +168,10 @@ ChainPlacer.prototype.place = function(constraint)
 						}
 						else if (state >= 0)
 						{
-							var s = edges.splice(state, 1);
+							edges.splice(state, 1);
 							gotRet[ix][iz] = -2;
 
-							var edgesLength = edges.length;
-							for (var k = state; k < edges.length; ++k)
+							for (let k = state; k < edges.length; ++k)
 								--gotRet[edges[k][0]][edges[k][1]];
 						}
 					}
@@ -206,56 +180,29 @@ ChainPlacer.prototype.place = function(constraint)
 
 					++count;
 				}
-			}
 
-		for (var ix = sx; ix <= lx; ++ix)
-			for (var iz = sz; iz <= lz; ++ iz)
+		for (let ix = left; ix <= right; ++ix)
+			for (let iz = top; iz <= bottom; ++iz)
 			{
-				if (this.fcc)
-					if ((this.x - ix) > this.fcc || (ix - this.x) > this.fcc || (this.z - iz) > this.fcc || (iz - this.z) > this.fcc)
-						continue;
+				if (this.farthestCircleCenter && (
+				      Math.abs(this.x - ix) > Math.abs(this.farthestCircleCenter) ||
+					  Math.abs(this.z - iz) > Math.abs(this.farthestCircleCenter)))
+					continue;
 
-				if (gotRet[ix][iz] == -2)
+				if (gotRet[ix][iz] == -2 && (
+				      ix > 0 && gotRet[ix-1][iz] == -1 ||
+				      iz > 0 && gotRet[ix][iz-1] == -1 ||
+				      ix < mapSize && gotRet[ix+1][iz] == -1 ||
+				      iz < mapSize && gotRet[ix][iz+1] == -1))
 				{
-					if (ix > 0)
-					{
-						if (gotRet[ix-1][iz] == -1)
-						{
-							edges.push([ix, iz]);
-							gotRet[ix][iz] = edges.length - 1;
-							continue;
-						}
-					}
-					if (iz > 0)
-					{
-						if (gotRet[ix][iz-1] == -1)
-						{
-							edges.push([ix, iz]);
-							gotRet[ix][iz] = edges.length - 1;
-							continue;
-						}
-					}
-					if (ix < size)
-					{
-						if (gotRet[ix+1][iz] == -1)
-						{
-							edges.push([ix, iz]);
-							gotRet[ix][iz] = edges.length - 1;
-							continue;
-						}
-					}
-					if (iz < size)
-					{
-						if (gotRet[ix][iz+1] == -1)
-						{
-							edges.push([ix, iz]);
-							gotRet[ix][iz] = edges.length - 1;
-							continue;
-						}
-					}
+					edges.push([ix, iz]);
+					gotRet[ix][iz] = edges.length - 1;
 				}
 			}
 	}
 
-	return failed > count * this.failFraction ? undefined : retVec;
+	if (failed > count * this.failFraction)
+		return undefined;
+
+	return retVec;
 };
