@@ -157,7 +157,7 @@ PathPlacer.prototype.place = function(constraint)
 
 		// Find slope of offset path
 		segments1.push(
-			({
+			{
 				"x": Math.round(nx + ndz * taperedWidth),
 				"z": Math.round(nz - ndx * taperedWidth)
 			});
