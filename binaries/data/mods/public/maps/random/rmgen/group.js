@@ -71,3 +71,16 @@ RandomGroup.prototype.place = function(player, constraint)
 {
 	return this.simpleGroup.place(player, constraint);
 };
+
+/**
+ * Construct, locate and place Entities according to the given Group and Constraint.
+ */
+function createObjectGroup(group, player, constraint)
+{
+	if (!constraint)
+		constraint = new NullConstraint();
+	else if (constraint instanceof Array)
+		constraint = new AndConstraint(constraint);
+
+	return group.place(player, constraint);
+}

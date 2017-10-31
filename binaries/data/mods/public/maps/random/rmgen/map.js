@@ -90,7 +90,7 @@ Map.prototype.validT = function(x, z, distance = 0)
 {
 	distance += MAP_BORDER_WIDTH;
 
-	if (g_MapSettings.CircularMap)
+	if (isCircularMap())
 	{
 		let halfSize = Math.floor(this.size / 2);
 		return Math.round(Math.euclidDistance2D(x, z, halfSize, halfSize)) < halfSize - distance - 1;
@@ -315,3 +315,62 @@ Map.prototype.exportTerrainTextures = function()
 		"priority": tilePriority
 	};
 };
+
+function placeObject(x, z, type, player, angle)
+{
+	if (g_Map.validT(x, z))
+		g_Map.addObject(new Entity(type, player, x, z, angle));
+}
+
+function initTerrain(terrain)
+{
+	g_Map.initTerrain(createTerrain(terrain));
+}
+
+function initHeight(height)
+{
+	g_Map.initHeight(height);
+}
+
+function createTileClass()
+{
+	return g_Map.createTileClass();
+}
+
+function getTileClass(id)
+{
+	if (!g_Map.validClass(id))
+		return undefined;
+
+	return g_Map.tileClasses[id];
+}
+
+function createArea(placer, painter, constraint)
+{
+	return g_Map.createArea(placer, painter, constraint);
+}
+
+function getMapSize()
+{
+	return g_Map.size;
+}
+
+function getMapArea()
+{
+	return Math.square(g_Map.size);
+}
+
+function getHeight(x, z)
+{
+	return g_Map.getHeight(x, z);
+}
+
+function setHeight(x, z, height)
+{
+	g_Map.setHeight(x, z, height);
+}
+
+function getTerrainTexture(x, y)
+{
+	return g_Map.getTexture(x, y);
+}

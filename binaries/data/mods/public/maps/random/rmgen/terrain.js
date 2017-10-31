@@ -42,3 +42,40 @@ RandomTerrain.prototype.place = function(x, z)
 {
 	pickRandom(this.terrains).place(x, z);
 };
+
+
+function createTerrain(terrain)
+{
+	if (!(terrain instanceof Array))
+		return createSimpleTerrain(terrain);
+
+	return new RandomTerrain(terrain.map(t => createTerrain(t)));
+}
+
+function createSimpleTerrain(terrain)
+{
+	if (typeof terrain != "string")
+		throw new Error("createSimpleTerrain expects string as input, received " + uneval(terrain));
+
+	// Split string by pipe | character, this allows specifying terrain + tree type in single string
+	let params = terrain.split(TERRAIN_SEPARATOR, 2);
+
+	if (params.length != 2)
+		return new SimpleTerrain(terrain);
+
+	return new SimpleTerrain(params[0], params[1]);
+}
+
+function placeTerrain(x, z, terrain)
+{
+	createTerrain(terrain).place(x, z);
+}
+
+function initTerrain(terrainNames)
+{
+	let terrain = createTerrain(terrainNames);
+
+	for (let x = 0; x < getMapSize(); ++x)
+		for (let z = 0; z < getMapSize(); ++z)
+			terrain.place(x, z);
+}

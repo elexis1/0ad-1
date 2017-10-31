@@ -316,3 +316,19 @@ function breadthFirstSearchPaint(args)
 		}
 	}
 }
+
+/**
+ * Create a painter for the given class
+ */
+function paintClass(id)
+{
+	return new TileClassPainter(getTileClass(id));
+}
+
+/**
+ * Create a painter for the given class
+ */
+function unPaintClass(id)
+{
+	return new TileClassUnPainter(getTileClass(id));
+}
