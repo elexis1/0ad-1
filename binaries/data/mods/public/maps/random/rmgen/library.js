@@ -284,8 +284,7 @@ function placeObject(x, z, type, player, angle)
 
 function placeTerrain(x, z, terrain)
 {
-	// convert terrain param into terrain object
-	g_Map.placeTerrain(x, z, createTerrain(terrain));
+	createTerrain(terrain).place(x, z);
 }
 
 function initTerrain(terrainNames)
@@ -320,14 +319,37 @@ function getTileClass(id)
 	return g_Map.tileClasses[id];
 }
 
+/**
+ * Constructs a new Area shaped by the Placer meeting the Constraint and calls the Painters there.
+ * Supports both Centered and Non-Centered Placers.
+ */
 function createArea(placer, painter, constraint)
 {
-	return g_Map.createArea(placer, painter, constraint);
+	if (!constraint)
+		constraint = new NullConstraint();
+	else if (constraint instanceof Array)
+		constraint = new AndConstraint(constraint);
+
+	let points = placer.place(constraint);
+	if (!points)
+		return undefined;
+
+	if (painter instanceof Array)
+		painter = new MultiPainter(painter);
+
+	let area = g_Map.createArea(points);
+	painter.paint(area);
+	return area;
 }
 
-function createObjectGroup(placer, player, constraint)
+function createObjectGroup(group, player, constraint)
 {
-	return g_Map.createObjectGroup(placer, player, constraint);
+	if (!constraint)
+		constraint = new NullConstraint();
+	else if (constraint instanceof Array)
+		constraint = new AndConstraint(constraint);
+
+	return group.place(player, constraint);
 }
 
 function getMapSize()
