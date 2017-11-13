@@ -381,7 +381,7 @@ function paintRiver(args)
 			let vecPoint = new Vector2D(ix, iz);
 
 			// Compute the shortest distance to the river.
-			let distanceToRiver = unitVecRiver.cross(Vector2D.sub(vecPoint, vecEnd));
+			let distanceToRiver = distanceOfPointFromLine(vecStart, vecEnd, vecPoint, false);
 
 			// Closest point on the river (i.e the foot of the perpendicular).
 			let river = Vector2D.sub(vecPoint, unitVecRiver.perpendicular().mult(distanceToRiver));
