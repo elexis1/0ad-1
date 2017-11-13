@@ -31,18 +31,18 @@ function rotateCoordinates(x, z, angle, centerX = 0.5, centerZ = 0.5)
  */
 function distributePointsOnCircle(pointCount, startAngle, radius, centerX, centerZ)
 {
-	let x = [];
-	let z = [];
+	let points = [];
 	let angle = [];
+
+	let center = new Vector2D(centerX, centerZ);
 
 	for (let i = 0; i < pointCount; ++i)
 	{
 		angle[i] = startAngle + 2 * Math.PI * i / pointCount;
-		x[i] = centerX + radius * Math.cos(angle[i]);
-		z[i] = centerZ + radius * Math.sin(angle[i]);
+		points.push(Vector2D.add(center, new Vector2D(0, radius).rotate(angle[i])));
 	}
 
-	return [x, z, angle];
+	return [points, angle];
 }
 
 /**

@@ -165,8 +165,7 @@ for (var i = 0; i < numPlayers; i++)
 RMS.SetProgress(20);
 
 log("Creating rivers between opponents...");
-var [riverX, riverZ] = distributePointsOnCircle(numPlayers, startAngle + Math.PI / numPlayers, 0.5, ...centralLake);
-for (let i = 0; i < numPlayers; ++i)
+for (let [river, angle] of distributePointsOnCircle(numPlayers, startAngle + Math.PI / numPlayers, 0.5, ...centralLake))
 {
 	if (areAllies(playerIDs[i] - 1, playerIDs[(i + 1) % numPlayers] - 1))
 		continue;
@@ -176,8 +175,8 @@ for (let i = 0; i < numPlayers; ++i)
 
 	paintRiver({
 		"parallel": true,
-		"startX": riverX[i],
-		"startZ": riverZ[i],
+		"startX": river.x,
+		"startZ": river.y,
 		"endX": centralLake[0],
 		"endZ": centralLake[1],
 		"width": tilesToFraction(scaleByMapSize(10, 30)),
