@@ -84,6 +84,13 @@ Vector2D.prototype.rotate = function(a)
 	return this;
 };
 
+Vector2D.prototype.round = function(f)
+{
+	this.x = Math.round(this.x);
+	this.y = Math.round(this.y);
+	return this;
+};
+
 // Numeric 2D info functions (non-mutating)
 //
 // These methods serve to get numeric info on the vector, they don't modify the vector

@@ -120,6 +120,17 @@ var brokenVector = {
 	TS_ASSERT_EQUALS(v8.y, 0);
 }
 
+// Test Vector2D round
+{
+	let vec = new Vector2D(Math.PI, Math.E).round();
+	TS_ASSERT_EQUALS(vec.x, 3);
+	TS_ASSERT_EQUALS(vec.y, 3);
+
+	vec.set(-1, -8.005).round();
+	TS_ASSERT_EQUALS(vec.x, -1);
+	TS_ASSERT_EQUALS(vec.y, -8);
+}
+
 // Test Vector2D list functions
 {
 	let list = [
