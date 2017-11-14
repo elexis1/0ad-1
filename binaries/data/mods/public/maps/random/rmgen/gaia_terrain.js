@@ -588,36 +588,30 @@ function createShallowsPassage(x1, z1, x2, z2, width, maxHeight, shallowHeight, 
 /**
  * Creates a ramp from (x1, y1) to (x2, y2).
  */
-function createRamp(x1, y1, x2, y2, minHeight, maxHeight, width, smoothLevel, mainTerrain, edgeTerrain, tileClass)
+function createRamp(rampStart, rampEnd, minHeight, maxHeight, width, smoothLevel, mainTerrain, edgeTerrain, tileClass)
 {
-	let halfWidth = width / 2;
-
-	let rampStart = new Vector2D(x1, y1);
-	let rampEnd = new Vector2D(x2, y2);
 	let ramp = Vector2D.sub(rampStart, rampEnd);
 	let rampLength = ramp.length();
-	let rampX = Vector2D.add(rampEnd, ramp.perpendicular());
+	let rampP = Vector2D.add(rampEnd, ramp.perpendicular());
 
-	let minBoundX = Math.max(Math.min(x1, x2) - halfWidth, 0);
-	let minBoundY = Math.max(Math.min(y1, y2) - halfWidth, 0);
-	let maxBoundX = Math.min(Math.max(x1, x2) + halfWidth, getMapSize());
-	let maxBoundY = Math.min(Math.max(y1, y2) + halfWidth, getMapSize());
+	let halfWidth = new Vector2D(1, 1).mult(width / 2);
+	let minBound = Vector2D.max([Vector2D.min([rampStart, rampEnd]).sub(halfWidth), new Vector2D(0, 0)]).round();
+	let maxBound = Vector2D.min([Vector2D.max([rampStart, rampEnd]).add(halfWidth), new Vector2D(getMapSize(), getMapSize())]).round();
 
-	for (let x = minBoundX; x < maxBoundX; ++x)
-		for (let y = minBoundY; y < maxBoundY; ++y)
+	for (let x = minBound.x; x < maxBound.x; ++x)
+		for (let y = minBound.y; y < maxBound.y; ++y)
 		{
 			let point = new Vector2D(x, y);
-			let lDist = distanceOfPointFromLine(rampX, rampEnd, point);
+			let lDist = distanceOfPointFromLine(rampP, rampEnd, point);
 			let sDist = distanceOfPointFromLine(rampStart, rampEnd, point);
 
-			if (lDist > rampLength || sDist > halfWidth)
+			if (lDist > rampLength || sDist > halfWidth.x)
 				continue;
 
 			let height = maxHeight - lDist / rampLength * (maxHeight - minHeight);
-
-			if (sDist >= halfWidth - smoothLevel)
+			if (smoothLevel >= halfWidth.x - sDist)
 			{
-				height = (height - minHeight) * (halfWidth - sDist) / smoothLevel + minHeight;
+				height = minHeight + (height - minHeight) * (halfWidth.x - sDist) / smoothLevel;
 
 				if (edgeTerrain)
 					placeTerrain(x, y, edgeTerrain);
@@ -628,7 +622,7 @@ function createRamp(x1, y1, x2, y2, minHeight, maxHeight, width, smoothLevel, ma
 			if (tileClass !== undefined)
 				addToClass(x, y, tileClass);
 
-			if (getHeight(Math.floor(x), Math.floor(y)) < height && height <= maxHeight)
+			if (getHeight(x, y) < height && height <= maxHeight)
 				setHeight(x, y, height);
 		}
 }

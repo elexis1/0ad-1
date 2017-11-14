@@ -92,15 +92,11 @@ for (var i = 0; i < numPlayers; i++)
 
 	// create the ramp
 	var rampAngle = playerAngle[i] + PI + randFloat(-PI/8, PI/8);
-	var rampDist = radius;
 	var rampLength = 15;
-	var rampWidth = 12;
-	var rampX1 = round(fx + (rampDist + rampLength) * cos(rampAngle));
-	var rampZ1 = round(fz + (rampDist + rampLength) * sin(rampAngle));
-	var rampX2 = round(fx + (rampDist - 3) * cos(rampAngle));
-	var rampZ2 = round(fz + (rampDist - 3) * sin(rampAngle));
-
-	createRamp (rampX1, rampZ1, rampX2, rampZ2, 3, 20, rampWidth, 2, tHill, tCliff, clPlayer);
+	let playerPos = new Vector2D(fx, fz);
+	let rampStart = Vector2D.add(playerPos, new Vector2D(radius + rampLength, 0).rotate(-rampAngle));
+	let rampEnd = Vector2D.add(playerPos, new Vector2D(radius - 3, 0).rotate(-rampAngle));
+	createRamp(rampStart, rampEnd, 3, 20, 12, 2, tHill, tCliff, clPlayer);
 
 	// create the city patch
 	var cityRadius = radius/3;
