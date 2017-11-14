@@ -592,13 +592,11 @@ function createRamp(x1, y1, x2, y2, minHeight, maxHeight, width, smoothLevel, ma
 {
 	let halfWidth = width / 2;
 
-	let rampStart = new Vector2d(x1, y1);
+	let rampStart = new Vector2D(x1, y1);
 	let rampEnd = new Vector2D(x2, y2);
-	let rampLength = rampStart.distanceTo(rampEnd);
-
-	let rampX = y1 == y2 ?
-		rampX = Vector2D.add(rampEnd, new Vector2D(0, halfWidth)) :
-		rampX = Vector2D.add(rampEnd, new Vector2D(halfWidth, (x1 - x2) / (y1 - y2) * (x2 - x3));
+	let ramp = Vector2D.sub(rampStart, rampEnd);
+	let rampLength = ramp.length();
+	let rampX = Vector2D.add(rampEnd, ramp.perpendicular());
 
 	let minBoundX = Math.max(Math.min(x1, x2) - halfWidth, 0);
 	let minBoundY = Math.max(Math.min(y1, y2) - halfWidth, 0);
