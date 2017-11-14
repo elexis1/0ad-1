@@ -136,6 +136,14 @@ var brokenVector = {
 	let avg = Vector2D.average(list);
 	TS_ASSERT_EQUALS(avg.x, 35.75);
 	TS_ASSERT_EQUALS(avg.y, -13);
+
+	let min = Vector2D.min(list);
+	TS_ASSERT_EQUALS(min.x, -1);
+	TS_ASSERT_EQUALS(min.y, -123);
+
+	let max = Vector2D.max(list);
+	TS_ASSERT_EQUALS(max.x, 89);
+	TS_ASSERT_EQUALS(max.y, 66);
 }
 
 // Test Vector3D distance

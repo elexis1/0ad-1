@@ -194,6 +194,38 @@ Vector2D.sum = function(vectorList)
 	return sum;
 };
 
+/**
+ * Returns a vector with the smallest components of the given vectors.
+ */
+Vector2D.min = function(vectorList)
+{
+	let min = new Vector2D(Infinity, Infinity);
+
+	for (let i = 0; i < vectorList.length; ++i)
+	{
+		min.x = Math.min(min.x, vectorList[i].x);
+		min.y = Math.min(min.y, vectorList[i].y);
+	}
+
+	return min;
+};
+
+/**
+ * Returns a vector having the greatest component of the given vectors.
+ */
+Vector2D.max = function(vectorList)
+{
+	let max = new Vector2D(-Infinity, -Infinity);
+
+	for (let i = 0; i < vectorList.length; ++i)
+	{
+		max.x = Math.max(max.x, vectorList[i].x);
+		max.y = Math.max(max.y, vectorList[i].y);
+	}
+
+	return max;
+};
+
 /////////////////////////////////////////////////////////////////////
 //	Vector3D
 //
