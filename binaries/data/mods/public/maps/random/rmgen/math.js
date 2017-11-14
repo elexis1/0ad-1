@@ -33,13 +33,12 @@ function distributePointsOnCircle(pointCount, startAngle, radius, centerX, cente
 {
 	let points = [];
 	let angle = [];
-
 	let center = new Vector2D(centerX, centerZ);
 
 	for (let i = 0; i < pointCount; ++i)
 	{
 		angle[i] = startAngle + 2 * Math.PI * i / pointCount;
-		points.push(Vector2D.add(center, new Vector2D(0, radius).rotate(angle[i])));
+		points[i] = Vector2D.add(center, new Vector2D(radius, 0).rotate(-angle[i]));
 	}
 
 	return [points, angle];
