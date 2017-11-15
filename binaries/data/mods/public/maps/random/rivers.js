@@ -51,6 +51,7 @@ InitMap();
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = getMapArea();
+const mapCenter = getMapCenter();
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -69,15 +70,8 @@ var shallowHeight = -1;
 initTerrain(tMainTerrain);
 
 log("Creating central lake...");
-var centralLake = [0.5, 0.5];
 createArea(
-	new ClumpPlacer(
-		mapArea / 100 * Math.pow(scaleByMapSize(1, 6), 1/8),
-		0.7,
-		0.1,
-		10,
-		fractionToTiles(centralLake[0]),
-		fractionToTiles(centralLake[1])),
+	new ClumpPlacer(mapArea / 100 * Math.pow(scaleByMapSize(1, 6), 1/8), 0.7, 0.1, 10, mapCenter.x, mapCenter.y),
 	[
 		new LayeredPainter([tShore, tWater, tWater, tWater], [1, 4, 2]),
 		new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4),
@@ -165,7 +159,7 @@ for (var i = 0; i < numPlayers; i++)
 RMS.SetProgress(20);
 
 log("Creating rivers between opponents...");
-for (let [river, angle] of distributePointsOnCircle(numPlayers, startAngle + Math.PI / numPlayers, 0.5, ...centralLake))
+for (let [river, angle] of distributePointsOnCircle(numPlayers, startAngle + Math.PI / numPlayers, 0.5, mapCenter.x, mapCenter.y))
 {
 	if (areAllies(playerIDs[i] - 1, playerIDs[(i + 1) % numPlayers] - 1))
 		continue;
@@ -177,8 +171,8 @@ for (let [river, angle] of distributePointsOnCircle(numPlayers, startAngle + Mat
 		"parallel": true,
 		"startX": river.x,
 		"startZ": river.y,
-		"endX": centralLake[0],
-		"endZ": centralLake[1],
+		"endX": mapCenter.x,
+		"endZ": mapCenter.y,
 		"width": tilesToFraction(scaleByMapSize(10, 30)),
 		"fadeDist": tilesToFraction(5),
 		"deviation": 0,

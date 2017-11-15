@@ -46,6 +46,7 @@ InitMap();
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
 const mapArea = getMapArea();
+const mapCenter = getMapCenter();
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -172,16 +173,11 @@ for (var i = 0; i < numPlayers; i++)
 
 	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 
-	let dockLocation = getTIPIADBON([ix, iz], [mapSize / 2, mapSize / 2], [-3 , 2.6], 0.5, 3);
-	if (dockLocation === undefined)
-	{
-		warn("Could not place dock for player " + playerIDs[i])
-		continue;
-	}
-
+	// TODO: fix offsets
+	let dockLocation = findLocationInDirectionBasedOnHeight(new Vector2D(ix, iz), mapCenter, -3 , 2.6, 6);
 	placeObject(
-		dockLocation[0],
-		dockLocation[1],
+		dockLocation.x,
+		dockLocation.y,
 		"structures/" + getCivCode(playerIDs[i] - 1) + "_dock",
 		playerIDs[i],
 		playerAngle[i] + Math.PI);

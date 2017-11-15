@@ -47,6 +47,7 @@ InitMap();
 
 const numPlayers = getNumPlayers();
 const mapSize = getMapSize();
+const mapCenter = getMapCenter();
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -153,10 +154,8 @@ for (var i = 0; i < numPlayers; i++)
 
 	placeDefaultDecoratives(fx, fz, aGrassShort, clBaseResource, radius);
 
-	//create docks
-	var dockLocation = getTIPIADBON([ix, iz], [mapSize / 2, mapSize / 2], [-3 , 2.6], 0.5, 3);
-	if (dockLocation !== undefined)
-		placeObject(dockLocation[0], dockLocation[1], "structures/" + getCivCode(id-1) + "_dock", id, playerAngle[i] + PI);
+	let dockLocation = findLocationInDirectionBasedOnHeight(new Vector2D(ix, iz), mapCenter, -3 , 2.6, 0.5, 3);
+	placeObject(dockLocation.x, dockLocation.y, "structures/" + getCivCode(id-1) + "_dock", id, playerAngle[i] + PI);
 }
 
 var landAreas = [];

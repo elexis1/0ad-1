@@ -1,3 +1,12 @@
+list of size 4, 100000000 sum operations
+
+for	 3623
+reduce	 6011
+for..of	23713
+
+
+no difference between let/var (each variant was faster one or another time)
+
 const g_MatchSettings_SP = "config/matchsettings.json";
 const g_MatchSettings_MP = "config/matchsettings.mp.json";
 

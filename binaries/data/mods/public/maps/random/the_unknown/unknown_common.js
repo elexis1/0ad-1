@@ -407,12 +407,7 @@ function unknownCentralRiver()
 			let cLocation = randFloat(0.15, 0.85);
 			let x1 = [fractionToTiles(cLocation), fractionToTiles(0.35)];
 			let x2 = [fractionToTiles(cLocation), fractionToTiles(0.65)];
-			if (!horizontal)
-			{
-				x1.reverse();
-				x2.reverse();
-			}
-			createShallowsPassage(...x1, ...x2, scaleByMapSize(4, 8), -2, -2, 2, clShallow, undefined, waterHeight);
+			createShallowsPassage(start, end, scaleByMapSize(4, 8), -2, -2, 2, clShallow, undefined, waterHeight);
 		}
 	}
 
@@ -422,7 +417,8 @@ function unknownCentralRiver()
 			randIntInclusive(8, scaleByMapSize(12, 16)),
 			scaleByMapSize(10, 20),
 			-4,
-			[-6, -1.5],
+			-6,
+			-1.5,
 			Math.PI / 5,
 			clWater,
 			clShallow,

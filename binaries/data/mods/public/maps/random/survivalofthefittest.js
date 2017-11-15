@@ -45,6 +45,7 @@ InitMap();
 
 var numPlayers = getNumPlayers();
 var mapSize = getMapSize();
+var mapCenter = getMapCenter();
 
 var clPlayer = createTileClass();
 var clHill = createTileClass();
@@ -56,12 +57,9 @@ var clWomen = createTileClass();
 
 initTerrain(tMainTerrain);
 
-var ix = Math.round(fractionToTiles(0.5));
-var iz = Math.round(fractionToTiles(0.5));
-
 // Create the main treasure area in the middle of the map
 createArea(
-	new ClumpPlacer(mapSize * mapSize * scaleByMapSize(0.065, 0.09), 0.7, 0.1, 10, ix, iz),
+	new ClumpPlacer(mapSize * mapSize * scaleByMapSize(0.065, 0.09), 0.7, 0.1, 10, mapCenter.x, mapCenter.y),
 	[
 		new LayeredPainter([tMainTerrain, tMainTerrain], [3]),
 		new SmoothElevationPainter(ELEVATION_SET, 3, 3),
@@ -140,12 +138,9 @@ for (let i = 0; i < numPlayers; ++i)
 		],
 		null);
 
-	var femaleLocation = getTIPIADBON([ix, iz], [mapSize / 2, mapSize / 2], [-3 , 3.5], 1, 3);
-	if (femaleLocation !== undefined)
-	{
-		placeObject(femaleLocation[0], femaleLocation[1], oTreasureSeeker, id, playerAngle[i] + PI);
-		addToClass(floor(femaleLocation[0]), floor(femaleLocation[1]), clWomen);
-	}
+	let femaleLocation = findLocationInDirectionBasedOnHeight(new Vector2D(ix, iz), mapCenter, -3 , 3.5, 3);
+	placeObject(femaleLocation.x, femaleLocation.y, oTreasureSeeker, id, playerAngle[i] + PI);
+	addToClass(Math.round(femaleLocation.x), Math.round(femaleLocation.y), clWomen);
 }
 RMS.SetProgress(20);
 

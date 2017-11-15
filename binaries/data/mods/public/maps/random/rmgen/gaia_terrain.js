@@ -191,7 +191,7 @@ function createMountain(maxHeight, minRadius, maxRadius, numCircles, constraint,
 				else if (getHeight(ix, iz) >= newHeight && getHeight(ix, iz) < newHeight + 4)
 					setHeight(ix, iz, newHeight + 4);
 
-				if (terrain !== undefined)
+				if (terrain)
 					placeTerrain(ix, iz, terrain);
 
 				if (tileClass !== undefined)
@@ -459,17 +459,20 @@ function rndRiver(f, seed)
 /**
  * Add small rivers with shallows starting at a central river ending at the map border, if the given Constraint is met.
  */
-function createTributaryRivers(horizontal, riverCount, riverWidth, waterHeight, heightRange, maxAngle, tributaryRiverTileClass, shallowTileClass, constraint)
+function createTributaryRivers(horizontal, riverCount, riverWidth, waterHeight, minHeight, maxHeight, maxAngle, tributaryRiverTileClass, shallowTileClass, constraint)
 {
 	log("Creating tributary rivers...");
 	let waviness = 0.4;
 	let smoothness = scaleByMapSize(3, 12);
 	let offset = 0.1;
 	let tapering = 0.05;
+	let riverAngle = horizontal ? 0 : Math.PI;
 
 	let riverConstraint = avoidClasses(tributaryRiverTileClass, 3);
 	if (shallowTileClass)
 		riverConstraint = new AndConstraint([riverConstraint, avoidClasses(shallowTileClass, 2)]);
+
+	let mapCenter = getMapCenter();
 
 	for (let i = 0; i < riverCount; ++i)
 	{
@@ -479,34 +482,17 @@ function createTributaryRivers(horizontal, riverCount, riverWidth, waterHeight, 
 		let angle = sign * randFloat(maxAngle, 2 * Math.PI - maxAngle);
 		let distance = sign * tapering;
 
-		let searchStart = [fractionToTiles(location), fractionToTiles(0.5 + distance)];
-		let searchEnd = [fractionToTiles(location), fractionToTiles(0.5 - distance)];
+		let searchStart = new Vector2D(location, 0.5 + distance).mult(getMapSize()).rotate(riverAngle);
+		let searchEnd = new Vector2D(location, 0.5 - distance).mult(getMapSize()).rotate(riverAngle);
 
-		if (!horizontal)
-		{
-			searchStart.reverse();
-			searchEnd.reverse();
-		}
-
-		let start = getTIPIADBON(searchStart, searchEnd, heightRange, 0.5, 4);
+		let start = findLocationInDirectionBasedOnHeight(searchStart, searchEnd, minHeight, maxHeight, 0);
+		let end = Vector2D.add(mapCenter, mapCenter.clone().rotate(angle));
 		if (!start)
 			continue;
 
-		let endX = fractionToTiles(0.5 + 0.5 * Math.cos(angle));
-		let endZ = fractionToTiles(0.5 + 0.5 * Math.sin(angle));
-
 		// Create river
 		if (!createArea(
-			new PathPlacer(
-				Math.floor(start[0]),
-				Math.floor(start[1]),
-				Math.floor(endX),
-				Math.floor(endZ),
-				riverWidth,
-				waviness,
-				smoothness,
-				offset,
-				tapering),
+			new PathPlacer(start.x, start.y, end.x, end.y, riverWidth, waviness, smoothness, offset, tapering),
 			[
 				new SmoothElevationPainter(ELEVATION_SET, waterHeight, 4),
 				paintClass(tributaryRiverTileClass)
@@ -516,7 +502,7 @@ function createTributaryRivers(horizontal, riverCount, riverWidth, waterHeight, 
 
 		// Create small puddles at the map border to ensure players being separated
 		createArea(
-			new ClumpPlacer(Math.floor(diskArea(riverWidth / 2)), 0.95, 0.6, 10, endX, endZ),
+			new ClumpPlacer(Math.floor(diskArea(riverWidth / 2)), 0.95, 0.6, 10, end.x, end.y),
 			new SmoothElevationPainter(ELEVATION_SET, waterHeight, 3),
 			constraint);
 	}
@@ -525,74 +511,57 @@ function createTributaryRivers(horizontal, riverCount, riverWidth, waterHeight, 
 	if (shallowTileClass)
 		for (let z of [0.25, 0.75])
 		{
-			let m1 = [Math.round(fractionToTiles(0.2)), Math.round(fractionToTiles(z))];
-			let m2 = [Math.round(fractionToTiles(0.8)), Math.round(fractionToTiles(z))];
-
-			if (!horizontal)
-			{
-				m1.reverse();
-				m2.reverse();
-			}
-
-			createShallowsPassage(...m1, ...m2, scaleByMapSize(4, 8), -2, -2, 2, shallowTileClass, undefined, waterHeight);
+			let start = new Vector2D(0, z).mult(getMapSize()).rotate(riverAngle);
+			let end = new Vector2D(1, z).mult(getMapSize()).rotate(riverAngle);
+			createShallowsPassage(start, end, scaleByMapSize(4, 8), -2, -2, 2, shallowTileClass, undefined, waterHeight);
 		}
 }
 
 /**
- * Create shallow water between (x1, z1) and (x2, z2) of tiles below maxHeight.
+ * Create shallow water between start and end at tiles below maxHeight.
  */
-function createShallowsPassage(x1, z1, x2, z2, width, maxHeight, shallowHeight, smooth, tileClass, terrain, riverHeight)
+function createShallowsPassage(start, end, width, maxHeight, shallowHeight, smooth, tileClass, terrain, riverHeight)
 {
-	let a = z1 - z2;
-	let b = x2 - x1;
+	let passage = Vector2D.sub(end, start);
+	let passageLength = passage.length();
+	let passageCenter = Vector2D.average([start, end]);
+	let perpendicular = Vector2D.add(passageCenter, passage.perpendicular());
 
-	let distance = Math.euclidDistance2D(x1, z1, x2, z2);
 	let mapSize = getMapSize();
 
 	for (let ix = 0; ix < mapSize; ++ix)
 		for (let iz = 0; iz < mapSize; ++iz)
 		{
-			let c = a * (ix - x1) + b * (iz - z1);
-			let my = iz - b * c / Math.square(distance);
-			let inline = 0;
-
-			let dis;
-			if (b == 0)
-			{
-				dis = Math.abs(ix - x1);
-				if (iz >= Math.min(z1, z2) && iz <= Math.max(z1, z2))
-					inline = 1;
-			}
-			else if (my >= Math.min(z1, z2) && my <= Math.max(z1, z2))
-			{
-				dis = Math.abs(c) / distance;
-				inline = 1;
-			}
-
-			if (dis > width || !inline || getHeight(ix, iz) > maxHeight)
+			if (getHeight(ix, iz) > maxHeight)
 				continue;
 
-			if (dis > width - smooth)
-				setHeight(ix, iz, ((width - dis) * shallowHeight + riverHeight * (smooth - width + dis)) / smooth);
-			else if (dis <= width - smooth)
+			let point = new Vector2D(ix, iz);
+
+			if (distanceOfPointFromLine(passageCenter, perpendicular, point) > passageLength / 2)
+				continue;
+
+			let distance = distanceOfPointFromLine(start, end, point);
+			if (distance > width)
+				continue;
+
+			if (distance > width - smooth)
+				setHeight(ix, iz, ((width - distance) * shallowHeight + riverHeight * (smooth - width + distance)) / smooth);
+			else if (distance <= width - smooth)
 				setHeight(ix, iz, shallowHeight);
 
 			if (tileClass !== undefined)
 				addToClass(ix, iz, tileClass);
 
-			if (terrain !== undefined)
+			if (terrain)
 				placeTerrain(ix, iz, terrain);
 		}
 }
 
-/**
- * Creates a ramp from (x1, y1) to (x2, y2).
- */
 function createRamp(rampStart, rampEnd, minHeight, maxHeight, width, smoothLevel, mainTerrain, edgeTerrain, tileClass)
 {
 	let ramp = Vector2D.sub(rampStart, rampEnd);
 	let rampLength = ramp.length();
-	let rampP = Vector2D.add(rampEnd, ramp.perpendicular());
+	let perpendicular = Vector2D.add(rampEnd, ramp.perpendicular());
 
 	let halfWidth = new Vector2D(1, 1).mult(width / 2);
 	let minBound = Vector2D.max([Vector2D.min([rampStart, rampEnd]).sub(halfWidth), new Vector2D(0, 0)]).round();
@@ -602,7 +571,7 @@ function createRamp(rampStart, rampEnd, minHeight, maxHeight, width, smoothLevel
 		for (let y = minBound.y; y < maxBound.y; ++y)
 		{
 			let point = new Vector2D(x, y);
-			let lDist = distanceOfPointFromLine(rampP, rampEnd, point);
+			let lDist = distanceOfPointFromLine(perpendicular, rampEnd, point);
 			let sDist = distanceOfPointFromLine(rampStart, rampEnd, point);
 
 			if (lDist > rampLength || sDist > halfWidth.x)
@@ -628,57 +597,23 @@ function createRamp(rampStart, rampEnd, minHeight, maxHeight, width, smoothLevel
 }
 
 /**
- * Get The Intended Point In A Direction Based On Height.
- * Retrieves the N'th point with a specific height in a line and returns it as a [x, y] array.
- *
- * @param startPoint - [x, y] array defining the start point
- * @param endPoint - [x, y] array defining the ending point
- * @param heightRange - [min, max] array defining the range which the height of the intended point can be. includes both "min" and "max"
- * @param step - how much tile units per turn should the search go. more value means faster but less accurate
- * @param n - how many points to skip before ending the search. skips """n-1 points""".
+ * Returns the first location between startPoint and endPoint that lies within the given heightrange. 
  */
-function getTIPIADBON(startPoint, endPoint, heightRange, step, n)
+function findLocationInDirectionBasedOnHeight(startPoint, endPoint, minHeight, maxHeight, offset = 0)
 {
-	let X = endPoint[0] - startPoint[0];
-	let Y = endPoint[1] - startPoint[1];
+	let stepVec = Vector2D.sub(endPoint, startPoint);
+	let stepCount = Math.ceil(stepVec.length());
+	stepVec.normalize();
 
-	if (!X && !Y)
+	for (let i = 0; i < stepCount; ++i)
 	{
-		error("getTIPIADBON startPoint and endPoint are identical! " + new Error().stack);
-		return undefined;
-	}
+		let pos = Vector2D.add(startPoint, Vector2D.mult(stepVec, i));
+		let ipos = pos.clone().round();
 
-	let M = Math.sqrt(Math.square(X) + step * Math.square(Y));
-	let stepX = step * X / M;
-	let stepY = step * Y / M;
-
-	let y = startPoint[1];
-	let checked = 0;
-
-	let mapSize = getMapSize();
-
-	for (let x = startPoint[0]; true; x += stepX)
-	{
-		let ix = Math.floor(x);
-		let iy = Math.floor(y);
-
-		if (ix < mapSize || iy < mapSize)
-		{
-			if (getHeight(ix, iy) <= heightRange[1] &&
-			    getHeight(ix, iy) >= heightRange[0])
-				++checked;
-
-			if (checked >= n)
-				return [x, y];
-		}
-
-		y += stepY;
-
-		if (y > endPoint[1] && stepY > 0 ||
-		    y < endPoint[1] && stepY < 0 ||
-		    x > endPoint[1] && stepX > 0 ||
-		    x < endPoint[1] && stepX < 0)
-			return undefined;
+		if (g_Map.validH(ipos.x, ipos.y) &&
+		    getHeight(ipos.x, ipos.y) >= minHeight &&
+		    getHeight(ipos.x, ipos.y) <= maxHeight)
+			return pos.add(stepVec.mult(offset));
 	}
 
 	return undefined;
