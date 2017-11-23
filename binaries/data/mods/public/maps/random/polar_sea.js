@@ -43,71 +43,46 @@ var clFood = createTileClass();
 var clBaseResource = createTileClass();
 var clArcticWolf = createTileClass();
 
-var [playerIDs, playerX, playerZ] = radialPlayerPlacement();
+var [playerIDs, playerX, playerZ] = playerPlacementCircle(0.35);
 
+log("Creating player markets...");
+var marketDist = 12;
 for (let i = 0; i < numPlayers; ++i)
 {
-	let id = playerIDs[i];
-	log("Creating base for player " + id + "...");
-
-	let fx = fractionToTiles(playerX[i]);
-	let fz = fractionToTiles(playerZ[i]);
-	let ix = Math.round(fx);
-	let iz = Math.round(fz);
-
-	addCivicCenterAreaToClass(ix, iz, clPlayer);
-
-	// Create the city patch
-	let cityRadius = scaleByMapSize(15,25)/3;
-	let placer = new ClumpPlacer(PI*cityRadius*cityRadius, 0.6, 0.3, 10, ix, iz);
-	let painter = new LayeredPainter([tRoadWild, tRoad], [1]);
-	createArea(placer, painter, null);
-
-	placeCivDefaultEntities(fx, fz, id, { 'iberWall': 'towers' });
-
-	placeDefaultChicken(fx, fz, clBaseResource, undefined, oMuskox);
-
-	// Create metal mine
-	let mAngle = randFloat(0, 2 * Math.PI);
-	let mDist = 12;
-	let mX = Math.round(fx + mDist * Math.cos(mAngle));
-	let mZ = Math.round(fz + mDist * Math.sin(mAngle));
-	let group = new SimpleGroup(
-		[new SimpleObject(oMetalLarge, 1, 1, 0, 0)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// Create stone mines
-	mAngle += randFloat(PI/8, PI/4);
-	mX = Math.round(fx + mDist * Math.cos(mAngle));
-	mZ = Math.round(fz + mDist * Math.sin(mAngle));
-	group = new SimpleGroup(
-		[new SimpleObject(oStoneLarge, 1, 1, 0, 2)],
-		true, clBaseResource, mX, mZ
-	);
-	createObjectGroup(group, 0);
-
-	// Create wood treasure
-	mAngle += PI/4;
-	let bbX = Math.round(fx + mDist * Math.cos(mAngle));
-	let bbZ = Math.round(fz + mDist * Math.sin(mAngle));
-	createObjectGroup(
-		new SimpleGroup(
-			[new SimpleObject(oWoodTreasure, 14,14, 0,3)],
-			true, clBaseResource, bbX, bbZ,
-			avoidClasses(clBaseResource, 4)
-		), 0);
-
-	// Create market
-	mAngle += PI/4;
-	placeObject(
-		Math.round(fx + mDist * Math.cos(mAngle)),
-		Math.round(fz + mDist * Math.sin(mAngle)),
-		oMarket,
-		id,
-		BUILDING_ORIENTATION);
+	let ix = Math.round(fractionToTiles(playerX[i]));
+	let iz = Math.round(fractionToTiles(playerZ[i]));
+	placeObject(ix, iz, oMarket, playerIDs[i], BUILDING_ORIENTATION);
+	addCivicCenterAreaToClass(ix, iz, clBaseResource);
 }
+
+placePlayerBases({
+	"PlayerPlacement": [playerIDs, playerX, playerZ],
+	"PlayerTileClass": clPlayer,
+	"BaseResourceClass": clBaseResource,
+	"IberianWalls": "towers",
+	"CityPatch": {
+		"outerTerrain": tRoadWild,
+		"innerTerrain": tRoad
+	},
+	"Chicken": {
+		"template": oMuskox
+	},
+	// No berries, no trees, no decoratives
+	"Mines": {
+		"types": [
+			{ "template": oMetalLarge },
+			{ "template": oStoneLarge }
+		]
+	},
+	"Treasures": {
+		"types": [
+			{
+				"template": oWoodTreasure,
+				"count": 14
+			}
+		]
+	},
+});
 Engine.SetProgress(30);
 
 log("Creating central lake...");

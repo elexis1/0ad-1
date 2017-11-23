@@ -3,6 +3,23 @@
  */
 
 /**
+ * These are identifiers of functions that can generate parts of a player base.
+ * There must be a function starting with placePlayerBase and ending with this name.
+ * This is a global so mods can extend this from external files.
+ */
+var g_PlayerBaseFunctions = [
+	// Possibly mark player class first here and use it afterwards
+	"CityPatch",
+	// Create the largest and most important entities first
+	"Trees",
+	"Mines",
+	"Treasures",
+	"Berries",
+	"Chicken",
+	"Decoratives"
+];
+
+/**
  * Gets the default starting entities for the civ of the given player, as defined by the civ file.
  */
 function getStartingEntities(playerID)
@@ -46,18 +63,74 @@ function placeStartingEntities(fx, fz, playerID, civEntities, dist = 6, orientat
 /**
  * Places the default starting entities as defined by the civilization definition and walls for Iberians.
  */
-function placeCivDefaultEntities(fx, fz, playerID, kwargs, dist = 6, orientation = BUILDING_ORIENTATION)
+function placeCivDefaultStartingEntities(fx, fz, playerID, iberWall, dist = 6, orientation = BUILDING_ORIENTATION)
 {
 	placeStartingEntities(fx, fz, playerID, getStartingEntities(playerID), dist, orientation);
 
 	let civ = getCivCode(playerID);
 	if (civ == "iber" && getMapSize() > 128)
 	{
-		if (kwargs && kwargs.iberWall == "towers")
+		if (iberWall == "towers")
 			placePolygonalWall(fx, fz, 15, ["entry"], "tower", civ, playerID, orientation, 7);
-		else if (!kwargs || kwargs.iberWall)
+		else if (iberWall)
 			placeGenericFortress(fx, fz, 20, playerID);
 	}
+}
+
+/**
+ * Places the civic center and starting resources for all given players.
+ */
+function placePlayerBases(playerBaseArgs)
+{
+	let [playerIDs, playerX, playerZ] = playerBaseArgs.PlayerPlacement;
+
+	for (let i = 0; i < getNumPlayers(); ++i)
+	{
+		playerBaseArgs.playerID = playerIDs[i];
+		playerBaseArgs.playerX = playerX[i];
+		playerBaseArgs.playerZ = playerZ[i];
+		placePlayerBase(playerBaseArgs);
+	}
+}
+
+/**
+ * Places the civic center and starting resources.
+ */
+function placePlayerBase(playerBaseArgs)
+{
+	log("Creating base for player " + playerBaseArgs.playerID + "...");
+
+	let fx = fractionToTiles(playerBaseArgs.playerX);
+	let fz = fractionToTiles(playerBaseArgs.playerZ);
+
+	placeCivDefaultStartingEntities(fx, fz, playerBaseArgs.playerID, playerBaseArgs.IberianWalls !== undefined ? playerBaseArgs.IberianWalls : "walls");
+
+	if (playerBaseArgs.PlayerTileClass !== undefined)
+		addCivicCenterAreaToClass(Math.round(fx), Math.round(fz), playerBaseArgs.PlayerTileClass);
+
+	for (let functionID of g_PlayerBaseFunctions)
+	{
+		let funcName = "placePlayerBase" + functionID;
+		let func = global[funcName];
+		if (!func)
+			throw new Error("Could not find " + funcName);
+
+		if (!playerBaseArgs[functionID])
+			continue;
+
+		let args = playerBaseArgs[functionID];
+
+		// Copy some global arguments to the arguments for each function
+		for (let prop of ["playerID", "playerX", "playerZ", "BaseResourceClass", "baseResourceConstraint"])
+			args[prop] = playerBaseArgs[prop];
+
+		func(args);
+	}
+}
+
+function defaultPlayerBaseRadius()
+{
+	return scaleByMapSize(15, 25);
 }
 
 /**
@@ -73,6 +146,242 @@ function addCivicCenterAreaToClass(ix, iz, tileClass)
 
 	addToClass(ix + 5, iz, tileClass);
 	addToClass(ix - 5, iz, tileClass);
+}
+
+/**
+ * Helper function.
+ */
+function getPlayerBaseArgs(playerBaseArgs)
+{
+	let baseResourceConstraint = playerBaseArgs.BaseResourceClass && avoidClasses(playerBaseArgs.BaseResourceClass, 4);
+
+	if (playerBaseArgs.baseResourceConstraint)
+		baseResourceConstraint = new AndConstraint([baseResourceConstraint, playerBaseArgs.baseResourceConstraint]);
+
+	return [
+		(property, defaultVal) => playerBaseArgs[property] === undefined ? defaultVal : playerBaseArgs[property],
+		new Vector2D(playerBaseArgs.playerX, playerBaseArgs.playerZ).mult(getMapSize()),
+		baseResourceConstraint
+	];
+}
+
+/**
+ * @property width
+ * @property radius
+ * @property tileClass - optionally mark the entire city patch with a tile class
+ */
+function placePlayerBaseCityPatch(args)
+{
+	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
+
+	let painters = [];
+
+	if (args.outerTerrain && args.innerTerrain)
+		painters.push(new LayeredPainter([args.outerTerrain, args.innerTerrain], [get("width", 1)]));
+
+	if (args.painters)
+		painters = painters.concat(args.painters);
+
+	createArea(
+		new ClumpPlacer(
+			Math.floor(diskArea(get("radius", defaultPlayerBaseRadius() / 3))),
+			get("coherence", 0.6),
+			get("smoothness", 0.3),
+			get("failFraction", 10),
+			Math.round(basePosition.x),
+			Math.round(basePosition.y)),
+		painters);
+}
+
+/**
+ * @property template
+ * @property count
+ * @property distance
+ * @property maxTries
+ */
+function placePlayerBaseChicken(args)
+{
+	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
+
+	for (let i = 0; i < get("groupCount", 2); ++i)
+		for (let tries = 0; tries < get("maxTries", 30); ++tries)
+		{
+			let loc = new Vector2D(0, get("distance", 9)).rotate(randFloat(0, 2 * Math.PI)).add(basePosition);
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(get("template", "gaia/fauna_chicken"), 5, 5, 0, get("count", 2))],
+					true,
+					args.BaseResourceClass,
+					loc.x,
+					loc.y),
+				0,
+				baseResourceConstraint))
+				return;
+		}
+
+	error("Could not place chicken for player " + args.playerID);
+}
+
+function placePlayerBaseBerries(args)
+{
+	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
+	for (let tries = 0; tries < get("maxTries", 30); ++tries)
+	{
+		let loc = new Vector2D(0, get("distance", 12)).rotate(randFloat(0, 2 * Math.PI)).add(basePosition);
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(
+					get("template", "gaia/flora_bush_berry"),
+					get("minCount", 5),
+					get("maxCount", 5),
+					get("maxDist", 1),
+					get("maxDist", 3))
+				],
+				true,
+				args.BaseResourceClass,
+				loc.x,
+				loc.y),
+			0,
+			baseResourceConstraint))
+			return;
+	}
+
+	error("Could not place berries for player " + args.playerID);
+}
+
+function placePlayerBaseMines(args)
+{
+	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
+
+	let angleBetweenMines = randFloat(get("minAngle", Math.PI / 6), get("maxAngle", Math.PI / 3));
+	let mineCount = args.types.length;
+
+	let groupElements = [];
+	if (args.groupElements)
+		groupElements = groupElements.concat(args.groupElements);
+
+	for (let tries = 0; tries < get("maxTries", 75); ++tries)
+	{
+		// First find a place where all mines can be placed
+		let pos = [];
+		let startAngle = randFloat(0, 2 * Math.PI);
+		for (let i = 0; i < mineCount; ++i)
+		{
+			let angle = startAngle + angleBetweenMines * (i + (mineCount - 1) / 2);
+			pos[i] = new Vector2D(0, get("distance", 12)).rotate(angle).add(basePosition).round();
+			if (!g_Map.validT(pos[i].x, pos[i].y) || !baseResourceConstraint.allows(pos[i].x, pos[i].y))
+			{
+				pos = undefined;
+				break;
+			}
+		}
+
+		if (!pos)
+			continue;
+
+		// Place the mines
+		for (let i = 0; i < mineCount; ++i)
+		{
+			if (args.types[i].type && args.types[i].type == "stone_formation")
+			{
+				createStoneMineFormation(pos[i].x, pos[i].y, args.types[i].template, args.types[i].terrain);
+				addToClass(pos[i].x, pos[i].y, args.BaseResourceClass);
+				continue;
+			}
+
+			createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(args.types[i].template, 1, 1, 0, 0)].concat(groupElements),
+					true,
+					args.BaseResourceClass,
+					pos[i].x,
+					pos[i].y),
+				0);
+		}
+		return;
+	}
+
+	error("Could not place mines for player " + args.playerID);
+}
+
+function placePlayerBaseTrees(args)
+{
+	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
+
+	let num = Math.floor(get("count", scaleByMapSize(4, 16)));
+
+	for (let x = 0; x < get("maxTries", 30); ++x)
+	{
+		let loc = new Vector2D(0, randFloat(get("minDist", 11), get("maxDist", 13))).rotate(randFloat(0, 2 * Math.PI)).add(basePosition).round();
+
+		if (createObjectGroup(
+			new SimpleGroup(
+				[new SimpleObject(args.template, num, num, get("minDistGroup", 0), get("maxDistGroup", 5))],
+				false,
+				args.BaseResourceClass,
+				loc.x,
+				loc.y),
+			0,
+			baseResourceConstraint))
+			return;
+	}
+
+	error("Could not place starting trees for player " + args.playerID);
+}
+
+function placePlayerBaseTreasures(args)
+{
+	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
+
+	for (let resourceTypeArgs of args.types)
+	{
+		get = (property, defaultVal) => args[property] === undefined ? defaultVal : args[property];
+
+		for (let tries = 0; tries < get("maxTries", 30); ++tries)
+		{
+			let loc = new Vector2D(0, randFloat(get("minDist", 11), get("maxDist", 13))).rotate(randFloat(0, 2 * Math.PI)).add(basePosition).round();
+
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(resourceTypeArgs.template, get("count", 14), get("count", 14), get("minDistGroup", 1), get("maxDistGroup", 3))],
+					false,
+					args.BaseResourceClass,
+					loc.x,
+					loc.y),
+				0,
+				baseResourceConstraint))
+				return;
+		}
+	}
+
+	error("Could not place treasure " + args.template + " for player " + args.playerID);
+}
+
+/**
+ * Typically used for placing grass tufts around the civic centers.
+ */
+function placePlayerBaseDecoratives(args)
+{
+	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
+
+	for (let i = 0; i < diskArea(get("radius", 1/15 * defaultPlayerBaseRadius())); ++i)
+		for (let x = 0; x < get("maxTries", 30); ++x)
+		{
+			let loc = new Vector2D(0, randIntInclusive(get("minDist", 10), get("maxDist", 12))).rotate(randFloat(0, 2 * Math.PI)).add(basePosition).round();
+
+			if (createObjectGroup(
+				new SimpleGroup(
+					[new SimpleObject(args.template, get("minCount", 2), get("maxCount", 5), 0, 1)],
+					false,
+					args.BaseResourceClass,
+					loc.x,
+					loc.y),
+				0,
+				baseResourceConstraint))
+				return;
+		}
+
+	error("Could not place decoratives for player " + args.playerID);
 }
 
 /**
@@ -124,7 +433,7 @@ function primeSortAllPlayers()
 /**
  * Determine player starting positions on a circular pattern.
  */
-function radialPlayerPlacement(radius = 0.35, startingAngle = undefined, centerX = 0.5, centerZ = 0.5)
+function playerPlacementCircle(radius, startingAngle = undefined, centerX = 0.5, centerZ = 0.5)
 {
 	let startAngle = startingAngle !== undefined ? startingAngle : randFloat(0, 2 * Math.PI);
 	let [locations, playerAngle] = distributePointsOnCircle(getNumPlayers(), startAngle, radius, new Vector2D(centerX, centerZ));
