@@ -154,8 +154,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oPine,
-		"radius": scaleByMapSize(0.5, 1)
+		"template": oPine
 	},
 	"Decoratives": {
 		"template": aGrassShort,

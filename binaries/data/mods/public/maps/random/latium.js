@@ -334,7 +334,6 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oPalm,
-		"radius": scaleByMapSize(1, 2),
 		"minDistGroup": 3,
 		"maxDistGroup": 5,
 	}

@@ -80,7 +80,6 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oOak,
-		"radius": scaleByMapSize(1.5, 2.5),
 		"maxDistGroup": 5
 	},
 	"Decoratives": {

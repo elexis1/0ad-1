@@ -236,8 +236,7 @@ placePlayerBases({
 		"distance": 11
 	},
 	"Trees": {
-		"template": oTree1,
-		"radius": scaleByMapSize(1.5, 2.5),
+		"template": oTree1
 		"maxDistGroup": 4
 	},
 	"Decoratives": {

@@ -1062,8 +1062,7 @@ function createUnknownPlayerBases()
 			]
 		},
 		"Trees": {
-			"template": oTree1,
-			"radius": scaleByMapSize(1.5, 2.5)
+			"template": oTree1
 		},
 		"Decoratives": {
 			"template": aGrassShort,

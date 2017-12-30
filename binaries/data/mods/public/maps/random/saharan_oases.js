@@ -72,8 +72,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oSDatePalm,
-		"radius": scaleByMapSize(1.5, 2.5),
+		"template": oSDatePalm
 	},
 	"Decoratives": {
 		"template": aBush1,

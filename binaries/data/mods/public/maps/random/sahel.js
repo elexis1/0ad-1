@@ -65,8 +65,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oBaobab,
-		"radius": scaleByMapSize(1, 2),
+		"template": oBaobab
 	}
 	// No decoratives
 });

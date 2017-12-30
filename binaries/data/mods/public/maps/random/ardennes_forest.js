@@ -126,7 +126,7 @@ placePlayerBases({
 	"CityPatch": {
 		"outerTerrain": tCity,
 		"innerTerrain": tCity,
-		"radius": scaleByMapSize(0.5, 1),
+		"radius": scaleByMapSize(5, 6),
 		"smoothness": 0.05
 	},
 	"Chicken": {
@@ -144,8 +144,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oOak,
-		"radius": scaleByMapSize(1, 2)
+		"template": oOak
 	}
 	// No decoratives
 });

@@ -86,8 +86,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oDatePalm,
-		"radius": scaleByMapSize(1.5, 2.5)
+		"template": oDatePalm
 	}
 	// No decoratives
 });

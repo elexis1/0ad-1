@@ -50,8 +50,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oTree,
-		"radius": scaleByMapSize(2, 4)
+		"template": oTree
 	}
 	// No decoratives
 });

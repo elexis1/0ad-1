@@ -109,12 +109,11 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oOak,
-		"radius": scaleByMapSize(1, 2),
+		"count": scaleByMapSize(2, 4),
 		"maxDistGroup": 5
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(10);

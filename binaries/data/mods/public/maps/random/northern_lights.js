@@ -57,8 +57,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oPine,
-		"radius": scaleByMapSize(2, 4)
+		"template": oPine
 	}
 	// No decoratives
 });

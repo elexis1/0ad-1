@@ -69,12 +69,10 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oCarob,
-		"radius": scaleByMapSize(1, 2)
+		"template": oCarob
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(10);

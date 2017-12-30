@@ -83,8 +83,9 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oBush,
-		"radius": scaleByMapSize(1.5, 2.5),
-		"maxDistGroup": 5
+		"count": 20,
+		"maxDistGroup": 3
+	}
 	// No decoratives
 });
 Engine.SetProgress(20);

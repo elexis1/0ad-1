@@ -76,8 +76,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oCarob,
-		"radius": scaleByMapSize(0.75, 1.25)
+		"template": oCarob
 	},
 	"Decoratives": {
 		"template": aBush1,

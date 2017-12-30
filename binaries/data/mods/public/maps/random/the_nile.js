@@ -81,12 +81,10 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oDatePalm,
-		"radius": scaleByMapSize(0.75, 1.25)
+		"template": oDatePalm
 	},
 	"Decoratives": {
-		"template": aBush1,
-		"radius": scaleByMapSize(1, 2)
+		"template": aBush1
 	}
 });
 Engine.SetProgress(30);

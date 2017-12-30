@@ -308,7 +308,7 @@ function placePlayerBaseTrees(args)
 {
 	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
 
-	let num = Math.floor(get("count", scaleByMapSize(4, 16)));
+	let num = Math.floor(get("count", scaleByMapSize(7, 20)));
 
 	for (let x = 0; x < get("maxTries", 30); ++x)
 	{
@@ -364,10 +364,12 @@ function placePlayerBaseDecoratives(args)
 {
 	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
 
-	for (let i = 0; i < diskArea(get("radius", 1/15 * defaultPlayerBaseRadius())); ++i)
+	for (let i = 0; i < diskArea(get("radius", 1/20 * defaultPlayerBaseRadius())); ++i)
+	{
+		let success = false;
 		for (let x = 0; x < get("maxTries", 30); ++x)
 		{
-			let loc = new Vector2D(0, randIntInclusive(get("minDist", 10), get("maxDist", 12))).rotate(randFloat(0, 2 * Math.PI)).add(basePosition).round();
+			let loc = new Vector2D(0, randIntInclusive(get("minDist", 8), get("maxDist", 11))).rotate(randFloat(0, 2 * Math.PI)).add(basePosition).round();
 
 			if (createObjectGroup(
 				new SimpleGroup(
@@ -378,10 +380,15 @@ function placePlayerBaseDecoratives(args)
 					loc.y),
 				0,
 				baseResourceConstraint))
-				return;
+			{
+				success = true;
+				break;
+			}
 		}
-
-	error("Could not place decoratives for player " + args.playerID);
+		if (!success)
+			// Don't warn since the decoratives are not important
+			return;
+	}
 }
 
 /**

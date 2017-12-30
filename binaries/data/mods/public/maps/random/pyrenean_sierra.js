@@ -130,7 +130,6 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oPine,
-		"radius": scaleByMapSize(1.5, 2.5),
 		"maxDistGroup": 5
 	},
 	"Decoratives": {

@@ -107,8 +107,7 @@ placePlayerBases({
 		],
 	},
 	"Trees": {
-		"template": "gaia/flora_tree_oak_large",
-		"radius": scaleByMapSize(0.5, 1)
+		"template": "gaia/flora_tree_oak_large"
 	}
 });
 Engine.SetProgress(10);

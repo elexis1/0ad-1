@@ -76,16 +76,10 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oBaobab,
-		"radius": scaleByMapSize(1.5, 2.5),
-		"minDistGroup": 4,
-		"maxDistGroup": 7,
-		"minDist": 14,
-		"maxDist": 15
+		"template": oBaobab
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(15);

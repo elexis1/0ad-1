@@ -263,7 +263,6 @@ createFood(
 	clFood);
 Engine.SetProgress(85);
 
-if (false)
 createStragglerTrees(
 	[oBaobab],
 	avoidClasses(clWater, 5, clForest, 2, clHill, 3, clPlayer, 12, clMetal, 4, clRock, 4),

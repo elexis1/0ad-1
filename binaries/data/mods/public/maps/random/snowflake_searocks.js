@@ -241,7 +241,6 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oTree1,
-		"radius": scaleByMapSize(1.5, 2.5),
 		"minDistGroup": 1,
 		"maxDistGroup": 3
 	},
