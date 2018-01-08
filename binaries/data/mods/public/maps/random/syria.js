@@ -90,7 +90,8 @@ placePlayerBases({
 		"groupElements": [new RandomObject(aBushes, 2, 4, 2, 3)]
 	},
 	"Trees": {
-		"template": pickRandom([oPalm, oTamarix])
+		"template": pickRandom([oPalm, oTamarix]),
+		"count": scaleByMapSize(2, 4)
 	}
 	// No decoratives
 });

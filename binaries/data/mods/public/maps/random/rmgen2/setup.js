@@ -192,11 +192,10 @@ function createBase(player, walls = "walls")
 		},
 		"Trees": {
 			"template": g_Gaia.tree1,
-			"radius": (currentBiome() == "savanna" ? 1 : 3) * scaleByMapSize(1, 2)
+			"count": currentBiome() == "savanna" ? 5 : 15
 		},
 		"Decoratives": {
-			"template": g_Decoratives.grassShort,
-			"radius": scaleByMapSize(1, 2)
+			"template": g_Decoratives.grassShort
 		}
 	});
 }

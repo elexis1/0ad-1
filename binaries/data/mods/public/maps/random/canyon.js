@@ -240,8 +240,7 @@ placePlayerBases({
 		"maxDistGroup": 4
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 
