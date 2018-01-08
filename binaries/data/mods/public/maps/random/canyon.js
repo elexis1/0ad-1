@@ -221,7 +221,7 @@ placePlayerBases({
 	"CityPatch": {
 		"outerTerrain": tRoad,
 		"innerTerrain": tRoad,
-		"radius": baseRadius
+		"radius": playerCanyonRadius / 3
 	},
 	"Chicken": {
 	},
@@ -236,7 +236,7 @@ placePlayerBases({
 		"distance": 11
 	},
 	"Trees": {
-		"template": oTree1
+		"template": oTree1,
 		"maxDistGroup": 4
 	},
 	"Decoratives": {

@@ -119,7 +119,7 @@ placePlayerBases({
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad,
-		"radius": playerRadius
+		"radius": playerRadius / 3
 	},
 	"Chicken": {
 		"template": oPeacock

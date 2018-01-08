@@ -335,7 +335,7 @@ function placePlayerBaseTreasures(args)
 
 	for (let resourceTypeArgs of args.types)
 	{
-		get = (property, defaultVal) => args[property] === undefined ? defaultVal : args[property];
+		get = (property, defaultVal) => resourceTypeArgs[property] === undefined ? defaultVal : resourceTypeArgs[property];
 
 		for (let tries = 0; tries < get("maxTries", 30); ++tries)
 		{

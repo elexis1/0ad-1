@@ -49,10 +49,9 @@ log("Creating player markets...");
 var marketDist = 12;
 for (let i = 0; i < numPlayers; ++i)
 {
-	let ix = Math.round(fractionToTiles(playerX[i]));
-	let iz = Math.round(fractionToTiles(playerZ[i]));
-	placeObject(ix, iz, oMarket, playerIDs[i], BUILDING_ORIENTATION);
-	addCivicCenterAreaToClass(ix, iz, clBaseResource);
+	let marketPos = Vector2D.add(new Vector2D(playerX[i], playerZ[i]).mult(mapSize), new Vector2D(marketDist, 0).rotate(randFloat(0, 2 * Math.PI))).round();
+	placeObject(marketPos.x, marketPos.y, oMarket, playerIDs[i], BUILDING_ORIENTATION);
+	addCivicCenterAreaToClass(marketPos.x, marketPos.y, clBaseResource);
 }
 
 placePlayerBases({

@@ -337,7 +337,7 @@ placePlayerBases({
 		"distance": scaleByMapSize(9, 14)
 	},
 	"Trees": {
-		"template": oOak
+		"template": oOak,
 		"minDist": 10,
 		"maxDist": 14
 	},

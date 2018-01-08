@@ -71,7 +71,7 @@ var clTower = createTileClass();
 var clRain = createTileClass();
 
 var ccMountainHeight = 25;
-var ccMountainSize = getDefaultPlayerTerritory();
+var ccMountainSize = defaultPlayerBaseRadius();
 
 var [playerIDs, playerX, playerZ] = playerPlacementCircle(0.35);
 
@@ -96,7 +96,7 @@ for (let i = 0; i < numPlayers; ++i)
 
 	// Flatten the initial CC area
 	createArea(
-		new ClumpPlacer(diskArea(defaultPlayerBaseRadius()), 0.95, 0.6, 10, ix, iz),
+		new ClumpPlacer(diskArea(ccMountainSize), 0.95, 0.6, 10, ix, iz),
 		[
 			new LayeredPainter([tHillVeryDark, tHillMedium1], [ccMountainSize]),
 			new SmoothElevationPainter(ELEVATION_SET, ccMountainHeight, ccMountainSize),

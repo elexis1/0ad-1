@@ -142,7 +142,7 @@ placePlayerBases({
 	"BaseResourceClass": clBaseResource,
 	"IberianWalls": "towers",
 	"CityPatch": {
-		"radius": 18,
+		"radius": 6,
 		"outerTerrain": tGrass,
 		"innerTerrain": tCity,
 		"painters": [

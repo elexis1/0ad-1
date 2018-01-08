@@ -117,7 +117,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oTree1
+		"template": oTree1,
 		"maxDistGroup": 5,
 		"minDist": 12,
 		"maxDist": 13

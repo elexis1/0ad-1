@@ -211,7 +211,7 @@ for (let island = 0; island < 2; ++island)
 	{
 		playerAngle[p] = Math.PI * ((i + 0.5) / (2 * playersPerIsland) + island) + swapAngle;
 		let pos = Vector2D.add(islandLocations[island], new Vector2D(radiusPlayer).rotate(-playerAngle[p]));
-		[playerX[p], playerZ[p]] = [pos.x, pos.y];
+		[playerX[p], playerZ[p]] = [tilesToFraction(pos.x), tilesToFraction(pos.y)];
 		++p;
 	}
 }

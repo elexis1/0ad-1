@@ -183,7 +183,7 @@ placePlayerBases({
 	"BaseResourceClass": clBaseResource,
 	"IberianWalls": "towers",
 	"CityPatch": {
-		"radius": playerRadius,
+		"radius": playerIslandRadius / 3,
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad
 	},
@@ -208,7 +208,6 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oTree1,
-		"radius": 1/20 * playerRadius,
 		"maxDistGroup": 5
 	},
 	"Decoratives": {

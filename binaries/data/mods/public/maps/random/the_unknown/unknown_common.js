@@ -1057,7 +1057,7 @@ function createUnknownPlayerBases()
 			"types": [
 				{
 					"template": oWoodTreasure,
-					"count": treasures ? 14 : 0
+					"count": g_StartingTreasures ? 14 : 0
 				}
 			]
 		},
