@@ -123,8 +123,7 @@ placePlayerBases({
 		"maxDist": 13
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(30);

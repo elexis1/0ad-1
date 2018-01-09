@@ -157,8 +157,7 @@ placePlayerBases({
 		"template": oPine
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(20);

@@ -342,8 +342,7 @@ placePlayerBases({
 		"maxDist": 14
 	},
 	"Decoratives": {
-		"template": aBush1,
-		"radius": scaleByMapSize(1, 2)
+		"template": aBush1
 	}
 });
 Engine.SetProgress(20);

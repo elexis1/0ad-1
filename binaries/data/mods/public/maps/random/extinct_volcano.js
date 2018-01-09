@@ -130,8 +130,7 @@ placePlayerBases({
 		"template": oTree2
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(15);

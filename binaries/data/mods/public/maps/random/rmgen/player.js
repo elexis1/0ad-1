@@ -364,7 +364,7 @@ function placePlayerBaseDecoratives(args)
 {
 	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
 
-	for (let i = 0; i < get("count", diskArea(1/20 * defaultPlayerBaseRadius())); ++i)
+	for (let i = 0; i < get("count", scaleByMapSize(2, 5)); ++i)
 	{
 		let success = false;
 		for (let x = 0; x < get("maxTries", 30); ++x)

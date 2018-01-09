@@ -101,12 +101,10 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oPoplar,
-		"radius": scaleByMapSize(1, 2)
+		"template": oPoplar
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(20);

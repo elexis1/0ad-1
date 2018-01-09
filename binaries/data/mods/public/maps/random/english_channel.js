@@ -79,8 +79,7 @@ placePlayerBases({
 		"template": oOak
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"radius": scaleByMapSize(1, 2)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(10);

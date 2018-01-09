@@ -75,8 +75,7 @@ placePlayerBases({
 		"template": oSDatePalm
 	},
 	"Decoratives": {
-		"template": aBush1,
-		"radius": scaleByMapSize(1, 2)
+		"template": aBush1
 	}
 });
 Engine.SetProgress(30);
