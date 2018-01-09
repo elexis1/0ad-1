@@ -223,7 +223,7 @@ placePlayerBases({
 	// PlayerTileClass already marked above
 	"BaseResourceClass": clBaseResource,
 	"baseResourceConstraint": stayClasses(clPlayer, 4),
-	"IberianWalls": "towers",
+	"Walls": "towers",
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad

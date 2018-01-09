@@ -82,7 +82,7 @@ placePlayerBases({
 			continentCenter.x,
 			continentCenter.y,
 			i => Math.PI * (-0.46 / numPlayers * (i + i % 2) - (i % 2) / 2))],
-	"IberianWalls": false,
+	"Walls": false,
 	"PlayerTileClass": clPlayer,
 	"BaseResourceClass": clBaseResource,
 	"CityPatch": {

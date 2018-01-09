@@ -181,7 +181,7 @@ placePlayerBases({
 	"PlayerPlacement": [playerIDs, playerX, playerZ],
 	// PlayerTileClass marked above
 	"BaseResourceClass": clBaseResource,
-	"IberianWalls": "towers",
+	"Walls": "towers",
 	"CityPatch": {
 		"radius": playerIslandRadius / 3,
 		"outerTerrain": tRoadWild,

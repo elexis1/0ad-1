@@ -109,7 +109,7 @@ Engine.SetProgress(8);
 placePlayerBases({
 	"PlayerPlacement": [playerIDs, playerX, playerZ],
 	// PlayerTileClass already marked above
-	"IberianWalls": "towers",
+	"Walls": "towers",
 	"BaseResourceClass": clBaseResource,
 	"CityPatch": {
 		"outerTerrain": tRoadWild,

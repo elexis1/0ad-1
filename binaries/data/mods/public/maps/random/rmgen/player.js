@@ -61,20 +61,28 @@ function placeStartingEntities(fx, fz, playerID, civEntities, dist = 6, orientat
 }
 
 /**
- * Places the default starting entities as defined by the civilization definition and walls for Iberians.
+ * Places the default starting entities as defined by the civilization definition, optionally including city walls.
  */
-function placeCivDefaultStartingEntities(fx, fz, playerID, iberWall, dist = 6, orientation = BUILDING_ORIENTATION)
+function placeCivDefaultStartingEntities(x, z, playerID, wallType, dist = 6, orientation = BUILDING_ORIENTATION)
 {
-	placeStartingEntities(fx, fz, playerID, getStartingEntities(playerID), dist, orientation);
+	placeStartingEntities(x, z, playerID, getStartingEntities(playerID), dist, orientation);
+	placeStartingWalls(x, z, playerID, wallType, orientation);
+}
 
+/**
+ * If the map is large enough and the civilization defines them, places the initial city walls or towers.
+ * @param {string|boolean} wallType - Either "towers" to only place the wall turrets or a boolean indicating enclosing city walls.
+ */
+function placeStartingWalls(x, z, playerID, wallType, orientation = BUILDING_ORIENTATION)
+{
 	let civ = getCivCode(playerID);
-	if (civ == "iber" && getMapSize() > 128)
-	{
-		if (iberWall == "towers")
-			placePolygonalWall(fx, fz, 15, ["entry"], "tower", civ, playerID, orientation, 7);
-		else if (iberWall)
-			placeGenericFortress(fx, fz, 20, playerID);
-	}
+	if (civ != "iber" || getMapSize() <= 128)
+		return;
+
+	if (wallType == "towers")
+		placePolygonalWall(x, z, 15, ["entry"], "tower", civ, playerID, orientation, 7);
+	else if (wallType)
+		placeGenericFortress(x, z, 20, playerID);
 }
 
 /**
@@ -103,7 +111,7 @@ function placePlayerBase(playerBaseArgs)
 	let fx = fractionToTiles(playerBaseArgs.playerX);
 	let fz = fractionToTiles(playerBaseArgs.playerZ);
 
-	placeCivDefaultStartingEntities(fx, fz, playerBaseArgs.playerID, playerBaseArgs.IberianWalls !== undefined ? playerBaseArgs.IberianWalls : "walls");
+	placeCivDefaultStartingEntities(fx, fz, playerBaseArgs.playerID, playerBaseArgs.Walls !== undefined ? playerBaseArgs.Walls : "walls");
 
 	if (playerBaseArgs.PlayerTileClass !== undefined)
 		addCivicCenterAreaToClass(Math.round(fx), Math.round(fz), playerBaseArgs.PlayerTileClass);

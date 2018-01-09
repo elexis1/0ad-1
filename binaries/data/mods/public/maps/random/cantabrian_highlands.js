@@ -91,7 +91,7 @@ placePlayerBases({
 	"PlayerPlacement": [playerIDs, playerX, playerZ],
 	"PlayerTileClass": clPlayer,
 	"BaseResourceClass": clBaseResource,
-	"IberianWalls": false,
+	"Walls": false,
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad

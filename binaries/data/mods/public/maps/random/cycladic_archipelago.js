@@ -140,7 +140,7 @@ placePlayerBases({
 	"PlayerPlacement": [sortAllPlayers(), playerX, playerZ],
 	// PlayerTileClass is clCity here and painted below
 	"BaseResourceClass": clBaseResource,
-	"IberianWalls": "towers",
+	"Walls": "towers",
 	"CityPatch": {
 		"radius": 6,
 		"outerTerrain": tGrass,

@@ -106,7 +106,7 @@ placePlayerBases({
 	"PlayerPlacement": playerPlacementRiver(riverAngle, 0.6),
 	"PlayerTileClass": clPlayer,
 	"BaseResourceClass": clBaseResource,
-	"IberianWalls": "towers",
+	"Walls": "towers",
 	"CityPatch": {
 		"outerTerrain": tCityPlaza,
 		"innerTerrain": tCity

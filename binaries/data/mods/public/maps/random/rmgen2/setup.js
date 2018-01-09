@@ -168,7 +168,7 @@ function createBase(player, walls = "walls")
 		"playerID": player.id,
 		"playerX": player.x,
 		"playerZ": player.z,
-		"IberianWalls": getMapSize() > 192 && walls,
+		"Walls": getMapSize() > 192 && walls,
 		"PlayerTileClass": g_TileClasses.player,
 		"BaseResourceClass": g_TileClasses.baseResource,
 		"CityPatch": {

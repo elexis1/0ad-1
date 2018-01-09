@@ -101,7 +101,7 @@ for (let i = 0; i < numPlayers; ++i)
 placePlayerBases({
 	"PlayerPlacement": [playerIDs, playerX, playerZ],
 	"PlayerTileClass": clPlayer,
-	"IberianWalls": false,
+	"Walls": false,
 	"BaseResourceClass": clBaseResource,
 	"CityPatch": {
 		"outerTerrain": tRoadWild,

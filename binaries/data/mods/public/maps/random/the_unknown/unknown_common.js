@@ -109,7 +109,7 @@ var playerX = [];
 var playerZ = [];
 
 var g_StartingTreasures = false;
-var g_IberianWalls = "walls";
+var g_StartingWalls = "walls";
 
 function createUnknownMap()
 {
@@ -131,7 +131,7 @@ function createUnknownMap()
  */
 function unknownArchipelago()
 {
-	g_IberianWalls = "towers";
+	g_StartingWalls = "towers";
 	g_StartingTreasures = true;
 
 	let [pIDs, islandX, islandZ] = playerPlacementCircle(0.35);
@@ -1033,7 +1033,7 @@ function createUnknownPlayerBases()
 {
 	placePlayerBases({
 		"PlayerPlacement": [playerIDs, playerX, playerZ],
-		"IberianWalls": g_IberianWalls,
+		"Walls": g_StartingWalls,
 		"BaseResourceClass": clBaseResource,
 		"CityPatch": {
 			"outerTerrain": tRoadWild,

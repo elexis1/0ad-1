@@ -316,7 +316,7 @@ Engine.SetProgress(10);
 
 placePlayerBases({
 	"PlayerPlacement": playerPlacementRiver(0, 0.6),
-	"IberianWalls": false,
+	"Walls": false,
 	"PlayerTileClass": clPlayer,
 	"BaseResourceClass": clBaseResource,
 	"CityPatch": {

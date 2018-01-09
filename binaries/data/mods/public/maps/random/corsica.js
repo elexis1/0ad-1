@@ -229,7 +229,7 @@ placePlayerBases({
 			paintClass(clSettlement)
 		]
 	},
-	"IberianWalls": false,
+	"Walls": false,
 	"Chicken": {
 	},
 	"Berries": {

@@ -59,7 +59,7 @@ placePlayerBases({
 	"PlayerPlacement": playerPlacementRiver(Math.PI / 2, 0.5),
 	// PlayerTileClass marked below
 	"BaseResourceClass": clBaseResource,
-	"IberianWalls": "towers",
+	"Walls": "towers",
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad,
