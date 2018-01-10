@@ -59,6 +59,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oTree,
+		"count": scaleByMapSize(3, 7),
 		"minDist": 13,
 		"maxDist": 15,
 		"minDistGroup": 4,

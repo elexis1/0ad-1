@@ -109,8 +109,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oOak,
-		"count": 2,
-		"maxDistGroup": 5
+		"count": 2
 	},
 	"Decoratives": {
 		"template": aGrassShort

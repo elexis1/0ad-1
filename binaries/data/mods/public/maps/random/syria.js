@@ -91,7 +91,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": pickRandom([oPalm, oTamarix]),
-		"count": scaleByMapSize(2, 4)
+		"count": 3
 	}
 	// No decoratives
 });

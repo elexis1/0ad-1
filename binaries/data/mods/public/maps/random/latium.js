@@ -334,8 +334,9 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oPalm,
-		"minDistGroup": 3,
-		"maxDistGroup": 5,
+		"count": 5,
+		"minDist": 10,
+		"maxDist": 11
 	}
 	// No decoratives
 });

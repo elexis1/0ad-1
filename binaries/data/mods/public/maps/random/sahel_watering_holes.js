@@ -77,7 +77,8 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oBaobab
+		"template": oBaobab,
+		"count": 5
 	},
 	"Decoratives": {
 		"template": aGrassShort

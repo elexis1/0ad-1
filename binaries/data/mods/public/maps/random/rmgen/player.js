@@ -173,11 +173,6 @@ function getPlayerBaseArgs(playerBaseArgs)
 	];
 }
 
-/**
- * @property width
- * @property radius
- * @property tileClass - optionally mark the entire city patch with a tile class
- */
 function placePlayerBaseCityPatch(args)
 {
 	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
@@ -201,17 +196,13 @@ function placePlayerBaseCityPatch(args)
 		painters);
 }
 
-/**
- * @property template
- * @property count
- * @property distance
- * @property maxTries
- */
 function placePlayerBaseChicken(args)
 {
 	let [get, basePosition, baseResourceConstraint] = getPlayerBaseArgs(args);
 
 	for (let i = 0; i < get("groupCount", 2); ++i)
+	{
+		let success = false;
 		for (let tries = 0; tries < get("maxTries", 30); ++tries)
 		{
 			let loc = new Vector2D(0, get("distance", 9)).rotate(randFloat(0, 2 * Math.PI)).add(basePosition);
@@ -224,10 +215,18 @@ function placePlayerBaseChicken(args)
 					loc.y),
 				0,
 				baseResourceConstraint))
-				return;
+			{
+				success = true;
+				break;
+			}
 		}
 
-	error("Could not place chicken for player " + args.playerID);
+		if (!success)
+		{
+			error("Could not place chicken for player " + args.playerID);
+			return;
+		}
+	}
 }
 
 function placePlayerBaseBerries(args)
@@ -238,13 +237,7 @@ function placePlayerBaseBerries(args)
 		let loc = new Vector2D(0, get("distance", 12)).rotate(randFloat(0, 2 * Math.PI)).add(basePosition);
 		if (createObjectGroup(
 			new SimpleGroup(
-				[new SimpleObject(
-					get("template", "gaia/flora_bush_berry"),
-					get("minCount", 5),
-					get("maxCount", 5),
-					get("maxDist", 1),
-					get("maxDist", 3))
-				],
+				[new SimpleObject(args.template, get("minCount", 5), get("maxCount", 5), get("maxDist", 1), get("maxDist", 3))],
 				true,
 				args.BaseResourceClass,
 				loc.x,
@@ -345,6 +338,8 @@ function placePlayerBaseTreasures(args)
 	{
 		get = (property, defaultVal) => resourceTypeArgs[property] === undefined ? defaultVal : resourceTypeArgs[property];
 
+		let success = false;
+
 		for (let tries = 0; tries < get("maxTries", 30); ++tries)
 		{
 			let loc = new Vector2D(0, randFloat(get("minDist", 11), get("maxDist", 13))).rotate(randFloat(0, 2 * Math.PI)).add(basePosition).round();
@@ -358,11 +353,17 @@ function placePlayerBaseTreasures(args)
 					loc.y),
 				0,
 				baseResourceConstraint))
-				return;
+			{
+				success = true;
+				break;
+			}
+		}
+		if (!success)
+		{
+			error("Could not place treasure " + resourceTypeArgs.template + " for player " + args.playerID);
+			return;
 		}
 	}
-
-	error("Could not place treasure " + args.template + " for player " + args.playerID);
 }
 
 /**

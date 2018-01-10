@@ -82,7 +82,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oDatePalm,
-		"count": scaleByMapSize(2, 4)
+		"count": 2
 	},
 	"Decoratives": {
 		"template": aBush1

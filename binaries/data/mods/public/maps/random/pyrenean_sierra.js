@@ -129,8 +129,7 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oPine,
-		"maxDistGroup": 5
+		"template": oPine
 	},
 	"Decoratives": {
 		"template": aGrassShort

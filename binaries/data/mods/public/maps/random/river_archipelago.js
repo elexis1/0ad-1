@@ -135,7 +135,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oTree,
-		"radius": 1/5 * playerRadius
+		"count": 40
 	}
 	// No decoratives
 });

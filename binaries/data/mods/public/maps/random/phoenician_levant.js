@@ -76,7 +76,8 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oCarob
+		"template": oCarob,
+		"count": 2
 	},
 	"Decoratives": {
 		"template": aBush1

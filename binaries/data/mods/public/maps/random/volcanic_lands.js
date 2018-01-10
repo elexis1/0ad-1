@@ -42,7 +42,7 @@ placePlayerBases({
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad
 	},
-	// No berries, no chicken
+	// No berries, no chicken, no decoratives
 	"Mines": {
 		"types": [
 			{ "template": oMetalLarge },
@@ -50,10 +50,9 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oTree
+		"template": oTree,
 		"count": scaleByMapSize(12, 30)
 	}
-	// No decoratives
 });
 Engine.SetProgress(15);
 

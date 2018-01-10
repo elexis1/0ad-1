@@ -71,7 +71,12 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oTree
+		"template": oTree,
+		"count": scaleByMapSize(12, 30),
+		"minDist": 12,
+		"maxDist": 14,
+		"minDistGroup": 1,
+		"maxDistGroup": 3
 	}
 	// No decoratives
 });

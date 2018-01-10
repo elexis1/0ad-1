@@ -124,7 +124,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oCarob,
-		"count": scaleByMapSize(2, 4)
+		"count": 2
 	},
 	"Decoratives": {
 		"template": aBush1

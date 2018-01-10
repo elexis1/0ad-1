@@ -231,22 +231,24 @@ placePlayerBases({
 	"Chicken": {
 	},
 	"Berries": {
-		"template": oFruitBush
+		"template": oFruitBush,
+		"distance": playerIslandRadius - 4
 	},
 	"Mines": {
 		"types": [
 			{ "template": oMetalLarge },
 			{ "template": oStoneLarge }
-		]
+		],
+		"distance": playerIslandRadius - 4
 	},
 	"Trees": {
 		"template": oTree1,
 		"count": scaleByMapSize(10, 50),
-		"minDist": 11
+		"minDist": 11,
+		"maxDist": 11
 	},
 	"Decoratives": {
-		"template": aGrassShort,
-		"count": scaleByMapSize(15, 30)
+		"template": aGrassShort
 	}
 });
 Engine.SetProgress(30);

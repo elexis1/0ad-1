@@ -91,8 +91,7 @@ placePlayerBases({
 			paintClass(clPlayer)
 		]
 	},
-	"Chicken": {
-	},
+	// Chicken already placed at the base terrain
 	"Berries": {
 		"template": "gaia/flora_bush_grapes",
 		"minCount": 2,
@@ -109,7 +108,8 @@ placePlayerBases({
 		"maxAngle": Math.PI
 	},
 	"Trees": {
-		"template": "gaia/flora_tree_oak_large"
+		"template": "gaia/flora_tree_oak_large",
+		"count": 2
 	}
 });
 Engine.SetProgress(10);

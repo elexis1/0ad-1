@@ -86,7 +86,8 @@ placePlayerBases({
 		"groupElements": shuffleArray(aBushes).map(t => new SimpleObject(t, 1, 1, 3, 4))
 	},
 	"Trees": {
-		"template": oOak
+		"template": oOak,
+		"count": 3
 	}
 	// No decoratives
 });

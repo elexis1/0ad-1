@@ -133,6 +133,8 @@ placePlayerBases({
 			{ "template": eMetalMine },
 			{ "template": eStoneMine },
 		],
+		"distance": defaultPlayerBaseRadius(),
+		"maxAngle": PI / 2,
 		"groupElements": shuffleArray([aBushA, aBushB, ePalmShort, ePalmTall]).map(t => new SimpleObject(t, 1, 1, 3, 4))
 	}
 	// Starting trees were set above
