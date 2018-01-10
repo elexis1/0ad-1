@@ -1033,8 +1033,8 @@ function createUnknownPlayerBases()
 {
 	placePlayerBases({
 		"PlayerPlacement": [playerIDs, playerX, playerZ],
-		"Walls": g_StartingWalls,
 		"BaseResourceClass": clBaseResource,
+		"Walls": g_StartingWalls,
 		"CityPatch": {
 			"outerTerrain": tRoadWild,
 			"innerTerrain": tRoad,

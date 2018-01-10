@@ -82,9 +82,9 @@ placePlayerBases({
 			continentCenter.x,
 			continentCenter.y,
 			i => Math.PI * (-0.46 / numPlayers * (i + i % 2) - (i % 2) / 2))],
-	"Walls": false,
 	"PlayerTileClass": clPlayer,
 	"BaseResourceClass": clBaseResource,
+	"Walls": false,
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad

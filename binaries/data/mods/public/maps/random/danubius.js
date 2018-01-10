@@ -316,13 +316,12 @@ Engine.SetProgress(10);
 
 placePlayerBases({
 	"PlayerPlacement": playerPlacementRiver(0, 0.6),
-	"Walls": false,
 	"PlayerTileClass": clPlayer,
 	"BaseResourceClass": clBaseResource,
+	"Walls": false,
 	"CityPatch": {
 		"outerTerrain": tShore,
-		"innerTerrain": tRoad,
-		"radius": scaleByMapSize(7, 12)
+		"innerTerrain": tRoad
 	},
 	"Chicken": {
 	},
@@ -338,6 +337,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oOak,
+		"count": 20,
 		"minDist": 10,
 		"maxDist": 14
 	},

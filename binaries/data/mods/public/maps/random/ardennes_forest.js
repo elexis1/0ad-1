@@ -141,10 +141,12 @@ placePlayerBases({
 		"types": [
 			{ "template": oMetalLarge },
 			{ "template": oStoneLarge }
-		]
+		],
+		"distance": 16
 	},
 	"Trees": {
-		"template": oOak
+		"template": oOak,
+		"count": scaleByMapSize(2, 4)
 	}
 	// No decoratives
 });

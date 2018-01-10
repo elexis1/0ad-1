@@ -259,7 +259,7 @@ createFood(
 		scaleByMapSize(5, 20),
 		scaleByMapSize(5, 20)
 	],
-	avoidClasses(clForest, 0, clPlayer, 8, clWater, 1, clFood, 10, clHill, 1),
+	avoidClasses(clForest, 0, clPlayer, 8, clBaseResource, 4, clWater, 1, clFood, 10, clHill, 1),
 	clFood);
 
 createFood(

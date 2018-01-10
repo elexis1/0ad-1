@@ -236,8 +236,7 @@ placePlayerBases({
 		"distance": 11
 	},
 	"Trees": {
-		"template": oTree1,
-		"maxDistGroup": 4
+		"template": oTree1
 	},
 	"Decoratives": {
 		"template": aGrassShort

@@ -109,7 +109,7 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oOak,
-		"count": scaleByMapSize(2, 4),
+		"count": 2,
 		"maxDistGroup": 5
 	},
 	"Decoratives": {

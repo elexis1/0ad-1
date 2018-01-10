@@ -161,7 +161,8 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oPalm
+		"template": oPalm,
+		"count": scaleByMapSize(2, 4)
 	}
 	// No decoratives
 });

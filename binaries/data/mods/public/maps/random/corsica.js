@@ -220,16 +220,16 @@ placePlayerBases({
 	"PlayerPlacement": [sortAllPlayers(), playerX, playerZ],
 	"PlayerTileClass": clPlayer,
 	"BaseResourceClass": clBaseResource,
+	"Walls": false,
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad,
 		"coherence": 0.8,
-		// 23 / 4
+		"radius": 6,
 		"painters": [
 			paintClass(clSettlement)
 		]
 	},
-	"Walls": false,
 	"Chicken": {
 	},
 	"Berries": {
@@ -240,7 +240,7 @@ placePlayerBases({
 			{ "template": eMetalMine },
 			{ "template": eStoneMine }
 		]
-	},
+	}
 	// Sufficient starting trees around, no decoratives
 });
 Engine.SetProgress(40);
@@ -396,7 +396,7 @@ createObjectGroupsDeprecated(
 		avoidClasses(
 			clWater, 1,
 			clForest, 0,
-			clPlayer, 6,
+			clPlayer, 3,
 			clBaseResource, 4,
 			clPassage, 2,
 			clCliffs, 2)

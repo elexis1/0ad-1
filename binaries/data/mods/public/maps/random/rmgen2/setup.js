@@ -168,9 +168,9 @@ function createBase(player, walls = "walls")
 		"playerID": player.id,
 		"playerX": player.x,
 		"playerZ": player.z,
-		"Walls": getMapSize() > 192 && walls,
 		"PlayerTileClass": g_TileClasses.player,
 		"BaseResourceClass": g_TileClasses.baseResource,
+		"Walls": getMapSize() > 192 && walls,
 		"CityPatch": {
 			"outerTerrain": g_Terrains.roadWild,
 			"innerTerrain": g_Terrains.road,

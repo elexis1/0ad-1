@@ -69,7 +69,8 @@ placePlayerBases({
 		]
 	},
 	"Trees": {
-		"template": oCarob
+		"template": oCarob,
+		"count": scaleByMapSize(2, 8)
 	},
 	"Decoratives": {
 		"template": aGrassShort

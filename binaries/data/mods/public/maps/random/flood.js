@@ -101,8 +101,8 @@ for (let i = 0; i < numPlayers; ++i)
 placePlayerBases({
 	"PlayerPlacement": [playerIDs, playerX, playerZ],
 	"PlayerTileClass": clPlayer,
-	"Walls": false,
 	"BaseResourceClass": clBaseResource,
+	"Walls": false,
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad
@@ -120,6 +120,8 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oTree2,
+		"count": 50,
+		"maxDist": 16,
 		"maxDistGroup": 7
 	},
 	"Decoratives": {

@@ -105,6 +105,8 @@ placePlayerBases({
 			{ "template": templateMetalMine },
 			{ "template": templateStoneMine }
 		],
+		"minAngle": Math.PI / 2,
+		"maxAngle": Math.PI
 	},
 	"Trees": {
 		"template": "gaia/flora_tree_oak_large"

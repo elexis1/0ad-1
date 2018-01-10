@@ -109,8 +109,8 @@ Engine.SetProgress(8);
 placePlayerBases({
 	"PlayerPlacement": [playerIDs, playerX, playerZ],
 	// PlayerTileClass already marked above
-	"Walls": "towers",
 	"BaseResourceClass": clBaseResource,
+	"Walls": "towers",
 	"CityPatch": {
 		"outerTerrain": tRoadWild,
 		"innerTerrain": tRoad
@@ -128,10 +128,8 @@ placePlayerBases({
 	},
 	"Trees": {
 		"template": oTree2
-	},
-	"Decoratives": {
-		"template": aGrassShort
 	}
+	// No decoratives
 });
 Engine.SetProgress(15);
 
