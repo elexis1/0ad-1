@@ -109,7 +109,7 @@ var playerX = [];
 var playerZ = [];
 
 var g_StartingTreasures = false;
-var g_StartingWalls = "walls";
+var g_StartingWalls = true;
 
 function createUnknownMap()
 {

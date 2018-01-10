@@ -111,7 +111,7 @@ function placePlayerBase(playerBaseArgs)
 	let fx = fractionToTiles(playerBaseArgs.playerX);
 	let fz = fractionToTiles(playerBaseArgs.playerZ);
 
-	placeCivDefaultStartingEntities(fx, fz, playerBaseArgs.playerID, playerBaseArgs.Walls !== undefined ? playerBaseArgs.Walls : "walls");
+	placeCivDefaultStartingEntities(fx, fz, playerBaseArgs.playerID, playerBaseArgs.Walls !== undefined ? playerBaseArgs.Walls : true);
 
 	if (playerBaseArgs.PlayerTileClass !== undefined)
 		addCivicCenterAreaToClass(Math.round(fx), Math.round(fz), playerBaseArgs.PlayerTileClass);

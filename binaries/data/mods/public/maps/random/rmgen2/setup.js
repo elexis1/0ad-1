@@ -162,7 +162,7 @@ function addBases(type, distance, groupedDistance, startAngle)
  * @param {Object} player - contains id, angle, x, z
  * @param {boolean} walls - Whether or not iberian gets starting walls
  */
-function createBase(player, walls = "walls")
+function createBase(player, walls = true)
 {
 	placePlayerBase({
 		"playerID": player.id,
