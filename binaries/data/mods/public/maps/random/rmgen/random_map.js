@@ -63,7 +63,7 @@ function RandomMap(baseHeight, baseTerrain)
 
 RandomMap.prototype.ReadTerrainFile = function(filename)
 {
-	warn(uneval(Engine.ReadTerrainFile(filename)));
+	return Engine.ReadTerrainFile(filename);
 };
 
 RandomMap.prototype.log = function(text)

@@ -19,9 +19,13 @@
 
 #include "MapGenerator.h"
 
+#include "graphics/MapIO.h"
+#include "graphics/Patch.h"
 #include "graphics/Terrain.h"
 #include "lib/timer.h"
+#include "maths/MathUtil.h"
 #include "ps/CLogger.h"
+#include "ps/FileIo.h"
 #include "ps/Profile.h"
 #include "ps/scripting/JSInterface_VFS.h"
 
@@ -228,14 +232,66 @@ int CMapGeneratorWorker::GetTerrainTileSize(ScriptInterface::CxPrivate* UNUSED(p
 JS::Value CMapGeneratorWorker::ReadTerrainFile(ScriptInterface::CxPrivate* pCxPrivate, const std::string& filename)
 {
 	CMapGeneratorWorker* self = static_cast<CMapGeneratorWorker*>(pCxPrivate->pCBData);
-
 	JSContext* cx = self->m_ScriptInterface->GetContext();
 	JSAutoRequest rq(cx);
 
-	JS::RootedValue returnValue(cx);
+	if (!VfsFileExists(filename))
+		throw PSERROR_File_OpenFailed();
 
+	CFileUnpacker unpacker;
+	unpacker.Read(filename, "PSMP");
+
+	if (unpacker.GetVersion() < CMapIO::FILE_READ_VERSION)
+		throw PSERROR_File_InvalidVersion();
+
+	JS::RootedValue returnValue(cx);
 	self->m_ScriptInterface->Eval("({})", &returnValue);
-	self->m_ScriptInterface->SetProperty(returnValue, "hello", filename);
+
+	// unpack size
+	ssize_t patchesPerSide = (ssize_t)unpacker.UnpackSize();
+	size_t verticesPerSide = patchesPerSide * PATCH_SIZE + 1;
+	self->m_ScriptInterface->SetProperty(returnValue, "size", (int) verticesPerSide);
+
+	// unpack heightmap
+	std::vector<u16> heightmap;
+	heightmap.resize(SQR(verticesPerSide));
+	unpacker.UnpackRaw(&heightmap[0], SQR(verticesPerSide) * sizeof(u16));
+	self->m_ScriptInterface->SetProperty(returnValue, "height", heightmap);
+
+	// unpack textures
+	size_t terrainTextureCount = unpacker.UnpackSize();
+	std::vector<std::string> terrainTextureNames;
+	terrainTextureNames.reserve(terrainTextureCount);
+	for (size_t i = 0; i < terrainTextureCount; ++i)
+	{
+		CStr texturename;
+		unpacker.UnpackString(texturename);
+		terrainTextureNames.push_back(texturename);
+	}
+	self->m_ScriptInterface->SetProperty(returnValue, "textureNames", terrainTextureNames);
+
+	// unpack tile data
+	ssize_t tilesPerSide = patchesPerSide * PATCH_SIZE;
+	std::vector<CMapIO::STileDesc> tiles;
+	tiles.resize(size_t(SQR(tilesPerSide)));
+	unpacker.UnpackRaw(&tiles[0], sizeof(CMapIO::STileDesc) * tiles.size());
+
+	// save tiledata to return value
+	JS::RootedObject tileDataArray(cx, JS_NewArrayObject(cx, 0));
+
+	int i = 0;
+	for (const CMapIO::STileDesc& tile : tiles)
+	{
+		JS::RootedValue newTileData(cx);
+		self->m_ScriptInterface->Eval("({})", &newTileData);
+		self->m_ScriptInterface->SetProperty(newTileData, "index1", tile.m_Tex1Index);
+		self->m_ScriptInterface->SetProperty(newTileData, "index2", tile.m_Tex2Index);
+		self->m_ScriptInterface->SetProperty(newTileData, "priority", tile.m_Priority);
+		JS_SetElement(cx, tileDataArray, i++, newTileData);
+	}
+
+	JS::RootedValue tileData(cx, JS::ObjectValue(*tileDataArray));
+	self->m_ScriptInterface->SetProperty(returnValue, "tileData", tileData);
 
 	return returnValue;
 }
