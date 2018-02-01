@@ -61,6 +61,11 @@ function RandomMap(baseHeight, baseTerrain)
 	this.entityCount = 150;
 }
 
+RandomMap.prototype.ReadTerrainFile = function(filename)
+{
+	warn(uneval(Engine.ReadTerrainFile(filename)));
+};
+
 RandomMap.prototype.log = function(text)
 {
 	this.logger.print(text);

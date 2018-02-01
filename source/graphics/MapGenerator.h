@@ -1,4 +1,4 @@
-/* Copyright (C) 2017 Wildfire Games.
+/* Copyright (C) 2018 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -129,6 +129,7 @@ private:
 	static std::vector<std::string> FindTemplates(ScriptInterface::CxPrivate* pCxPrivate, const std::string& path, bool includeSubdirectories);
 	static std::vector<std::string> FindActorTemplates(ScriptInterface::CxPrivate* pCxPrivate, const std::string& path, bool includeSubdirectories);
 	static int GetTerrainTileSize(ScriptInterface::CxPrivate* pCxPrivate);
+	static JS::Value ReadTerrainFile(ScriptInterface::CxPrivate* pCxPrivate, const std::string& filename);
 
 	std::set<std::wstring> m_LoadedLibraries;
 	shared_ptr<ScriptInterface::StructuredClone> m_MapData;

@@ -1,4 +1,4 @@
-/* Copyright (C) 2017 Wildfire Games.
+/* Copyright (C) 2018 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -108,6 +108,7 @@ bool CMapGeneratorWorker::Run()
 	m_ScriptInterface->RegisterFunction<std::vector<std::string>, std::string, bool, CMapGeneratorWorker::FindTemplates>("FindTemplates");
 	m_ScriptInterface->RegisterFunction<std::vector<std::string>, std::string, bool, CMapGeneratorWorker::FindActorTemplates>("FindActorTemplates");
 	m_ScriptInterface->RegisterFunction<int, CMapGeneratorWorker::GetTerrainTileSize>("GetTerrainTileSize");
+	m_ScriptInterface->RegisterFunction<JS::Value, std::string, CMapGeneratorWorker::ReadTerrainFile>("ReadTerrainFile");
 
 	// Globalscripts may use VFS script functions
 	m_ScriptInterface->LoadGlobalScripts();
@@ -224,6 +225,20 @@ int CMapGeneratorWorker::GetTerrainTileSize(ScriptInterface::CxPrivate* UNUSED(p
 	return TERRAIN_TILE_SIZE;
 }
 
+JS::Value CMapGeneratorWorker::ReadTerrainFile(ScriptInterface::CxPrivate* pCxPrivate, const std::string& filename)
+{
+	CMapGeneratorWorker* self = static_cast<CMapGeneratorWorker*>(pCxPrivate->pCBData);
+
+	JSContext* cx = self->m_ScriptInterface->GetContext();
+	JSAutoRequest rq(cx);
+
+	JS::RootedValue returnValue(cx);
+
+	self->m_ScriptInterface->Eval("({})", &returnValue);
+	self->m_ScriptInterface->SetProperty(returnValue, "hello", filename);
+
+	return returnValue;
+}
 
 bool CMapGeneratorWorker::LoadScripts(const std::wstring& libraryName)
 {
