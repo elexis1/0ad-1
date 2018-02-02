@@ -72,9 +72,9 @@ RandomMap.prototype.log = function(text)
 /**
  * Loads PMP terrain file that contains elevation grid and terrain textures created in atlas.
  */
-RandomMap.prototype.ImportTerrainFile = function(filename)
+RandomMap.prototype.ImportTerrain = function(filename)
 {
-	let terrainData = Engine.ReadTerrainFile("maps/random/" + filename);
+	let terrainData = Engine.ImportTerrain("maps/random/" + filename);
 	this.importHeightData(terrainData);
 	this.importTerrainTextures(terrainData);
 };

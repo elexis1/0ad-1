@@ -122,6 +122,7 @@ private:
 
 	// callbacks for script functions
 	static bool LoadLibrary(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name);
+	static JS::Value ImportTerrain(ScriptInterface::CxPrivate* pCxPrivate, const std::string& filename);
 	static void ExportMap(ScriptInterface::CxPrivate* pCxPrivate, JS::HandleValue data);
 	static void SetProgress(ScriptInterface::CxPrivate* pCxPrivate, int progress);
 	static CParamNode GetTemplate(ScriptInterface::CxPrivate* pCxPrivate, const std::string& templateName);
@@ -129,7 +130,6 @@ private:
 	static std::vector<std::string> FindTemplates(ScriptInterface::CxPrivate* pCxPrivate, const std::string& path, bool includeSubdirectories);
 	static std::vector<std::string> FindActorTemplates(ScriptInterface::CxPrivate* pCxPrivate, const std::string& path, bool includeSubdirectories);
 	static int GetTerrainTileSize(ScriptInterface::CxPrivate* pCxPrivate);
-	static JS::Value ReadTerrainFile(ScriptInterface::CxPrivate* pCxPrivate, const std::string& filename);
 
 	std::set<std::wstring> m_LoadedLibraries;
 	shared_ptr<ScriptInterface::StructuredClone> m_MapData;

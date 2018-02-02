@@ -105,6 +105,7 @@ bool CMapGeneratorWorker::Run()
 	// Functions for RMS
 	JSI_VFS::RegisterScriptFunctions_Maps(*m_ScriptInterface);
 	m_ScriptInterface->RegisterFunction<bool, std::wstring, CMapGeneratorWorker::LoadLibrary>("LoadLibrary");
+	m_ScriptInterface->RegisterFunction<JS::Value, std::string, CMapGeneratorWorker::ImportTerrain>("ImportTerrain");
 	m_ScriptInterface->RegisterFunction<void, JS::HandleValue, CMapGeneratorWorker::ExportMap>("ExportMap");
 	m_ScriptInterface->RegisterFunction<void, int, CMapGeneratorWorker::SetProgress>("SetProgress");
 	m_ScriptInterface->RegisterFunction<CParamNode, std::string, CMapGeneratorWorker::GetTemplate>("GetTemplate");
@@ -112,7 +113,6 @@ bool CMapGeneratorWorker::Run()
 	m_ScriptInterface->RegisterFunction<std::vector<std::string>, std::string, bool, CMapGeneratorWorker::FindTemplates>("FindTemplates");
 	m_ScriptInterface->RegisterFunction<std::vector<std::string>, std::string, bool, CMapGeneratorWorker::FindActorTemplates>("FindActorTemplates");
 	m_ScriptInterface->RegisterFunction<int, CMapGeneratorWorker::GetTerrainTileSize>("GetTerrainTileSize");
-	m_ScriptInterface->RegisterFunction<JS::Value, std::string, CMapGeneratorWorker::ReadTerrainFile>("ReadTerrainFile");
 
 	// Globalscripts may use VFS script functions
 	m_ScriptInterface->LoadGlobalScripts();
@@ -229,7 +229,7 @@ int CMapGeneratorWorker::GetTerrainTileSize(ScriptInterface::CxPrivate* UNUSED(p
 	return TERRAIN_TILE_SIZE;
 }
 
-JS::Value CMapGeneratorWorker::ReadTerrainFile(ScriptInterface::CxPrivate* pCxPrivate, const std::string& filename)
+JS::Value CMapGeneratorWorker::ImportTerrain(ScriptInterface::CxPrivate* pCxPrivate, const std::string& filename)
 {
 	CMapGeneratorWorker* self = static_cast<CMapGeneratorWorker*>(pCxPrivate->pCBData);
 	JSContext* cx = self->m_ScriptInterface->GetContext();
