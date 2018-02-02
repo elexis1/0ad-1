@@ -258,7 +258,7 @@ JS::Value CMapGeneratorWorker::ReadTerrainFile(ScriptInterface::CxPrivate* pCxPr
 	unpacker.UnpackRaw(&heightmap[0], SQR(verticesPerSide) * sizeof(u16));
 	self->m_ScriptInterface->SetProperty(returnValue, "height", heightmap);
 
-	// unpack textures
+	// unpack texture names
 	size_t terrainTextureCount = unpacker.UnpackSize();
 	std::vector<std::string> terrainTextureNames;
 	terrainTextureNames.reserve(terrainTextureCount);
@@ -270,28 +270,27 @@ JS::Value CMapGeneratorWorker::ReadTerrainFile(ScriptInterface::CxPrivate* pCxPr
 	}
 	self->m_ScriptInterface->SetProperty(returnValue, "textureNames", terrainTextureNames);
 
-	// unpack tile data
+	// unpack texture IDs per tile
 	ssize_t tilesPerSide = patchesPerSide * PATCH_SIZE;
 	std::vector<CMapIO::STileDesc> tiles;
 	tiles.resize(size_t(SQR(tilesPerSide)));
 	unpacker.UnpackRaw(&tiles[0], sizeof(CMapIO::STileDesc) * tiles.size());
 
-	// save tiledata to return value
-	JS::RootedObject tileDataArray(cx, JS_NewArrayObject(cx, 0));
-
-	int i = 0;
-	for (const CMapIO::STileDesc& tile : tiles)
+	// reorder by patches and store and save texture IDs per tile
+	std::vector<u16> textureIDs;
+	for (ssize_t x = 0; x < tilesPerSide; ++x)
 	{
-		JS::RootedValue newTileData(cx);
-		self->m_ScriptInterface->Eval("({})", &newTileData);
-		self->m_ScriptInterface->SetProperty(newTileData, "index1", tile.m_Tex1Index);
-		self->m_ScriptInterface->SetProperty(newTileData, "index2", tile.m_Tex2Index);
-		self->m_ScriptInterface->SetProperty(newTileData, "priority", tile.m_Priority);
-		JS_SetElement(cx, tileDataArray, i++, newTileData);
+		size_t patchX = x / PATCH_SIZE;
+		size_t offX = x % PATCH_SIZE;
+		for (ssize_t y = 0; y < tilesPerSide; ++y)
+		{
+			size_t patchY = y / PATCH_SIZE;
+			size_t offY = y % PATCH_SIZE;
+			// m_Priority and m_Tex2Index unused
+			textureIDs.push_back(tiles[(patchY * patchesPerSide + patchX) * SQR(PATCH_SIZE) + (offY * PATCH_SIZE + offX)].m_Tex1Index);
+		}
 	}
-
-	JS::RootedValue tileData(cx, JS::ObjectValue(*tileDataArray));
-	self->m_ScriptInterface->SetProperty(returnValue, "tileData", tileData);
+	self->m_ScriptInterface->SetProperty(returnValue, "textureIDs", textureIDs);
 
 	return returnValue;
 }

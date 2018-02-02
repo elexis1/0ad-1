@@ -2,10 +2,7 @@ Engine.LoadLibrary("rmgen");
 
 var g_Map = new RandomMap(0, "grass1_spring");
 
-var terrainfile = g_Map.ReadTerrainFile("maps/skirmishes/Acropolis Bay (2).pmp");
-
-warn(terrainfile.size)
-warn(uneval(terrainfile.tileData[0]))
+g_Map.ImportTerrainFile("maps/skirmishes/Acropolis Bay (2).pmp");
 
 placePlayerBases({
 	"PlayerPlacement": playerPlacementCircle(fractionToTiles(0.39))

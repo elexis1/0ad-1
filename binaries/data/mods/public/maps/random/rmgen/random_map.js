@@ -61,9 +61,12 @@ function RandomMap(baseHeight, baseTerrain)
 	this.entityCount = 150;
 }
 
-RandomMap.prototype.ReadTerrainFile = function(filename)
+RandomMap.prototype.ImportTerrainFile = function(filename)
 {
-	return Engine.ReadTerrainFile(filename);
+	let terrainData = Engine.ReadTerrainFile(/*"maps/random/" + */filename);
+
+	this.importHeightData(terrainData);
+	this.importTerrainTextures(terrainData);
 };
 
 RandomMap.prototype.log = function(text)
@@ -392,6 +395,43 @@ RandomMap.prototype.exportEntityList = function()
 	return this.entities;
 };
 
+RandomMap.prototype.importHeightData = function(terrainData)
+{
+	// Scale height to the chosen mapsize and apply bicubic interpolation
+	let sourceSize = Math.sqrt(terrainData.height.length);
+	let targetSize = g_Map.getSize() + 1;
+	let scale = sourceSize / targetSize;
+
+	let bbox = getPointsInBoundingBox(getBoundingBox([new Vector2D(-1, -1), new Vector2D(2, 2)]));
+
+	this.height = [];
+
+	for (let x = 0; x < targetSize; ++x)
+	{
+		this.height[x] = new Float32Array(targetSize);
+		for (let y = 0; y < targetSize; ++y)
+		{
+			let targetPos = new Vector2D(x, y);
+			let sourcePos = Vector2D.mult(targetPos, scale);
+			let sourceTilePos = sourcePos.clone().floor();
+
+			let shift = new Vector2D(0, 0);
+			for (let c of ["x", "y"])
+			if (sourceTilePos[c] == 0)
+				shift[c] = 1;
+			else if (sourceTilePos[c] == sourceSize - 1)
+				shift[c] = - 2;
+			else if (sourceTilePos[c] == sourceSize - 2)
+				shift[c] = - 1;
+
+			let neighbors = bbox.map(pos => Vector2D.sum([pos, sourceTilePos, shift])).map(pos =>
+				terrainData.height[pos.y * sourceSize + pos.x] / HEIGHT_UNITS_PER_METRE);
+
+			this.setHeight(targetPos, bicubicInterpolation(Vector2D.sub(sourcePos, sourceTilePos).sub(shift), ...neighbors) / scale);
+		}
+	}
+};
+
 /**
  * Convert the elevation grid to a one-dimensional array.
  */
@@ -411,6 +451,24 @@ RandomMap.prototype.exportHeightData = function()
 		}
 
 	return heightmap;
+};
+
+RandomMap.prototype.importTerrainTextures = function(terrainData)
+{
+	let sourceSize = Math.sqrt(terrainData.textureIDs.length);
+	let scale = sourceSize / this.size;
+
+	this.texture = [];
+	for (let x = 0; x < this.size; ++x)
+	{
+		this.texture[x] = new Uint16Array(this.size);
+		for (let y = 0; y < this.size; ++y)
+		{
+			let targetPos = new Vector2D(x, y);
+			let sourcePos = Vector2D.mult(targetPos, scale).floor();
+			this.setTexture(targetPos, terrainData.textureNames[terrainData.textureIDs[sourcePos.x * sourceSize + sourcePos.y]]);
+		}
+	}
 };
 
 /**
