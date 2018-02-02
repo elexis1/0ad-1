@@ -61,17 +61,22 @@ function RandomMap(baseHeight, baseTerrain)
 	this.entityCount = 150;
 }
 
-RandomMap.prototype.ImportTerrainFile = function(filename)
-{
-	let terrainData = Engine.ReadTerrainFile(/*"maps/random/" + */filename);
-
-	this.importHeightData(terrainData);
-	this.importTerrainTextures(terrainData);
-};
-
+/**
+ * Prints a timed log entry to stdout and the logfile.
+ */
 RandomMap.prototype.log = function(text)
 {
 	this.logger.print(text);
+};
+
+/**
+ * Loads PMP terrain file that contains elevation grid and terrain textures created in atlas.
+ */
+RandomMap.prototype.ImportTerrainFile = function(filename)
+{
+	let terrainData = Engine.ReadTerrainFile("maps/random/" + filename);
+	this.importHeightData(terrainData);
+	this.importTerrainTextures(terrainData);
 };
 
 /**
