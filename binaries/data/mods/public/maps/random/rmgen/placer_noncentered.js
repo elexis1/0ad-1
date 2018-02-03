@@ -35,6 +35,26 @@ MapBoundsPlacer.prototype.place = function(constraint)
 };
 
 /**
+ * The AreasPlacer returns all points of the given Areas that meet the constraint.
+ */
+function AreasPlacer(areas)
+{
+	this.areas = areas;
+}
+
+AreasPlacer.prototype.place = function(constraint)
+{
+	let points = [];
+
+	for (let area of this.areas)
+		for (let point of area.getPoints())
+			if (points.every(p => !Vector2D.isEqualTo(p, point)) && constraint.allows(point))
+				points.push(point);
+
+	return points;
+};
+
+/**
  * HeightPlacer constants determining whether the extrema should be included by the placer too.
  */
 const Elevation_ExcludeMin_ExcludeMax = 0;
