@@ -31,6 +31,8 @@ const g_CivData = deepfreeze(loadCivFiles(false));
  */
 var TILE_CENTERED_HEIGHT_MAP = false;
 
+const g_TileVertices = deepfreeze([new Vector2D(0, 0), new Vector2D(1, 0), new Vector2D(0, 1), new Vector2D(1, 1)]);
+
 function fractionToTiles(f)
 {
 	return g_MapSettings.Size * f;
@@ -111,7 +113,7 @@ function createAreas(centeredPlacer, painter, constraint, amount, retryFactor = 
 function createAreasInAreas(centeredPlacer, painter, constraint, amount, retryFactor, areas)
 {
 	let placeFunc = function() {
-		centeredPlacer.setCenterPosition(pickRandom(pickRandom(areas).points));
+		centeredPlacer.setCenterPosition(pickRandom(pickRandom(areas).getPoints()));
 		return createArea(centeredPlacer, painter, constraint);
 	};
 
@@ -139,7 +141,7 @@ function createObjectGroups(group, player, constraint, amount, retryFactor = 10,
 function createObjectGroupsByAreas(group, player, constraint, amount, retryFactor, areas, behaveDeprecated = false)
 {
 	let placeFunc = function() {
-		group.setCenterPosition(pickRandom(pickRandom(areas).points));
+		group.setCenterPosition(pickRandom(pickRandom(areas).getPoints()));
 		return createObjectGroup(group, player, constraint);
 	};
 
@@ -163,10 +165,8 @@ function createArea(placer, painters, constraints)
 	if (!points)
 		return undefined;
 
-	let area = g_Map.createArea(points);
-
+	let area = new Area(points);
 	new MultiPainter(painters).paint(area);
-
 	return area;
 }
 

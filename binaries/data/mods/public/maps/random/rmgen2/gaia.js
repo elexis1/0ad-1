@@ -49,10 +49,10 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 			1);
 
 		// Find the bounding box of the bluff
-		if (rendered[0] === undefined)
+		if (!rendered.length)
 			continue;
 
-		var points = rendered[0].points;
+		let points = rendered[0].getPoints();
 
 		var corners = findCorners(points);
 

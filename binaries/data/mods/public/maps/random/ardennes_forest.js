@@ -272,7 +272,7 @@ for (var ix = 0; ix < mapSize; ix++)
 				randomAngle());
 	}
 
-var explorableArea = g_Map.createArea(explorablePoints);
+var explorableArea = new Area(explorablePoints);
 
 Engine.SetProgress(55);
 

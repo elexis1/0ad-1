@@ -13,7 +13,7 @@ function TileClassPainter(tileClass)
 
 TileClassPainter.prototype.paint = function(area)
 {
-	for (let point of area.points)
+	for (let point of area.getPoints())
 		this.tileClass.add(point);
 };
 
@@ -27,7 +27,7 @@ function TileClassUnPainter(tileClass)
 
 TileClassUnPainter.prototype.paint = function(area)
 {
-	for (let point of area.points)
+	for (let point of area.getPoints())
 		this.tileClass.remove(point);
 };
 
@@ -61,7 +61,7 @@ function TerrainPainter(terrain)
 
 TerrainPainter.prototype.paint = function(area)
 {
-	for (let point of area.points)
+	for (let point of area.getPoints())
 		this.terrain.place(point);
 };
 
@@ -89,7 +89,7 @@ LayeredPainter.prototype.paint = function(area)
 		"area": area,
 		"brushSize": 1,
 		"gridSize": g_Map.getSize(),
-		"withinArea": (areaID, position) => g_Map.area[position.x][position.y] == areaID,
+		"withinArea": (area, position) => area.contains(position),
 		"paintTile": (point, distance) => {
 			let width = 0;
 			let i = 0;
@@ -116,14 +116,10 @@ function ElevationPainter(elevation)
 
 ElevationPainter.prototype.paint = function(area)
 {
-	for (let point of area.points)
-		for (let [dx, dz] of [[0, 0], [1, 0], [0, 1], [1, 1]])
-		{
-			let position = Vector2D.add(point, new Vector2D(dx, dz));
-
-			if (g_Map.inMapBounds(position))
-				g_Map.setHeight(position, this.elevation);
-		}
+	for (let point of area.getPoints())
+		for (let vertex of g_TileVertices)
+			if (g_Map.inMapBounds(vertex))
+				g_Map.setHeight(vertex, this.elevation);
 };
 
 /**
@@ -173,7 +169,7 @@ SmoothElevationPainter.prototype.paint = function(area)
 	// Get heightmap grid vertices within or adjacent to the area
 	let brushSize = 2;
 	let heightPoints = [];
-	for (let point of area.points)
+	for (let point of area.getPoints())
 		for (let dx = -1; dx < 1 + brushSize; ++dx)
 		{
 			let nx = point.x + dx;
@@ -192,16 +188,7 @@ SmoothElevationPainter.prototype.paint = function(area)
 		}
 
 	// Every vertex of a tile is considered within the area
-	let withinArea = (areaID, position) => {
-		for (let [dx, dz] of [[0, 0], [1, 0], [0, 1], [1, 1]])
-		{
-			let vertexPos = Vector2D.sub(position, new Vector2D(dx, dz));
-			if (g_Map.inMapBounds(vertexPos) && g_Map.area[vertexPos.x][vertexPos.y] == areaID)
-				return true;
-		}
-
-		return false;
-	};
+	let withinArea = (area, position) => g_TileVertices.some(vertexPos => area.contains(Vector2D.sub(position, vertexPos)));
 
 	// Change height inside the area depending on the distance to the border
 	breadthFirstSearchPaint({
@@ -222,10 +209,9 @@ SmoothElevationPainter.prototype.paint = function(area)
 	});
 
 	// Smooth everything out
-	let areaID = area.getID();
 	for (let point of heightPoints)
 	{
-		if (!withinArea(areaID, point))
+		if (!withinArea(area, point))
 			continue;
 
 		let count = 0;
@@ -277,8 +263,7 @@ function breadthFirstSearchPaint(args)
 
 	// Find all points outside of the area, mark them as seen and set zero distance
 	let pointQueue = [];
-	let areaID = args.area.getID();
-	for (let point of args.area.points)
+	for (let point of args.area.getPoints())
 		// The brushSize is added because the entire brushSize is by definition part of the area
 		for (let dx = -1; dx < 1 + args.brushSize; ++dx)
 		{
@@ -288,7 +273,7 @@ function breadthFirstSearchPaint(args)
 				let nz = point.y + dz;
 				let position = new Vector2D(nx, nz);
 
-				if (!withinGrid(nx, nz) || args.withinArea(areaID, position) || saw[nx][nz])
+				if (!withinGrid(nx, nz) || args.withinArea(args.area, position) || saw[nx][nz])
 					continue;
 
 				saw[nx][nz] = 1;
@@ -304,7 +289,7 @@ function breadthFirstSearchPaint(args)
 		let point = pointQueue.shift();
 		let distance = dist[point.x][point.y];
 
-		if (args.withinArea(areaID, point))
+		if (args.withinArea(args.area, point))
 			args.paintTile(point, distance);
 
 		// Enqueue neighboring points
@@ -316,7 +301,7 @@ function breadthFirstSearchPaint(args)
 				let nz = point.y + dz;
 				let position = new Vector2D(nx, nz);
 
-				if (!withinGrid(nx, nz) || !args.withinArea(areaID, position) || saw[nx][nz])
+				if (!withinGrid(nx, nz) || !args.withinArea(args.area, position) || saw[nx][nz])
 					continue;
 
 				saw[nx][nz] = 1;
