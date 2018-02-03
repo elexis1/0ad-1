@@ -39,7 +39,7 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 		let areasBluff = createAreas(
 			new ChainPlacer(5 * bluffDeviation, 7 * bluffDeviation, 100 * bluffDeviation, 0),
 			[
-				new LayeredPainter([g_Terrains.cliff, g_Terrains.mainTerrain, constrastTerrain], [2, 3]),
+				new LayeredPainter([g_Terrains.mainTerrain, constrastTerrain], [5]),
 				new SmoothElevationPainter(ELEVATION_MODIFY, elevation * bluffDeviation, 2),
 				new TileClassPainter(g_TileClasses.bluff)
 			],
@@ -94,7 +94,6 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 			continue;
 		}
 
-		var ground = createTerrain(g_Terrains.mainTerrain);
 		let slopeLength = (1 - margin) * baseLine.mid.distanceTo(endLine.mid);
 
 		// Adjust the height of each point in the bluff
@@ -102,12 +101,15 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 		{
 			let dist = Math.abs(distanceOfPointFromLine(baseLine.start, baseLine.end, point));
 			g_Map.setHeight(point, Math.max(g_Map.getHeight(point) * (1 - dist / slopeLength) - 2, endLine.height));
-                       if (g_Map.getHeight(point) <= endLine.height + 2 && g_Map.validTile(point) && g_Map.getTexture(point).indexOf('cliff') != -1)
-                               ground.place(point);
 		}
 
 		// Smooth out the ground around the bluff
 		fadeToGround(bb, corners.min, endLine.height);
+
+		createArea(
+			new AreasPlacer(areasBluff),
+			new TerrainPainter(g_Terrains.cliff),
+			new SlopeConstraint(2, Infinity));
 	}
 
 	addElements([
