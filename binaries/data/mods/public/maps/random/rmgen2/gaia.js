@@ -1091,7 +1091,7 @@ function findClearLine(bb, corners, angle, baseHeight)
 			throw new Error("Unknown angle " + angle);
 	}
 
-	var clearLine = {};
+	let clearLine = {};
 
 	for (let x = corners.min.x; x <= corners.max.x; ++x)
 	{
@@ -1123,10 +1123,7 @@ function findClearLine(bb, corners, angle, baseHeight)
 			};
 		}
 
-		if (clear && (angle == 1 || angle == 2))
-			break;
-
-		if (!clear && (angle == 0 || angle == 3))
+		if (clear ? (angle == 1 || angle == 2) : (angle == 0 || angle == 3))
 			break;
 	}
 
