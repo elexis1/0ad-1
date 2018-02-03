@@ -1045,15 +1045,16 @@ function createBoundingBox(points, corners)
 /**
  * Flattens the ground touching a terrain feature.
  */
-function fadeToGround(bb, minX, minZ, elevation)
+function fadeToGround(bb, center, elevation)
 {
-	var ground = createTerrain(g_Terrains.mainTerrain);
-	for (var x = 0; x < bb.length; ++x)
-		for (var z = 0; z < bb[x].length; ++z)
+	let ground = createTerrain(g_Terrains.mainTerrain);
+	for (let x = 0; x < bb.length; ++x)
+		for (let y = 0; y < bb[x].length; ++y)
 		{
-			if (!bb[x][z].isFeature && nextToFeature(bb, x, z))
+			let bboxPosition = new Vector2D(x, y);
+			if (!bb[x][y].isFeature && nextToFeature(bb, bboxPosition))
 			{
-				let position = new Vector2D(x + minX, z + minZ);
+				let position = new Vector2D.add(center, bboxPosition);
 				g_Map.setHeight(position, g_Map.getAverageHeight(position));
 				ground.place(position);
 			}
@@ -1066,59 +1067,58 @@ function fadeToGround(bb, minX, minZ, elevation)
 function findClearLine(bb, corners, angle, baseHeight)
 {
 	// Angle - 0: northwest; 1: northeast; 2: southeast; 3: southwest
-	var z = corners.maxZ;
-	var xOffset = -1;
-	var zOffset = -1;
-
-	switch(angle)
+	let offset;
+	let y;
+	switch (angle)
 	{
+		case 0:
+			offset = new Vector2D(-1, -1);
+			y = corners.max.y;
+			break;
 		case 1:
-			xOffset = 1;
+			offset = new Vector2D(1, -1);
+			y = corners.max.y;
 			break;
 		case 2:
-			xOffset = 1;
-			zOffset = 1;
-			z = corners.minZ;
+			offset = new Vector2D(1, 1);
+			y = corners.min.y;
 			break;
 		case 3:
-			zOffset = 1;
-			z = corners.minZ;
+			offset = new Vector2D(-1, 1);
+			y = corners.min.y;
 			break;
+		default:
+			throw new Error("Unknown angle " + angle);
 	}
 
 	var clearLine = {};
 
-	for (var x = corners.minX; x <= corners.maxX; ++x)
+	for (let x = corners.min.x; x <= corners.max.x; ++x)
 	{
-		let position2 = new Vector2D(x, z);
+		let position = new Vector2D(x, y);
+		let clear = true;
 
-		var clear = true;
-
-		while (position2.x >= corners.minX && position2.x <= corners.maxX && position2.y >= corners.minZ && position2.y <= corners.maxZ)
+		while (position.x >= corners.min.x &&
+		       position.y >= corners.min.y &&
+		       position.x <= corners.max.x &&
+		       position.y <= corners.max.y)
 		{
-			var bp = bb[position2.x - corners.minX][position2.y - corners.minZ];
-			if (bp.isFeature && g_Map.validTile(position2))
+			let bp = bb[position.x - corners.min.x][position.y - corners.min.y];
+			if (bp.isFeature && g_Map.validTile(position))
 			{
 				clear = false;
 				break;
 			}
-
-			position2.add(new Vector2D(xOffset, zOffset));
+			position.add(offset);
 		}
 
 		if (clear)
 		{
-			var lastX = position2.x - xOffset;
-			var lastZ = position2.y - zOffset;
-			var midX = Math.floor((x + lastX) / 2);
-			var midZ = Math.floor((z + lastZ) / 2);
+			let end = Vector2D.sub(position, offset);
 			clearLine = {
-				"x1": x,
-				"z1": z,
-				"x2": lastX,
-				"z2": lastZ,
-				"midX": midX,
-				"midZ": midZ,
+				"start": position,
+				"end": end,
+				"mid": Vector2D.average([position, end]).floor(),
 				"height": baseHeight
 			};
 		}
