@@ -69,13 +69,13 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 
 		// If we can't access the bluff, try different angles
 		let retries = 0;
-		let bluffCat = 2;
-		while (bluffCat != 0 && retries < 5)
+		let bluffReachable = false;
+		while (!bluffReachable && retries < 5)
 		{
 			baseLine = findClearLine(bb, corners, angle, baseHeight);
 			endLine = findClearLine(bb, corners, opAngle, baseHeight);
 
-			bluffCat = unreachableBluff(bb, corners, baseLine, endLine);
+			bluffReachable = reachableBluff(bb, corners, baseLine, endLine);
 			++angle;
 			if (angle > 3)
 				angle = 0;
@@ -88,7 +88,7 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 		}
 
 		// Inaccessible, turn it into a plateau
-		if (bluffCat > 0)
+		if (!bluffReachable)
 		{
 			removeBluff(points);
 			continue;
@@ -930,24 +930,14 @@ function addStragglerTrees(constraint, size, deviation, fill)
 	}
 }
 
-///////////
-// Terrain Helpers
-///////////
-
 /**
  * Determine if the endline of the bluff is within the tilemap.
- *
- * @returns {Number} 0 if the bluff is reachable, otherwise a positive number
  */
-function unreachableBluff(bb, corners, baseLine, endLine)
+function reachableBluff(bb, corners, baseLine, endLine)
 {
-	// If we couldn't find a slope line
-	if (!baseLine.mid)
-		return 1;
-
 	// TODO: this should be an ||?
-	if (!g_Map.validTile(endLine.start) && !g_Map.validTile(endLine.end))
-		return 2;
+	if (!baseLine.mid || !g_Map.validTile(endLine.start) && !g_Map.validTile(endLine.end))
+		return false;
 
 	let minTilesInGroup = 1;
 	let insideBluff = false;
@@ -999,7 +989,7 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 				insideBluff = true;
 
 			if (outsideBluff && valid)
-				return 3;
+				return false;
 		}
 
 		// We're expecting the end of the bluff
@@ -1007,8 +997,7 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 			outsideBluff = true;
 	}
 
-	// Bluff is reachable
-	return 0;
+	return true;
 }
 
 /**
