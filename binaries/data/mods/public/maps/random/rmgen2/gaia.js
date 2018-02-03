@@ -1131,38 +1131,9 @@ function findClearLine(bb, corners, angle, baseHeight)
 }
 
 /**
- * Returns the corners of a bounding box.
- */
-function findCorners(points)
-{
-	// Find the bounding box of the terrain feature
-	var mapSize = g_Map.getSize();
-	var minX = mapSize + 1;
-	var minZ = mapSize + 1;
-	var maxX = -1;
-	var maxZ = -1;
-
-	for (let point of points)
-	{
-		minX = Math.min(point.x, minX);
-		minZ = Math.min(point.y, minZ);
-
-		maxX = Math.max(point.x, maxX);
-		maxZ = Math.max(point.y, maxZ);
-	}
-
-	return {
-		"minX": minX,
-		"minZ": minZ,
-		"maxX": maxX,
-		"maxZ": maxZ
-	};
-}
-
-/**
  * Determines if a point in a bounding box array is next to a terrain feature.
  */
-function nextToFeature(bb, x, z)
+function nextToFeature(bb, position)
 {
 	for (var xOffset = -1; xOffset <= 1; ++xOffset)
 		for (var zOffset = -1; zOffset <= 1; ++zOffset)
