@@ -946,20 +946,21 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 	if (!g_Map.validTile(endLine.start) && !g_Map.validTile(endLine.end))
 		return 2;
 
-	var minTilesInGroup = 1;
-	var insideBluff = false;
-	var outsideBluff = false;
+	let minTilesInGroup = 1;
+	let insideBluff = false;
+	let outsideBluff = false;
 
 	// If there aren't enough points in each row
-	for (var x = 0; x < bb.length; ++x)
+	for (let x = 0; x < bb.length; ++x)
 	{
-		var count = 0;
-		for (var z = 0; z < bb[x].length; ++z)
+		let count = 0;
+		for (let y = 0; y < bb[x].length; ++y)
 		{
-			if (!bb[x][z].isFeature)
+			if (!bb[x][y].isFeature)
 				continue;
 
-			let valid = g_Map.validTile(new Vector2D(x, z).add(corners.min));
+			let valid = g_Map.validTile(new Vector2D(x, y).add(corners.min));
+
 			if (valid)
 				++count;
 
@@ -975,8 +976,8 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 			outsideBluff = true;
 	}
 
-	var insideBluff = false;
-	var outsideBluff = false;
+	insideBluff = false;
+	outsideBluff = false;
 
 	// If there aren't enough points in each column
 	for (var z = 0; z < bb[0].length; ++z)
