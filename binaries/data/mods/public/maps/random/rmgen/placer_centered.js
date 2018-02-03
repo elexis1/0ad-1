@@ -166,7 +166,6 @@ ChainPlacer.prototype.place = function(constraint)
 			new Vector2D(Math.max(0, chainPos.x - radius), Math.max(0, chainPos.y - radius)),
 			new Vector2D(Math.min(chainPos.x + radius, size), Math.min(chainPos.y + radius, size))
 		]));
-
 		for (let position of bbox)
 		{
 			if (position.distanceToSquared(chainPos) >= radius2)
@@ -188,10 +187,9 @@ ChainPlacer.prototype.place = function(constraint)
 			}
 			else if (state >= 0)
 			{
-				let s = edges.splice(state, 1);
+				edges.splice(state, 1);
 				gotRet[position.x][position.y] = -2;
 
-				let edgesLength = edges.length;
 				for (let k = state; k < edges.length; ++k)
 					--gotRet[edges[k].x][edges[k].y];
 			}
