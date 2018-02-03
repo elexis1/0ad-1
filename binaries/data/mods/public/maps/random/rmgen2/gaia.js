@@ -20,7 +20,9 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 {
 	g_Map.log("Creating bluffs");
 
-	var constrastTerrain = g_Terrains.tier2Terrain;
+	let elevation = 30;
+
+	let constrastTerrain = g_Terrains.tier2Terrain;
 
 	if (currentBiome() == "generic/tropic")
 		constrastTerrain = g_Terrains.dirt;
@@ -28,50 +30,43 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 	if (currentBiome() == "generic/autumn")
 		constrastTerrain = g_Terrains.tier3Terrain;
 
-	var count = fill * 15;
-	var minSize = 5;
-	var maxSize = 7;
-	var elevation = 30;
-	var spread = 100;
-
-	for (var i = 0; i < count; ++i)
+	for (let i = 0; i < fill * 15; ++i)
 	{
-		var offset = getRandomDeviation(size, deviation);
-
-		var rendered = createAreas(
-			new ChainPlacer(Math.floor(minSize * offset), Math.floor(maxSize * offset), Math.floor(spread * offset), 0.5),
+		let bluffDeviation = getRandomDeviation(size, deviation);
+		let areasBluff = createAreas(
+			new ChainPlacer(5 * bluffDeviation, 7 * bluffDeviation, 100 * bluffDeviation, 0),
 			[
 				new LayeredPainter([g_Terrains.cliff, g_Terrains.mainTerrain, constrastTerrain], [2, 3]),
-				new SmoothElevationPainter(ELEVATION_MODIFY, Math.floor(elevation * offset), 2),
+				new SmoothElevationPainter(ELEVATION_MODIFY, elevation * bluffDeviation, 2),
 				new TileClassPainter(g_TileClasses.bluff)
 			],
 			constraint,
 			1);
 
 		// Find the bounding box of the bluff
-		if (!rendered.length)
+		if (!areasBluff.length)
 			continue;
 
-		let points = rendered[0].getPoints();
+		let points = areasBluff[0].getPoints();
 
 		var corners = findCorners(points);
 
 		// Seed an array the size of the bounding box
-		var bb = createBoundingBox(points, corners);
+		let bb = createBoundingBox(points, corners);
 
 		// Get a random starting position for the baseline and the endline
-		var angle = randIntInclusive(0, 3);
-		var opAngle = angle - 2;
+		let angle = randIntInclusive(0, 3);
+		let opAngle = angle - 2;
 		if (angle < 2)
 			opAngle = angle + 2;
 
 		// Find the edges of the bluff
-		var baseLine;
-		var endLine;
+		let baseLine;
+		let endLine;
 
 		// If we can't access the bluff, try different angles
-		var retries = 0;
-		var bluffCat = 2;
+		let retries = 0;
+		let bluffCat = 2;
 		while (bluffCat != 0 && retries < 5)
 		{
 			baseLine = findClearLine(bb, corners, angle, baseHeight);
