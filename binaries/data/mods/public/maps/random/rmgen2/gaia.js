@@ -22,6 +22,9 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 
 	let elevation = 30;
 
+	// Percent of the length of the bluff determining the entrance area
+	let margin = 0.08;
+
 	let constrastTerrain = g_Terrains.tier2Terrain;
 
 	if (currentBiome() == "generic/tropic")
@@ -91,8 +94,6 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 			continue;
 		}
 
-		// Create an entrance area by using a small margin
-		var margin = 0.08;
 		var ground = createTerrain(g_Terrains.mainTerrain);
 		let slopeLength = (1 - margin) * baseLine.mid.distanceTo(endLine.mid);
 
@@ -1135,15 +1136,14 @@ function findClearLine(bb, corners, angle, baseHeight)
  */
 function nextToFeature(bb, position)
 {
-	for (var xOffset = -1; xOffset <= 1; ++xOffset)
-		for (var zOffset = -1; zOffset <= 1; ++zOffset)
+	for (let x = -1; x <= 1; ++x)
+		for (let y = -1; y <= 1; ++y)
 		{
-			var thisX = x + xOffset;
-			var thisZ = z + zOffset;
-			if (thisX < 0 || thisX >= bb.length || thisZ < 0 || thisZ >= bb[x].length || thisX == 0 && thisZ == 0)
+			let pos = new Vector2D(x, y).add(position);
+			if (pos.x < 0 || pos.x >= bb.length || pos.y < 0 || pos.y >= bb[pos.x].length || pos.x == 0 && pos.y == 0)
 				continue;
 
-			if (bb[thisX][thisZ].isFeature)
+			if (bb[pos.x][pos.y].isFeature)
 				return true;
 		}
 
