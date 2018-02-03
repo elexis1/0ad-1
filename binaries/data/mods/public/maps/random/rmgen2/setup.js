@@ -221,27 +221,40 @@ function getTeamsArray()
  */
 function randomStartingPositionPattern(teamsArray)
 {
-	var formats = ["radial"];
 	var mapSize = g_Map.getSize();
 	var numPlayers = getNumPlayers();
 
+	let formats = [{
+		"setup": "radial",
+		"distance": fractionToTiles(randFloat(0.25, 0.35)),
+		"groupedDistance": fractionToTiles(randFloat(0.07, 0.1))
+	}];
+
 	// Enable stronghold if we have a few teams and a big enough map
 	if (teamsArray.length >= 2 && numPlayers >= 4 && mapSize >= 256)
-		formats.push("stronghold");
+		formats.push({
+			"setup": "stronghold",
+			"distance": fractionToTiles(randFloat(0.2, 0.35)),
+			"groupedDistance": fractionToTiles(randFloat(0.07, 0.1))
+		});
 
 	// Enable random if we have enough teams or enough players on a big enough map
 	if (mapSize >= 256 && (teamsArray.length >= 3 || numPlayers > 4))
-		formats.push("random");
+		formats.push({
+			"setup": "random",
+			"distance": fractionToTiles(randFloat(0.25, 0.35)),
+			"groupedDistance": fractionToTiles(randFloat(0.07, 0.1))
+		});
 
 	// Enable line if we have enough teams and players on a big enough map
 	if (teamsArray.length >= 2 && numPlayers >= 4 && mapSize >= 384)
-		formats.push("line");
+		formats.push({
+			"setup": "line",
+			"distance": fractionToTiles(randFloat(0.2, 0.35)),
+			"groupedDistance": fractionToTiles(randFloat(0.05, 0.1))
+		});
 
-	return {
-		"setup": pickRandom(formats),
-		"distance": fractionToTiles(randFloat(0.2, 0.35)),
-		"separation": fractionToTiles(randFloat(0.05, 0.1))
-	};
+	return pickRandom(formats);
 }
 
 /**

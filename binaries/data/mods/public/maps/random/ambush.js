@@ -17,7 +17,7 @@ createArea(
 Engine.SetProgress(10);
 
 const pos = randomStartingPositionPattern(getTeamsArray());
-addBases(pos.setup, pos.distance, pos.separation, randomAngle());
+addBases(pos.setup, pos.distance, pos.groupedDistance, randomAngle());
 Engine.SetProgress(20);
 
 addElements([
