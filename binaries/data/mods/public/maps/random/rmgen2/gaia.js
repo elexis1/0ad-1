@@ -49,7 +49,7 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 
 		let points = areasBluff[0].getPoints();
 
-		var corners = findCorners(points);
+		let corners = getBoundingBox(points);
 
 		// Seed an array the size of the bounding box
 		let bb = createBoundingBox(points, corners);
@@ -94,29 +94,19 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 		// Create an entrance area by using a small margin
 		var margin = 0.08;
 		var ground = createTerrain(g_Terrains.mainTerrain);
-		var slopeLength = (1 - margin) * Math.euclidDistance2D(baseLine.midX, baseLine.midZ, endLine.midX, endLine.midZ);
+		let slopeLength = (1 - margin) * baseLine.mid.distanceTo(endLine.mid);
 
 		// Adjust the height of each point in the bluff
 		for (let point of points)
 		{
-			var dist = Math.abs(distanceOfPointFromLine(
-				new Vector2D(baseLine.x1, baseLine.z1),
-				new Vector2D(baseLine.x2, baseLine.z2),
-				point));
-
-			var curHeight = g_Map.getHeight(point);
-			var newHeight = curHeight - curHeight * (dist / slopeLength) - 2;
-
-			newHeight = Math.max(newHeight, endLine.height);
-
-			if (newHeight <= endLine.height + 2 && g_Map.validTile(point) && g_Map.getTexture(point).indexOf('cliff') != -1)
-				ground.place(point);
-
-			g_Map.setHeight(point, newHeight);
+			let dist = Math.abs(distanceOfPointFromLine(baseLine.start, baseLine.end, point));
+			g_Map.setHeight(point, Math.max(g_Map.getHeight(point) * (1 - dist / slopeLength) - 2, endLine.height));
+                       if (g_Map.getHeight(point) <= endLine.height + 2 && g_Map.validTile(point) && g_Map.getTexture(point).indexOf('cliff') != -1)
+                               ground.place(point);
 		}
 
 		// Smooth out the ground around the bluff
-		fadeToGround(bb, corners.minX, corners.minZ, endLine.height);
+		fadeToGround(bb, corners.min, endLine.height);
 	}
 
 	addElements([
@@ -949,11 +939,11 @@ function addStragglerTrees(constraint, size, deviation, fill)
 function unreachableBluff(bb, corners, baseLine, endLine)
 {
 	// If we couldn't find a slope line
-	if (typeof baseLine.midX === "undefined" || typeof endLine.midX === "undefined")
+	if (!baseLine.mid)
 		return 1;
 
-	// If the end points aren't on the tilemap
-	if (!g_Map.validTile(new Vector2D(endLine.x1, endLine.z1)) && !g_Map.validTile(new Vector2D(endLine.x2, endLine.z2)))
+	// TODO: this should be an ||?
+	if (!g_Map.validTile(endLine.start) && !g_Map.validTile(endLine.end))
 		return 2;
 
 	var minTilesInGroup = 1;
@@ -969,8 +959,7 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 			if (!bb[x][z].isFeature)
 				continue;
 
-			var valid = g_Map.validTile(new Vector2D(x + corners.minX, z + corners.minZ));
-
+			let valid = g_Map.validTile(new Vector2D(x, z).add(corners.min));
 			if (valid)
 				++count;
 
@@ -998,7 +987,7 @@ function unreachableBluff(bb, corners, baseLine, endLine)
 			if (!bb[x][z].isFeature)
 				continue;
 
-			var valid = g_Map.validTile(new Vector2D(x + corners.minX, z + corners.minZ));
+			let valid = g_Map.validTile(new Vector2D(x, z).add(corners.min));
 
 			if (valid)
 				++count;
@@ -1035,22 +1024,20 @@ function removeBluff(points)
  */
 function createBoundingBox(points, corners)
 {
-	var bb = [];
-	var width = corners.maxX - corners.minX + 1;
-	var length = corners.maxZ - corners.minZ + 1;
-	for (var w = 0; w < width; ++w)
+	let bb = [];
+	for (let w = 0; w < corners.max.x - corners.min.x + 1; ++w)
 	{
 		bb[w] = [];
-		for (let l = 0; l < length; ++l)
+		for (let l = 0; l < corners.max.y - corners.min.y + 1; ++l)
 			bb[w][l] = {
-				"height": g_Map.getHeight(new Vector2D(w + corners.minX, l + corners.minZ)),
+				"height": g_Map.getHeight(new Vector2D(w, l).add(corners.min)),
 				"isFeature": false
 			};
 	}
 
 	// Define the coordinates that represent the bluff
 	for (let point of points)
-		bb[point.x - corners.minX][point.y - corners.minZ].isFeature = true;
+		bb[point.x - corners.min.x][point.y - corners.min.y].isFeature = true;
 
 	return bb;
 }
