@@ -1,8 +1,9 @@
 function RandomMapLogger()
 {
 	this.lastTime = undefined;
-	this.startTime = Date.now();
+	this.startTime = Engine.GetMicroseconds();
 	this.prefix = ""; // seems noisy
+	this.precision = 3;
 
 	this.printDirectly(
 		this.prefix +
@@ -21,7 +22,7 @@ RandomMapLogger.prototype.print = function(string)
 {
 	this.printDuration();
 	this.printDirectly(this.prefix + string + "...");
-	this.lastTime = Date.now();
+	this.lastTime = Engine.GetMicroseconds();
 };
 
 RandomMapLogger.prototype.printDuration = function()
@@ -30,7 +31,7 @@ RandomMapLogger.prototype.printDuration = function()
 		return;
 
 	this.printDurationDirectly("", this.lastTime);
-	this.lastTime = Date.now();
+	this.lastTime = Engine.GetMicroseconds();
 };
 
 RandomMapLogger.prototype.close = function()
@@ -41,5 +42,5 @@ RandomMapLogger.prototype.close = function()
 
 RandomMapLogger.prototype.printDurationDirectly = function(text, startTime)
 {
-	this.printDirectly(text + " " + ((Date.now() - startTime) / 1000).toFixed(3) + "s.\n");
+	this.printDirectly(text + " " + ((Engine.GetMicroseconds() - startTime) / 1000000).toFixed(this.precision) + "s.\n");
 };

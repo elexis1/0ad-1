@@ -24,6 +24,7 @@
 #include "ps/CLogger.h"
 #include "ps/Profile.h"
 #include "ps/scripting/JSInterface_VFS.h"
+#include "ps/scripting/JSInterface_Debug.h"
 
 // TODO: what's a good default? perhaps based on map size
 #define RMS_RUNTIME_SIZE 96 * 1024 * 1024
@@ -103,6 +104,7 @@ bool CMapGeneratorWorker::Run()
 	m_ScriptInterface->RegisterFunction<bool, std::wstring, CMapGeneratorWorker::LoadLibrary>("LoadLibrary");
 	m_ScriptInterface->RegisterFunction<void, JS::HandleValue, CMapGeneratorWorker::ExportMap>("ExportMap");
 	m_ScriptInterface->RegisterFunction<void, int, CMapGeneratorWorker::SetProgress>("SetProgress");
+	m_ScriptInterface->RegisterFunction<double, JSI_Debug::GetMicroseconds>("GetMicroseconds");
 	m_ScriptInterface->RegisterFunction<CParamNode, std::string, CMapGeneratorWorker::GetTemplate>("GetTemplate");
 	m_ScriptInterface->RegisterFunction<bool, std::string, CMapGeneratorWorker::TemplateExists>("TemplateExists");
 	m_ScriptInterface->RegisterFunction<std::vector<std::string>, std::string, bool, CMapGeneratorWorker::FindTemplates>("FindTemplates");
