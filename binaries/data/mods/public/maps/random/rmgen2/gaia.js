@@ -954,7 +954,7 @@ function reachableBluff(bb, corners, baseLine, endLine)
 				insideBluff = true;
 
 			if (outsideBluff && valid)
-				return 3;
+				return false;
 		}
 
 		// We're expecting the end of the bluff
