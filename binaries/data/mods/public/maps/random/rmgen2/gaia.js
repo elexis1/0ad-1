@@ -59,9 +59,7 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 
 		// Get a random starting position for the baseline and the endline
 		let angle = randIntInclusive(0, 3);
-		let opAngle = angle - 2;
-		if (angle < 2)
-			opAngle = angle + 2;
+		let opposingAngle = (angle + 2) % 4;
 
 		// Find the edges of the bluff
 		let baseLine;
@@ -76,14 +74,9 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 			endLine = findClearLine(bb, corners, opAngle, baseHeight);
 
 			bluffReachable = reachableBluff(bb, corners, baseLine, endLine);
-			++angle;
-			if (angle > 3)
-				angle = 0;
 
-			opAngle = angle - 2;
-			if (angle < 2)
-				opAngle = angle + 2;
-
+                       angle = (angle + 1) % 4;
+                       opposingAngle = (angle + 2) % 4;
 			++retries;
 		}
 
