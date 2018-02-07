@@ -31,7 +31,7 @@ var g_DefaultTileClasses = [
 	"baseResource",
 	"berries",
 	"bluff",
-	"bluffSlope",
+	"bluffIgnore", // performance improvement
 	"dirt",
 	"fish",
 	"food",

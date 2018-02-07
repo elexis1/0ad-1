@@ -25,3 +25,8 @@ Area.prototype.contains = function(point)
 {
 	return g_Map.inMapBounds(point) && this.cache[point.x][point.y] == 1;
 };
+
+Area.prototype.isAdjacent = function(point)
+{
+	return g_Map.getAdjacentPoints(point).some(adjacentPos => bluffArea.contains(adjacentPos));
+};

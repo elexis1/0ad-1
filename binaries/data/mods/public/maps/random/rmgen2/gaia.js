@@ -7,6 +7,75 @@ var g_Props = {
 };
 
 /**
+ * Prevent circular patterns around the CC by marking a random chain of circles there to be ignored by bluffs.
+ */
+function markPlayerAvoidanceArea(playerPos, radius)
+{
+	for (let player of playerPos)
+		if (player)
+			createArea(
+				new ChainPlacer(3, 6, scaleByMapSize(25, 60), Infinity, player.position, radius),
+				new TileClassPainter(g_TileClasses.bluffIgnore),
+				undefined,
+				scaleByMapSize(7, 14));
+
+	createArea(
+		new MapBoundsPlacer(),
+		new TileClassPainter(g_TileClasses.bluffIgnore),
+		new NearTileClassConstraint(g_TileClasses.baseResource, 5));
+}
+
+/**
+ * Bluffs might surround playerbases either entirely or unfairly.
+ */
+function createBluffsPassages(playerPos)
+{
+	g_Map.log("Creating passages towards the center");
+	for (let player of playerPos)
+	{
+		if (!player)
+			continue;
+
+		let successful = true;
+		for (let tryCount = 0; tryCount < 80; ++tryCount)
+		{
+			let angle = player.position.angleTo(g_Map.getCenter()) + randFloat(-1, 1) * Math.PI / 2;
+			let start = Vector2D.add(player.position, new Vector2D(defaultPlayerBaseRadius() * 0.7, 0).rotate(angle).perpendicular());
+			let end = Vector2D.add(player.position, new Vector2D(defaultPlayerBaseRadius() * randFloat(1.7, 2), 0).rotate(angle).perpendicular());
+
+			if (!(new AndConstraint(avoidClasses(g_TileClasses.forest, 0), stayClasses(g_TileClasses.bluff, 14)).allows(end)))
+				continue;
+
+			if ((g_Map.getHeight(end.clone().floor()) - g_Map.getHeight(start.clone().floor())) / start.distanceTo(end) > 1.5)
+				continue;
+
+			let area = createPassage({
+				"start": start,
+				"end": end,
+				"startWidth": scaleByMapSize(10, 20),
+				"endWidth": scaleByMapSize(10, 14),
+				"smoothWidth": 3,
+				"terrain": g_Terrains.mainTerrain,
+				"tileClass": g_TileClasses.bluffsPassage
+			});
+
+			for (let point of area.getPoints())
+				g_Map.deleteTerrainEntity(point);
+
+			createArea(
+				new AreasPlacer([area]),
+				new TerrainPainter(g_Terrains.cliff),
+				new SlopeConstraint(2, Infinity));
+
+			break;
+		}
+
+		if (!successful)
+			warn("Could not place bluffs passage for player " + player.id)
+	}
+}
+
+/**
  * Create bluffs, i.e. a slope hill reachable from ground level.
  * Fill it with wood, mines, animals and decoratives.
  *
@@ -37,25 +106,13 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 	{
 		let bluffDeviation = getRandomDeviation(size, deviation);
 		let areasBluff = createAreas(
-			new ChainPlacer(5 * bluffDeviation, 7 * bluffDeviation, 100 * bluffDeviation, 0),
-			[
-				new LayeredPainter([g_Terrains.mainTerrain, constrastTerrain], [5]),
-				new SmoothElevationPainter(ELEVATION_MODIFY, elevation * bluffDeviation, 2),
-				new TileClassPainter(g_TileClasses.bluff)
-			],
+			new ChainPlacer(5 * bluffDeviation, 7 * bluffDeviation, 100 * bluffDeviation, 0.5),
+			undefined,
 			constraint,
 			1);
 
-		// Find the bounding box of the bluff
 		if (!areasBluff.length)
 			continue;
-
-		let points = areasBluff[0].getPoints();
-
-		let corners = getBoundingBox(points);
-
-		// Seed an array the size of the bounding box
-		let bb = createBoundingBox(points, corners);
 
 		// Get a random starting position for the baseline and the endline
 		let angle = randIntInclusive(0, 3);
@@ -67,42 +124,48 @@ function addBluffs(constraint, size, deviation, fill, baseHeight)
 
 		// If we can't access the bluff, try different angles
 		let retries = 0;
-		let bluffReachable = false;
-		while (!bluffReachable && retries < 5)
+		let bluffPassable = false;
+		while (!bluffPassable && retries++ < 4)
 		{
-			baseLine = findClearLine(bb, corners, angle, baseHeight);
-			endLine = findClearLine(bb, corners, opAngle, baseHeight);
+			baseLine = findClearLine(areasBluff[0], angle);
+			endLine = findClearLine(areasBluff[0], opposingAngle);
+			bluffPassable = isBluffPassable(areasBluff[0], baseLine, endLine);
 
-			bluffReachable = reachableBluff(bb, corners, baseLine, endLine);
-
-                       angle = (angle + 1) % 4;
-                       opposingAngle = (angle + 2) % 4;
-			++retries;
+			angle = (angle + 1) % 4;
+			opposingAngle = (angle + 2) % 4;
 		}
 
-		// Inaccessible, turn it into a plateau
-		if (!bluffReachable)
-		{
-			removeBluff(points);
+		if (!bluffPassable)
 			continue;
-		}
 
-		let slopeLength = (1 - margin) * baseLine.mid.distanceTo(endLine.mid);
+		createArea(
+			new AreasPlacer(areasBluff),
+			[
+				new LayeredPainter([g_Terrains.mainTerrain, constrastTerrain], [5]),
+				new SmoothElevationPainter(ELEVATION_MODIFY, elevation * bluffDeviation, 2),
+				new TileClassPainter(g_TileClasses.bluff)
+			]);
+
+		let slopeLength = (1 - margin) * Vector2D.average([baseLine.start, baseLine.end]).distanceTo(Vector2D.average([endLine.start, endLine.end]));
 
 		// Adjust the height of each point in the bluff
-		for (let point of points)
+		for (let point of areasBluff[0].getPoints())
 		{
 			let dist = Math.abs(distanceOfPointFromLine(baseLine.start, baseLine.end, point));
-			g_Map.setHeight(point, Math.max(g_Map.getHeight(point) * (1 - dist / slopeLength) - 2, endLine.height));
+			g_Map.setHeight(point, Math.max(g_Map.getHeight(point) * (1 - dist / slopeLength) - 2, baseHeight));
 		}
 
-		// Smooth out the ground around the bluff
-		fadeToGround(bb, corners.min, endLine.height);
+		smoothAreaAdjacence(areasBluff[0]);
 
 		createArea(
 			new AreasPlacer(areasBluff),
 			new TerrainPainter(g_Terrains.cliff),
 			new SlopeConstraint(2, Infinity));
+
+		createArea(
+			new MapBoundsPlacer(),
+			new TileClassPainter(g_TileClasses.bluffIgnore),
+			new NearTileClassConstraint(g_TileClasses.bluff, 8));
 	}
 
 	addElements([
@@ -413,6 +476,11 @@ function addHills(constraint, size, deviation, fill)
 		"maxElevation": 12,
 		"steepness": 1.5
 	});
+
+	createArea(
+		new MapBoundsPlacer(),
+		new TileClassPainter(g_TileClasses.bluffIgnore),
+		new NearTileClassConstraint(g_TileClasses.hill, 6));
 }
 
 /**
@@ -926,31 +994,34 @@ function addStragglerTrees(constraint, size, deviation, fill)
 /**
  * Determine if the endline of the bluff is within the tilemap.
  */
-function reachableBluff(bb, corners, baseLine, endLine)
+function isBluffPassable(bluffArea, baseLine, endLine)
 {
-	// TODO: this should be an ||?
-	if (!baseLine.mid || !g_Map.validTile(endLine.start) && !g_Map.validTile(endLine.end))
+	if (!baseLine ||
+	    !endLine ||
+	    !g_Map.validTilePassable(endLine.start) &&
+	    !g_Map.validTilePassable(endLine.end))
 		return false;
 
-	let minTilesInGroup = 1;
+	let minTilesInGroup = 2;
 	let insideBluff = false;
 	let outsideBluff = false;
 
 	// If there aren't enough points in each row
-	for (let x = 0; x < bb.length; ++x)
+	let corners = getBoundingBox(bluffArea.getPoints());
+	for (let x = corners.min.x; x <= corners.max.x; ++x)
 	{
 		let count = 0;
-		for (let y = 0; y < bb[x].length; ++y)
+		for (let y = corners.min.y; y <= corners.max.y; ++y)
 		{
-			if (!bb[x][y].isFeature)
+			let pos = new Vector2D(x, y);
+			if (!bluffArea.contains(pos))
 				continue;
 
-			let valid = g_Map.validTile(new Vector2D(x, y).add(corners.min));
-
+			let valid = g_Map.validTilePassable(pos);
 			if (valid)
 				++count;
 
-			if (!insideBluff && valid)
+			if (valid)
 				insideBluff = true;
 
 			if (outsideBluff && valid)
@@ -966,19 +1037,20 @@ function reachableBluff(bb, corners, baseLine, endLine)
 	outsideBluff = false;
 
 	// If there aren't enough points in each column
-	for (let y = 0; y < bb[0].length; ++y)
+	for (let y = corners.min.y; y <= corners.max.y; ++y)
 	{
 		let count = 0;
-		for (let x = 0; x < bb.length; ++x)
+		for (let x = corners.min.x; x <= corners.max.x; ++x)
 		{
-			if (!bb[x][y].isFeature)
+			let pos = new Vector2D(x, y);
+			if (!bluffArea.contains(pos))
 				continue;
 
-			let valid = g_Map.validTile(new Vector2D(x, y).add(corners.min));
+			let valid = g_Map.validTilePassable(pos.add(corners.min));
 			if (valid)
 				++count;
 
-			if (!insideBluff && valid)
+			if (valid)
 				insideBluff = true;
 
 			if (outsideBluff && valid)
@@ -994,63 +1066,27 @@ function reachableBluff(bb, corners, baseLine, endLine)
 }
 
 /**
- * Remove the bluff class and turn it into a plateau.
+ * Flattens all points adjacent to but not on the bluff.
  */
-function removeBluff(points)
+function smoothAreaAdjacence(bluffArea)
 {
-	g_Map.log("Replacing bluff with plateau");
-
-	for (let point of points)
-		g_TileClasses.mountain.add(point);
-}
-
-/**
- * Create an array of points the fill a bounding box around a terrain feature.
- */
-function createBoundingBox(points, corners)
-{
-	let bb = [];
-	for (let w = 0; w < corners.max.x - corners.min.x + 1; ++w)
-	{
-		bb[w] = [];
-		for (let l = 0; l < corners.max.y - corners.min.y + 1; ++l)
-			bb[w][l] = {
-				"height": g_Map.getHeight(new Vector2D(w, l).add(corners.min)),
-				"isFeature": false
-			};
-	}
-
-	// Define the coordinates that represent the bluff
-	for (let point of points)
-		bb[point.x - corners.min.x][point.y - corners.min.y].isFeature = true;
-
-	return bb;
-}
-
-/**
- * Flattens the ground touching a terrain feature.
- */
-function fadeToGround(bb, center, elevation)
-{
-	let ground = createTerrain(g_Terrains.mainTerrain);
-	for (let x = 0; x < bb.length; ++x)
-		for (let y = 0; y < bb[x].length; ++y)
+	for (let point of bluffArea.getPoints())
+		for (let adjacentPoint of g_Map.getAdjacentPoints(point))
 		{
-			let bboxPosition = new Vector2D(x, y);
-			if (!bb[x][y].isFeature && nextToFeature(bb, bboxPosition))
-			{
-				let position = new Vector2D.add(center, bboxPosition);
-				g_Map.setHeight(position, g_Map.getAverageHeight(position));
-				ground.place(position);
-			}
+			if (bluffArea.contains(adjacentPoint))
+				continue;
+			g_Map.setHeight(adjacentPoint, g_Map.getAverageHeight(adjacentPoint));
+			createTerrain(g_Terrains.mainTerrain).place(adjacentPoint);
 		}
 }
 
 /**
- * Find a 45 degree line in a bounding box that does not intersect any terrain feature.
+ * Find a 45 degree line that does not intersect with the bluff.
  */
-function findClearLine(bb, corners, angle, baseHeight)
+function findClearLine(bluffArea, angle)
 {
+	let corners = getBoundingBox(bluffArea.getPoints());
+
 	// Angle - 0: northwest; 1: northeast; 2: southeast; 3: southwest
 	let offset;
 	let y;
@@ -1076,62 +1112,35 @@ function findClearLine(bb, corners, angle, baseHeight)
 			throw new Error("Unknown angle " + angle);
 	}
 
-	let clearLine = {};
-
+	let clearLine;
 	for (let x = corners.min.x; x <= corners.max.x; ++x)
 	{
-		let position = new Vector2D(x, y);
-		let clear = true;
+		let start = new Vector2D(x, y);
 
-		while (position.x >= corners.min.x &&
-		       position.y >= corners.min.y &&
-		       position.x <= corners.max.x &&
-		       position.y <= corners.max.y)
+		let intersectsBluff = false;
+		let end = start.clone();
+
+		while (end.x >= corners.min.x && end.x <= corners.max.x && end.y >= corners.min.y && end.y <= corners.max.y)
 		{
-			let bp = bb[position.x - corners.min.x][position.y - corners.min.y];
-			if (bp.isFeature && g_Map.validTile(position))
+			if (bluffArea.contains(end) && g_Map.validTilePassable(end))
 			{
-				clear = false;
+				intersectsBluff = true;
 				break;
 			}
-			position.add(offset);
+			end.add(offset);
 		}
 
-		if (clear)
-		{
-			let end = Vector2D.sub(position, offset);
+		if (!intersectsBluff)
 			clearLine = {
-				"start": position,
-				"end": end,
-				"mid": Vector2D.average([position, end]).floor(),
-				"height": baseHeight
+				"start": start,
+				"end": end.sub(offset)
 			};
-		}
 
-		if (clear ? (angle == 1 || angle == 2) : (angle == 0 || angle == 3))
+		if (intersectsBluff ? (angle == 0 || angle == 3) : (angle == 1 || angle == 2))
 			break;
 	}
 
 	return clearLine;
-}
-
-/**
- * Determines if a point in a bounding box array is next to a terrain feature.
- */
-function nextToFeature(bb, position)
-{
-	for (let x = -1; x <= 1; ++x)
-		for (let y = -1; y <= 1; ++y)
-		{
-			let pos = new Vector2D(x, y).add(position);
-			if (pos.x < 0 || pos.x >= bb.length || pos.y < 0 || pos.y >= bb[pos.x].length || pos.x == 0 && pos.y == 0)
-				continue;
-
-			if (bb[pos.x][pos.y].isFeature)
-				return true;
-		}
-
-	return false;
 }
 
 /**

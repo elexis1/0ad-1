@@ -8,7 +8,7 @@ var heightLand = 2;
 
 var g_Map = new RandomMap(heightLand, g_Terrains.mainTerrain);
 
-initTileClasses();
+initTileClasses("bluffsPassage");
 
 createArea(
 	new MapBoundsPlacer(),
@@ -17,18 +17,15 @@ createArea(
 Engine.SetProgress(10);
 
 const pos = randomStartingPositionPattern(getTeamsArray());
-addBases(pos.setup, pos.distance, pos.groupedDistance, randomAngle());
+const playerPos = addBases(pos.setup, pos.distance, pos.groupedDistance, randomAngle());
+markPlayerAvoidanceArea(playerPos, defaultPlayerBaseRadius());
 Engine.SetProgress(20);
 
 addElements([
 	{
 		"func": addBluffs,
 		"baseHeight": heightLand,
-		"avoid": [
-			g_TileClasses.bluff, 12,
-			g_TileClasses.hill, 5,
-			g_TileClasses.player, 35
-		],
+		"avoid": [g_TileClasses.bluffIgnore, 0],
 		"sizes": ["normal", "big", "huge"],
 		"mixes": ["same"],
 		"amounts": ["tons"]
@@ -47,11 +44,14 @@ addElements([
 ]);
 Engine.SetProgress(30);
 
+createBluffsPassages(playerPos);
+
 addElements([
 	{
 		"func": addLayeredPatches,
 		"avoid": [
 			g_TileClasses.bluff, 2,
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.dirt, 5,
 			g_TileClasses.forest, 2,
 			g_TileClasses.mountain, 2,
@@ -66,6 +66,7 @@ addElements([
 		"func": addDecoration,
 		"avoid": [
 			g_TileClasses.bluff, 2,
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.forest, 2,
 			g_TileClasses.mountain, 2,
 			g_TileClasses.player, 12,
@@ -82,6 +83,7 @@ addElements(shuffleArray([
 	{
 		"func": addMetal,
 		"avoid": [
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.berries, 5,
 			g_TileClasses.forest, 3,
 			g_TileClasses.mountain, 2,
@@ -98,6 +100,7 @@ addElements(shuffleArray([
 	{
 		"func": addStone,
 		"avoid": [
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.berries, 5,
 			g_TileClasses.forest, 3,
 			g_TileClasses.mountain, 2,
@@ -115,6 +118,7 @@ addElements(shuffleArray([
 	{
 		"func": addForests,
 		"avoid": [
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.forest, 6,
 			g_TileClasses.metal, 3,
 			g_TileClasses.mountain, 5,
@@ -131,6 +135,7 @@ addElements(shuffleArray([
 	{
 		"func": addForests,
 		"avoid": [
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.bluff, 10,
 			g_TileClasses.forest, 10,
 			g_TileClasses.metal, 3,
@@ -151,6 +156,7 @@ addElements(shuffleArray([
 		"func": addBerries,
 		"avoid": [
 			g_TileClasses.bluff, 5,
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.forest, 5,
 			g_TileClasses.metal, 10,
 			g_TileClasses.mountain, 2,
@@ -166,6 +172,7 @@ addElements(shuffleArray([
 		"func": addAnimals,
 		"avoid": [
 			g_TileClasses.bluff, 5,
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.forest, 2,
 			g_TileClasses.metal, 2,
 			g_TileClasses.mountain, 1,
@@ -182,6 +189,7 @@ addElements(shuffleArray([
 		"avoid": [
 			g_TileClasses.berries, 5,
 			g_TileClasses.bluff, 5,
+			g_TileClasses.bluffsPassage, 4,
 			g_TileClasses.forest, 7,
 			g_TileClasses.metal, 2,
 			g_TileClasses.mountain, 1,
@@ -200,6 +208,7 @@ placePlayersNomad(
 	g_TileClasses.player,
 	avoidClasses(
 		g_TileClasses.bluff, 4,
+		g_TileClasses.bluffsPassage, 4,
 		g_TileClasses.water, 4,
 		g_TileClasses.forest, 1,
 		g_TileClasses.metal, 4,
