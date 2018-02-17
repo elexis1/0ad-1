@@ -51,6 +51,7 @@ that of Atlas depending on commandline parameters.
 #include "ps/Globals.h"
 #include "ps/Hotkey.h"
 #include "ps/Loader.h"
+#include "ps/ModInstaller.h"
 #include "ps/Profile.h"
 #include "ps/Profiler2.h"
 #include "ps/Pyrogenesis.h"
@@ -494,6 +495,28 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 			return;
 		}
 	}
+	
+	const bool isModInstallation = args.Has("install-mod");
+	const OsPath modPath(isModInstallation ? args.Get("install-mod") : "");
+
+	if (isModInstallation)
+	{
+		if (!FileExists(modPath))
+		{
+			debug_printf("ERROR: The mod file '%s' does not exist!\n", modPath.string8().c_str());
+			return;
+		}
+		if (DirectoryExists(modPath))
+		{
+			debug_printf("ERROR: The mod file '%s' is a directory!\n", modPath.string8().c_str());
+			return;
+		}
+		if (modPath.Basename().empty())
+		{
+			debug_printf("ERROR: The name of the mod file '%s' is empty!\n", modPath.string8().c_str());
+			return;
+		}
+	}
 
 	// We need to initialize SpiderMonkey and libxml2 in the main thread before
 	// any thread uses them. So initialize them here before we might run Atlas.
@@ -530,6 +553,19 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		}
 
 		g_VFS.reset();
+
+		CXeromyces::Terminate();
+		return;
+	}
+	
+	if (isModInstallation)
+	{
+		Paths paths(args);
+		
+		CModInstaller installer(paths.UserData() / "mods", paths.Cache());
+
+		// Creates a directory with the name extracted from a `mod.json`
+		installer.Install(modPath);
 
 		CXeromyces::Terminate();
 		return;
