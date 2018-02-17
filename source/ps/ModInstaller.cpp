@@ -1,4 +1,4 @@
-/* Copyright (C) 2017 Wildfire Games.
+/* Copyright (C) 2018 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@
 #include "ps/Filesystem.h"
 #include "ps/XML/Xeromyces.h"
 
-#include <boost/filesystem/operations.hpp>
 #include <fstream>
 
 CModInstaller::CModInstaller(const OsPath& modsdir, const OsPath& tempdir) :
@@ -49,13 +48,11 @@ CModInstaller::~CModInstaller()
 
 void CModInstaller::Install(const OsPath& mod)
 {
-#define BOOST_WARN_IF_FAIL(expression) try { (expression); } catch (boost::filesystem::filesystem_error& ex) { debug_printf("%s", ex.what()); }
-
 	const OsPath modTemp = m_TempDir / mod.Basename() / mod.Filename().ChangeExtension(L".zip");
 	CreateDirectories(modTemp.Parent(), 0700);
 
-	BOOST_WARN_IF_FAIL(boost::filesystem::copy_file(mod.string8(), modTemp.string8(), boost::filesystem::copy_option::overwrite_if_exists));
-	
+	CopyFile(mod, modTemp, true);
+
 	// Load the mod to VFS
 	if (m_VFS->Mount(m_CacheDir, m_TempDir / "") != INFO::OK)
 		return;
@@ -82,14 +79,18 @@ void CModInstaller::Install(const OsPath& mod)
 
 	const OsPath modDir = m_ModsDir / modName;
 	const OsPath modPath = modDir / (modName + ".zip");
-	
+
 	// Create a directory with the next structure:
 	//   mod-name/
-	//   +mod-name.zip
+	//     mod-name.zip
 	CreateDirectories(modDir, 0700);
-	BOOST_WARN_IF_FAIL(boost::filesystem::rename(modTemp.string8(), modPath.string8()));
+	wrename(modTemp, modPath);
 	DeleteDirectory(modTemp.Parent());
 
+	// On Windows, write the contents of mod.json to a separate file next to the archive:
+	//   mod-name/
+	//     mod-name.zip
+	//     mod.json
 #ifdef OS_WIN
 	std::ofstream mod_json((modDir / "mod.json").string8());
 	if (mod_json.good())
@@ -98,8 +99,7 @@ void CModInstaller::Install(const OsPath& mod)
 		mod_json.close();
 	}
 #endif
-	
+
 	// Remove the original file
-	BOOST_WARN_IF_FAIL(boost::filesystem::remove(mod.string8()));
-#undef BOOST_WARN_IF_FAIL
+	wunlink(mod);
 }

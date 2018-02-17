@@ -495,7 +495,7 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 			return;
 		}
 	}
-	
+
 	const bool isModInstallation = args.Has("install-mod");
 	const OsPath modPath(isModInstallation ? args.Get("install-mod") : "");
 
@@ -557,11 +557,11 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		CXeromyces::Terminate();
 		return;
 	}
-	
+
 	if (isModInstallation)
 	{
 		Paths paths(args);
-		
+
 		CModInstaller installer(paths.UserData() / "mods", paths.Cache());
 
 		// Creates a directory with the name extracted from a `mod.json`
