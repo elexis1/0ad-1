@@ -296,6 +296,16 @@ function isDependencyMet(dependency)
 		(!operator || versionSatisfied(g_Mods[folder].version, operator[0], version)));
 }
 
+function modIo()
+{
+	messageBox(500, 200,
+		translate("You are about to connect to a server that is not under the control of Wildfire Games, that allows you to download mods. While we have taken care to make this secure, there is no absolute certainty that this is not a security risk. Do you really want to connect?"),
+		translate("Connect to mod.io?"),
+		[translate("Cancel"), translateWithContext("mod.io connection message box", "Connect")],
+		[null, function() { Engine.PushGuiPage("page_modio.xml"); }]
+	);
+}
+
 /**
  * Compares the given versions using the given operator.
  *       '-' or '_' is ignored. Only numbers are supported.

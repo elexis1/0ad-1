@@ -20,6 +20,7 @@
 #include "ps/scripting/JSInterface_Mod.h"
 
 #include "ps/Mod.h"
+#include "ps/ModIo.h"
 
 extern void restart_engine();
 
@@ -53,10 +54,56 @@ void JSI_Mod::SetMods(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std:
 	g_modsLoaded = mods;
 }
 
+JS::Value JSI_Mod::ModIoGetMods(ScriptInterface::CxPrivate* pCxPrivate)
+{
+	ScriptInterface* scriptInterface = pCxPrivate->pScriptInterface;
+	JSContext* cx = scriptInterface->GetContext();
+	JSAutoRequest rq(cx);
+
+	if (!g_ModIo)
+		g_ModIo = new ModIo();
+
+	ENSURE(g_ModIo);
+
+	const std::vector<ModIoModData>& availableMods = g_ModIo->GetMods(*scriptInterface);
+
+	JS::RootedObject mods(cx, JS_NewArrayObject(cx, availableMods.size()));
+	if (!mods)
+		return JS::NullValue(); // TODO: error?
+
+	u32 i = 0;
+	for (const ModIoModData& mod : availableMods)
+	{
+		JS::RootedValue m(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
+		for (const std::pair<std::string, std::string>& prop : mod.properties)
+			scriptInterface->SetProperty(m, prop.first.c_str(), prop.second, true);
+
+		scriptInterface->SetProperty(m, "dependencies", mod.dependencies, true);
+		
+		JS_SetElement(cx, mods, i++, m);
+	}
+
+	return JS::ObjectValue(*mods);
+}
+
+void JSI_Mod::ModIoDownloadMod(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), uint32_t idx)
+{
+	if (!g_ModIo)
+	{
+		LOGERROR("ModIoDownloadMod called before ModIoGetMods");
+		return;
+	}
+
+	g_ModIo->DownloadMod(idx);
+}
+
 void JSI_Mod::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
 {
 	scriptInterface.RegisterFunction<JS::Value, &GetEngineInfo>("GetEngineInfo");
 	scriptInterface.RegisterFunction<JS::Value, &JSI_Mod::GetAvailableMods>("GetAvailableMods");
 	scriptInterface.RegisterFunction<void, &JSI_Mod::RestartEngine>("RestartEngine");
 	scriptInterface.RegisterFunction<void, std::vector<CStr>, &JSI_Mod::SetMods>("SetMods");
+
+	scriptInterface.RegisterFunction<JS::Value, &JSI_Mod::ModIoGetMods>("ModIoGetMods");
+	scriptInterface.RegisterFunction<void, uint32_t, &JSI_Mod::ModIoDownloadMod>("ModIoDownloadMod");
 }

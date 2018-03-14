@@ -30,6 +30,9 @@ namespace JSI_Mod
 	JS::Value GetAvailableMods(ScriptInterface::CxPrivate* pCxPrivate);
 	void RestartEngine(ScriptInterface::CxPrivate* pCxPrivate);
 	void SetMods(ScriptInterface::CxPrivate* pCxPrivate, const std::vector<CStr>& mods);
+
+	JS::Value ModIoGetMods(ScriptInterface::CxPrivate* pCxPrivate);
+	void ModIoDownloadMod(ScriptInterface::CxPrivate* pCxPrivate, uint32_t idx);
 }
 
 #endif

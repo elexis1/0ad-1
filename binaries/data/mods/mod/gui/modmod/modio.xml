@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<objects>
+	<script file="gui/modmod/modio.js"/>
+
+	<object type="image" sprite="ModernFade" z="0"/>
+
+	<object name="modmod" type="image" style="ModernDialog" size="10% 10% 90% 90%">
+		<!-- Page Title -->
+		<object style="ModernLabelText" type="text" size="50%-128 -18 50%+128 14">
+			<translatableAttribute id="caption">mod.io mods</translatableAttribute>
+		</object>
+
+		<!-- Available Mods Wrapper -->
+		<object name="modsAvailable" size="16 20 100%-16 100%-70" style="ModmodScrollbar">
+			<object style="ModernLabelText" type="text" size="0 5 100% 25">
+				<translatableAttribute id="caption">Available Mods</translatableAttribute>
+			</object>
+
+			<object name="modsAvailableList"
+				style="ModernList"
+				type="olist"
+				size="0 25 100%-2 100%"
+				font="sans-stroke-13"
+			>
+				<action on="SelectionChange">showModDescription();</action>
+				<!-- List headers -->
+				<column id="modname_id" color="255 255 255" width="20%">
+					<translatableAttribute id="heading">Name</translatableAttribute>
+				</column>
+				<column id="modVersion" color="255 255 255" width="10%">
+					<translatableAttribute id="heading">Version</translatableAttribute>
+				</column>
+				<column id="name" color="255 255 255" width="20%">
+					<translatableAttribute id="heading">Mod Label</translatableAttribute>
+				</column>
+				<column id="modfilesize" color="255 255 255" width="15%">
+					<translatableAttribute id="heading">File Size</translatableAttribute>
+				</column>
+				<column id="dependencies" color="255 255 255" width="25%">
+					<translatableAttribute id="heading">Dependencies</translatableAttribute>
+				</column>
+			</object>
+			<object name="modDescription" type="text" style="ModmodScrollbar" size="0 100% 100%-16 100%+28" />
+		</object>
+
+		<!-- BUTTONS -->
+		<object type="button" style="ModernButtonRed" size="16 100%-44 200 100%-16">
+			<translatableAttribute id="caption">Back</translatableAttribute>
+			<action on="Press">Engine.SwitchGuiPage("page_modmod.xml");</action>
+		</object>
+		<object type="button" style="ModernButtonRed" size="100%-200 100%-44 100%-16 100%-16">
+			<translatableAttribute id="caption">Download</translatableAttribute>
+			<action on="Press">downloadMod();</action>
+		</object>
+	</object>
+</objects>

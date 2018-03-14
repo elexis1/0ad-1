@@ -61,6 +61,7 @@
 #include "ps/Joystick.h"
 #include "ps/Loader.h"
 #include "ps/Mod.h"
+#include "ps/ModIo.h"
 #include "ps/Profile.h"
 #include "ps/ProfileViewer.h"
 #include "ps/Profiler2.h"
@@ -677,6 +678,8 @@ void Shutdown(int flags)
 	EndGame();
 
 	SAFE_DELETE(g_XmppClient);
+
+	SAFE_DELETE(g_ModIo);
 
 	ShutdownPs();
 

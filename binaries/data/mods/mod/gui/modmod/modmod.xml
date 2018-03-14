@@ -60,7 +60,7 @@
 				sortable="true"
 				selected_column="name"
 				selected_column_order="1"
-				size="0 25 100%-2 100%"
+				size="0 25 100%-2 100%-28"
 				font="sans-stroke-13"
 				auto_scroll="true"
 			>
@@ -88,8 +88,10 @@
 					<translatableAttribute id="heading">Website</translatableAttribute>
 				</column>
 			</object>
-			<object name="globalModDescription" type="text" style="ModmodScrollbar" size="0 100%-28 100%-16 100%" textcolor="100 100 100">
-				<translatableAttribute id="caption">Description</translatableAttribute>
+			<object name="globalModDescription" type="text" style="ModmodScrollbar" size="0 100%-28 100%-184-184 100%" />
+			<object type="button" style="ModernButtonRed" size="100%-184-184 100%-28 100%-184 100%">
+				<translatableAttribute id="caption">Check Online</translatableAttribute>
+				<action on="Press">modIo();</action>
 			</object>
 			<object type="button" style="ModernButtonRed" size="100%-184-184-4 100%-28 100%-184-4 100%">
 				<translatableAttribute id="caption">Visit Website</translatableAttribute>
