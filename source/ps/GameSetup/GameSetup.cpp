@@ -712,6 +712,9 @@ void Shutdown(int flags)
 	g_UserReporter.Deinitialize();
 	TIMER_END(L"shutdown UserReporter");
 
+	// g_ModIo and g_UserReporter need to be shutdown before curl is cleaned up.
+	curl_global_cleanup();
+
 	delete &g_L10n;
 
 from_config:
@@ -942,6 +945,10 @@ bool Init(const CmdLineArgs& args, int flags)
 	CFG_GET_VAL("profiler2.autoenable", profilerHTTPEnable);
 	if (profilerHTTPEnable)
 		g_Profiler2.EnableHTTP();
+
+	// Initialise everything except Win32 sockets (because our networking
+	// system already inits those)
+	curl_global_init(CURL_GLOBAL_ALL & ~CURL_GLOBAL_WIN32);
 
 	if (!g_Quickstart)
 		g_UserReporter.Initialize(); // after config

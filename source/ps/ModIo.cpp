@@ -79,13 +79,6 @@ ModIo::ModIo()
 		m_IdQuery = "name_id="+nameid;
 	}
 
-	// TODO we should only do this in one single place (same for shutdown, currently we do it here and in the userreporter)
-	{
-		// Initialise everything except Win32 sockets (because our networking
-		// system already inits those)
-		curl_global_init(CURL_GLOBAL_ALL & ~CURL_GLOBAL_WIN32);
-	}
-
 	m_Curl = curl_easy_init();
 	ENSURE(m_Curl);
 
@@ -126,7 +119,6 @@ ModIo::~ModIo()
 {
 	curl_slist_free_all(m_Headers);
 	curl_easy_cleanup(m_Curl);
-	curl_global_cleanup(); // TODO
 }
 
 size_t ModIo::ReceiveCallback(void* buffer, size_t size, size_t nmemb, void* userp)
