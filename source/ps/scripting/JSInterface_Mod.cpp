@@ -19,6 +19,7 @@
 
 #include "ps/scripting/JSInterface_Mod.h"
 
+#include "ps/CLogger.h"
 #include "ps/Mod.h"
 #include "ps/ModIo.h"
 
