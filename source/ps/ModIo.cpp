@@ -102,6 +102,7 @@ ModIo::ModIo()
 	// TODO more?
 	curl_easy_setopt(m_Curl, CURLOPT_HTTPHEADER, m_Headers);
 
+	// TODO Do that elsewhere when used elsewhere
 	if (sodium_init() < 0) {
 		LOGERROR("Failed to initialize libsodium");
 		ENSURE(0 && "sodium_init returned success.");
