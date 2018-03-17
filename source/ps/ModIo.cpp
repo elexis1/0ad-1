@@ -27,7 +27,6 @@
 #include "lib/file/file_system.h"
 #include "lib/sysdep/sysdep.h"
 #include "lib/sysdep/filesystem.h"
-#include "maths/MD5.h"
 #include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
 #include "ps/GameSetup/Paths.h"
@@ -35,25 +34,12 @@
 #include "scriptinterface/ScriptConversions.h"
 #include "scriptinterface/ScriptInterface.h"
 
-#include <sodium.h>
-
 #include <iomanip>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
 ModIo* g_ModIo = nullptr;
-
-struct DownloadCallbackData {
-	DownloadCallbackData(FILE* _fp)
-		: fp(_fp), md5()
-	{
-		crypto_generichash_init(&hash_state, NULL, 0U, crypto_generichash_BYTES_MAX);
-	}
-	FILE* fp;
-	MD5 md5;
-	crypto_generichash_state hash_state;
-};
 
 ModIo::ModIo()
 	: m_GamesRequest("/games")
@@ -78,6 +64,9 @@ ModIo::ModIo()
 		g_ConfigDB.GetValue(CFG_SYSTEM, "modio.v1.name_id", nameid);
 		m_IdQuery = "name_id="+nameid;
 	}
+
+	m_CurlMulti = curl_multi_init();
+	ENSURE(m_CurlMulti);
 
 	m_Curl = curl_easy_init();
 	ENSURE(m_Curl);
@@ -120,6 +109,7 @@ ModIo::~ModIo()
 {
 	curl_slist_free_all(m_Headers);
 	curl_easy_cleanup(m_Curl);
+	curl_multi_cleanup(m_CurlMulti);
 }
 
 size_t ModIo::ReceiveCallback(void* buffer, size_t size, size_t nmemb, void* userp)
@@ -145,6 +135,18 @@ size_t ModIo::DownloadCallback(void* buffer, size_t size, size_t nmemb, void* us
 	crypto_generichash_update(&data->hash_state, (const u8*)buffer, len*size);
 
 	return len*size;
+}
+
+int ModIo::DownloadProgressCallback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+	DownloadProgressData* data = static_cast<DownloadProgressData*>(clientp);
+
+	if (dltotal == 0)
+		data->progress = 0;
+	else
+		data->progress = static_cast<double>(dlnow) / static_cast<double>(dltotal);
+
+	return 0;
 }
 
 CURLcode ModIo::PerformRequest(const std::string& url)
@@ -464,12 +466,10 @@ bool ModIo::ParseMods(const ScriptInterface& scriptInterface)
 	return ret;
 }
 
-void ModIo::DownloadMod(size_t idx)
+void ModIo::StartDownloadMod(size_t idx)
 {
 	if (idx >= m_ModData.size())
 		return;
-
-	// TODO: do this asynchronously? or at least tell the gui that we are doing something -> progress bar (or something spinning)
 
 	const Paths paths(g_args);
 	const OsPath modUserPath = paths.UserData()/"mods";
@@ -493,72 +493,135 @@ void ModIo::DownloadMod(size_t idx)
 	//       one, to ensure that in case a download aborts and the file stays
 	//       around, the game will not attempt to open the file which has not
 	//       been verified.
-	// TODO: Add a shutdown hook to remove that file if a user requests shutdown.
-	//       This would require us to actually listen to anything during the download...
-	const OsPath filePath = modPath/(m_ModData[idx].properties["name_id"]+".zip.temp");
-	DownloadCallbackData callbackData(sys_OpenFile(filePath, "wb"));
-	if (!callbackData.fp)
+	m_DownloadFilePath = modPath/(m_ModData[idx].properties["name_id"]+".zip.temp");
+	m_CallbackData = DownloadCallbackData(sys_OpenFile(m_DownloadFilePath, "wb"));
+	if (!m_CallbackData.fp)
 	{
-		LOGERROR("Could not open temporary file for mod download: %s", filePath.string8());
+		LOGERROR("Could not open temporary file for mod download: %s", m_DownloadFilePath.string8());
 		return;
 	}
+	m_DownloadProgressData.progress = 0;
 
 	// Set IO callbacks
 	curl_easy_setopt(m_Curl, CURLOPT_WRITEFUNCTION, DownloadCallback);
-	curl_easy_setopt(m_Curl, CURLOPT_WRITEDATA, (void*)&callbackData);
+	curl_easy_setopt(m_Curl, CURLOPT_WRITEDATA, (void*)&m_CallbackData);
+	curl_easy_setopt(m_Curl, CURLOPT_XFERINFOFUNCTION, DownloadProgressCallback);
+	curl_easy_setopt(m_Curl, CURLOPT_XFERINFODATA, (void*)&m_DownloadProgressData);
 
-	LOGERROR("Trying to download %s", m_ModData[idx].properties["binary_url"].c_str());
+	LOGWARNING("Trying to download %s", m_ModData[idx].properties["binary_url"].c_str());
 
 	// The download link will most likely redirect elsewhere, so allow that.
 	// We verify the validity of the file below.
 	curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 1L);
 	// One redirect seems plenty for a CDN servint the files.
 	curl_easy_setopt(m_Curl, CURLOPT_MAXREDIRS, 1L);
+	// Enable the progress meter
+	curl_easy_setopt(m_Curl, CURLOPT_NOPROGRESS, 0L);
 
-	// Download the file
-	CURLcode err = PerformRequest(m_ModData[idx].properties["binary_url"]);
-	fclose(callbackData.fp);
-	callbackData.fp = NULL;
+	m_ErrorBuffer[0] = '\0';
+	curl_easy_setopt(m_Curl, CURLOPT_URL, m_ModData[idx].properties["binary_url"].c_str());
+	CURLMcode err = curl_multi_add_handle(m_CurlMulti, m_Curl);
+
+	if (err == CURLM_OK)
+		m_DownloadModID = idx;
+	else
+	{
+		LOGERROR("Failed to start the download. Handle error: %s; %s", curl_multi_strerror(err), m_ErrorBuffer);
+		TearDownAsyncDownload();
+	}
+}
+
+void ModIo::CancelDownload()
+{
+	TearDownAsyncDownload();
+	DeleteDownloadedFile();
+}
+
+void ModIo::TearDownAsyncDownload()
+{
+	curl_multi_remove_handle(m_CurlMulti, m_Curl);
+
+	fclose(m_CallbackData.fp);
+	m_CallbackData.fp = nullptr;
 
 	// To minimise security risks, don't support redirects for queries
 	curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 0L);
-
-	if (err != CURLE_OK)
-	{
-		LOGERROR("Failure while downloading mod file. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
-		if (wunlink(filePath) != 0)
-			LOGERROR("Failed to delete file.");
-		return;
-	}
-
-	if (!VerifyDownload(filePath, callbackData, m_ModData[idx]))
-	{
-		LOGERROR("File %s failed to verify.", filePath.string8());
-		// delete the file again as it does not match
-		if (wunlink(filePath) != 0)
-			LOGERROR("Failed to delete file.");
-
-		return;
-	}
-
-	const OsPath finalFilePath = modPath/(m_ModData[idx].properties["name_id"]+".zip");
-	if (wrename(filePath, finalFilePath) != 0)
-	{
-		LOGERROR("failed to rename file.");
-		wunlink(filePath);
-		return;
-	}
-
-	LOGERROR("downloaded something and verified it successfully.");
-
-	// TODO: hook into .pyromod code to do the win32 specific thing because win32...
+	// Disable the progress meter for queries
+	curl_easy_setopt(m_Curl, CURLOPT_NOPROGRESS, 1L);
 }
 
-bool ModIo::VerifyDownload(const OsPath& filePath, DownloadCallbackData& callbackData, const ModIoModData& modData) const
+void ModIo::DeleteDownloadedFile()
 {
+	if (wunlink(m_DownloadFilePath) != 0)
+		LOGERROR("Failed to delete temporary file.");
+	m_DownloadFilePath = OsPath();
+}
+
+bool ModIo::AdvanceDownload()
+{
+	int stillRunning;
+	CURLMcode err = curl_multi_perform(m_CurlMulti, &stillRunning);
+	if (err != CURLM_OK)
 	{
-		u64 filesize = std::stoull(modData.properties.at("filesize"));
-		if (filesize != FileSize(filePath))
+		LOGERROR("Asynchronous download failure: %s; %s", curl_multi_strerror(err), m_ErrorBuffer);
+		CancelDownload();
+		return true;
+	}
+	else
+	{
+		CURLMsg* message;
+		do
+		{
+			int in_queue;
+			message = curl_multi_info_read(m_CurlMulti, &in_queue);
+			if (!message || message->msg == CURLMSG_DONE || message->easy_handle == m_Curl)
+				continue;
+
+			CURLcode err = message->data.result;
+			if (err == CURLE_OK)
+				continue;
+
+			LOGERROR("Failure while downloading mod file. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
+			CancelDownload();
+			return true;
+		} while (message);
+	}
+
+	if (stillRunning)
+		return false;
+
+	// Else, the download is finished.
+	TearDownAsyncDownload();
+
+	if (VerifyDownload())
+	{
+		const OsPath finalFilePath = m_DownloadFilePath.Parent() / (m_ModData[m_DownloadModID].properties["name_id"] + ".zip");
+		LOGWARNING("%s to %s", m_DownloadFilePath.string8(), finalFilePath.string8());
+		if (wrename(m_DownloadFilePath, finalFilePath) != 0)
+			LOGERROR("failed to rename file.");
+
+		// TODO: Trying to download a game twice will fail here (obviously)
+	}
+	else
+	{
+		LOGERROR("File %s failed to verify.", m_DownloadFilePath.string8());
+		DeleteDownloadedFile();
+	}
+
+	LOGWARNING("download finished (successfully or not).");
+
+	// TODO: hook into .pyromod code to do the win32 specific thing because win32...
+
+	return true;
+}
+
+bool ModIo::VerifyDownload() const
+{
+	DownloadCallbackData callbackData = m_CallbackData;
+
+	{
+		u64 filesize = std::stoull(m_ModData[m_DownloadModID].properties.at("filesize"));
+		if (filesize != FileSize(m_DownloadFilePath))
 		{
 			LOGERROR("Invalid filesize.");
 			return false;
@@ -575,9 +638,9 @@ bool ModIo::VerifyDownload(const OsPath& filePath, DownloadCallbackData& callbac
 		for (size_t i = 0; i < MD5::DIGESTSIZE; ++i)
 			md5digest << std::setw(2) << (int)digest[i];
 
-		if (modData.properties.at("filehash_md5") != md5digest.str())
+		if (m_ModData[m_DownloadModID].properties.at("filehash_md5") != md5digest.str())
 		{
-			LOGERROR("Invalid file. Expected md5 %s, got %s.", modData.properties.at("filehash_md5").c_str(), md5digest.str());
+			LOGERROR("Invalid file. Expected md5 %s, got %s.", m_ModData[m_DownloadModID].properties.at("filehash_md5").c_str(), md5digest.str());
 			return false;
 		}
 	}
@@ -593,7 +656,7 @@ bool ModIo::VerifyDownload(const OsPath& filePath, DownloadCallbackData& callbac
 		return false;
 	}
 
-	if (crypto_sign_verify_detached(modData.sig.sig, hash_fin, sizeof hash_fin, m_pk.pk) != 0)
+	if (crypto_sign_verify_detached(m_ModData[m_DownloadModID].sig.sig, hash_fin, sizeof hash_fin, m_pk.pk) != 0)
 	{
 		LOGERROR("failed to verify signature");
 		return false;

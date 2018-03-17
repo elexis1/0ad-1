@@ -87,7 +87,7 @@ JS::Value JSI_Mod::ModIoGetMods(ScriptInterface::CxPrivate* pCxPrivate)
 	return JS::ObjectValue(*mods);
 }
 
-void JSI_Mod::ModIoDownloadMod(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), uint32_t idx)
+void JSI_Mod::ModIoStartDownloadMod(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), uint32_t idx)
 {
 	if (!g_ModIo)
 	{
@@ -95,7 +95,47 @@ void JSI_Mod::ModIoDownloadMod(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), u
 		return;
 	}
 
-	g_ModIo->DownloadMod(idx);
+	g_ModIo->StartDownloadMod(idx);
+}
+
+void JSI_Mod::ModIoCancelDownload(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
+{
+	if (!g_ModIo)
+	{
+		LOGERROR("ModIoCancelDownload called before ModIoGetMods");
+		return;
+	}
+
+	g_ModIo->CancelDownload();
+}
+
+bool JSI_Mod::ModIoAdvanceDownload(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
+{
+	if (!g_ModIo)
+	{
+		LOGERROR("ModIoAdvanceDownload called before ModIoGetMods");
+		return false;
+	}
+
+	return g_ModIo->AdvanceDownload();
+}
+
+JS::Value JSI_Mod::ModIoGetDownloadProgress(ScriptInterface::CxPrivate* pCxPrivate)
+{
+	ScriptInterface* scriptInterface = pCxPrivate->pScriptInterface;
+	JSContext* cx = scriptInterface->GetContext();
+	JSAutoRequest rq(cx);
+
+	if (!g_ModIo)
+	{
+		LOGERROR("ModIoGetDownloadStatus called before ModIoGetMods");
+		return JS::NullValue();
+	}
+
+	const DownloadProgressData& downloadProgressData = g_ModIo->GetDownloadProgress();
+	JS::RootedValue progress(cx, JS::DoubleValue(downloadProgressData.progress));
+
+	return progress;
 }
 
 void JSI_Mod::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
@@ -106,5 +146,8 @@ void JSI_Mod::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
 	scriptInterface.RegisterFunction<void, std::vector<CStr>, &JSI_Mod::SetMods>("SetMods");
 
 	scriptInterface.RegisterFunction<JS::Value, &JSI_Mod::ModIoGetMods>("ModIoGetMods");
-	scriptInterface.RegisterFunction<void, uint32_t, &JSI_Mod::ModIoDownloadMod>("ModIoDownloadMod");
+	scriptInterface.RegisterFunction<void, uint32_t, &JSI_Mod::ModIoStartDownloadMod>("ModIoStartDownloadMod");
+	scriptInterface.RegisterFunction<void, &JSI_Mod::ModIoCancelDownload>("ModIoCancelDownload");
+	scriptInterface.RegisterFunction<bool, &JSI_Mod::ModIoAdvanceDownload>("ModIoAdvanceDownload");
+	scriptInterface.RegisterFunction<JS::Value, &JSI_Mod::ModIoGetDownloadProgress>("ModIoGetDownloadProgress");
 }

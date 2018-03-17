@@ -1,4 +1,5 @@
 let g_ModsAvailableOnline = [];
+let g_Downloading = false;
 
 function init()
 {
@@ -63,7 +64,23 @@ function downloadMod()
 		return;
 	}
 
-	Engine.ModIoDownloadMod(+listObject.list[listObject.selected]);
+	Engine.ModIoStartDownloadMod(+listObject.list[listObject.selected])
+	g_Downloading = true;
+}
+
+function onTick()
+{
+	if (!g_Downloading)
+		return;
+
+	if (Engine.ModIoAdvanceDownload())
+	{
+		// Download finished
+		g_Downloading = false;
+		return;
+	}
+
+	warn(Engine.ModIoGetDownloadProgress());
 }
 
 function closePage()

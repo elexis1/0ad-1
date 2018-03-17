@@ -32,7 +32,10 @@ namespace JSI_Mod
 	void SetMods(ScriptInterface::CxPrivate* pCxPrivate, const std::vector<CStr>& mods);
 
 	JS::Value ModIoGetMods(ScriptInterface::CxPrivate* pCxPrivate);
-	void ModIoDownloadMod(ScriptInterface::CxPrivate* pCxPrivate, uint32_t idx);
+	void ModIoStartDownloadMod(ScriptInterface::CxPrivate* pCxPrivate, uint32_t idx);
+	void ModIoCancelDownload(ScriptInterface::CxPrivate* pCxPrivate);
+	bool ModIoAdvanceDownload(ScriptInterface::CxPrivate* pCxPrivate);
+	JS::Value ModIoGetDownloadProgress(ScriptInterface::CxPrivate* pCxPrivate);
 }
 
 #endif

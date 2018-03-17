@@ -23,22 +23,25 @@
 #ifndef INCLUDED_MODIO
 #define INCLUDED_MODIO
 
+#include "maths/MD5.h"
+
 #include <string>
-#include <sodium/crypto_sign.h>
+#include <sodium.h>
 
 #include "lib/external_libraries/curl.h"
 
-class DownloadCallbackData;
 class ScriptInterface;
 
 // TODO: Allocate instance of the below two using sodium_malloc?
-struct PKStruct {
+struct PKStruct
+{
 	unsigned char sig_alg[2] = {}; // == "Ed"
 	unsigned char keynum[8] = {}; // should match the keynum in the sigstruct, else this is the wrong key
 	unsigned char pk[crypto_sign_PUBLICKEYBYTES] = {};
 };
 
-struct SigStruct {
+struct SigStruct
+{
 	unsigned char sig_alg[2] = {}; // "ED" (since we only support the hashed mode)
 	unsigned char keynum[8] = {}; // should match the keynum in the PKStruct
 	unsigned char sig[crypto_sign_BYTES] = {};
@@ -49,6 +52,27 @@ struct ModIoModData
 	std::map<std::string, std::string> properties;
 	std::vector<std::string> dependencies;
 	SigStruct sig;
+};
+
+struct DownloadProgressData
+{
+	double progress;
+};
+
+struct DownloadCallbackData
+{
+	DownloadCallbackData()
+		: fp(nullptr), md5()
+	{
+	}
+	DownloadCallbackData(FILE* _fp)
+		: fp(_fp), md5()
+	{
+		crypto_generichash_init(&hash_state, NULL, 0U, crypto_generichash_BYTES_MAX);
+	}
+	FILE* fp;
+	MD5 md5;
+	crypto_generichash_state hash_state;
 };
 
 /**
@@ -109,15 +133,30 @@ public:
 	ModIo();
 	~ModIo();
 
+	// Synchronous API calls:
+
 	const std::vector<ModIoModData>& GetMods(const ScriptInterface& scriptinterface);
 
-	void DownloadMod(size_t idx);
+	// Asynchronous API calls:
+
+	void StartDownloadMod(size_t idx);
+	void CancelDownload();
+	// Returns true if the download is complete, false otherwise
+	bool AdvanceDownload();
+	const DownloadProgressData& GetDownloadProgress() const
+	{
+		return m_DownloadProgressData;
+	}
 
 private:
 	static size_t ReceiveCallback(void* buffer, size_t size, size_t nmemb, void* userp);
 	static size_t DownloadCallback(void* buffer, size_t size, size_t nmemb, void* userp);
+	static int DownloadProgressCallback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
 
 	CURLcode PerformRequest(const std::string& url);
+
+	void TearDownAsyncDownload();
+	void DeleteDownloadedFile();
 
 	static bool ParseGameIdResponse(const ScriptInterface& scriptInterface, const std::string& responseData, int& id);
 	static bool ParseModsResponse(const ScriptInterface& scriptInterface, const std::string& responseData, std::vector<ModIoModData>& modData, const PKStruct& pk);
@@ -126,7 +165,7 @@ private:
 	bool ParseGameId(const ScriptInterface& scriptInterface);
 	bool ParseMods(const ScriptInterface& scriptInterface);
 
-	bool VerifyDownload(const OsPath& filePath, DownloadCallbackData& callbackData, const ModIoModData& modData) const;
+	bool VerifyDownload() const;
 
 	// Url parts
 	std::string m_BaseUrl;
@@ -138,9 +177,16 @@ private:
 	std::string m_IdQuery;
 
 	CURL* m_Curl;
+	CURLM* m_CurlMulti;
 	curl_slist* m_Headers;
 	char m_ErrorBuffer[CURL_ERROR_SIZE];
 	std::string m_ResponseData;
+
+	// Current mod download
+	int m_DownloadModID;
+	OsPath m_DownloadFilePath;
+	DownloadCallbackData m_CallbackData;
+	DownloadProgressData m_DownloadProgressData;
 
 	PKStruct m_pk;
 
