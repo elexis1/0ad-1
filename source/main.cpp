@@ -496,26 +496,26 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		}
 	}
 
-	const bool isModInstallation = args.Has("install-mod");
-	const OsPath modPath(isModInstallation ? args.Get("install-mod") : "");
-
-	if (isModInstallation)
+	std::vector<OsPath> modsToInstall;
+	for (const CStr& arg : args.GetArgsWithoutName())
 	{
+		const OsPath modPath(arg);
 		if (!FileExists(modPath))
 		{
 			debug_printf("ERROR: The mod file '%s' does not exist!\n", modPath.string8().c_str());
-			return;
+			continue;
 		}
 		if (DirectoryExists(modPath))
 		{
 			debug_printf("ERROR: The mod file '%s' is a directory!\n", modPath.string8().c_str());
-			return;
+			continue;
 		}
 		if (modPath.Basename().empty())
 		{
 			debug_printf("ERROR: The name of the mod file '%s' is empty!\n", modPath.string8().c_str());
-			return;
+			continue;
 		}
+		modsToInstall.emplace_back(std::move(modPath));
 	}
 
 	// We need to initialize SpiderMonkey and libxml2 in the main thread before
@@ -558,7 +558,7 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		return;
 	}
 
-	if (isModInstallation)
+	if (!modsToInstall.empty())
 	{
 		const int runtimeSize = 8 * MiB;
 		const int heapGrowthBytesGCTrigger = 1 * MiB;
@@ -568,8 +568,11 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		Paths paths(args);
 		CModInstaller installer(paths.UserData() / "mods", paths.Cache());
 
-		// Creates a directory with the name extracted from a `mod.json`
-		installer.Install(modPath, scriptRuntime, true);
+		for (const OsPath& modPath : modsToInstall)
+		{
+			// Creates a directory with the name extracted from a `mod.json`
+			installer.Install(modPath, scriptRuntime, true);
+		}
 
 		scriptRuntime.reset();
 
