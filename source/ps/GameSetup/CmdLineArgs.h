@@ -61,10 +61,16 @@ public:
 	 */
 	OsPath GetArg0() const;
 
+	/**
+	 * Returns all arguments that don't have a name (string started with '-').
+	 */
+	std::vector<CStr> GetArgsWithoutName() const;
+
 private:
 	typedef std::vector<std::pair<CStr, CStr> > ArgsT;
 	ArgsT m_Args;
 	OsPath m_Arg0;
+	std::vector<CStr> m_ArgsWithoutName;
 };
 
 #endif // INCLUDED_CMDLINEARGS

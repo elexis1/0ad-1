@@ -35,7 +35,10 @@ CmdLineArgs::CmdLineArgs(int argc, const char* argv[])
 	{
 		// Only accept arguments that start with '-'
 		if (argv[i][0] != '-')
+		{
+			m_ArgsWithoutName.emplace_back(argv[i]);
 			continue;
+		}
 
 		// Allow -arg and --arg
 		char offset = argv[i][1] == '-' ? 2 : 1;
@@ -90,4 +93,9 @@ std::vector<CStr> CmdLineArgs::GetMultiple(const char* name) const
 OsPath CmdLineArgs::GetArg0() const
 {
 	return m_Arg0;
+}
+
+std::vector<CStr> CmdLineArgs::GetArgsWithoutName() const
+{
+	return m_ArgsWithoutName;
 }
