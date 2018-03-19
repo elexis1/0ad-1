@@ -560,12 +560,18 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 
 	if (isModInstallation)
 	{
-		Paths paths(args);
+		const int runtimeSize = 8 * MiB;
+		const int heapGrowthBytesGCTrigger = 1 * MiB;
+		std::shared_ptr<ScriptRuntime> scriptRuntime = ScriptInterface::CreateRuntime(
+			std::shared_ptr<ScriptRuntime>(), runtimeSize, heapGrowthBytesGCTrigger);
 
+		Paths paths(args);
 		CModInstaller installer(paths.UserData() / "mods", paths.Cache());
 
 		// Creates a directory with the name extracted from a `mod.json`
-		installer.Install(modPath);
+		installer.Install(modPath, scriptRuntime, true);
+
+		scriptRuntime.reset();
 
 		CXeromyces::Terminate();
 		return;

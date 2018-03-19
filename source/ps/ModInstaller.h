@@ -41,16 +41,15 @@ public:
 	 * Do all the processing and unpacking.
 	 * @param mod path of .pyromod file of mod
 	 */
-	void Install(const OsPath& mod);
+	void Install(const OsPath& mod,
+	             const std::shared_ptr<ScriptRuntime>& scriptRuntime,
+	             bool deleteAfterInstall);
 
 private:
-
 	PIVFS m_VFS;
 	OsPath m_ModsDir;
 	OsPath m_TempDir;
 	VfsPath m_CacheDir;
-
-	std::shared_ptr<ScriptRuntime> m_ScriptRuntime;
 };
 
 #endif // INCLUDED_MODINSTALLER

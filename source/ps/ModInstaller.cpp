@@ -29,24 +29,18 @@ CModInstaller::CModInstaller(const OsPath& modsdir, const OsPath& tempdir) :
 	m_ModsDir(modsdir), m_TempDir(tempdir / "_modscache"), m_CacheDir("cache/")
 {
 	m_VFS = CreateVfs();
-
 	CreateDirectories(m_TempDir, 0700);
-
-	const int runtimeSize = 8 * MiB;
-	const int heapGrowthBytesGCTrigger = 1 * MiB;
-	m_ScriptRuntime = ScriptInterface::CreateRuntime(std::shared_ptr<ScriptRuntime>(), runtimeSize, heapGrowthBytesGCTrigger);
 }
 
 CModInstaller::~CModInstaller()
 {
 	m_VFS.reset();
-
-	m_ScriptRuntime.reset();
-
 	DeleteDirectory(m_TempDir);
 }
 
-void CModInstaller::Install(const OsPath& mod)
+void CModInstaller::Install(const OsPath& mod,
+                            const std::shared_ptr<ScriptRuntime>& scriptRuntime,
+                            bool deleteAfterInstall)
 {
 	const OsPath modTemp = m_TempDir / mod.Basename() / mod.Filename().ChangeExtension(L".zip");
 	CreateDirectories(modTemp.Parent(), 0700);
@@ -63,7 +57,7 @@ void CModInstaller::Install(const OsPath& mod)
 		return;
 
 	// Extract the name of the mod
-	ScriptInterface scriptInterface("Engine", "ModInstaller", m_ScriptRuntime);
+	ScriptInterface scriptInterface("Engine", "ModInstaller", scriptRuntime);
 	JSContext* cx = scriptInterface.GetContext();
 	JS::RootedValue json_val(cx);
 	if (!scriptInterface.ParseJSON(modinfo.GetAsString(), &json_val))
@@ -87,19 +81,22 @@ void CModInstaller::Install(const OsPath& mod)
 	wrename(modTemp, modPath);
 	DeleteDirectory(modTemp.Parent());
 
+#ifdef OS_WIN
 	// On Windows, write the contents of mod.json to a separate file next to the archive:
 	//   mod-name/
 	//     mod-name.zip
 	//     mod.json
-#ifdef OS_WIN
 	std::ofstream mod_json((modDir / "mod.json").string8());
 	if (mod_json.good())
 	{
 		mod_json << modinfo.GetAsString();
 		mod_json.close();
 	}
-#endif
+#endif // OS_WIN
 
-	// Remove the original file
-	wunlink(mod);
+	if (deleteAfterInstall)
+	{
+		// Remove the original file
+		wunlink(mod);
+	}
 }
