@@ -500,6 +500,8 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 	for (const CStr& arg : args.GetArgsWithoutName())
 	{
 		const OsPath modPath(arg);
+		if (!CModInstaller::IsDefaultModExtension(modPath.Extension()))
+			continue;
 		if (!FileExists(modPath))
 		{
 			debug_printf("ERROR: The mod file '%s' does not exist!\n", modPath.string8().c_str());
@@ -508,11 +510,6 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		if (DirectoryExists(modPath))
 		{
 			debug_printf("ERROR: The mod file '%s' is a directory!\n", modPath.string8().c_str());
-			continue;
-		}
-		if (modPath.Basename().empty())
-		{
-			debug_printf("ERROR: The name of the mod file '%s' is empty!\n", modPath.string8().c_str());
 			continue;
 		}
 		modsToInstall.emplace_back(std::move(modPath));

@@ -45,6 +45,8 @@ public:
 	             const std::shared_ptr<ScriptRuntime>& scriptRuntime,
 	             bool deleteAfterInstall);
 
+	static bool IsDefaultModExtension(const Path& ext);
+
 private:
 	PIVFS m_VFS;
 	OsPath m_ModsDir;

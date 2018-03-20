@@ -100,3 +100,9 @@ void CModInstaller::Install(const OsPath& mod,
 		wunlink(mod);
 	}
 }
+
+// static
+bool CModInstaller::IsDefaultModExtension(const Path& ext)
+{
+	return ext == ".pyromod" || ext == ".zip";
+}
