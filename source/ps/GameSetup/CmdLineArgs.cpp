@@ -1,4 +1,4 @@
-/* Copyright (C) 2015 Wildfire Games.
+/* Copyright (C) 2018 Wildfire Games.
  * This file is part of 0 A.D.
  *
  * 0 A.D. is free software: you can redistribute it and/or modify
@@ -58,13 +58,13 @@ CmdLineArgs::CmdLineArgs(int argc, const char* argv[])
 	}
 }
 
-bool CmdLineArgs::Has(const char* name) const
+bool CmdLineArgs::Has(const CStr& name) const
 {
 	return m_Args.end() != find_if(m_Args.begin(), m_Args.end(),
 		[&name](const std::pair<CStr, CStr>& a) { return a.first == name; });
 }
 
-CStr CmdLineArgs::Get(const char* name) const
+CStr CmdLineArgs::Get(const CStr& name) const
 {
 	ArgsT::const_iterator it = find_if(m_Args.begin(), m_Args.end(),
 		[&name](const std::pair<CStr, CStr>& a) { return a.first == name; });
@@ -74,7 +74,7 @@ CStr CmdLineArgs::Get(const char* name) const
 		return "";
 }
 
-std::vector<CStr> CmdLineArgs::GetMultiple(const char* name) const
+std::vector<CStr> CmdLineArgs::GetMultiple(const CStr& name) const
 {
 	std::vector<CStr> values;
 	ArgsT::const_iterator it = m_Args.begin();
