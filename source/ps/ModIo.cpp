@@ -124,6 +124,8 @@ size_t ModIo::ReceiveCallback(void* buffer, size_t size, size_t nmemb, void* use
 size_t ModIo::DownloadCallback(void* buffer, size_t size, size_t nmemb, void* userp)
 {
 	DownloadCallbackData* data = static_cast<DownloadCallbackData*>(userp);
+	if (!data->fp)
+		return 0;
 
 	size_t len = fwrite(buffer, size, nmemb, data->fp);
 
@@ -541,7 +543,8 @@ void ModIo::TearDownAsyncDownload()
 {
 	curl_multi_remove_handle(m_CurlMulti, m_Curl);
 
-	fclose(m_CallbackData.fp);
+	if (m_CallbackData.fp)
+		fclose(m_CallbackData.fp);
 	m_CallbackData.fp = nullptr;
 
 	// To minimise security risks, don't support redirects for queries
