@@ -25,10 +25,9 @@
 
 #include "maths/MD5.h"
 
-#include <string>
-#include <sodium.h>
-
 #include "lib/external_libraries/curl.h"
+#include <sodium.h>
+#include <string>
 
 class ScriptInterface;
 

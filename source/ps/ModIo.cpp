@@ -24,20 +24,20 @@
 
 #include "ModIo.h"
 
-#include "lib/file/file_system.h"
-#include "lib/sysdep/sysdep.h"
-#include "lib/sysdep/filesystem.h"
 #include "ps/CLogger.h"
 #include "ps/ConfigDB.h"
 #include "ps/GameSetup/Paths.h"
 #include "ps/Mod.h"
+
+#include "lib/file/file_system.h"
+#include "lib/sysdep/filesystem.h"
+#include "lib/sysdep/sysdep.h"
 #include "scriptinterface/ScriptConversions.h"
 #include "scriptinterface/ScriptInterface.h"
 
-#include <iomanip>
-
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <iomanip>
 
 ModIo* g_ModIo = nullptr;
 

@@ -17,7 +17,7 @@
 
 #include "precompiled.h"
 
-#include "ps/scripting/JSInterface_Mod.h"
+#include "JSInterface_Mod.h"
 
 #include "ps/CLogger.h"
 #include "ps/Mod.h"
