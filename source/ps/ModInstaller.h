@@ -45,6 +45,9 @@ public:
 	             const std::shared_ptr<ScriptRuntime>& scriptRuntime,
 	             bool deleteAfterInstall);
 
+	/**
+	 * Returns true if a filename with the extension can be a mod.
+	 */
 	static bool IsDefaultModExtension(const Path& ext);
 
 private:
