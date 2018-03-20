@@ -137,7 +137,7 @@ size_t ModIo::DownloadCallback(void* buffer, size_t size, size_t nmemb, void* us
 	return len*size;
 }
 
-int ModIo::DownloadProgressCallback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+int ModIo::DownloadProgressCallback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t UNUSED(ultotal), curl_off_t UNUSED(ulnow))
 {
 	DownloadProgressData* data = static_cast<DownloadProgressData*>(clientp);
 
