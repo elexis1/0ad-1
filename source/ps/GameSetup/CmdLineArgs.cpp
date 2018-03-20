@@ -20,6 +20,26 @@
 
 #include "lib/sysdep/sysdep.h"
 
+namespace
+{
+
+// The simple matcher for elements of the arguments container.
+class IsKeyEqualsTo
+{
+public:
+	IsKeyEqualsTo(const CStr& value) : m_Value(value) {}
+
+	bool operator()(const std::pair<CStr, CStr>& p) const
+	{
+		return p.first == m_Value;
+	}
+
+private:
+	const CStr m_Value;
+};
+
+} // namespace
+
 CmdLineArgs::CmdLineArgs(int argc, const char* argv[])
 {
 	if (argc >= 1)
@@ -60,32 +80,24 @@ CmdLineArgs::CmdLineArgs(int argc, const char* argv[])
 
 bool CmdLineArgs::Has(const CStr& name) const
 {
-	return m_Args.end() != find_if(m_Args.begin(), m_Args.end(),
-		[&name](const std::pair<CStr, CStr>& a) { return a.first == name; });
+	return std::any_of(m_Args.begin(), m_Args.end(), IsKeyEqualsTo(name));
 }
 
 CStr CmdLineArgs::Get(const CStr& name) const
 {
-	ArgsT::const_iterator it = find_if(m_Args.begin(), m_Args.end(),
-		[&name](const std::pair<CStr, CStr>& a) { return a.first == name; });
-	if (it != m_Args.end())
-		return it->second;
-	else
-		return "";
+	ArgsT::const_iterator it = std::find_if(m_Args.begin(), m_Args.end(), IsKeyEqualsTo(name));
+	return it != m_Args.end() ? it->second : "";
 }
 
 std::vector<CStr> CmdLineArgs::GetMultiple(const CStr& name) const
 {
 	std::vector<CStr> values;
 	ArgsT::const_iterator it = m_Args.begin();
-	while (1)
+	while ((it = std::find_if(it, m_Args.end(), IsKeyEqualsTo(name))) != m_Args.end())
 	{
-		it = find_if(it, m_Args.end(),
-			[&name](const std::pair<CStr, CStr>& a) { return a.first == name; });
-		if (it == m_Args.end())
-			break;
 		values.push_back(it->second);
-		++it; // start searching from the next one in the next iteration
+		// Start searching from the next one in the next iteration
+		++it;
 	}
 	return values;
 }
