@@ -1,5 +1,5 @@
-let g_ModsAvailableOnline = [];
-let g_Downloading = false;
+var g_ModsAvailableOnline = [];
+var g_Downloading = false;
 
 function init()
 {
@@ -25,7 +25,7 @@ function filesizeToString(filesize)
 
 function generateModsList(mods)
 {
-	var [keys, names, name_ids, versions, filesizes, dependencies] = [[],[],[],[],[],[]];
+	let [keys, names, name_ids, versions, filesizes, dependencies] = [[], [], [], [], [], []];
 
 	let i = 0;
 	for (let mod of mods)
@@ -38,7 +38,7 @@ function generateModsList(mods)
 		dependencies.push((mod.dependencies || []).join(" "));
 	}
 
-	var obj = Engine.GetGUIObjectByName("modsAvailableList");
+	let obj = Engine.GetGUIObjectByName("modsAvailableList");
 	obj.list_name = names;
 	obj.list_modVersion = versions;
 	obj.list_modname_id = name_ids;
@@ -64,7 +64,7 @@ function downloadMod()
 		return;
 	}
 
-	Engine.ModIoStartDownloadMod(+listObject.list[listObject.selected])
+	Engine.ModIoStartDownloadMod(+listObject.list[listObject.selected]);
 	g_Downloading = true;
 }
 

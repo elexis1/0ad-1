@@ -174,7 +174,6 @@ const std::vector<ModIoModData>& ModIo::GetMods(const ScriptInterface& scriptInt
 		if (err != CURLE_OK)
 		{
 			LOGERROR("Failure while querying for game id. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
-			
 			return m_ModData;
 		}
 
@@ -218,7 +217,7 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 
 	if (!gameResponse.isObject())
 		FAIL("response not an object");
-	
+
 	JS::RootedObject gameResponseObj(cx, gameResponse.toObjectOrNull());
 	JS::RootedValue dataVal(cx);
 	if (!JS_GetProperty(cx, gameResponseObj, "data", &dataVal))

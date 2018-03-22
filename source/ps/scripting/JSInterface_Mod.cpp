@@ -80,7 +80,7 @@ JS::Value JSI_Mod::ModIoGetMods(ScriptInterface::CxPrivate* pCxPrivate)
 			scriptInterface->SetProperty(m, prop.first.c_str(), prop.second, true);
 
 		scriptInterface->SetProperty(m, "dependencies", mod.dependencies, true);
-		
+
 		JS_SetElement(cx, mods, i++, m);
 	}
 
