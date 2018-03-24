@@ -212,7 +212,7 @@ struct DownloadCallbackData
  *
  * The mod.io settings are also locked down such that only mods that have been authorized by us
  * show up in API queries. This is both done so that all required information (dependencies)
- * are stored for the files, and that only mods that have been checked for being ok are acutally
+ * are stored for the files, and that only mods that have been checked for being ok are actually
  * shown to users.
  */
 class ModIo
