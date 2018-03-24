@@ -48,8 +48,9 @@ public:
 	{ \
 		TestLogger logger; \
 		int id = -1; \
-		TS_ASSERT(!ModIo::ParseGameIdResponse(script, input, id)); \
-		TS_ASSERT_STR_CONTAINS(logger.GetOutput(), expected_error); \
+		std::string err; \
+		TS_ASSERT(!ModIo::ParseGameIdResponse(script, input, id, err)); \
+		TS_ASSERT_STR_EQUALS(err, expected_error); \
 		TS_ASSERT_EQUALS(id, expected_id); \
 	}
 
@@ -84,8 +85,9 @@ public:
 		{
 			TestLogger logger;
 			int id = -1;
-			TS_ASSERT(ModIo::ParseGameIdResponse(script, "{\"data\": [{\"id\": 42}]}", id));
-			TS_ASSERT_STR_NOT_CONTAINS(logger.GetOutput(), "ERROR");
+			std::string err;
+			TS_ASSERT(ModIo::ParseGameIdResponse(script, "{\"data\": [{\"id\": 42}]}", id, err));
+			TS_ASSERT(err.empty());
 			TS_ASSERT_EQUALS(id, 42);
 		}
 	}
@@ -106,8 +108,9 @@ public:
 	{ \
 		TestLogger logger; \
 		std::vector<ModIoModData> mods; \
-		TS_ASSERT(!ModIo::ParseModsResponse(script, input, mods, pk)); \
-		TS_ASSERT_STR_CONTAINS(logger.GetOutput(), expected_error); \
+		std::string err; \
+		TS_ASSERT(!ModIo::ParseModsResponse(script, input, mods, pk, err)); \
+		TS_ASSERT_STR_EQUALS(err, expected_error); \
 		TS_ASSERT_EQUALS(mods.size(), 0); \
 	}
 
@@ -165,8 +168,9 @@ public:
 		{
 			TestLogger logger;
 			std::vector<ModIoModData> mods;
-			TS_ASSERT(ModIo::ParseModsResponse(script, "{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[],\\\"minisigs\\\":[]}\"}}]}", mods, pk));
-			TS_ASSERT_STR_NOT_CONTAINS(logger.GetOutput(), "ERROR");
+			std::string err;
+			TS_ASSERT(ModIo::ParseModsResponse(script, "{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[],\\\"minisigs\\\":[]}\"}}]}", mods, pk, err));
+			TS_ASSERT(err.empty());
 			TS_ASSERT_EQUALS(mods.size(), 0);
 		}
 
@@ -174,8 +178,9 @@ public:
 		{
 			TestLogger logger;
 			std::vector<ModIoModData> mods;
-			TS_ASSERT(ModIo::ParseModsResponse(script, "{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[],\\\"minisigs\\\":[\\\"untrusted comment: signature from minisign secret key\\\\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\\\\ntrusted comment: timestamp:1517285433\\\\tfile:tm.zip\\\\nTHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw==\\\"]}\"}}]}", mods, pk));
-			TS_ASSERT_STR_NOT_CONTAINS(logger.GetOutput(), "ERROR");
+			std::string err;
+			TS_ASSERT(ModIo::ParseModsResponse(script, "{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[],\\\"minisigs\\\":[\\\"untrusted comment: signature from minisign secret key\\\\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\\\\ntrusted comment: timestamp:1517285433\\\\tfile:tm.zip\\\\nTHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw==\\\"]}\"}}]}", mods, pk, err));
+			TS_ASSERT(err.empty());
 			TS_ASSERT_EQUALS(mods.size(), 1);
 		}
 	}
@@ -196,16 +201,18 @@ public:
 	{ \
 		TestLogger logger; \
 		SigStruct sig; \
-		TS_ASSERT(!ModIo::ParseSignature({input}, sig, pk)); \
-		TS_ASSERT_STR_NOT_CONTAINS(logger.GetOutput(), "ERROR"); \
+		std::string err; \
+		TS_ASSERT(!ModIo::ParseSignature({input}, sig, pk, err)); \
+		TS_ASSERT(err.empty()); \
 	}
 
 #define TS_ASSERT_PARSE(input, expected_error) \
 	{ \
 		TestLogger logger; \
 		SigStruct sig; \
-		TS_ASSERT(!ModIo::ParseSignature({input}, sig, pk)); \
-		TS_ASSERT_STR_CONTAINS(logger.GetOutput(), expected_error); \
+		std::string err; \
+		TS_ASSERT(!ModIo::ParseSignature({input}, sig, pk, err)); \
+		TS_ASSERT_STR_EQUALS(err, expected_error); \
 	}
 
 		TS_ASSERT_PARSE_SILENT_FAILURE();
@@ -229,8 +236,9 @@ public:
 		{
 			TestLogger logger;
 			SigStruct sig;
-			TS_ASSERT(ModIo::ParseSignature({"\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\ntrusted comment: timestamp:1517285433\tfile:tm.zip\nTHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw=="}, sig, pk));
-			TS_ASSERT_STR_NOT_CONTAINS(logger.GetOutput(), "ERROR");
+			std::string err;
+			TS_ASSERT(ModIo::ParseSignature({"\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\ntrusted comment: timestamp:1517285433\tfile:tm.zip\nTHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw=="}, sig, pk, err));
+			TS_ASSERT(err.empty());
 		}
 
 #undef TS_ASSERT_PARSE_SILENT_FAILURE
