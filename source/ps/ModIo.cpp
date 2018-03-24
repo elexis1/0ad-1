@@ -325,7 +325,7 @@ bool ModIo::AdvanceRequest(const ScriptInterface& scriptInterface)
 	if (err != CURLM_OK)
 	{
 		std::string error = fmt::sprintf(
-			"Asynchronous download failure: %s, %s", curl_multi_strerror(err), m_ErrorBuffer);
+			g_L10n.Translate("Asynchronous download failure: %s, %s"), curl_multi_strerror(err), m_ErrorBuffer);
 		TearDownRequest();
 		if (m_DownloadProgressData.status == DownloadProgressData::DOWNLOADING)
 			DeleteDownloadedFile();
@@ -347,7 +347,7 @@ bool ModIo::AdvanceRequest(const ScriptInterface& scriptInterface)
 				continue;
 
 			std::string error = fmt::sprintf(
-				"Download failure. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
+				g_L10n.Translate("Download failure. Server response: %s; %s"), curl_easy_strerror(err), m_ErrorBuffer);
 			TearDownRequest();
 			if (m_DownloadProgressData.status == DownloadProgressData::DOWNLOADING)
 				DeleteDownloadedFile();
@@ -441,7 +441,7 @@ bool ModIo::VerifyDownloadedFile(std::string& err)
 		u64 filesize = std::stoull(m_ModData[m_DownloadModID].properties.at("filesize"));
 		if (filesize != FileSize(m_DownloadFilePath))
 		{
-			err = "Invalid filesize.";
+			err = g_L10n.Translate("Invalid filesize.");
 			return false;
 		}
 	}
@@ -459,7 +459,7 @@ bool ModIo::VerifyDownloadedFile(std::string& err)
 		if (m_ModData[m_DownloadModID].properties.at("filehash_md5") != md5digest.str())
 		{
 			err = fmt::sprintf(
-				"Invalid file. Expected md5 %s, got %s.",
+				g_L10n.Translate("Invalid file. Expected md5 %s, got %s."),
 				m_ModData[m_DownloadModID].properties.at("filehash_md5").c_str(),
 				md5digest.str());
 			return false;
@@ -473,13 +473,13 @@ bool ModIo::VerifyDownloadedFile(std::string& err)
 	unsigned char hash_fin[crypto_generichash_BYTES_MAX] = {};
 	if (crypto_generichash_final(&m_CallbackData.hash_state, hash_fin, sizeof hash_fin) != 0)
 	{
-		err = "Failed to compute final hash.";
+		err = g_L10n.Translate("Failed to compute final hash.");
 		return false;
 	}
 
 	if (crypto_sign_verify_detached(m_ModData[m_DownloadModID].sig.sig, hash_fin, sizeof hash_fin, m_pk.pk) != 0)
 	{
-		err = "Failed to verify signature.";
+		err = g_L10n.Translate("Failed to verify signature.");
 		return false;
 	}
 

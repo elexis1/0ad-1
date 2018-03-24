@@ -130,7 +130,7 @@ struct DownloadProgressData
 		}
 	}
 
-	std::string error; // TODO: Translate it
+	std::string error;
 	double progress;
 	enum {
 		NONE, // Default state
