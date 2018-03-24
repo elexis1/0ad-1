@@ -89,7 +89,7 @@
 				</column>
 			</object>
 			<object name="globalModDescription" type="text" style="ModmodScrollbar" size="0 100%-35 100%-184-184-184-4 100%" />
-			<object type="button" style="ModernButtonRed" size="100%-184-184-184-4 100%-28 100%-184-184-4 100%">
+			<object type="button" style="ModernButtonRed" size="100%-184-184-184-4-4 100%-28 100%-184-184-4-4 100%">
 				<translatableAttribute id="caption">Check Online</translatableAttribute>
 				<action on="Press">modIo();</action>
 			</object>
