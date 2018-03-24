@@ -55,7 +55,97 @@ struct ModIoModData
 
 struct DownloadProgressData
 {
+	DownloadProgressData()
+		: status(DownloadProgressData::NONE), progress(0)
+	{
+	}
+
+	// Utility method for default failure situations.
+	void Fail(const std::string& _error)
+	{
+		switch (status)
+		{
+		case GAMEID:
+			status = FAILED_GAMEID;
+			break;
+		case LISTING:
+			status = FAILED_LISTING;
+			break;
+		case DOWNLOADING:
+			status = FAILED_DOWNLOADING;
+			break;
+		// In other cases, the failed status should be set manually.
+		default:
+			break;
+		}
+
+		error = _error;
+	}
+
+	void Succeed()
+	{
+		switch (status)
+		{
+		case GAMEID:
+			status = READY;
+			break;
+		case LISTING:
+			status = LISTED;
+			break;
+		case DOWNLOADING:
+			status = SUCCESS;
+			break;
+		default:
+			break;
+		}
+	}
+
+	std::string StringStatus() const
+	{
+		switch (status)
+		{
+		case NONE:
+			return "none";
+		case GAMEID:
+			return "gameid";
+		case READY:
+			return "ready";
+		case LISTING:
+			return "listing";
+		case LISTED:
+			return "listed";
+		case DOWNLOADING:
+			return "downloading";
+		case SUCCESS:
+			return "success";
+		case FAILED_GAMEID:
+			return "failed_gameid";
+		case FAILED_LISTING:
+			return "failed_listing";
+		case FAILED_DOWNLOADING:
+			return "failed_downloading";
+		case FAILED_FILECHECK:
+			return "failed_filecheck";
+		NODEFAULT;
+		}
+	}
+
+	std::string error; // TODO: Translate it
 	double progress;
+	enum {
+		NONE, // Default state
+		GAMEID, // The game ID is being downloaded
+		READY, // The game ID has been downloaded
+		LISTING, // The mod list is being downloaded
+		LISTED, // The mod list has been downloaded
+		DOWNLOADING, // A mod file is being downloaded
+		SUCCESS, // A mod file has been downloaded
+
+		FAILED_GAMEID, // Game ID couldn't be retrieved
+		FAILED_LISTING, // Mod list couldn't be retrieved
+		FAILED_DOWNLOADING, // File couldn't be retrieved
+		FAILED_FILECHECK // The file is corrupted
+	} status;
 };
 
 struct DownloadCallbackData
@@ -132,16 +222,21 @@ public:
 	ModIo();
 	~ModIo();
 
-	// Synchronous API calls:
-
-	const std::vector<ModIoModData>& GetMods(const ScriptInterface& scriptinterface);
-
-	// Asynchronous API calls:
-
+	// Async requests
+	void StartGetGameId();
+	void StartListMods();
 	void StartDownloadMod(size_t idx);
-	void CancelDownload();
-	// Returns true if the download is complete, false otherwise
-	bool AdvanceDownload();
+
+	// Advance the current async request and perform final steps if the download is complete.
+	// Returns true if the download is complete (successful or not), false otherwise
+	bool AdvanceRequest(const ScriptInterface& scriptInterface);
+	// Cancel the current async request and clean things up
+	void CancelRequest();
+
+	const std::vector<ModIoModData>& GetMods() const
+	{
+		return m_ModData;
+	}
 	const DownloadProgressData& GetDownloadProgress() const
 	{
 		return m_DownloadProgressData;
@@ -152,19 +247,19 @@ private:
 	static size_t DownloadCallback(void* buffer, size_t size, size_t nmemb, void* userp);
 	static int DownloadProgressCallback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
 
-	CURLcode PerformRequest(const std::string& url);
+	CURLMcode SetupRequest(const std::string& url, bool fileDownload);
+	void TearDownRequest();
 
-	void TearDownAsyncDownload();
+	bool ParseGameId(const ScriptInterface& scriptInterface, std::string& err);
+	bool ParseMods(const ScriptInterface& scriptInterface, std::string& err);
+
 	void DeleteDownloadedFile();
+	bool VerifyDownloadedFile(std::string& err);
 
-	static bool ParseGameIdResponse(const ScriptInterface& scriptInterface, const std::string& responseData, int& id);
-	static bool ParseModsResponse(const ScriptInterface& scriptInterface, const std::string& responseData, std::vector<ModIoModData>& modData, const PKStruct& pk);
-	static bool ParseSignature(const std::vector<std::string>& minisigs, SigStruct& sig, const PKStruct& pk);
-
-	bool ParseGameId(const ScriptInterface& scriptInterface);
-	bool ParseMods(const ScriptInterface& scriptInterface);
-
-	bool VerifyDownload() const;
+	// Utility methods for parsing mod.io responses and metadata
+	static bool ParseGameIdResponse(const ScriptInterface& scriptInterface, const std::string& responseData, int& id, std::string& err);
+	static bool ParseModsResponse(const ScriptInterface& scriptInterface, const std::string& responseData, std::vector<ModIoModData>& modData, const PKStruct& pk, std::string& err);
+	static bool ParseSignature(const std::vector<std::string>& minisigs, SigStruct& sig, const PKStruct& pk, std::string& err);
 
 	// Url parts
 	std::string m_BaseUrl;

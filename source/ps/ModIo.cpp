@@ -29,6 +29,7 @@
 #include "ps/GameSetup/Paths.h"
 #include "ps/Mod.h"
 
+#include "i18n/L10n.h"
 #include "lib/file/file_system.h"
 #include "lib/sysdep/filesystem.h"
 #include "lib/sysdep/sysdep.h"
@@ -80,8 +81,12 @@ ModIo::ModIo()
 	// Disable signal handlers (required for multithreaded applications)
 	curl_easy_setopt(m_Curl, CURLOPT_NOSIGNAL, 1L);
 
-	// To minimise security risks, don't support redirects
+	// To minimise security risks, don't support redirects (except for file
+	// downloads, for which this setting will be enabled).
 	curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 0L);
+
+	// For file downloads, one redirect seems plenty for a CDN serving the files.
+	curl_easy_setopt(m_Curl, CURLOPT_MAXREDIRS, 1L);
 
 	m_Headers = NULL;
 	std::string ua = "User-Agent: pyrogenesis ";
@@ -151,62 +156,348 @@ int ModIo::DownloadProgressCallback(void* clientp, curl_off_t dltotal, curl_off_
 	return 0;
 }
 
-CURLcode ModIo::PerformRequest(const std::string& url)
+CURLMcode ModIo::SetupRequest(const std::string& url, bool fileDownload)
 {
+	if (fileDownload)
+	{
+		// The download link will most likely redirect elsewhere, so allow that.
+		// We verify the validity of the file later.
+		curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 1L);
+		// Enable the progress meter
+		curl_easy_setopt(m_Curl, CURLOPT_NOPROGRESS, 0L);
+
+		// Set IO callbacks
+		curl_easy_setopt(m_Curl, CURLOPT_WRITEFUNCTION, DownloadCallback);
+		curl_easy_setopt(m_Curl, CURLOPT_WRITEDATA, (void*)&m_CallbackData);
+		curl_easy_setopt(m_Curl, CURLOPT_XFERINFOFUNCTION, DownloadProgressCallback);
+		curl_easy_setopt(m_Curl, CURLOPT_XFERINFODATA, (void*)&m_DownloadProgressData);
+
+		// Initialize the progress counter
+		m_DownloadProgressData.progress = 0;
+	}
+	else
+	{
+		// Set IO callbacks
+		curl_easy_setopt(m_Curl, CURLOPT_WRITEFUNCTION, ReceiveCallback);
+		curl_easy_setopt(m_Curl, CURLOPT_WRITEDATA, this);
+	}
+
 	m_ErrorBuffer[0] = '\0';
 	curl_easy_setopt(m_Curl, CURLOPT_URL, url.c_str());
-	return curl_easy_perform(m_Curl);
+	return curl_multi_add_handle(m_CurlMulti, m_Curl);
 }
 
-const std::vector<ModIoModData>& ModIo::GetMods(const ScriptInterface& scriptInterface)
+void ModIo::TearDownRequest()
+{
+	ENSURE(curl_multi_remove_handle(m_CurlMulti, m_Curl) == CURLM_OK);
+
+	if (m_CallbackData.fp)
+		fclose(m_CallbackData.fp);
+	m_CallbackData.fp = nullptr;
+
+	// Go back to the default options for queries
+
+	// To minimise security risks, don't support redirects
+	curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 0L);
+	// Disable the progress meter
+	curl_easy_setopt(m_Curl, CURLOPT_NOPROGRESS, 1L);
+}
+
+void ModIo::StartGetGameId()
+{
+	m_GameId.clear();
+
+	CURLMcode err = SetupRequest(m_BaseUrl+m_GamesRequest+"?"+m_ApiKey+"&"+m_IdQuery, false);
+	if (err != CURLM_OK)
+	{
+		LOGERROR("Failure while starting querying for game id. Error: %s; %s",
+			curl_multi_strerror(err), m_ErrorBuffer);
+		TearDownRequest();
+		m_DownloadProgressData.status = DownloadProgressData::FAILED_GAMEID;
+	}
+	else
+		m_DownloadProgressData.status = DownloadProgressData::GAMEID;
+}
+
+void ModIo::StartListMods()
 {
 	m_ModData.clear();
 
-	// Set IO callbacks
-	curl_easy_setopt(m_Curl, CURLOPT_WRITEFUNCTION, ReceiveCallback);
-	curl_easy_setopt(m_Curl, CURLOPT_WRITEDATA, this);
-
-	// Get the game id if we didn't fetch it already
 	if (m_GameId.empty())
 	{
-		CURLcode err = PerformRequest(m_BaseUrl+m_GamesRequest+"?"+m_ApiKey+"&"+m_IdQuery);
-
-		if (err != CURLE_OK)
-		{
-			LOGERROR("Failure while querying for game id. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
-			return m_ModData;
-		}
-
-		if (!ParseGameId(scriptInterface))
-			return m_ModData;
+		LOGERROR("Game ID not fetched from mod.io. Call StartGetGameId first and wait for it to finish.");
+		return;
 	}
 
-	// Get the actual mods
-	CURLcode err = PerformRequest(m_BaseUrl+m_GamesRequest+m_GameId+"/mods?"+m_ApiKey);
-	if (err != CURLE_OK)
+	CURLMcode err = SetupRequest(m_BaseUrl+m_GamesRequest+m_GameId+"/mods?"+m_ApiKey, false);
+	if (err != CURLM_OK)
 	{
-		LOGERROR("Failure while querying for mods. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
-		return m_ModData;
+		LOGERROR("Failure while starting querying for mods. Error: %s; %s",
+			curl_multi_strerror(err), m_ErrorBuffer);
+		TearDownRequest();
+		m_DownloadProgressData.status = DownloadProgressData::FAILED_LISTING;
 	}
-
-	if (!ParseMods(scriptInterface))
-		m_ModData.clear(); // Failed during parsing, make sure we don't provide partial data
-
-	return m_ModData;
+	else
+		m_DownloadProgressData.status = DownloadProgressData::LISTING;
 }
 
-#define FAIL(...) STMT(LOGERROR(__VA_ARGS__); CLEANUP(); return false;)
+void ModIo::StartDownloadMod(size_t idx)
+{
+	if (idx >= m_ModData.size())
+		return;
+
+	const Paths paths(g_args);
+	const OsPath modUserPath = paths.UserData()/"mods";
+	const OsPath modPath = modUserPath/m_ModData[idx].properties["name_id"];
+	if (!DirectoryExists(modPath) && INFO::OK != CreateDirectories(modPath, 0700, false))
+	{
+		LOGERROR("Could not create mod directory: %s", modPath.string8());
+		return;
+	}
+
+	// Name the file after the name_id, since using the filename would mean that
+	// we could end up with multiple zip files in the folder that might not work
+	// as expected for a user (since a later version might remove some files
+	// that aren't compatible anymore with the engine version).
+	// So we ignore the filename provided by the API and assume that we do not
+	// care about handling update.zip files. If that is the case we would need
+	// a way to find out what files are required by the current one and which
+	// should be removed for everything to work. This seems to be too complicated
+	// so we just do not support that usage.
+	// NOTE: We do save the file under a slightly different name from the final
+	//       one, to ensure that in case a download aborts and the file stays
+	//       around, the game will not attempt to open the file which has not
+	//       been verified.
+	m_DownloadFilePath = modPath/(m_ModData[idx].properties["name_id"]+".zip.temp");
+	m_CallbackData = DownloadCallbackData(sys_OpenFile(m_DownloadFilePath, "wb"));
+	if (!m_CallbackData.fp)
+	{
+		LOGERROR("Could not open temporary file for mod download: %s", m_DownloadFilePath.string8());
+		return;
+	}
+
+	CURLMcode err = SetupRequest(m_ModData[idx].properties["binary_url"], true);
+	if (err != CURLM_OK)
+	{
+		LOGERROR("Failed to start the download. Error: %s; %s",
+			curl_multi_strerror(err), m_ErrorBuffer);
+		TearDownRequest();
+		m_DownloadProgressData.status = DownloadProgressData::FAILED_DOWNLOADING;
+	}
+	else
+	{
+		m_DownloadModID = idx;
+		m_DownloadProgressData.status = DownloadProgressData::DOWNLOADING;
+	}
+}
+
+void ModIo::CancelRequest()
+{
+	TearDownRequest();
+
+	switch (m_DownloadProgressData.status)
+	{
+	case DownloadProgressData::GAMEID:
+		m_DownloadProgressData.status = DownloadProgressData::NONE;
+		break;
+	case DownloadProgressData::LISTING:
+		m_DownloadProgressData.status = DownloadProgressData::READY;
+		break;
+	case DownloadProgressData::DOWNLOADING:
+		m_DownloadProgressData.status = DownloadProgressData::LISTED;
+		DeleteDownloadedFile();
+		break;
+	default:
+		break;
+	}
+}
+
+bool ModIo::AdvanceRequest(const ScriptInterface& scriptInterface)
+{
+	// If the request was cancelled, stop trying to advance it
+	if (m_DownloadProgressData.status != DownloadProgressData::GAMEID &&
+		m_DownloadProgressData.status != DownloadProgressData::LISTING &&
+        m_DownloadProgressData.status != DownloadProgressData::DOWNLOADING)
+		return true;
+
+	int stillRunning;
+	CURLMcode err = curl_multi_perform(m_CurlMulti, &stillRunning);
+	if (err != CURLM_OK)
+	{
+		std::string error = fmt::sprintf(
+			"Asynchronous download failure: %s, %s", curl_multi_strerror(err), m_ErrorBuffer);
+		TearDownRequest();
+		if (m_DownloadProgressData.status == DownloadProgressData::DOWNLOADING)
+			DeleteDownloadedFile();
+		m_DownloadProgressData.Fail(error);
+		return true;
+	}
+	else
+	{
+		CURLMsg* message;
+		do
+		{
+			int in_queue;
+			message = curl_multi_info_read(m_CurlMulti, &in_queue);
+			if (!message || message->msg == CURLMSG_DONE || message->easy_handle == m_Curl)
+				continue;
+
+			CURLcode err = message->data.result;
+			if (err == CURLE_OK)
+				continue;
+
+			std::string error = fmt::sprintf(
+				"Download failure. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
+			TearDownRequest();
+			if (m_DownloadProgressData.status == DownloadProgressData::DOWNLOADING)
+				DeleteDownloadedFile();
+			m_DownloadProgressData.Fail(error);
+			return true;
+		} while (message);
+	}
+
+	if (stillRunning)
+		return false;
+
+	// Download finished.
+	TearDownRequest();
+
+	// Perform parsing and/or checks
+	std::string error;
+	switch (m_DownloadProgressData.status)
+	{
+	case DownloadProgressData::GAMEID:
+		if (!ParseGameId(scriptInterface, error))
+			m_DownloadProgressData.Fail(error);
+		else
+			m_DownloadProgressData.Succeed();
+		break;
+	case DownloadProgressData::LISTING:
+		if (!ParseMods(scriptInterface, error))
+		{
+			m_ModData.clear(); // Failed during parsing, make sure we don't provide partial data
+			m_DownloadProgressData.Fail(error);
+		}
+		else
+			m_DownloadProgressData.Succeed();
+		break;
+	case DownloadProgressData::DOWNLOADING:
+		if (VerifyDownloadedFile(error))
+		{
+			m_DownloadProgressData.Succeed();
+
+			const OsPath finalFilePath = m_DownloadFilePath.Parent() / (m_ModData[m_DownloadModID].properties["name_id"] + ".zip");
+			if (wrename(m_DownloadFilePath, finalFilePath) != 0)
+				LOGERROR("Failed to rename file.");
+
+			// TODO: Trying to download a game twice will fail here (obviously)
+		}
+		else
+		{
+			m_DownloadProgressData.status = DownloadProgressData::FAILED_FILECHECK;
+			m_DownloadProgressData.error = error;
+			DeleteDownloadedFile();
+		}
+		break;
+	}
+
+	// TODO: hook into .pyromod code to do the win32 specific thing because win32...
+
+	return true;
+}
+
+bool ModIo::ParseGameId(const ScriptInterface& scriptInterface, std::string& err)
+{
+	int id = -1;
+	if (!ParseGameIdResponse(scriptInterface, m_ResponseData, id, err))
+	{
+		m_ResponseData.clear();
+		return false;
+	}
+
+	m_ResponseData.clear();
+
+	m_GameId = "/" + std::to_string(id);
+	return true;
+}
+
+bool ModIo::ParseMods(const ScriptInterface& scriptInterface, std::string& err)
+{
+	bool ret = ParseModsResponse(scriptInterface, m_ResponseData, m_ModData, m_pk, err);
+	m_ResponseData.clear();
+	return ret;
+}
+
+void ModIo::DeleteDownloadedFile()
+{
+	if (wunlink(m_DownloadFilePath) != 0)
+		LOGERROR("Failed to delete temporary file.");
+	m_DownloadFilePath = OsPath();
+}
+
+bool ModIo::VerifyDownloadedFile(std::string& err)
+{
+	{
+		u64 filesize = std::stoull(m_ModData[m_DownloadModID].properties.at("filesize"));
+		if (filesize != FileSize(m_DownloadFilePath))
+		{
+			err = "Invalid filesize.";
+			return false;
+		}
+	}
+
+	// MD5 (because upstream provides it)
+	// Just used to make sure there was no obvious corruption during transfer.
+	{
+		u8 digest[MD5::DIGESTSIZE];
+		m_CallbackData.md5.Final(digest);
+		std::stringstream md5digest;
+		md5digest << std::hex << std::setfill('0');
+		for (size_t i = 0; i < MD5::DIGESTSIZE; ++i)
+			md5digest << std::setw(2) << (int)digest[i];
+
+		if (m_ModData[m_DownloadModID].properties.at("filehash_md5") != md5digest.str())
+		{
+			err = fmt::sprintf(
+				"Invalid file. Expected md5 %s, got %s.",
+				m_ModData[m_DownloadModID].properties.at("filehash_md5").c_str(),
+				md5digest.str());
+			return false;
+		}
+	}
+
+	// Verify file signature.
+	// Used to make sure that the downloaded file was actually checked and signed
+	// by Wildfire Games. And has not been tampered with by the API provider, or the CDN.
+
+	unsigned char hash_fin[crypto_generichash_BYTES_MAX] = {};
+	if (crypto_generichash_final(&m_CallbackData.hash_state, hash_fin, sizeof hash_fin) != 0)
+	{
+		err = "Failed to compute final hash.";
+		return false;
+	}
+
+	if (crypto_sign_verify_detached(m_ModData[m_DownloadModID].sig.sig, hash_fin, sizeof hash_fin, m_pk.pk) != 0)
+	{
+		err = "Failed to verify signature.";
+		return false;
+	}
+
+	return true;
+}
+
+#define FAIL(...) STMT(err = fmt::sprintf(__VA_ARGS__); CLEANUP(); return false;)
 
 /**
- * Parses the current content of m_ResponseData to extract m_GameId.
- *
- * The JSON data is expected to look like
- * { "data": [{"id": 42, ...}, ...], ... }
- * where we are only interested in the value of the id property.
- *
- * @returns true iff it successfully parsed the id.
- */
-bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const std::string& responseData, int& id)
+* Parses the current content of m_ResponseData to extract m_GameId.
+*
+* The JSON data is expected to look like
+* { "data": [{"id": 42, ...}, ...], ... }
+* where we are only interested in the value of the id property.
+*
+* @returns true iff it successfully parsed the id.
+*/
+bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const std::string& responseData, int& id, std::string& err)
 {
 #define CLEANUP() id = -1;
 	JSContext* cx = scriptInterface.GetContext();
@@ -238,14 +529,14 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 		FAIL("couldn't get first element.");
 
 	id = -1;
-// TODO: This check currently does not really do anything if "id" is present...
-// meaning we can set id to be null and we get id=0.
-// There is a script value conversion check failed warning, but that does not change anything.
-// TODO: We should probably make those fail (hard), if that isn't done by default (which it probably should)
-// the we should add a templated variant that does.
-// TODO check if id < 0 (<=?) and if yes also fail here
-// NOTE: FromJSProperty does set things to probably 0 even if there is some stupid type conversion
-// So we check for <= 0, so we actually get proper results here...
+	// TODO: This check currently does not really do anything if "id" is present...
+	// meaning we can set id to be null and we get id=0.
+	// There is a script value conversion check failed warning, but that does not change anything.
+	// TODO: We should probably make those fail (hard), if that isn't done by default (which it probably should)
+	// the we should add a templated variant that does.
+	// TODO check if id < 0 (<=?) and if yes also fail here
+	// NOTE: FromJSProperty does set things to probably 0 even if there is some stupid type conversion
+	// So we check for <= 0, so we actually get proper results here...
 	// Valid ids are always > 0.
 	if (!ScriptInterface::FromJSProperty(cx, first, "id", id) || id <= 0)
 		FAIL("couldn't get id");
@@ -254,36 +545,21 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 #undef CLEANUP
 }
 
-bool ModIo::ParseGameId(const ScriptInterface& scriptInterface)
-{
-	int id = -1;
-	if (!ParseGameIdResponse(scriptInterface, m_ResponseData, id))
-	{
-		m_ResponseData.clear();
-		return false;
-	}
-
-	m_ResponseData.clear();
-
-	m_GameId = "/" + std::to_string(id);
-	return true;
-}
-
 /**
- * Parses the current content of m_ResponseData into m_ModData.
- *
- * The JSON data is expected to look like
- * { data: [modobj1, modobj2, ...], ... (including result_count) }
- * where modobjN has the following structure
- * { homepage: "url", name: "displayname", nameid: "short-non-whitespace-name",
- *   summary: "short desc.", modfile: { version: "1.2.4", filename: "asdf.zip",
- *   filehash: { md5: "deadbeef" }, filesize: 1234, download: { binary_url: "someurl", ... } }, ... }.
- * Only the listed properties are of interest to consumers, and we flatten
- * the modfile structure as that simplifies handling and there are no conflicts.
- */
-bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std::string& responseData, std::vector<ModIoModData>& modData, const PKStruct& pk)
+* Parses the current content of m_ResponseData into m_ModData.
+*
+* The JSON data is expected to look like
+* { data: [modobj1, modobj2, ...], ... (including result_count) }
+* where modobjN has the following structure
+* { homepage: "url", name: "displayname", nameid: "short-non-whitespace-name",
+*   summary: "short desc.", modfile: { version: "1.2.4", filename: "asdf.zip",
+*   filehash: { md5: "deadbeef" }, filesize: 1234, download: { binary_url: "someurl", ... } }, ... }.
+* Only the listed properties are of interest to consumers, and we flatten
+* the modfile structure as that simplifies handling and there are no conflicts.
+*/
+bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std::string& responseData, std::vector<ModIoModData>& modData, const PKStruct& pk, std::string& err)
 {
-// Make sure we don't end up passing partial results back
+	// Make sure we don't end up passing partial results back
 #define CLEANUP() modData.clear();
 
 	JSContext* cx = scriptInterface.GetContext();
@@ -376,7 +652,7 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 			FAIL("failed to get minisigs from metadata");
 
 		// Remove this entry if we did not find a valid matching signature
-		if (!ParseSignature(minisigs, modData.back().sig, pk))
+		if (!ParseSignature(minisigs, modData.back().sig, pk, err))
 			modData.pop_back();
 
 #undef COPY_STRINGS
@@ -387,10 +663,10 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 }
 
 /**
- * Parse signatures to find one that matches the public key, and has a valid global signature.
- * Returns true and sets @param sig to the valid matching signature.
- */
-bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& sig, const PKStruct& pk)
+* Parse signatures to find one that matches the public key, and has a valid global signature.
+* Returns true and sets @param sig to the valid matching signature.
+*/
+bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& sig, const PKStruct& pk, std::string& err)
 {
 #define CLEANUP() sig = {};
 	for (const std::string& file_sig : minisigs)
@@ -420,9 +696,9 @@ bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& 
 		if (memcmp(&pk.keynum, &sig.keynum, sizeof sig.keynum) != 0)
 			continue; // mismatched key, try another one
 
-		// Signature matches our public key
+					  // Signature matches our public key
 
-		// Now verify the global signature (sig || trusted_comment)
+					  // Now verify the global signature (sig || trusted_comment)
 
 		unsigned char global_sig[crypto_sign_BYTES];
 		if (sodium_base642bin(global_sig, sizeof global_sig, sig_lines[3].c_str(), sig_lines[3].size(), NULL, &bin_len, NULL, sodium_base64_VARIANT_ORIGINAL) != 0 || bin_len != sizeof global_sig)
@@ -459,210 +735,3 @@ bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& 
 }
 
 #undef FAIL
-
-bool ModIo::ParseMods(const ScriptInterface& scriptInterface)
-{
-	bool ret = ParseModsResponse(scriptInterface, m_ResponseData, m_ModData, m_pk);
-	m_ResponseData.clear();
-	return ret;
-}
-
-void ModIo::StartDownloadMod(size_t idx)
-{
-	if (idx >= m_ModData.size())
-		return;
-
-	const Paths paths(g_args);
-	const OsPath modUserPath = paths.UserData()/"mods";
-	const OsPath modPath = modUserPath/m_ModData[idx].properties["name_id"];
-	if (!DirectoryExists(modPath) && INFO::OK != CreateDirectories(modPath, 0700, false))
-	{
-		LOGERROR("Could not create mod directory: %s", modPath.string8());
-		return;
-	}
-
-	// Name the file after the name_id, since using the filename would mean that
-	// we could end up with multiple zip files in the folder that might not work
-	// as expected for a user (since a later version might remove some files
-	// that aren't compatible anymore with the engine version).
-	// So we ignore the filename provided by the API and assume that we do not
-	// care about handling update.zip files. If that is the case we would need
-	// a way to find out what files are required by the current one and which
-	// should be removed for everything to work. This seems to be too complicated
-	// so we just do not support that usage.
-	// NOTE: We do save the file under a slightly different name from the final
-	//       one, to ensure that in case a download aborts and the file stays
-	//       around, the game will not attempt to open the file which has not
-	//       been verified.
-	m_DownloadFilePath = modPath/(m_ModData[idx].properties["name_id"]+".zip.temp");
-	m_CallbackData = DownloadCallbackData(sys_OpenFile(m_DownloadFilePath, "wb"));
-	if (!m_CallbackData.fp)
-	{
-		LOGERROR("Could not open temporary file for mod download: %s", m_DownloadFilePath.string8());
-		return;
-	}
-	m_DownloadProgressData.progress = 0;
-
-	// Set IO callbacks
-	curl_easy_setopt(m_Curl, CURLOPT_WRITEFUNCTION, DownloadCallback);
-	curl_easy_setopt(m_Curl, CURLOPT_WRITEDATA, (void*)&m_CallbackData);
-	curl_easy_setopt(m_Curl, CURLOPT_XFERINFOFUNCTION, DownloadProgressCallback);
-	curl_easy_setopt(m_Curl, CURLOPT_XFERINFODATA, (void*)&m_DownloadProgressData);
-
-	LOGWARNING("Trying to download %s", m_ModData[idx].properties["binary_url"].c_str());
-
-	// The download link will most likely redirect elsewhere, so allow that.
-	// We verify the validity of the file below.
-	curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 1L);
-	// One redirect seems plenty for a CDN servint the files.
-	curl_easy_setopt(m_Curl, CURLOPT_MAXREDIRS, 1L);
-	// Enable the progress meter
-	curl_easy_setopt(m_Curl, CURLOPT_NOPROGRESS, 0L);
-
-	m_ErrorBuffer[0] = '\0';
-	curl_easy_setopt(m_Curl, CURLOPT_URL, m_ModData[idx].properties["binary_url"].c_str());
-	CURLMcode err = curl_multi_add_handle(m_CurlMulti, m_Curl);
-
-	if (err == CURLM_OK)
-		m_DownloadModID = idx;
-	else
-	{
-		LOGERROR("Failed to start the download. Handle error: %s; %s", curl_multi_strerror(err), m_ErrorBuffer);
-		TearDownAsyncDownload();
-	}
-}
-
-void ModIo::CancelDownload()
-{
-	TearDownAsyncDownload();
-	DeleteDownloadedFile();
-}
-
-void ModIo::TearDownAsyncDownload()
-{
-	curl_multi_remove_handle(m_CurlMulti, m_Curl);
-
-	if (m_CallbackData.fp)
-		fclose(m_CallbackData.fp);
-	m_CallbackData.fp = nullptr;
-
-	// To minimise security risks, don't support redirects for queries
-	curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 0L);
-	// Disable the progress meter for queries
-	curl_easy_setopt(m_Curl, CURLOPT_NOPROGRESS, 1L);
-}
-
-void ModIo::DeleteDownloadedFile()
-{
-	if (wunlink(m_DownloadFilePath) != 0)
-		LOGERROR("Failed to delete temporary file.");
-	m_DownloadFilePath = OsPath();
-}
-
-bool ModIo::AdvanceDownload()
-{
-	int stillRunning;
-	CURLMcode err = curl_multi_perform(m_CurlMulti, &stillRunning);
-	if (err != CURLM_OK)
-	{
-		LOGERROR("Asynchronous download failure: %s; %s", curl_multi_strerror(err), m_ErrorBuffer);
-		CancelDownload();
-		return true;
-	}
-	else
-	{
-		CURLMsg* message;
-		do
-		{
-			int in_queue;
-			message = curl_multi_info_read(m_CurlMulti, &in_queue);
-			if (!message || message->msg == CURLMSG_DONE || message->easy_handle == m_Curl)
-				continue;
-
-			CURLcode err = message->data.result;
-			if (err == CURLE_OK)
-				continue;
-
-			LOGERROR("Failure while downloading mod file. Server response: %s; %s", curl_easy_strerror(err), m_ErrorBuffer);
-			CancelDownload();
-			return true;
-		} while (message);
-	}
-
-	if (stillRunning)
-		return false;
-
-	// Else, the download is finished.
-	TearDownAsyncDownload();
-
-	if (VerifyDownload())
-	{
-		const OsPath finalFilePath = m_DownloadFilePath.Parent() / (m_ModData[m_DownloadModID].properties["name_id"] + ".zip");
-		LOGWARNING("%s to %s", m_DownloadFilePath.string8(), finalFilePath.string8());
-		if (wrename(m_DownloadFilePath, finalFilePath) != 0)
-			LOGERROR("failed to rename file.");
-
-		// TODO: Trying to download a game twice will fail here (obviously)
-	}
-	else
-	{
-		LOGERROR("File %s failed to verify.", m_DownloadFilePath.string8());
-		DeleteDownloadedFile();
-	}
-
-	LOGWARNING("download finished (successfully or not).");
-
-	// TODO: hook into .pyromod code to do the win32 specific thing because win32...
-
-	return true;
-}
-
-bool ModIo::VerifyDownload() const
-{
-	DownloadCallbackData callbackData = m_CallbackData;
-
-	{
-		u64 filesize = std::stoull(m_ModData[m_DownloadModID].properties.at("filesize"));
-		if (filesize != FileSize(m_DownloadFilePath))
-		{
-			LOGERROR("Invalid filesize.");
-			return false;
-		}
-	}
-
-	// MD5 (because upstream provides it)
-	// Just used to make sure there was no obvious corruption during transfer.
-	{
-		u8 digest[MD5::DIGESTSIZE];
-		callbackData.md5.Final(digest);
-		std::stringstream md5digest;
-		md5digest << std::hex << std::setfill('0');
-		for (size_t i = 0; i < MD5::DIGESTSIZE; ++i)
-			md5digest << std::setw(2) << (int)digest[i];
-
-		if (m_ModData[m_DownloadModID].properties.at("filehash_md5") != md5digest.str())
-		{
-			LOGERROR("Invalid file. Expected md5 %s, got %s.", m_ModData[m_DownloadModID].properties.at("filehash_md5").c_str(), md5digest.str());
-			return false;
-		}
-	}
-
-	// Verify file signature.
-	// Used to make sure that the downloaded file was actually checked and signed
-	// by Wildfire Games. And has not been tampered with by the API provider, or the CDN.
-
-	unsigned char hash_fin[crypto_generichash_BYTES_MAX] = {};
-	if (crypto_generichash_final(&callbackData.hash_state, hash_fin, sizeof hash_fin) != 0)
-	{
-		LOGERROR("failed to compute final hash");
-		return false;
-	}
-
-	if (crypto_sign_verify_detached(m_ModData[m_DownloadModID].sig.sig, hash_fin, sizeof hash_fin, m_pk.pk) != 0)
-	{
-		LOGERROR("failed to verify signature");
-		return false;
-	}
-
-	return true;
-}

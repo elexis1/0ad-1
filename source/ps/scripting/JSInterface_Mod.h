@@ -31,10 +31,12 @@ namespace JSI_Mod
 	void RestartEngine(ScriptInterface::CxPrivate* pCxPrivate);
 	void SetMods(ScriptInterface::CxPrivate* pCxPrivate, const std::vector<CStr>& mods);
 
-	JS::Value ModIoGetMods(ScriptInterface::CxPrivate* pCxPrivate);
+	void ModIoStartGetGameId(ScriptInterface::CxPrivate* pCxPrivate);
+	void ModIoStartListMods(ScriptInterface::CxPrivate* pCxPrivate);
 	void ModIoStartDownloadMod(ScriptInterface::CxPrivate* pCxPrivate, uint32_t idx);
-	void ModIoCancelDownload(ScriptInterface::CxPrivate* pCxPrivate);
-	bool ModIoAdvanceDownload(ScriptInterface::CxPrivate* pCxPrivate);
+	bool ModIoAdvanceRequest(ScriptInterface::CxPrivate* pCxPrivate);
+	void ModIoCancelRequest(ScriptInterface::CxPrivate* pCxPrivate);
+	JS::Value ModIoGetMods(ScriptInterface::CxPrivate* pCxPrivate);
 	JS::Value ModIoGetDownloadProgress(ScriptInterface::CxPrivate* pCxPrivate);
 }
 
