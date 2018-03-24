@@ -1,16 +1,13 @@
 var g_ModsAvailableOnline = [];
-var g_Downloading = false;
 
 function init()
 {
-	g_ModsAvailableOnline = Engine.ModIoGetMods();
-
-	generateModsList(g_ModsAvailableOnline);
+	Engine.ModIoStartGetGameId();
 }
 
 function filesizeToString(filesize)
 {
-	let suffixes = ["B", "kiB", "MiB", "GiB"]; // bigger values are currently unlikely to occur here...
+	let suffixes = ["B", "KiB", "MiB", "GiB"]; // bigger values are currently unlikely to occur here...
 	let i = 0;
 	while (i < suffixes.length-1)
 	{
@@ -65,22 +62,23 @@ function downloadMod()
 	}
 
 	Engine.ModIoStartDownloadMod(+listObject.list[listObject.selected]);
-	g_Downloading = true;
 }
 
 function onTick()
 {
-	if (!g_Downloading)
-		return;
+	let progressData = Engine.ModIoGetDownloadProgress();
+	warn(uneval(progressData));
 
-	if (Engine.ModIoAdvanceDownload())
+	if (progressData.status == "ready")
+		Engine.ModIoStartListMods();
+	else if (progressData.status == "listed")
 	{
-		// Download finished
-		g_Downloading = false;
-		return;
+		g_ModsAvailableOnline = Engine.ModIoGetMods();
+		generateModsList(g_ModsAvailableOnline);
 	}
 
-	warn(Engine.ModIoGetDownloadProgress());
+	if (!Engine.ModIoAdvanceRequest())
+		warn("still downloading stuff");
 }
 
 function closePage()
