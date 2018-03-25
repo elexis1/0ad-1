@@ -7,9 +7,9 @@ function init()
 
 function filesizeToString(filesize)
 {
-	let suffixes = ["B", "KiB", "MiB", "GiB"]; // bigger values are currently unlikely to occur here...
+	let suffixes = ["B", "KiB", "MiB", "GiB"]; // Bigger values are currently unlikely to occur here...
 	let i = 0;
-	while (i < suffixes.length-1)
+	while (i < suffixes.length - 1)
 	{
 		if (filesize < 1024)
 			break;

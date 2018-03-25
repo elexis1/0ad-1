@@ -5,5 +5,6 @@
 	<include>common/modern/sprites.xml</include>
 
 	<include>modmod/styles.xml</include>
-	<include>modmod/modio.xml</include>
+
+	<include>modio/modio.xml</include>
 </page>
