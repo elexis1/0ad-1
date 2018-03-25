@@ -3588,25 +3588,27 @@ UnitAI.prototype.FsmStateNameChanged = function(state)
  * Call when the current order has been completed (or failed).
  * Removes the current order from the queue, and processes the
  * next one (if any). Returns false and defaults to IDLE
- * if there are no remaining orders.
+ * if there are no remaining orders or if the unit is not
+ * inWorld and not garrisoned (thus usually waiting to be destroyed).
  */
 UnitAI.prototype.FinishOrder = function()
 {
 	if (!this.orderQueue.length)
 	{
-		var stack = new Error().stack.trimRight().replace(/^/mg, '  '); // indent each line
-		var cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
-		var template = cmpTemplateManager.GetCurrentTemplateName(this.entity);
+		let stack = new Error().stack.trimRight().replace(/^/mg, '  '); // indent each line
+		let cmpTemplateManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_TemplateManager);
+		let template = cmpTemplateManager.GetCurrentTemplateName(this.entity);
 		error("FinishOrder called for entity " + this.entity + " (" + template + ") when order queue is empty\n" + stack);
 	}
 
 	this.orderQueue.shift();
 	this.order = this.orderQueue[0];
 
-	if (this.orderQueue.length)
+	let cmpPosition = Engine.QueryInterface(this.entity, IID_Position);
+	if (this.orderQueue.length && (this.IsGarrisoned() || cmpPosition && cmpPosition.IsInWorld()))
 	{
 		let ret = this.UnitFsm.ProcessMessage(this,
-			{"type": "Order."+this.order.type, "data": this.order.data}
+			{ "type": "Order."+this.order.type, "data": this.order.data }
 		);
 
 		Engine.PostMessage(this.entity, MT_UnitAIOrderDataChanged, { "to": this.GetOrderData() });
@@ -3619,29 +3621,26 @@ UnitAI.prototype.FinishOrder = function()
 		// Otherwise we've successfully processed a new order
 		return true;
 	}
-	else
+
+	this.SetNextState("IDLE");
+
+	Engine.PostMessage(this.entity, MT_UnitAIOrderDataChanged, { "to": this.GetOrderData() });
+
+	// Check if there are queued formation orders
+	if (this.IsFormationMember())
 	{
-		this.SetNextState("IDLE");
-
-		Engine.PostMessage(this.entity, MT_UnitAIOrderDataChanged, { "to": this.GetOrderData() });
-
-		// Check if there are queued formation orders
-		if (this.IsFormationMember())
+		let cmpUnitAI = Engine.QueryInterface(this.formationController, IID_UnitAI);
+		if (cmpUnitAI)
 		{
-			let cmpUnitAI = Engine.QueryInterface(this.formationController, IID_UnitAI);
-			if (cmpUnitAI)
-			{
-				// Inform the formation controller that we finished this task
-				this.finishedOrder = true;
-				// We don't want to carry out the default order
-				// if there are still queued formation orders left
-				if (cmpUnitAI.GetOrders().length > 1)
-					return true;
-			}
+			// Inform the formation controller that we finished this task
+			this.finishedOrder = true;
+			// We don't want to carry out the default order
+			// if there are still queued formation orders left
+			if (cmpUnitAI.GetOrders().length > 1)
+				return true;
 		}
-
-		return false;
 	}
+	return false;
 };
 
 /**
@@ -5570,8 +5569,11 @@ UnitAI.prototype.GetQueryRange = function(iid)
 		if (!cmpRanged)
 			return ret;
 		var range = iid !== IID_Attack ? cmpRanged.GetRange() : cmpRanged.GetFullAttackRange();
+		var cmpVision = Engine.QueryInterface(this.entity, IID_Vision);
+		if (!cmpVision)
+			return ret;
 		ret.min = range.min;
-		ret.max = range.max;
+		ret.max = Math.min(range.max, cmpVision.GetRange());
 	}
 	else if (this.GetStance().respondChase)
 	{
@@ -5590,8 +5592,8 @@ UnitAI.prototype.GetQueryRange = function(iid)
 		var cmpVision = Engine.QueryInterface(this.entity, IID_Vision);
 		if (!cmpVision)
 			return ret;
-		var halfvision = cmpVision.GetRange() / 2;
-		ret.max = range.max + halfvision;
+		var vision = cmpVision.GetRange();
+		ret.max = Math.min(range.max + vision / 2, vision);
 	}
 	// We probably have stance 'passive' and we wouldn't have a range,
 	// but as it is the default for healers we need to set it to something sane.

@@ -387,7 +387,7 @@ m.BaseManager.prototype.checkResourceLevels = function(gameState, queues)
 				{
 					if (count < 600)
 					{
-						queues.field.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_field", { "base": this.ID }));
+						queues.field.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_field", { "favoredBase": this.ID }));
 						gameState.ai.HQ.needFarm = true;
 					}
 				}
@@ -398,11 +398,11 @@ m.BaseManager.prototype.checkResourceLevels = function(gameState, queues)
 					if (gameState.ai.HQ.saveResources || gameState.ai.HQ.saveSpace || count > 300 || numFarms > 5)
 						goal = Math.max(goal-1, 1);
 					if (numFound + numQueue < goal)
-						queues.field.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_field", { "base": this.ID }));
+						queues.field.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_field", { "favoredBase": this.ID }));
 				}
 				else if (gameState.ai.HQ.needCorral && !gameState.getOwnEntitiesByClass("Corral", true).hasEntities() &&
 				         !queues.corral.hasQueuedUnits() && gameState.ai.HQ.canBuild(gameState, "structures/{civ}_corral"))
-					queues.corral.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_corral", { "base": this.ID }));
+					queues.corral.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_corral", { "favoredBase": this.ID }));
 				continue;
 			}
 			if (!gameState.isTemplateAvailable(gameState.applyCiv("structures/{civ}_field")) &&
@@ -412,7 +412,7 @@ m.BaseManager.prototype.checkResourceLevels = function(gameState, queues)
 				let count = this.getResourceLevel(gameState, type, gameState.currentPhase() > 1);  // animals are not accounted
 				if (count < 600)
 				{
-					queues.corral.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_corral", { "base": this.ID }));
+					queues.corral.addPlan(new m.ConstructionPlan(gameState, "structures/{civ}_corral", { "favoredBase": this.ID }));
 					gameState.ai.HQ.needCorral = true;
 				}
 			}
@@ -467,7 +467,7 @@ m.BaseManager.prototype.checkResourceLevels = function(gameState, queues)
 };
 
 /** Adds the estimated gather rates from this base to the currentRates */
-m.BaseManager.prototype.getGatherRates = function(gameState, currentRates)
+m.BaseManager.prototype.addGatherRates = function(gameState, currentRates)
 {
 	for (let res in currentRates)
 	{
@@ -549,7 +549,7 @@ m.BaseManager.prototype.setWorkersIdleByPriority = function(gameState)
 			let lastFailed = gameState.ai.HQ.lastFailedGather[moreNeed.type];
 			if (lastFailed && gameState.ai.elapsedTime - lastFailed < 20)
 				continue;
-			// Ensure that the most wanted resource is exhausted
+			// Ensure that the most wanted resource is not exhausted
 			if (moreNeed.type != "food" && gameState.ai.HQ.isResourceExhausted(moreNeed.type))
 			{
 				if (lessNeed.type != "food" && gameState.ai.HQ.isResourceExhausted(lessNeed.type))
@@ -641,6 +641,8 @@ m.BaseManager.prototype.reassignIdleWorkers = function(gameState, idleWorkers)
 						continue;
 					let lastFailed = gameState.ai.HQ.lastFailedGather[needed.type];
 					if (lastFailed && gameState.ai.elapsedTime - lastFailed < 20)
+						continue;
+					if (needed.type != "food" && gameState.ai.HQ.isResourceExhausted(needed.type))
 						continue;
 					ent.setMetadata(PlayerID, "subrole", "gatherer");
 					ent.setMetadata(PlayerID, "gather-type", needed.type);
