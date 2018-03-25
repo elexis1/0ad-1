@@ -55,29 +55,24 @@ public:
 	}
 
 		// Various malformed inputs
-		TS_ASSERT_PARSE("", "Failed to parse response as JSON", -1);
-		TS_ASSERT_PARSE("()", "Failed to parse response as JSON", -1);
+		TS_ASSERT_PARSE("", "Failed to parse response as JSON.", -1);
+		TS_ASSERT_PARSE("()", "Failed to parse response as JSON.", -1);
 		TS_ASSERT_PARSE("[]", "data property not an object", -1);
 		TS_ASSERT_PARSE("null", "response not an object", -1);
 		TS_ASSERT_PARSE("{}", "data property not an object", -1);
 		TS_ASSERT_PARSE("{\"data\": null}", "data property not an object", -1);
 		TS_ASSERT_PARSE("{\"data\": {}}", "data property not an array with at least one element", -1);
 		TS_ASSERT_PARSE("{\"data\": []}", "data property not an array with at least one element", -1);
-		TS_ASSERT_PARSE("{\"data\": [null]}", "couldn't get id", -1);
-		TS_ASSERT_PARSE("{\"data\": [false]}", "couldn't get id", -1);
-		TS_ASSERT_PARSE("{\"data\": [{}]}", "couldn't get id", -1);
-		TS_ASSERT_PARSE("{\"data\": [[]]}", "couldn't get id", -1);
+		TS_ASSERT_PARSE("{\"data\": [null]}", "first element is not an object", -1);
+		TS_ASSERT_PARSE("{\"data\": [false]}", "first element is not an object", -1);
+		TS_ASSERT_PARSE("{\"data\": [{}]}", "no id property in first element", -1);
+		TS_ASSERT_PARSE("{\"data\": [[]]}", "no id property in first element", -1);
 
-		// TODO: These only return -1 since we set id to that when we fail.
-		//       This should actually not be needed, but our parsing code does strange things.
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": null}]}", "couldn't get id", -1);
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": {}}]}", "couldn't get id", -1);
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": -12}]}", "couldn't get id", -1);
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": 0}]}", "couldn't get id", -1);
-
-		// TODO: This should fail, but our parsing code just warns in case we pass something of the wrong
-		//       type, instead of failing.
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": true}]}", "couldn't get id", -1); // TODO: This fails since parsing is bogus.
+		// Various invalid IDs
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": null}]}", "id property must be a number", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": {}}]}", "id property must be a number", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": true}]}", "id property must be a number", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": -12}]}", "invalid id.", -1);
 
 #undef TS_ASSERT_PARSE
 
@@ -154,7 +149,7 @@ public:
 		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"}}}]}", "failed to get metadata_blob from modFile");
 
 		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":null}}]}", "metadata_blob not decoded as an object");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"\"}}]}", "Failed to parse metadata_blob as JSON");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"\"}}]}", "Failed to parse metadata_blob as JSON.");
 
 		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{}\"}}]}", "failed to get dependencies from metadata");
 		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":null}\"}}]}", "failed to get dependencies from metadata");

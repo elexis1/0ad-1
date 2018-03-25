@@ -529,19 +529,24 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 	JS::RootedValue first(cx);
 	if (!JS_GetElement(cx, data, 0, &first))
 		FAIL("couldn't get first element.");
+	if (!first.isObject())
+		FAIL("first element is not an object");
+
+	JS::RootedObject firstObj(cx, &first.toObject());
+	bool hasIdProperty;
+	if (!JS_HasProperty(cx, firstObj, "id", &hasIdProperty) || !hasIdProperty)
+		FAIL("no id property in first element");
+
+	JS::RootedValue idProperty(cx);
+	ENSURE(JS_GetProperty(cx, firstObj, "id", &idProperty));
+
+	// Make sure the property is not set to something that could be converted to a bogus value
+	if (!idProperty.isNumber())
+		FAIL("id property must be a number");
 
 	id = -1;
-	// TODO: This check currently does not really do anything if "id" is present...
-	// meaning we can set id to be null and we get id=0.
-	// There is a script value conversion check failed warning, but that does not change anything.
-	// TODO: We should probably make those fail (hard), if that isn't done by default (which it probably should)
-	// the we should add a templated variant that does.
-	// TODO check if id < 0 (<=?) and if yes also fail here
-	// NOTE: FromJSProperty does set things to probably 0 even if there is some stupid type conversion
-	// So we check for <= 0, so we actually get proper results here...
-	// Valid ids are always > 0.
-	if (!ScriptInterface::FromJSProperty(cx, first, "id", id) || id <= 0)
-		FAIL("couldn't get id");
+	if (!ScriptInterface::FromJSVal(cx, idProperty, id) || id < 0)
+		FAIL("invalid id.");
 
 	return true;
 #undef CLEANUP
@@ -723,7 +728,7 @@ bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& 
 
 		if (crypto_sign_verify_detached(global_sig, sig_and_trusted_comment, (sizeof sig.sig) + trusted_comment.size(), pk.pk) != 0)
 		{
-			LOGERROR("failed to verify global signature");
+			err = "failed to verify global signature";
 			sodium_free(sig_and_trusted_comment);
 			return false;
 		}
