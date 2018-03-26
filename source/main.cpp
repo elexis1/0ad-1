@@ -555,28 +555,6 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		return;
 	}
 
-	if (!modsToInstall.empty())
-	{
-		const int runtimeSize = 8 * MiB;
-		const int heapGrowthBytesGCTrigger = 1 * MiB;
-		std::shared_ptr<ScriptRuntime> scriptRuntime = ScriptInterface::CreateRuntime(
-			std::shared_ptr<ScriptRuntime>(), runtimeSize, heapGrowthBytesGCTrigger);
-
-		Paths paths(args);
-		CModInstaller installer(paths.UserData() / "mods", paths.Cache());
-
-		for (const OsPath& modPath : modsToInstall)
-		{
-			// Creates a directory with the name extracted from a `mod.json`
-			installer.Install(modPath, scriptRuntime, true);
-		}
-
-		scriptRuntime.reset();
-
-		CXeromyces::Terminate();
-		return;
-	}
-
 	// run in archive-building mode if requested
 	if (args.Has("archivebuild"))
 	{
@@ -619,6 +597,24 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 			continue;
 		}
 
+		std::vector<CStr> installedMods;
+		if (!modsToInstall.empty())
+		{
+
+			Paths paths(args);
+			CModInstaller installer(paths.UserData() / "mods", paths.Cache());
+
+			for (const OsPath& modPath : modsToInstall)
+			{
+				// Creates a directory with the name extracted from a `mod.json`
+				CStr modName = installer.Install(modPath, g_ScriptRuntime, true);
+				if (!modName.empty())
+					installedMods.emplace_back(modName);
+			}
+
+			modsToInstall.clear();
+		}
+
 		if (isNonVisual)
 		{
 			InitNonVisual(args);
@@ -627,7 +623,7 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		}
 		else
 		{
-			InitGraphics(args, 0);
+			InitGraphics(args, 0, installedMods);
 			MainControllerInit();
 			while (!quit)
 				Frame();

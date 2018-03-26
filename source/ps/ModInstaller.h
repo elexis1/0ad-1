@@ -40,8 +40,10 @@ public:
 	/**
 	 * Do all the processing and unpacking.
 	 * @param mod path of .pyromod file of mod
+	 *
+	 * @return CStr if successful the name of the mod
 	 */
-	void Install(const OsPath& mod,
+	CStr Install(const OsPath& mod,
 	             const std::shared_ptr<ScriptRuntime>& scriptRuntime,
 	             bool deleteAfterInstall);
 

@@ -38,7 +38,7 @@ CModInstaller::~CModInstaller()
 	DeleteDirectory(m_TempDir);
 }
 
-void CModInstaller::Install(const OsPath& mod,
+CStr CModInstaller::Install(const OsPath& mod,
                             const std::shared_ptr<ScriptRuntime>& scriptRuntime,
                             bool deleteAfterInstall)
 {
@@ -49,27 +49,27 @@ void CModInstaller::Install(const OsPath& mod,
 
 	// Load the mod to VFS
 	if (m_VFS->Mount(m_CacheDir, m_TempDir / "") != INFO::OK)
-		return;
+		return "";
 	CVFSFile modinfo;
 	PSRETURN modinfo_status = modinfo.Load(m_VFS, m_CacheDir / modTemp.Basename() / "mod.json", false);
 	m_VFS->Clear();
 	if (modinfo_status != PSRETURN_OK)
-		return;
+		return "";
 
 	// Extract the name of the mod
 	ScriptInterface scriptInterface("Engine", "ModInstaller", scriptRuntime);
 	JSContext* cx = scriptInterface.GetContext();
 	JS::RootedValue json_val(cx);
 	if (!scriptInterface.ParseJSON(modinfo.GetAsString(), &json_val))
-		return;
+		return "";
 	JS::RootedObject json_obj(cx, json_val.toObjectOrNull());
 	JS::RootedValue name_val(cx);
 	if (!JS_GetProperty(cx, json_obj, "name", &name_val))
-		return;
-	std::string modName;
+		return "";
+	CStr modName;
 	ScriptInterface::FromJSVal(cx, name_val, modName);
 	if (modName.empty())
-		return;
+		return "";
 
 	const OsPath modDir = m_ModsDir / modName;
 	const OsPath modPath = modDir / (modName + ".zip");
@@ -99,6 +99,7 @@ void CModInstaller::Install(const OsPath& mod,
 		// Remove the original file
 		wunlink(mod);
 	}
+	return modName;
 }
 
 // static
