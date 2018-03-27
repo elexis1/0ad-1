@@ -304,8 +304,8 @@ function isDependencyMet(dependency)
 
 function modIo()
 {
-	messageBox(500, 200,
-		translate("You are about to connect to a server that is not under the control of Wildfire Games, that allows you to download mods. While we have taken care to make this secure, there is no absolute certainty that this is not a security risk. Do you really want to connect?"),
+	messageBox(500, 250,
+		translate("You are about to connect to a server that provides easy access to community-made mods, but is not under the control of Wildfire Games.\n\n While we have taken care to make this secure, there is no absolute certainty that this is not a security risk.\n\nDo you really want to connect?"),
 		translate("Connect to mod.io?"),
 		[translate("Cancel"), translateWithContext("mod.io connection message box", "Connect")],
 		[null, function() { Engine.PushGuiPage("page_modio.xml"); }]

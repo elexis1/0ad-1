@@ -51,13 +51,38 @@
 		</object>
 
 		<!-- Buttons -->
-		<object type="button" style="ModernButtonRed" size="16 100%-44 200 100%-16">
+		<object type="button" style="ModernButtonRed" size="100%-552 100%-44 100%-372 100%-16">
 			<translatableAttribute id="caption">Back</translatableAttribute>
 			<action on="Press">Engine.SwitchGuiPage("page_modmod.xml");</action>
 		</object>
-		<object type="button" style="ModernButtonRed" size="100%-200 100%-44 100%-16 100%-16">
+		<object name="refreshButton" type="button" style="ModernButtonRed" size="100%-368 100%-44 100%-188 100%-16" enabled="false">
+			<translatableAttribute id="caption">Refresh List</translatableAttribute>
+			<action on="Press">updateModList();</action>
+		</object>
+		<object name="downloadButton" type="button" style="ModernButtonRed" size="100%-184 100%-44 100%-16 100%-16" enabled="false">
 			<translatableAttribute id="caption">Download</translatableAttribute>
 			<action on="Press">downloadMod();</action>
+		</object>
+
+	</object>
+
+	<!-- Download/Request-in-progress Dialog -->
+	<!-- Captions are supplied in modio.js -->
+	<!-- This must be after the buttons, and with "z" > 20, else it and/or other objects will not be drawn correctly -->
+	<object name="downloadDialog" type="image" sprite="ModernFade" z="30" size="0 0 100% 100%" hidden="true">
+		<object type="image" style="ModernDialog" size="50%-190 50%-80 50%+190 50%+80">
+
+			<object name="downloadDialog_title" type="text" style="ModernLabelText" size="50%-128 0%-16 50%+128 16"/>
+
+			<object name="downloadDialog_caption" type="text" style="ModernLabelText" size="0 0 100% 50%"/>
+
+			<object name="downloadDialog_progress" size="50%-160 50%-16 50%+160 50%+16" type="image" style="ModernProgressBarBackground">
+				<object name="downloadDialog_progressBar" type="progressbar" style="ModernProgressBar"/>
+				<object name="downloadDialog_progressText" type="text" style="ModernProgressBarText"/>
+			</object>
+
+			<object name="downloadDialog_button" type="button" style="ModernButtonRed" size="50%-80 75%-14 50%+80 75%+14"/>
+
 		</object>
 	</object>
 </objects>
