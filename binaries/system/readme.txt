@@ -45,6 +45,9 @@ Configuration:
 -xres=N             set screen X resolution to 'N'
 -yres=N             set screen Y resolution to 'N'
 
+Installing mods:
+PATHS               Install mods by executing the application with the paths of one or multiple pyromod files as argument. E.g. "pyrogenesis mod1.pyromod mod2.zip"
+
 Advanced / diagnostic:
 -version            print the version of the engine and exit
 -dumpSchema         creates a file entity.rng in the working directory, containing
