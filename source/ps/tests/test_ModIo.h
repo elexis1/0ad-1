@@ -73,6 +73,7 @@ public:
 		TS_ASSERT_PARSE("{\"data\": [{\"id\": {}}]}", "id property must be a number", -1);
 		TS_ASSERT_PARSE("{\"data\": [{\"id\": true}]}", "id property must be a number", -1);
 		TS_ASSERT_PARSE("{\"data\": [{\"id\": -12}]}", "invalid id.", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": 0}]}", "invalid id.", -1);
 
 #undef TS_ASSERT_PARSE
 
