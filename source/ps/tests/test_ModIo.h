@@ -198,7 +198,7 @@ public:
 		TestLogger logger; \
 		SigStruct sig; \
 		std::string err; \
-		TS_ASSERT(!ModIo::ParseSignature({input}, sig, pk, err)); \
+		TS_ASSERT(!ModIo::ParseSignature(input, sig, pk, err)); \
 		TS_ASSERT(err.empty()); \
 	}
 
@@ -211,7 +211,7 @@ public:
 		TS_ASSERT_STR_EQUALS(err, expected_error); \
 	}
 
-		TS_ASSERT_PARSE_SILENT_FAILURE();
+		TS_ASSERT_PARSE_SILENT_FAILURE({});
 
 		TS_ASSERT_PARSE("", "invalid (too short) sig");
 		TS_ASSERT_PARSE("\n\n\n", "failed to decode base64 sig");
@@ -219,7 +219,7 @@ public:
 		TS_ASSERT_PARSE("\nRWTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n", "only hashed minisign signatures are supported");
 
 		// Silent failure again this one has the wrong keynum
-		TS_ASSERT_PARSE_SILENT_FAILURE("\nRUTA5VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n");
+		TS_ASSERT_PARSE_SILENT_FAILURE({"\nRUTA5VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n"});
 
 		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n", "failed to decode base64 global_sig");
 		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\nTHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw==", "malformed trusted comment");
