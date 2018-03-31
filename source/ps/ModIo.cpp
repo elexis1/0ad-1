@@ -489,14 +489,14 @@ bool ModIo::VerifyDownloadedFile(std::string& err)
 #define FAIL(...) STMT(err = fmt::sprintf(__VA_ARGS__); CLEANUP(); return false;)
 
 /**
-* Parses the current content of m_ResponseData to extract m_GameId.
-*
-* The JSON data is expected to look like
-* { "data": [{"id": 42, ...}, ...], ... }
-* where we are only interested in the value of the id property.
-*
-* @returns true iff it successfully parsed the id.
-*/
+ * Parses the current content of m_ResponseData to extract m_GameId.
+ *
+ * The JSON data is expected to look like
+ * { "data": [{"id": 42, ...}, ...], ... }
+ * where we are only interested in the value of the id property.
+ *
+ * @returns true iff it successfully parsed the id.
+ */
 bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const std::string& responseData, int& id, std::string& err)
 {
 #define CLEANUP() id = -1;
@@ -555,17 +555,17 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 }
 
 /**
-* Parses the current content of m_ResponseData into m_ModData.
-*
-* The JSON data is expected to look like
-* { data: [modobj1, modobj2, ...], ... (including result_count) }
-* where modobjN has the following structure
-* { homepage: "url", name: "displayname", nameid: "short-non-whitespace-name",
-*   summary: "short desc.", modfile: { version: "1.2.4", filename: "asdf.zip",
-*   filehash: { md5: "deadbeef" }, filesize: 1234, download: { binary_url: "someurl", ... } }, ... }.
-* Only the listed properties are of interest to consumers, and we flatten
-* the modfile structure as that simplifies handling and there are no conflicts.
-*/
+ * Parses the current content of m_ResponseData into m_ModData.
+ *
+ * The JSON data is expected to look like
+ * { data: [modobj1, modobj2, ...], ... (including result_count) }
+ * where modobjN has the following structure
+ * { homepage: "url", name: "displayname", nameid: "short-non-whitespace-name",
+ *   summary: "short desc.", modfile: { version: "1.2.4", filename: "asdf.zip",
+ *   filehash: { md5: "deadbeef" }, filesize: 1234, download: { binary_url: "someurl", ... } }, ... }.
+ * Only the listed properties are of interest to consumers, and we flatten
+ * the modfile structure as that simplifies handling and there are no conflicts.
+ */
 bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std::string& responseData, std::vector<ModIoModData>& modData, const PKStruct& pk, std::string& err)
 {
 	// Make sure we don't end up passing partial results back
@@ -674,9 +674,9 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 }
 
 /**
-* Parse signatures to find one that matches the public key, and has a valid global signature.
-* Returns true and sets @param sig to the valid matching signature.
-*/
+ * Parse signatures to find one that matches the public key, and has a valid global signature.
+ * Returns true and sets @param sig to the valid matching signature.
+ */
 bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& sig, const PKStruct& pk, std::string& err)
 {
 #define CLEANUP() sig = {};
@@ -707,9 +707,9 @@ bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& 
 		if (memcmp(&pk.keynum, &sig.keynum, sizeof sig.keynum) != 0)
 			continue; // mismatched key, try another one
 
-					  // Signature matches our public key
+		// Signature matches our public key
 
-					  // Now verify the global signature (sig || trusted_comment)
+		// Now verify the global signature (sig || trusted_comment)
 
 		unsigned char global_sig[crypto_sign_BYTES];
 		if (sodium_base642bin(global_sig, sizeof global_sig, sig_lines[3].c_str(), sig_lines[3].size(), NULL, &bin_len, NULL, sodium_base64_VARIANT_ORIGINAL) != 0 || bin_len != sizeof global_sig)
