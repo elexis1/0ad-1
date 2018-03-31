@@ -57,23 +57,23 @@ public:
 		// Various malformed inputs
 		TS_ASSERT_PARSE("", "Failed to parse response as JSON.", -1);
 		TS_ASSERT_PARSE("()", "Failed to parse response as JSON.", -1);
-		TS_ASSERT_PARSE("[]", "data property not an object", -1);
-		TS_ASSERT_PARSE("null", "response not an object", -1);
-		TS_ASSERT_PARSE("{}", "data property not an object", -1);
-		TS_ASSERT_PARSE("{\"data\": null}", "data property not an object", -1);
-		TS_ASSERT_PARSE("{\"data\": {}}", "data property not an array with at least one element", -1);
-		TS_ASSERT_PARSE("{\"data\": []}", "data property not an array with at least one element", -1);
-		TS_ASSERT_PARSE("{\"data\": [null]}", "first element is not an object", -1);
-		TS_ASSERT_PARSE("{\"data\": [false]}", "first element is not an object", -1);
-		TS_ASSERT_PARSE("{\"data\": [{}]}", "no id property in first element", -1);
-		TS_ASSERT_PARSE("{\"data\": [[]]}", "no id property in first element", -1);
+		TS_ASSERT_PARSE("[]", "data property not an object.", -1);
+		TS_ASSERT_PARSE("null", "response not an object.", -1);
+		TS_ASSERT_PARSE("{}", "data property not an object.", -1);
+		TS_ASSERT_PARSE("{\"data\": null}", "data property not an object.", -1);
+		TS_ASSERT_PARSE("{\"data\": {}}", "data property not an array with at least one element.", -1);
+		TS_ASSERT_PARSE("{\"data\": []}", "data property not an array with at least one element.", -1);
+		TS_ASSERT_PARSE("{\"data\": [null]}", "First element not an object.", -1);
+		TS_ASSERT_PARSE("{\"data\": [false]}", "First element not an object.", -1);
+		TS_ASSERT_PARSE("{\"data\": [{}]}", "No id property in first element.", -1);
+		TS_ASSERT_PARSE("{\"data\": [[]]}", "No id property in first element.", -1);
 
 		// Various invalid IDs
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": null}]}", "id property must be a number", -1);
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": {}}]}", "id property must be a number", -1);
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": true}]}", "id property must be a number", -1);
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": -12}]}", "invalid id.", -1);
-		TS_ASSERT_PARSE("{\"data\": [{\"id\": 0}]}", "invalid id.", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": null}]}", "id property not a number.", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": {}}]}", "id property not a number.", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": true}]}", "id property not a number.", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": -12}]}", "Invalid id.", -1);
+		TS_ASSERT_PARSE("{\"data\": [{\"id\": 0}]}", "Invalid id.", -1);
 
 #undef TS_ASSERT_PARSE
 
@@ -112,50 +112,50 @@ public:
 
 		TS_ASSERT_PARSE("", "Failed to parse response as JSON.");
 		TS_ASSERT_PARSE("()", "Failed to parse response as JSON.");
-		TS_ASSERT_PARSE("null", "response not an object");
-		TS_ASSERT_PARSE("[]", "data property not an object");
-		TS_ASSERT_PARSE("{}", "data property not an object");
-		TS_ASSERT_PARSE("{\"data\": null}", "data property not an object");
-		TS_ASSERT_PARSE("{\"data\": {}}", "data property not an array with at least one element");
-		TS_ASSERT_PARSE("{\"data\": []}", "data property not an array with at least one element");
-		TS_ASSERT_PARSE("{\"data\": [null]}", "Failed to get array element object");
-		TS_ASSERT_PARSE("{\"data\": [false]}", "Failed to get array element object");
-		TS_ASSERT_PARSE("{\"data\": [true]}", "Failed to get array element object");
-		TS_ASSERT_PARSE("{\"data\": [{}]}", "failed to get name from el");
-		TS_ASSERT_PARSE("{\"data\": [[]]}", "failed to get name from el");
-		TS_ASSERT_PARSE("{\"data\": [{\"foo\":\"bar\"}]}", "failed to get name from el");
+		TS_ASSERT_PARSE("null", "response not an object.");
+		TS_ASSERT_PARSE("[]", "data property not an object.");
+		TS_ASSERT_PARSE("{}", "data property not an object.");
+		TS_ASSERT_PARSE("{\"data\": null}", "data property not an object.");
+		TS_ASSERT_PARSE("{\"data\": {}}", "data property not an array with at least one element.");
+		TS_ASSERT_PARSE("{\"data\": []}", "data property not an array with at least one element.");
+		TS_ASSERT_PARSE("{\"data\": [null]}", "Failed to get array element object.");
+		TS_ASSERT_PARSE("{\"data\": [false]}", "Failed to get array element object.");
+		TS_ASSERT_PARSE("{\"data\": [true]}", "Failed to get array element object.");
+		TS_ASSERT_PARSE("{\"data\": [{}]}", "Failed to get name from el.");
+		TS_ASSERT_PARSE("{\"data\": [[]]}", "Failed to get name from el.");
+		TS_ASSERT_PARSE("{\"data\": [{\"foo\":\"bar\"}]}", "Failed to get name from el.");
 
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":null}]}", "failed to get name_id from el"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":42}]}", "failed to get name_id from el"); // no conversion warning, but converting numbers to strings and vice-versa seems ok
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":false}]}", "failed to get name_id from el"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":{}}]}", "failed to get name_id from el"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":[]}]}", "failed to get name_id from el"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"foobar\"}]}", "failed to get name_id from el");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":null}]}", "Failed to get name_id from el."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":42}]}", "Failed to get name_id from el."); // no conversion warning, but converting numbers to strings and vice-versa seems ok
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":false}]}", "Failed to get name_id from el."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":{}}]}", "Failed to get name_id from el."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":[]}]}", "Failed to get name_id from el."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"foobar\"}]}", "Failed to get name_id from el.");
 
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\"}]}", "modfile not an object");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":null}]}", "modfile not an object");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":[]}]}", "failed to get version from modFile");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{}}]}", "failed to get version from modFile");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\"}]}", "modfile not an object.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":null}]}", "modfile not an object.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":[]}]}", "Failed to get version from modFile.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{}}]}", "Failed to get version from modFile.");
 
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":null}}]}", "failed to get filesize from modFile"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234}}]}", "failed to get md5 from filehash");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":null}}]}", "Failed to get filesize from modFile."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234}}]}", "Failed to get md5 from filehash.");
 
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":null}}]}", "failed to get md5 from filehash");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{}}}]}", "failed to get md5 from filehash");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":null}}}]}", "failed to get binary_url from download"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}}}]}", "failed to get binary_url from download");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":null}}]}", "Failed to get md5 from filehash.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{}}}]}", "Failed to get md5 from filehash.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":null}}}]}", "Failed to get binary_url from download."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}}}]}", "Failed to get binary_url from download.");
 
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":null}}]}", "failed to get binary_url from download"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":null}}}]}", "failed to get metadata_blob from modFile"); // also some script value conversion check warning
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"}}}]}", "failed to get metadata_blob from modFile");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":null}}]}", "Failed to get binary_url from download."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":null}}}]}", "Failed to get metadata_blob from modFile."); // also some script value conversion check warning
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"}}}]}", "Failed to get metadata_blob from modFile.");
 
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":null}}]}", "metadata_blob not decoded as an object");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":null}}]}", "metadata_blob not decoded as an object.");
 		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"\"}}]}", "Failed to parse metadata_blob as JSON.");
 
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{}\"}}]}", "failed to get dependencies from metadata");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":null}\"}}]}", "failed to get dependencies from metadata");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[]}\"}}]}", "failed to get minisigs from metadata");
-		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[],\\\"minisigs\\\":null}\"}}]}", "failed to get minisigs from metadata");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{}\"}}]}", "Failed to get dependencies from metadata.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":null}\"}}]}", "Failed to get dependencies from metadata.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[]}\"}}]}", "Failed to get minisigs from metadata.");
+		TS_ASSERT_PARSE("{\"data\": [{\"name\":\"\",\"name_id\":\"\",\"summary\":\"\",\"modfile\":{\"version\":\"\",\"filesize\":1234, \"filehash\":{\"md5\":\"abc\"}, \"download\":{\"binary_url\":\"\"},\"metadata_blob\":\"{\\\"dependencies\\\":[],\\\"minisigs\\\":null}\"}}]}", "Failed to get minisigs from metadata.");
 
 #undef TS_ASSERT_PARSE
 
@@ -213,20 +213,20 @@ public:
 
 		TS_ASSERT_PARSE_SILENT_FAILURE({});
 
-		TS_ASSERT_PARSE("", "invalid (too short) sig");
-		TS_ASSERT_PARSE("\n\n\n", "failed to decode base64 sig");
-		TS_ASSERT_PARSE("\nZm9vYmFyCg==\n\n", "failed to decode base64 sig");
-		TS_ASSERT_PARSE("\nRWTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n", "only hashed minisign signatures are supported");
+		TS_ASSERT_PARSE("", "Invalid (too short) sig.");
+		TS_ASSERT_PARSE("\n\n\n", "Failed to decode base64 sig.");
+		TS_ASSERT_PARSE("\nZm9vYmFyCg==\n\n", "Failed to decode base64 sig.");
+		TS_ASSERT_PARSE("\nRWTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n", "Only hashed minisign signatures are supported.");
 
 		// Silent failure again this one has the wrong keynum
 		TS_ASSERT_PARSE_SILENT_FAILURE({"\nRUTA5VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n"});
 
-		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n", "failed to decode base64 global_sig");
-		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\nTHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw==", "malformed trusted comment");
+		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\n", "Failed to decode base64 global_sig.");
+		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\n\nTHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw==", "Malformed trusted comment.");
 
 		// TODO: Test for both the untrusted comment and the trusted comment to actually start with that
 
-		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\ntrusted comment: timestamp:1517285433\tfile:tm.zip\nAHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw==", "failed to verify global signature");
+		TS_ASSERT_PARSE("\nRUTA6VIoth2Q1HUg5bwwbCUZPcqbQ/reLXqxiaWARH5PNcwxX5vBv/mLPLgdxGsIrOyK90763+rCVTmjeYx5BDz8C0CIbGZTNQs=\ntrusted comment: timestamp:1517285433\tfile:tm.zip\nAHwNMhK4Ogj6XA4305p1K9/ouP/DrxPcDFrPaiu+Ke6/WGlHIzBZHvmHWUedvsK6dzL31Gk8YNzscKWnZqWNCw==", "Failed to verify global signature.");
 
 		// Valid signature
 		{

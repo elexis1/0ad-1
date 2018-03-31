@@ -210,10 +210,11 @@ void ModIo::StartGetGameId()
 	CURLMcode err = SetupRequest(m_BaseUrl+m_GamesRequest+"?"+m_ApiKey+"&"+m_IdQuery, false);
 	if (err != CURLM_OK)
 	{
-		LOGERROR("Failure while starting querying for game id. Error: %s; %s",
-			curl_multi_strerror(err), m_ErrorBuffer);
 		TearDownRequest();
 		m_DownloadProgressData.status = DownloadProgressData::FAILED_GAMEID;
+		m_DownloadProgressData.error = fmt::sprintf(
+			g_L10n.Translate("Failure while starting querying for game id. Error: %s; %s."),
+			curl_multi_strerror(err), m_ErrorBuffer);
 	}
 	else
 		m_DownloadProgressData.status = DownloadProgressData::GAMEID;
@@ -232,10 +233,11 @@ void ModIo::StartListMods()
 	CURLMcode err = SetupRequest(m_BaseUrl+m_GamesRequest+m_GameId+"/mods?"+m_ApiKey, false);
 	if (err != CURLM_OK)
 	{
-		LOGERROR("Failure while starting querying for mods. Error: %s; %s",
-			curl_multi_strerror(err), m_ErrorBuffer);
 		TearDownRequest();
 		m_DownloadProgressData.status = DownloadProgressData::FAILED_LISTING;
+		m_DownloadProgressData.error = fmt::sprintf(
+			g_L10n.Translate("Failure while starting querying for mods. Error: %s; %s."),
+			curl_multi_strerror(err), m_ErrorBuffer);
 	}
 	else
 		m_DownloadProgressData.status = DownloadProgressData::LISTING;
@@ -251,7 +253,9 @@ void ModIo::StartDownloadMod(size_t idx)
 	const OsPath modPath = modUserPath/m_ModData[idx].properties["name_id"];
 	if (!DirectoryExists(modPath) && INFO::OK != CreateDirectories(modPath, 0700, false))
 	{
-		LOGERROR("Could not create mod directory: %s", modPath.string8());
+		m_DownloadProgressData.status = DownloadProgressData::FAILED_DOWNLOADING;
+		m_DownloadProgressData.error = fmt::sprintf(
+			g_L10n.Translate("Could not create mod directory: %s."), modPath.string8());
 		return;
 	}
 
@@ -272,17 +276,19 @@ void ModIo::StartDownloadMod(size_t idx)
 	m_CallbackData = DownloadCallbackData(sys_OpenFile(m_DownloadFilePath, "wb"));
 	if (!m_CallbackData.fp)
 	{
-		LOGERROR("Could not open temporary file for mod download: %s", m_DownloadFilePath.string8());
+		m_DownloadProgressData.status = DownloadProgressData::FAILED_DOWNLOADING;
+		m_DownloadProgressData.error = fmt::sprintf(
+			g_L10n.Translate("Could not open temporary file for mod download: %s."), m_DownloadFilePath.string8());
 		return;
 	}
 
 	CURLMcode err = SetupRequest(m_ModData[idx].properties["binary_url"], true);
 	if (err != CURLM_OK)
 	{
-		LOGERROR("Failed to start the download. Error: %s; %s",
-			curl_multi_strerror(err), m_ErrorBuffer);
 		TearDownRequest();
 		m_DownloadProgressData.status = DownloadProgressData::FAILED_DOWNLOADING;
+		m_DownloadProgressData.error = fmt::sprintf(
+			g_L10n.Translate("Failed to start the download. Error: %s; %s."), curl_multi_strerror(err), m_ErrorBuffer);
 	}
 	else
 	{
@@ -325,7 +331,7 @@ bool ModIo::AdvanceRequest(const ScriptInterface& scriptInterface)
 	if (err != CURLM_OK)
 	{
 		std::string error = fmt::sprintf(
-			g_L10n.Translate("Asynchronous download failure: %s, %s"), curl_multi_strerror(err), m_ErrorBuffer);
+			g_L10n.Translate("Asynchronous download failure: %s, %s."), curl_multi_strerror(err), m_ErrorBuffer);
 		TearDownRequest();
 		if (m_DownloadProgressData.status == DownloadProgressData::DOWNLOADING)
 			DeleteDownloadedFile();
@@ -347,7 +353,7 @@ bool ModIo::AdvanceRequest(const ScriptInterface& scriptInterface)
 				continue;
 
 			std::string error = fmt::sprintf(
-				g_L10n.Translate("Download failure. Server response: %s; %s"), curl_easy_strerror(err), m_ErrorBuffer);
+				g_L10n.Translate("Download failure. Server response: %s; %s."), curl_easy_strerror(err), m_ErrorBuffer);
 			TearDownRequest();
 			if (m_DownloadProgressData.status == DownloadProgressData::DOWNLOADING)
 				DeleteDownloadedFile();
@@ -509,7 +515,7 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 		FAIL("Failed to parse response as JSON.");
 
 	if (!gameResponse.isObject())
-		FAIL("response not an object");
+		FAIL("response not an object.");
 
 	JS::RootedObject gameResponseObj(cx, gameResponse.toObjectOrNull());
 	JS::RootedValue dataVal(cx);
@@ -518,24 +524,24 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 
 	// [{"id": 42, ...}, ...]
 	if (!dataVal.isObject())
-		FAIL("data property not an object");
+		FAIL("data property not an object.");
 
 	JS::RootedObject data(cx, dataVal.toObjectOrNull());
 	u32 length;
 	if (!JS_IsArrayObject(cx, data) || !JS_GetArrayLength(cx, data, &length) || !length)
-		FAIL("data property not an array with at least one element");
+		FAIL("data property not an array with at least one element.");
 
 	// {"id": 42, ...}
 	JS::RootedValue first(cx);
 	if (!JS_GetElement(cx, data, 0, &first))
-		FAIL("couldn't get first element.");
+		FAIL("Couldn't get first element.");
 	if (!first.isObject())
-		FAIL("first element is not an object");
+		FAIL("First element not an object.");
 
 	JS::RootedObject firstObj(cx, &first.toObject());
 	bool hasIdProperty;
 	if (!JS_HasProperty(cx, firstObj, "id", &hasIdProperty) || !hasIdProperty)
-		FAIL("no id property in first element");
+		FAIL("No id property in first element.");
 
 	JS::RootedValue idProperty(cx);
 	ENSURE(JS_GetProperty(cx, firstObj, "id", &idProperty));
@@ -544,11 +550,11 @@ bool ModIo::ParseGameIdResponse(const ScriptInterface& scriptInterface, const st
 	// TODO: We should be able to convert JS::Values to C++ variables in a way that actually
 	// fails when types do not match.
 	if (!idProperty.isNumber())
-		FAIL("id property must be a number");
+		FAIL("id property not a number.");
 
 	id = -1;
 	if (!ScriptInterface::FromJSVal(cx, idProperty, id) || id <= 0)
-		FAIL("invalid id.");
+		FAIL("Invalid id.");
 
 	return true;
 #undef CLEANUP
@@ -580,7 +586,7 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 		FAIL("Failed to parse response as JSON.");
 
 	if (!modResponse.isObject())
-		FAIL("response not an object");
+		FAIL("response not an object.");
 
 	JS::RootedObject modResponseObj(cx, modResponse.toObjectOrNull());
 	JS::RootedValue dataVal(cx);
@@ -589,12 +595,12 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 
 	// [modobj1, modobj2, ... ]
 	if (!dataVal.isObject())
-		FAIL("data property not an object");
+		FAIL("data property not an object.");
 
 	JS::RootedObject data(cx, dataVal.toObjectOrNull());
 	u32 length;
 	if (!JS_IsArrayObject(cx, data) || !JS_GetArrayLength(cx, data, &length) || !length)
-		FAIL("data property not an array with at least one element");
+		FAIL("data property not an array with at least one element.");
 
 	modData.clear();
 	modData.reserve(length);
@@ -603,7 +609,7 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 	{
 		JS::RootedValue el(cx);
 		if (!JS_GetElement(cx, data, i, &el) || !el.isObject())
-			FAIL("Failed to get array element object");
+			FAIL("Failed to get array element object.");
 
 		modData.emplace_back();
 
@@ -612,7 +618,7 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 	{ \
 		std::string val; \
 		if (!ScriptInterface::FromJSProperty(cx, obj, prop.c_str(), val)) \
-			FAIL("failed to get %s from %s", prop, #obj);\
+			FAIL("Failed to get %s from %s.", prop, #obj);\
 		modData.back().properties.emplace(prefix+prop, val); \
 	}
 
@@ -623,44 +629,44 @@ bool ModIo::ParseModsResponse(const ScriptInterface& scriptInterface, const std:
 		JS::RootedObject elObj(cx, el.toObjectOrNull());
 		JS::RootedValue modFile(cx);
 		if (!JS_GetProperty(cx, elObj, "modfile", &modFile))
-			FAIL("Failed to get modfile data");
+			FAIL("Failed to get modfile data.");
 
 		if (!modFile.isObject())
-			FAIL("modfile not an object");
+			FAIL("modfile not an object.");
 
 		COPY_STRINGS("", modFile, "version", "filesize");
 
 		JS::RootedObject modFileObj(cx, modFile.toObjectOrNull());
 		JS::RootedValue filehash(cx);
 		if (!JS_GetProperty(cx, modFileObj, "filehash", &filehash))
-			FAIL("Failed to get filehash data");
+			FAIL("Failed to get filehash data.");
 
 		COPY_STRINGS("filehash_", filehash, "md5");
 
 		JS::RootedValue download(cx);
 		if (!JS_GetProperty(cx, modFileObj, "download", &download))
-			FAIL("Failed to get download data");
+			FAIL("Failed to get download data.");
 
 		COPY_STRINGS("", download, "binary_url");
 
 		// Parse metadata_blob (sig+deps)
 		std::string metadata_blob;
 		if (!ScriptInterface::FromJSProperty(cx, modFile, "metadata_blob", metadata_blob))
-			FAIL("failed to get metadata_blob from modFile");
+			FAIL("Failed to get metadata_blob from modFile.");
 
 		JS::RootedValue metadata(cx);
 		if (!scriptInterface.ParseJSON(metadata_blob, &metadata))
 			FAIL("Failed to parse metadata_blob as JSON.");
 
 		if (!metadata.isObject())
-			FAIL("metadata_blob not decoded as an object");
+			FAIL("metadata_blob not decoded as an object.");
 
 		if (!ScriptInterface::FromJSProperty(cx, metadata, "dependencies", modData.back().dependencies))
-			FAIL("failed to get dependencies from metadata");
+			FAIL("Failed to get dependencies from metadata.");
 
 		std::vector<std::string> minisigs;
 		if (!ScriptInterface::FromJSProperty(cx, metadata, "minisigs", minisigs))
-			FAIL("failed to get minisigs from metadata");
+			FAIL("Failed to get minisigs from metadata.");
 
 		// Remove this entry if we did not find a valid matching signature
 		if (!ParseSignature(minisigs, modData.back().sig, pk, err))
@@ -689,7 +695,7 @@ bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& 
 		std::vector<std::string> sig_lines;
 		boost::split(sig_lines, file_sig, boost::is_any_of("\n"));
 		if (sig_lines.size() < 4)
-			FAIL("invalid (too short) sig");
+			FAIL("Invalid (too short) sig.");
 
 		// We only _really_ care about the second line which is the signature of the file (b64-encoded)
 		// Also handling the other signature is nice, but not really required.
@@ -697,12 +703,12 @@ bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& 
 
 		size_t bin_len = 0;
 		if (sodium_base642bin((unsigned char*)&sig, sizeof sig, msg_sig.c_str(), msg_sig.size(), NULL, &bin_len, NULL, sodium_base64_VARIANT_ORIGINAL) != 0 || bin_len != sizeof sig)
-			FAIL("failed to decode base64 sig");
+			FAIL("Failed to decode base64 sig.");
 
 		cassert(sizeof pk.keynum == sizeof sig.keynum);
 
 		if (memcmp(&sig.sig_alg, "ED", 2) != 0)
-			FAIL("only hashed minisign signatures are supported");
+			FAIL("Only hashed minisign signatures are supported.");
 
 		if (memcmp(&pk.keynum, &sig.keynum, sizeof sig.keynum) != 0)
 			continue; // mismatched key, try another one
@@ -713,24 +719,24 @@ bool ModIo::ParseSignature(const std::vector<std::string>& minisigs, SigStruct& 
 
 		unsigned char global_sig[crypto_sign_BYTES];
 		if (sodium_base642bin(global_sig, sizeof global_sig, sig_lines[3].c_str(), sig_lines[3].size(), NULL, &bin_len, NULL, sodium_base64_VARIANT_ORIGINAL) != 0 || bin_len != sizeof global_sig)
-			FAIL("failed to decode base64 global_sig");
+			FAIL("Failed to decode base64 global_sig.");
 
 		const std::string trusted_comment_prefix = "trusted comment: ";
 		if (sig_lines[2].size() < trusted_comment_prefix.size())
-			FAIL("malformed trusted comment");
+			FAIL("Malformed trusted comment.");
 
 		const std::string trusted_comment = sig_lines[2].substr(trusted_comment_prefix.size());
 
 		unsigned char* sig_and_trusted_comment = (unsigned char*)sodium_malloc((sizeof sig.sig) + trusted_comment.size());
 		if (!sig_and_trusted_comment)
-			FAIL("sodium_malloc failed");
+			FAIL("sodium_malloc failed.");
 
 		memcpy(sig_and_trusted_comment, sig.sig, sizeof sig.sig);
 		memcpy(sig_and_trusted_comment + sizeof sig.sig, trusted_comment.data(), trusted_comment.size());
 
 		if (crypto_sign_verify_detached(global_sig, sig_and_trusted_comment, (sizeof sig.sig) + trusted_comment.size(), pk.pk) != 0)
 		{
-			err = "failed to verify global signature";
+			err = "Failed to verify global signature.";
 			sodium_free(sig_and_trusted_comment);
 			return false;
 		}
