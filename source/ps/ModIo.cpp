@@ -28,6 +28,7 @@
 #include "ps/ConfigDB.h"
 #include "ps/GameSetup/Paths.h"
 #include "ps/Mod.h"
+#include "ps/ModInstaller.h"
 
 #include "i18n/L10n.h"
 #include "lib/file/file_system.h"
@@ -392,9 +393,9 @@ bool ModIo::AdvanceRequest(const ScriptInterface& scriptInterface)
 		{
 			m_DownloadProgressData.Succeed();
 
-			const OsPath finalFilePath = m_DownloadFilePath.Parent() / (m_ModData[m_DownloadModID].properties["name_id"] + ".zip");
-			if (wrename(m_DownloadFilePath, finalFilePath) != 0)
-				LOGERROR("Failed to rename file.");
+			Paths paths(g_args);
+			CModInstaller installer(paths.UserData() / "mods", paths.Cache());
+			installer.Install(m_DownloadFilePath, g_ScriptRuntime, true);
 
 			// TODO: Trying to download a game twice will fail here (obviously)
 		}
@@ -406,8 +407,6 @@ bool ModIo::AdvanceRequest(const ScriptInterface& scriptInterface)
 		}
 		break;
 	}
-
-	// TODO: hook into .pyromod code to do the win32 specific thing because win32...
 
 	return true;
 }

@@ -600,14 +600,13 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 		std::vector<CStr> installedMods;
 		if (!modsToInstall.empty())
 		{
-
 			Paths paths(args);
 			CModInstaller installer(paths.UserData() / "mods", paths.Cache());
 
 			for (const OsPath& modPath : modsToInstall)
 			{
 				// Creates a directory with the name extracted from a `mod.json`
-				CStr modName = installer.Install(modPath, g_ScriptRuntime, true);
+				CStr modName = installer.Install(modPath, g_ScriptRuntime, false);
 				if (!modName.empty())
 					installedMods.emplace_back(modName);
 			}
