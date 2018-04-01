@@ -416,35 +416,33 @@
 	<sprite name="ModernProgressBarBackground">
 		<image
 			texture="global/modern/progressbar/background_end.png"
-			real_texture_placement="14 0 32 32"
-			size="0 0 18 32"
+			size="0 50%-12 5 50%+12"
 		/>
 		<image
 			texture="global/modern/progressbar/background_end.png"
-			real_texture_placement="30 0 31 32"
-			size="18 0 100%-18 32"
+			real_texture_placement="3 0 4 24"
+			size="5 50%-12 100%-5 50%+12"
 		/>
 		<image
 			texture="global/modern/progressbar/background_end.png"
-			real_texture_placement="32 0 14 32"
-			size="100%-18 0 100% 32"
+			size="100% 50%-12 100%-5 50%+12"
 		/>
 	</sprite>
 	<sprite name="ModernProgressBar">
 		<image
 			texture="global/modern/progressbar/bar_end.png"
-			real_texture_placement="16 6 32 26"
-			size="-16 0 0 100%"
+			real_texture_placement="0 0 1 20"
+			size="-1 50%-10 0 50%+10"
 		/>
 		<image
 			texture="global/modern/progressbar/bar_end.png"
-			real_texture_placement="30 6 31 26"
-			size="0 0 100% 100%"
+			real_texture_placement="2 0 4 20"
+			size="0 50%-10 100% 50%+10"
 		/>
 		<image
 			texture="global/modern/progressbar/bar_end.png"
-			real_texture_placement="32 6 16 26"
-			size="100% 0 100%+16 100%"
+			real_texture_placement="1 0 0 20"
+			size="100% 50%-10 100%+1 50%+10"
 		/>
 	</sprite>
 	<!--

@@ -175,7 +175,7 @@
 	/>
 	<style name="ModernProgressBar"
 		sprite_bar="ModernProgressBar"
-		size="18 50%-10 100%-18 50%+10"
+		size="3 0 100%-3 100%"
 	/>
 	<style name="ModernProgressBarText"
 		font="sans-stroke-14"
