@@ -21,12 +21,24 @@
 #include "lib/file/vfs/vfs.h"
 #include "scriptinterface/ScriptInterface.h"
 
+#include <vector>
+
 /**
  * Install a mod into the mods directory.
  */
 class CModInstaller
 {
 public:
+	enum ModInstallationResult
+	{
+		SUCCESS,
+		FAIL_ON_VFS_MOUNT,
+		FAIL_ON_MOD_LOAD,
+		FAIL_ON_PARSE_JSON,
+		FAIL_ON_EXTRACT_NAME,
+		FAIL_ON_MOD_MOVE
+	};
+
 	/**
 	 * Initialise the mod installer for processing the given mod.
 	 *
@@ -40,12 +52,16 @@ public:
 	/**
 	 * Do all the processing and unpacking.
 	 * @param mod path of .pyromod file of mod
-	 *
-	 * @return CStr if successful the name of the mod
 	 */
-	CStr Install(const OsPath& mod,
-	             const std::shared_ptr<ScriptRuntime>& scriptRuntime,
-	             bool deleteAfterInstall);
+	ModInstallationResult Install(
+		const OsPath& mod,
+		const std::shared_ptr<ScriptRuntime>& scriptRuntime,
+		bool deleteAfterInstall);
+
+	/**
+	 * @return a list of mods installed with the object during its lifetime.
+	 */
+	const std::vector<CStr>& GetInstalledMods() const;
 
 	/**
 	 * Returns true if a filename with the extension can be a mod.
@@ -57,6 +73,7 @@ private:
 	OsPath m_ModsDir;
 	OsPath m_TempDir;
 	VfsPath m_CacheDir;
+	std::vector<CStr> m_InstalledMods;
 };
 
 #endif // INCLUDED_MODINSTALLER

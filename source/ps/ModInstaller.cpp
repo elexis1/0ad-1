@@ -38,9 +38,10 @@ CModInstaller::~CModInstaller()
 	DeleteDirectory(m_TempDir);
 }
 
-CStr CModInstaller::Install(const OsPath& mod,
-                            const std::shared_ptr<ScriptRuntime>& scriptRuntime,
-                            bool deleteAfterInstall)
+CModInstaller::ModInstallationResult CModInstaller::Install(
+	const OsPath& mod,
+	const std::shared_ptr<ScriptRuntime>& scriptRuntime,
+	bool deleteAfterInstall)
 {
 	const OsPath modTemp = m_TempDir / mod.Basename() / mod.Filename().ChangeExtension(L".zip");
 	CreateDirectories(modTemp.Parent(), 0700);
@@ -49,27 +50,27 @@ CStr CModInstaller::Install(const OsPath& mod,
 
 	// Load the mod to VFS
 	if (m_VFS->Mount(m_CacheDir, m_TempDir / "") != INFO::OK)
-		return "";
+		return FAIL_ON_VFS_MOUNT;
 	CVFSFile modinfo;
 	PSRETURN modinfo_status = modinfo.Load(m_VFS, m_CacheDir / modTemp.Basename() / "mod.json", false);
 	m_VFS->Clear();
 	if (modinfo_status != PSRETURN_OK)
-		return "";
+		return FAIL_ON_MOD_LOAD;
 
 	// Extract the name of the mod
 	ScriptInterface scriptInterface("Engine", "ModInstaller", scriptRuntime);
 	JSContext* cx = scriptInterface.GetContext();
 	JS::RootedValue json_val(cx);
 	if (!scriptInterface.ParseJSON(modinfo.GetAsString(), &json_val))
-		return "";
+		return FAIL_ON_PARSE_JSON;
 	JS::RootedObject json_obj(cx, json_val.toObjectOrNull());
 	JS::RootedValue name_val(cx);
 	if (!JS_GetProperty(cx, json_obj, "name", &name_val))
-		return "";
+		return FAIL_ON_EXTRACT_NAME;
 	CStr modName;
 	ScriptInterface::FromJSVal(cx, name_val, modName);
 	if (modName.empty())
-		return "";
+		return FAIL_ON_EXTRACT_NAME;
 
 	const OsPath modDir = m_ModsDir / modName;
 	const OsPath modPath = modDir / (modName + ".zip");
@@ -78,7 +79,8 @@ CStr CModInstaller::Install(const OsPath& mod,
 	//   mod-name/
 	//     mod-name.zip
 	CreateDirectories(modDir, 0700);
-	wrename(modTemp, modPath);
+	if (wrename(modTemp, modPath) != 0)
+		return FAIL_ON_MOD_MOVE;
 	DeleteDirectory(modTemp.Parent());
 
 #ifdef OS_WIN
@@ -99,7 +101,15 @@ CStr CModInstaller::Install(const OsPath& mod,
 		// Remove the original file
 		wunlink(mod);
 	}
-	return modName;
+
+	m_InstalledMods.emplace_back(modName);
+
+	return SUCCESS;
+}
+
+const std::vector<CStr>& CModInstaller::GetInstalledMods() const
+{
+	return m_InstalledMods;
 }
 
 // static

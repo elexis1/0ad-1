@@ -132,7 +132,8 @@ struct DownloadProgressData
 
 	std::string error;
 	double progress;
-	enum {
+	enum
+	{
 		NONE, // Default state
 		GAMEID, // The game ID is being downloaded
 		READY, // The game ID has been downloaded

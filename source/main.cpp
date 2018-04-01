@@ -606,12 +606,10 @@ static void RunGameOrAtlas(int argc, const char* argv[])
 			for (const OsPath& modPath : modsToInstall)
 			{
 				// Creates a directory with the name extracted from a `mod.json`
-				CStr modName = installer.Install(modPath, g_ScriptRuntime, false);
-				if (!modName.empty())
-					installedMods.emplace_back(modName);
+				installer.Install(modPath, g_ScriptRuntime, false);
 			}
 
-			modsToInstall.clear();
+			installedMods = installer.GetInstalledMods();
 		}
 
 		if (isNonVisual)
