@@ -1,3 +1,27 @@
+function filesizeToString(filesize)
+{
+	let suffixes = [
+		translateWithContext("filesize unit", "B"),
+		translateWithContext("filesize unit", "KiB"),
+		translateWithContext("filesize unit", "MiB"),
+		translateWithContext("filesize unit", "GiB")
+	];
+
+	let i = 0;
+	while (i < suffixes.length - 1)
+	{
+		if (filesize < 1024)
+			break;
+		filesize /= 1024;
+		++i;
+	}
+
+	return {
+		"filesize": filesize.toFixed(i == 0 ? 0 : 1),
+		"suffix": suffixes[i]
+	};
+}
+
 /**
  * These functions rely on the JS cache where possible and
  * should be prefered over the Engine.Translate ones to optimize the performance.

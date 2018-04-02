@@ -22,56 +22,39 @@ function init()
 	Engine.ModIoStartGetGameId();
 }
 
-function filesizeToString(filesize)
+function displayMods()
 {
-	let suffixes = ["B", "KiB", "MiB", "GiB"]; // Bigger values are currently unlikely to occur here...
-	let i = 0;
-	while (i < suffixes.length - 1)
-	{
-		if (filesize < 1024)
-			break;
-		filesize /= 1024;
-		++i;
-	}
+	let modsAvailableList = Engine.GetGUIObjectByName("modsAvailableList");
 
-	return {
-		"filesize": filesize.toFixed(i == 0 ? 0 : 1),
-		"suffix": suffixes[i]
-	};
+	let displayedMods = clone(g_ModsAvailableOnline);
+	for (let i = 0; i < displayedMods.length; ++i)
+		displayedMods[i].i = i;
+ 
+	displayedMods.sort((mod1, mod2) =>
+		modsAvailableList.selected_column_order *
+		(modsAvailableList.selected_column == "filesize" ?
+			mod1.filesize - mod2.filesize :
+			String(mod1[modsAvailableList.selected_column]).localeCompare(String(mod2[modsAvailableList.selected_column]))));
+
+	modsAvailableList.list_name = displayedMods.map(mod => mod.name);
+	modsAvailableList.list_name_id = displayedMods.map(mod => mod.name_id);
+	modsAvailableList.list_version = displayedMods.map(mod => mod.version);
+	// Translation: File size with suffix (ie. 123.4 KiB)
+	modsAvailableList.list_filesize = displayedMods.map(mod => sprintf(translate("%(filesize)s %(suffix)s"), filesizeToString(mod.filesize)));
+	modsAvailableList.list_dependencies = displayedMods.map(mod => (mod.dependencies || []).join(" "));
+	modsAvailableList.list = displayedMods.map(mod => mod.i);
 }
 
-function generateModsList(mods)
+function selectedModIndex()
 {
-	let [keys, names, name_ids, versions, filesizes, dependencies] = [[], [], [], [], [], []];
-
-	let i = 0;
-	for (let mod of mods)
-	{
-		keys.push(i++);
-		names.push(mod.name);
-		name_ids.push(mod.name_id);
-		versions.push(mod.version);
-		// Translation: File size with suffix (ie. 123.4 KiB)
-		filesizes.push(sprintf(translate("%(filesize)s %(suffix)s"), filesizeToString(mod.filesize)));
-		dependencies.push((mod.dependencies || []).join(" "));
-	}
-
-	let obj = Engine.GetGUIObjectByName("modsAvailableList");
-	obj.list_name = names;
-	obj.list_modVersion = versions;
-	obj.list_modname_id = name_ids;
-	obj.list_modfilesize = filesizes;
-	obj.list_dependencies = dependencies;
-
-	obj.list = keys;
+	let modsAvailableList = Engine.GetGUIObjectByName("modsAvailableList");
+	return +modsAvailableList.list[modsAvailableList.selected];
 }
 
 function showModDescription()
 {
 	Engine.GetGUIObjectByName("downloadButton").enabled = true;
-	let listObject = Engine.GetGUIObjectByName("modsAvailableList");
-	if (listObject.selected != -1)
-		Engine.GetGUIObjectByName("modDescription").caption = g_ModsAvailableOnline[listObject.selected].summary;
+	Engine.GetGUIObjectByName("modDescription").caption = g_ModsAvailableOnline[selectedModIndex] ? g_ModsAvailableOnline[selectedModIndex].summary : "";
 }
 
 function updateModList()
@@ -92,16 +75,11 @@ function updateModList()
 
 function downloadMod()
 {
-	let listObject = Engine.GetGUIObjectByName("modsAvailableList");
-	if (listObject.selected == -1)
-	{
-		warn("Select something first.");
-		return;
-	}
+	let selected = selectedModIndex();
 
 	progressDialog(
 		sprintf(translate("Downloading “%(modname)s”"), {
-			"modname": g_ModsAvailableOnline[listObject.selected].name
+			"modname": g_ModsAvailableOnline[selected].name
 		}),
 		translate("Downloading"), true,
 		translate("Cancel Download"), () => cancelRequest()
@@ -109,7 +87,7 @@ function downloadMod()
 	Engine.GetGUIObjectByName("downloadButton").enabled = false;
 
 	g_Failure = false;
-	Engine.ModIoStartDownloadMod(+listObject.list[listObject.selected]);
+	Engine.ModIoStartDownloadMod(selected);
 }
 
 function cancelRequest()
@@ -139,7 +117,7 @@ function onTick()
 			hideDialog();
 			Engine.GetGUIObjectByName("refreshButton").enabled = true;
 			g_ModsAvailableOnline = Engine.ModIoGetMods();
-			generateModsList(g_ModsAvailableOnline);
+			displayMods();
 		}
 		return;
 

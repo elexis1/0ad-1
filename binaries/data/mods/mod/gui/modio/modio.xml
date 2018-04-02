@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <objects>
+
 	<script directory="gui/common/"/>
 	<script directory="gui/modio/"/>
 
@@ -24,23 +25,29 @@
 			</object>
 
 			<object name="modsAvailableList"
-				style="ModernList"
 				type="olist"
+				style="ModernSortedList"
 				size="0 25 100%-2 100%"
+				sortable="true"
+				selected_column="name"
+				selected_column_order="1"
 				font="sans-stroke-13"
 			>
 				<action on="SelectionChange">showModDescription();</action>
+				<action on="SelectionColumnChange">displayMods();</action>
+				<action on="MouseLeftDoubleClickItem">downloadMod();</action>
+
 				<!-- List headers -->
-				<column id="modname_id" color="255 255 255" width="20%">
+				<column id="name_id" color="255 255 255" width="20%">
 					<translatableAttribute id="heading">Name</translatableAttribute>
 				</column>
-				<column id="modVersion" color="255 255 255" width="10%">
+				<column id="version" color="255 255 255" width="15%">
 					<translatableAttribute id="heading">Version</translatableAttribute>
 				</column>
 				<column id="name" color="255 255 255" width="20%">
 					<translatableAttribute id="heading">Mod Label</translatableAttribute>
 				</column>
-				<column id="modfilesize" color="255 255 255" width="15%">
+				<column id="filesize" color="255 255 255" width="20%">
 					<translatableAttribute id="heading">File Size</translatableAttribute>
 				</column>
 				<column id="dependencies" color="255 255 255" width="25%">
@@ -55,10 +62,12 @@
 			<translatableAttribute id="caption">Back</translatableAttribute>
 			<action on="Press">Engine.SwitchGuiPage("page_modmod.xml");</action>
 		</object>
+
 		<object name="refreshButton" type="button" style="ModernButtonRed" size="100%-368 100%-44 100%-188 100%-16" enabled="false">
 			<translatableAttribute id="caption">Refresh List</translatableAttribute>
 			<action on="Press">updateModList();</action>
 		</object>
+
 		<object name="downloadButton" type="button" style="ModernButtonRed" size="100%-184 100%-44 100%-16 100%-16" enabled="false">
 			<translatableAttribute id="caption">Download</translatableAttribute>
 			<action on="Press">downloadMod();</action>

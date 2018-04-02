@@ -69,6 +69,7 @@
 				<action on="MouseLeftDoubleClickItem">enableMod();</action>
 
 				<!-- List headers -->
+				<!-- Keep the column names in sync with the property names of mods -->
 				<column id="name" color="255 255 255" width="10%">
 					<translatableAttribute id="heading">Name</translatableAttribute>
 				</column>
@@ -88,19 +89,24 @@
 					<translatableAttribute id="heading">Website</translatableAttribute>
 				</column>
 			</object>
-			<object name="globalModDescription" type="text" style="ModmodScrollbar" size="0 100%-35 100%-184-184-184-4 100%" />
-			<object type="button" style="ModernButtonRed" size="100%-184-184-184-4-4 100%-28 100%-184-184-4-4 100%">
-				<translatableAttribute id="caption">Check Online</translatableAttribute>
+
+			<object name="globalModDescription" type="text" style="ModmodScrollbar" size="188 100%-35 100%-372 100%" />
+
+			<object type="button" style="ModernButtonRed" size="8 100%-28 188 100%">
+				<translatableAttribute id="caption">Download Mods</translatableAttribute>
 				<action on="Press">modIo();</action>
 			</object>
-			<object type="button" style="ModernButtonRed" size="100%-184-184-4 100%-28 100%-184-4 100%">
+
+			<object type="button" style="ModernButtonRed" size="100%-372 100%-28 100%-188 100%">
 				<translatableAttribute id="caption">Visit Website</translatableAttribute>
 				<action on="Press">visitModWebsite("modsDisabledList");</action>
 			</object>
+
 			<object type="button" style="ModernButtonRed" size="100%-184 100%-28 100% 100%">
 				<translatableAttribute id="caption">Enable</translatableAttribute>
 				<action on="Press">enableMod();</action>
 			</object>
+
 		</object>
 
 		<!-- Enabled Mods Wrapper -->

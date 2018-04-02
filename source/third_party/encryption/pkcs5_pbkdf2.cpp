@@ -39,7 +39,7 @@ static void hmac_sha256(unsigned char (&digest)[crypto_hash_sha256_BYTES],
 
 	memset(k_pad, 0, sizeof k_pad);
 	memcpy(k_pad, key, key_len);
-	for (int i = 0; i < crypto_hash_sha256_BYTES; ++i)
+	for (unsigned int i = 0; i < crypto_hash_sha256_BYTES; ++i)
 		k_pad[i] ^= 0x36;
 	crypto_hash_sha256_init(&state);
 	crypto_hash_sha256_update(&state, k_pad, crypto_hash_sha256_BYTES);
@@ -49,7 +49,7 @@ static void hmac_sha256(unsigned char (&digest)[crypto_hash_sha256_BYTES],
 
 	memset(k_pad, 0, sizeof k_pad);
 	memcpy(k_pad, key, key_len);
-	for (int i = 0; i < crypto_hash_sha256_BYTES; ++i)
+	for (unsigned int i = 0; i < crypto_hash_sha256_BYTES; ++i)
 		k_pad[i] ^= 0x5c;
 
 	crypto_hash_sha256_init(&state);
