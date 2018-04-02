@@ -77,6 +77,6 @@
     <content_attribute id="money-gambling">none</content_attribute>
   </content_rating>
   <mimetypes>
-    <mimetype>application/x-pyromod</mimetype>
+    <mimetype>application/x-pyromod+zip</mimetype>
   </mimetypes>
 </application>
