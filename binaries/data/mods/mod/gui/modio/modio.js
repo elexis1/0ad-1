@@ -10,6 +10,119 @@ var g_ModsAvailableOnline = [];
  */
 var g_Failure;
 
+/**
+ * Returns true if ModIoAdvanceRequest should be called.
+ */
+var g_ModIOState = {
+	/**
+	 * Finished status indicators
+	 */
+	"ready": progressData => {
+		// GameID acquired, ready to fetch mod list
+		updateModList();
+		return true;
+	},
+	"listed": progressData => {
+		// List of available mods acquired
+
+		// Only run this once (for each update).
+		if (g_ModsAvailableOnline.length)
+			return true;
+
+		hideDialog();
+		Engine.GetGUIObjectByName("refreshButton").enabled = true;
+		g_ModsAvailableOnline = Engine.ModIoGetMods();
+		displayMods();
+		return true;
+	},
+	"success": progressData => {
+		// Successfully acquired a mod file
+		hideDialog();
+		Engine.GetGUIObjectByName("downloadButton").enabled = true;
+		return true;
+	},
+	/**
+	 * In-progress status indicators.
+	 */
+	"gameid": progressData => {
+		// Acquiring GameID from mod.io
+		return true;
+	},
+	"listing": progressData => {
+		// Acquiring list of available mods from mod.io
+		return true;
+	},
+	"downloading": progressData => {
+		// Downloading a mod file
+		let totalSize = g_ModsAvailableOnline[selectedModIndex()].filesize;
+		let progressPercent = Math.ceil(progressData.progress * 100);
+
+		Engine.GetGUIObjectByName("downloadDialog_progressBar").caption = progressPercent;
+
+		// Translation: Mod file download indicator. Current download size over expected final size, with percentage complete.
+		Engine.GetGUIObjectByName("downloadDialog_progressText").caption = sprintf(translate("%(current)s / %(total)s (%(percent)s%%)"), {
+			"current": filesizeToString(progressData.progress * totalSize),
+			"total": filesizeToString(totalSize),
+			"percent": progressPercent
+		});
+		return true;
+	},
+	/**
+	 * Error/Failure status indicators.
+	 */
+	"failed_gameid": progressData => {
+		// Game ID couldn't be retrieved
+		showErrorMessageBox(
+			sprintf(translateWithContext("mod.io error message", "Game ID could not be retrieved.\n\n%(technicalDetails)s"), {
+				"technicalDetails": progressData.error || "-"
+			}),
+			translateWithContext("mod.io error message", "Initialization Error"),
+			[translate("Abort"), translate("Retry")],
+			[Engine.PopGuiPage, init]);
+		return false;
+	},
+	"failed_listing":  progressData => {
+		// Mod list couldn't be retrieved
+		showErrorMessageBox(
+			sprintf(translateWithContext("mod.io error message", "Mod List could not be retrieved.\n\n%(technicalDetails)s"), {
+				"technicalDetails": progressData.error || "-"
+			}),
+			translateWithContext("mod.io error message", "Fetch Error"),
+			[translate("Abort"), translate("Retry")],
+			[cancelRequest, updateModList]);
+		return false;
+	},
+	"failed_downloading":  progressData => {
+		// File couldn't be retrieved
+		showErrorMessageBox(
+			sprintf(translateWithContext("mod.io error message", "File download failed.\n\n%(technicalDetails)s"), {
+				"technicalDetails": progressData.error || "-"
+			}),
+			translateWithContext("mod.io error message", "Download Error"),
+			[translate("Abort"), translate("Retry")],
+			[cancelRequest, downloadMod]);
+		return false;
+	},
+	"failed_filecheck":  progressData => {
+		// The file is corrupted
+		showErrorMessageBox(
+			sprintf(translateWithContext("mod.io error message", "File verification error.\n\n%(technicalDetails)s"), {
+				"technicalDetails": progressData.error || "-"
+			}),
+			translateWithContext("mod.io error message", "Verification Error"),
+			[translate("Abort")],
+			[cancelRequest]);
+		return false;
+	},
+	/**
+	 * Defaults
+	 */
+	"none":  progressData => {
+		// Nothing has happened yet.
+		return true;
+	}
+};
+
 function init(data)
 {
 	progressDialog(
@@ -21,6 +134,18 @@ function init(data)
 
 	g_Failure = false;
 	Engine.ModIoStartGetGameId();
+}
+
+function onTick()
+{
+	let progressData = Engine.ModIoGetDownloadProgress();
+
+	let handler = g_ModIOState[progressData.status];
+	if (!handler)
+		warn("Unrecognised progress status: " + progressData.status);
+
+	if (handler(progressData))
+		Engine.ModIoAdvanceRequest();
 }
 
 function displayMods()
@@ -105,122 +230,11 @@ function cancelRequest()
 	hideDialog();
 }
 
-function onTick()
-{
-	let progressData = Engine.ModIoGetDownloadProgress();
-
-	switch (progressData.status)
-	{
-	/**
-	 * Finished status indicators
-	 */
-	case "ready": // GameID acquired, ready to fetch mod list
-		updateModList();
-		return;
-
-	case "listed": // List of available mods acquired
-		if (!g_ModsAvailableOnline.length) // Only run this once (for each update).
-		{
-			hideDialog();
-			Engine.GetGUIObjectByName("refreshButton").enabled = true;
-			g_ModsAvailableOnline = Engine.ModIoGetMods();
-			displayMods();
-		}
-		return;
-
-	case "success": // Successfully acquired a mod file
-		hideDialog();
-		Engine.GetGUIObjectByName("downloadButton").enabled = true;
-		return;
-
-	/**
-	 * In-progress status indicators.
-	 */
-	case "gameid": // Acquiring GameID from mod.io
-		break;
-
-	case "listing": // Acquiring list of available mods from mod.io
-		break;
-
-	case "downloading": // Downloading a mod file
-	{
-		let totalSize = g_ModsAvailableOnline[selectedModIndex()].filesize;
-		let progressPercent = Math.ceil(progressData.progress * 100);
-
-		Engine.GetGUIObjectByName("downloadDialog_progressBar").caption = progressPercent;
-
-		// Translation: Mod file download indicator. Current download size over expected final size, with percentage complete.
-		Engine.GetGUIObjectByName("downloadDialog_progressText").caption = sprintf(translate("%(current)s / %(total)s (%(percent)s%%)"), {
-			"current": filesizeToString(progressData.progress * totalSize),
-			"total": filesizeToString(totalSize),
-			"percent": progressPercent
-		});
-		break;
-	}
-
-	/**
-	 * Error/Failure status indicators.
-	 */
-	case "failed_gameid": // Game ID couldn't be retrieved
-		if (!g_Failure)
-			showErrorMessageBox(
-				sprintf(translateWithContext("mod.io error message", "Game ID could not be retrieved.\n\n%(technicalDetails)s"), {
-					"technicalDetails": progressData.error || "-"
-				}),
-				translateWithContext("mod.io error message", "Initialization Error"),
-				[translate("Abort"), translate("Retry")],
-				[Engine.PopGuiPage, init]);
-		return;
-
-	case "failed_listing": // Mod list couldn't be retrieved
-		if (!g_Failure)
-			showErrorMessageBox(
-				sprintf(translateWithContext("mod.io error message", "Mod List could not be retrieved.\n\n%(technicalDetails)s"), {
-					"technicalDetails": progressData.error || "-"
-				}),
-				translateWithContext("mod.io error message", "Fetch Error"),
-				[translate("Abort"), translate("Retry")],
-				[cancelRequest, updateModList]);
-		return;
-
-	case "failed_downloading": // File couldn't be retrieved
-		if (!g_Failure)
-			showErrorMessageBox(
-				sprintf(translateWithContext("mod.io error message", "File download failed.\n\n%(technicalDetails)s"), {
-					"technicalDetails": progressData.error || "-"
-				}),
-				translateWithContext("mod.io error message", "Download Error"),
-				[translate("Abort"), translate("Retry")],
-				[cancelRequest, downloadMod]);
-		return;
-
-	case "failed_filecheck": // The file is corrupted
-		if (!g_Failure)
-			showErrorMessageBox(
-				sprintf(translateWithContext("mod.io error message", "File verification error.\n\n%(technicalDetails)s"), {
-					"technicalDetails": progressData.error || "-"
-				}),
-				translateWithContext("mod.io error message", "Verification Error"),
-				[translate("Abort")],
-				[cancelRequest]
-			);
-		return;
-
-	/**
-	 * Defaults
-	 */
-	case "none": // Nothing has happened yet.
-		break;
-
-	default:
-		warn("Unrecognised progress status: " + progressData.status);
-	}
-
-	Engine.ModIoAdvanceRequest();
-}
-
 function showErrorMessageBox(caption, title, buttonCaptions, buttonActions)
 {
+	if (g_Failure)
+		return;
+
 	messageBox(400, 160, caption, title, buttonCaptions, buttonActions);
 	g_Failure = true;
 }
