@@ -142,7 +142,10 @@ function onTick()
 
 	let handler = g_ModIOState[progressData.status];
 	if (!handler)
-		warn("Unrecognised progress status: " + progressData.status);
+	{
+		warn("Unrecognized progress status: " + progressData.status);
+		return;
+	}
 
 	if (handler(progressData))
 		Engine.ModIoAdvanceRequest();
