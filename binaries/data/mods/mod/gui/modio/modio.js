@@ -78,7 +78,7 @@ var g_ModIOState = {
 			}),
 			translateWithContext("mod.io error message", "Initialization Error"),
 			[translate("Abort"), translate("Retry")],
-			[Engine.PopGuiPage, init]);
+			[closePage, init]);
 		return false;
 	},
 	"failed_listing":  progressData => {
@@ -130,7 +130,7 @@ function init(data)
 		translate("Initializing"),
 		false,
 		translate("Cancel"),
-		Engine.PopGuiPage);
+		closePage);
 
 	g_Failure = false;
 	Engine.ModIoStartGetGameId();
@@ -228,6 +228,11 @@ function cancelRequest()
 	g_Failure = false;
 	Engine.ModIoCancelRequest();
 	hideDialog();
+}
+
+function closePage(data)
+{
+	Engine.PopGuiPageCB(undefined);
 }
 
 function showErrorMessageBox(caption, title, buttonCaptions, buttonActions)

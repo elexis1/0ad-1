@@ -61,7 +61,7 @@
 		<!-- Buttons -->
 		<object type="button" style="ModernButtonRed" size="100%-552 100%-44 100%-372 100%-16">
 			<translatableAttribute id="caption">Back</translatableAttribute>
-			<action on="Press">Engine.PopGuiPage();</action>
+			<action on="Press">closePage();</action>
 		</object>
 
 		<object name="refreshButton" type="button" style="ModernButtonRed" size="100%-368 100%-44 100%-188 100%-16" enabled="false">

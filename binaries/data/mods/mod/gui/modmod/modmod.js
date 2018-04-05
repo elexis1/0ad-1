@@ -60,11 +60,16 @@ var g_ColorDependenciesNotMet = "255 100 100";
 function init(data, hotloadData)
 {
 	g_InstalledMods = data && data.installedMods || hotloadData && hotloadData.installedMods || [];
+	initMods();
+	initGUIButtons(data);
+}
+
+function initMods()
+{
 	loadMods();
 	loadEnabledMods();
 	validateMods();
 	initGUIFilters();
-	initGUIButtons(data);
 }
 
 function getHotloadData()
@@ -317,8 +322,7 @@ function modIo()
 			null,
 			() => {
 				Engine.PushGuiPage("page_modio.xml", {
-					"callback": "init",
-					"installedMods": g_InstalledMods
+					"callback": "initMods"
 				});
 			}
 		]
