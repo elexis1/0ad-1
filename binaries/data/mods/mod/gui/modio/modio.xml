@@ -38,6 +38,7 @@
 				<action on="MouseLeftDoubleClickItem">downloadMod();</action>
 
 				<!-- List headers -->
+				<!-- Keep in sync with mod property names -->
 				<column id="name_id" color="255 255 255" width="20%">
 					<translatableAttribute id="heading">Name</translatableAttribute>
 				</column>
@@ -60,7 +61,7 @@
 		<!-- Buttons -->
 		<object type="button" style="ModernButtonRed" size="100%-552 100%-44 100%-372 100%-16">
 			<translatableAttribute id="caption">Back</translatableAttribute>
-			<action on="Press">Engine.SwitchGuiPage("page_modmod.xml");</action>
+			<action on="Press">Engine.PopGuiPage();</action>
 		</object>
 
 		<object name="refreshButton" type="button" style="ModernButtonRed" size="100%-368 100%-44 100%-188 100%-16" enabled="false">
@@ -90,7 +91,7 @@
 				<object name="downloadDialog_progressText" type="text" style="ModernProgressBarText"/>
 			</object>
 
-			<object name="downloadDialog_button" type="button" style="ModernButtonRed" size="50%-80 75%-14 50%+80 75%+14"/>
+			<object name="downloadDialog_button" type="button" style="ModernButtonRed" size="50%-80 75%-14 50%+80 75%+14" hotkey="cancel"/>
 
 		</object>
 	</object>

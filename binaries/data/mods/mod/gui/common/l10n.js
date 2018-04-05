@@ -1,6 +1,6 @@
 function filesizeToString(filesize)
 {
-	let suffixes = [
+	let units = [
 		translateWithContext("filesize unit", "B"),
 		translateWithContext("filesize unit", "KiB"),
 		translateWithContext("filesize unit", "MiB"),
@@ -8,7 +8,7 @@ function filesizeToString(filesize)
 	];
 
 	let i = 0;
-	while (i < suffixes.length - 1)
+	while (i < units.length - 1)
 	{
 		if (filesize < 1024)
 			break;
@@ -16,10 +16,11 @@ function filesizeToString(filesize)
 		++i;
 	}
 
-	return {
+	// Translation: For example 123.4 KiB
+	return sprintf(translate("%(filesize)s %(unit)s"), {
 		"filesize": filesize.toFixed(i == 0 ? 0 : 1),
-		"suffix": suffixes[i]
-	};
+		"unit": units[i]
+	});
 }
 
 /**

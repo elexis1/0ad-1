@@ -49,7 +49,7 @@ var g_ModsEnabled = [];
 var g_ModsDisabled = [];
 
 /**
- * name of the mods installed by the ModInstaller.
+ * Name of the mods installed by the ModInstaller.
  */
 var g_InstalledMods;
 
@@ -57,14 +57,19 @@ var g_ColorNoModSelected = "255 255 100";
 var g_ColorDependenciesMet = "100 255 100";
 var g_ColorDependenciesNotMet = "255 100 100";
 
-function init(data)
+function init(data, hotloadData)
 {
-	g_InstalledMods = data && data.installedMods || [];
+	g_InstalledMods = data && data.installedMods || hotloadData && hotloadData.installedMods || [];
 	loadMods();
 	loadEnabledMods();
 	validateMods();
 	initGUIFilters();
 	initGUIButtons(data);
+}
+
+function getHotloadData()
+{
+	return { "installedMods": g_InstalledMods };
 }
 
 function loadMods()
@@ -96,7 +101,7 @@ function initGUIFilters()
 function initGUIButtons(data)
 {
 	// Either get back to the previous page or quit if there is no previous page
-	let cancelButton = !data || data.cancelbutton === undefined || data.cancelbutton;
+	let cancelButton = !data || data.cancelbutton;
 	Engine.GetGUIObjectByName("cancelButton").hidden = !cancelButton;
 	Engine.GetGUIObjectByName("quitButton").hidden = cancelButton;
 }
@@ -308,7 +313,15 @@ function modIo()
 		translate("You are about to connect to the mod.io server. This provides easy access to community-made mods, but is not under the control of Wildfire Games.\n\n While we have taken care to make this secure, there is no absolute certainty that this is not a security risk.\n\nDo you really want to connect?"),
 		translate("Connect to mod.io?"),
 		[translate("Cancel"), translateWithContext("mod.io connection message box", "Connect")],
-		[null, function() { Engine.PushGuiPage("page_modio.xml"); }]
+		[
+			null,
+			() => {
+				Engine.PushGuiPage("page_modio.xml", {
+					"callback": "init",
+					"installedMods": g_InstalledMods
+				});
+			}
+		]
 	);
 }
 

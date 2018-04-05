@@ -6,17 +6,18 @@ var g_ModsAvailableOnline = [];
  * We use a global so we don't get multiple messageBoxes appearing (one for each "tick").
  *
  * Set to `true` by showErrorMessageBox()
- * Set to `false` by init(), updateModList(), downloadFile(), and cancelRequest()
+ * Set to `false` by init, updateModList, downloadFile and cancelRequest
  */
 var g_Failure;
 
-function init()
+function init(data)
 {
 	progressDialog(
 		translate("Initializing mod.io interface."),
-		translate("Initializing"), false,
-		translate("Cancel"), () => closePage()
-	);
+		translate("Initializing"),
+		false,
+		translate("Cancel"),
+		Engine.PopGuiPage);
 
 	g_Failure = false;
 	Engine.ModIoStartGetGameId();
@@ -39,8 +40,7 @@ function displayMods()
 	modsAvailableList.list_name = displayedMods.map(mod => mod.name);
 	modsAvailableList.list_name_id = displayedMods.map(mod => mod.name_id);
 	modsAvailableList.list_version = displayedMods.map(mod => mod.version);
-	// Translation: File size with suffix (ie. 123.4 KiB)
-	modsAvailableList.list_filesize = displayedMods.map(mod => sprintf(translate("%(filesize)s %(suffix)s"), filesizeToString(mod.filesize)));
+	modsAvailableList.list_filesize = displayedMods.map(mod => filesizeToString(mod.filesize));
 	modsAvailableList.list_dependencies = displayedMods.map(mod => (mod.dependencies || []).join(" "));
 	modsAvailableList.list = displayedMods.map(mod => mod.i);
 }
@@ -48,13 +48,18 @@ function displayMods()
 function selectedModIndex()
 {
 	let modsAvailableList = Engine.GetGUIObjectByName("modsAvailableList");
+
+	if (modsAvailableList.selected == -1)
+		return undefined;
+
 	return +modsAvailableList.list[modsAvailableList.selected];
 }
 
 function showModDescription()
 {
-	Engine.GetGUIObjectByName("downloadButton").enabled = true;
-	Engine.GetGUIObjectByName("modDescription").caption = g_ModsAvailableOnline[selectedModIndex] ? g_ModsAvailableOnline[selectedModIndex].summary : "";
+	let selected = selectedModIndex();
+	Engine.GetGUIObjectByName("downloadButton").enabled = selected !== undefined;
+	Engine.GetGUIObjectByName("modDescription").caption = selected !== undefined ? g_ModsAvailableOnline[selected].summary : "";
 }
 
 function updateModList()
@@ -65,9 +70,10 @@ function updateModList()
 
 	progressDialog(
 		translate("Fetching and updating list of available mods."),
-		translate("Updating"), false,
-		translate("Cancel Update"), () => cancelRequest()
-	);
+		translate("Updating"),
+		false,
+		translate("Cancel Update"),
+		cancelRequest);
 
 	g_Failure = false;
 	Engine.ModIoStartListMods();
@@ -81,9 +87,11 @@ function downloadMod()
 		sprintf(translate("Downloading “%(modname)s”"), {
 			"modname": g_ModsAvailableOnline[selected].name
 		}),
-		translate("Downloading"), true,
-		translate("Cancel Download"), () => cancelRequest()
-	);
+		translate("Downloading"),
+		true,
+		translate("Cancel Download"),
+		cancelRequest);
+
 	Engine.GetGUIObjectByName("downloadButton").enabled = false;
 
 	g_Failure = false;
@@ -103,7 +111,6 @@ function onTick()
 
 	switch (progressData.status)
 	{
-
 	/**
 	 * Finished status indicators
 	 */
@@ -130,25 +137,22 @@ function onTick()
 	 * In-progress status indicators.
 	 */
 	case "gameid": // Acquiring GameID from mod.io
+		break;
+
 	case "listing": // Acquiring list of available mods from mod.io
 		break;
 
 	case "downloading": // Downloading a mod file
 	{
+		let totalSize = g_ModsAvailableOnline[selectedModIndex()].filesize;
 		let progressPercent = Math.ceil(progressData.progress * 100);
-		Engine.GetGUIObjectByName("downloadDialog_progressBar").caption = progressPercent;
 
-		let listObject = Engine.GetGUIObjectByName("modsAvailableList");
-		let fileSize = g_ModsAvailableOnline[+listObject.list[listObject.selected]].filesize;
-		let currentSize = filesizeToString(progressData.progress * fileSize);
-		fileSize = filesizeToString(fileSize);
+		Engine.GetGUIObjectByName("downloadDialog_progressBar").caption = progressPercent;
 
 		// Translation: Mod file download indicator. Current download size over expected final size, with percentage complete.
 		Engine.GetGUIObjectByName("downloadDialog_progressText").caption = sprintf(translate("%(current)s / %(total)s (%(percent)s%%)"), {
-			// Translation: File size with suffix (ie. 123.4 KiB)
-			"current": currentSize.suffix == fileSize.suffix ? currentSize.filesize : sprintf(translate("%(filesize)s %(suffix)s"), currentSize),
-			// Translation: File size with suffix (ie. 123.4 KiB)
-			"total": sprintf(translate("%(filesize)s %(suffix)s"), fileSize),
+			"current": filesizeToString(progressData.progress * totalSize),
+			"total": filesizeToString(totalSize),
 			"percent": progressPercent
 		});
 		break;
@@ -165,8 +169,7 @@ function onTick()
 				}),
 				translateWithContext("mod.io error message", "Initialization Error"),
 				[translate("Abort"), translate("Retry")],
-				[() => closePage(), () => init()]
-			);
+				[Engine.PopGuiPage, init]);
 		return;
 
 	case "failed_listing": // Mod list couldn't be retrieved
@@ -177,8 +180,7 @@ function onTick()
 				}),
 				translateWithContext("mod.io error message", "Fetch Error"),
 				[translate("Abort"), translate("Retry")],
-				[() => cancelRequest(), () => updateModList()]
-			);
+				[cancelRequest, updateModList]);
 		return;
 
 	case "failed_downloading": // File couldn't be retrieved
@@ -189,8 +191,7 @@ function onTick()
 				}),
 				translateWithContext("mod.io error message", "Download Error"),
 				[translate("Abort"), translate("Retry")],
-				[() => cancelRequest(), () => downloadMod()]
-			);
+				[cancelRequest, downloadMod]);
 		return;
 
 	case "failed_filecheck": // The file is corrupted
@@ -201,7 +202,7 @@ function onTick()
 				}),
 				translateWithContext("mod.io error message", "Verification Error"),
 				[translate("Abort")],
-				[() => cancelRequest()]
+				[cancelRequest]
 			);
 		return;
 
@@ -213,15 +214,9 @@ function onTick()
 
 	default:
 		warn("Unrecognised progress status: " + progressData.status);
-
 	}
 
 	Engine.ModIoAdvanceRequest();
-}
-
-function closePage()
-{
-	Engine.PopGuiPage();
 }
 
 function showErrorMessageBox(caption, title, buttonCaptions, buttonActions)
@@ -236,6 +231,7 @@ function progressDialog(dialogCaption, dialogTitle, showProgressBar, buttonCapti
 
 	let downloadDialog_caption = Engine.GetGUIObjectByName("downloadDialog_caption");
 	downloadDialog_caption.caption = dialogCaption;
+
 	let size = downloadDialog_caption.size;
 	size.rbottom = showProgressBar ? 50 : 75;
 	downloadDialog_caption.size = size;
@@ -248,6 +244,7 @@ function progressDialog(dialogCaption, dialogTitle, showProgressBar, buttonCapti
 
 	Engine.GetGUIObjectByName("downloadDialog").hidden = false;
 }
+
 
 function hideDialog()
 {
