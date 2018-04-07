@@ -38,7 +38,14 @@
 			</object>
 		</object>
 
-		<object name="globalModDescription" type="text" style="ModernText" size="312 33 100%-16 70" textcolor="180 180 180" text_valign="center">
+		<object
+			name="globalModDescription"
+			type="text"
+			size="312 32 100%-16 69"
+			textcolor="180 180 180"
+			text_align="left"
+			text_valign="center"
+		>
 			<translatableAttribute id="caption">Description</translatableAttribute>
 		</object>
 
