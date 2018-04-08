@@ -130,7 +130,7 @@ function init(data)
 		translate("Initializing"),
 		false,
 		translate("Cancel"),
-		closePage);
+		() => { cancelRequest(); closePage(); });
 
 	g_Failure = false;
 	Engine.ModIoStartGetGameId();
