@@ -5,10 +5,21 @@ var g_ModsAvailableOnline = [];
  *
  * We use a global so we don't get multiple messageBoxes appearing (one for each "tick").
  *
- * Set to `true` by showErrorMessageBox()
- * Set to `false` by init, updateModList, downloadFile and cancelRequest
+ * Set to `true` by showErrorMessageBox
+ * Set to `false` by init, updateModList, downloadFile, and cancelRequest
  */
 var g_Failure;
+
+/**
+ * Indicates if the user has cancelled a request.
+ *
+ * Primarily used so the user can cancel the mod list fetch, as whenever that get cancelled,
+ * the modio state reverts to "ready", even if we've successfully listed mods before.
+ *
+ * Set to `true` by cancelRequest
+ * Set to `false` by updateModList, and downloadFile
+ */
+var g_RequestCancelled;
 
 /**
  * Returns true if ModIoAdvanceRequest should be called.
@@ -19,7 +30,8 @@ var g_ModIOState = {
 	 */
 	"ready": progressData => {
 		// GameID acquired, ready to fetch mod list
-		updateModList();
+		if (!g_RequestCancelled)
+			updateModList();
 		return true;
 	},
 	"listed": progressData => {
@@ -130,7 +142,7 @@ function init(data)
 		translate("Initializing"),
 		false,
 		translate("Cancel"),
-		() => { cancelRequest(); closePage(); });
+		closePage);
 
 	g_Failure = false;
 	Engine.ModIoStartGetGameId();
@@ -201,9 +213,10 @@ function updateModList()
 		translate("Updating"),
 		false,
 		translate("Cancel Update"),
-		cancelRequest);
+		() => { Engine.GetGUIObjectByName('refreshButton').enabled = true; });
 
 	g_Failure = false;
+	g_RequestCancelled = false;
 	Engine.ModIoStartListMods();
 }
 
@@ -218,17 +231,19 @@ function downloadMod()
 		translate("Downloading"),
 		true,
 		translate("Cancel Download"),
-		cancelRequest);
+		() => { Engine.GetGUIObjectByName("downloadButton").enabled = true; });
 
 	Engine.GetGUIObjectByName("downloadButton").enabled = false;
 
 	g_Failure = false;
+	g_RequestCancelled = false;
 	Engine.ModIoStartDownloadMod(selected);
 }
 
 function cancelRequest()
 {
 	g_Failure = false;
+	g_RequestCancelled = true;
 	Engine.ModIoCancelRequest();
 	hideDialog();
 }
@@ -262,7 +277,7 @@ function progressDialog(dialogCaption, dialogTitle, showProgressBar, buttonCapti
 
 	let downloadDialog_button = Engine.GetGUIObjectByName("downloadDialog_button");
 	downloadDialog_button.caption = buttonCaption;
-	downloadDialog_button.onPress = buttonAction;
+	downloadDialog_button.onPress = () => { cancelRequest(); buttonAction(); }
 
 	Engine.GetGUIObjectByName("downloadDialog").hidden = false;
 }
