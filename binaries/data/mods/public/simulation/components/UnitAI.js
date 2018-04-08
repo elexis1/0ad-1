@@ -203,7 +203,6 @@ UnitAI.prototype.UnitFsmSpec = {
 		// 2. If unpacked, we first need to pack, then follow case 1.
 		if (this.CanPack())
 		{
-			// Case 2: pack
 			this.PushOrderFront("Pack", { "force": true });
 			return;
 		}
@@ -276,7 +275,6 @@ UnitAI.prototype.UnitFsmSpec = {
 		// 2. If unpacked, we first need to pack, then follow case 1.
 		if (this.CanPack())
 		{
-			// Case 2: pack
 			this.PushOrderFront("Pack", { "force": true });
 			return;
 		}
@@ -305,7 +303,6 @@ UnitAI.prototype.UnitFsmSpec = {
 		// 2. If unpacked, we first need to pack, then follow case 1.
 		if (this.CanPack())
 		{
-			// Case 2: pack
 			this.PushOrderFront("Pack", { "force": true });
 			return;
 		}
@@ -332,7 +329,6 @@ UnitAI.prototype.UnitFsmSpec = {
 		// 2. If unpacked, we first need to pack, then follow case 1.
 		if (this.CanPack())
 		{
-			// Case 2: pack
 			this.PushOrderFront("Pack", { "force": true });
 			return;
 		}
@@ -447,15 +443,6 @@ UnitAI.prototype.UnitFsmSpec = {
 			// 2. If packed, we first need to unpack, then follow case 1.
 			if (this.CanUnpack())
 			{
-				// Ignore unforced attacks
-				// TODO: use special stances instead?
-				if (!this.order.data.force)
-				{
-					this.FinishOrder();
-					return;
-				}
-
-				// Case 2: unpack
 				this.PushOrderFront("Unpack", { "force": true });
 				return;
 			}
@@ -480,23 +467,10 @@ UnitAI.prototype.UnitFsmSpec = {
 		// For packable units out of attack range:
 		// 1. If packed, we need to move to attack range and then unpack.
 		// 2. If unpacked, we first need to pack, then follow case 1.
-		var cmpPack = Engine.QueryInterface(this.entity, IID_Pack);
-		if (cmpPack)
+		if (this.CanPack())
 		{
-			// Ignore unforced attacks
-			// TODO: use special stances instead?
-			if (!this.order.data.force)
-			{
-				this.FinishOrder();
-				return;
-			}
-
-			if (this.CanPack())
-			{
-				// Case 2: pack
-				this.PushOrderFront("Pack", { "force": true });
-				return;
-			}
+			this.PushOrderFront("Pack", { "force": true });
+			return;
 		}
 
 		// If we can't reach the target, but are standing ground, then abandon this attack order.
@@ -718,7 +692,7 @@ UnitAI.prototype.UnitFsmSpec = {
 		}
 		else if (this.IsGarrisoned())
 		{
-			this.SetNextState("INDIVIDUAL.AUTOGARRISON");
+			this.SetNextState("INDIVIDUAL.GARRISON.GARRISONED");
 			return;
 		}
 
@@ -727,7 +701,6 @@ UnitAI.prototype.UnitFsmSpec = {
 		// 2. If unpacked, we first need to pack, then follow case 1.
 		if (this.CanPack())
 		{
-			// Case 2: pack
 			this.PushOrderFront("Pack", { "force": true });
 			return;
 		}
@@ -742,16 +715,6 @@ UnitAI.prototype.UnitFsmSpec = {
 			this.StopMoving();
 			this.SetNextState("INDIVIDUAL.GARRISON.GARRISONED");
 		}
-	},
-
-	"Order.Autogarrison": function(msg) {
-		if (this.IsTurret())
-		{
-			this.SetNextState("IDLE");
-			return;
-		}
-
-		this.SetNextState("INDIVIDUAL.AUTOGARRISON");
 	},
 
 	"Order.Ungarrison": function() {
@@ -2025,7 +1988,9 @@ UnitAI.prototype.UnitFsmSpec = {
 					if (this.FindNewTargets())
 					{
 						// Attempt to immediately re-enter the timer function, to avoid wasting the attack.
-						if (this.orderQueue.length > 0 && this.orderQueue[0].data.attackType == this.oldAttackType)
+						// Packable units may have switched to PACKING state, thus canceling the timer and having order.data.attackType undefined.
+						if (this.orderQueue.length > 0 && this.orderQueue[0].data && this.orderQueue[0].data.attackType &&
+						    this.orderQueue[0].data.attackType == this.oldAttackType)
 							this.TimerHandler(msg.data, msg.lateness);
 						return;
 					}
@@ -2918,6 +2883,9 @@ UnitAI.prototype.UnitFsmSpec = {
 						return true;
 					}
 
+					if (this.IsGarrisoned())
+						return false;
+
 					// Check that we can garrison here
 					if (this.CanGarrison(target))
 					{
@@ -3005,16 +2973,6 @@ UnitAI.prototype.UnitFsmSpec = {
 				"leave": function() {
 				}
 			},
-		},
-
-		"AUTOGARRISON": {
-			"enter": function() {
-				this.isGarrisoned = true;
-				return false;
-			},
-
-			"leave": function() {
-			}
 		},
 
 		"CHEERING": {
@@ -3336,7 +3294,7 @@ UnitAI.prototype.GetGarrisonHolder = function()
 	if (this.IsGarrisoned())
 	{
 		for (let order of this.orderQueue)
-			if (order.type == "Garrison" || order.type == "Autogarrison")
+			if (order.type == "Garrison")
 				return order.data.target;
 	}
 	return INVALID_ENTITY;
@@ -3360,17 +3318,14 @@ UnitAI.prototype.IsWalking = function()
 };
 
 /**
- * return true if in WalkAndFight looking for new targets
+ * Return true if the current order is WalkAndFight or Patrol.
  */
 UnitAI.prototype.IsWalkingAndFighting = function()
 {
 	if (this.IsFormationMember())
-	{
-		var cmpUnitAI = Engine.QueryInterface(this.formationController, IID_UnitAI);
-		return (cmpUnitAI && cmpUnitAI.IsWalkingAndFighting());
-	}
+		return false;
 
-	return (this.orderQueue.length > 0 && this.orderQueue[0].type == "WalkAndFight");
+	return this.orderQueue.length > 0 && (this.orderQueue[0].type == "WalkAndFight" || this.orderQueue[0].type == "Patrol");
 };
 
 UnitAI.prototype.OnCreate = function()
@@ -4691,19 +4646,14 @@ UnitAI.prototype.ShouldChaseTargetedEntity = function(target, force)
 	if (this.IsTurret())
 		return false;
 
-	// TODO: use special stances instead?
-	var cmpPack = Engine.QueryInterface(this.entity, IID_Pack);
-	if (cmpPack)
-		return false;
-
 	if (this.GetStance().respondChase)
 		return true;
 
 	// If we are guarding/escorting, chase at least as long as the guarded unit is in target range of the attacker
 	if (this.isGuardOf)
 	{
-		var cmpUnitAI =  Engine.QueryInterface(target, IID_UnitAI);
-		var cmpAttack = Engine.QueryInterface(target, IID_Attack);
+		let cmpUnitAI =  Engine.QueryInterface(target, IID_UnitAI);
+		let cmpAttack = Engine.QueryInterface(target, IID_Attack);
 		if (cmpUnitAI && cmpAttack &&
 		    cmpAttack.GetAttackTypes().some(type => cmpUnitAI.CheckTargetAttackRange(this.isGuardOf, type)))
 			return true;
@@ -5070,12 +5020,12 @@ UnitAI.prototype.Ungarrison = function()
 };
 
 /**
- * Adds autogarrison order to the queue (only used by ProductionQueue for auto-garrisoning
- * and Promotion when promoting already garrisoned entities).
+ * Adds a garrison order for units that are already garrisoned in the garrison holder.
  */
 UnitAI.prototype.Autogarrison = function(target)
 {
-	this.AddOrder("Autogarrison", { "target": target }, false);
+	this.isGarrisoned = true;
+	this.PushOrderFront("Garrison", { "target": target });
 };
 
 /**
@@ -5850,19 +5800,19 @@ UnitAI.prototype.CanRepair = function(target)
 UnitAI.prototype.CanPack = function()
 {
 	var cmpPack = Engine.QueryInterface(this.entity, IID_Pack);
-	return (cmpPack && !cmpPack.IsPacking() && !cmpPack.IsPacked());
+	return cmpPack && !cmpPack.IsPacking() && !cmpPack.IsPacked();
 };
 
 UnitAI.prototype.CanUnpack = function()
 {
 	var cmpPack = Engine.QueryInterface(this.entity, IID_Pack);
-	return (cmpPack && !cmpPack.IsPacking() && cmpPack.IsPacked());
+	return cmpPack && !cmpPack.IsPacking() && cmpPack.IsPacked();
 };
 
 UnitAI.prototype.IsPacking = function()
 {
 	var cmpPack = Engine.QueryInterface(this.entity, IID_Pack);
-	return (cmpPack && cmpPack.IsPacking());
+	return cmpPack && cmpPack.IsPacking();
 };
 
 //// Formation specific functions ////

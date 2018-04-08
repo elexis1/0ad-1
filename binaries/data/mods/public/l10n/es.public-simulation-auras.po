@@ -6,6 +6,7 @@
 # Albert, 2017
 # Albert, 2016
 # Antón Chinaev <Chinaev_Anton@outlook.es>, 2018
+# Antonio Martín <antonio.martinperez1991@gmail.com>, 2018
 # Camilo Zuluaga <czuluagaz@gmail.com>, 2017
 # Esteban A. Mina <ztephanuz@hotmail.com>, 2017
 # Javier Rojas <hekeine@gmail.com>, 2017
@@ -17,8 +18,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2018-02-23 09:05+0100\n"
-"PO-Revision-Date: 2018-02-23 19:25+0000\n"
+"POT-Creation-Date: 2018-04-04 14:47+0200\n"
+"PO-Revision-Date: 2018-04-04 19:28+0000\n"
 "Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/wildfire-games/0ad/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -84,7 +85,7 @@ msgstr "Sacerdocio poderoso"
 msgid ""
 "Strengthen the Priesthood of Amun and undermine your monarch's influence.\n"
 "-5% health for heroes per temple built."
-msgstr "Refuerza el sacerdocio de Amun y debilita la influencia de tu monarca.\n-5% de salud a los heroes por templo construído."
+msgstr "Refuerza el sacerdocio de Amun y debilita la influencia de tu monarca.\n-5% de salud a los héroes por cada templo construido."
 
 #: simulation/data/auras/structures/library.jsonauraName
 msgid "Power of Knowledge"
@@ -260,7 +261,7 @@ msgstr "Reclutamiento forzoso"
 
 #: simulation/data/auras/teambonuses/rome_player_teambonus.jsonauraDescription
 msgid "-20% training time for allied citizen-soldier infantry."
-msgstr ""
+msgstr "Reducción del 20% en el tiempo de entrenamiento de los ciudadanos-soldado."
 
 #: simulation/data/auras/teambonuses/sele_player_teambonus.jsonauraName
 msgid "Syrian Tetrapolis"
@@ -555,7 +556,7 @@ msgstr "Templo de Atenea"
 
 #: simulation/data/auras/units/heroes/athen_hero_pericles_2.jsonauraDescription
 msgid "-25% stone cost and +2 garrisoned heal rate for temples."
-msgstr "-25% de costo de piedra y +2 de guarnición para los templos."
+msgstr "-25% de coste de piedra y +2 de guarnición para los templos."
 
 #: simulation/data/auras/units/heroes/athen_hero_themistocles_1.jsonauraName
 msgid "Naval Commander"
@@ -606,15 +607,15 @@ msgstr "General relámpago"
 
 #: simulation/data/auras/units/heroes/cart_hero_hamilcar_1.jsonauraDescription
 msgid "Nearby soldiers and siege engines +15% speed."
-msgstr ""
+msgstr "Soldados y máquinas de asedio reciben un 15% de velocidad."
 
 #: simulation/data/auras/units/heroes/cart_hero_hamilcar_2.jsonauraName
 msgid "Subduer of Mercenaries"
-msgstr ""
+msgstr "Someter mercenarios"
 
 #: simulation/data/auras/units/heroes/cart_hero_hamilcar_2.jsonauraDescription
 msgid "-20% attack for enemy mercenaries."
-msgstr ""
+msgstr "-20% de ataque para los mercenarios enemigos."
 
 #: simulation/data/auras/units/heroes/cart_hero_hannibal.jsonauraName
 msgid "Tactician"
@@ -623,7 +624,7 @@ msgstr "Estratega"
 #: simulation/data/auras/units/heroes/cart_hero_hannibal.jsonauraDescription
 msgid ""
 "+20% attack and +1 capture for nearby allied soldiers and siege engines."
-msgstr ""
+msgstr "+20% de ataque y +1 de captura a los soldados y máquinas de asedio aliados cercanos."
 
 #: simulation/data/auras/units/heroes/cart_hero_maharbal.jsonauraName
 msgid "Cavalry Commander"
@@ -712,8 +713,9 @@ msgid "Warrior Queen"
 msgstr "Reina Guerrera"
 
 #: simulation/data/auras/units/heroes/kush_hero_amanirenas.jsonauraDescription
-msgid "+20% attack and +2 capture for soldiers and elephants."
-msgstr "+20% ataque y +2 de captura para soldados y elefantes."
+#: simulation/data/auras/units/heroes/mace_hero_philip.jsonauraDescription
+msgid "+20% attack and +2 capture for champion units."
+msgstr "+20% de ataque y +2 de captura para las unidades campeonas."
 
 #: simulation/data/auras/units/heroes/kush_hero_arakamani_1.jsonauraName
 msgid "Defier of Tradition"
@@ -739,15 +741,25 @@ msgstr "Asesinato del Creyente."
 msgid "Enemy healrate reduced by 50%."
 msgstr "Reducida la velocidad de curación del enemigo un 50%."
 
-#: simulation/data/auras/units/heroes/kush_hero_nastasen.jsonauraName
-msgid "Saviour of Kush"
-msgstr "Salvador de Kush"
+#: simulation/data/auras/units/heroes/kush_hero_nastasen_1.jsonauraName
+msgid "Savior of Kush"
+msgstr ""
 
-#: simulation/data/auras/units/heroes/kush_hero_nastasen.jsonauraDescription
+#: simulation/data/auras/units/heroes/kush_hero_nastasen_1.jsonauraDescription
 msgid ""
 "Own units +10% attack.\n"
 "Nastasen acquired lots of bounty from the defeated invaders. Gain +50% loot from killing enemy units."
 msgstr "+10% de ataque a tus propias unidades.\nNastasen adquirió montones de botín de los invasores derrotados. Obtén +50% de botín de matar unidades enemigas."
+
+#: simulation/data/auras/units/heroes/kush_hero_nastasen_2.jsonauraName
+msgid "Gift of Warships"
+msgstr ""
+
+#: simulation/data/auras/units/heroes/kush_hero_nastasen_2.jsonauraDescription
+msgid ""
+"Train Ptolemaic Mercenary Triremes at -25% resource cost.\n"
+"Crushing the Ptolemaic invasion of Kush, Nastasen seized numerous enemy warships."
+msgstr ""
 
 #: simulation/data/auras/units/heroes/mace_hero_alexander_1.jsonauraName
 msgid "Imperialism"
@@ -779,15 +791,11 @@ msgstr "Maestro de asedios"
 
 #: simulation/data/auras/units/heroes/mace_hero_demetrius.jsonauraDescription
 msgid "+10% attack, +10% range and +1 armor for siege engines."
-msgstr "+ 10% de ataque, + 10% de alcance y +1 de armadura para los maquinas de asedio."
+msgstr "+10% de ataque, +10% de alcance y +1 de armadura para los maquinas de asedio."
 
 #: simulation/data/auras/units/heroes/mace_hero_philip.jsonauraName
 msgid "Rise of Macedon"
 msgstr "Auge de Macedonia"
-
-#: simulation/data/auras/units/heroes/mace_hero_philip.jsonauraDescription
-msgid "+20% attack and +2 capture for champion units."
-msgstr "+20% de ataque y +2 de captura para las unidades campeonas."
 
 #: simulation/data/auras/units/heroes/mace_hero_pyrrhus.jsonauraName
 msgid "Pyrrhic Victory"
@@ -826,7 +834,7 @@ msgstr "Líder absoluto"
 
 #: simulation/data/auras/units/heroes/pers_hero_cyrus.jsonauraDescription
 msgid "+20% attack and +1 capture for cavalry soldiers."
-msgstr "+ 20% de ataque y +1 de captura para soldados de caballería."
+msgstr "+20% de ataque y +1 de captura para soldados de caballería."
 
 #: simulation/data/auras/units/heroes/pers_hero_darius.jsonauraName
 msgid "Leadership"
@@ -834,7 +842,7 @@ msgstr "Liderazgo"
 
 #: simulation/data/auras/units/heroes/pers_hero_darius.jsonauraDescription
 msgid "+15% movement speed for all soldiers, siege engines and traders."
-msgstr ""
+msgstr "+15% de velocidad de movimiento para todos los soldados, máquinas de asedio y comerciantes."
 
 #: simulation/data/auras/units/heroes/pers_hero_xerxes.jsonauraName
 msgid "Administrator"
@@ -879,7 +887,7 @@ msgstr "Patrono constructor"
 
 #: simulation/data/auras/units/heroes/ptol_hero_ptolemy_I_1.jsonauraDescription
 msgid "+10% build and repair rate for workers."
-msgstr "+ 10% tasa de construcción y reparación para los trabajadores."
+msgstr "+10% tasa de construcción y reparación para los trabajadores."
 
 #: simulation/data/auras/units/heroes/ptol_hero_ptolemy_I_2.jsonauraName
 msgid "Mercenary Patron"
@@ -887,7 +895,7 @@ msgstr "Patrono mercenario"
 
 #: simulation/data/auras/units/heroes/ptol_hero_ptolemy_I_2.jsonauraDescription
 msgid "Mercenaries cost -35% resources during his lifetime."
-msgstr ""
+msgstr "Los mercenarios cuestan un 35% menos de recursos mientras vivan."
 
 #: simulation/data/auras/units/heroes/rome_hero_marcellus_1.jsonauraName
 #: simulation/data/auras/units/heroes/rome_hero_marcellus_2.jsonauraName
@@ -916,7 +924,7 @@ msgstr "Triunfo"
 
 #: simulation/data/auras/units/heroes/rome_hero_scipio.jsonauraDescription
 msgid "+20% attack and +2 capture for soldiers and siege engines."
-msgstr "+ 20% de ataque y +2 de captura para soldados y motores de asedio."
+msgstr "+20% de ataque y +2 de captura para soldados y motores de asedio."
 
 #: simulation/data/auras/units/heroes/sele_hero_antiochus_great.jsonauraName
 msgid "Ilarchès"
@@ -940,7 +948,7 @@ msgstr "Comandante de elefantes"
 
 #: simulation/data/auras/units/heroes/sele_hero_seleucus_victor.jsonauraDescription
 msgid "+20% attack and movement speed for war elephants."
-msgstr "+ 20% de ataque y velocidad de movimiento para los elefantes de guerra."
+msgstr "+20% de ataque y velocidad de movimiento para los elefantes de guerra."
 
 #: simulation/data/auras/units/heroes/spart_hero_brasidas.jsonauraName
 msgid "Helot Reforms"
@@ -948,7 +956,7 @@ msgstr "Reformas ilotas"
 
 #: simulation/data/auras/units/heroes/spart_hero_brasidas.jsonauraDescription
 msgid "+25% attack and +1 armor for javelin infantry citizen-soldiers."
-msgstr ""
+msgstr "+25% de ataque y +1 de armadura para los ciudadanos-soldado de infantería con jabalina."
 
 #: simulation/data/auras/units/heroes/spart_hero_leonidas.jsonauraName
 msgid "Last Stand"
@@ -956,4 +964,4 @@ msgstr "Último superviviente"
 
 #: simulation/data/auras/units/heroes/spart_hero_leonidas.jsonauraDescription
 msgid "+25% attack and +1 capture for spear soldiers."
-msgstr "+ 25% de ataque y +1 de captura para los soldados de lanza."
+msgstr "+25% de ataque y +1 de captura para los soldados de lanza."

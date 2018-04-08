@@ -74,17 +74,13 @@ var g_SummarySelectedData;
 // Redefined every time someone makes a tribute (so we can save some data in a closure). Called in input.js handleInputBeforeGui.
 var g_FlushTributing = function() {};
 
-function initSessionMenuButtons()
-{
-	initMenuPosition();
-	updateGameSpeedControl();
-	resizeDiplomacyDialog();
-	resizeTradeDialog();
-}
-
-function initMenuPosition()
+function initMenu()
 {
 	Engine.GetGUIObjectByName("menu").size = "100%-164 " + MENU_TOP + " 100% " + MENU_BOTTOM;
+
+	// TODO: Atlas should pass g_GameAttributes.settings
+	for (let button of ["menuExitButton", "summaryButton", "objectivesButton", "diplomacyButton"])
+		Engine.GetGUIObjectByName(button).enabled = !Engine.IsAtlasRunning();
 }
 
 function updateMenuPosition(dt)
@@ -767,6 +763,11 @@ function updateTraderTexts()
 	Engine.GetGUIObjectByName("traderCountText").caption = getIdleLandTradersText(traderNumber) + "\n\n" + getIdleShipTradersText(traderNumber);
 }
 
+function initBarterButtons()
+{
+	g_BarterSell = g_ResourceData.GetCodes()[0];
+}
+
 /**
  * Code common to both the Barter Panel and the Trade/Barter Dialog, that
  * only needs to be run when the panel or dialog is opened by the player.
@@ -1025,6 +1026,8 @@ function toggleTutorial()
 
 function updateGameSpeedControl()
 {
+	Engine.GetGUIObjectByName("gameSpeedButton").hidden = g_IsNetworked;
+
 	let player = g_Players[Engine.GetPlayerID()];
 	g_GameSpeeds = getGameSpeedChoices(!player || player.state != "active");
 

@@ -10,6 +10,7 @@
 # Дмитрий Ошкало <dmitry.oshkalo@gmail.com>, 2015-2018
 # Максим Дронь <dronmax@gmail.com>, 2014-2015
 # Григорий Световидов <grin.sv@gmail.com>, 2015
+# Ilya Andreev, 2018
 # Ivan Korovin <i.d.korovin@gmail.com>, 2017
 # Prince Moth <princemoth@rambler.ru>, 2016
 # Roman M. Yagodin <roman.yagodin@gmail.com>, 2017
@@ -26,8 +27,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2018-03-02 09:04+0100\n"
-"PO-Revision-Date: 2018-03-03 20:57+0000\n"
+"POT-Creation-Date: 2018-04-04 14:47+0200\n"
+"PO-Revision-Date: 2018-04-05 19:11+0000\n"
 "Last-Translator: Дмитрий Ошкало <dmitry.oshkalo@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/wildfire-games/0ad/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -43,17 +44,6 @@ msgstr "Игроки начинают на противоположных сто
 #: maps/random/aegean_sea.jsonsettings.Name
 msgid "Aegean Sea"
 msgstr "Эгейское море"
-
-#: maps/random/aethiopia.jsonsettings.Description
-msgid ""
-"Aethiopia, land of the Kushites. Arid and hostile as the terrain might look,"
-" the region is surprisingly lush. The presence of several life-bringing "
-"oases serve to make this a prized haven for man and beast alike."
-msgstr ""
-
-#: maps/random/aethiopia.jsonsettings.Name
-msgid "Aethiopia"
-msgstr "Эфиопия"
 
 #: maps/random/african_plains.jsonsettings.Description
 msgid ""
@@ -107,7 +97,7 @@ msgstr "Анатолийское плоскогорье"
 msgid ""
 "A maze of islands of different sizes and shapes. Players start with more "
 "wood than normal."
-msgstr "Лабиринт островов разных форм и размеров. В начале у игроков больше леса, чем обычно."
+msgstr "Лабиринт островов разных форм и размеров. Игра начинается с увеличенными запасами древесины."
 
 #: maps/random/archipelago.jsonsettings.Name
 msgid "Archipelago"
@@ -283,7 +273,7 @@ msgid ""
 " subject to numerous yet short-lived invasions. Ultimately consolidating "
 "power with Rhodes at their lead, these islands developed into great "
 "maritime, commercial and cultural centers. Will you acheive the same?"
-msgstr ""
+msgstr "Контролируя проход к Эгейскому морю с Востока, Додеканес подвергался многочисленным, но недолгим вторжениям. В конце концов, после объединения с Родосом по их инициативе, острова превратились в крупные морские, торговые и культурные центры. А вы достигните того же?"
 
 #: maps/random/dodecanese.jsonsettings.Name
 msgid "Dodecanese"
@@ -328,11 +318,24 @@ msgid ""
 "[color=\"red\"]IMPORTANT NOTE: AI PLAYERS DO NOT WORK WITH THIS MAP[/color]\n"
 "\n"
 "A once fertile valley, desolated by the eruption of the long-dormant volcano in the heart of the region. Following years of empty, scorched deadness, signs of life started reappearing and spreading. Now the land is half-way to the full lushness of its former era. Alas, it is not to be: following a long stretch of drought, interminable rains have set in in the higher regions to the north. Water levels are rising at drastic levels, slowly forcing players to seek the high ground of the lesser, extinct volcanoes or the now again dormant great cone."
-msgstr ""
+msgstr "[color=\"red\"]ВАЖНОЕ ЗАМЕЧАНИЕ: ИГРОКИ ИИ НЕ МОГУТ ИГРАТЬ НА ЭТОЙ КАРТЕ[/color]\n\nОднажды плодородная долина, была опустошена извержением давно спящего вулкана в самом сердце региона. После нескольких лет на месте пустой и обгоревшей мёртвенности начали появляться и распространяться признаки жизни. Теперь эта земля на полпути к своей прежней пышности. Увы, этому не суждено сбыться: после продолжительной засухи начались бесконечные дожди в северных районах. Уровень воды постепенно растёт, медленно заставляя игроков искать возвышенности таких как потухший вулкан, который может в очередной раз оказаться большим спящим конусом."
 
 #: maps/random/extinct_volcano.jsonsettings.Name
 msgid "Extinct Volcano"
 msgstr "Потухший вулкан"
+
+#: maps/random/fields_of_meroe.jsonsettings.Description
+msgid ""
+"The \"Island of Meroë\", a vast peninsula flanked by the Nile and Atbarah "
+"rivers, formed the heartland of ancient Kush. Where the harsh deserts start "
+"making way for the semi-arid savannahs and small acacia forests dot the "
+"landscape. The area is rich in resources and the ever-present Nile brings "
+"life, but grave threats loom on the opposite riverbank."
+msgstr ""
+
+#: maps/random/fields_of_meroe.jsonsettings.Name
+msgid "Fields of Meroë"
+msgstr ""
 
 #: maps/random/flood.jsonsettings.Description
 msgid ""
@@ -467,6 +470,22 @@ msgstr "Игроки начинают на малых островах сред�
 msgid "Islands"
 msgstr "Острова"
 
+#: maps/random/jebel_barkal.jsonsettings.Description
+msgid ""
+"Starting near the fertile banks of the Nile, the players besiege the heavily"
+" defended city Napata which lies at the foot of the hill Jebel Barkal, the "
+"\"Pure Mountain\". It is the Southern home of Amun, and according to "
+"Kushites and Egyptians alike, the birthplace of man. Known as the Throne of "
+"the Two Lands, the ancient religious capital of Napata lay in its shadow. "
+"This is where Kings were made... and unmade! Abutting a rich floodplain "
+"downstream from the 4th cataract, this area became the breadbasket of "
+"ancient Kush."
+msgstr ""
+
+#: maps/random/jebel_barkal.jsonsettings.Name
+msgid "Jebel Barkal"
+msgstr ""
+
 #: maps/random/kerala.jsonsettings.Description
 msgid ""
 "Players start in the southwestern shores of India between a sea and "
@@ -525,7 +544,7 @@ msgid ""
 "place to live, but the control of this ancient corridor was vital for any "
 "power seeking to control the lucrative trade routes on the Nile and affords "
 "access to the rich goldfields of the Nubian desert."
-msgstr ""
+msgstr "Известный в греко-римском мире как Триаконташоинос, Нижняя Нубия была областью между первым и вторым порогом реки Нил и образовывала традиционный пограничный район между Кушем и Египтом. Палящие пустыни, крутые долины и возвышающиеся скалы этого района делают его неприветливым местом для жизни, но контроль над этим древним коридором был жизненно важен для любой силы, стремящейся контролировать прибыльные торговые маршруты Нила и получить доступ к богатым золотым месторождениям Нубийской пустыни."
 
 #: maps/random/lower_nubia.jsonsettings.Name
 msgid "Lower Nubia"
@@ -736,7 +755,7 @@ msgid ""
 "Narrow strips of lands are separated by waterways, leaving few and shallow "
 "landbridges between them. Tropical wetlands provide plenty of game, but "
 "beware of Mauryan tribesmen when exploring the outermost islands."
-msgstr ""
+msgstr "Узкие полоски земли разделены водными путями, оставляя между ними небольшие сухопутные мосты. Тропические и заболоченные угодья обеспечивают обилие дичи, но остерегайтесь племён Маурийцев при изучении самых отдалённых островов."
 
 #: maps/random/river_archipelago.jsonsettings.Name
 msgid "River Archipelago"
@@ -821,6 +840,19 @@ msgstr "Команды начинают с почти смежных город�
 msgid "Stronghold"
 msgstr "Крепость"
 
+#: maps/random/sudd.jsonsettings.Description
+msgid ""
+"The Sudd is a vast swamp. The White Nile and its many branches meander "
+"through the area. Floating mats of vegetation cover the shallow water, with "
+"the occasional little islets and dry patches protruding from the waters. At "
+"some places small islets pop up, enough for a few huts and palm trees, or "
+"sometimes an entire village."
+msgstr ""
+
+#: maps/random/sudd.jsonsettings.Name
+msgid "Sudd"
+msgstr ""
+
 #: maps/random/survivalofthefittest.jsonsettings.Description
 msgid ""
 "[color=\"red\"]IMPORTANT NOTE: AI PLAYERS DO NOT WORK WITH THIS MAP[/color]\n"
@@ -892,6 +924,68 @@ msgstr "Озеро, окружённое холмами."
 msgid "Wild Lake"
 msgstr "Дикое озеро"
 
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Preview
+msgid "fields_of_meroe_dry.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "fields_of_meroe_dry.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Description
+msgid ""
+"The vitalizing waters of the Nile sustain life along its banks, while the "
+"long dry season scorches the land."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Description
+msgctxt "biome definition"
+msgid ""
+"The vitalizing waters of the Nile sustain life along its banks, while the "
+"long dry season scorches the land."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Title
+msgid "Dry Season"
+msgstr "Сезон засухи"
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Title
+msgctxt "biome definition"
+msgid "Dry Season"
+msgstr "Сезон засухи"
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Preview
+msgid "fields_of_meroe_rainy.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "fields_of_meroe_rainy.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Description
+msgid ""
+"Revelling in the much awaited rain, the baked land transforms into a lush "
+"haven for both man and beast."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Description
+msgctxt "biome definition"
+msgid ""
+"Revelling in the much awaited rain, the baked land transforms into a lush "
+"haven for both man and beast."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Title
+msgid "Rainy Season"
+msgstr "Сезон дождей"
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Title
+msgctxt "biome definition"
+msgid "Rainy Season"
+msgstr "Сезон дождей"
+
 #: maps/random/rmbiome/generic/alpine.jsonDescription.Description
 msgid ""
 "A region in the high snowy mountains. Biting winds sweep through the "
@@ -971,7 +1065,7 @@ msgid ""
 "Start in a region blessed with the Mediterranean climate, a warm and "
 "inviting land. The cypresses are in a perpetual struggle with the dominant "
 "fan palms while deer graze in their shadows, blissfully unaware."
-msgstr ""
+msgstr "Начните в регионе, благословлённый средиземноморским климатом, теплом и привлекательной землёй. Кипарис находится в постоянной борьбе с домирирующими пальмами, а олени пасутся в тенях не осознавая блаженства."
 
 #: maps/random/rmbiome/generic/mediterranean.jsonDescription.Description
 msgctxt "biome definition"
@@ -979,7 +1073,7 @@ msgid ""
 "Start in a region blessed with the Mediterranean climate, a warm and "
 "inviting land. The cypresses are in a perpetual struggle with the dominant "
 "fan palms while deer graze in their shadows, blissfully unaware."
-msgstr ""
+msgstr "Начните в регионе, благословлённый средиземноморским климатом, теплом и привлекательной землёй. Кипарис находится в постоянной борьбе с домирирующими пальмами, а олени пасутся в тенях не осознавая блаженства."
 
 #: maps/random/rmbiome/generic/savanna.jsonDescription.Description
 msgid ""
@@ -1010,7 +1104,7 @@ msgid ""
 "Settle in the cold regions of the North, the native habitat of the wooly "
 "muskox. Here you can pine away to your content and also hunt the occasional "
 "walrus or two."
-msgstr ""
+msgstr "Поселитесь в холодных районах Севера в естественной среде обитания для мохнатого овцебыка. Здесь вы можете добывать сосну и охотиться на моржей."
 
 #: maps/random/rmbiome/generic/snowy.jsonDescription.Description
 msgctxt "biome definition"
@@ -1018,16 +1112,16 @@ msgid ""
 "Settle in the cold regions of the North, the native habitat of the wooly "
 "muskox. Here you can pine away to your content and also hunt the occasional "
 "walrus or two."
-msgstr ""
+msgstr "Поселитесь в холодных районах Севера в естественной среде обитания для мохнатого овцебыка. Здесь вы можете добывать сосну и охотиться на моржей."
 
 #: maps/random/rmbiome/generic/snowy.jsonDescription.Title
 msgid "Snowy"
-msgstr ""
+msgstr "Снежный"
 
 #: maps/random/rmbiome/generic/snowy.jsonDescription.Title
 msgctxt "biome definition"
 msgid "Snowy"
-msgstr ""
+msgstr "Снежный"
 
 #: maps/random/rmbiome/generic/temperate.jsonDescription.Description
 msgid ""
@@ -1035,7 +1129,7 @@ msgid ""
 "diverse broadleaf forests. Poplars, pines, beeches and oaks all vie for "
 "supremacy but this root-war is a neverending struggle. Numerous apple trees "
 "dot the land, deer and sheep gorge themselves on this years fallen fruit."
-msgstr ""
+msgstr "Пышные луга покрыли землю, в некоторых местах уступая дорогу великолепным и разнообразным широколиственным лесам. Тополя, сосны, буки и дубы - все они соперничают за господство, эта \"война корней\" - бесконечная борьба. Многочисленные яблони усеивают землю, а олени и овцы поедают упавшие на землю плоды."
 
 #: maps/random/rmbiome/generic/temperate.jsonDescription.Description
 msgctxt "biome definition"
@@ -1044,16 +1138,16 @@ msgid ""
 "diverse broadleaf forests. Poplars, pines, beeches and oaks all vie for "
 "supremacy but this root-war is a neverending struggle. Numerous apple trees "
 "dot the land, deer and sheep gorge themselves on this years fallen fruit."
-msgstr ""
+msgstr "Пышные луга покрыли землю, в некоторых местах уступая дорогу великолепным и разнообразным широколиственным лесам. Тополя, сосны, буки и дубы - все они соперничают за господство, эта \"война корней\" - бесконечная борьба. Многочисленные яблони усеивают землю, а олени и овцы поедают упавшие на землю плоды."
 
 #: maps/random/rmbiome/generic/temperate.jsonDescription.Title
 msgid "Temperate"
-msgstr ""
+msgstr "Умеренный"
 
 #: maps/random/rmbiome/generic/temperate.jsonDescription.Title
 msgctxt "biome definition"
 msgid "Temperate"
-msgstr ""
+msgstr "Умеренный"
 
 #: maps/random/rmbiome/generic/tropic.jsonDescription.Description
 msgid ""
@@ -1061,7 +1155,7 @@ msgid ""
 " environment awaits. The tall Toona trees look on disapprovingly at this "
 "invasion of their privacy and ferocious tigers are determined to defend "
 "their territory at all costs."
-msgstr ""
+msgstr "Исследуйте таинственные тропики. Вас ждёт невероятно зелёная, но также и экстремально влажная среда. Высокие деревья Тооны неодобрительно смотрят на ваше вторжение в их личную жизнь, а свирепые тигры полны решимости защищать свою территорию любой ценой."
 
 #: maps/random/rmbiome/generic/tropic.jsonDescription.Description
 msgctxt "biome definition"
@@ -1070,7 +1164,7 @@ msgid ""
 " environment awaits. The tall Toona trees look on disapprovingly at this "
 "invasion of their privacy and ferocious tigers are determined to defend "
 "their territory at all costs."
-msgstr ""
+msgstr "Исследуйте таинственные тропики. Невероятно зелёная, но также и экстремально влажная среда. Высокие деревья Тооны неодобрительно смотрят на ваше вторжение в их личную жизнь, а свирепые тигры полны решимости защищать свою территорию любой ценой."
 
 #: maps/random/rmbiome/generic/tropic.jsonDescription.Title
 msgid "Tropic"
@@ -1080,6 +1174,15 @@ msgstr "Тропики"
 msgctxt "biome definition"
 msgid "Tropic"
 msgstr "Тропики"
+
+#: maps/random/rmbiome/gulf_of_bothnia/frozen_lake.jsonDescription.Preview
+msgid "gulf_of_bothnia_frozen_lake.png"
+msgstr ""
+
+#: maps/random/rmbiome/gulf_of_bothnia/frozen_lake.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "gulf_of_bothnia_frozen_lake.png"
+msgstr ""
 
 #: maps/random/rmbiome/gulf_of_bothnia/frozen_lake.jsonDescription.Description
 msgid ""
@@ -1102,6 +1205,15 @@ msgstr "Замёрзшее озеро"
 msgctxt "biome definition"
 msgid "Frozen Lake"
 msgstr "Замёрзшее озеро"
+
+#: maps/random/rmbiome/gulf_of_bothnia/late_spring.jsonDescription.Preview
+msgid "gulf_of_bothnia_late_spring.png"
+msgstr ""
+
+#: maps/random/rmbiome/gulf_of_bothnia/late_spring.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "gulf_of_bothnia_late_spring.png"
+msgstr ""
 
 #: maps/random/rmbiome/gulf_of_bothnia/late_spring.jsonDescription.Description
 msgid ""
@@ -1126,6 +1238,15 @@ msgstr "Поздняя весна"
 msgctxt "biome definition"
 msgid "Late Spring"
 msgstr "Поздняя весна"
+
+#: maps/random/rmbiome/gulf_of_bothnia/winter.jsonDescription.Preview
+msgid "gulf_of_bothnia_winter.png"
+msgstr ""
+
+#: maps/random/rmbiome/gulf_of_bothnia/winter.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "gulf_of_bothnia_winter.png"
+msgstr ""
 
 #: maps/random/rmbiome/gulf_of_bothnia/winter.jsonDescription.Description
 msgid ""
@@ -1154,7 +1275,7 @@ msgid ""
 "Spring in the highlands, yet the heat has already begun making itself felt. "
 "The short-lived green grasses are on the retreat, paving the way for "
 "scorching summer."
-msgstr ""
+msgstr "Весна ещё в горах, но жара уже начала ощущаться. Недолговечные зелёные травы отступают, давая дорогу палящему солнцу."
 
 #: maps/random/rmbiome/persian_highlands/spring.jsonDescription.Description
 msgctxt "biome definition"
@@ -1162,7 +1283,7 @@ msgid ""
 "Spring in the highlands, yet the heat has already begun making itself felt. "
 "The short-lived green grasses are on the retreat, paving the way for "
 "scorching summer."
-msgstr ""
+msgstr "Весна ещё в горах, но жара уже начала ощущаться. Недолговечные зелёные травы отступают, давая дорогу палящему солнцу."
 
 #: maps/random/rmbiome/persian_highlands/spring.jsonDescription.Title
 msgid "Spring"
@@ -1211,16 +1332,25 @@ msgstr "Нам нужно найти безопасное место, наши �
 msgid "The lakes start swallowing the land, we have to find shelter!"
 msgstr "Озёра выходят из берегов, нам нужно найти убежище!"
 
-#: maps/random/survivalofthefittest_triggers.js:190
+#: maps/random/jebel_barkal_triggers.js:565
+msgid "Napata is attacking!"
+msgstr ""
+
+#: maps/random/jebel_barkal_triggers.js:577
+#, javascript-format
+msgid "Napata will attack in %(time)s!"
+msgstr ""
+
+#: maps/random/survivalofthefittest_triggers.js:163
 #, javascript-format
 msgid "The first wave will start in %(time)s!"
 msgstr "Первая волна начнётся через %(time)s!"
 
-#: maps/random/survivalofthefittest_triggers.js:325
+#: maps/random/survivalofthefittest_triggers.js:264
 msgid "An enemy wave is attacking!"
 msgstr "Волна вражеской атаки!"
 
-#: maps/random/survivalofthefittest_triggers.js:349
+#: maps/random/survivalofthefittest_triggers.js:289
 #, javascript-format
 msgid "%(player)s has been defeated (lost civic center)."
 msgstr "%(player)s потерпел поражение (городской центр разрушен)."
@@ -1286,20 +1416,20 @@ msgstr "Уничтожьте врага для победы!"
 #, javascript-format
 msgid "%(lastPlayer)s has won (treasure collected)."
 msgid_plural "%(players)s and %(lastPlayer)s have won (treasure collected)."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Победа за %(lastPlayer)s (сокровище собрано)."
+msgstr[1] "%(players)s и %(lastPlayer)s победили (сокровище собрано)."
+msgstr[2] " %(players)s и %(lastPlayer)s победили (сокровище собрано)."
+msgstr[3] "%(players)s и %(lastPlayer)s победили (сокровище собрано)."
 
 #: maps/scenarios/treasure_islands.js:105
 #, javascript-format
 msgid "%(lastPlayer)s has been defeated (treasure collected)."
 msgid_plural ""
 "%(players)s and %(lastPlayer)s have been defeated (treasure collected)."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] " %(lastPlayer)s были побеждены (сокровище собрано)."
+msgstr[1] "%(players)s и %(lastPlayer)s были побеждены (сокровище собрано)."
+msgstr[2] "%(players)s и %(lastPlayer)s были побеждены (сокровище собрано)."
+msgstr[3] "%(players)s и %(lastPlayer)s были побеждены (сокровище собрано)."
 
 #: maps/scenarios/Arcadia.xml:Description:39
 msgid ""
@@ -2053,7 +2183,7 @@ msgstr "Песочница — Иберийцы"
 
 #: maps/scenarios/Sandbox - Kushites.xml:Description:40
 msgid "Play the Kushites faction in a non-threatening sandbox scenario."
-msgstr ""
+msgstr "Играть с фракцией Кушитов в безопасной песочнице."
 
 #: maps/scenarios/Sandbox - Kushites.xml:PlayerData[1].Name:40
 msgid "Kushites"
@@ -2466,7 +2596,7 @@ msgstr "Бельгийские болота (2)"
 msgid ""
 "South of the Sahara, East of the Nile, lies a semi-arid region today known "
 "as the Butana Steppe."
-msgstr ""
+msgstr "К югу от Сахары и востоку от Нила лежит полузасушливая земля, ныне известная как Степь Бутаны."
 
 #: maps/skirmishes/Butana Steppe (2).xml:PlayerData[1].Name:40
 msgid "West Player"
@@ -2478,7 +2608,7 @@ msgstr "Восточный игрок"
 
 #: maps/skirmishes/Butana Steppe (2).xml:Name:40
 msgid "Butana Steppe (2)"
-msgstr ""
+msgstr "Степь Бутаны (2)"
 
 #: maps/skirmishes/Caspian Sea (2v2).xml:Description:39
 msgid ""
@@ -2575,6 +2705,51 @@ msgstr "Туманный альпийский пейзаж становится 
 #: maps/skirmishes/Dueling Cliffs (3v3).xml:Name:40
 msgid "Dueling Cliffs (3v3)"
 msgstr "Дуэль: Скалы (3v3)"
+
+#: maps/skirmishes/Egypt (3v3).xml:Name:40
+msgid "Egypt (3v3)"
+msgstr "Египет (3v3)"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[1].Name:40
+msgid "Alexandria"
+msgstr "Александрия"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[2].Name:40
+msgid "Theben"
+msgstr "Фивы"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[3].Name:40
+msgid "Siwa"
+msgstr "Сива"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[4].Name:40
+msgid "Sinai"
+msgstr "Синай"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[5].Name:40
+msgid "Memphis"
+msgstr "Мемфис"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[6].Name:40
+msgid "Cyrene"
+msgstr "Кирена"
+
+#: maps/skirmishes/Egypt (3v3).xml:Description:40
+msgid ""
+"Fight for the remains of ancient Egypt!\n"
+"\n"
+"Players start with full grown cities and small armies, each having distinct advantages and drawbacks. Take care, there are 7 mighty forts and marauding bandids!\n"
+"\n"
+"It is the last century before 0 A.D. Egypt is internally divided between hellenistic (Alexandria, represented by Seleucids) and traditional influences (Memphis, represented by Ptolemies). Thebes in the southern clime of river Nile has already been taken over by the Kush. In the north western Al-Dschabal al-Achdar, where the mediterranean city of Cyrene is located the Romans are preparing their invasion. From the eastern desert at-Tih and mount Sinai enemies (represented by Persians) are pushing forward and the oasis Siwa. Charga (represented by Carthage) in the south western desert are trying to get a share of the pie as well.\n"
+"Locations:\n"
+"- Alexandria: library, harbor\n"
+"- Memphis: Necropolis, pyramids, Apis shrine\n"
+"- Thebes: temple district, Valley of the Kings \n"
+"- Cyrene: mediterranean Macchie, olive groves\n"
+"- Fayyum: crocodile shrine, nile dam\n"
+"- Eastern desert: mount Sinai, deep Wadi, Red Sea reefs\n"
+"- Western desert: Oasis Charga and Siwa, Qattara Depression\n"
+msgstr ""
 
 #: maps/skirmishes/Forest Battle (4).xml:Description:40
 msgid ""
@@ -2879,7 +3054,7 @@ msgid ""
 "The rolling Thessalian plain is traversed with narrow streams, easily "
 "forded. Wide-open spaces allow for massive expansion, while each player "
 "starts the match safe atop a large acropolis."
-msgstr "Фессалийская равнина пересечена узкими реками, легко преодолеваемыми вброд. Широкие пространства  доступны для массированной экспансии, каждый игрок начинает состязание наверху большого акрополя. "
+msgstr "Холмистая Фессалийская равнина пересечена узкими ручьями, легко преодолеваемыми вброд. Широкие открытые пространства  доступны для массированной экспансии, каждый игрок начинает состязание на вершине большого акрополя. "
 
 #: maps/skirmishes/Thessalian Plains (4).xml:Name:39
 msgid "Thessalian Plains (4)"

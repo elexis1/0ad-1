@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Antonio Buonomo <hyd.antonio@gmail.com>, 2017
-# Christian Bellagamba <christiandes00@gmail.com>, 2017
+# Christian Bellagamba <christiandes00@gmail.com>, 2017-2018
 # Claudio <claudiudurneac97@yahoo.it>, 2015
 # Tiber7 - Danilo B. Guttadauria <danilo.guttadauria@gmail.com>, 2016
 # Davide, 2016
@@ -20,12 +20,13 @@
 # Nicola Jelmorini, 2014-2015
 # Paper Jack <jackthief315@gmail.com>, 2017
 # Samuele Marazzita <samuelemarazzita@gmail.com>, 2016
+# Simone Bondi <simonebondi456@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: 0 A.D.\n"
-"POT-Creation-Date: 2018-03-02 09:04+0100\n"
-"PO-Revision-Date: 2018-03-04 18:11+0000\n"
-"Last-Translator: mattia_b89 <mattia.b89@gmail.com>\n"
+"POT-Creation-Date: 2018-04-04 14:47+0200\n"
+"PO-Revision-Date: 2018-04-04 14:36+0000\n"
+"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/wildfire-games/0ad/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -35,22 +36,11 @@ msgstr ""
 
 #: maps/random/aegean_sea.jsonsettings.Description
 msgid "Players start on two sides of a sea with scattered islands."
-msgstr "I giocatori iniziano su due lati di un mare con isole sparse"
+msgstr "I giocatori iniziano su due lati di un mare con isole sparse."
 
 #: maps/random/aegean_sea.jsonsettings.Name
 msgid "Aegean Sea"
 msgstr "Mar Egeo"
-
-#: maps/random/aethiopia.jsonsettings.Description
-msgid ""
-"Aethiopia, land of the Kushites. Arid and hostile as the terrain might look,"
-" the region is surprisingly lush. The presence of several life-bringing "
-"oases serve to make this a prized haven for man and beast alike."
-msgstr ""
-
-#: maps/random/aethiopia.jsonsettings.Name
-msgid "Aethiopia"
-msgstr "Aethiopia"
 
 #: maps/random/african_plains.jsonsettings.Description
 msgid ""
@@ -280,7 +270,7 @@ msgid ""
 " subject to numerous yet short-lived invasions. Ultimately consolidating "
 "power with Rhodes at their lead, these islands developed into great "
 "maritime, commercial and cultural centers. Will you acheive the same?"
-msgstr ""
+msgstr "Dato che controlla l'accesso al Mar Egeo dal lato Est, il Dodecaneso è stato soggetto a numerose, seppur brevi, invasioni. Consolidando infine il potere insieme a Rodi sotto la sua guida, queste isole si svilupparono in potenti centri marittimi, culturali e commerciali. Riuscirai a fare altrettanto?"
 
 #: maps/random/dodecanese.jsonsettings.Name
 msgid "Dodecanese"
@@ -294,11 +284,11 @@ msgid ""
 "became an important way-station for the trade in ivory and other goods. It "
 "was considered to be the home of the god Khnum, guardian of the source of "
 "the Nile, and boasted an impressive temple complex."
-msgstr ""
+msgstr "Formando la tradizionale frontiera tra l'antico Kush e l'Egitto, l'isola fortificata di Elefantina era situata sul Nilo vicino la prima cateratta. Rappresentando il confine tra l'Alto Egitto e la Bassa Nubia, l'isola divenne un importante punto di passaggio dei commerci di avorio e altre merci. Si pensava fosse la casa del dio Khnum, il guardiano della sorgente del nilo, e si vantava di un impressionante complesso templare."
 
 #: maps/random/elephantine.jsonsettings.Name
 msgid "Elephantine"
-msgstr ""
+msgstr "Elefantina"
 
 #: maps/random/empire.jsonsettings.Description
 msgid ""
@@ -330,6 +320,19 @@ msgstr "[color=\"red\"]NOTA IMPORTANTE: LE I.A. NON FUNZIONANO SU QUESTA MAPPA[/
 #: maps/random/extinct_volcano.jsonsettings.Name
 msgid "Extinct Volcano"
 msgstr "Vulcano Dormiente"
+
+#: maps/random/fields_of_meroe.jsonsettings.Description
+msgid ""
+"The \"Island of Meroë\", a vast peninsula flanked by the Nile and Atbarah "
+"rivers, formed the heartland of ancient Kush. Where the harsh deserts start "
+"making way for the semi-arid savannahs and small acacia forests dot the "
+"landscape. The area is rich in resources and the ever-present Nile brings "
+"life, but grave threats loom on the opposite riverbank."
+msgstr ""
+
+#: maps/random/fields_of_meroe.jsonsettings.Name
+msgid "Fields of Meroë"
+msgstr ""
 
 #: maps/random/flood.jsonsettings.Description
 msgid ""
@@ -406,7 +409,7 @@ msgid ""
 "western civilization. Yet the land lacks unity, countless cit-states vie for"
 " dominance. Will you lead your polis to glory and greatness or see it fall "
 "into oblivion, erased from the histories?"
-msgstr ""
+msgstr "Hellas, casa dei Greci e, grazie a loro, delle fondamenta della civiltà occidentale. Sebbene la terra sia scomposta, innumerevoli città-stato competono per il dominio sul territorio. Porterai la tua polis alla gloria e alla grandezza o la vedrai cadere nell'oblio, cancellata dalla storia?"
 
 #: maps/random/hellas.jsonsettings.Name
 msgid "Hellas"
@@ -463,6 +466,22 @@ msgstr "I giocatori iniziano su piccole isole, mentre ce ne sono molte altre att
 #: maps/random/islands.jsonsettings.Name
 msgid "Islands"
 msgstr "Isole"
+
+#: maps/random/jebel_barkal.jsonsettings.Description
+msgid ""
+"Starting near the fertile banks of the Nile, the players besiege the heavily"
+" defended city Napata which lies at the foot of the hill Jebel Barkal, the "
+"\"Pure Mountain\". It is the Southern home of Amun, and according to "
+"Kushites and Egyptians alike, the birthplace of man. Known as the Throne of "
+"the Two Lands, the ancient religious capital of Napata lay in its shadow. "
+"This is where Kings were made... and unmade! Abutting a rich floodplain "
+"downstream from the 4th cataract, this area became the breadbasket of "
+"ancient Kush."
+msgstr ""
+
+#: maps/random/jebel_barkal.jsonsettings.Name
+msgid "Jebel Barkal"
+msgstr ""
 
 #: maps/random/kerala.jsonsettings.Description
 msgid ""
@@ -522,7 +541,7 @@ msgid ""
 "place to live, but the control of this ancient corridor was vital for any "
 "power seeking to control the lucrative trade routes on the Nile and affords "
 "access to the rich goldfields of the Nubian desert."
-msgstr ""
+msgstr "Conosciuta nel mondo Greco-Romano come Triakontaschoinos, la Bassa Nubia era l'area tra la prima e la seconda cateratta del Nilo e formava la tradizionale regione di frontiera tra il Kush e l'Egitto. Il deserto arido, le valli ripide e le pareti rocciose di quest'area lo rendono un paese inospitale alla vita, ma il controllo di questo antico corridoio era vitale per qualsiasi civiltà che tentasse di assumere il controllo delle lucrose vie commerciali sul Nilo e permettersi l'accesso alle ricche miniere d'oro del deserto Nubiano."
 
 #: maps/random/lower_nubia.jsonsettings.Name
 msgid "Lower Nubia"
@@ -818,6 +837,19 @@ msgstr "Le squadre partono con i centri civici quasi adiacenti, offrendo facile 
 msgid "Stronghold"
 msgstr "Roccaforte"
 
+#: maps/random/sudd.jsonsettings.Description
+msgid ""
+"The Sudd is a vast swamp. The White Nile and its many branches meander "
+"through the area. Floating mats of vegetation cover the shallow water, with "
+"the occasional little islets and dry patches protruding from the waters. At "
+"some places small islets pop up, enough for a few huts and palm trees, or "
+"sometimes an entire village."
+msgstr ""
+
+#: maps/random/sudd.jsonsettings.Name
+msgid "Sudd"
+msgstr ""
+
 #: maps/random/survivalofthefittest.jsonsettings.Description
 msgid ""
 "[color=\"red\"]IMPORTANT NOTE: AI PLAYERS DO NOT WORK WITH THIS MAP[/color]\n"
@@ -889,6 +921,68 @@ msgstr "Un lago racchiuso tra le colline"
 msgid "Wild Lake"
 msgstr "Lago selvaggio"
 
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Preview
+msgid "fields_of_meroe_dry.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "fields_of_meroe_dry.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Description
+msgid ""
+"The vitalizing waters of the Nile sustain life along its banks, while the "
+"long dry season scorches the land."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Description
+msgctxt "biome definition"
+msgid ""
+"The vitalizing waters of the Nile sustain life along its banks, while the "
+"long dry season scorches the land."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Title
+msgid "Dry Season"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/dry.jsonDescription.Title
+msgctxt "biome definition"
+msgid "Dry Season"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Preview
+msgid "fields_of_meroe_rainy.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "fields_of_meroe_rainy.png"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Description
+msgid ""
+"Revelling in the much awaited rain, the baked land transforms into a lush "
+"haven for both man and beast."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Description
+msgctxt "biome definition"
+msgid ""
+"Revelling in the much awaited rain, the baked land transforms into a lush "
+"haven for both man and beast."
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Title
+msgid "Rainy Season"
+msgstr ""
+
+#: maps/random/rmbiome/fields_of_meroe/rainy.jsonDescription.Title
+msgctxt "biome definition"
+msgid "Rainy Season"
+msgstr ""
+
 #: maps/random/rmbiome/generic/alpine.jsonDescription.Description
 msgid ""
 "A region in the high snowy mountains. Biting winds sweep through the "
@@ -1078,6 +1172,15 @@ msgctxt "biome definition"
 msgid "Tropic"
 msgstr "Tropicale"
 
+#: maps/random/rmbiome/gulf_of_bothnia/frozen_lake.jsonDescription.Preview
+msgid "gulf_of_bothnia_frozen_lake.png"
+msgstr ""
+
+#: maps/random/rmbiome/gulf_of_bothnia/frozen_lake.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "gulf_of_bothnia_frozen_lake.png"
+msgstr ""
+
 #: maps/random/rmbiome/gulf_of_bothnia/frozen_lake.jsonDescription.Description
 msgid ""
 "Solidifying it's grip, the harsh cold has succeeded in freezing up the gulf."
@@ -1099,6 +1202,15 @@ msgstr "Lago Ghiacciato"
 msgctxt "biome definition"
 msgid "Frozen Lake"
 msgstr "Lago Ghiacciato"
+
+#: maps/random/rmbiome/gulf_of_bothnia/late_spring.jsonDescription.Preview
+msgid "gulf_of_bothnia_late_spring.png"
+msgstr ""
+
+#: maps/random/rmbiome/gulf_of_bothnia/late_spring.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "gulf_of_bothnia_late_spring.png"
+msgstr ""
 
 #: maps/random/rmbiome/gulf_of_bothnia/late_spring.jsonDescription.Description
 msgid ""
@@ -1123,6 +1235,15 @@ msgstr "Tarda Primavera"
 msgctxt "biome definition"
 msgid "Late Spring"
 msgstr "Tarda Primavera"
+
+#: maps/random/rmbiome/gulf_of_bothnia/winter.jsonDescription.Preview
+msgid "gulf_of_bothnia_winter.png"
+msgstr ""
+
+#: maps/random/rmbiome/gulf_of_bothnia/winter.jsonDescription.Preview
+msgctxt "biome definition"
+msgid "gulf_of_bothnia_winter.png"
+msgstr ""
 
 #: maps/random/rmbiome/gulf_of_bothnia/winter.jsonDescription.Description
 msgid ""
@@ -1208,16 +1329,25 @@ msgstr "Dobbiamo trovare terreno asciutto, tra poco le nostre terre saranno somm
 msgid "The lakes start swallowing the land, we have to find shelter!"
 msgstr "I laghi iniziano a inghiottire la terra, dobbiamo trovare un rifugio!"
 
-#: maps/random/survivalofthefittest_triggers.js:190
+#: maps/random/jebel_barkal_triggers.js:565
+msgid "Napata is attacking!"
+msgstr ""
+
+#: maps/random/jebel_barkal_triggers.js:577
+#, javascript-format
+msgid "Napata will attack in %(time)s!"
+msgstr ""
+
+#: maps/random/survivalofthefittest_triggers.js:163
 #, javascript-format
 msgid "The first wave will start in %(time)s!"
 msgstr "La prima ondata inizierà tra %(time)s!"
 
-#: maps/random/survivalofthefittest_triggers.js:325
+#: maps/random/survivalofthefittest_triggers.js:264
 msgid "An enemy wave is attacking!"
 msgstr "Un'ondata nemica sta attaccando!"
 
-#: maps/random/survivalofthefittest_triggers.js:349
+#: maps/random/survivalofthefittest_triggers.js:289
 #, javascript-format
 msgid "%(player)s has been defeated (lost civic center)."
 msgstr "%(player)s è stato sconfitto (Centro Civico distrutto)"
@@ -1854,13 +1984,13 @@ msgstr "Piccola mappa con un sacco di risorse e un po' d'acqua, per le prove di 
 
 #: maps/scenarios/Napata Reconstruction.xml:Name:40
 msgid "Napata Reconstruction"
-msgstr ""
+msgstr "Ricostruzione della città di Napata"
 
 #: maps/scenarios/Napata Reconstruction.xml:Description:40
 msgid ""
 "This map displays a reconstruction of the ancient city Napata. "
 "[color=\"red\"]Note:[/color] The map is not intended to be playable."
-msgstr ""
+msgstr "Questa mappa rappresenta una ricostruzione dell'antica città di Napata. [color=\"red\"]Nota:[/color] La mappa non è stata pensata per giocare."
 
 #: maps/scenarios/Necropolis.xml:Description:39
 msgid ""
@@ -2568,6 +2698,51 @@ msgstr "Un paesaggio alpino nebbioso diventa un campo di battaglia, ogni squadra
 #: maps/skirmishes/Dueling Cliffs (3v3).xml:Name:40
 msgid "Dueling Cliffs (3v3)"
 msgstr "Duello tra le rupi (3v3)"
+
+#: maps/skirmishes/Egypt (3v3).xml:Name:40
+msgid "Egypt (3v3)"
+msgstr ""
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[1].Name:40
+msgid "Alexandria"
+msgstr "Alessandria"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[2].Name:40
+msgid "Theben"
+msgstr "Tebe"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[3].Name:40
+msgid "Siwa"
+msgstr "Siwa"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[4].Name:40
+msgid "Sinai"
+msgstr "Sinai"
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[5].Name:40
+msgid "Memphis"
+msgstr ""
+
+#: maps/skirmishes/Egypt (3v3).xml:PlayerData[6].Name:40
+msgid "Cyrene"
+msgstr ""
+
+#: maps/skirmishes/Egypt (3v3).xml:Description:40
+msgid ""
+"Fight for the remains of ancient Egypt!\n"
+"\n"
+"Players start with full grown cities and small armies, each having distinct advantages and drawbacks. Take care, there are 7 mighty forts and marauding bandids!\n"
+"\n"
+"It is the last century before 0 A.D. Egypt is internally divided between hellenistic (Alexandria, represented by Seleucids) and traditional influences (Memphis, represented by Ptolemies). Thebes in the southern clime of river Nile has already been taken over by the Kush. In the north western Al-Dschabal al-Achdar, where the mediterranean city of Cyrene is located the Romans are preparing their invasion. From the eastern desert at-Tih and mount Sinai enemies (represented by Persians) are pushing forward and the oasis Siwa. Charga (represented by Carthage) in the south western desert are trying to get a share of the pie as well.\n"
+"Locations:\n"
+"- Alexandria: library, harbor\n"
+"- Memphis: Necropolis, pyramids, Apis shrine\n"
+"- Thebes: temple district, Valley of the Kings \n"
+"- Cyrene: mediterranean Macchie, olive groves\n"
+"- Fayyum: crocodile shrine, nile dam\n"
+"- Eastern desert: mount Sinai, deep Wadi, Red Sea reefs\n"
+"- Western desert: Oasis Charga and Siwa, Qattara Depression\n"
+msgstr ""
 
 #: maps/skirmishes/Forest Battle (4).xml:Description:40
 msgid ""

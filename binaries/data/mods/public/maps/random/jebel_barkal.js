@@ -56,7 +56,7 @@ const oElephantInfant = "gaia/fauna_elephant_african_infant";
 const oLion = "gaia/fauna_lion";
 const oLioness = "gaia/fauna_lioness";
 const oCrocodile = "gaia/fauna_crocodile";
-const oFish = "gaia/fauna_fish";
+const oFish = "gaia/fauna_fish_tilapia";
 const oHawk = "gaia/fauna_hawk";
 const oTempleApedemak = "structures/kush_temple";
 const oTempleAmun = "structures/kush_temple_amun";
@@ -77,8 +77,8 @@ const oElephantStables = "structures/kush_elephant_stables";
 const oWallMedium = "structures/kush_wall_medium";
 const oWallGate = "structures/kush_wall_gate";
 const oWallTower = "structures/kush_wall_tower";
-const oKushCitizenArcher = "units/kush_infantry_archer_e";
-const oKushHealer = "units/kush_support_healer_e";
+const oKushCitizenArcher = "units/kush_infantry_archer_b";
+const oKushHealer = "units/kush_support_healer_b";
 const oKushChampionArcher = "units/kush_champion_infantry";
 const oKushChampions = [
 	oKushChampionArcher,
@@ -192,7 +192,7 @@ const pathWidth = 4;
 const pathWidthCenter = 10;
 const pathWidthSecondary = 6;
 
-const placeNapataWall = getDifficulty() >= 3;
+const placeNapataWall = getDifficulty() >= 3 && mapSize >= 192;
 
 const layoutFertileLandTextures = [
 	{
@@ -263,7 +263,7 @@ const layoutKushCity = [
 	},
 	{
 		"templateName": "uncapturable|" + oElephantStables,
-		"difficulty": "Medium",
+		"difficulty": "Easy",
 		"constraints": avoidClasses(clElephantStables, 10),
 		"painters": new TileClassPainter(clElephantStables)
 	},
@@ -546,7 +546,7 @@ for (let i = 0; i < numPlayers; ++i)
 		"PlayerTileClass": clPlayer,
 		"BaseResourceClass": clBaseResource,
 		"baseResourceConstraint": avoidClasses(clPlayer, 4, clWater, 4),
-		"Walls": mapSize <= 256 ? "towers" : "walls",
+		"Walls": mapSize <= 256 || getDifficulty() >= 3 ? "towers" : "walls",
 		"CityPatch": {
 			"outerTerrain": isDesert ? tRoadDesert : tRoadFertileLand,
 			"innerTerrain": isDesert ? tRoadDesert : tRoadFertileLand
@@ -636,7 +636,7 @@ var cityGridPosition = [];
 var cityGridAngle = [];
 for (let y = 0; y < gridPointsY; ++y)
 	[cityGridPosition[y], cityGridAngle[y]] = distributePointsOnCircularSegment(
-		gridPointsX, gridMaxAngle * (gridPointsX + 1) / gridPointsX, gridStartAngle, gridRadius(y), gridCenter);
+		gridPointsX, gridMaxAngle, gridStartAngle, gridRadius(y), gridCenter);
 
 g_Map.log("Marking city path crossings");
 for (let y in cityGridPosition)
@@ -786,17 +786,20 @@ createArea(
 	new ElevationPainter(heightDesert + heightOffsetStatue));
 
 g_Map.log("Placing healers at the ritual place");
-var [healerPosition, healerAngle] = distributePointsOnCircularSegment(scaleByMapSize(2, 10), Math.PI, ritualAngle, scaleByMapSize(2, 3), ritualPosition);
+var [healerPosition, healerAngle] = distributePointsOnCircularSegment(
+	scaleByMapSize(2, 10), Math.PI, ritualAngle, scaleByMapSize(2, 3), ritualPosition);
 for (let i = 0; i < healerPosition.length; ++i)
 	g_Map.placeEntityPassable(oKushHealer, 0, healerPosition[i], healerAngle[i] + Math.PI);
 
 g_Map.log("Placing statues at the ritual place");
-var [statuePosition, statueAngle] = distributePointsOnCircularSegment(scaleByMapSize(4, 8), Math.PI, ritualAngle, scaleByMapSize(3, 4), ritualPosition);
+var [statuePosition, statueAngle] = distributePointsOnCircularSegment(
+	scaleByMapSize(4, 8), Math.PI, ritualAngle, scaleByMapSize(3, 4), ritualPosition);
 for (let i = 0; i < statuePosition.length; ++i)
 	g_Map.placeEntityPassable(pickRandom(aStatues), 0, statuePosition[i], statueAngle[i] + Math.PI);
 
 g_Map.log("Placing palms at the ritual place");
-var [palmPosition, palmAngle] = distributePointsOnCircularSegment(scaleByMapSize(6, 16), Math.PI, ritualAngle, scaleByMapSize(4, 5), ritualPosition);
+var [palmPosition, palmAngle] = distributePointsOnCircularSegment(
+	scaleByMapSize(6, 16), Math.PI, ritualAngle, scaleByMapSize(4, 5), ritualPosition);
 for (let i = 0; i < palmPosition.length; ++i)
 	if (avoidClasses(clTemple, 1).allows(palmPosition[i]))
 		g_Map.placeEntityPassable(oPalmPath, 0, palmPosition[i], randomAngle());
@@ -837,7 +840,7 @@ if (placeNapataWall)
 	let wallGridMaxAngleSummand = Math.PI / 32;
 	let wallGridStartAngle = gridStartAngle - wallGridMaxAngleSummand / 2;
 	let wallGridRadiusFront = gridRadius(gridPointsY - 1) + pathWidth - 1;
-	let wallGridMaxAngleFront = (gridMaxAngle + wallGridMaxAngleSummand) * gridPointsX / gridPointsX - wallGridMaxAngleSummand / 2;
+	let wallGridMaxAngleFront = gridMaxAngle + wallGridMaxAngleSummand;
 	let entitiesWalls = placeCircularWall(
 		gridCenter,
 		wallGridRadiusFront,
@@ -846,13 +849,13 @@ if (placeNapataWall)
 		0,
 		wallGridStartAngle,
 		wallGridMaxAngleFront,
-		0,
 		true,
+		0,
 		0);
 
 	g_Map.log("Placing side and back walls");
 	let wallGridRadiusBack = hillRadius - scaleByMapSize(15, 25);
-	let wallGridMaxAngleBack = (gridMaxAngle + wallGridMaxAngleSummand) * (gridPointsX + 1) / gridPointsX;
+	let wallGridMaxAngleBack = gridMaxAngle + wallGridMaxAngleSummand;
 	let wallGridPositionFront = distributePointsOnCircularSegment(gridPointsX, wallGridMaxAngleBack, wallGridStartAngle, wallGridRadiusFront, gridCenter)[0];
 	let wallGridPositionBack = distributePointsOnCircularSegment(gridPointsX, wallGridMaxAngleBack, wallGridStartAngle, wallGridRadiusBack, gridCenter)[0];
 	let wallGridPosition = [wallGridPositionFront[0], ...wallGridPositionBack, wallGridPositionFront[wallGridPositionFront.length - 1]];
@@ -1155,7 +1158,7 @@ createObjectGroupsByAreas(
 	new SimpleGroup([new RandomObject([oKushCitizenArcher, oKushChampionArcher], scaleByMapSize(4, 10), scaleByMapSize(6, 20), 1, 4)], true, clSoldier),
 	0,
 	new StaticConstraint([avoidClasses(clCliff, 1), new NearTileClassConstraint(clCliff, 5)]),
-	scaleByMapSize(1, 5),
+	scaleByMapSize(1, 5) / 3 * getDifficulty(),
 	250,
 	[areaHilltop]);
 
@@ -1168,7 +1171,7 @@ createObjectGroupsByAreas(
 		avoidClasses(clCliff, 1, clSoldier, 1),
 		new NearTileClassConstraint(clCliff, 5)
 	]),
-	scaleByMapSize(8, 100),
+	scaleByMapSize(8, 100) / 3 * getDifficulty(),
 	250,
 	[areaHill]);
 
@@ -1177,28 +1180,31 @@ createObjectGroupsByAreas(
 	new SimpleGroup([new RandomObject(oPtolSiege, 1, 1, 1, 3)], true, clSoldier),
 	0,
 	new StaticConstraint([new NearTileClassConstraint(clCliff, 5), avoidClasses(clCliff, 1, clSoldier, 1)]),
-	scaleByMapSize(1, 6),
+	scaleByMapSize(1, 6) / 3 * getDifficulty(),
 	250,
 	[areaHilltop]);
 
-g_Map.log("Placing soldiers near pyramids");
 const avoidCollisionsPyramids = new StaticConstraint([avoidCollisions, new NearTileClassConstraint(clPyramid, 10)]);
-createObjectGroupsByAreas(
-	new SimpleGroup([new SimpleObject(oKushCitizenArcher, 1, 1, 1, 1)], true, clSoldier),
-	0,
-	avoidCollisionsPyramids,
-	scaleByMapSize(3, 8),
-	250,
-	[areaPyramids]);
+if (!isNomad())
+{
+	g_Map.log("Placing soldiers near pyramids");
+	createObjectGroupsByAreas(
+		new SimpleGroup([new SimpleObject(oKushCitizenArcher, 1, 1, 1, 1)], true, clSoldier),
+		0,
+		avoidCollisionsPyramids,
+		scaleByMapSize(3, 8),
+		250,
+		[areaPyramids]);
 
-g_Map.log("Placing treasures at the pyramid");
-createObjectGroupsByAreas(
-	new SimpleGroup([new RandomObject(oTreasuresHill, 1, 1, 2, 2)], true, clTreasure),
-	0,
-	avoidCollisionsPyramids,
-	scaleByMapSize(1, 10),
-	250,
-	[areaPyramids]);
+	g_Map.log("Placing treasures at the pyramid");
+	createObjectGroupsByAreas(
+		new SimpleGroup([new RandomObject(oTreasuresHill, 1, 1, 2, 2)], true, clTreasure),
+		0,
+		avoidCollisionsPyramids,
+		scaleByMapSize(1, 10),
+		250,
+		[areaPyramids]);
+}
 
 g_Map.log("Placing treasures on the hilltop");
 createObjectGroupsByAreas(
@@ -1285,7 +1291,7 @@ g_Map.log("Creating hawk");
 for (let i = 0; i < scaleByMapSize(0, 2); ++i)
 	g_Map.placeEntityAnywhere(oHawk, 0, mapCenter, randomAngle());
 
-placePlayersNomad(clPlayer, [avoidClasses(clHill, 15, clSoldier, 15, clCity, 15), avoidCollisions]);
+placePlayersNomad(clPlayer, [avoidClasses(clHill, 15, clSoldier, 20, clCity, 15), avoidCollisions]);
 
 setWindAngle(-0.43);
 setWaterHeight(heightWaterLevel + SEA_LEVEL);
