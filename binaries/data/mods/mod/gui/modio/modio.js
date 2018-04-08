@@ -170,7 +170,7 @@ function displayMods()
 	let displayedMods = clone(g_ModsAvailableOnline);
 	for (let i = 0; i < displayedMods.length; ++i)
 		displayedMods[i].i = i;
- 
+
 	displayedMods.sort((mod1, mod2) =>
 		modsAvailableList.selected_column_order *
 		(modsAvailableList.selected_column == "filesize" ?
@@ -205,6 +205,9 @@ function showModDescription()
 function updateModList()
 {
 	g_ModsAvailableOnline = [];
+
+	// Clear the list if we're refreshing
+	displayMods();
 
 	Engine.GetGUIObjectByName("refreshButton").enabled = false;
 
