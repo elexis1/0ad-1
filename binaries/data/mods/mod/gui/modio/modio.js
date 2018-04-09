@@ -207,6 +207,7 @@ function updateModList()
 	g_ModsAvailableOnline = [];
 
 	// Clear the list if we're refreshing
+	Engine.GetGUIObjectByName("modsAvailableList").selected = -1;
 	displayMods();
 
 	Engine.GetGUIObjectByName("refreshButton").enabled = false;
