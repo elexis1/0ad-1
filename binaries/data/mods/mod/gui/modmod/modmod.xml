@@ -175,6 +175,11 @@
 		<object name="message" type="text" size="394 100%-78 100%-15 100%-52" text_align="left" textcolor="white"/>
 
 		<!-- BUTTONS -->
+		<object type="button" style="ModernButtonRed" size="100%-944 100%-44 100%-764 100%-16">
+			<translatableAttribute id="caption">Help</translatableAttribute>
+			<action on="Press">Engine.PushGuiPage("page_help.xml");</action>
+		</object>
+
 		<object name="quitButton" type="button" style="ModernButtonRed" size="100%-760 100%-44 100%-580 100%-16">
 			<translatableAttribute id="caption">Quit</translatableAttribute>
 			<action on="Press">Engine.Exit();</action>
