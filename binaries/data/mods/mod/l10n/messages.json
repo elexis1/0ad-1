@@ -8,6 +8,7 @@
             {
                 "extractor": "javascript",
                 "filemasks": [
+                    "gui/modio/**.js",
                     "gui/modmod/**.js"
                 ],
                 "options": {
@@ -28,6 +29,8 @@
             {
                 "extractor": "xml",
                 "filemasks": [
+                    "gui/help/**.xml",
+                    "gui/modio/**.xml",
                     "gui/modmod/**.xml"
                 ],
                 "options": {
@@ -38,6 +41,14 @@
                         },
                         "translate": {}
                     }
+                }
+            },
+            {
+                "extractor": "txt",
+                "filemasks": [
+                    "gui/help/help.txt"
+                ],
+                "options": {
                 }
             }
         ]
