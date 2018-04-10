@@ -6,7 +6,8 @@
 
   !include "MUI2.nsh"
   !include "LogicLib.nsh"
- 
+  !include "FileAssociation.nsh"
+
   ; Control whether to include source code (and component selection screen)
   !define INCLUDE_SOURCE 0
 
@@ -159,6 +160,9 @@ Section "!Game and data files" GameSection
 
   !insertmacro MUI_STARTMENU_WRITE_END
 
+  ;Register .pyromod file association
+  ${registerExtension} "$INSTDIR\binaries\system\pyrogenesis.exe" ".pyromod" "Pyrogenesis mod"
+
 SectionEnd
 
 !if INCLUDE_SOURCE
@@ -244,6 +248,9 @@ Section "Uninstall"
 
   DeleteRegKey SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\0 A.D."
   DeleteRegKey /ifempty SHCTX "Software\0 A.D."
+
+  ;Unregister .pyromod file association
+  ${unregisterExtension} ".pyromod" "Pyrogenesis mod"
 
 SectionEnd
 
