@@ -166,10 +166,16 @@ function onTick()
 function displayMods()
 {
 	let modsAvailableList = Engine.GetGUIObjectByName("modsAvailableList");
+	let selectedMod = modsAvailableList.list[modsAvailableList.selected];
+	modsAvailableList.selected = -1;
 
 	let displayedMods = clone(g_ModsAvailableOnline);
 	for (let i = 0; i < displayedMods.length; ++i)
 		displayedMods[i].i = i;
+
+	let filterColumns = ["name", "name_id", "summary"];
+	let filterText = Engine.GetGUIObjectByName("modFilter").caption.toLowerCase();
+	displayedMods = displayedMods.filter(mod => filterColumns.some(column => mod[column].toLowerCase().indexOf(filterText) != -1));
 
 	displayedMods.sort((mod1, mod2) =>
 		modsAvailableList.selected_column_order *
@@ -183,6 +189,7 @@ function displayMods()
 	modsAvailableList.list_filesize = displayedMods.map(mod => filesizeToString(mod.filesize));
 	modsAvailableList.list_dependencies = displayedMods.map(mod => (mod.dependencies || []).join(" "));
 	modsAvailableList.list = displayedMods.map(mod => mod.i);
+	modsAvailableList.selected = modsAvailableList.list.indexOf(selectedMod);
 }
 
 function selectedModIndex()

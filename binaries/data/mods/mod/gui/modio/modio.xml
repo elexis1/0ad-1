@@ -20,14 +20,24 @@
 
 		<!-- Available Mods Wrapper -->
 		<object name="modsAvailable" size="16 20 100%-16 100%-70" style="ModmodScrollbar">
+
 			<object style="ModernLabelText" type="text" size="0 5 100% 25">
 				<translatableAttribute id="caption">Available Mods</translatableAttribute>
+			</object>
+
+			<object name="modFilter"
+				type="input"
+				style="ModernInput"
+				size="16 0 200 24"
+			>
+				<action on="Press">displayMods();</action>
+				<action on="TextEdit">displayMods();</action>
 			</object>
 
 			<object name="modsAvailableList"
 				type="olist"
 				style="ModernSortedList"
-				size="0 25 100%-2 100%"
+				size="0 30 100%-2 100%"
 				sortable="true"
 				selected_column="name"
 				selected_column_order="1"
