@@ -171,10 +171,20 @@ CFixedVector3D JSI_GameView::GetTerrainAtScreenPoint(ScriptInterface::CxPrivate*
 	return CFixedVector3D(fixed::FromFloat(pos.X), fixed::FromFloat(pos.Y), fixed::FromFloat(pos.Z));
 }
 
+/**
+* Print current camera coordinates as XML.
+*/
+void JSI_GameView::CameraPrintLookAtCoordinates(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), float lookAtX, float lookAtY, float lookAtZ)
+{
+	if (g_Game && g_Game->GetView())
+		g_Game->GetView()->PrintLookAtCoordinates(lookAtX, lookAtY, lookAtZ);
+}
+
 void JSI_GameView::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
 {
 	RegisterScriptFunctions_Settings(scriptInterface);
 
+	scriptInterface.RegisterFunction<void, float, float, float, &CameraPrintLookAtCoordinates>("CameraPrintLookAtCoordinates");
 	scriptInterface.RegisterFunction<float, &CameraGetX>("CameraGetX");
 	scriptInterface.RegisterFunction<float, &CameraGetZ>("CameraGetZ");
 	scriptInterface.RegisterFunction<void, entity_pos_t, entity_pos_t, &CameraMoveTo>("CameraMoveTo");

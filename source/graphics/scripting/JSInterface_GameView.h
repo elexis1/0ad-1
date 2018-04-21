@@ -45,6 +45,7 @@ namespace JSI_GameView
 	void CameraFollowFPS(ScriptInterface::CxPrivate* pCxPrivate, entity_id_t entityid);
 	entity_id_t GetFollowedEntity(ScriptInterface::CxPrivate* pCxPrivate);
 	CFixedVector3D GetTerrainAtScreenPoint(ScriptInterface::CxPrivate* pCxPrivate, int x, int y);
+	void CameraPrintLookAtCoordinates(ScriptInterface::CxPrivate* pCxPrivate, float lookAtX, float lookAtY, float lookAtZ);
 }
 
 #undef DECLARE_BOOLEAN_SCRIPT_SETTING
