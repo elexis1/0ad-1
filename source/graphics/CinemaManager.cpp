@@ -189,6 +189,7 @@ void CCinemaManager::DrawNodes(const RNSpline& spline, const CColor& nodeColor) 
 
 void CCinemaManager::DrawBars() const
 {
+	return;
 	int height = (float)g_xres / 2.39f;
 	int shift = (g_yres - height) / 2;
 	if (shift <= 0)
