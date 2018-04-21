@@ -22,12 +22,12 @@
     <ship>
       <Obstructions>pathfinding</Obstructions>
       <MinWaterDepth>1</MinWaterDepth>
-      <Clearance>10.0</Clearance>
+      <Clearance>18.0</Clearance>
     </ship>
     <ship-small>
       <Obstructions>pathfinding</Obstructions>
       <MinWaterDepth>1</MinWaterDepth>
-      <Clearance>3.0</Clearance>
+      <Clearance>5.0</Clearance>
     </ship-small>
 
     <!--
