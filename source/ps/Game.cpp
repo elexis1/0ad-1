@@ -38,6 +38,7 @@
 #include "ps/Replay.h"
 #include "ps/Shapes.h"
 #include "ps/World.h"
+#include "ps/GameSetup/CmdLineArgs.h"
 #include "ps/GameSetup/GameSetup.h"
 #include "renderer/Renderer.h"
 #include "renderer/TimeManager.h"
@@ -53,6 +54,8 @@
 
 extern bool g_GameRestarted;
 extern GameLoopState* g_AtlasGameLoop;
+
+extern CmdLineArgs g_args;
 
 /**
  * Globally accessible pointer to the CGame object.
@@ -191,7 +194,17 @@ bool CGame::StartVisualReplay(const OsPath& replayPath)
 
 	JS::RootedValue attribs(cx);
 	scriptInterface.ParseJSON(line, &attribs);
-	StartGame(&attribs, "");
+
+	CStr savegame = "";
+	if (g_args.Has("load"))
+	{
+		std::ifstream file (g_args.Get("load").c_str(), std::ifstream::in);
+		std::stringstream buffer;
+		buffer << file.rdbuf();
+		savegame = buffer.str();
+	}
+
+	StartGame(&attribs, savegame);
 
 	return true;
 }
