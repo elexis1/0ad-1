@@ -124,7 +124,7 @@ void main()
 	
 	specular = pow(max(0.0, ndoth), 150.0f) * sunColor * specularStrength;
 
-	losMod = texture2D(losTex, v_los).a;
+	losMod = 1.0; // texture2D(losTex, v_los).a;
 
 	//losMod = texture2D(losMap, gl_TexCoord[3].st).a;
 

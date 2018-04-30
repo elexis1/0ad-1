@@ -310,7 +310,7 @@ void main()
 #endif
 	
 	losMod = texture2D(losMap, losCoords.st).a;
-	losMod = losMod < 0.03 ? 0.0 : losMod;
+	losMod = 1.0; // losMod < 0.03 ? 0.0 : losMod;
 	
 	vec3 color;
 #if USE_SHADOWS_ON_WATER && USE_SHADOW

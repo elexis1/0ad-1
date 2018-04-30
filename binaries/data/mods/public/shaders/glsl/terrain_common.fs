@@ -241,7 +241,7 @@ void main()
   #endif
 
   float los = texture2D(losTex, v_los).a;
-  los = los < 0.03 ? 0.0 : los;
+  los = 1.0; // los < 0.03 ? 0.0 : los;
   color *= los;
 
   #if DECAL
