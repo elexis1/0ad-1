@@ -524,8 +524,11 @@ function placeLinearWall(startPosition, targetPosition, wallPart = undefined, st
 			let place = Vector2D.add(position, new Vector2D(0, wallEle.indent).rotate(-wallAngle));
 
 			if (wallEle.templateName && g_Map.inMapBounds(place) && constraint.allows(place.clone().floor()))
-				entities.push(g_Map.placeEntityPassable(wallEle.templateName, playerId, place, placeAngle + wallEle.angle));
-
+			{
+				let entity = g_Map.placeEntityPassable(wallEle.templateName, playerId, place, placeAngle + wallEle.angle);
+				if (entity)
+					entities.push(entity);
+			}
 			position.add(dist);
 		}
 
@@ -535,7 +538,11 @@ function placeLinearWall(startPosition, targetPosition, wallPart = undefined, st
 		let wallLength = (wallEle.length - overlap) / 2;
 		position.add(new Vector2D(scaleFactor * wallLength, 0).rotate(-wallAngle));
 		if (wallEle.templateName && g_Map.inMapBounds(position) && constraint.allows(position.clone().floor()))
-			entities.push(g_Map.placeEntityPassable(wallEle.templateName, playerId, position, placeAngle + wallEle.angle));
+		{
+			let entity = g_Map.placeEntityPassable(wallEle.templateName, playerId, position, placeAngle + wallEle.angle);
+			if (entity)
+				entities.push(entity)
+		}
 	}
 
 	return entities;
