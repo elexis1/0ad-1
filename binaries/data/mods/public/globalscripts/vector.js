@@ -302,6 +302,17 @@ Vector3D.prototype.div = function(f)
 	return this;
 };
 
+Vector3D.prototype.rotateY = function(angle)
+{
+	let sin = Math.sin(angle);
+	let cos = Math.cos(angle);
+
+	return this.set(
+		this.x * cos + this.y * sin,
+		0,
+		-this.x * sin + this.y * cos);
+};
+
 Vector3D.prototype.normalize = function()
 {
 	let magnitude = this.length();
@@ -404,6 +415,17 @@ Vector3D.prototype.horizAngleTo = function(v)
 //
 // Static functions that return a new vector object.
 // Note that object creation is slow in JS, so use them only when really necessary
+
+Vector3D.sum = function(vectorList)
+{
+	// Do not use for...of nor array functions for performance
+	let sum = new Vector3D();
+
+	for (let i = 0; i < vectorList.length; ++i)
+		sum.add(vectorList[i]);
+
+	return sum;
+};
 
 Vector3D.add = function(v1, v2)
 {
