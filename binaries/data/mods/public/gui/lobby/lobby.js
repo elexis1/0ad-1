@@ -88,7 +88,7 @@ var g_Dialog = false;
 /**
  * All chat messages received since init (i.e. after lobby join and after returning from a game).
  */
-var g_ChatMessages = [];
+var g_ChatMessages = ["[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"111 252 105\"]Aristol[/color]>[/font] M.T", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"134 106 251\"]audacioustux[/color]>[/font] st", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"134 106 251\"]audacioustux[/color]>[/font] steinum", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"134 106 251\"]audacioustux[/color]>[/font] host", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"102 106 255\"]M.T[/color]>[/font] doctor ", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"102 106 255\"]M.T[/color]>[/font] yilmaz", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"134 106 251\"]audacioustux[/color]>[/font] steinum", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"134 106 251\"]audacioustux[/color]>[/font] M.T they're in 1v1", "[font=\"sans-bold-13\"]\\[10:31][/font] [font=\"sans-bold-13\"]<[color=\"111 252 105\"]Aristol[/color]>[/font] they still in game M.T", "[font=\"sans-bold-13\"]\\[10:32][/font] [font=\"sans-bold-13\"]<[color=\"102 106 255\"]M.T[/color]>[/font] wait", "[font=\"sans-bold-13\"]\\[10:32][/font] [font=\"sans-bold-13\"]<[color=\"111 252 105\"]Aristol[/color]>[/font] they have no specs allowed", "[font=\"sans-bold-13\"]\\[10:33][/font] [font=\"sans-bold-13\"]<[color=\"160 215 142\"]Decger[/color]>[/font] host", "[font=\"sans-bold-13\"]\\[10:41][/font] [font=\"sans-bold-13\"]<[color=\"201 239 118\"]@Ratings[/color]>[/font] A rated game has ended. yilmazgng lost against doctororgans. Rating Adjustment: yilmazgng (1671 -> 1660) and doctororgans (1775 -> 1786).", "[font=\"sans-bold-13\"]\\[10:46][/font] [font=\"sans-bold-13\"]<[color=\"201 239 118\"]@Ratings[/color]>[/font] A rated game has ended. cbocity lost against bokluk2000. Rating Adjustment: cbocity (1047 -> 1022) and bokluk2000 (1208 -> 1219).", "[font=\"sans-bold-13\"]\\[10:49][/font] [font=\"sans-bold-13\"]<[color=\"201 239 118\"]@Ratings[/color]>[/font] A rated game has ended. cagd_lulofun won against grosquick. Rating Adjustment: cagd_lulofun (1269 -> 1277) and grosquick (981 -> 968).", "[font=\"sans-bold-13\"]\\[11:02][/font] [font=\"sans-bold-13\"]<[color=\"111 252 105\"]Aristol[/color]>[/font] ?", "[font=\"sans-bold-13\"]\\[11:03][/font] [font=\"sans-bold-13\"]<[color=\"111 252 105\"]Aristol[/color]>[/font] hoyall", "[font=\"sans-bold-13\"]\\[11:03][/font] [font=\"sans-bold-13\"]<[color=\"183 204 172\"]hoyall[/color]>[/font] Aristol", "[font=\"sans-bold-13\"]\\[11:32][/font] [font=\"sans-bold-13\"]<[color=\"201 239 118\"]@Ratings[/color]>[/font] A rated game has ended. polgarmester won against bokluk2000. Rating Adjustment: polgarmester (1137 -> 1157) and bokluk2000 (1219 -> 1201).", "[font=\"sans-bold-13\"]\\[11:33][/font] [font=\"sans-bold-13\"]<[color=\"201 239 118\"]@Ratings[/color]>[/font] A rated game has ended. yilmazgng lost against doctororgans. Rating Adjustment: yilmazgng (1660 -> 1649) and doctororgans (1786 -> 1796).", "[font=\"sans-bold-13\"]\\[12:21][/font] [font=\"sans-bold-13\"]== CAGD_lulofun has left.[/font]", "[font=\"sans-bold-13\"]\\[12:21][/font] [font=\"sans-bold-13\"]== hoyall has left.[/font]", "[font=\"sans-bold-13\"]\\[12:21][/font] [font=\"sans-bold-13\"]<[color=\"154 157 203\"]Palaiologos[/color]>[/font] lol good, it wasn't rated"];
 
 /**
  * Rating of the current user.
@@ -99,7 +99,7 @@ var g_UserRating = "";
 /**
  * All games currently running.
  */
-var g_GameList = [];
+var g_GameList = [{name:"UltraFilip's game", ip:"", port:"20595", stunIP:"", stunPort:"20595", hostUsername:"UltraFilip", state:"running", nbp:"2", maxnbp:"4", players:"{\"0\":\\[{\"Name\":\"UltraFilip\",\"Team\":0},{\"Name\":\"Cryosmium\",\"Team\":0}],\"1\":\\[{\"Name\":\"Themistocles\",\"Team\":1,\"AI\":\"petra\",\"AIDiff\":3},{\"Name\":\"Boudicca\",\"Team\":1,\"AI\":\"petra\",\"AIDiff\":3}]}", mapName:"maps/skirmishes/Corinthian Isthmus (4)", niceMapName:"Corinthian Isthmus (4)", mapSize:"Default", mapType:"skirmish", victoryCondition:"conquest", startTime:"1525426203"}, {name:"ReMach's game", ip:"", port:"20595", stunIP:"", stunPort:"20595", hostUsername:"ReMach", state:"waiting", nbp:"1", maxnbp:"4", players:"{\"0\":\\[{\"Name\":\"ReMach (1144)\",\"Team\":0},{\"Name\":\"Ptolemy Neos Dionysos\",\"Team\":0,\"AI\":\"petra\",\"AIDiff\":3}],\"1\":\\[{\"Name\":\"Philo\",\"Team\":1,\"Offline\":true,\"State\":\"defeated\"},{\"Name\":\"Antiochus XI Epiphanes\",\"Team\":1,\"AI\":\"petra\",\"AIDiff\":3}]}", mapName:"maps/random/marmara", niceMapName:"Marmara", mapSize:"512", mapType:"random", victoryCondition:"conquest", startTime:"1525425089"}, {name:"Come on", ip:"", port:"20595", stunIP:"", stunPort:"20595", hostUsername:"Polgarmester", state:"waiting", nbp:"2", maxnbp:"4", players:"{\"0\":\\[{\"Name\":\"Polgarmester (1137)\",\"Team\":0},{\"Name\":\"CAGD_lulofun (1269)\",\"Team\":0,\"Offline\":true,\"State\":\"defeated\"}],\"3\":\\[{\"Name\":\"JustForSmoke (1053)\",\"Team\":3},{\"Name\":\"DoctorOrgans (1796)\",\"Team\":3,\"Offline\":true,\"State\":\"defeated\"}]}", mapName:"maps/random/unknown_land", niceMapName:"Unknown Land", mapSize:"384", mapType:"random", victoryCondition:"conquest", startTime:"1525426987"}];
 
 /**
  * Used to restore the selection after updating the playerlist.
@@ -703,7 +703,9 @@ function updatePlayerList()
 	let nickList = [];
 	let ratingList = [];
 
-	let cleanPlayerList = Engine.GetPlayerList().map(player => {
+	let cleanPlayerList =  [{name:"Aidan0AD", presence:"available", rating:"1217", role:"participant"}, {name:"CAGD_lulofun", presence:"available", rating:"1277", role:"participant"}, {name:"Cryosmium", presence:"playing", rating:"", role:"participant"}, {name:"Decger", presence:"available", rating:"1598", role:"participant"}, {name:"DoctorOrgans", presence:"available", rating:"1796", role:"visitor"}, {name:"Dunedan", presence:"available", rating:"", role:"participant"}, {name:"Johny_Mielony", presence:"playing", rating:"1244", role:"participant"}, {name:"Migens", presence:"playing", rating:"", role:"participant"}, {name:"Palaiologos", presence:"playing", rating:"1332", role:"participant"}, {name:"Ratings", presence:"available", rating:"", role:"moderator"}, {name:"ReMach", presence:"playing", rating:"1144", role:"participant"}, {name:"UltraFilip", presence:"playing", rating:"", role:"participant"}, {name:"Vick", presence:"available", rating:"1377", role:"participant"}, {name:"WFGbot", presence:"available", rating:"", role:"moderator"}, {name:"cbocity", presence:"playing", rating:"1022", role:"participant"}, {name:"elexis3", presence:"available", rating:"1180", role:"participant"}, {name:"qpwelloo", presence:"playing", rating:"", role:"participant"}, {name:"user1", presence:"away", rating:"", role:"moderator"}, {name:"wireablepuppet", presence:"playing", rating:"991", role:"participant"}];
+
+	let cleanPlayerList2 = Engine.GetPlayerList().map(player => {
 		player.isBuddy = g_Buddies.indexOf(player.name) != -1;
 		return player;
 	}).sort((a, b) => {
@@ -993,6 +995,7 @@ function updateGameList()
 		g_SelectedGamePort = g_GameList[gamesBox.selected].port;
 	}
 
+	if (false)
 	g_GameList = Engine.GetGameList().map(game => {
 
 		game.hasBuddies = 0;
@@ -1079,7 +1082,7 @@ function updateGameList()
 		list_mapSize.push(translateMapSize(game.mapSize));
 		list_mapType.push(g_MapTypes.Title[mapTypeIdx] || "");
 		list_nPlayers.push(game.nbp + "/" + game.maxnbp);
-		list_gameRating.push(game.gameRating);
+		list_gameRating.push(randIntInclusive(900, 1500));
 		list.push(gameName);
 		list_data.push(i);
 	}
@@ -1394,7 +1397,7 @@ function addChatMessage(msg)
 	if (!formatted)
 		return;
 
-	g_ChatMessages.push(formatted);
+	//g_ChatMessages.push(formatted);
 	Engine.GetGUIObjectByName("chatText").caption = g_ChatMessages.join("\n");
 }
 
