@@ -619,7 +619,11 @@ function placeCircularWall(center, radius, wallPart, style, playerId = 0, orient
 
 			// Placement
 			if (wallEle.templateName && g_Map.inMapBounds(place) && constraint.allows(place.clone().floor()))
-				entities.push(g_Map.placeEntityPassable(wallEle.templateName, playerId, place, placeAngle + wallEle.angle));
+			{
+				let entity = g_Map.placeEntityPassable(wallEle.templateName, playerId, place, placeAngle + wallEle.angle);
+				if (entity)
+					entities.push(entity);
+			}
 
 			// Prepare for the next wall element
 			actualAngle += addAngle;
@@ -634,7 +638,11 @@ function placeCircularWall(center, radius, wallPart, style, playerId = 0, orient
 		let place = Vector2D.average([position, target]);
 		let placeAngle = actualAngle + addAngle / 2;
 		if (g_Map.inMapBounds(place) && constraint.allows(place.clone().floor()))
-			entities.push(g_Map.placeEntityPassable(wallEle.templateName, playerId, place, placeAngle + wallEle.angle));
+		{
+			let entity = g_Map.placeEntityPassable(wallEle.templateName, playerId, place, placeAngle + wallEle.angle);
+			if (entity)
+				entities.push(entity);
+		}
 	}
 
 	return entities;
