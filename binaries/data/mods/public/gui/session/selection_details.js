@@ -71,7 +71,8 @@ function displaySingle(entState)
 	let civName = g_CivData[playerState.civ].Name;
 	let civEmblem = g_CivData[playerState.civ].Emblem;
 
-	let playerName = playerState.name;
+	//let playerName = playerState.name;
+	let playerName = "Wildfire Games"
 	let playerColor = rgbToGuiColor(g_DisplayedPlayerColors[entState.player], 128);
 
 	// Indicate disconnected players by prefixing their name
