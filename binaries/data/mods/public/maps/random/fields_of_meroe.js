@@ -5,7 +5,7 @@ Engine.LoadLibrary("rmbiome");
 if (g_MapSettings.Biome)
 	setSelectedBiome();
 else
-	setBiome("fields_of_meroe/dry");
+	setBiome("fields_of_meroe/rainy");
 
 const tMainDirt = g_Terrains.mainDirt;
 const tSecondaryDirt = g_Terrains.secondaryDirt;
@@ -428,7 +428,7 @@ if (aRain)
 		new SimpleGroup([new SimpleObject(aRain, 1, 1, 1, 4)], true, clRain),
 		0,
 		avoidClasses(clRain, 5),
-		scaleByMapSize(60, 200));
+		2 * scaleByMapSize(60, 200));
 Engine.SetProgress(98);
 
 placePlayersNomad(clPlayer, avoidClasses(clForest, 1, clKushiteVillages, 18, clMetal, 4, clRock, 4, clDunes, 4, clFood, 2, clRiver, 5));
