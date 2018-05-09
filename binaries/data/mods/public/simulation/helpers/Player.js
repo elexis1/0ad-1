@@ -88,6 +88,19 @@ function LoadPlayerSettings(settings, newPlayers)
 			for (var j = 1; j < numPlayers; ++j)
 				cmpPlayer.SetEnemy(j);
 
+			cmpPlayer.SetFormations([
+				"special/formations/null",
+				"special/formations/box",
+				"special/formations/column_closed",
+				"special/formations/line_closed",
+				"special/formations/column_open",
+				"special/formations/line_open",
+				"special/formations/flank",
+				"special/formations/skirmish",
+				"special/formations/wedge",
+				"special/formations/battle_line"
+			]);
+
 			continue;
 		}
 
