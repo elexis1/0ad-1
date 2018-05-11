@@ -250,9 +250,9 @@ void SkyManager::RenderSky()
 	glRotatef( 180.0f /*+ 45.0f*/ + RADTODEG(g_Renderer.GetLightEnv().GetRotation()), 0.0f, 1.0f, 0.0f );
 
 	// Distance to draw the faces at
-	const float D = mapSize*(TERRAIN_TILE_SIZE/2.0f); // distance from map center
-	const float H = 500.0f; // height of the ceiling
-	const float FH = -230.0f; // height of the "floor"
+	const float D = 1500.f;//mapSize*(TERRAIN_TILE_SIZE/2.0f); // distance from map center
+	const float H = 1000.0f; // height of the ceiling
+	const float FH = -250.0f; // height of the "floor"
 
 	CShaderProgramPtr shader;
 	CShaderTechniquePtr skytech;
