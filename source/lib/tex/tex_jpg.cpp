@@ -169,7 +169,7 @@ METHODDEF(void) src_term(j_decompress_ptr UNUSED(cinfo))
 * The caller is responsible for freeing it after finishing decompression.
 */
 
-GLOBAL(void) src_prepare(j_decompress_ptr cinfo, rpU8 data, size_t size)
+GLOBAL(void) src_prepare(j_decompress_ptr cinfo, u8* RESTRICT data, size_t size)
 {
 	SrcPtr src;
 
@@ -440,7 +440,7 @@ Status TexCodecJpg::transform(Tex* UNUSED(t), size_t UNUSED(transforms)) const
 // due to less copying.
 
 
-static Status jpg_decode_impl(rpU8 data, size_t size, jpeg_decompress_struct* cinfo, Tex* t)
+static Status jpg_decode_impl(u8* RESTRICT data, size_t size, jpeg_decompress_struct* cinfo, Tex* t)
 {
 	src_prepare(cinfo, data, size);
 
@@ -478,7 +478,7 @@ static Status jpg_decode_impl(rpU8 data, size_t size, jpeg_decompress_struct* ci
 	const size_t pitch = w * bpp / 8;
 	const size_t imgSize = pitch * h;	// for allow_rows
 	shared_ptr<u8> img;
-	AllocateAligned(img, imgSize, pageSize);
+	AllocateAligned(img, imgSize, g_PageSize);
 
 	// read rows
 	std::vector<RowPtr> rows = tex_codec_alloc_rows(img.get(), h, pitch, TEX_TOP_DOWN, 0);
@@ -577,7 +577,7 @@ size_t TexCodecJpg::hdr_size(const u8* UNUSED(file)) const
 }
 
 
-Status TexCodecJpg::decode(rpU8 data, size_t size, Tex* RESTRICT t) const
+Status TexCodecJpg::decode(u8* RESTRICT data, size_t size, Tex* RESTRICT t) const
 {
 	// contains the JPEG decompression parameters and pointers to
 	//  working space (allocated as needed by the JPEG library).
