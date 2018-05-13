@@ -1,7 +1,7 @@
 Trigger.prototype.StartCutscene = function(data)
 {
 	let cmpCinemaManager = Engine.QueryInterface(SYSTEM_ENTITY, IID_CinemaManager);
-	cmpCinemaManager.AddCinemaPathToQueue("test");
+	cmpCinemaManager.AddCinemaPathToQueue("test2");
 	cmpCinemaManager.Play();
 };
 

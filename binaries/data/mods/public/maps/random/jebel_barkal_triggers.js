@@ -368,9 +368,9 @@ Trigger.prototype.JebelBarkal_Init = function()
 
 	this.JebelBarkal_SetDefenderStance();
 	this.JebelBarkal_StartRitualAnimations();
-	this.JebelBarkal_GarrisonBuildings();
+	//this.JebelBarkal_GarrisonBuildings();
 	this.DoAfterDelay(jebelBarkal_firstCityPatrolTime(this.GetDifficulty(), isNomad) * 60 * 1000, "JebelBarkal_SpawnCityPatrolGroups", {});
-	this.JebelBarkal_StartAttackTimer(jebelBarkal_firstAttackTime(this.GetDifficulty(), isNomad));
+	//this.JebelBarkal_StartAttackTimer(jebelBarkal_firstAttackTime(this.GetDifficulty(), isNomad));
 };
 
 Trigger.prototype.JebelBarkal_TrackUnits = function()
