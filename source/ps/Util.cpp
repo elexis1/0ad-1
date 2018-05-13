@@ -38,6 +38,7 @@
 #include "i18n/L10n.h"
 #include "lib/utf8.h"
 
+#include "ps/ConfigDB.h"
 #include "ps/GameSetup/Config.h"
 #include "ps/GameSetup/GameSetup.h"
 #include "ps/Game.h"
@@ -176,10 +177,10 @@ const wchar_t* ErrorString(int err)
 // write the specified texture to disk.
 // note: <t> cannot be made const because the image may have to be
 // transformed to write it out in the format determined by <fn>'s extension.
-Status tex_write(Tex* t, const VfsPath& filename)
+Status tex_write(Tex* t, const VfsPath& filename, int quality)
 {
 	DynArray da;
-	RETURN_STATUS_IF_ERR(t->encode(filename.Extension(), &da));
+	RETURN_STATUS_IF_ERR(t->encode(filename.Extension(), &da, quality));
 
 	// write to disk
 	Status ret = INFO::OK;
@@ -271,7 +272,10 @@ void WriteScreenshot(const VfsPath& extension)
 		return;
 	glReadPixels(0, 0, (GLsizei)w, (GLsizei)h, fmt, GL_UNSIGNED_BYTE, img);
 
-	if (tex_write(&t, filename) == INFO::OK)
+	int quality;
+	CFG_GET_VAL("videorendering.jpeg_quality", quality);
+
+	if (tex_write(&t, filename, quality) == INFO::OK)
 	{
 		OsPath realPath;
 		g_VFS->GetRealPath(filename, realPath);
@@ -407,7 +411,7 @@ void WriteBigScreenshot(const VfsPath& extension, int tiles)
 		g_Game->GetView()->GetCamera()->SetProjectionTile(1, 0, 0);
 	}
 
-	if (tex_write(&t, filename) == INFO::OK)
+	if (tex_write(&t, filename, 100) == INFO::OK)
 	{
 		OsPath realPath;
 		g_VFS->GetRealPath(filename, realPath);

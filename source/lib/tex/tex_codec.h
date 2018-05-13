@@ -63,7 +63,7 @@ public:
 	 * by the caller.
 	 * @return Status
 	 **/
-	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da) const = 0;
+	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da, int quality) const = 0;
 
 	/**
 	 * transform the texture's pixel format.
@@ -120,7 +120,7 @@ public:
 class TexCodecPng:ITexCodec {
 public:
 	virtual Status decode(u8* data, size_t size, Tex* RESTRICT t) const;
-	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da) const;
+	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da, int quality) const;
 	virtual Status transform(Tex* t, size_t transforms) const;
 	virtual bool is_hdr(const u8* file) const;
 	virtual bool is_ext(const OsPath& extension) const;
@@ -134,7 +134,7 @@ public:
 class TexCodecJpg:ITexCodec {
 public:
 	virtual Status decode(u8* data, size_t size, Tex* RESTRICT t) const;
-	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da) const;
+	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da, int quality) const;
 	virtual Status transform(Tex* t, size_t transforms) const;
 	virtual bool is_hdr(const u8* file) const;
 	virtual bool is_ext(const OsPath& extension) const;
@@ -148,7 +148,7 @@ public:
 class TexCodecDds:ITexCodec {
 public:
 	virtual Status decode(u8* data, size_t size, Tex* RESTRICT t) const;
-	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da) const;
+	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da, int quality) const;
 	virtual Status transform(Tex* t, size_t transforms) const;
 	virtual bool is_hdr(const u8* file) const;
 	virtual bool is_ext(const OsPath& extension) const;
@@ -162,7 +162,7 @@ public:
 class TexCodecTga:ITexCodec {
 public:
 	virtual Status decode(u8* data, size_t size, Tex* RESTRICT t) const;
-	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da) const;
+	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da, int quality) const;
 	virtual Status transform(Tex* t, size_t transforms) const;
 	virtual bool is_hdr(const u8* file) const;
 	virtual bool is_ext(const OsPath& extension) const;
@@ -176,7 +176,7 @@ public:
 class TexCodecBmp:ITexCodec {
 public:
 	virtual Status decode(u8* data, size_t size, Tex* RESTRICT t) const;
-	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da) const;
+	virtual Status encode(Tex* RESTRICT t, DynArray* RESTRICT da, int quality) const;
 	virtual Status transform(Tex* t, size_t transforms) const;
 	virtual bool is_hdr(const u8* file) const;
 	virtual bool is_ext(const OsPath& extension) const;

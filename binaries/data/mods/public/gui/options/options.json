@@ -10,6 +10,25 @@
 				"config": "videorendering.enabled"
 			},
 			{
+				"type": "dropdown",
+				"label": "Screenshot format",
+				"tooltip": "Image format",
+				"config": "videorendering.format",
+				"list": [
+					{ "value": ".jpeg", "label": "JPEG" },
+					{ "value": ".png", "label": "PNG" },
+					{ "value": ".bmp", "label": "BMP (don't)" }
+				]
+			},
+			{
+				"type": "number",
+				"label": "Screenshot JPEG Quality",
+				"tooltip": "This is only relevant if JPEG is enabled.",
+				"config": "videorendering.jpeg_quality",
+				"min": 1,
+				"max": 100
+			},
+			{
 				"type": "string",
 				"label": "Rendering directory:",
 				"tooltip": "Where to write the screenshots to",

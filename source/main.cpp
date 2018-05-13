@@ -327,10 +327,12 @@ static void Frame()
 	bool takeScreenshots;
 	int screenshotsFPS;
 	int screenshotsStartTime;
+	std::string screenshotFormat;
 
 	CFG_GET_VAL("videorendering.enabled", takeScreenshots);
 	CFG_GET_VAL("videorendering.fps", screenshotsFPS);
 	CFG_GET_VAL("videorendering.start", screenshotsStartTime);
+	CFG_GET_VAL("videorendering.format", screenshotFormat);
 
 	bool doScreenshot = takeScreenshots && g_Game &&
 		g_Game->IsGameStarted() && g_Game->SimTime() >= screenshotsStartTime * 1000;
@@ -439,7 +441,7 @@ static void Frame()
 	ogl_WarnIfError();
 
 	if (doScreenshot)
-		WriteScreenshot(L".png");
+		WriteScreenshot(wstring_from_utf8(screenshotFormat));
 
 	g_Profiler.Frame();
 

@@ -45,7 +45,7 @@ class TestTex : public CxxTest::TestSuite
 			TS_ASSERT_OK(t.wrap(w, h, bpp, flags, img, 0));
 
 			// encode to file format
-			TS_ASSERT_OK(t.encode(extension, &da));
+			TS_ASSERT_OK(t.encode(extension, &da, 100));
 			memset(&t, 0, sizeof(t));
 
 			// decode from file format

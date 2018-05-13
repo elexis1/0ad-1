@@ -508,7 +508,7 @@ static Status jpg_decode_impl(u8* RESTRICT data, size_t size, jpeg_decompress_st
 }
 
 
-static Status jpg_encode_impl(Tex* t, jpeg_compress_struct* cinfo, DynArray* da)
+static Status jpg_encode_impl(Tex* t, jpeg_compress_struct* cinfo, DynArray* da, int quality)
 {
 	dst_prepare(cinfo, da);
 
@@ -520,7 +520,9 @@ static Status jpg_encode_impl(Tex* t, jpeg_compress_struct* cinfo, DynArray* da)
 	cinfo->in_color_space = (t->m_Bpp == 8)? JCS_GRAYSCALE : JCS_RGB;
 	// defaults depend on cinfo->in_color_space already having been set!
 	jpeg_set_defaults(cinfo);
-	// (add optional settings, e.g. quality, here)
+
+	// additional settings
+	jpeg_set_quality(cinfo, quality, true);
 
 	// TRUE ensures that we will write a complete interchange-JPEG file.
 	// don't change unless you are very sure of what you're doing.
@@ -598,19 +600,19 @@ Status TexCodecJpg::decode(u8* RESTRICT data, size_t size, Tex* RESTRICT t) cons
 
 
 // limitation: palette images aren't supported
-Status TexCodecJpg::encode(Tex* RESTRICT t, DynArray* RESTRICT da) const
+Status TexCodecJpg::encode(Tex* RESTRICT t, DynArray* RESTRICT da, int quality) const
 {
 	// contains the JPEG compression parameters and pointers to
 	// working space (allocated as needed by the JPEG library).
 	struct jpeg_compress_struct cinfo;
-	
+
 	JpgErrorMgr jerr(cinfo);
 	if(setjmp(jerr.call_site))
 		WARN_RETURN(ERR::FAIL);
 
 	jpeg_create_compress(&cinfo);
 
-	Status ret = jpg_encode_impl(t, &cinfo, da);
+	Status ret = jpg_encode_impl(t, &cinfo, da, quality);
 
 	jpeg_destroy_compress(&cinfo); // releases a "good deal" of memory
 
