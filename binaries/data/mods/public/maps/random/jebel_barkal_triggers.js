@@ -76,27 +76,27 @@ var scaleByMapSize = (min, max) => min + (max - min) * (TriggerHelper.GetMapSize
 /**
  * Defensive Infantry units patrol along the paths of the city.
  */
-var jebelBarkal_cityPatrolGroup_count = time => TriggerHelper.GetMapSizeTiles() > 192 ? scaleByTime(time, 3, scaleByMapSize(3, 10)) : 0;
+var jebelBarkal_cityPatrolGroup_count = time => 25;
 var jebelBarkal_cityPatrolGroup_interval = time => scaleByTime(time, 5, 3);
 var jebelBarkal_cityPatrolGroup_balancing = {
 	"buildingClasses": ["Wonder", "Temple", "CivCentre", "Fortress", "Barracks+!Stables", "Embassy"],
-	"unitCount": time => Math.min(20, scaleByTime(time, 10, 45)),
+	"unitCount": time => randIntInclusive(5, 20),
 	"unitComposition": (time, heroes) => [
 		{
 			"templates": jebelBarkal_templates.champion_infantry_melee,
-			"frequency": scaleByTime(time, 0, 2)
+			"frequency": randFloat(0, 1)
 		},
 		{
 			"templates": jebelBarkal_templates.champion_infantry_ranged,
-			"frequency": scaleByTime(time, 0, 3)
+			"frequency": randFloat(0, 1)
 		},
 		{
 			"templates": jebelBarkal_templates.citizenSoldier_infantry_melee,
-			"frequency": scaleByTime(time, 2, 0)
+			"frequency": randFloat(0, 1)
 		},
 		{
 			"templates": jebelBarkal_templates.citizenSoldier_infantry_ranged,
-			"frequency": scaleByTime(time, 3, 0)
+			"frequency": randFloat(0, 1)
 		}
 	],
 	"targetClasses": () => "Unit+!Ship"
@@ -368,7 +368,7 @@ Trigger.prototype.JebelBarkal_Init = function()
 
 	this.JebelBarkal_SetDefenderStance();
 	this.JebelBarkal_StartRitualAnimations();
-	//this.JebelBarkal_GarrisonBuildings();
+	this.JebelBarkal_GarrisonBuildings();
 	this.DoAfterDelay(jebelBarkal_firstCityPatrolTime(this.GetDifficulty(), isNomad) * 60 * 1000, "JebelBarkal_SpawnCityPatrolGroups", {});
 	//this.JebelBarkal_StartAttackTimer(jebelBarkal_firstAttackTime(this.GetDifficulty(), isNomad));
 };

@@ -1,0 +1,2449 @@
+start {"settings":{"PlayerData":[{"Civ":"athen","Name":"Wildfire Games","Color":{"r":21,"g":55,"b":149},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1},{"Civ":"cart","Name":"Player 2","Color":{"r":150,"g":20,"b":20},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1},{"Civ":"gaul","Name":"Player 3","Color":{"r":86,"g":180,"b":31},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1},{"Civ":"iber","Name":"Player 4","Color":{"r":231,"g":200,"b":5},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1},{"Civ":"mace","Name":"Player 5","Color":{"r":50,"g":170,"b":170},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1},{"Civ":"pers","Name":"Player 6","Color":{"r":160,"g":80,"b":200},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1},{"Civ":"rome","Name":"Player 7","Color":{"r":220,"g":115,"b":16},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1},{"Civ":"spart","Name":"Player 8","Color":{"r":64,"g":64,"b":64},"AI":"","AIDiff":3,"AIBehavior":"random","Team":-1}],"VictoryConditions":["conquest"],"TriggerScripts":["scripts/TriggerHelper.js","scripts/ConquestCommon.js","scripts/Conquest.js","scripts/TriggerHelper.js","random/jebel_barkal_triggers.js","scenarios/A23_JebelBarkal_triggers.js"],"CircularMap":true,"SupportedTriggerDifficulties":{"Default":"Medium","Values":["Very Easy","Easy","Medium","Hard","Very Hard"]},"TriggerDifficulty":3,"Description":"Starting near the fertile banks of the Nile, the players besiege the heavily defended city Napata which lies at the foot of the hill Jebel Barkal, the \"Pure Mountain\". It is the Southern home of Amun, and according to Kushites and Egyptians alike, the birthplace of man. Known as the Throne of the Two Lands, the ancient religious capital of Napata lay in its shadow. This is where Kings were made... and unmade! Abutting a rich floodplain downstream from the 4th cataract, this area became the breadbasket of ancient Kush.","Keywords":["new","trigger"],"LockTeams":false,"Name":"A23 Trailer Jebel Barkal","Preview":"jebel_barkal.png","RevealMap":false,"Size":448,"PopulationCap":300,"StartingResources":300,"Ceasefire":0,"RelicCount":2,"ExploreMap":false,"DisableTreasures":false,"DisableSpies":false,"CheatsEnabled":true,"AISeed":2105128415,"Nomad":false,"Script":"jebel_barkal.js","Seed":1815738724,"mapType":"scenario","RelicDuration":20,"WonderDuration":20,"RegicideGarrison":false,"LastManStanding":false,"RatingEnabled":false,"VictoryScripts":["scripts/TriggerHelper.js","scripts/ConquestCommon.js","scripts/Conquest.js"]},"mapType":"scenario","mapPath":"maps/scenarios/","mapFilter":"new","script":"jebel_barkal.js","gameSpeed":1,"map":"maps/scenarios/A23_JebelBarkal","matchID":"C38B0BEF702F9342","timestamp":1526294984,"engine_version":"0.0.23","mods":[["public","0.0.23"]]}
+turn 0 200
+end
+turn 1 200
+end
+turn 2 200
+cmd 7 {"type":"gather","entities":[15196,15197,15198,15201],"target":15184,"queued":false}
+cmd 7 {"type":"gather","entities":[15199,15200,15203,15204,15205],"target":15186,"queued":false}
+cmd 7 {"type":"gather","entities":[219,220,15206,15207,15208],"target":15187,"queued":false}
+cmd 7 {"type":"gather","entities":[213,214,215,216],"target":15185,"queued":false}
+cmd 7 {"type":"gather","entities":[18710,18711,18712,18713,18714,18715],"target":249,"queued":false}
+cmd 7 {"type":"gather","entities":[18716,18717,18718,18719,18720,18721,18722,18723],"target":250,"queued":false}
+cmd 7 {"type":"gather","entities":[15167,15173,15174],"target":6878,"queued":false}
+cmd 7 {"type":"gather","entities":[15165,15168,15172,15166],"target":6890,"queued":false}
+cmd 7 {"type":"walk","entities":[15163,15164,15169,15171],"x":663.4503784179688,"z":134.81948852539062,"queued":false}
+cmd 7 {"type":"walk","entities":[15163,15164,15169,15171],"x":693.0718383789062,"z":37.08622741699219,"queued":true}
+cmd 7 {"type":"gather","entities":[15269,15270],"target":6878,"queued":false}
+cmd 7 {"type":"gather","entities":[15262,15263],"target":6875,"queued":false}
+cmd 7 {"type":"walk-custom","entities":[15264,15265,15266,15267],"targetPositions":[{"x":"867.73","y":"15.64"},{"x":"866.14","y":"21.21"},{"x":"864.32","y":"26.86"},{"x":"862.50","y":"32.52"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 7 {"type":"walk","entities":[15264,15265,15266,15267],"x":785.5889892578125,"z":126.2908935546875,"queued":true}
+cmd 7 {"type":"stop","entities":[15235,15236,15237,15238,15239,15240,15241,15242,15243,15244,15245,15246,15247,15248,15249,15250,15251,15252,15253,15254,15255,15256,15257,15258,15259,15260,18795],"queued":false}
+cmd 5 {"type":"gather","entities":[19466,19468,19470,19471],"target":4311,"queued":true}
+cmd 5 {"type":"gather","entities":[345,346,19458,19460,19462,19463,19464,19471],"target":378,"queued":true}
+cmd 5 {"type":"gather","entities":[346,347,348,19457,19458,19459,19461,19463,19464,19465],"target":379,"queued":false}
+cmd 5 {"type":"gather","entities":[19457,19458,19459,19461,19463,19464,19465],"target":355,"queued":false}
+cmd 5 {"type":"gather","entities":[19458,19460,19462,19463,19465,19466,19467,19468,19469,19470,19471,19472],"target":4310,"queued":false}
+cmd 5 {"type":"walk","entities":[19473,19474,19475,19476,19477,19478,19479,19480],"x":500.7514953613281,"z":275.9486389160156,"queued":false}
+cmd 5 {"type":"gather","entities":[19473,19474,19475,19476,19477,19478,19479,19480],"target":4262,"queued":false}
+cmd 5 {"type":"gather","entities":[15295,15300,15301,15311],"target":15282,"queued":false}
+cmd 5 {"type":"gather","entities":[15308,15309,15310,15311],"target":15286,"queued":false}
+cmd 5 {"type":"gather","entities":[15307],"target":15286,"queued":false}
+cmd 5 {"type":"walk","entities":[15303,15304,15305,15294],"x":469.4054870605469,"z":251.98519897460938,"queued":false}
+cmd 5 {"type":"gather","entities":[15287,15289,15290,15291,15292,15293],"target":15279,"queued":false}
+cmd 5 {"type":"gather","entities":[15296,15297,15298,15299],"target":15281,"queued":false}
+cmd 5 {"type":"gather","entities":[15295,15296,15301],"target":15282,"queued":false}
+cmd 5 {"type":"gather","entities":[349,350,18919,18920,18923,18924,19481,19482,19483,19484,19485,19486,19487,19488],"target":381,"queued":false}
+cmd 5 {"type":"gather","entities":[18925,18926,18929,18930,18933,18934,18937,18938],"target":382,"queued":false}
+cmd 5 {"type":"gather","entities":[353,18943,18944,18945,18965,18966,18967],"target":18966,"queued":false}
+cmd 5 {"type":"gather","entities":[18941,18942,18946,18947,18948,18949],"target":18961,"queued":false}
+cmd 5 {"type":"walk","entities":[18942,18961,18962,18963,18964,18965,18966],"x":497.92462158203125,"z":343.302490234375,"queued":false}
+cmd 5 {"type":"walk","entities":[18957,18958,18959,18960],"x":515.1365356445312,"z":367.60748291015625,"queued":false}
+cmd 5 {"type":"walk","entities":[18952,18953,18954,18955,18956],"x":505.1681213378906,"z":327.18365478515625,"queued":false}
+cmd 5 {"type":"walk","entities":[351,352,18917,18918,18921,18922,18927,18928,18931,18932,18935,18936,18939,18940],"x":453.439208984375,"z":525.1251220703125,"queued":false}
+cmd 5 {"type":"attack-walk","entities":[19433,19434,19435,19436,19437,19438,19439,19440,19441,19442,19443,19444,19445,19446,19447,19448,19449,19450,19451,19452,19453,19454,19455,19456],"x":479.1966552734375,"z":538.3591918945312,"targetClasses":{"attack":["Unit"]},"queued":false}
+cmd 5 {"type":"garrison","entities":[19377,19378,19379,19380,19381,19382,19383,19384],"target":15316,"queued":false}
+cmd 5 {"type":"garrison","entities":[19455,19452,19454],"target":15314,"queued":false}
+cmd 2 {"type":"garrison","entities":[18556,18557,18558,19508],"target":15369,"queued":false}
+cmd 2 {"type":"garrison","entities":[18552,18553,18554,18555,19505,19506,19507],"target":15371,"queued":false}
+cmd 2 {"type":"walk","entities":[19525,19526,19527,19528,19529,19530,19531,19532],"x":348.2149353027344,"z":581.24609375,"queued":true}
+cmd 2 {"type":"attack-walk","entities":[19509,19510,19511,19512,19513,19514,19515,19516,19518,19519,19520,19522,19523,19524],"x":375.02178955078125,"z":540.6722412109375,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 2 {"type":"gather","entities":[15392,15394,15395,15396],"target":11227,"queued":false}
+cmd 2 {"type":"gather","entities":[473,474,475,476,15390,15391,15392],"target":11228,"queued":false}
+cmd 2 {"type":"gather","entities":[18571,18572,18573,18574,18575,18597,18598,18599,18576,18577,18578,18600,18601],"target":510,"queued":false}
+cmd 2 {"type":"gather","entities":[18562,18563,18564,18565,18566,18567,18568,18569,18570,18593,18594,18595,18596],"target":509,"queued":false}
+cmd 2 {"type":"gather","entities":[18579,18580,18581,18582,18583,18584,18585,18586,18587,18588,18589,18590,18591,18592],"target":5091,"queued":false}
+cmd 2 {"type":"gather","entities":[18589,18590,18591,18592],"target":5070,"queued":false}
+cmd 2 {"type":"gather","entities":[18580,18581,18582,18583,18584],"target":5071,"queued":false}
+cmd 2 {"type":"gather","entities":[15380,15381,15382,15383,15384,15385,15386],"target":11233,"queued":true}
+cmd 2 {"type":"gather","entities":[15380,15381,15382],"target":11232,"queued":false}
+cmd 2 {"type":"gather","entities":[15387,15388,15389],"target":11230,"queued":false}
+cmd 2 {"type":"gather","entities":[18602,18603,18604,18605,18606,18607,18608,18609,18610,18611,18612,18613,18614,18615,18616,18617],"target":4596,"queued":false}
+cmd 2 {"type":"gather","entities":[18602,18603,18604,18607,18613,18614,18615],"target":4649,"queued":false}
+cmd 2 {"type":"garrison","entities":[479,480],"target":15368,"queued":false}
+cmd 6 {"type":"gather","entities":[18450,18451,18452,18453,18454,18455,18456,18457,18458,18459],"target":607,"queued":false}
+cmd 6 {"type":"gather","entities":[18441,18442,18443,18444,18445,18446,18447,18448,18449,18460],"target":606,"queued":false}
+cmd 6 {"type":"gather","entities":[594,595,18439,18440,18461,18462],"target":606,"queued":false}
+cmd 6 {"type":"gather","entities":[588,589,590,591],"target":598,"queued":false}
+cmd 6 {"type":"gather","entities":[18407,18408,18409,18410,18411,18412,18413,18414,18415,18416,18417,18418,18419],"target":18423,"queued":false}
+cmd 6 {"type":"gather","entities":[596],"target":18430,"queued":false}
+cmd 6 {"type":"gather","entities":[18396,18397,18398,18399,18400],"target":18377,"queued":false}
+cmd 6 {"type":"gather","entities":[18401,18402,18403,18404],"target":18375,"queued":false}
+cmd 6 {"type":"gather","entities":[18387,18388,18389,18390,18404],"target":18376,"queued":false}
+cmd 6 {"type":"gather","entities":[18391,18392,18393,18394],"target":18378,"queued":false}
+cmd 6 {"type":"gather","entities":[18394,18395,18396,18397],"target":18379,"queued":false}
+cmd 6 {"type":"walk","entities":[18802,18803,18804,18805,18806,18807,18808,18809,18810,18811,18812,18813,18814,18815],"x":461.4716796875,"z":731.4476928710938,"queued":true}
+cmd 6 {"type":"attack-walk","entities":[18802,18803,18804,18805,18806,18807,18808,18809,18810,18811,18812,18813,18814,18815],"x":462.87646484375,"z":731.1557006835938,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 6 {"type":"gather","entities":[18407,18408,18409,18410,18411,18412,18413,18414,18415,18416,18417,18418,18419],"target":18435,"queued":false}
+cmd 6 {"type":"gather","entities":[18407,18408,18409,18410,18411,18412,18413,18414,18415,18416,18417,18418,18419],"target":18423,"queued":false}
+cmd 6 {"type":"walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":80.70213317871094,"z":820.8328247070312,"queued":false}
+cmd 6 {"type":"attack-walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":182.29013061523438,"z":943.558349609375,"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 6 {"type":"attack-walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":288.88629150390625,"z":980.361572265625,"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 6 {"type":"attack-walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":396.65936279296875,"z":774.781494140625,"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 6 {"type":"walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":121.12420654296875,"z":812.9409790039062,"queued":false}
+cmd 6 {"type":"walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":324.3794250488281,"z":900.04052734375,"queued":true}
+cmd 6 {"type":"walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":364.851318359375,"z":802.0762939453125,"queued":true}
+cmd 6 {"type":"attack-walk","entities":[18839,18840,18841,18842,18843,18844,18845,18846,18847,18848],"x":406.5284423828125,"z":783.8717041015625,"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 8 {"type":"walk","entities":[18425,18426,18427,18429,18430,18431],"x":225.29306030273438,"z":698.1197509765625,"queued":false}
+cmd 8 {"type":"walk","entities":[18420,18421,18422,18423,18428,18432,18433,18434,18435,21217,18424],"x":248.32327270507812,"z":686.882568359375,"queued":false}
+cmd 0 {"type":"attack","entities":[15116,15117,16657,16658,17960,17961,18004,18005,18006,18007,18008,18009,18010,18011,18012,18013,18014,18015,18016,18017,18018,18019,18020,18021,18022,18023,18036,18037,18038,18039,18040,18041,18045,18070,18109,18110,18111,18112,18113,18114,18115,18116,18117,18118,18119,18120,18121,18135,18136,18142,18143,18144,18145,18146,18148,18149,18150,18151,18152,18153,18154,18155,18156,18157,18158,18159,18160,18189,18191,18192,18193,18194,18195,18196,18197,18198,18281,18282,18283,18284,18285,18297,18298,18299,18300,18301,18302,18303,18304,18305,18312,18313,18314,18357],"target":18835,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack","entities":[18189,18191,18192,18193,18194,18195,18196,18197,18198,18281,18285],"target":18828,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack-walk","entities":[18034,18035,18036,18037,18038,18039,18040,18041,18042,18043,18044,18045,18070],"x":389.45196533203125,"z":717.31689453125,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 0 {"type":"attack-walk","entities":[18024,18025,18026,18027,18028,18029,18030,18031,18032,18033,18073],"x":417.9653015136719,"z":685.7493896484375,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 0 {"type":"attack","entities":[18071],"target":18510,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack","entities":[18072],"target":18509,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack","entities":[18073],"target":18533,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack","entities":[18070],"target":18499,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack","entities":[18187],"target":18507,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack-walk","entities":[18356],"x":422.3252868652344,"z":667.6964111328125,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 0 {"type":"attack","entities":[18189,18191,18192,18193,18194,18195,18196,18197,18198],"target":18832,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack-walk","entities":[18083,18084,18085,18086,18087,18088,18089,18090,18091,18092,18093,18094,18095,18096,18097,18098,18099,18202,18208,18209,18210,18296,15118,16659,18190,18199,18200,18201,18203,18207,18269,18270,18277,18286,18315],"x":415.30877685546875,"z":641.3382568359375,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 0 {"type":"walk-custom","entities":[18174,18176,18182,18183,18184,18185,18269,18270,18271,18272,18273,18274,18275,18276,18294,18295,18353,18356],"targetPositions":[{"x":"565.81","y":"637.38"},{"x":"561.82","y":"638.17"},{"x":"557.82","y":"638.95"},{"x":"553.83","y":"639.71"},{"x":"549.81","y":"640.33"},{"x":"545.79","y":"640.95"},{"x":"541.80","y":"641.75"},{"x":"537.81","y":"642.56"},{"x":"533.82","y":"643.37"},{"x":"529.83","y":"644.17"},{"x":"525.84","y":"644.98"},{"x":"521.85","y":"645.79"},{"x":"517.87","y":"646.59"},{"x":"513.88","y":"647.40"},{"x":"509.89","y":"648.20"},{"x":"505.89","y":"648.95"},{"x":"501.89","y":"649.69"},{"x":"497.85","y":"650.16"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18083,18084,18085,18086,18087,18088,18089,18090,18091,18092,18093,18094,18095,18096,18097,18098,18099,18199,18201,18202,18203,18204,18207,18208,18209,18210,18296],"targetPositions":[{"x":"404.37","y":"680.18"},{"x":"406.83","y":"678.19"},{"x":"408.66","y":"675.73"},{"x":"410.55","y":"673.18"},{"x":"412.43","y":"670.64"},{"x":"414.73","y":"668.48"},{"x":"417.04","y":"666.31"},{"x":"419.21","y":"664.00"},{"x":"421.38","y":"661.69"},{"x":"423.55","y":"659.38"},{"x":"425.52","y":"656.90"},{"x":"427.48","y":"654.41"},{"x":"429.74","y":"652.23"},{"x":"432.02","y":"650.02"},{"x":"434.30","y":"647.82"},{"x":"436.04","y":"645.18"},{"x":"437.79","y":"642.53"},{"x":"439.52","y":"639.87"},{"x":"441.25","y":"637.21"},{"x":"443.71","y":"635.33"},{"x":"446.23","y":"633.41"},{"x":"449.02","y":"631.91"},{"x":"451.12","y":"629.79"},{"x":"453.34","y":"627.59"},{"x":"455.76","y":"625.61"},{"x":"458.19","y":"623.63"},{"x":"460.81","y":"621.85"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18148,18149,18150,18151,18152,18153,18154,18155,18156,18157,18158,18159,18160],"targetPositions":[{"x":"345.03","y":"799.75"},{"x":"346.49","y":"797.68"},{"x":"347.95","y":"795.60"},{"x":"349.36","y":"793.49"},{"x":"350.60","y":"791.28"},{"x":"352.27","y":"789.44"},{"x":"353.98","y":"787.56"},{"x":"355.24","y":"785.38"},{"x":"356.43","y":"783.14"},{"x":"357.60","y":"780.89"},{"x":"358.97","y":"778.78"},{"x":"360.19","y":"776.55"},{"x":"361.66","y":"774.51"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18004,18005,18006,18007,18008,18009,18010,18011,18012,18013,18014,18015,18017,18018,18135,18136,18142,18143,18144,18145,18146,18299,18302,18303,18304],"targetPositions":[{"x":"330.20","y":"816.72"},{"x":"331.42","y":"815.14"},{"x":"332.50","y":"813.42"},{"x":"333.36","y":"811.60"},{"x":"334.31","y":"809.80"},{"x":"335.54","y":"808.19"},{"x":"336.52","y":"806.41"},{"x":"337.48","y":"804.61"},{"x":"338.43","y":"802.81"},{"x":"339.39","y":"801.02"},{"x":"340.34","y":"799.22"},{"x":"341.29","y":"797.42"},{"x":"341.88","y":"795.53"},{"x":"342.63","y":"793.65"},{"x":"343.48","y":"791.80"},{"x":"344.14","y":"789.88"},{"x":"344.78","y":"787.94"},{"x":"345.41","y":"786.01"},{"x":"345.91","y":"784.09"},{"x":"346.64","y":"782.21"},{"x":"347.27","y":"780.30"},{"x":"348.06","y":"778.44"},{"x":"348.71","y":"776.52"},{"x":"349.09","y":"774.54"},{"x":"349.78","y":"772.65"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18109,18110,18111,18112,18113,18114,18115,18116,18117,18118,18119,18120,18121,18301],"targetPositions":[{"x":"363.22","y":"769.93"},{"x":"364.41","y":"767.34"},{"x":"365.59","y":"764.72"},{"x":"366.64","y":"762.04"},{"x":"367.65","y":"759.35"},{"x":"368.78","y":"756.71"},{"x":"369.93","y":"754.08"},{"x":"370.97","y":"751.39"},{"x":"371.70","y":"748.61"},{"x":"372.53","y":"745.86"},{"x":"373.79","y":"743.30"},{"x":"374.96","y":"740.78"},{"x":"375.84","y":"738.05"},{"x":"376.55","y":"735.27"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18148,18149,18150,18151,18152,18153,18154,18155,18156,18157,18158,18159,18160,18297],"targetPositions":[{"x":"367.14","y":"798.68"},{"x":"368.80","y":"795.15"},{"x":"370.48","y":"791.58"},{"x":"372.41","y":"788.14"},{"x":"373.08","y":"784.34"},{"x":"373.86","y":"780.48"},{"x":"375.07","y":"776.79"},{"x":"375.94","y":"772.94"},{"x":"376.79","y":"769.09"},{"x":"377.94","y":"765.31"},{"x":"378.96","y":"761.50"},{"x":"380.04","y":"757.70"},{"x":"381.78","y":"754.24"},{"x":"383.01","y":"750.58"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18083,18084,18085,18086,18087,18088,18089,18090,18091,18092,18093,18094,18095,18096,18097,18098,18099,18199,18201,18202,18203,18207,18208,18209,18210,18296],"targetPositions":[{"x":"396.51","y":"713.66"},{"x":"398.63","y":"709.48"},{"x":"400.74","y":"705.31"},{"x":"403.06","y":"701.25"},{"x":"405.38","y":"697.19"},{"x":"409.00","y":"694.28"},{"x":"412.65","y":"691.35"},{"x":"415.97","y":"688.06"},{"x":"419.29","y":"684.77"},{"x":"422.39","y":"681.28"},{"x":"425.49","y":"677.78"},{"x":"428.53","y":"674.22"},{"x":"431.56","y":"670.65"},{"x":"434.59","y":"667.09"},{"x":"437.81","y":"663.70"},{"x":"441.03","y":"660.31"},{"x":"444.33","y":"656.99"},{"x":"447.62","y":"653.67"},{"x":"451.21","y":"650.71"},{"x":"454.82","y":"647.73"},{"x":"458.68","y":"645.12"},{"x":"462.56","y":"642.49"},{"x":"466.22","y":"639.59"},{"x":"470.16","y":"637.10"},{"x":"474.19","y":"634.73"},{"x":"478.47","y":"632.91"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18047,18048,18049,18050,18056,18057,18058,18176,18184,18278],"targetPositions":[{"x":"396.16","y":"737.03"},{"x":"397.47","y":"728.92"},{"x":"400.29","y":"721.22"},{"x":"403.50","y":"713.66"},{"x":"406.80","y":"706.14"},{"x":"410.51","y":"698.83"},{"x":"414.65","y":"691.76"},{"x":"418.85","y":"684.69"},{"x":"422.60","y":"677.42"},{"x":"425.15","y":"669.72"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18046,18051,18052,18053,18054,18055],"targetPositions":[{"x":"450.90","y":"669.02"},{"x":"454.19","y":"664.14"},{"x":"458.85","y":"660.10"},{"x":"463.43","y":"655.88"},{"x":"467.84","y":"651.52"},{"x":"471.95","y":"646.84"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18076,18077,18078,18079,18080,18081],"targetPositions":[{"x":"450.68","y":"654.09"},{"x":"454.49","y":"648.03"},{"x":"458.76","y":"642.34"},{"x":"462.87","y":"636.48"},{"x":"467.00","y":"630.62"},{"x":"471.49","y":"625.46"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18217,18260,18261,18262,18263,18264,18265,18266,18267,18268,18291,18292,18320,18321,18322],"targetPositions":[{"x":"580.28","y":"656.45"},{"x":"577.42","y":"657.03"},{"x":"574.56","y":"657.61"},{"x":"571.70","y":"658.19"},{"x":"568.84","y":"658.76"},{"x":"565.98","y":"659.34"},{"x":"563.12","y":"659.92"},{"x":"560.26","y":"660.50"},{"x":"557.40","y":"661.08"},{"x":"554.54","y":"661.66"},{"x":"551.68","y":"662.23"},{"x":"548.82","y":"662.81"},{"x":"545.96","y":"663.39"},{"x":"543.10","y":"663.97"},{"x":"540.24","y":"664.55"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"walk-custom","entities":[18106,18108,18213,18214,18215,18216,18217,18218,18219,18220,18221,18222,18223,18224,18225,18288,18306,18317,18319,18320,18350],"targetPositions":[{"x":"577.10","y":"638.99"},{"x":"575.15","y":"639.38"},{"x":"573.20","y":"639.79"},{"x":"571.25","y":"640.19"},{"x":"569.30","y":"640.59"},{"x":"567.35","y":"641.00"},{"x":"565.43","y":"641.52"},{"x":"563.51","y":"642.04"},{"x":"561.59","y":"642.56"},{"x":"559.62","y":"642.82"},{"x":"557.64","y":"643.09"},{"x":"555.67","y":"643.35"},{"x":"553.76","y":"643.89"},{"x":"551.84","y":"644.44"},{"x":"549.93","y":"644.98"},{"x":"547.98","y":"645.37"},{"x":"546.03","y":"645.77"},{"x":"544.08","y":"646.16"},{"x":"542.12","y":"646.56"},{"x":"540.17","y":"646.95"},{"x":"538.22","y":"647.35"}],"targetClasses":{"attack":["Unit","Structure"]},"queued":true}
+cmd 0 {"type":"attack","entities":[18979],"target":15317,"queued":false,"allowCapture":false}
+cmd 0 {"type":"attack-walk","entities":[18979],"x":496.3768005371094,"z":658.2021484375,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 0 {"type":"attack-walk","entities":[18212],"x":681.1571044921875,"z":419.581298828125,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 0 {"type":"attack-walk","entities":[18738,18739,18740,18741,18742,18747,18748,18750,18756,18757,18758,18759,18765,18770,18772,18773,18777,18778,18779,18780,18781,18782,18783,18791,18972],"x":681.689208984375,"z":346.4482116699219,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 7 {"type":"lock-gate","entities":[15212,15213],"lock":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":253.412109375,"z":818.7904052734375,"queued":false}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":314.5816345214844,"z":846.6729125976562,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":374.5379638671875,"z":861.5714111328125,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":401.587646484375,"z":883.0359497070312,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":412.3330078125,"z":913.1026000976562,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":431.11981201171875,"z":926.4555053710938,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":485.93292236328125,"z":882.0003051757812,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":634.4635620117188,"z":822.739013671875,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":494.1466369628906,"z":879.7490234375,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":680.364501953125,"z":802.42626953125,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":945.8921508789062,"z":799.7711791992188,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":919.3104858398438,"z":856.3221435546875,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":710.474365234375,"z":866.0673217773438,"queued":true}
+cmd 0 {"type":"stop","entities":[20881,20884,20885,20883,20886,20882]}
+cmd 0 {"type":"stop","entities":[20965,20966,20967]}
+cmd 0 {"type":"stop","entities":[21124]}
+cmd 0 {"type":"stop","entities":[21126]}
+cmd 0 {"type":"walk","entities":[18903],"x":204.57626342773438,"z":1232.382080078125,"queued":false}
+cmd 0 {"type":"walk","entities":[18904],"x":483.511962890625,"z":885.5934448242188,"queued":true}
+cmd 0 {"type":"walk","entities":[18904],"x":698.9854125976562,"z":799.370849609375,"queued":true}
+cmd 0 {"type":"walk","entities":[18904],"x":812.0464477539062,"z":790.244384765625,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":697.7809448242188,"z":799.211181640625,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":744.0516357421875,"z":1008.225341796875,"queued":true}
+cmd 0 {"type":"walk","entities":[18906],"x":894.0697021484375,"z":996.3826904296875,"queued":true}
+cmd 0 {"type":"walk","entities":[18911],"x":883.6541748046875,"z":859.3798828125,"queued":false}
+cmd 0 {"type":"walk","entities":[18911],"x":521.1610717773438,"z":947.5344848632812,"queued":true}
+cmd 0 {"type":"walk","entities":[18911],"x":563.09423828125,"z":1005.45947265625,"queued":true}
+cmd 0 {"type":"walk","entities":[18911],"x":731.89404296875,"z":1011.936279296875,"queued":true}
+cmd 0 {"type":"walk","entities":[19560,19561,19562],"x":1093.0574951171875,"z":930.9686279296875,"queued":false}
+cmd 0 {"type":"walk","entities":[19560,19561,19562],"x":1252.156982421875,"z":1052.10546875,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":1093.8714599609375,"z":943.39111328125,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":861.7299194335938,"z":852.7476196289062,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":708.9803466796875,"z":878.152587890625,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":511.576904296875,"z":952.9859619140625,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":561.429443359375,"z":1010.1121826171875,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":421.00238037109375,"z":1125.3829345703125,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":478.95196533203125,"z":1173.81787109375,"queued":true}
+cmd 0 {"type":"walk","entities":[18343,18344,18345,18346],"x":490.4513244628906,"z":1315.28173828125,"queued":true}
+cmd 0 {"type":"walk","entities":[18346],"x":1418.810791015625,"z":1356.6737060546875,"queued":false}
+cmd 0 {"type":"walk","entities":[18346],"x":1319.853759765625,"z":1627.8370361328125,"queued":true}
+cmd 0 {"type":"walk","entities":[18346],"x":1423.9998779296875,"z":1717.5029296875,"queued":true}
+cmd 0 {"type":"attack-walk","entities":[18122,18123,18124,18125,18126,18127,18128,18129,18130,18131,18132,18133,18134],"x":149.1761474609375,"z":831.6996459960938,"targetClasses":{"attack":["Unit","Structure"]},"queued":false}
+cmd 0 {"type":"walk","entities":[18059,18060,18061,18062,18063,18064,18065,18066,18067,18068,18069],"x":116.35037231445312,"z":1033.8712158203125,"queued":false}
+cmd 0 {"type":"walk","entities":[18059,18060,18061,18062,18063,18064,18065,18066,18067,18068,18069],"x":120.90211486816406,"z":825.89111328125,"queued":true}
+cmd 0 {"type":"attack","entities":[18059,18060,18061,18062,18063,18064,18065,18066,18067,18068,18069],"target":18407,"queued":true,"allowCapture":false}
+cmd 0 {"type":"walk","entities":[5879],"x":258.3614807128906,"z":1230.3968505859375,"queued":false}
+cmd 0 {"type":"stance","entities":[19544,19545,19546,19547],"name":"standground"}
+cmd 0 {"type":"stance","entities":[19540,19541,19542],"name":"standground"}
+cmd 0 {"type":"walk","entities":[19542],"x":402.6139831542969,"z":909.774658203125,"queued":false}
+cmd 0 {"type":"walk","entities":[19541],"x":394.0395812988281,"z":915.4379272460938,"queued":false}
+cmd 0 {"type":"walk","entities":[19546],"x":413.527099609375,"z":901.2183227539062,"queued":false}
+cmd 0 {"type":"walk","entities":[19545],"x":417.4434814453125,"z":897.9133911132812,"queued":false}
+cmd 0 {"type":"walk","entities":[19544],"x":422.14105224609375,"z":894.4583129882812,"queued":false}
+cmd 0 {"type":"walk","entities":[19547],"x":427.1117858886719,"z":889.7544555664062,"queued":false}
+cmd 0 {"type":"walk","entities":[18906,19550,18905,18904,18903],"x":491.36688232421875,"z":877.5062255859375,"queued":false}
+cmd 0 {"type":"walk","entities":[18906,19550,18905,18904,18903],"x":697.388671875,"z":800.873291015625,"queued":true}
+cmd 0 {"type":"walk","entities":[18906,19550,18905,18904,18903],"x":907.3920288085938,"z":799.787841796875,"queued":true}
+cmd 0 {"type":"walk","entities":[18906,19550,18905,18904,18903],"x":899.6284790039062,"z":860.9837036132812,"queued":true}
+cmd 0 {"type":"walk","entities":[18906,19550,18905,18904,18903],"x":886.8985595703125,"z":1011.7366333007812,"queued":true}
+cmd 0 {"type":"walk","entities":[18906,19550,18905,18904,18903],"x":736.6534423828125,"z":1014.3485717773438,"queued":true}
+cmd 0 {"type":"walk","entities":[18913,19551,18338,18339,18340,18341,18342],"x":707.06640625,"z":873.7817993164062,"queued":false}
+cmd 0 {"type":"walk","entities":[18913,19551,18338,18339,18340,18341,18342],"x":726.3734741210938,"z":943.6517333984375,"queued":true}
+cmd 0 {"type":"walk","entities":[18913,19551,18338,18339,18340,18341,18342],"x":899.332275390625,"z":942.5371704101562,"queued":true}
+cmd 0 {"type":"walk","entities":[18913,19551,18338,18339,18340,18341,18342],"x":906.3768310546875,"z":860.9353637695312,"queued":true}
+cmd 0 {"type":"walk","entities":[18913,19551,18338,18339,18340,18341,18342],"x":1091.8765869140625,"z":931.06103515625,"queued":true}
+cmd 0 {"type":"walk","entities":[18909,19558],"x":696.64111328125,"z":801.3311767578125,"queued":false}
+cmd 0 {"type":"walk","entities":[18909,19558],"x":707.692138671875,"z":872.8506469726562,"queued":true}
+cmd 0 {"type":"walk","entities":[18909,19558],"x":525.5989990234375,"z":940.735595703125,"queued":true}
+cmd 0 {"type":"walk","entities":[18909,19558],"x":568.69873046875,"z":1000.6895751953125,"queued":true}
+cmd 0 {"type":"walk","entities":[19552],"x":559.97021484375,"z":1003.8378295898438,"queued":false}
+cmd 0 {"type":"walk","entities":[19552],"x":724.4417724609375,"z":943.1373291015625,"queued":true}
+cmd 0 {"type":"walk","entities":[19552],"x":744.0045166015625,"z":1014.3715209960938,"queued":true}
+cmd 0 {"type":"walk","entities":[19552],"x":891.869873046875,"z":1013.1864013671875,"queued":true}
+cmd 0 {"type":"walk","entities":[19558,18909],"x":919.3372802734375,"z":797.8651123046875,"queued":false}
+cmd 0 {"type":"walk","entities":[19558,18909],"x":911.93359375,"z":875.8323364257812,"queued":true}
+cmd 0 {"type":"walk","entities":[19558,18909],"x":1094.5050048828125,"z":935.5072021484375,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":311.9967041015625,"z":845.296875,"queued":false}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":385.9856872558594,"z":867.1576538085938,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":417.7467956542969,"z":912.0887451171875,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":490.7348937988281,"z":882.74609375,"queued":true}
+cmd 0 {"type":"walk","entities":[18361,18362,18363],"x":533.6446533203125,"z":948.4197387695312,"queued":true}
+cmd 0 {"type":"walk","entities":[18358],"x":450.9303894042969,"z":732.4366455078125,"queued":false}
+cmd 0 {"type":"walk","entities":[18358],"x":443.29315185546875,"z":711.2570190429688,"queued":true}
+cmd 0 {"type":"walk","entities":[18358],"x":448.36932373046875,"z":689.4443359375,"queued":true}
+cmd 0 {"type":"walk","entities":[18358],"x":414.2138977050781,"z":682.495849609375,"queued":true}
+cmd 0 {"type":"walk","entities":[18358],"x":399.9704284667969,"z":663.1940307617188,"queued":true}
+cmd 0 {"type":"walk","entities":[18357],"x":403.0626220703125,"z":787.8298950195312,"queued":true}
+cmd 0 {"type":"walk","entities":[18357],"x":396.2826843261719,"z":777.65966796875,"queued":true}
+cmd 0 {"type":"walk","entities":[18357],"x":377.4092712402344,"z":804.7676391601562,"queued":true}
+cmd 0 {"type":"walk","entities":[18357],"x":359.42431640625,"z":809.1382446289062,"queued":true}
+cmd 0 {"type":"walk","entities":[18357],"x":364.48828125,"z":783.7455444335938,"queued":true}
+cmd 0 {"type":"walk","entities":[18293],"x":540.08544921875,"z":718.8160400390625,"queued":true}
+cmd 0 {"type":"walk","entities":[18293],"x":503.2900390625,"z":701.56494140625,"queued":true}
+cmd 0 {"type":"walk","entities":[18293],"x":481.2826843261719,"z":682.4942626953125,"queued":true}
+cmd 0 {"type":"walk","entities":[18293],"x":443.5252990722656,"z":673.8961181640625,"queued":true}
+cmd 0 {"type":"walk","entities":[18293],"x":405.7071838378906,"z":685.371337890625,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":634.2835693359375,"z":696.2672119140625,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":639.242431640625,"z":680.3529663085938,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":636.9960327148438,"z":664.5625,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":637.5277709960938,"z":646.3069458007812,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":637.0877075195312,"z":629.7991943359375,"queued":true}
+cmd 0 {"type":"attack","entities":[18360],"target":19110,"queued":true,"allowCapture":false}
+cmd 0 {"type":"walk","entities":[18360],"x":651.5819702148438,"z":637.285888671875,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":661.364013671875,"z":640.465576171875,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":663.5964965820312,"z":633.5059814453125,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":667.4884033203125,"z":615.9807739257812,"queued":true}
+cmd 0 {"type":"attack","entities":[18360],"target":19064,"queued":true,"allowCapture":false}
+cmd 0 {"type":"walk","entities":[18360],"x":678.97216796875,"z":605.6593017578125,"queued":true}
+cmd 0 {"type":"walk","entities":[18360],"x":696.794921875,"z":606.2118530273438,"queued":true}
+end
+turn 3 200
+end
+turn 4 200
+end
+turn 5 200
+end
+turn 6 200
+end
+turn 7 200
+end
+turn 8 200
+end
+turn 9 200
+end
+turn 10 200
+end
+turn 11 200
+end
+turn 12 200
+end
+turn 13 200
+end
+turn 14 200
+end
+turn 15 200
+end
+turn 16 200
+end
+turn 17 200
+end
+turn 18 200
+end
+turn 19 200
+end
+turn 20 200
+end
+turn 21 200
+end
+turn 22 200
+end
+turn 23 200
+end
+turn 24 200
+end
+turn 25 200
+end
+turn 26 200
+end
+turn 27 200
+end
+turn 28 200
+end
+turn 29 200
+end
+turn 30 200
+end
+turn 31 200
+end
+turn 32 200
+end
+turn 33 200
+end
+turn 34 200
+end
+turn 35 200
+end
+turn 36 200
+end
+turn 37 200
+end
+turn 38 200
+end
+turn 39 200
+end
+turn 40 200
+end
+turn 41 200
+end
+turn 42 200
+end
+turn 43 200
+end
+turn 44 200
+end
+turn 45 200
+end
+turn 46 200
+end
+turn 47 200
+end
+turn 48 200
+end
+turn 49 200
+end
+turn 50 200
+end
+turn 51 200
+end
+turn 52 200
+end
+turn 53 200
+end
+turn 54 200
+end
+turn 55 200
+end
+turn 56 200
+end
+turn 57 200
+end
+turn 58 200
+end
+turn 59 200
+end
+turn 60 200
+end
+turn 61 200
+end
+turn 62 200
+end
+turn 63 200
+end
+turn 64 200
+end
+turn 65 200
+end
+turn 66 200
+end
+turn 67 200
+end
+turn 68 200
+end
+turn 69 200
+end
+turn 70 200
+end
+turn 71 200
+end
+turn 72 200
+end
+turn 73 200
+end
+turn 74 200
+end
+turn 75 200
+end
+turn 76 200
+end
+turn 77 200
+end
+turn 78 200
+end
+turn 79 200
+end
+turn 80 200
+end
+turn 81 200
+end
+turn 82 200
+end
+turn 83 200
+end
+turn 84 200
+end
+turn 85 200
+end
+turn 86 200
+end
+turn 87 200
+end
+turn 88 200
+end
+turn 89 200
+end
+turn 90 200
+end
+turn 91 200
+end
+turn 92 200
+end
+turn 93 200
+end
+turn 94 200
+end
+turn 95 200
+end
+turn 96 200
+end
+turn 97 200
+end
+turn 98 200
+end
+turn 99 200
+end
+turn 100 200
+end
+turn 101 200
+end
+turn 102 200
+end
+turn 103 200
+end
+turn 104 200
+end
+turn 105 200
+end
+turn 106 200
+end
+turn 107 200
+end
+turn 108 200
+end
+turn 109 200
+end
+turn 110 200
+end
+turn 111 200
+end
+turn 112 200
+end
+turn 113 200
+end
+turn 114 200
+end
+turn 115 200
+end
+turn 116 200
+end
+turn 117 200
+end
+turn 118 200
+end
+turn 119 200
+end
+turn 120 200
+end
+turn 121 200
+end
+turn 122 200
+end
+turn 123 200
+end
+turn 124 200
+end
+turn 125 200
+end
+turn 126 200
+end
+turn 127 200
+end
+turn 128 200
+end
+turn 129 200
+end
+turn 130 200
+end
+turn 131 200
+end
+turn 132 200
+end
+turn 133 200
+end
+turn 134 200
+end
+turn 135 200
+end
+turn 136 200
+end
+turn 137 200
+end
+turn 138 200
+end
+turn 139 200
+end
+turn 140 200
+end
+turn 141 200
+end
+turn 142 200
+end
+turn 143 200
+end
+turn 144 200
+end
+turn 145 200
+end
+turn 146 200
+end
+turn 147 200
+end
+turn 148 200
+end
+turn 149 200
+end
+turn 150 200
+end
+turn 151 200
+end
+turn 152 200
+end
+turn 153 200
+end
+turn 154 200
+end
+turn 155 200
+end
+turn 156 200
+end
+turn 157 200
+end
+turn 158 200
+end
+turn 159 200
+end
+turn 160 200
+end
+turn 161 200
+end
+turn 162 200
+end
+turn 163 200
+end
+turn 164 200
+end
+turn 165 200
+end
+turn 166 200
+end
+turn 167 200
+end
+turn 168 200
+end
+turn 169 200
+end
+turn 170 200
+end
+turn 171 200
+end
+turn 172 200
+end
+turn 173 200
+end
+turn 174 200
+end
+turn 175 200
+end
+turn 176 200
+end
+turn 177 200
+end
+turn 178 200
+end
+turn 179 200
+end
+turn 180 200
+end
+turn 181 200
+end
+turn 182 200
+end
+turn 183 200
+end
+turn 184 200
+end
+turn 185 200
+end
+turn 186 200
+end
+turn 187 200
+end
+turn 188 200
+end
+turn 189 200
+end
+turn 190 200
+end
+turn 191 200
+end
+turn 192 200
+end
+turn 193 200
+end
+turn 194 200
+end
+turn 195 200
+end
+turn 196 200
+end
+turn 197 200
+end
+turn 198 200
+end
+turn 199 200
+end
+turn 200 200
+end
+turn 201 200
+end
+turn 202 200
+end
+turn 203 200
+end
+turn 204 200
+end
+turn 205 200
+end
+turn 206 200
+end
+turn 207 200
+end
+turn 208 200
+end
+turn 209 200
+end
+turn 210 200
+end
+turn 211 200
+end
+turn 212 200
+end
+turn 213 200
+end
+turn 214 200
+end
+turn 215 200
+end
+turn 216 200
+end
+turn 217 200
+end
+turn 218 200
+end
+turn 219 200
+end
+turn 220 200
+end
+turn 221 200
+end
+turn 222 200
+end
+turn 223 200
+end
+turn 224 200
+end
+turn 225 200
+end
+turn 226 200
+end
+turn 227 200
+end
+turn 228 200
+end
+turn 229 200
+end
+turn 230 200
+end
+turn 231 200
+end
+turn 232 200
+end
+turn 233 200
+end
+turn 234 200
+end
+turn 235 200
+end
+turn 236 200
+end
+turn 237 200
+end
+turn 238 200
+end
+turn 239 200
+end
+turn 240 200
+end
+turn 241 200
+end
+turn 242 200
+end
+turn 243 200
+end
+turn 244 200
+end
+turn 245 200
+end
+turn 246 200
+end
+turn 247 200
+end
+turn 248 200
+end
+turn 249 200
+end
+turn 250 200
+end
+turn 251 200
+end
+turn 252 200
+end
+turn 253 200
+end
+turn 254 200
+end
+turn 255 200
+end
+turn 256 200
+end
+turn 257 200
+end
+turn 258 200
+end
+turn 259 200
+end
+turn 260 200
+end
+turn 261 200
+end
+turn 262 200
+end
+turn 263 200
+end
+turn 264 200
+end
+turn 265 200
+end
+turn 266 200
+end
+turn 267 200
+end
+turn 268 200
+end
+turn 269 200
+end
+turn 270 200
+end
+turn 271 200
+end
+turn 272 200
+end
+turn 273 200
+end
+turn 274 200
+end
+turn 275 200
+end
+turn 276 200
+end
+turn 277 200
+end
+turn 278 200
+end
+turn 279 200
+end
+turn 280 200
+end
+turn 281 200
+end
+turn 282 200
+end
+turn 283 200
+end
+turn 284 200
+end
+turn 285 200
+end
+turn 286 200
+end
+turn 287 200
+end
+turn 288 200
+end
+turn 289 200
+end
+turn 290 200
+end
+turn 291 200
+end
+turn 292 200
+end
+turn 293 200
+end
+turn 294 200
+end
+turn 295 200
+end
+turn 296 200
+end
+turn 297 200
+end
+turn 298 200
+end
+turn 299 200
+end
+turn 300 200
+end
+turn 301 200
+end
+turn 302 200
+end
+turn 303 200
+end
+turn 304 200
+end
+turn 305 200
+end
+turn 306 200
+end
+turn 307 200
+end
+turn 308 200
+end
+turn 309 200
+end
+turn 310 200
+end
+turn 311 200
+end
+turn 312 200
+end
+turn 313 200
+end
+turn 314 200
+end
+turn 315 200
+end
+turn 316 200
+end
+turn 317 200
+end
+turn 318 200
+end
+turn 319 200
+end
+turn 320 200
+end
+turn 321 200
+end
+turn 322 200
+end
+turn 323 200
+end
+turn 324 200
+end
+turn 325 200
+end
+turn 326 200
+end
+turn 327 200
+end
+turn 328 200
+end
+turn 329 200
+end
+turn 330 200
+end
+turn 331 200
+end
+turn 332 200
+end
+turn 333 200
+end
+turn 334 200
+end
+turn 335 200
+end
+turn 336 200
+end
+turn 337 200
+end
+turn 338 200
+end
+turn 339 200
+end
+turn 340 200
+end
+turn 341 200
+end
+turn 342 200
+end
+turn 343 200
+end
+turn 344 200
+end
+turn 345 200
+end
+turn 346 200
+end
+turn 347 200
+end
+turn 348 200
+end
+turn 349 200
+end
+turn 350 200
+end
+turn 351 200
+end
+turn 352 200
+end
+turn 353 200
+end
+turn 354 200
+end
+turn 355 200
+end
+turn 356 200
+end
+turn 357 200
+end
+turn 358 200
+end
+turn 359 200
+end
+turn 360 200
+end
+turn 361 200
+end
+turn 362 200
+end
+turn 363 200
+end
+turn 364 200
+end
+turn 365 200
+end
+turn 366 200
+end
+turn 367 200
+end
+turn 368 200
+end
+turn 369 200
+end
+turn 370 200
+end
+turn 371 200
+end
+turn 372 200
+end
+turn 373 200
+end
+turn 374 200
+end
+turn 375 200
+end
+turn 376 200
+end
+turn 377 200
+end
+turn 378 200
+end
+turn 379 200
+end
+turn 380 200
+end
+turn 381 200
+end
+turn 382 200
+end
+turn 383 200
+end
+turn 384 200
+end
+turn 385 200
+end
+turn 386 200
+end
+turn 387 200
+end
+turn 388 200
+end
+turn 389 200
+end
+turn 390 200
+end
+turn 391 200
+end
+turn 392 200
+end
+turn 393 200
+end
+turn 394 200
+end
+turn 395 200
+end
+turn 396 200
+end
+turn 397 200
+end
+turn 398 200
+end
+turn 399 200
+end
+turn 400 200
+end
+turn 401 200
+end
+turn 402 200
+end
+turn 403 200
+end
+turn 404 200
+end
+turn 405 200
+end
+turn 406 200
+end
+turn 407 200
+end
+turn 408 200
+end
+turn 409 200
+end
+turn 410 200
+end
+turn 411 200
+end
+turn 412 200
+end
+turn 413 200
+end
+turn 414 200
+end
+turn 415 200
+end
+turn 416 200
+end
+turn 417 200
+end
+turn 418 200
+end
+turn 419 200
+end
+turn 420 200
+end
+turn 421 200
+end
+turn 422 200
+end
+turn 423 200
+end
+turn 424 200
+end
+turn 425 200
+end
+turn 426 200
+end
+turn 427 200
+end
+turn 428 200
+end
+turn 429 200
+end
+turn 430 200
+end
+turn 431 200
+end
+turn 432 200
+end
+turn 433 200
+end
+turn 434 200
+end
+turn 435 200
+end
+turn 436 200
+end
+turn 437 200
+end
+turn 438 200
+end
+turn 439 200
+end
+turn 440 200
+end
+turn 441 200
+end
+turn 442 200
+end
+turn 443 200
+end
+turn 444 200
+end
+turn 445 200
+end
+turn 446 200
+end
+turn 447 200
+end
+turn 448 200
+end
+turn 449 200
+end
+turn 450 200
+end
+turn 451 200
+end
+turn 452 200
+end
+turn 453 200
+end
+turn 454 200
+end
+turn 455 200
+end
+turn 456 200
+end
+turn 457 200
+end
+turn 458 200
+end
+turn 459 200
+end
+turn 460 200
+end
+turn 461 200
+end
+turn 462 200
+end
+turn 463 200
+end
+turn 464 200
+end
+turn 465 200
+end
+turn 466 200
+end
+turn 467 200
+end
+turn 468 200
+end
+turn 469 200
+end
+turn 470 200
+end
+turn 471 200
+end
+turn 472 200
+end
+turn 473 200
+end
+turn 474 200
+end
+turn 475 200
+end
+turn 476 200
+end
+turn 477 200
+end
+turn 478 200
+end
+turn 479 200
+end
+turn 480 200
+end
+turn 481 200
+end
+turn 482 200
+end
+turn 483 200
+end
+turn 484 200
+end
+turn 485 200
+end
+turn 486 200
+end
+turn 487 200
+end
+turn 488 200
+end
+turn 489 200
+end
+turn 490 200
+end
+turn 491 200
+end
+turn 492 200
+end
+turn 493 200
+end
+turn 494 200
+end
+turn 495 200
+end
+turn 496 200
+end
+turn 497 200
+end
+turn 498 200
+end
+turn 499 200
+end
+turn 500 200
+end
+turn 501 200
+end
+turn 502 200
+end
+turn 503 200
+end
+turn 504 200
+end
+turn 505 200
+end
+turn 506 200
+end
+turn 507 200
+end
+turn 508 200
+end
+turn 509 200
+end
+turn 510 200
+end
+turn 511 200
+end
+turn 512 200
+end
+turn 513 200
+end
+turn 514 200
+end
+turn 515 200
+end
+turn 516 200
+end
+turn 517 200
+end
+turn 518 200
+end
+turn 519 200
+end
+turn 520 200
+end
+turn 521 200
+end
+turn 522 200
+end
+turn 523 200
+end
+turn 524 200
+end
+turn 525 200
+end
+turn 526 200
+end
+turn 527 200
+end
+turn 528 200
+end
+turn 529 200
+end
+turn 530 200
+end
+turn 531 200
+end
+turn 532 200
+end
+turn 533 200
+end
+turn 534 200
+end
+turn 535 200
+end
+turn 536 200
+end
+turn 537 200
+end
+turn 538 200
+end
+turn 539 200
+end
+turn 540 200
+end
+turn 541 200
+end
+turn 542 200
+end
+turn 543 200
+end
+turn 544 200
+end
+turn 545 200
+end
+turn 546 200
+end
+turn 547 200
+end
+turn 548 200
+end
+turn 549 200
+end
+turn 550 200
+end
+turn 551 200
+end
+turn 552 200
+end
+turn 553 200
+end
+turn 554 200
+end
+turn 555 200
+end
+turn 556 200
+end
+turn 557 200
+end
+turn 558 200
+end
+turn 559 200
+end
+turn 560 200
+end
+turn 561 200
+end
+turn 562 200
+end
+turn 563 200
+end
+turn 564 200
+end
+turn 565 200
+end
+turn 566 200
+end
+turn 567 200
+end
+turn 568 200
+end
+turn 569 200
+end
+turn 570 200
+end
+turn 571 200
+end
+turn 572 200
+end
+turn 573 200
+end
+turn 574 200
+end
+turn 575 200
+end
+turn 576 200
+end
+turn 577 200
+end
+turn 578 200
+end
+turn 579 200
+end
+turn 580 200
+end
+turn 581 200
+end
+turn 582 200
+end
+turn 583 200
+end
+turn 584 200
+end
+turn 585 200
+end
+turn 586 200
+end
+turn 587 200
+end
+turn 588 200
+end
+turn 589 200
+end
+turn 590 200
+end
+turn 591 200
+end
+turn 592 200
+end
+turn 593 200
+end
+turn 594 200
+end
+turn 595 200
+end
+turn 596 200
+end
+turn 597 200
+end
+turn 598 200
+end
+turn 599 200
+end
+turn 600 200
+end
+turn 601 200
+end
+turn 602 200
+end
+turn 603 200
+end
+turn 604 200
+end
+turn 605 200
+end
+turn 606 200
+end
+turn 607 200
+end
+turn 608 200
+end
+turn 609 200
+end
+turn 610 200
+end
+turn 611 200
+end
+turn 612 200
+end
+turn 613 200
+end
+turn 614 200
+end
+turn 615 200
+end
+turn 616 200
+end
+turn 617 200
+end
+turn 618 200
+end
+turn 619 200
+end
+turn 620 200
+end
+turn 621 200
+end
+turn 622 200
+end
+turn 623 200
+end
+turn 624 200
+end
+turn 625 200
+end
+turn 626 200
+end
+turn 627 200
+end
+turn 628 200
+end
+turn 629 200
+end
+turn 630 200
+end
+turn 631 200
+end
+turn 632 200
+end
+turn 633 200
+end
+turn 634 200
+end
+turn 635 200
+end
+turn 636 200
+end
+turn 637 200
+end
+turn 638 200
+end
+turn 639 200
+end
+turn 640 200
+end
+turn 641 200
+end
+turn 642 200
+end
+turn 643 200
+end
+turn 644 200
+end
+turn 645 200
+end
+turn 646 200
+end
+turn 647 200
+end
+turn 648 200
+end
+turn 649 200
+end
+turn 650 200
+end
+turn 651 200
+end
+turn 652 200
+end
+turn 653 200
+end
+turn 654 200
+end
+turn 655 200
+end
+turn 656 200
+end
+turn 657 200
+end
+turn 658 200
+end
+turn 659 200
+end
+turn 660 200
+end
+turn 661 200
+end
+turn 662 200
+end
+turn 663 200
+end
+turn 664 200
+end
+turn 665 200
+end
+turn 666 200
+end
+turn 667 200
+end
+turn 668 200
+end
+turn 669 200
+end
+turn 670 200
+end
+turn 671 200
+end
+turn 672 200
+end
+turn 673 200
+end
+turn 674 200
+end
+turn 675 200
+end
+turn 676 200
+end
+turn 677 200
+end
+turn 678 200
+end
+turn 679 200
+end
+turn 680 200
+end
+turn 681 200
+end
+turn 682 200
+end
+turn 683 200
+end
+turn 684 200
+end
+turn 685 200
+end
+turn 686 200
+end
+turn 687 200
+end
+turn 688 200
+end
+turn 689 200
+end
+turn 690 200
+end
+turn 691 200
+end
+turn 692 200
+end
+turn 693 200
+end
+turn 694 200
+end
+turn 695 200
+end
+turn 696 200
+end
+turn 697 200
+end
+turn 698 200
+end
+turn 699 200
+end
+turn 700 200
+end
+turn 701 200
+end
+turn 702 200
+end
+turn 703 200
+end
+turn 704 200
+end
+turn 705 200
+end
+turn 706 200
+end
+turn 707 200
+end
+turn 708 200
+end
+turn 709 200
+end
+turn 710 200
+end
+turn 711 200
+end
+turn 712 200
+end
+turn 713 200
+end
+turn 714 200
+end
+turn 715 200
+end
+turn 716 200
+end
+turn 717 200
+end
+turn 718 200
+end
+turn 719 200
+end
+turn 720 200
+end
+turn 721 200
+end
+turn 722 200
+end
+turn 723 200
+end
+turn 724 200
+end
+turn 725 200
+end
+turn 726 200
+end
+turn 727 200
+end
+turn 728 200
+end
+turn 729 200
+end
+turn 730 200
+end
+turn 731 200
+end
+turn 732 200
+end
+turn 733 200
+end
+turn 734 200
+end
+turn 735 200
+end
+turn 736 200
+end
+turn 737 200
+end
+turn 738 200
+end
+turn 739 200
+end
+turn 740 200
+end
+turn 741 200
+end
+turn 742 200
+end
+turn 743 200
+end
+turn 744 200
+end
+turn 745 200
+end
+turn 746 200
+end
+turn 747 200
+end
+turn 748 200
+end
+turn 749 200
+end
+turn 750 200
+end
+turn 751 200
+end
+turn 752 200
+end
+turn 753 200
+end
+turn 754 200
+end
+turn 755 200
+end
+turn 756 200
+end
+turn 757 200
+end
+turn 758 200
+end
+turn 759 200
+end
+turn 760 200
+end
+turn 761 200
+end
+turn 762 200
+end
+turn 763 200
+end
+turn 764 200
+end
+turn 765 200
+end
+turn 766 200
+end
+turn 767 200
+end
+turn 768 200
+end
+turn 769 200
+end
+turn 770 200
+end
+turn 771 200
+end
+turn 772 200
+end
+turn 773 200
+end
+turn 774 200
+end
+turn 775 200
+end
+turn 776 200
+end
+turn 777 200
+end
+turn 778 200
+end
+turn 779 200
+end
+turn 780 200
+end
+turn 781 200
+end
+turn 782 200
+end
+turn 783 200
+end
+turn 784 200
+end
+turn 785 200
+end
+turn 786 200
+end
+turn 787 200
+end
+turn 788 200
+end
+turn 789 200
+end
+turn 790 200
+end
+turn 791 200
+end
+turn 792 200
+end
+turn 793 200
+end
+turn 794 200
+end
+turn 795 200
+end
+turn 796 200
+end
+turn 797 200
+end
+turn 798 200
+end
+turn 799 200
+end
+turn 800 200
+end
+turn 801 200
+end
+turn 802 200
+end
+turn 803 200
+end
+turn 804 200
+end
+turn 805 200
+end
+turn 806 200
+end
+turn 807 200
+end
+turn 808 200
+end
+turn 809 200
+end
+turn 810 200
+end
+turn 811 200
+end
+turn 812 200
+end
+turn 813 200
+end
+turn 814 200
+end
+turn 815 200
+end
+turn 816 200
+end
+turn 817 200
+end
+turn 818 200
+end
+turn 819 200
+end
+turn 820 200
+end
+turn 821 200
+end
+turn 822 200
+end
+turn 823 200
+end
+turn 824 200
+end
+turn 825 200
+end
+turn 826 200
+end
+turn 827 200
+end
+turn 828 200
+end
+turn 829 200
+end
+turn 830 200
+end
+turn 831 200
+end
+turn 832 200
+end
+turn 833 200
+end
+turn 834 200
+end
+turn 835 200
+end
+turn 836 200
+end
+turn 837 200
+end
+turn 838 200
+end
+turn 839 200
+end
+turn 840 200
+end
+turn 841 200
+end
+turn 842 200
+end
+turn 843 200
+end
+turn 844 200
+end
+turn 845 200
+end
+turn 846 200
+end
+turn 847 200
+end
+turn 848 200
+end
+turn 849 200
+end
+turn 850 200
+end
+turn 851 200
+end
+turn 852 200
+end
+turn 853 200
+end
+turn 854 200
+end
+turn 855 200
+end
+turn 856 200
+end
+turn 857 200
+end
+turn 858 200
+end
+turn 859 200
+end
+turn 860 200
+end
+turn 861 200
+end
+turn 862 200
+end
+turn 863 200
+end
+turn 864 200
+end
+turn 865 200
+end
+turn 866 200
+end
+turn 867 200
+end
+turn 868 200
+end
+turn 869 200
+end
+turn 870 200
+end
+turn 871 200
+end
+turn 872 200
+end
+turn 873 200
+end
+turn 874 200
+end
+turn 875 200
+end
+turn 876 200
+end
+turn 877 200
+end
+turn 878 200
+end
+turn 879 200
+end
+turn 880 200
+end
+turn 881 200
+end
+turn 882 200
+end
+turn 883 200
+end
+turn 884 200
+end
+turn 885 200
+end
+turn 886 200
+end
+turn 887 200
+end
+turn 888 200
+end
+turn 889 200
+end
+turn 890 200
+end
+turn 891 200
+end
+turn 892 200
+end
+turn 893 200
+end
+turn 894 200
+end
+turn 895 200
+end
+turn 896 200
+end
+turn 897 200
+end
+turn 898 200
+end
+turn 899 200
+end
+turn 900 200
+end
+turn 901 200
+end
+turn 902 200
+end
+turn 903 200
+end
+turn 904 200
+end
+turn 905 200
+end
+turn 906 200
+end
+turn 907 200
+end
+turn 908 200
+end
+turn 909 200
+end
+turn 910 200
+end
+turn 911 200
+end
+turn 912 200
+end
+turn 913 200
+end
+turn 914 200
+end
+turn 915 200
+end
+turn 916 200
+end
+turn 917 200
+end
+turn 918 200
+end
+turn 919 200
+end
+turn 920 200
+end
+turn 921 200
+end
+turn 922 200
+end
+turn 923 200
+end
+turn 924 200
+end
+turn 925 200
+end
+turn 926 200
+end
+turn 927 200
+end
+turn 928 200
+end
+turn 929 200
+end
+turn 930 200
+end
+turn 931 200
+end
+turn 932 200
+end
+turn 933 200
+end
+turn 934 200
+end
+turn 935 200
+end
+turn 936 200
+end
+turn 937 200
+end
+turn 938 200
+end
+turn 939 200
+end
+turn 940 200
+end
+turn 941 200
+end
+turn 942 200
+end
+turn 943 200
+end
+turn 944 200
+end
+turn 945 200
+end
+turn 946 200
+end
+turn 947 200
+end
+turn 948 200
+end
+turn 949 200
+end
+turn 950 200
+end
+turn 951 200
+end
+turn 952 200
+end
+turn 953 200
+end
+turn 954 200
+end
+turn 955 200
+end
+turn 956 200
+end
+turn 957 200
+end
+turn 958 200
+end
+turn 959 200
+end
+turn 960 200
+end
+turn 961 200
+end
+turn 962 200
+end
+turn 963 200
+end
+turn 964 200
+end
+turn 965 200
+end
+turn 966 200
+end
+turn 967 200
+end
+turn 968 200
+end
+turn 969 200
+end
+turn 970 200
+end
+turn 971 200
+end
+turn 972 200
+end
+turn 973 200
+end
+turn 974 200
+end
+turn 975 200
+end
+turn 976 200
+end
+turn 977 200
+end
+turn 978 200
+end
+turn 979 200
+end
+turn 980 200
+end
+turn 981 200
+end
+turn 982 200
+end
+turn 983 200
+end
+turn 984 200
+end
+turn 985 200
+end
+turn 986 200
+end
+turn 987 200
+end
+turn 988 200
+end
+turn 989 200
+end
+turn 990 200
+end
+turn 991 200
+end
+turn 992 200
+end
+turn 993 200
+end
+turn 994 200
+end
+turn 995 200
+end
+turn 996 200
+end
+turn 997 200
+end
+turn 998 200
+end
+turn 999 200
+end
+turn 1000 200
+end
+turn 1001 200
+end
+turn 1002 200
+end
+turn 1003 200
+end
+turn 1004 200
+end
+turn 1005 200
+end
+turn 1006 200
+end
+turn 1007 200
+end
+turn 1008 200
+end
+turn 1009 200
+end
+turn 1010 200
+end
+turn 1011 200
+end
+turn 1012 200
+end
+turn 1013 200
+end
+turn 1014 200
+end
+turn 1015 200
+end
+turn 1016 200
+end
+turn 1017 200
+end
+turn 1018 200
+end
+turn 1019 200
+end
+turn 1020 200
+end
+turn 1021 200
+end
+turn 1022 200
+end
+turn 1023 200
+end
+turn 1024 200
+end
+turn 1025 200
+end
+turn 1026 200
+end
+turn 1027 200
+end
+turn 1028 200
+end
+turn 1029 200
+end
+turn 1030 200
+end
+turn 1031 200
+end
+turn 1032 200
+end
+turn 1033 200
+end
+turn 1034 200
+end
+turn 1035 200
+end
+turn 1036 200
+end
+turn 1037 200
+end
+turn 1038 200
+end
+turn 1039 200
+end
+turn 1040 200
+end
+turn 1041 200
+end
+turn 1042 200
+end
+turn 1043 200
+end
+turn 1044 200
+end
+turn 1045 200
+end
+turn 1046 200
+end
+turn 1047 200
+end
+turn 1048 200
+end
+turn 1049 200
+end
+turn 1050 200
+end
+turn 1051 200
+end
+turn 1052 200
+end
+turn 1053 200
+end
+turn 1054 200
+end
+turn 1055 200
+end
+turn 1056 200
+end
+turn 1057 200
+end
+turn 1058 200
+end
+turn 1059 200
+end
+turn 1060 200
+end
+turn 1061 200
+end
+turn 1062 200
+end
+turn 1063 200
+end
+turn 1064 200
+end
+turn 1065 200
+end
+turn 1066 200
+end
+turn 1067 200
+end
+turn 1068 200
+end
+turn 1069 200
+end
+turn 1070 200
+end
+turn 1071 200
+end
+turn 1072 200
+end
+turn 1073 200
+end
+turn 1074 200
+end
+turn 1075 200
+end
+turn 1076 200
+end
+turn 1077 200
+end
+turn 1078 200
+end
+turn 1079 200
+end
+turn 1080 200
+end
+turn 1081 200
+end
+turn 1082 200
+end
+turn 1083 200
+end
+turn 1084 200
+end
+turn 1085 200
+end
+turn 1086 200
+end
+turn 1087 200
+end
+turn 1088 200
+end
+turn 1089 200
+end
+turn 1090 200
+end
+turn 1091 200
+end
+turn 1092 200
+end
+turn 1093 200
+end
+turn 1094 200
+end
+turn 1095 200
+end
+turn 1096 200
+end
+turn 1097 200
+end
+turn 1098 200
+end
+turn 1099 200
+end
+turn 1100 200
+end
+turn 1101 200
+end
+turn 1102 200
+end
+turn 1103 200
+end
+turn 1104 200
+end
+turn 1105 200
+end
+turn 1106 200
+end
+turn 1107 200
+end
+turn 1108 200
+end
+turn 1109 200
+end
+turn 1110 200
+end
+turn 1111 200
+end
+turn 1112 200
+end
+turn 1113 200
+end
