@@ -11,29 +11,24 @@ var g_NetworkWarnings = {};
 /**
  * Message-types to be displayed.
  */
-var g_NetworkWarningTexts = {
+function getNetworkWarningText(isLocal, performance, username)
+{
+	if (performance.packetLoss > 0.1)
+		return isLocal ?
+			translate("Bad connection to server (%(packetLossRatio)s%% packet loss)") :
+			translate("Bad connection to %(player)s (%(packetLossRatio)s%% packet loss)");
 
-	"server-timeout": (msg, username) =>
-		sprintf(translate("Losing connection to server (%(seconds)ss)"), {
-			"seconds": Math.ceil(msg.lastReceivedTime / 1000)
-		}),
+	if (performance.meanRTT > 500)
+		return isLocal ?
+			translate("Bad connection to %(player)s (%(milliseconds)sms)") :
+			translate("Bad connection to server (%(milliseconds)sms)");
 
-	"client-timeout": (msg, username) =>
-		sprintf(translate("%(player)s losing connection (%(seconds)ss)"), {
-			"player": username,
-			"seconds": Math.ceil(msg.lastReceivedTime / 1000)
-		}),
+	if (performance.lastReceivedTime > 3)
+		return isLocal ?
+			translate("%(player)s losing connection (%(seconds)ss)") :
+			translate("Losing connection to server (%(seconds)ss)");
 
-	"server-latency": (msg, username) =>
-		sprintf(translate("Bad connection to server (%(milliseconds)sms)"), {
-			"milliseconds": msg.meanRTT
-		}),
-
-	"client-latency": (msg, username) =>
-		sprintf(translate("Bad connection to %(player)s (%(milliseconds)sms)"), {
-			"player": username,
-			"milliseconds": msg.meanRTT
-		})
+	return "";
 };
 
 var g_NetworkCommands = {
@@ -190,21 +185,33 @@ function executeNetworkCommand(input)
  *
  * @param msg - GUI message sent by NetServer or NetClient
  */
-function addNetworkWarning(msg)
+function addNetworkWarnings()
 {
-	if (!g_NetworkWarningTexts[msg.warntype])
-	{
-		warn("Unknown network warning type received: " + uneval(msg));
-		return;
-	}
-
 	if (Engine.ConfigDB_GetValue("user", "overlay.netwarnings") != "true")
 		return;
 
-	g_NetworkWarnings[msg.guid || "server"] = {
-		"added": Date.now(),
-		"msg": msg
-	};
+	//if (msg.lastReceiveTime > 3)
+	return; // TODO
+
+	let clientPerformance = Engine.GetNetworkClientPerformance();
+
+	sprintf(text, {
+		"player": username,
+		"seconds": Math.ceil(performance.lastReceivedTime / 1000),
+		"milliseconds": performance.meanRTT,
+		"ratio": performance.packetLoss
+	})
+
+	for (let guid in clientPerformance)
+	{
+		let string = getNetworkWarningText(guid == Engine.GetPlayerGUID(), clientPerformance, g_PlayerAssignments[guid].name);
+		if (string)
+			g_NetworkWarnings[guid] = {
+				"added": Date.now(),
+				"string": string,
+				"performance":  performance[guid]
+			};
+	}
 }
 
 /**
@@ -215,12 +222,11 @@ function getNetworkWarnings()
 {
 	// Remove outdated messages
 	for (let guid in g_NetworkWarnings)
-		if (Date.now() > g_NetworkWarnings[guid].added + g_NetworkWarningTimeout ||
-		    guid != "server" && !g_PlayerAssignments[guid])
+		if (Date.now() > g_NetworkWarnings[guid].added + g_NetworkWarningTimeout || !g_PlayerAssignments[guid])
 			delete g_NetworkWarnings[guid];
 
 	// Show local messages first
-	let guids = Object.keys(g_NetworkWarnings).sort(guid => guid != "server");
+	let guids = Object.keys(g_NetworkWarnings).sort(guid => guid != Engine.GetPlayerGUID());
 
 	let font = Engine.GetGUIObjectByName("gameStateNotifications").font;
 
@@ -229,14 +235,13 @@ function getNetworkWarnings()
 
 	for (let guid of guids)
 	{
-		let msg = g_NetworkWarnings[guid].msg;
+		let isLocal = guid == Engine.GetPlayerGUID();
 
 		// Add formatted text
-		messages.push(g_NetworkWarningTexts[msg.warntype](msg, colorizePlayernameByGUID(guid)));
+		messages.push(getNetworkWarningText(isLocal, g_NetworkWarnings[guid].performance, colorizePlayernameByGUID(guid)));
 
 		// Add width of unformatted text
-		let username = guid != "server" && g_PlayerAssignments[guid].name;
-		let textWidth = Engine.GetTextWidth(font, g_NetworkWarningTexts[msg.warntype](msg, username));
+		let textWidth = Engine.GetTextWidth(font, getNetworkWarningText(isLocal, g_NetworkWarnings[guid].performance, g_PlayerAssignments[guid].name));
 		maxTextWidth = Math.max(textWidth, maxTextWidth);
 	}
 

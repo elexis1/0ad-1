@@ -25,11 +25,6 @@
 #include "scriptinterface/ScriptVal.h"
 
 /**
- * Report the peer if we didn't receive a packet after this time (milliseconds).
- */
-extern const u32 NETWORK_WARNING_TIMEOUT;
-
-/**
  *  Maximum timeout of the local client of the host (milliseconds).
  */
 extern const u32 MAXIMUM_HOST_TIMEOUT;
@@ -106,6 +101,11 @@ public:
 	u32 GetMeanRTT() const;
 
 	/**
+	 * Average ratio of packets lost with regards to ENET_PEER_PACKET_LOSS_SCALE. Indicates connection quality.
+	 */
+	u32 GetPacketLoss() const;
+
+	/**
 	 * Allows increasing the timeout to prevent drops during an expensive operation,
 	 * and decreasing it back to normal afterwards.
 	 */
@@ -168,6 +168,11 @@ public:
 	 * Average round trip time to the client.
 	 */
 	u32 GetMeanRTT() const;
+
+	/**
+	 * Average ratio of packets lost with regards to ENET_PEER_PACKET_LOSS_SCALE. Indicates connection quality.
+	 */
+	u32 GetPacketLoss() const;
 
 	/**
 	 * Sends a disconnection notification to the client,

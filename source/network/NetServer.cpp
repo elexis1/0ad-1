@@ -452,7 +452,7 @@ bool CNetServerWorker::RunStep()
 	for (CNetServerSession* session : m_Sessions)
 		session->GetFileTransferer().Poll();
 
-	CheckClientConnections();
+	BroadcastClientPerformance();
 
 	// Process network events:
 
@@ -555,7 +555,7 @@ bool CNetServerWorker::RunStep()
 	return true;
 }
 
-void CNetServerWorker::CheckClientConnections()
+void CNetServerWorker::BroadcastClientPerformance()
 {
 	// Send messages at most once per second
 	std::time_t now = std::time(nullptr);
@@ -564,48 +564,30 @@ void CNetServerWorker::CheckClientConnections()
 
 	m_LastConnectionCheck = now;
 
-	for (size_t i = 0; i < m_Sessions.size(); ++i)
+	CClientPerformanceMessage msg;
+	for (CNetServerSession* session : m_Sessions)
 	{
-		u32 lastReceived = m_Sessions[i]->GetLastReceivedTime();
-		u32 meanRTT = m_Sessions[i]->GetMeanRTT();
+		CClientPerformanceMessage::S_m_Clients client;
+		client.m_GUID = session->GetGUID();
+		client.m_MeanRTT = session->GetMeanRTT();
+		client.m_LastReceivedTime = session->GetLastReceivedTime();
+		client.m_LostPackets = session->GetPacketLoss();
 
-		CNetMessage* message = nullptr;
+		msg.m_Clients.push_back(client);
+	}
 
-		// Report if we didn't hear from the client since few seconds
-		if (lastReceived > NETWORK_WARNING_TIMEOUT)
+	// Send to all clients except ones experiencing a timeout.
+	// Send the performance stanza to clients that finished the loading screen while
+	// the game is still waiting for other clients to finish the loading screen.
+	for (CNetServerSession* session : m_Sessions)
+	{
+		// TODO: const
+		if (session->GetLastReceivedTime() < 3 &&
+			 ((session->GetCurrState() == NSS_PREGAME && m_State == SERVER_STATE_PREGAME) ||
+			 (session->GetCurrState() == NSS_INGAME)))
 		{
-			CClientTimeoutMessage* msg = new CClientTimeoutMessage();
-			msg->m_GUID = m_Sessions[i]->GetGUID();
-			msg->m_LastReceivedTime = lastReceived;
-			message = msg;
+			session->SendMessage(&msg);
 		}
-		// Report if the client has bad ping
-		else if (meanRTT > DEFAULT_TURN_LENGTH_MP)
-		{
-			CClientPerformanceMessage* msg = new CClientPerformanceMessage();
-			CClientPerformanceMessage::S_m_Clients client;
-			client.m_GUID = m_Sessions[i]->GetGUID();
-			client.m_MeanRTT = meanRTT;
-			msg->m_Clients.push_back(client);
-			message = msg;
-		}
-
-		// Send to all clients except the affected one
-		// (since that will show the locally triggered warning instead).
-		// Also send it to clients that finished the loading screen while
-		// the game is still waiting for other clients to finish the loading screen.
-		if (message)
-			for (size_t j = 0; j < m_Sessions.size(); ++j)
-			{
-				if (i != j && (
-				    (m_Sessions[j]->GetCurrState() == NSS_PREGAME && m_State == SERVER_STATE_PREGAME) ||
-				    m_Sessions[j]->GetCurrState() == NSS_INGAME))
-				{
-					m_Sessions[j]->SendMessage(message);
-				}
-			}
-
-		SAFE_DELETE(message);
 	}
 }
 

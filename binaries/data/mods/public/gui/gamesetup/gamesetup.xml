@@ -202,6 +202,19 @@
 				<translatableAttribute id="tooltip">Show the multiplayer lobby in a dialog window.</translatableAttribute>
 			</object>
 
+			<!-- View Network Button -->
+			<object name="networkButton"
+				type="button"
+				style="IconButton"
+				sprite="iconInfoGold"
+				sprite_over="iconInfoWhite"
+				size="100%-41 346 100%-25 362"
+				hotkey="network"
+				z="100"
+			>
+				<translatableAttribute id="tooltip">Show the network dialog.</translatableAttribute>
+			</object>
+
 			<!-- Map Description -->
 			<object name="mapInfoDescriptionFrame" type="image" sprite="ModernDarkBoxGold" size="100%-315 550 100%-25 100%-60" z="21">
 				<object name="mapInfoDescription" type="text" style="ModernText" size="0 0 100% 100%"/>

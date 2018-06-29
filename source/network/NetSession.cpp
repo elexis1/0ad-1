@@ -27,8 +27,6 @@
 #include "ps/Profile.h"
 #include "scriptinterface/ScriptInterface.h"
 
-const u32 NETWORK_WARNING_TIMEOUT = 2000;
-
 const u32 MAXIMUM_HOST_TIMEOUT = std::numeric_limits<u32>::max();
 
 static const int CHANNEL_COUNT = 1;
@@ -220,6 +218,16 @@ u32 CNetClientSession::GetMeanRTT() const
 
 	return m_Server->roundTripTime;
 }
+const double packet_loss_scale = (1 << 16);
+const double packet_loss_scale_factor = packet_loss_scale / ENET_PEER_PACKET_LOSS_SCALE;
+
+u32 CNetClientSession::GetPacketLoss() const
+{
+	if (!m_Server)
+		return 0;
+
+	return m_Server->packetLoss * packet_loss_scale_factor;
+}
 
 void CNetClientSession::SetLongTimeout(bool enabled)
 {
@@ -250,6 +258,14 @@ u32 CNetServerSession::GetMeanRTT() const
 		return 0;
 
 	return m_Peer->roundTripTime;
+}
+
+u32 CNetServerSession::GetPacketLoss() const
+{
+	if (!m_Peer)
+		return 0;
+
+	return m_Peer->packetLoss * packet_loss_scale_factor;
 }
 
 void CNetServerSession::Disconnect(u32 reason)

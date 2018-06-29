@@ -36,6 +36,8 @@
 #include "scriptinterface/ScriptInterface.h"
 #include "simulation2/Simulation2.h"
 
+#include <map>
+
 CNetClient *g_NetClient = NULL;
 
 /**
@@ -99,7 +101,6 @@ CNetClient::CNetClient(CGame* game, bool isLocalClient) :
 	AddTransition(NCS_PREGAME, (uint)NMT_GAME_SETUP, NCS_PREGAME, (void*)&OnGameSetup, context);
 	AddTransition(NCS_PREGAME, (uint)NMT_PLAYER_ASSIGNMENT, NCS_PREGAME, (void*)&OnPlayerAssignment, context);
 	AddTransition(NCS_PREGAME, (uint)NMT_KICKED, NCS_PREGAME, (void*)&OnKicked, context);
-	AddTransition(NCS_PREGAME, (uint)NMT_CLIENT_TIMEOUT, NCS_PREGAME, (void*)&OnClientTimeout, context);
 	AddTransition(NCS_PREGAME, (uint)NMT_CLIENT_PERFORMANCE, NCS_PREGAME, (void*)&OnClientPerformance, context);
 	AddTransition(NCS_PREGAME, (uint)NMT_GAME_START, NCS_LOADING, (void*)&OnGameStart, context);
 	AddTransition(NCS_PREGAME, (uint)NMT_JOIN_SYNC_START, NCS_JOIN_SYNCING, (void*)&OnJoinSyncStart, context);
@@ -108,7 +109,6 @@ CNetClient::CNetClient(CGame* game, bool isLocalClient) :
 	AddTransition(NCS_JOIN_SYNCING, (uint)NMT_GAME_SETUP, NCS_JOIN_SYNCING, (void*)&OnGameSetup, context);
 	AddTransition(NCS_JOIN_SYNCING, (uint)NMT_PLAYER_ASSIGNMENT, NCS_JOIN_SYNCING, (void*)&OnPlayerAssignment, context);
 	AddTransition(NCS_JOIN_SYNCING, (uint)NMT_KICKED, NCS_JOIN_SYNCING, (void*)&OnKicked, context);
-	AddTransition(NCS_JOIN_SYNCING, (uint)NMT_CLIENT_TIMEOUT, NCS_JOIN_SYNCING, (void*)&OnClientTimeout, context);
 	AddTransition(NCS_JOIN_SYNCING, (uint)NMT_CLIENT_PERFORMANCE, NCS_JOIN_SYNCING, (void*)&OnClientPerformance, context);
 	AddTransition(NCS_JOIN_SYNCING, (uint)NMT_GAME_START, NCS_JOIN_SYNCING, (void*)&OnGameStart, context);
 	AddTransition(NCS_JOIN_SYNCING, (uint)NMT_SIMULATION_COMMAND, NCS_JOIN_SYNCING, (void*)&OnInGame, context);
@@ -119,14 +119,12 @@ CNetClient::CNetClient(CGame* game, bool isLocalClient) :
 	AddTransition(NCS_LOADING, (uint)NMT_GAME_SETUP, NCS_LOADING, (void*)&OnGameSetup, context);
 	AddTransition(NCS_LOADING, (uint)NMT_PLAYER_ASSIGNMENT, NCS_LOADING, (void*)&OnPlayerAssignment, context);
 	AddTransition(NCS_LOADING, (uint)NMT_KICKED, NCS_LOADING, (void*)&OnKicked, context);
-	AddTransition(NCS_LOADING, (uint)NMT_CLIENT_TIMEOUT, NCS_LOADING, (void*)&OnClientTimeout, context);
 	AddTransition(NCS_LOADING, (uint)NMT_CLIENT_PERFORMANCE, NCS_LOADING, (void*)&OnClientPerformance, context);
 	AddTransition(NCS_LOADING, (uint)NMT_CLIENTS_LOADING, NCS_LOADING, (void*)&OnClientsLoading, context);
 	AddTransition(NCS_LOADING, (uint)NMT_LOADED_GAME, NCS_INGAME, (void*)&OnLoadedGame, context);
 
 	AddTransition(NCS_INGAME, (uint)NMT_REJOINED, NCS_INGAME, (void*)&OnRejoined, context);
 	AddTransition(NCS_INGAME, (uint)NMT_KICKED, NCS_INGAME, (void*)&OnKicked, context);
-	AddTransition(NCS_INGAME, (uint)NMT_CLIENT_TIMEOUT, NCS_INGAME, (void*)&OnClientTimeout, context);
 	AddTransition(NCS_INGAME, (uint)NMT_CLIENT_PERFORMANCE, NCS_INGAME, (void*)&OnClientPerformance, context);
 	AddTransition(NCS_INGAME, (uint)NMT_CLIENTS_LOADING, NCS_INGAME, (void*)&OnClientsLoading, context);
 	AddTransition(NCS_INGAME, (uint)NMT_CLIENT_PAUSED, NCS_INGAME, (void*)&OnClientPaused, context);
@@ -201,37 +199,13 @@ void CNetClient::Poll()
 
 void CNetClient::CheckServerConnection()
 {
-	// Trigger local warnings if the connection to the server is bad.
-	// At most once per second.
 	std::time_t now = std::time(nullptr);
 	if (now <= m_LastConnectionCheck)
 		return;
 
 	m_LastConnectionCheck = now;
 
-	JSContext* cx = GetScriptInterface().GetContext();
-	JSAutoRequest rq(cx);
-
-	// Report if we are losing the connection to the server
-	u32 lastReceived = m_Session->GetLastReceivedTime();
-	if (lastReceived > NETWORK_WARNING_TIMEOUT)
-	{
-		JS::RootedValue msg(cx);
-		GetScriptInterface().Eval("({ 'type':'netwarn', 'warntype': 'server-timeout' })", &msg);
-		GetScriptInterface().SetProperty(msg, "lastReceivedTime", lastReceived);
-		PushGuiMessage(msg);
-		return;
-	}
-
-	// Report if we have a bad ping to the server
-	u32 meanRTT = m_Session->GetMeanRTT();
-	if (meanRTT > DEFAULT_TURN_LENGTH_MP)
-	{
-		JS::RootedValue msg(cx);
-		GetScriptInterface().Eval("({ 'type':'netwarn', 'warntype': 'server-latency' })", &msg);
-		GetScriptInterface().SetProperty(msg, "meanRTT", meanRTT);
-		PushGuiMessage(msg);
-	}
+	m_ClientPerformance[m_GUID] = std::make_tuple(m_Session->GetMeanRTT(), m_Session->GetLastReceivedTime(), m_Session->GetPacketLoss());
 }
 
 void CNetClient::Flush()
@@ -663,9 +637,18 @@ bool CNetClient::OnPlayerAssignment(void* context, CFsmEvent* event)
 		assignment.m_PlayerID = message->m_Hosts[i].m_PlayerID;
 		assignment.m_Status = message->m_Hosts[i].m_Status;
 		newPlayerAssignments[message->m_Hosts[i].m_GUID] = assignment;
+
+		if (client->m_ClientPerformance.find(message->m_Hosts[i].m_GUID) != client->m_ClientPerformance.end())
+			client->m_ClientPerformance[message->m_Hosts[i].m_GUID] = std::make_tuple(0, 0, 0);
 	}
 
 	client->m_PlayerAssignments.swap(newPlayerAssignments);
+
+	for (std::map<std::string, std::tuple<u32, u32, float>>::iterator iter = client->m_ClientPerformance.begin(); iter != client->m_ClientPerformance.end(); )
+		if (client->m_PlayerAssignments.find(client->m_GUID) != client->m_PlayerAssignments.end())
+			client->m_ClientPerformance.erase(iter++);
+		else
+			++iter;
 
 	client->PostPlayerAssignmentsToScript();
 
@@ -769,27 +752,6 @@ bool CNetClient::OnKicked(void *context, CFsmEvent* event)
 	return true;
 }
 
-bool CNetClient::OnClientTimeout(void *context, CFsmEvent* event)
-{
-	// Report the timeout of some other client
-
-	ENSURE(event->GetType() == (uint)NMT_CLIENT_TIMEOUT);
-
-	CNetClient* client = (CNetClient*)context;
-	JSContext* cx = client->GetScriptInterface().GetContext();
-	JSAutoRequest rq(cx);
-
-	CClientTimeoutMessage* message = (CClientTimeoutMessage*)event->GetParamRef();
-	JS::RootedValue msg(cx);
-
-	client->GetScriptInterface().Eval("({ 'type':'netwarn', 'warntype': 'client-timeout' })", &msg);
-	client->GetScriptInterface().SetProperty(msg, "guid", std::string(message->m_GUID));
-	client->GetScriptInterface().SetProperty(msg, "lastReceivedTime", message->m_LastReceivedTime);
-	client->PushGuiMessage(msg);
-
-	return true;
-}
-
 bool CNetClient::OnClientPerformance(void *context, CFsmEvent* event)
 {
 	// Performance statistics for one or multiple clients
@@ -802,17 +764,10 @@ bool CNetClient::OnClientPerformance(void *context, CFsmEvent* event)
 
 	CClientPerformanceMessage* message = (CClientPerformanceMessage*)event->GetParamRef();
 
-	// Display warnings for other clients with bad ping
 	for (size_t i = 0; i < message->m_Clients.size(); ++i)
 	{
-		if (message->m_Clients[i].m_MeanRTT < DEFAULT_TURN_LENGTH_MP || message->m_Clients[i].m_GUID == client->m_GUID)
-			continue;
-
-		JS::RootedValue msg(cx);
-		client->GetScriptInterface().Eval("({ 'type':'netwarn', 'warntype': 'client-latency' })", &msg);
-		client->GetScriptInterface().SetProperty(msg, "guid", message->m_Clients[i].m_GUID);
-		client->GetScriptInterface().SetProperty(msg, "meanRTT", message->m_Clients[i].m_MeanRTT);
-		client->PushGuiMessage(msg);
+		if (client->m_ClientPerformance.find(message->m_Clients[i].m_GUID) != client->m_ClientPerformance.end())
+			client->m_ClientPerformance[message->m_Clients[i].m_GUID] = std::make_tuple(message->m_Clients[i].m_MeanRTT, message->m_Clients[i].m_LastReceivedTime, message->m_Clients[i].m_P);
 	}
 
 	return true;
@@ -923,4 +878,23 @@ bool CNetClient::OnInGame(void *context, CFsmEvent* event)
 	}
 
 	return true;
+}
+
+JS::Value CNetClient::GetClientPerformance()
+{
+	JSContext* cx = GetScriptInterface().GetContext();
+	JSAutoRequest rq(cx);
+
+	JS::RootedValue performanceVals(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
+
+	for (const std::pair<std::string, std::tuple<u32, u32, u32>>& clientPerf : m_ClientPerformance)
+	{
+		JS::RootedValue performanceVal(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
+		GetScriptInterface().SetProperty(performanceVal, "meanRTT", std::get<0>(clientPerf.second));
+		GetScriptInterface().SetProperty(performanceVal, "lastReceivedTime", std::get<1>(clientPerf.second));
+		GetScriptInterface().SetProperty(performanceVal, "lostPackets", std::get<2>(clientPerf.second));
+		GetScriptInterface().SetProperty(performanceVals, clientPerf.first.c_str(), performanceVal);
+	}
+
+	return performanceVals;
 }

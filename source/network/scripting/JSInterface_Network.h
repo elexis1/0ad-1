@@ -34,6 +34,7 @@ namespace JSI_Network
 	JS::Value FindStunEndpoint(ScriptInterface::CxPrivate* pCxPrivate, int port);
 	void DisconnectNetworkGame(ScriptInterface::CxPrivate* pCxPrivate);
 	JS::Value PollNetworkClient(ScriptInterface::CxPrivate* pCxPrivate);
+	JS::Value GetNetworkClientPerformance(ScriptInterface::CxPrivate* pCxPrivate);
 	CStr GetPlayerGUID(ScriptInterface::CxPrivate* pCxPrivate);
 	void KickPlayer(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, bool ban);
 	void AssignNetworkPlayer(ScriptInterface::CxPrivate* pCxPrivate, int playerID, const CStr& guid);

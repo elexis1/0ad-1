@@ -140,7 +140,6 @@ var g_ReadyData = [
  */
 var g_NetMessageTypes = {
 	"netstatus": msg => handleNetStatusMessage(msg),
-	"netwarn": msg => addNetworkWarning(msg),
 	"gamesetup": msg => handleGamesetupMessage(msg),
 	"players": msg => handlePlayerAssignmentMessage(msg),
 	"ready": msg => handleReadyMessage(msg),
@@ -1063,6 +1062,15 @@ var g_MiscControls = {
 		},
 		"hidden": () => !Engine.HasXmppClient()
 	},
+	"networkButton": {
+		"onPress": () => function() {
+			if (g_IsNetworked)
+				Engine.PushGuiPage("page_network.xml", {
+					"playerAssignments": g_PlayerAssignments
+				});
+		},
+		"hidden": () => !g_IsNetworked
+	},
 	"spTips": {
 		"hidden": () => {
 			let settingsPanel = Engine.GetGUIObjectByName("settingsPanel");
@@ -1405,7 +1413,7 @@ function initSettingsTabButtons()
 	let settingTabButtons = Engine.GetGUIObjectByName("settingTabButtons");
 	let settingTabButtonsSize = settingTabButtons.size;
 	settingTabButtonsSize.bottom = settingTabButtonsSize.top + g_SettingsTabsGUI.length * (g_TabButtonHeight + g_TabButtonDist);
-	settingTabButtonsSize.right = g_MiscControls.lobbyButton.hidden() ?
+	settingTabButtonsSize.right = (g_MiscControls.lobbyButton.hidden() && g_MiscControls.networkButton.hidden()) ?
 		settingTabButtonsSize.right :
 		Engine.GetGUIObjectByName("lobbyButton").size.left - g_LobbyButtonSpacing;
 	settingTabButtons.size = settingTabButtonsSize;

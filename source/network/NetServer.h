@@ -283,9 +283,9 @@ private:
 	void HandleMessageReceive(const CNetMessage* message, CNetServerSession* session);
 
 	/**
-	 * Send a network warning if the connection to a client is being lost or has bad latency.
+	 * Inform clients if the connection to a client is being lost or has bad latency.
 	 */
-	void CheckClientConnections();
+	void BroadcastClientPerformance();
 
 	void SendHolePunchingMessage(const CStr& ip, u16 port);
 

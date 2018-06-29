@@ -163,6 +163,18 @@ JS::Value JSI_Network::PollNetworkClient(ScriptInterface::CxPrivate* pCxPrivate)
 	return pCxPrivate->pScriptInterface->CloneValueFromOtherContext(g_NetClient->GetScriptInterface(), pollNet);
 }
 
+JS::Value JSI_Network::GetNetworkClientPerformance(ScriptInterface::CxPrivate* pCxPrivate)
+{
+	if (!g_NetClient)
+		return JS::UndefinedValue();
+
+	// Convert from net client context to GUI script context
+	JSContext* cxNet = g_NetClient->GetScriptInterface().GetContext();
+	JSAutoRequest rqNet(cxNet);
+	JS::RootedValue pollNet(cxNet, g_NetClient->GetClientPerformance());
+	return pCxPrivate->pScriptInterface->CloneValueFromOtherContext(g_NetClient->GetScriptInterface(), pollNet);
+}
+
 void JSI_Network::SetNetworkGameAttributes(ScriptInterface::CxPrivate* pCxPrivate, JS::HandleValue attribs1)
 {
 	ENSURE(g_NetClient);
@@ -235,6 +247,7 @@ void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface
 	scriptInterface.RegisterFunction<void, &DisconnectNetworkGame>("DisconnectNetworkGame");
 	scriptInterface.RegisterFunction<CStr, &GetPlayerGUID>("GetPlayerGUID");
 	scriptInterface.RegisterFunction<JS::Value, &PollNetworkClient>("PollNetworkClient");
+	scriptInterface.RegisterFunction<JS::Value, &GetNetworkClientPerformance>("GetNetworkClientPerformance");
 	scriptInterface.RegisterFunction<void, JS::HandleValue, &SetNetworkGameAttributes>("SetNetworkGameAttributes");
 	scriptInterface.RegisterFunction<void, int, CStr, &AssignNetworkPlayer>("AssignNetworkPlayer");
 	scriptInterface.RegisterFunction<void, CStrW, bool, &KickPlayer>("KickPlayer");

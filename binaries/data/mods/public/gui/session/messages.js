@@ -50,9 +50,6 @@ var g_NetMessageTypes = {
 	"netstatus": msg => {
 		handleNetStatusMessage(msg);
 	},
-	"netwarn": msg => {
-		addNetworkWarning(msg);
-	},
 	"out-of-sync": msg => {
 		onNetworkOutOfSync(msg);
 	},
