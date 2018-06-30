@@ -59,7 +59,7 @@
 			<translatableAttribute id="caption">Kick</translatableAttribute>
 			<translatableAttribute id="tooltip">Disconnect this player immediately.</translatableAttribute>
 			<action on="Press">
-				kickSelectedPlayer(false);
+				kickSelectedClient(false);
 			</action>
 		</object>
 
@@ -67,7 +67,7 @@
 			<translatableAttribute id="caption">Ban</translatableAttribute>
 			<translatableAttribute id="tooltip">Disconnect this player immediately and deny any request to rejoin.</translatableAttribute>
 			<action on="Press">
-				kickSelectedPlayer(true);
+				kickSelectedClient(true);
 			</action>
 			<!-- TODO: skip confirmation hotkey -->
 		</object>

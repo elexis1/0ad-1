@@ -1,3 +1,8 @@
+var g_IsController;
+
+// TODO: page needs to be reloaded in case of updates
+var g_PlayerAssignments;
+
 // TODO: display host
 // TODO: allow giving host controls to clients
 // TODO: allow muting clients
@@ -7,18 +12,17 @@ var g_ClientListLastUpdate = 0;
 
 var g_SelectedClientGUID;
 
-// TODO: page needs to be reloaded in case of updates
-var g_PlayerAssignments;
-
 function init(data, hotloadData)
 {
 	g_PlayerAssignments = hotloadData ? hotloadData.playerAssignments : data.playerAssignments;
+	g_IsController = hotloadData ? hotloadData.isController : data.isController;
 	updateClientList();
 }
 
 function getHotloadData()
 {
 	return {
+		"isController": g_IsController,
 		"playerAssignments": g_PlayerAssignments
 	};
 }
@@ -41,7 +45,11 @@ function onClientSelection()
 	g_SelectedClientGUID = clientList.list[clientList.selected] || undefined;
 
 	for (let name of ["kickButton", "banButton"])
-		Engine.GetGUIObjectByName(name).enabled = g_SelectedClientGUID && g_SelectedClientGUID != Engine.GetPlayerGUID();
+	{
+		let button = Engine.GetGUIObjectByName(name);
+		button.hidden = !g_IsController;
+		button.enabled = g_SelectedClientGUID && g_SelectedClientGUID != Engine.GetPlayerGUID();
+	}
 }
 
 function updateClientList()
@@ -49,7 +57,7 @@ function updateClientList()
 	let clientPerformance = Engine.GetNetworkClientPerformance();
 
 	let clientList = Engine.GetGUIObjectByName("clientList");
-	let guids = Object.keys(clientPerformance).filter(guid => g_PlayerAssignments[guid]).sort((guid1, guid2) =>
+	let guids = Object.keys(clientPerformance).filter(guid => !!g_PlayerAssignments[guid]).sort((guid1, guid2) =>
 		clientList.selected_column_order *
 		(clientList.selected_column == "name" ?
 			g_PlayerAssignments[guid1].name.localeCompare(g_PlayerAssignments[guid2].name) :
@@ -87,16 +95,11 @@ function updateClientList()
 	clientList.selected = clientList.list.indexOf(g_SelectedClientGUID);
 }
 
-function selectedClient()
-{
-}
-
 function askToKickSelectedClient()
 {
 }
 
 function kickSelectedClient(ban)
 {
-	let name = "";
-	kickPlayer(name, ban);
+	kickPlayer(g_PlayerAssignments[g_SelectedClientGUID].name, ban);
 }

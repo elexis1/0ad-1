@@ -644,11 +644,9 @@ bool CNetClient::OnPlayerAssignment(void* context, CFsmEvent* event)
 
 	client->m_PlayerAssignments.swap(newPlayerAssignments);
 
-	for (std::map<std::string, std::tuple<u32, u32, double>>::iterator iter = client->m_ClientPerformance.begin(); iter != client->m_ClientPerformance.end(); )
-		if (client->m_PlayerAssignments.find(client->m_GUID) != client->m_PlayerAssignments.end())
-			client->m_ClientPerformance.erase(iter++);
-		else
-			++iter;
+	for (std::map<std::string, std::tuple<u32, u32, double>>::iterator iter = client->m_ClientPerformance.begin(); iter != client->m_ClientPerformance.end(); ++iter)
+		if (client->m_PlayerAssignments.find(iter->first) != client->m_PlayerAssignments.end())
+			client->m_ClientPerformance.erase(iter);
 
 	client->PostPlayerAssignmentsToScript();
 

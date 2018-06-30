@@ -1065,7 +1065,8 @@ var g_MiscControls = {
 	"networkButton": {
 		"onPress": () => function() {
 			if (g_IsNetworked)
-				Engine.PushGuiPage("page_network.xml", {
+				Engine.PushGuiPage("page_networkreport.xml", {
+					"isController": g_IsController,
 					"playerAssignments": g_PlayerAssignments
 				});
 		},
