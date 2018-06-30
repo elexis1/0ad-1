@@ -2004,6 +2004,7 @@ function onTick()
 		handleNetMessages();
 
 	updateTimers();
+	pollNetworkWarnings();
 
 	let now = Date.now();
 	let tickLength = now - g_LastTickTime;

@@ -41,6 +41,7 @@ namespace JSI_Network
 	void ClearAllPlayerReady (ScriptInterface::CxPrivate* pCxPrivate);
 	void SendNetworkChat(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& message);
 	void SendNetworkReady(ScriptInterface::CxPrivate* pCxPrivate, int message);
+	u32 GetTurnLength(ScriptInterface::CxPrivate* pCxPrivate);
 	void SetTurnLength(ScriptInterface::CxPrivate* pCxPrivate, int length);
 
 	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);

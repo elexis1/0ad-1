@@ -189,7 +189,7 @@ START_NMT_CLASS_(ClientPerformance, NMT_CLIENT_PERFORMANCE)
 		NMT_FIELD(CStr, m_GUID)
 		NMT_FIELD_INT(m_MeanRTT, u32, 4)
 		NMT_FIELD_INT(m_LastReceivedTime, u32, 4)
-		NMT_FIELD_INT(m_PacketLoss, u16, 4)
+		NMT_FIELD_INT(m_PacketLoss, u32, 4)
 	NMT_END_ARRAY()
 END_NMT_CLASS()
 

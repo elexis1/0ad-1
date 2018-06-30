@@ -564,30 +564,34 @@ void CNetServerWorker::BroadcastClientPerformance()
 
 	m_LastConnectionCheck = now;
 
-	CClientPerformanceMessage msg;
-	for (CNetServerSession* session : m_Sessions)
+	for (CNetServerSession* addresseeSession : m_Sessions)
 	{
-		CClientPerformanceMessage::S_m_Clients client;
-		client.m_GUID = session->GetGUID();
-		client.m_MeanRTT = session->GetMeanRTT();
-		client.m_LastReceivedTime = session->GetLastReceivedTime();
-		client.m_LostPackets = session->GetPacketLoss();
-
-		msg.m_Clients.push_back(client);
-	}
-
-	// Send to all clients except ones experiencing a timeout.
-	// Send the performance stanza to clients that finished the loading screen while
-	// the game is still waiting for other clients to finish the loading screen.
-	for (CNetServerSession* session : m_Sessions)
-	{
+		// Send to all clients except ones experiencing a timeout.
+		// Send the performance stanza to clients that finished the loading screen while
+		// the game is still waiting for other clients to finish the loading screen.
 		// TODO: const
-		if (session->GetLastReceivedTime() < 3 &&
-			 ((session->GetCurrState() == NSS_PREGAME && m_State == SERVER_STATE_PREGAME) ||
-			 (session->GetCurrState() == NSS_INGAME)))
+		if (addresseeSession->GetLastReceivedTime() >= 3000 ||
+		    ((addresseeSession->GetCurrState() != NSS_PREGAME || m_State != SERVER_STATE_PREGAME) &&
+		      addresseeSession->GetCurrState() != NSS_INGAME))
+			continue;
+
+		CClientPerformanceMessage msg;
+
+		for (CNetServerSession* measuredSession : m_Sessions)
 		{
-			session->SendMessage(&msg);
+			// Inform clients about every connection except their own (since they measure that themself)
+			if (measuredSession->GetGUID() == addresseeSession->GetGUID())
+				continue;
+
+			CClientPerformanceMessage::S_m_Clients client;
+			client.m_GUID = measuredSession->GetGUID();
+			client.m_MeanRTT = measuredSession->GetMeanRTT();
+			client.m_LastReceivedTime = measuredSession->GetLastReceivedTime();
+			client.m_PacketLoss = measuredSession->GetPacketLoss();
+			msg.m_Clients.push_back(client);
 		}
+
+		addresseeSession->SendMessage(&msg);
 	}
 }
 

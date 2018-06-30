@@ -3,11 +3,11 @@
 <objects>
 
 	<script directory="gui/common/"/>
-	<script directory="gui/network/"/>
+	<script directory="gui/networkreport/"/>
 
 	<object type="image" sprite="ModernFade"/>
 
-	<object type="image" style="ModernWindow" size="50%-350 50%-250 50%+350 50%+250">
+	<object type="image" style="ModernWindow" size="50%-400 50%-250 50%+400 50%+250">
 
 		<action on="Tick">
 			onTick();
@@ -26,20 +26,19 @@
 			size="25 50 100%-25 100%-60"
 			font="sans-bold-stroke-13"
 		>
-			<!-- TODO: display host -->
-			<!-- TODO: allow giving host controls to clients -->
-			<!-- TODO: allow muting clients -->
-			<!-- TODO: display if clients are too slow with the simulation -->
-
-			<column id="name" color="0 128 128" width="33%">
+			<column id="name" color="0 128 128" width="25%">
 				<translatableAttribute id="heading">Name</translatableAttribute>
 			</column>
 
-			<column id="meanRTT" color="0 128 128" width="33%">
+			<column id="status" color="0 128 128" width="45%">
+				<translatableAttribute id="heading">Status</translatableAttribute>
+			</column>
+
+			<column id="meanRTT" color="0 128 128" width="15%">
 				<translatableAttribute id="heading">Ping</translatableAttribute>
 			</column>
 
-			<column id="lastReceivedTime" color="0 128 128" width="33%">
+			<column id="packetLoss" color="0 128 128" width="15%">
 				<translatableAttribute id="heading">Packet Loss</translatableAttribute>
 			</column>
 

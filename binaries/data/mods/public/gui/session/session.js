@@ -802,6 +802,7 @@ function onTick()
 	g_LastTickTime = now;
 
 	handleNetMessages();
+	pollNetworkWarnings();
 
 	updateCursorAndTooltip();
 

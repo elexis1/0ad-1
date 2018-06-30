@@ -205,7 +205,7 @@ void CNetClient::CheckServerConnection()
 
 	m_LastConnectionCheck = now;
 
-	m_ClientPerformance[m_GUID] = std::make_tuple(m_Session->GetMeanRTT(), m_Session->GetLastReceivedTime(), m_Session->GetPacketLoss());
+	m_ClientPerformance[m_GUID] = std::make_tuple(m_Session->GetMeanRTT(), m_Session->GetLastReceivedTime(), m_Session->GetPacketLossRatio());
 }
 
 void CNetClient::Flush()
@@ -639,12 +639,12 @@ bool CNetClient::OnPlayerAssignment(void* context, CFsmEvent* event)
 		newPlayerAssignments[message->m_Hosts[i].m_GUID] = assignment;
 
 		if (client->m_ClientPerformance.find(message->m_Hosts[i].m_GUID) != client->m_ClientPerformance.end())
-			client->m_ClientPerformance[message->m_Hosts[i].m_GUID] = std::make_tuple(0, 0, 0);
+			client->m_ClientPerformance[message->m_Hosts[i].m_GUID] = std::make_tuple(0, 0, 0.d);
 	}
 
 	client->m_PlayerAssignments.swap(newPlayerAssignments);
 
-	for (std::map<std::string, std::tuple<u32, u32, float>>::iterator iter = client->m_ClientPerformance.begin(); iter != client->m_ClientPerformance.end(); )
+	for (std::map<std::string, std::tuple<u32, u32, double>>::iterator iter = client->m_ClientPerformance.begin(); iter != client->m_ClientPerformance.end(); )
 		if (client->m_PlayerAssignments.find(client->m_GUID) != client->m_PlayerAssignments.end())
 			client->m_ClientPerformance.erase(iter++);
 		else
@@ -764,11 +764,11 @@ bool CNetClient::OnClientPerformance(void *context, CFsmEvent* event)
 
 	CClientPerformanceMessage* message = (CClientPerformanceMessage*)event->GetParamRef();
 
-	for (size_t i = 0; i < message->m_Clients.size(); ++i)
-	{
-		if (client->m_ClientPerformance.find(message->m_Clients[i].m_GUID) != client->m_ClientPerformance.end())
-			client->m_ClientPerformance[message->m_Clients[i].m_GUID] = std::make_tuple(message->m_Clients[i].m_MeanRTT, message->m_Clients[i].m_LastReceivedTime, message->m_Clients[i].m_P);
-	}
+	for (const CClientPerformanceMessage::S_m_Clients& mClient : message->m_Clients)
+		client->m_ClientPerformance[mClient.m_GUID] = std::make_tuple(
+			mClient.m_MeanRTT,
+			mClient.m_LastReceivedTime,
+			mClient.m_PacketLoss / PACKET_LOSS_SCALE);
 
 	return true;
 }
@@ -887,12 +887,12 @@ JS::Value CNetClient::GetClientPerformance()
 
 	JS::RootedValue performanceVals(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
 
-	for (const std::pair<std::string, std::tuple<u32, u32, u32>>& clientPerf : m_ClientPerformance)
+	for (const std::pair<std::string, std::tuple<u32, u32, double>>& clientPerf : m_ClientPerformance)
 	{
 		JS::RootedValue performanceVal(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
 		GetScriptInterface().SetProperty(performanceVal, "meanRTT", std::get<0>(clientPerf.second));
 		GetScriptInterface().SetProperty(performanceVal, "lastReceivedTime", std::get<1>(clientPerf.second));
-		GetScriptInterface().SetProperty(performanceVal, "lostPackets", std::get<2>(clientPerf.second));
+		GetScriptInterface().SetProperty(performanceVal, "packetLoss", std::get<2>(clientPerf.second));
 		GetScriptInterface().SetProperty(performanceVals, clientPerf.first.c_str(), performanceVal);
 	}
 

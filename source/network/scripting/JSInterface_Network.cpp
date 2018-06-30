@@ -29,6 +29,7 @@
 #include "network/StunClient.h"
 #include "ps/CLogger.h"
 #include "ps/Game.h"
+#include "simulation2/system/TurnManager.h"
 #include "scriptinterface/ScriptInterface.h"
 
 u16 JSI_Network::GetDefaultPort(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
@@ -228,6 +229,11 @@ void JSI_Network::StartNetworkGame(ScriptInterface::CxPrivate* UNUSED(pCxPrivate
 	g_NetClient->SendStartGameMessage();
 }
 
+u32 JSI_Network::GetTurnLength(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
+{
+	return DEFAULT_TURN_LENGTH_MP;
+}
+
 void JSI_Network::SetTurnLength(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), int length)
 {
 	if (g_NetServer)
@@ -255,5 +261,6 @@ void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface
 	scriptInterface.RegisterFunction<void, int, &SendNetworkReady>("SendNetworkReady");
 	scriptInterface.RegisterFunction<void, &ClearAllPlayerReady>("ClearAllPlayerReady");
 	scriptInterface.RegisterFunction<void, &StartNetworkGame>("StartNetworkGame");
+	scriptInterface.RegisterFunction<u32, &GetTurnLength>("GetTurnLength");
 	scriptInterface.RegisterFunction<void, int, &SetTurnLength>("SetTurnLength");
 }

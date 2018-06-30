@@ -286,7 +286,7 @@ private:
 	PlayerAssignmentMap m_PlayerAssignments;
 
 	// Latest copy of roundtrip time and lost packets
-	std::map<std::string, std::tuple<u32, u32, u32>> m_ClientPerformance;
+	std::map<std::string, std::tuple<u32, u32, double>> m_ClientPerformance;
 
 	/// Globally unique identifier to distinguish users beyond the lifetime of a single network session
 	CStr m_GUID;

@@ -29,6 +29,11 @@
  */
 extern const u32 MAXIMUM_HOST_TIMEOUT;
 
+/**
+ * Denominator of the packet loss ratio, whereas the numerator is sent as u32.
+ */
+extern const double PACKET_LOSS_SCALE;
+
 class CNetClient;
 class CNetServerWorker;
 
@@ -101,9 +106,9 @@ public:
 	u32 GetMeanRTT() const;
 
 	/**
-	 * Average ratio of packets lost with regards to ENET_PEER_PACKET_LOSS_SCALE. Indicates connection quality.
+	 * Average ratio of packets lost.
 	 */
-	u32 GetPacketLoss() const;
+	double GetPacketLossRatio() const;
 
 	/**
 	 * Allows increasing the timeout to prevent drops during an expensive operation,
