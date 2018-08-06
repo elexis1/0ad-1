@@ -41,33 +41,14 @@ function init(initData, hotloadData)
 	Engine.GetGUIObjectByName("structreeButton").tooltip = colorizeHotkey(
 		translate("%(hotkey)s: View the structure tree of civilizations featured in 0 A.D."),
 		"structree");
+
 	Engine.GetGUIObjectByName("civInfoButton").tooltip = colorizeHotkey(
 		translate("%(hotkey)s: Learn about the many civilizations featured in 0 A.D."),
 		"civinfo");
+
 	Engine.GetGUIObjectByName("lobbyButton").tooltip = colorizeHotkey(
 		translate("%(hotkey)s: Launch the multiplayer lobby to join and host publicly visible games and chat with other players."),
 		"lobby");
-}
-
-function initUserReport()
-{
-	g_Terms = {
-		"Privacy": {
-			"title": translate("Privacy Policy"),
-			"instruction": translate("Please read and accept the Privacy Policy"),
-			"file": "pregame/userreport/Privacy_Policy",
-			"config": "userreport.privacy_policy",
-			"callback": (data) => {
-				EnableUserReport(data.accepted);
-				updateTermsFeedback();
-			},
-			"accepted": false
-		}
-	};
-
-	loadTermsAcceptance();
-	EnableUserReport(!checkTerms() && Engine.IsUserReportEnabled());
-	updateTermsFeedback();
 }
 
 function getHotloadData()
@@ -98,33 +79,6 @@ function scrollBackgrounds()
 		else
 			guiObj.size = new GUISize(screen.right/2 - h + offset, screen.top, screen.right/2 + h + offset, screen.bottom);
 	}
-}
-
-function formatUserReportStatus(status)
-{
-	let d = status.split(/:/, 3);
-
-	if (d[0] == "disabled")
-		return translate("disabled");
-
-	if (d[0] == "connecting")
-		return translate("connecting to server");
-
-	if (d[0] == "sending")
-		return sprintf(translate("uploading (%f%%)"), Math.floor(100 * d[1]));
-
-	if (d[0] == "completed")
-	{
-		let httpCode = d[1];
-		if (httpCode == 200)
-			return translate("upload succeeded");
-		return sprintf(translate("upload failed (%(errorCode)s)"), { "errorCode": httpCode });
-	}
-
-	if (d[0] == "failed")
-		return sprintf(translate("upload failed (%(errorMessage)s)"), { "errorMessage": d[2] });
-
-	return translate("unknown");
 }
 
 function onTick()
@@ -187,21 +141,6 @@ function ShowRenderPathMessage()
 function SplashScreenClosedCallback()
 {
 	ShowRenderPathMessage();
-}
-
-function EnableUserReport(enabled)
-{
-	Engine.GetGUIObjectByName("userReportDisableButton").hidden = !enabled;
-	Engine.GetGUIObjectByName("userReportEnableButton").hidden = enabled;
-	Engine.SetUserReportEnabled(enabled);
-}
-
-function updateTermsFeedback()
-{
-	let feedbackText = checkTerms();
-	let userReportEnableButton = Engine.GetGUIObjectByName("userReportEnableButton")
-	userReportEnableButton.enabled = !feedbackText;
-	userReportEnableButton.tooltip = feedbackText;
 }
 
 /**

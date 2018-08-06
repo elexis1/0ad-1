@@ -5,6 +5,7 @@
 	<script directory="gui/common/"/>
 	<script directory="gui/pregame/"/>
 	<script directory="gui/pregame/backgrounds/"/>
+	<script directory="gui/pregame/userreport/"/>
 
 	<!--
 	==========================================
@@ -56,11 +57,11 @@
 			/>
 			<object name="userReportEnableButton" type="button" style="StoneButton" size="8 100%-36 146 100%-8">
 				<translatableAttribute id="caption">Enable Feedback</translatableAttribute>
-				<action on="Press">EnableUserReport(true);</action>
+				<action on="Press">enableUserReport(true);</action>
 			</object>
 			<object name="userReportDisableButton" type="button" style="StoneButton" size="8 100%-36 146 100%-8">
 				<translatableAttribute id="caption">Disable Feedback</translatableAttribute>
-				<action on="Press">EnableUserReport(false);</action>
+				<action on="Press">enableUserReport(false);</action>
 			</object>
 			<object type="button" style="StoneButton" size="100%-146 100%-36 100%-8 100%-8">
 				<translatableAttribute id="caption">Privacy Policy</translatableAttribute>

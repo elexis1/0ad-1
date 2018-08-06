@@ -218,8 +218,7 @@
             {
                 "extractor": "txt",
                 "filemasks": [
-                    "gui/manual/intro.txt",
-                    "gui/manual/userreport.txt"
+                    "gui/manual/intro.txt"
                 ],
                 "options": {
                 }
@@ -284,7 +283,7 @@
                     "gui/savedgames/**.xml",
                     "gui/splashscreen/**.xml",
                     "gui/summary/**.xml",
-                    "gui/terms/**.xml
+                    "gui/terms/**.xml"
                 ],
                 "options": {
                     "keywords": {
@@ -366,7 +365,7 @@
                 "extractor": "txt",
                 "filemasks": [
                     "gui/gamesetup/**.txt",
-                    "gui/pregame/Privacy_Policy.txt",
+                    "gui/pregame/userreport/**.txt",
                     "gui/splashscreen/splashscreen.txt",
                     "gui/text/tips/**.txt"
                 ],
