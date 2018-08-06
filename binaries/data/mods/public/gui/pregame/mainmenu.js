@@ -55,7 +55,7 @@ function initUserReport()
 		"Privacy": {
 			"title": translate("Privacy Policy"),
 			"instruction": translate("Please read and accept the Privacy Policy"),
-			"file": "pregame/Privacy_Policy",
+			"file": "userreport/Privacy_Policy",
 			"config": "userreport.privacy_policy",
 			"callback": (data) => {
 				EnableUserReport(data.accepted);
