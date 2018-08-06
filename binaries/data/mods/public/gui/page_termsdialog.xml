@@ -6,5 +6,5 @@
 
 	<include>common/global.xml</include>
 
-	<include>terms/terms.xml</include>
+	<include>termsdialog/termsdialog.xml</include>
 </page>

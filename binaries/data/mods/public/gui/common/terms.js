@@ -7,7 +7,7 @@ function initTerms(terms)
 
 function openTerms(page)
 {
-	Engine.PushGuiPage("page_terms.xml", {
+	Engine.PushGuiPage("page_termsdialog.xml", {
 		"file": g_Terms[page].file,
 		"title": g_Terms[page].title,
 		"page": page,

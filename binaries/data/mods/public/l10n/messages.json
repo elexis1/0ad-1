@@ -166,8 +166,7 @@
             {
                 "extractor": "txt",
                 "filemasks": [
-                    "gui/prelobby/common/terms/Terms_of_Service.txt",
-                    "gui/prelobby/common/terms/Terms_of_Use.txt"
+                    "gui/prelobby/common/terms/**.txt"
                 ],
                 "options": {
                 }
@@ -248,7 +247,7 @@
                     "gui/savedgames/**.js",
                     "gui/splashscreen/**.js",
                     "gui/summary/**.js",
-                    "gui/terms**.js"
+                    "gui/termsdialog/**.js"
                 ],
                 "options": {
                     "format": "javascript-format",
@@ -283,7 +282,7 @@
                     "gui/savedgames/**.xml",
                     "gui/splashscreen/**.xml",
                     "gui/summary/**.xml",
-                    "gui/terms/**.xml"
+                    "gui/termsdialog/**.xml"
                 ],
                 "options": {
                     "keywords": {

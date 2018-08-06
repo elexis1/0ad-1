@@ -2,7 +2,7 @@
 <objects>
 
 	<script directory="gui/common/"/>
-	<script directory="gui/terms/"/>
+	<script directory="gui/termsdialog/"/>
 
 	<object type="image" z="0" sprite="ModernFade"/>
 
