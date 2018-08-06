@@ -19,7 +19,6 @@ function acceptTerms(data)
 {
 	g_Terms[data.page].accepted = data.accepted;
 	saveSettingAndWriteToUserConfig(g_Terms[data.page].config, data.accepted ? getTermsHash(data.page) : "0");
-	updateTermsFeedback(data);
 
 	if (g_Terms[data.page].callback)
 		g_Terms[data.page].callback(data);

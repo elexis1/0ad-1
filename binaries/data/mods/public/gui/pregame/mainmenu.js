@@ -59,6 +59,7 @@ function initUserReport()
 			"config": "userreport.privacy_policy",
 			"callback": (data) => {
 				EnableUserReport(data.accepted);
+				updateTermsFeedback();
 			},
 			"accepted": false
 		}

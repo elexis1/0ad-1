@@ -312,15 +312,16 @@ function modIo()
 			"title": translate("Disclaimer"),
 			"file": "modio/Disclaimer",
 			"config": "modio.disclaimer_version",
-			"accepted": false
+			"accepted": false,
+			"callback": openModIo
 		}
 	});
 	openTerms("Disclaimer");
 }
 
-function updateTermsFeedback()
+function openModIo(data)
 {
-	if (g_Terms.Disclaimer.accepted)
+	if (data.accepted)
 		Engine.PushGuiPage("page_modio.xml", {
 			"callback": "initMods"
 		});
