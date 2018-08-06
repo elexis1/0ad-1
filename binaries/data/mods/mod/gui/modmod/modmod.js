@@ -307,19 +307,23 @@ function isDependencyMet(dependency)
 
 function modIo()
 {
-	messageBox(500, 250,
-		translate("You are about to connect to the mod.io online service. This provides easy access to community-made mods, but is not under the control of Wildfire Games.\n\nWhile we have taken care to make this secure, we cannot guarantee with absolute certainty that this is not a security risk.\n\nDo you really want to connect?"),
-		translate("Connect to mod.io?"),
-		[translate("Cancel"), translateWithContext("mod.io connection message box", "Connect")],
-		[
-			null,
-			() => {
-				Engine.PushGuiPage("page_modio.xml", {
-					"callback": "initMods"
-				});
-			}
-		]
-	);
+	initTerms({
+		"Disclaimer": {
+			"title": translate("Disclaimer"),
+			"file": "modio/Disclaimer",
+			"config": "modio.disclaimer_version",
+			"accepted": false
+		}
+	});
+	openTerms("Disclaimer");
+}
+
+function updateTermsFeedback()
+{
+	if (g_Terms.Disclaimer.accepted)
+		Engine.PushGuiPage("page_modio.xml", {
+			"callback": "initMods"
+		});
 }
 
 /**
