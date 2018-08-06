@@ -366,6 +366,7 @@
                 "extractor": "txt",
                 "filemasks": [
                     "gui/gamesetup/**.txt",
+                    "gui/pregame/Privacy_Policy.txt",
                     "gui/splashscreen/splashscreen.txt",
                     "gui/text/tips/**.txt"
                 ],

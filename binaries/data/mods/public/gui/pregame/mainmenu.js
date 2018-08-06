@@ -24,7 +24,7 @@ function init(initData, hotloadData)
 	// Initialize currentSubmenuType with placeholder to avoid null when switching
 	currentSubmenuType = "submenuSinglePlayer";
 
-	EnableUserReport(Engine.IsUserReportEnabled());
+	initUserReport();
 
 	// Only show splash screen(s) once at startup, but not again after hotloading
 	g_ShowSplashScreens = hotloadData ? hotloadData.showSplashScreens : initData && initData.isStartup;
@@ -47,6 +47,24 @@ function init(initData, hotloadData)
 	Engine.GetGUIObjectByName("lobbyButton").tooltip = colorizeHotkey(
 		translate("%(hotkey)s: Launch the multiplayer lobby to join and host publicly visible games and chat with other players."),
 		"lobby");
+}
+
+function initUserReport()
+{
+	g_Terms = {
+		"Privacy": {
+			"title": translate("Terms of Service"),
+			"instruction": translate("Please read and accept the Privacy Policy"),
+			"file": "pregame/Privacy_Policy",
+			"config": "userreport.privacy_policy",
+			"callback": (data) => {	EnableUserReport(data.accept); },
+			"accept": false
+		}
+	};
+
+	loadTermsAcceptance();
+	EnableUserReport(!checkTerms() && Engine.IsUserReportEnabled());
+	updateTermsFeedback();
 }
 
 function getHotloadData()
@@ -117,12 +135,16 @@ function onTick()
 	updateMenuPosition(tickLength);
 
 	if (Engine.IsUserReportEnabled())
-		Engine.GetGUIObjectByName("userReportEnabledText").caption =
+		Engine.GetGUIObjectByName("userReportText").caption =
 			'[font="sans-bold-16"]' + translate("Thank you for helping improve 0 A.D.!") + "[/font]\n\n" +
 			translate("Anonymous feedback is currently enabled.") + "\n" +
 			sprintf(translate("Status: %(status)s."), {
 				"status": formatUserReportStatus(Engine.GetUserReportStatus())
 			});
+	else
+		Engine.GetGUIObjectByName("userReportText").caption =
+			'[font="sans-bold-16"]' + translate("Help improve 0 A.D.!") + "[/font]\n\n" +
+			translate("You can automatically send us anonymous feedback that will help us fix bugs, and improve performance and compatibility.");
 
 	// Show splash screens here, so we don't interfere with main menu hotloading
 	if (g_ShowSplashScreens)
@@ -164,11 +186,19 @@ function SplashScreenClosedCallback()
 	ShowRenderPathMessage();
 }
 
-function EnableUserReport(Enabled)
+function EnableUserReport(enabled)
 {
-	Engine.GetGUIObjectByName("userReportDisabled").hidden = Enabled;
-	Engine.GetGUIObjectByName("userReportEnabled").hidden = !Enabled;
-	Engine.SetUserReportEnabled(Enabled);
+	Engine.GetGUIObjectByName("userReportDisableButton").hidden = !enabled;
+	Engine.GetGUIObjectByName("userReportEnableButton").hidden = enabled;
+	Engine.SetUserReportEnabled(enabled);
+}
+
+function updateTermsFeedback()
+{
+	let feedbackText = checkTerms();
+	let userReportEnableButton = Engine.GetGUIObjectByName("userReportEnableButton")
+	userReportEnableButton.enabled = !feedbackText;
+	userReportEnableButton.tooltip = feedbackText;
 }
 
 /**
