@@ -26,7 +26,7 @@
 		</object>
 
 		<object size="0 180 100% 270">
-			<include file="gui/prelobby/common/terms/terms.xml"/>
+			<include file="gui/prelobby/common/terms/termslobby.xml"/>
 		</object>
 
 		<object size="0 280 100% 480">
