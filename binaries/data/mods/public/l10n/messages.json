@@ -248,7 +248,8 @@
                     "gui/replaymenu/**.js",
                     "gui/savedgames/**.js",
                     "gui/splashscreen/**.js",
-                    "gui/summary/**.js"
+                    "gui/summary/**.js",
+                    "gui/terms**.js"
                 ],
                 "options": {
                     "format": "javascript-format",
@@ -282,7 +283,8 @@
                     "gui/replaymenu/**.xml",
                     "gui/savedgames/**.xml",
                     "gui/splashscreen/**.xml",
-                    "gui/summary/**.xml"
+                    "gui/summary/**.xml",
+                    "gui/terms/**.xml
                 ],
                 "options": {
                     "keywords": {
