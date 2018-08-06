@@ -17,8 +17,8 @@ function openTerms(terms)
 
 function acceptTerms(data)
 {
-	g_Terms[data.terms].accept = data.accept;
-	saveSettingAndWriteToUserConfig(g_Terms[data.terms].config, data.accept ? getTermsHash(data.terms) : "0");
+	g_Terms[data.terms].accepted = data.accepted;
+	saveSettingAndWriteToUserConfig(g_Terms[data.terms].config, data.accepted ? getTermsHash(data.terms) : "0");
 	updateTermsFeedback(data);
 
 	if (g_Terms[data.terms].callback)
@@ -28,7 +28,7 @@ function acceptTerms(data)
 function checkTerms()
 {
 	for (let page in g_Terms)
-		if (!g_Terms[page].accept)
+		if (!g_Terms[page].accepted)
 			return g_Terms[page].instruction;
 
 	return "";
@@ -44,5 +44,5 @@ function getTermsHash(page)
 function loadTermsAcceptance()
 {
 	for (let page in g_Terms)
-		g_Terms[page].accept = Engine.ConfigDB_GetValue("user", g_Terms[page].config) == getTermsHash(page);
+		g_Terms[page].accepted = Engine.ConfigDB_GetValue("user", g_Terms[page].config) == getTermsHash(page);
 }

@@ -53,12 +53,14 @@ function initUserReport()
 {
 	g_Terms = {
 		"Privacy": {
-			"title": translate("Terms of Service"),
+			"title": translate("Privacy Policy"),
 			"instruction": translate("Please read and accept the Privacy Policy"),
 			"file": "pregame/Privacy_Policy",
 			"config": "userreport.privacy_policy",
-			"callback": (data) => {	EnableUserReport(data.accept); },
-			"accept": false
+			"callback": (data) => {
+				EnableUserReport(data.accepted);
+			},
+			"accepted": false
 		}
 	};
 
