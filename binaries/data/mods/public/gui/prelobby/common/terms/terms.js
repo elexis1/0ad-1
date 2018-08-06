@@ -21,8 +21,3 @@ function initLobbyTerms()
 		}
 	});
 }
-
-function updateTermsFeedback()
-{
-	updateFeedback();
-}
