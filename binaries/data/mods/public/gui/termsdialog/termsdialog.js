@@ -5,7 +5,17 @@ function init(data)
 	g_TermsPage = data.page;
 
 	Engine.GetGUIObjectByName("title").caption = data.title;
-	Engine.GetGUIObjectByName("mainText").caption = Engine.TranslateLines(Engine.ReadFile("gui/" + data.file + ".txt"));
+
+	let language = Engine.GetGUIObjectByName("language");
+	language.list = Engine.GetSupportedLocaleDisplayNames();
+	language.list_data = Engine.GetSupportedLocaleDisplayNames();
+
+	selectLanguage(data.file);
+}
+
+function selectLanguage(file)
+{
+	Engine.GetGUIObjectByName("mainText").caption = Engine.TranslateLines(Engine.ReadFile("gui/" + file + ".txt"));
 }
 
 function closeTerms(accepted)

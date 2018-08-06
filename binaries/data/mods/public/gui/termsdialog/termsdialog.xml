@@ -6,11 +6,16 @@
 
 	<object type="image" z="0" sprite="ModernFade"/>
 
-	<object type="image" style="ModernDialog" size="50%-350 50%-275 50%+350 50%+275">
+	<object type="image" style="ModernDialog" size="50%-350 50%-290 50%+350 50%+290">
 
 		<object name="title" style="ModernLabelText" type="text" size="50%-128 -18 50%+128 14"/>
 
-		<object type="image" sprite="ModernFade" size="20 20 100%-20 100%-58">
+		<object type="text" style="ModernLabelText" size="25 18 100 50">
+			<translatableAttribute id="caption">Language</translatableAttribute>
+		</object>
+		<object type="dropdown" name="language" style="ModernDropDown" size="100 20 100%-20 46" tooltip_style="onscreenToolTip"/>
+
+		<object type="image" sprite="ModernFade" size="20 50 100%-20 100%-58">
 			<object name="mainText" type="text" style="ModernTextPanel"/>
 		</object>
 
