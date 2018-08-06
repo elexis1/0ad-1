@@ -60,6 +60,17 @@ var g_ColorDependenciesNotMet = "255 100 100";
 function init(data, hotloadData)
 {
 	g_InstalledMods = data && data.installedMods || hotloadData && hotloadData.installedMods || [];
+
+	initTerms({
+		"Disclaimer": {
+			"title": translate("Disclaimer"),
+			"file": "modio/Disclaimer",
+			"config": "modio.disclaimer_version",
+			"accepted": false,
+			"callback": openModIo
+		}
+	});
+
 	initMods();
 	initGUIButtons(data);
 }
@@ -305,17 +316,8 @@ function isDependencyMet(dependency)
 		(!operator || versionSatisfied(g_Mods[folder].version, operator[0], version)));
 }
 
-function modIo()
+function modIoTerms()
 {
-	initTerms({
-		"Disclaimer": {
-			"title": translate("Disclaimer"),
-			"file": "modio/Disclaimer",
-			"config": "modio.disclaimer_version",
-			"accepted": false,
-			"callback": openModIo
-		}
-	});
 	openTerms("Disclaimer");
 }
 

@@ -1,6 +1,6 @@
 function initUserReport()
 {
-	g_Terms = {
+	initTerms({
 		"Privacy": {
 			"title": translate("Privacy Policy"),
 			"instruction": translate("Please read and accept the Privacy Policy"),
@@ -12,7 +12,7 @@ function initUserReport()
 			},
 			"accepted": false
 		}
-	};
+	});
 
 	loadTermsAcceptance();
 	enableUserReport(!checkTerms() && Engine.IsUserReportEnabled());
