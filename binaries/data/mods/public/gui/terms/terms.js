@@ -1,10 +1,10 @@
-var g_TermsName = "";
+var g_TermsPage = "";
 
 function init(data)
 {
-	g_TermsName = data.terms;
+	g_TermsPage = data.page;
 
-	Engine.GetGUIObjectByName("mainText").caption = Engine.TranslateLines(Engine.ReadFile("gui/" + data.page + ".txt"));
+	Engine.GetGUIObjectByName("mainText").caption = Engine.TranslateLines(Engine.ReadFile("gui/" + data.file + ".txt"));
 
 	if (data.title)
 		Engine.GetGUIObjectByName("title").caption = data.title;
@@ -13,7 +13,7 @@ function init(data)
 function closeTerms(accepted)
 {
 	Engine.PopGuiPageCB({
-		"terms": g_TermsName,
+		"page": g_TermsPage,
 		"accepted": accepted
 	});
 }

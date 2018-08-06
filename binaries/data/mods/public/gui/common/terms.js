@@ -5,24 +5,24 @@ function initTerms(terms)
 	g_Terms = terms;
 }
 
-function openTerms(terms)
+function openTerms(page)
 {
 	Engine.PushGuiPage("page_terms.xml", {
-		"page": g_Terms[terms].file,
-		"title": g_Terms[terms].title,
-		"terms": terms,
+		"file": g_Terms[page].file,
+		"title": g_Terms[page].title,
+		"page": page,
 		"callback": "acceptTerms"
 	});
 }
 
 function acceptTerms(data)
 {
-	g_Terms[data.terms].accepted = data.accepted;
-	saveSettingAndWriteToUserConfig(g_Terms[data.terms].config, data.accepted ? getTermsHash(data.terms) : "0");
+	g_Terms[data.page].accepted = data.accepted;
+	saveSettingAndWriteToUserConfig(g_Terms[data.page].config, data.accepted ? getTermsHash(data.page) : "0");
 	updateTermsFeedback(data);
 
-	if (g_Terms[data.terms].callback)
-		g_Terms[data.terms].callback(data);
+	if (g_Terms[data.page].callback)
+		g_Terms[data.page].callback(data);
 }
 
 function checkTerms()
