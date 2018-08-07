@@ -68,7 +68,7 @@ function init(data, hotloadData)
 			"config": "modio.disclaimer_version",
 			"accepted": false,
 			"callback": openModIo,
-			"buttons": [
+			"urlButtons": [
 				{
 					"caption": translate("Terms"),
 					"url": "https://mod.io/terms"

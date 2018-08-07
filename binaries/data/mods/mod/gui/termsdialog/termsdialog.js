@@ -7,26 +7,26 @@ function init(data)
 	g_TermsFile = data.file;
 
 	Engine.GetGUIObjectByName("title").caption = data.title;
-	initButtons(data);
+	initURLButtons(data);
 	initLanguageDropdown();
 }
 
-function initButtons(data)
+function initURLButtons(data)
 {
 	for (let i = 0; i <= 1; ++i)
 	{
-		let button = Engine.GetGUIObjectByName("button" + i);
-		let buttonData = data.buttons && data.buttons[i];
+		let urlButton = Engine.GetGUIObjectByName("urlButton" + i);
+		let urlButtonData = data.urlButtons && data.urlButtons[i];
 
-		button.hidden = !buttonData;
-		if (buttonData)
+		urlButton.hidden = !urlButtonData;
+		if (urlButtonData)
 		{
-			button.caption = buttonData.caption;
-			button.tooltip = sprintf(translate("Open %(url)s in the browser."), {
-				"url": buttonData.url
+			urlButton.caption = urlButtonData.caption;
+			urlButton.tooltip = sprintf(translate("Open %(url)s in the browser."), {
+				"url": urlButtonData.url
 			});
-			button.onPress = () => {
-				Engine.OpenURL(buttonData.url);
+			urlButton.onPress = () => {
+				Engine.OpenURL(urlButtonData.url);
 			}
 		}
 	}

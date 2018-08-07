@@ -21,8 +21,8 @@
 			<object name="mainText" type="text" style="ModernTextPanel"/>
 		</object>
 
-		<object type="button" name="button0" style="ModernButtonRed" size="25 100%-44 185 100%-16"/>
-		<object type="button" name="button1" style="ModernButtonRed" size="195 100%-44 355 100%-16"/>
+		<object type="button" name="urlButton0" style="ModernButtonRed" size="25 100%-44 185 100%-16"/>
+		<object type="button" name="urlButton1" style="ModernButtonRed" size="195 100%-44 355 100%-16"/>
 
 		<object type="button" style="ModernButtonRed" size="100%-355 100%-44 100%-195 100%-16" hotkey="cancel">
 			<translatableAttribute id="caption">Decline</translatableAttribute>
