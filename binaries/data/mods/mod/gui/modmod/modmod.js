@@ -65,7 +65,7 @@ function init(data, hotloadData)
 		"Disclaimer": {
 			"title": translate("Disclaimer"),
 			"file": "modio/Disclaimer",
-			"config": "modio.disclaimer_version",
+			"config": "modio.disclaimer",
 			"accepted": false,
 			"callback": openModIo,
 			"urlButtons": [
@@ -80,6 +80,7 @@ function init(data, hotloadData)
 			]
 		}
 	});
+	loadTermsAcceptance()
 
 	initMods();
 	initGUIButtons(data);
@@ -326,9 +327,20 @@ function isDependencyMet(dependency)
 		(!operator || versionSatisfied(g_Mods[folder].version, operator[0], version)));
 }
 
-function modIoTerms()
+function modIoTerms(data)
 {
-	openTerms("Disclaimer");
+	if (data.terms)
+		openTerms("Disclaimer");
+}
+
+function modIoTermsOrOpen()
+{
+	if (checkTerms())
+		openTerms("Disclaimer");
+	else
+		openModIo({
+			"accepted": true
+		});
 }
 
 function openModIo(data)

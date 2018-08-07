@@ -32,7 +32,7 @@ function checkTerms()
 {
 	for (let page in g_Terms)
 		if (!g_Terms[page].accepted)
-			return g_Terms[page].instruction;
+			return g_Terms[page].instruction || true;
 
 	return "";
 }

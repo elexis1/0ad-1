@@ -187,12 +187,12 @@
 
 		<object type="button" style="ModernButtonRed" size="100%-800 100%-44 100%-610 100%-16">
 			<translatableAttribute id="caption">Help</translatableAttribute>
-			<action on="Press">Engine.PushGuiPage("page_modhelp.xml");</action>
+			<action on="Press">Engine.PushGuiPage("page_modhelp.xml", { "callback": "modIoTerms" });</action>
 		</object>
 
 		<object type="button" style="ModernButtonRed" size="100%-606 100%-44 100%-412 100%-16">
 			<translatableAttribute id="caption">Download Mods</translatableAttribute>
-			<action on="Press">modIoTerms();</action>
+			<action on="Press">modIoTermsOrOpen();</action>
 		</object>
 
 		<object name="saveConfigurationButton" type="button" style="ModernButtonRed" size="100%-408 100%-44 100%-214 100%-16">
