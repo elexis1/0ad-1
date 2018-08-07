@@ -16,7 +16,7 @@ function initURLButtons(data)
 	for (let i = 0; i <= 1; ++i)
 	{
 		let urlButton = Engine.GetGUIObjectByName("urlButton" + i);
-		let urlButtonData = data.urlButtons && data.urlButtons[i];
+		let urlButtonData = data.urlButtons[i];
 
 		urlButton.hidden = !urlButtonData;
 		if (urlButtonData)
