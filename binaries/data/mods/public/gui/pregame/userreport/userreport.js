@@ -19,6 +19,21 @@ function initUserReport()
 	updateUserReportTermsFeedback();
 }
 
+function enableUserReport(enabled)
+{
+	Engine.GetGUIObjectByName("userReportDisableButton").hidden = !enabled;
+	Engine.GetGUIObjectByName("userReportEnableButton").hidden = enabled;
+	Engine.SetUserReportEnabled(enabled);
+}
+
+function updateUserReportTermsFeedback()
+{
+	let feedbackText = checkTerms();
+	let userReportEnableButton = Engine.GetGUIObjectByName("userReportEnableButton")
+	userReportEnableButton.enabled = !feedbackText;
+	userReportEnableButton.tooltip = feedbackText;
+}
+
 function formatUserReportStatus(status)
 {
 	let d = status.split(/:/, 3);
@@ -45,19 +60,4 @@ function formatUserReportStatus(status)
 		return sprintf(translate("upload failed (%(errorMessage)s)"), { "errorMessage": d[2] });
 
 	return translate("unknown");
-}
-
-function enableUserReport(enabled)
-{
-	Engine.GetGUIObjectByName("userReportDisableButton").hidden = !enabled;
-	Engine.GetGUIObjectByName("userReportEnableButton").hidden = enabled;
-	Engine.SetUserReportEnabled(enabled);
-}
-
-function updateTermsFeedback()
-{
-	let feedbackText = checkTerms();
-	let userReportEnableButton = Engine.GetGUIObjectByName("userReportEnableButton")
-	userReportEnableButton.enabled = !feedbackText;
-	userReportEnableButton.tooltip = feedbackText;
 }
