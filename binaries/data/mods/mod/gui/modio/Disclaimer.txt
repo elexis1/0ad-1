@@ -1,5 +1,6 @@
-You are about to connect to the mod.io online service. This provides easy access to community-made mods, but is not under the control of Wildfire Games.
+0 A.D. Empires Ascendant mod.io Disclaimer
 
-While we have taken care to make this secure, we cannot guarantee with absolute certainty that this is not a security risk. As such, Wildfire Games would not be held accountable for any damages caused by this service or it's content.
-
-Connecting to this service means you have agreed to mod.io's Terms of Use and Privacy Policy.
+You are about to connect to the mod.io online service.
+This provides an easy way to download and install community-made mods and is provided by DBolical Pty Ltd, not Wildfire Games.
+Wildfire Games has taken care to make this secure, but cannot guarantee that this connection or the downloadable mods don't pose security risks.
+By using the service, you understand that mod.io's Terms of Use and Privacy Policy apply.
