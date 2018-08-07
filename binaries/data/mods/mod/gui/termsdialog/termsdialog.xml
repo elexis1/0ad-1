@@ -10,10 +10,10 @@
 
 		<object name="title" style="ModernLabelText" type="text" size="50%-128 -18 50%+128 14"/>
 
-		<object type="text" style="ModernLabelText" size="25 18 100 50">
+		<object type="text" style="ModernLabelText" size="25 18 125 50">
 			<translatableAttribute id="caption">Language</translatableAttribute>
 		</object>
-		<object type="dropdown" name="language" style="ModernDropDown" size="100 20 100%-25 46" tooltip_style="onscreenToolTip">
+		<object type="dropdown" name="language" style="ModernDropDown" size="125 20 100%-25 46" tooltip_style="onscreenToolTip">
 			<action on="SelectionChange">selectLanguage();</action>
 		</object>
 
