@@ -36,7 +36,7 @@ function checkTerms()
 function getTermsHash(page)
 {
 	return Engine.CalculateMD5(
-		(g_Terms[page].hashPrefixObject ? Engine.GetGUIObjectByName(g_Terms[page].hashPrefixObject).caption : "") +
+		(g_Terms[page].salt ? g_Terms[page].salt() : "") +
 		Engine.ReadFile("gui/" + g_Terms[page].file + ".txt"));
 }
 
