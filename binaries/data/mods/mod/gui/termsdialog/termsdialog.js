@@ -7,8 +7,29 @@ function init(data)
 	g_TermsFile = data.file;
 
 	Engine.GetGUIObjectByName("title").caption = data.title;
-
+	initButtons(data);
 	initLanguageDropdown();
+}
+
+function initButtons(data)
+{
+	for (let i = 0; i <= 1; ++i)
+	{
+		let button = Engine.GetGUIObjectByName("button" + i);
+		let buttonData = data.buttons && data.buttons[i];
+
+		button.hidden = !buttonData;
+		if (buttonData)
+		{
+			button.caption = buttonData.caption;
+			button.tooltip = sprintf(translate("Open %(url)s in the browser."), {
+				"url": buttonData.url
+			});
+			button.onPress = () => {
+				Engine.OpenURL(buttonData.url);
+			}
+		}
+	}
 }
 
 function initLanguageDropdown()

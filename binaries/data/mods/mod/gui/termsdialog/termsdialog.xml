@@ -6,7 +6,7 @@
 
 	<object type="image" z="0" sprite="ModernFade"/>
 
-	<object type="image" style="ModernDialog" size="50%-350 50%-290 50%+350 50%+290">
+	<object type="image" style="ModernDialog" size="50%-360 50%-290 50%+360 50%+290">
 
 		<object name="title" style="ModernLabelText" type="text" size="50%-128 -18 50%+128 14"/>
 
@@ -20,6 +20,9 @@
 		<object type="image" sprite="ModernFade" size="20 50 100%-20 100%-58">
 			<object name="mainText" type="text" style="ModernTextPanel"/>
 		</object>
+
+		<object type="button" name="button0" style="ModernButtonRed" size="25 100%-44 185 100%-16"/>
+		<object type="button" name="button1" style="ModernButtonRed" size="195 100%-44 355 100%-16"/>
 
 		<object type="button" style="ModernButtonRed" size="100%-355 100%-44 100%-195 100%-16" hotkey="cancel">
 			<translatableAttribute id="caption">Decline</translatableAttribute>

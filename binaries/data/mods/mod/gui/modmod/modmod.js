@@ -67,7 +67,17 @@ function init(data, hotloadData)
 			"file": "modio/Disclaimer",
 			"config": "modio.disclaimer_version",
 			"accepted": false,
-			"callback": openModIo
+			"callback": openModIo,
+			"buttons": [
+				{
+					"caption": translate("Terms"),
+					"url": "https://mod.io/terms"
+				},
+				{
+					"caption": translate("Privacy Policy"),
+					"url": "https://mod.io/privacy"
+				}
+			]
 		}
 	});
 
