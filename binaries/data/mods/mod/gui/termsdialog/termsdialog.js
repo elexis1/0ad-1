@@ -16,25 +16,20 @@ function initLanguageDropdown()
 	let displayNames = Engine.GetSupportedLocaleDisplayNames();
 	let baseNames = Engine.GetSupportedLocaleBaseNames();
 
-	let languages = [
-		// en-US
-		{
-			"title": displayNames[0],
-			"localeDict": baseNames[0]
-		}
-	];
+	// en-US
+	let languages_list = [displayNames[0]];
+	let languages_list_data = [baseNames[0]];
 
 	let currentLocaleDict = Engine.GetFallbackToAvailableDictLocale(Engine.GetCurrentLocale());
-	if (currentLocaleDict != languages[0].localeDict)
-		languages.push({
-			"title": displayNames[baseNames.indexOf(currentLocaleDict)] || "error",
-			"localeDict": currentLocaleDict
-		});
+	if (currentLocaleDict != languages_list_data[0])
+	{
+		languages_list.push(displayNames[baseNames.indexOf(currentLocaleDict)]);
+		languages_list_data.push(currentLocaleDict);
+	}
 
 	let language = Engine.GetGUIObjectByName("language");
-	languages = prepareForDropdown(languages);
-	language.list = languages.title;
-	language.list_data = languages.localeDict;
+	language.list = languages_list;
+	language.list_data = languages_list;
 	language.selected = 0;
 }
 
