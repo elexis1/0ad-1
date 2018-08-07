@@ -64,8 +64,8 @@
 				<action on="Press">enableUserReport(false);</action>
 			</object>
 			<object type="button" style="StoneButton" size="100%-146 100%-36 100%-8 100%-8">
-				<translatableAttribute id="caption">Privacy Policy</translatableAttribute>
-				<action on="Press">openTerms("Privacy");</action>
+				<translatableAttribute id="caption">Disclaimer</translatableAttribute>
+				<action on="Press">openTerms("Disclaimer");</action>
 			</object>
 		</object>
 

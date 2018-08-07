@@ -1,14 +1,14 @@
 function initUserReport()
 {
 	initTerms({
-		"Privacy": {
-			"title": translate("Privacy Policy"),
-			"instruction": translate("Please read and accept the Privacy Policy"),
-			"file": "pregame/userreport/Privacy_Policy",
-			"config": "userreport.privacy_policy",
+		"Disclaimer": {
+			"title": translate("Disclaimer"),
+			"instruction": translate("Please read and accept the Disclaimer"),
+			"file": "pregame/userreport/Disclaimer",
+			"config": "userreport.disclaimer",
 			"callback": (data) => {
 				enableUserReport(data.accepted);
-				updateTermsFeedback();
+				updateUserReportTermsFeedback();
 			},
 			"accepted": false
 		}
@@ -16,7 +16,7 @@ function initUserReport()
 
 	loadTermsAcceptance();
 	enableUserReport(!checkTerms() && Engine.IsUserReportEnabled());
-	updateTermsFeedback();
+	updateUserReportTermsFeedback();
 }
 
 function formatUserReportStatus(status)

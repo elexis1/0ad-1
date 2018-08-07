@@ -3,4 +3,3 @@ You are about to connect to the mod.io online service. This provides easy access
 While we have taken care to make this secure, we cannot guarantee with absolute certainty that this is not a security risk. As such, Wildfire Games would not be held accountable for any damages caused by this service or it's content.
 
 Connecting to this service means you have agreed to mod.io's Terms of Use and Privacy Policy.
-
