@@ -44,29 +44,19 @@
 		- MAIN MENU - USER REPORT
 		==========================================
 		-->
-		<object
-			name="userReport"
-			size="100%-304 100%-154 100%-4 100%-4"
-			type="image"
-			style="userReportPanel"
-		>
-			<object
-				name="userReportText"
-				type="text"
-				style="userReportText"
-			/>
-			<object name="userReportEnableButton" type="button" style="StoneButton" size="8 100%-36 146 100%-8">
-				<translatableAttribute id="caption">Enable Feedback</translatableAttribute>
-				<action on="Press">enableUserReport(true);</action>
+		<object name="userReport" type="image" style="userReportPanel" size="100%-304 100%-154 100%-4 100%-4">
+
+			<object type="text" name="userReportText" style="userReportText"/>
+
+			<object type="button" name="userReportEnableButton" style="StoneButton" size="8 100%-36 146 100%-8">
+				<action on="Press">toggleUserReport();</action>
 			</object>
-			<object name="userReportDisableButton" type="button" style="StoneButton" size="8 100%-36 146 100%-8">
-				<translatableAttribute id="caption">Disable Feedback</translatableAttribute>
-				<action on="Press">enableUserReport(false);</action>
-			</object>
+
 			<object type="button" style="StoneButton" size="100%-146 100%-36 100%-8 100%-8">
 				<translatableAttribute id="caption">Disclaimer</translatableAttribute>
 				<action on="Press">openTerms("Disclaimer");</action>
 			</object>
+
 		</object>
 
 		<!--

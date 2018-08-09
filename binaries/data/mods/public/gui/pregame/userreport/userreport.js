@@ -7,7 +7,7 @@ function initUserReport()
 			"file": "pregame/userreport/Disclaimer",
 			"config": "userreport.disclaimer",
 			"callback": (data) => {
-				enableUserReport(data.accepted);
+				setUserReportEnabled(data.accepted);
 				updateUserReportTermsFeedback();
 			},
 			"accepted": false
@@ -15,15 +15,8 @@ function initUserReport()
 	});
 
 	loadTermsAcceptance();
-	enableUserReport(!checkTerms() && Engine.IsUserReportEnabled());
+	setUserReportEnabled(!checkTerms() && Engine.IsUserReportEnabled());
 	updateUserReportTermsFeedback();
-}
-
-function enableUserReport(enabled)
-{
-	Engine.GetGUIObjectByName("userReportDisableButton").hidden = !enabled;
-	Engine.GetGUIObjectByName("userReportEnableButton").hidden = enabled;
-	Engine.SetUserReportEnabled(enabled);
 }
 
 function updateUserReportTermsFeedback()
@@ -32,6 +25,19 @@ function updateUserReportTermsFeedback()
 	let userReportEnableButton = Engine.GetGUIObjectByName("userReportEnableButton")
 	userReportEnableButton.enabled = !feedbackText;
 	userReportEnableButton.tooltip = feedbackText;
+}
+
+function toggleUserReport()
+{
+	setUserReportEnabled(!Engine.IsUserReportEnabled());
+}
+
+function setUserReportEnabled(enabled)
+{
+	Engine.GetGUIObjectByName("userReportEnableButton").caption =
+		enabled ? translate("Disable Feedback") : translate("Enable Feedback");
+
+	Engine.SetUserReportEnabled(enabled);
 }
 
 function updateUserReporterStatus()
