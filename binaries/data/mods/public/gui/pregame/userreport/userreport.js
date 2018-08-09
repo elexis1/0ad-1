@@ -34,9 +34,22 @@ function updateUserReportTermsFeedback()
 	userReportEnableButton.tooltip = feedbackText;
 }
 
-function formatUserReportStatus(status)
+function updateUserReporterStatus()
 {
-	let d = status.split(/:/, 3);
+	Engine.GetGUIObjectByName("userReportText").caption =
+		Engine.IsUserReportEnabled() ?
+			'[font="sans-bold-16"]' + translate("Thank you for helping improve 0 A.D.!") + "[/font]\n\n" +
+			translate("Feedback is currently enabled.") + "\n" +
+			sprintf(translate("Status: %(status)s."), {
+				"status": formatUserReportStatus()
+			}) :
+			'[font="sans-bold-16"]' + translate("Help improve 0 A.D.!") + "[/font]\n\n" +
+			translate("You can automatically send us feedback that can help us fix bugs, and improve performance and compatibility.");
+}
+
+function formatUserReportStatus()
+{
+	let d = Engine.GetUserReportStatus().split(/:/, 3);
 
 	if (d[0] == "disabled")
 		return translate("disabled");
