@@ -9,8 +9,8 @@
 	</object>
 
 	<object type="button" style="StoneButton" size="100%-146 100%-36 100%-8 100%-8">
-		<translatableAttribute id="caption">Disclaimer</translatableAttribute>
-		<action on="Press">openTerms("Disclaimer");</action>
+		<translatableAttribute id="caption">Terms</translatableAttribute>
+		<action on="Press">openTerms("Terms");</action>
 	</object>
 
 </object>

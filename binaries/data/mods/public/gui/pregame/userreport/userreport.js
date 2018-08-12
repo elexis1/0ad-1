@@ -18,11 +18,11 @@ var g_UserReportStatusFormat = {
 function initUserReport()
 {
 	initTerms({
-		"Disclaimer": {
-			"title": translate("Disclaimer"),
-			"instruction": translate("Please read and accept the Disclaimer"),
-			"file": "pregame/userreport/Disclaimer",
-			"config": "userreport.disclaimer",
+		"Terms": {
+			"title": translate("Terms"),
+			"instruction": translate("Please read and accept the UserReporter Terms"),
+			"file": "pregame/userreport/Terms",
+			"config": "userreport.terms",
 			"callback": data => {
 				setUserReportEnabled(data.accepted);
 				updateUserReportTermsFeedback();
