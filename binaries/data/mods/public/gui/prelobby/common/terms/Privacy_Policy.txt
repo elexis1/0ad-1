@@ -1,0 +1,41 @@
+0 A.D. Empires Ascendant Multiplayer Lobby Privacy Policy
+
+Document Date: 2018-07-01
+
+Definitions:
+ * The "service" is the 0 A.D. Empires Ascendant Multiplayer Lobby provided by Wildfire Games (WFG).
+ * "Playerlist" refers to the nicknames of the players that are currently connected to the Multiplayer Lobby and their presence state (available, away or playing).
+ * "Lobby Chat" refers to the service of chat text messaging in the Multiplayer Lobby. This excludes ingame chat messages.
+ * "Gamelist" refers to the service that allows players to host games online and join games registered by other players.
+ * "Match statistics" refers to data stored in the replay of the match, for example the map settings, the number of units and buildings created and the winner of the match.
+ * "Rating" refers to the service of analyzing player match statistics for the purpose of generating a single comprehensive score.
+ * "Ranked games" refers to games in which rating changing statistics are tracked.
+ * "Moderate" refers to the process of enforcing usage policies.
+ * "Feedback" are messages that refer to 0 A.D. Empires Ascendant or other Wildfire Games projects, that we might apply to improve these projects, for example bug reports, gameplay balancing suggestions or proposed features.
+ * "Abuse" is any unauthorized use of the service, for example unsolicited mass messaging, denial of service, exploitation of vulnerabilities or fraud.
+ * "We" are Wildfire Games team members.
+ * "You" are the user of the service.
+
+We process the following user data:
+ 1. To comply with possible legal obligations in case of Abuse, we store a log of connections to the server that includes the IP address and port number, time of connection and presence changes for up to one month.
+ 2. To provide the service, a username and password specific to the service is required. We only process an encrypted password, so that your actual password is not disclosed to us or anyone else in case of a data breach.
+ 3. To provide the Playerlist service, your online presence state is published to online users.
+ 4. To provide the Lobby Chat service, your text messages are published to online users.
+ 5. To provide the Gamelist service, the IP address of the hosting player and some Match statistics are published to online users.
+ 6. To provide the Rating service, the names of the players of Ranked games and Match statistics of Ranked games are transmitted, stored and processed.
+
+ We reserve the right to:
+ 1. Store IP addresses for up to two years for the purpose of Moderation.
+ 2. Store public Lobby Chat messages for the purpose of Moderation and Feedback consideration.
+ 3. Publish anonymized Match statistics and anonymized Lobby Chat messages or statistics.
+
+You understand that:
+ * The IP address is the only information processed that could reliably identify your natural person.
+ * Usernames are chosen freely on this service, can differ from or collide with names of other users on other services by Wildfire Games such as the Forums.
+ * We ask you to not publish personal data on this service, especially if you are below 16 years of age.
+ * User submitted content on the service is public, not verifiable to us and does not enable us to identify your natural person.
+ * Unless your data is stored for a legal obligation such as Abuse, your userdata will become anonymous if you stop using this service.
+
+If you wish to file personal data request in accordance with the General Data Protection Regulation:
+ * Please write an email to user-data@wildfiregames.com.
+ * You will have to authenticate yourself with the service to prevent abuse of personal data requests.
