@@ -27,6 +27,16 @@ function initUserReport()
 				setUserReportEnabled(data.accepted);
 				updateUserReportTermsFeedback();
 			},
+			"urlButtons": [
+				{
+					"caption": translate("Logfiles"),
+					"url": "https://trac.wildfiregames.com/wiki/GameDataPaths"
+				},
+				{
+					"caption": translate("Publications"),
+					"url": Engine.ConfigDB_GetValue("user", "userreport.url_publication")
+				}
+			],
 			"accepted": false
 		}
 	});
