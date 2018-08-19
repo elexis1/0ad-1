@@ -10,7 +10,7 @@
 
 	<object type="button" style="StoneButton" size="100%-146 100%-36 100%-8 100%-8">
 		<translatableAttribute id="caption">Terms</translatableAttribute>
-		<action on="Press">openTerms("Terms");</action>
+		<action on="Press">openTerms("TermsAndConditions");</action>
 	</object>
 
 </object>
