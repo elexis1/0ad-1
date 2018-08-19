@@ -267,6 +267,8 @@ bool XmppClient::onTLSConnect(const glooxwrapper::CertInfo& info)
 		"\ncipher: " << info.cipher <<
 		"\ncompression: " << info.compression );
 
+	m_certStatus = static_cast<gloox::CertStatus> (info.status);
+
 	// Optionally accept invalid certificates, see require_tls option.
 	bool verify_certificate = true;
 	CFG_GET_VAL("lobby.verify_certificate", verify_certificate);
@@ -1055,6 +1057,31 @@ void XmppClient::GetRoleString(const gloox::MUCRoomRole r, std::string& role) co
 }
 
 /**
+ * Translates a gloox certificate error codes, i.e. gloox certificate statuses except CertOk.
+ * Keep in sync with specifications.
+ */
+std::string XmppClient::TLSErrorToString(gloox::CertStatus status) const
+{
+	std::map<gloox::CertStatus, std::string> CertErrorStrings = {
+		{ gloox::CertInvalid, g_L10n.Translate("The certificate is not trusted.") },
+		{ gloox::CertSignerUnknown, g_L10n.Translate("The certificate hasn't got a known issuer.") },
+		{ gloox::CertRevoked, g_L10n.Translate("The certificate has been revoked.") },
+		{ gloox::CertExpired, g_L10n.Translate("The certificate has expired.") },
+		{ gloox::CertNotActive, g_L10n.Translate("The certifiacte is not yet active.") },
+		{ gloox::CertWrongPeer, g_L10n.Translate("The certificate has not been issued for the peer we're connected to.") },
+		{ gloox::CertSignerNotCa, g_L10n.Translate("The signer is not a CA.") }
+	};
+
+	std::string result = "";
+
+	for (std::map<gloox::CertStatus, std::string>::iterator it = CertErrorStrings.begin(); it != CertErrorStrings.end(); ++it)
+		if (status & it->first)
+			result += "\n" + it->second;
+
+	return result;
+}
+
+/**
  * Convert a gloox stanza error type to string.
  * Keep in sync with Gloox documentation
  *
@@ -1124,7 +1151,7 @@ std::string XmppClient::ConnectionErrorToString(gloox::ConnectionError err) cons
 	CASE(ConnDnsError, g_L10n.Translate("Resolving the server's hostname failed"));
 	CASE(ConnOutOfMemory, g_L10n.Translate("This system is out of memory"));
 	DEBUG_CASE(ConnNoSupportedAuth, "The authentication mechanisms the server offered are not supported or no authentication mechanisms were available");
-	CASE(ConnTlsFailed, g_L10n.Translate("The server's certificate could not be verified or the TLS handshake did not complete successfully"));
+	CASE(ConnTlsFailed, g_L10n.Translate("The server's certificate could not be verified or the TLS handshake did not complete successfully.") + TLSErrorToString(m_certStatus));
 	CASE(ConnTlsNotAvailable, g_L10n.Translate("The server did not offer required TLS encryption"));
 	DEBUG_CASE(ConnCompressionFailed, "Negotiation/initializing compression failed");
 	CASE(ConnAuthenticationFailed, g_L10n.Translate("Authentication failed. Incorrect password or account does not exist"));
