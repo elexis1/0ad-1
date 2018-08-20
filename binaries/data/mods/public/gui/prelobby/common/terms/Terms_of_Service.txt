@@ -1,25 +1,15 @@
-0 A.D. Empires Ascendant Multiplayer Lobby Terms of Service
+[font="sans-bold-18"]0 A.D. Empires Ascendant Multiplayer Lobby Terms of Service[/font]
 
-Document Date: 2018-07-01
+[font="sans-bold-14"]Document Date:[/font] 2018-08-20
 
-Definitions:
- * The "service" is the 0 A.D. Empires Ascendant Multiplayer Lobby provided by Wildfire Games (WFG).
- * "We" are Wildfire Games team members.
- * "You" are the user of the service.
- * "Official software"  refers to the software "0 A.D. Empires Ascendant" published on the Wildfire Games website, or a modified version of this software that doesn't modify this document or its presentation.
- * "Moderate" refers to the process of enforcing usage policies.
- * "Personal data" is data that relates to  identification of natural persons in the sense of GDPR Article 4.
-
-By using the service you agree to:
-1. Only use the service with the official software unless authorized by a Wildfire Games team member.
+[font="sans-bold-14"]By using the 0 A.D. Multiplayer Lobby, you agree to:[/font]
+1. Only use the 0 A.D. Multiplayer Lobby with a software that does not modify the Terms and Conditions, their presentation or the agreement mechanism, unless authorized by a Wildfire Games team member.
 2. Behave in accordance with the Terms of Use.
-3. Use the service at your own risk. We do not take responsibility for the content posted by users or damages to your computer.
+3. Use the 0 A.D. Multiplayer Lobby at your own risk. We do not take responsibility for the content posted by users or damages to your computer.
 
-We reserve the right to:
- 1. Moderate the service.
- 2. Appoint others to moderate the service.
- 3. Discontinue or interrupt service at any time with or without prior announcement.
- 4. Change the service at any time with or without announcement.
- 5. Delete any and all service data at any time with or without announcement.
- 6. Process personal data in accordance with the Wildfire Games Multiplayer Lobby Privacy Policy.
- 7. Change this document, the Terms Of Use or the Privacy Policy and deny the the service until the new version is read and agreed with.
+[font="sans-bold-14"]Wildfire Games reserves the right to:[/font]
+1. Moderate the 0 A.D. Multiplayer Lobby and enforce the Terms of Use.
+2. Appoint others to moderate the 0 A.D. Multiplayer Lobby.
+3. Discontinue or interrupt any part of the 0 A.D. Multiplayer Lobby at any time with or without prior announcement.
+4. Change or extend the 0 A.D. Multiplayer Lobby. When it affects personal data, users are provided with the new Terms and Conditions prior.
+5. Delete any 0 A.D. Multiplayer Lobby user accounts or data at any time with or without announcement except where a user has objected to the erasure of his or her personal data for performance of a legal claim.
