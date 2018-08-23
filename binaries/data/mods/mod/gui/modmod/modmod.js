@@ -333,7 +333,7 @@ function modIoTerms(data)
 		openTerms("Disclaimer");
 }
 
-function modIoTermsOrOpen()
+function downloadMods()
 {
 	if (checkTerms())
 		openTerms("Disclaimer");
