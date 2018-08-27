@@ -80,7 +80,7 @@ function init(data, hotloadData)
 			]
 		}
 	});
-	loadTermsAcceptance()
+	loadTermsAcceptance();
 
 	initMods();
 	initGUIButtons(data);
