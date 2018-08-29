@@ -61,29 +61,9 @@ function init(data, hotloadData)
 {
 	g_InstalledMods = data && data.installedMods || hotloadData && hotloadData.installedMods || [];
 
-	initTerms({
-		"Disclaimer": {
-			"title": translate("Disclaimer"),
-			"file": "modio/Disclaimer",
-			"config": "modio.disclaimer",
-			"accepted": false,
-			"callback": openModIo,
-			"urlButtons": [
-				{
-					"caption": translate("Terms"),
-					"url": "https://mod.io/terms"
-				},
-				{
-					"caption": translate("Privacy Policy"),
-					"url": "https://mod.io/privacy"
-				}
-			]
-		}
-	});
-	loadTermsAcceptance();
-
 	initMods();
 	initGUIButtons(data);
+	initModIoTerms();
 }
 
 function initMods()
@@ -327,24 +307,6 @@ function isDependencyMet(dependency)
 		(!operator || versionSatisfied(g_Mods[folder].version, operator[0], version)));
 }
 
-function downloadMods()
-{
-	if (checkTerms())
-		openTerms("Disclaimer");
-	else
-		openModIo({
-			"accepted": true
-		});
-}
-
-function openModIo(data)
-{
-	if (data.accepted)
-		Engine.PushGuiPage("page_modio.xml", {
-			"callback": "initMods"
-		});
-}
-
 /**
  * Compares the given versions using the given operator.
  *       '-' or '_' is ignored. Only numbers are supported.
@@ -435,4 +397,51 @@ function visitModWebsite()
 		url = "http://" + url;
 
 	Engine.OpenURL(url);
+}
+
+function initModIoTerms()
+{
+	initTerms({
+		"Disclaimer": {
+			"title": translate("Disclaimer"),
+			"file": "modio/Disclaimer",
+			"config": "modio.disclaimer",
+			"accepted": false,
+			"callback": openModIo,
+			"buttons": [
+				{
+					"caption": translate("Show mod.io Terms"),
+					"url": "https://mod.io/terms"
+				},
+				{
+					"caption": translate("Show mod.io Privacy Policy"),
+					"url": "https://mod.io/privacy"
+				},
+				{
+					"caption": translate("Show mod.io DMCA"),
+					"url": "https://mod.io/report"
+				}
+			]
+		}
+	});
+
+	loadTermsAcceptance();
+}
+
+function downloadModsButton()
+{
+	if (checkTerms())
+		openTerms("Disclaimer");
+	else
+		openModIo({
+			"accepted": true
+		});
+}
+
+function openModIo(data)
+{
+	if (data.accepted)
+		Engine.PushGuiPage("page_modio.xml", {
+			"callback": "initMods"
+		});
 }

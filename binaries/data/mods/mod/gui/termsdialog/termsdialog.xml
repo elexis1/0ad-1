@@ -10,28 +10,37 @@
 
 		<object name="title" style="ModernLabelText" type="text" size="50%-128 -18 50%+128 14"/>
 
-		<object type="text" style="ModernLabelText" size="25 18 125 50">
-			<translatableAttribute id="caption">Language</translatableAttribute>
-		</object>
-		<object type="dropdown" name="language" style="ModernDropDown" size="125 20 100%-25 46" tooltip_style="onscreenToolTip">
-			<action on="SelectionChange">selectLanguage();</action>
-		</object>
-
-		<object type="image" sprite="ModernFade" size="20 50 100%-20 100%-58">
-			<object name="mainText" type="text" style="ModernTextPanel"/>
+		<object size="25 18 100% 50">
+			<object type="text" size="0 0 100 100%" style="ModernLabelText">
+				<translatableAttribute id="caption">Language</translatableAttribute>
+			</object>
+			<object type="dropdown" name="language" size="100 4 100%-25 100%" style="ModernDropDown" tooltip_style="onscreenToolTip">
+				<action on="SelectionChange">selectLanguage();</action>
+			</object>
 		</object>
 
-		<object type="button" name="urlButton0" style="ModernButtonRed" size="25 100%-44 185 100%-16"/>
-		<object type="button" name="urlButton1" style="ModernButtonRed" size="195 100%-44 355 100%-16"/>
-
-		<object type="button" style="ModernButtonRed" size="100%-355 100%-44 100%-195 100%-16" hotkey="cancel">
-			<translatableAttribute id="caption">Decline</translatableAttribute>
-			<action on="Press">closeTerms(false);</action>
+		<object size="20 60 100%-20 100%-24">
+			<object name="mainTextPanel" type="image" sprite="ModernFade" size="0 0 100% 100%">
+				<object name="mainText" type="text" style="ModernTextPanel"/>
+			</object>
 		</object>
 
-		<object type="button" style="ModernButtonRed" size="100%-185 100%-44 100%-25 100%-16">
-			<translatableAttribute id="caption">Accept</translatableAttribute>
-			<action on="Press">closeTerms(true);</action>
+		<object size="25 50% 100%-450 100%-16">
+			<repeat count="6">
+				<object type="button" name="button[n]" size="0 100% 0 100%" textcolor="white" font="sans-bold-16" hidden="true"/>
+			</repeat>
+		</object>
+
+		<object size="100%-355 100%-44 100% 100%-16">
+			<object type="button" style="ModernButtonRed" size="0 0 160 100%" hotkey="cancel">
+				<translatableAttribute id="caption">Decline</translatableAttribute>
+				<action on="Press">closeTerms(false);</action>
+			</object>
+
+			<object type="button" style="ModernButtonRed" size="170 0 330 100%">
+				<translatableAttribute id="caption">Accept</translatableAttribute>
+				<action on="Press">closeTerms(true);</action>
+			</object>
 		</object>
 
 	</object>

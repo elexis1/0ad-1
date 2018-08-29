@@ -27,13 +27,29 @@ function initUserReport()
 				setUserReportEnabled(data.accepted);
 				updateUserReportTermsFeedback();
 			},
-			"urlButtons": [
+			"buttons": [
 				{
-					"caption": translate("Logfiles"),
-					"url": "https://trac.wildfiregames.com/wiki/GameDataPaths"
+					"caption": translate("Show Logfiles"),
+					"messageBox": {
+						"caption": translate("Logfiles"),
+						"subject": sprintf(translate("You can find the most recent UserReport data at:\n%(logPath)s"), {
+							"logPath": Engine.GetUserReportLogPath()
+						}),
+						"selectable": true
+					}
 				},
 				{
-					"caption": translate("Publications"),
+					"caption": translate("Show UserReporterID"),
+					"messageBox": {
+						"caption": translate("UserReporterID"),
+						"subject": sprintf(translate("You can find your UserReporterID in the config file at:\n%(configPath)s"), {
+							"configPath": Engine.GetUserReportConfigPath()
+						}),
+						"selectable": true
+					}
+				},
+				{
+					"caption": translate("Show Publications"),
 					"url": Engine.ConfigDB_GetValue("user", "userreport.url_publication")
 				}
 			],

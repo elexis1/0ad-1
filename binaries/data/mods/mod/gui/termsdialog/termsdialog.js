@@ -7,29 +7,52 @@ function init(data)
 	g_TermsFile = data.file;
 
 	Engine.GetGUIObjectByName("title").caption = data.title;
-	initURLButtons(data);
 	initLanguageDropdown();
+	initCustomButtons(data.buttons);
 }
 
-function initURLButtons(data)
+function initCustomButtons(buttonsData)
 {
-	for (let i = 0; i <= 1; ++i)
-	{
-		let urlButton = Engine.GetGUIObjectByName("urlButton" + i);
-		let urlButtonData = data.urlButtons[i];
+	let buttonHeight = 30;
 
-		urlButton.hidden = !urlButtonData;
-		if (urlButtonData)
+	buttonsData.forEach((buttonData, i) => {
+
+		let button = Engine.GetGUIObjectByName("button[" + i + "]");
+		if (buttonData.url)
 		{
-			urlButton.caption = urlButtonData.caption;
-			urlButton.tooltip = sprintf(translate("Open %(url)s in the browser."), {
-				"url": urlButtonData.url
+			button.tooltip = sprintf(translate("Open %(url)s in the browser."), {
+				"url": buttonData.url
 			});
-			urlButton.onPress = () => {
-				Engine.OpenURL(urlButtonData.url);
-			}
+			button.onPress = () => {
+				Engine.OpenURL(buttonData.url);
+			};
 		}
-	}
+		else if (buttonData.messageBox)
+			button.onPress = () => {
+				messageBox(
+					400, 200,
+					buttonData.messageBox.subject,
+					buttonData.messageBox.caption,
+					undefined,
+					undefined,
+					undefined,
+					buttonData.messageBox.selectable);
+			};
+
+		let size = button.size;
+		size.top = -buttonHeight * (buttonsData.length - i);
+		size.bottom = -buttonHeight * (buttonsData.length - i - 1);
+		size.right = Engine.GetTextWidth(button.font, buttonData.caption) + 10;
+		button.size = size;
+
+		button.caption = buttonData.caption;
+		button.hidden = false;
+	});
+
+	let mainTextPanel = Engine.GetGUIObjectByName("mainTextPanel");
+	let size = mainTextPanel.size;
+	size.bottom = -Math.max(buttonsData.length, 1) * buttonHeight;
+	mainTextPanel.size = size;
 }
 
 function initLanguageDropdown()
