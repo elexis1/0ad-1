@@ -8,7 +8,9 @@ function init(data)
 	Engine.GetGUIObjectByName("mbTitleBar").caption = data.title;
 
 	// Set subject
-	let mbTextObj = Engine.GetGUIObjectByName("mbText");
+	Engine.GetGUIObjectByName(data.selectable ? "mbText" : "mbInput").hidden = true;
+	let mbTextObj = Engine.GetGUIObjectByName(data.selectable ? "mbInput" : "mbText");
+	mbTextObj.hidden = false;
 	mbTextObj.caption = data.message;
 	if (data.font)
 		mbTextObj.font = data.font;

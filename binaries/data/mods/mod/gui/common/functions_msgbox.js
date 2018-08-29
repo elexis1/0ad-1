@@ -26,7 +26,7 @@ function messageBoxCallbackFunction(btnCode)
 	g_MessageBoxCallbackArgs = [];
 };
 
-function messageBox(mbWidth, mbHeight, mbMessage, mbTitle, mbButtonCaptions, mbBtnCode, mbCallbackArgs)
+function messageBox(mbWidth, mbHeight, mbMessage, mbTitle, mbButtonCaptions, mbBtnCode, mbCallbackArgs, mbSelectable)
 {
 	if (g_MessageBoxBtnFunctions && g_MessageBoxBtnFunctions.length)
 	{
@@ -43,6 +43,7 @@ function messageBox(mbWidth, mbHeight, mbMessage, mbTitle, mbButtonCaptions, mbB
 		"message": mbMessage,
 		"title": mbTitle,
 		"buttonCaptions": mbButtonCaptions,
+		"selectable": mbSelectable,
 		"callback": mbBtnCode && "messageBoxCallbackFunction"
 	});
 }
