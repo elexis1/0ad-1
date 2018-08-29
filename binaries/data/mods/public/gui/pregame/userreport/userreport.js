@@ -8,10 +8,10 @@ var g_UserReportStatusFormat = {
 		data[1] == 200 ?
 			translate("upload succeeded") :
 			sprintf(translate("upload failed (%(errorCode)s)"), {
-				"errorCode": data[2]
+				"errorCode": data[1]
 			}),
 	"failed": data => sprintf(translate("upload failed (%(errorMessage)s)"), {
-		"errorMessage": data[1]
+		"errorMessage": data[2]
 	})
 };
 
@@ -73,11 +73,11 @@ function updateUserReporterStatus()
 
 	Engine.GetGUIObjectByName("userReportText").caption =
 		Engine.IsUserReportEnabled() ?
-			'[font="sans-bold-16"]' + translate("Thank you for helping improve 0 A.D.!") + "[/font]\n\n" +
+			setStringTags(translate("Thank you for helping improve 0 A.D.!"), { "font": "sans-bold-16" }) + "\n\n" +
 			translate("Feedback is currently enabled.") + "\n" +
 			sprintf(translate("Status: %(status)s."), {
 				"status": g_UserReportStatusFormat[statusData[0]] ? g_UserReportStatusFormat[statusData[0]](statusData) : translate("unknown")
 			}) :
-			'[font="sans-bold-16"]' + translate("Help improve 0 A.D.!") + "[/font]\n\n" +
+			setStringTags(translate("Help improve 0 A.D.!"), { "font": "sans-bold-16" }) + "\n\n" +
 			translate("You can automatically send us feedback that can help us fix bugs, and improve performance and compatibility.");
 }
