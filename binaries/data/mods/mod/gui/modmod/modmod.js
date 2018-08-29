@@ -327,12 +327,6 @@ function isDependencyMet(dependency)
 		(!operator || versionSatisfied(g_Mods[folder].version, operator[0], version)));
 }
 
-function modIoTerms(data)
-{
-	if (data.terms)
-		openTerms("Disclaimer");
-}
-
 function downloadMods()
 {
 	if (checkTerms())
