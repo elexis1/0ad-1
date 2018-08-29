@@ -24,7 +24,7 @@ function initCustomButtons(buttonsData)
 				"url": buttonData.url
 			});
 			button.onPress = () => {
-				Engine.OpenURL(buttonData.url);
+				openURL(buttonData.url);
 			};
 		}
 		else if (buttonData.messageBox)
