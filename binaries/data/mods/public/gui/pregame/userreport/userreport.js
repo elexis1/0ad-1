@@ -7,6 +7,32 @@ var g_TermsUserReport = {
 		"callback": data => {
 			setUserReportEnabled(data.accepted);
 		},
+		"buttons": [
+			{
+				"caption": translate("Show Logfiles"),
+				"messageBox": {
+					"caption": translate("Logfiles"),
+					"subject": sprintf(translate("You can find the most recent UserReport data at:\n%(logPath)s"), {
+						"logPath": Engine.GetUserReportLogPath()
+					}),
+					"selectable": true
+				}
+			},
+			{
+				"caption": translate("Show UserReporterID"),
+				"messageBox": {
+					"caption": translate("UserReporterID"),
+					"subject": sprintf(translate("You can find your UserReporterID in the config file at:\n%(configPath)s"), {
+						"configPath": Engine.GetUserReportConfigPath()
+					}),
+					"selectable": true
+				}
+			},
+			{
+				"caption": translate("Show Publications"),
+				"url": Engine.ConfigDB_GetValue("user", "userreport.url_publication")
+			}
+		],
 		"accepted": false
 	}
 };

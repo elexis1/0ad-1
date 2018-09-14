@@ -10,10 +10,16 @@
 
 		<object name="title" style="ModernLabelText" type="text" size="50%-128 -18 50%+128 14"/>
 
-		<object size="20 20 100%-20 100%-50">
+		<object size="20 20 100%-20 100%-25">
 			<object name="mainTextPanel" type="image" sprite="ModernFade" size="0 0 100% 100%">
 				<object name="mainText" type="text" style="ModernTextPanel"/>
 			</object>
+		</object>
+
+		<object size="25 50% 100%-450 100%-16">
+			<repeat count="6">
+				<object type="button" name="button[n]" size="0 100% 0 100%" textcolor="white" font="sans-bold-16" hidden="true"/>
+			</repeat>
 		</object>
 
 		<object size="100%-355 100%-44 100% 100%-16">
