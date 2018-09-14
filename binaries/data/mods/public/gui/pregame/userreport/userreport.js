@@ -1,8 +1,8 @@
 var g_TermsUserReport = {
 	"TermsAndConditions": {
-		"title": translate("Technical Details"),
-		"instruction": "",
-		"file": "gui/manual/userreport.txt",
+		"file": "gui/userreport/Terms_and_Conditions.txt",
+		"title": translate("Terms"),
+		"instruction": translate("Please read and accept the UserReporter Terms and Conditions"),
 		"config": "userreport.terms",
 		"callback": data => {
 			setUserReportEnabled(data.accepted);
@@ -81,6 +81,7 @@ function updateUserReportButtons()
 	};
 
 	let userReportTermsButton = Engine.GetGUIObjectByName("userReportTermsButton");
+	userReportTermsButton.caption = translate("Terms");
 	userReportTermsButton.onPress = () => {
 		openTerms("TermsAndConditions");
 	};
@@ -93,10 +94,10 @@ function updateUserReportStatus()
 	Engine.GetGUIObjectByName("userReportText").caption =
 		Engine.IsUserReportEnabled() ?
 			setStringTags(translate("Thank you for helping improve 0 A.D.!"), { "font": "sans-bold-16" }) + "\n\n" +
-			translate("Anonymous feedback is currently enabled.") + "\n" +
+			translate("Feedback is currently enabled.") + "\n" +
 			sprintf(translate("Status: %(status)s."), {
 				"status": g_UserReportStatusFormat[statusData[0]] ? g_UserReportStatusFormat[statusData[0]](statusData) : translate("unknown")
 			}) :
 			setStringTags(translate("Help improve 0 A.D.!"), { "font": "sans-bold-16" }) + "\n\n" +
-			translate("You can automatically send us anonymous feedback that will help us fix bugs, and improve performance and compatibility.");
+			translate("You can automatically send us feedback that can help us fix bugs, and improve performance and compatibility.");
 }

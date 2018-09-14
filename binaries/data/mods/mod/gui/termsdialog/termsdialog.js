@@ -83,9 +83,9 @@ function selectLanguage()
 	let useTranslation = Engine.GetGUIObjectByName("language").selected == 1;
 
 	Engine.GetGUIObjectByName("mainText").caption =
-		Engine.FileExists(g_TermsFile) ?
-		(useTranslation ? Engine.TranslateLines(Engine.ReadFile(g_TermsFile)) : Engine.ReadFile(g_TermsFile)) :
-		g_TermsFile;
+		Engine.GetGUIObjectByName("language").selected == 1 ?
+			Engine.TranslateLines(Engine.ReadFile(g_TermsFile)) :
+			Engine.ReadFile(g_TermsFile);
 
 	Engine.GetGUIObjectByName("connectButton").onPress = () => {
 
