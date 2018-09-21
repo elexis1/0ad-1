@@ -27,7 +27,7 @@
 
 		<object size="25 50% 100%-450 100%-16">
 			<repeat count="6">
-				<object type="button" name="button[n]" size="0 100% 0 100%" textcolor="white" font="sans-bold-16" hidden="true"/>
+				<object type="button" name="button[n]" size="0 100% 0 100%" textcolor="192 192 192" textcolor_over="white" font="sans-bold-16" hidden="true"/>
 			</repeat>
 		</object>
 
