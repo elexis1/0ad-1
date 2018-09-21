@@ -9,15 +9,15 @@ function downloadModsButton()
 			"callback": openModIo,
 			"buttons": [
 				{
-					"caption": translate("Show mod.io Terms"),
+					"caption": translate("mod.io Terms"),
 					"url": "https://mod.io/terms"
 				},
 				{
-					"caption": translate("Show mod.io Privacy Policy"),
+					"caption": translate("mod.io Privacy Policy"),
 					"url": "https://mod.io/privacy"
 				},
 				{
-					"caption": translate("Show mod.io DMCA"),
+					"caption": translate("mod.io Copyright"),
 					"url": "https://mod.io/report"
 				}
 			]

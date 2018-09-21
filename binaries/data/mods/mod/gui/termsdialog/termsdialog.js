@@ -14,10 +14,15 @@ function init(data)
 function initCustomButtons(buttonsData)
 {
 	let buttonHeight = 30;
+	let buttonWidth = 100 + buttonsData.reduce((maxWidth, buttonData, i) =>
+		Math.max(maxWidth, Engine.GetTextWidth(Engine.GetGUIObjectByName("button[" + i + "]").font, buttonData.caption)),
+		0);
 
 	buttonsData.forEach((buttonData, i) => {
 
 		let button = Engine.GetGUIObjectByName("button[" + i + "]");
+		button.caption = buttonData.caption;
+
 		if (buttonData.url)
 		{
 			button.tooltip = sprintf(translate("Open %(url)s in the browser."), {
@@ -42,10 +47,8 @@ function initCustomButtons(buttonsData)
 		let size = button.size;
 		size.top = -buttonHeight * (buttonsData.length - i);
 		size.bottom = -buttonHeight * (buttonsData.length - i - 1);
-		size.right = Engine.GetTextWidth(button.font, buttonData.caption) + 10;
+		size.right = buttonWidth;
 		button.size = size;
-
-		button.caption = buttonData.caption;
 		button.hidden = false;
 	});
 

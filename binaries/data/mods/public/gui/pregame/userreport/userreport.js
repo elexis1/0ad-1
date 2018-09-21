@@ -9,7 +9,7 @@ var g_TermsUserReport = {
 		},
 		"buttons": [
 			{
-				"caption": translate("Show Logfiles"),
+				"caption": translate("Logfiles"),
 				"messageBox": {
 					"caption": translate("Logfiles"),
 					"subject": sprintf(translate("You can find the most recent UserReport data at:\n%(logPath)s"), {
@@ -19,7 +19,7 @@ var g_TermsUserReport = {
 				}
 			},
 			{
-				"caption": translate("Show UserReporterID"),
+				"caption": translate("UserReporterID"),
 				"messageBox": {
 					"caption": translate("UserReporterID"),
 					"subject": sprintf(translate("You can find your UserReporterID in the config file at:\n%(configPath)s"), {
@@ -29,7 +29,7 @@ var g_TermsUserReport = {
 				}
 			},
 			{
-				"caption": translate("Show Publications"),
+				"caption": translate("Publications"),
 				"url": Engine.ConfigDB_GetValue("user", "userreport.url_publication")
 			}
 		],
