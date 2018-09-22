@@ -26,19 +26,25 @@
 		</object>
 
 		<object size="20 100%-80 100%-20 100%-55">
-			<repeat count="6">
-				<object type="button" name="button[n]" style="ModernButtonRed" hidden="true"/>
+			<repeat count="3">
+				<object type="text" name="label[n]" style="ModernLabelText" hidden="true"/>
+				<object type="input" name="input[n]" style="ModernInput" readonly="true" font="sans-14" hidden="true"/>
 			</repeat>
 		</object>
 
-		<object size="100%-355 100%-50 100% 100%-16">
-			<object type="button" style="ModernButtonRed" size="0 0 160 100%" hotkey="cancel">
-				<translatableAttribute id="caption">Decline</translatableAttribute>
-				<action on="Press">closeTerms(false);</action>
-			</object>
+		<object size="25 100%-45 100% 100%-16">
+			<object size="0 0 160 100%" type="button" name="button[0]" style="ModernButtonRed" hidden="true"/>
+			<object size="175 0 335 100%" type="button" name="button[1]" style="ModernButtonRed" hidden="true"/>
 
-			<object name="connectButton" type="button" style="ModernButtonRed" size="170 0 330 100%">
-				<translatableAttribute id="caption">Accept</translatableAttribute>
+			<object size="100%-355 0 100% 100%">
+				<object type="button" style="ModernButtonRed" size="0 0 160 100%" hotkey="cancel">
+					<translatableAttribute id="caption">Decline</translatableAttribute>
+					<action on="Press">closeTerms(false);</action>
+				</object>
+
+				<object name="connectButton" type="button" style="ModernButtonRed" size="170 0 330 100%">
+					<translatableAttribute id="caption">Accept</translatableAttribute>
+				</object>
 			</object>
 		</object>
 

@@ -8,38 +8,47 @@ function init(data)
 
 	Engine.GetGUIObjectByName("title").caption = data.title;
 	initLanguageDropdown();
-	initCustomButtons(data.buttons);
+	initCustomButtons(data.urlButtons, data.selectableTexts);
 }
 
-function initCustomButtons(buttonsData)
+function initCustomButtons(urlButtons, selectableTexts)
 {
-	buttonsData.forEach((buttonData, i) => {
+	/*
+	let buttonHeight = 30;
+	let buttonWidth = 100 + buttonsData.reduce((maxWidth, objectData, i) =>
+		Math.max(maxWidth, objectData.type == "selectableText" ? 0 : Engine.GetTextWidth(Engine.GetGUIObjectByName("button[" + i + "]").font, objectData.caption)),
+		0);
+*/
+	urlButtons.forEach((urlButton, i) => {
 
 		let button = Engine.GetGUIObjectByName("button[" + i + "]");
-		button.caption = buttonData.caption;
+		button.caption = urlButton.caption;
+		button.hidden = false;
+		button.tooltip = sprintf(translate("Open %(url)s in the browser."), {
+			"url": urlButton.url
+		});
+		button.onPress = () => {
+			openURL(urlButton.url);
+		};
+		return;
+		let size = button.size;
+		size.left = 10;
+		size.rleft = Math.round(100 * i / buttonsData.length);
+		size.rright = Math.round(100 * (i + 1) / buttonsData.length);
+		button.size = size;
+	});
 
-		if (buttonData.url)
-		{
-			button.tooltip = sprintf(translate("Open %(url)s in the browser."), {
-				"url": buttonData.url
-			});
-			button.onPress = () => {
-				openURL(buttonData.url);
-			};
-		}
-		else if (buttonData.messageBox)
-			button.onPress = () => {
-				messageBox(
-					400, 200,
-					buttonData.messageBox.subject,
-					buttonData.messageBox.caption,
-					undefined,
-					undefined,
-					undefined,
-					buttonData.messageBox.selectable);
-			};
-			button.hidden = false;
+	selectableTexts.forEach((selectableText, i) => {
+		let label = Engine.GetGUIObjectByName("label[" + i + "]");
+		label.caption = selectableText.caption;
+		label.hidden = false;
 
+		let input = Engine.GetGUIObjectByName("input[" + i + "]");
+		input.caption = selectableText.text;
+		input.hidden = false;
+
+		return;
+		let button;
 		let size = button.size;
 		size.left = 10;
 		size.rleft = Math.round(100 * i / buttonsData.length);

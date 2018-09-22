@@ -10,7 +10,8 @@ function openTerms(page)
 	Engine.PushGuiPage("page_termsdialog.xml", {
 		"file": g_Terms[page].file,
 		"title": g_Terms[page].title,
-		"buttons": g_Terms[page].buttons || [],
+		"urlButtons": g_Terms[page].urlButtons || [],
+		"selectableTexts": g_Terms[page].selectableTexts || [],
 		"page": page,
 		"callback": "acceptTerms"
 	});
