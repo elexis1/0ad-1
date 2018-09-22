@@ -1,24 +1,20 @@
-var g_TermsPage = "";
-var g_TermsFile = "";
+var g_TermsPage;
+var g_TermsFile;
+var g_TermsSprintf;
 
 function init(data)
 {
 	g_TermsPage = data.page;
 	g_TermsFile = data.file;
+	g_TermsSprintf = data.sprintf;
 
 	Engine.GetGUIObjectByName("title").caption = data.title;
 	initLanguageDropdown();
-	initCustomButtons(data.urlButtons, data.selectableTexts);
+	initURLButtons(data.urlButtons);
 }
 
-function initCustomButtons(urlButtons, selectableTexts)
+function initURLButtons(urlButtons, selectableTexts)
 {
-	/*
-	let buttonHeight = 30;
-	let buttonWidth = 100 + buttonsData.reduce((maxWidth, objectData, i) =>
-		Math.max(maxWidth, objectData.type == "selectableText" ? 0 : Engine.GetTextWidth(Engine.GetGUIObjectByName("button[" + i + "]").font, objectData.caption)),
-		0);
-*/
 	urlButtons.forEach((urlButton, i) => {
 
 		let button = Engine.GetGUIObjectByName("button[" + i + "]");
@@ -30,30 +26,6 @@ function initCustomButtons(urlButtons, selectableTexts)
 		button.onPress = () => {
 			openURL(urlButton.url);
 		};
-		return;
-		let size = button.size;
-		size.left = 10;
-		size.rleft = Math.round(100 * i / buttonsData.length);
-		size.rright = Math.round(100 * (i + 1) / buttonsData.length);
-		button.size = size;
-	});
-
-	selectableTexts.forEach((selectableText, i) => {
-		let label = Engine.GetGUIObjectByName("label[" + i + "]");
-		label.caption = selectableText.caption;
-		label.hidden = false;
-
-		let input = Engine.GetGUIObjectByName("input[" + i + "]");
-		input.caption = selectableText.text;
-		input.hidden = false;
-
-		return;
-		let button;
-		let size = button.size;
-		size.left = 10;
-		size.rleft = Math.round(100 * i / buttonsData.length);
-		size.rright = Math.round(100 * (i + 1) / buttonsData.length);
-		button.size = size;
 	});
 }
 
@@ -85,9 +57,11 @@ function selectLanguage()
 	let useTranslation = Engine.GetGUIObjectByName("language").selected == 1;
 
 	Engine.GetGUIObjectByName("mainText").caption =
-		Engine.GetGUIObjectByName("language").selected == 1 ?
-			Engine.TranslateLines(Engine.ReadFile(g_TermsFile)) :
-			Engine.ReadFile(g_TermsFile);
+		sprintf(
+			Engine.GetGUIObjectByName("language").selected == 1 ?
+				Engine.TranslateLines(Engine.ReadFile(g_TermsFile)) :
+				Engine.ReadFile(g_TermsFile),
+			g_TermsSprintf);
 
 	Engine.GetGUIObjectByName("connectButton").onPress = () => {
 

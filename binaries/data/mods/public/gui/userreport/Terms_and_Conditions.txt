@@ -45,8 +45,9 @@ The transmission is secured with SSL. Data is protected against unintentional lo
 [font="sans-bold-14"]User rights (GDPR 13):[/font]
  1. Contact Wildfire Games, by sending an email to webmaster at wildfiregames dot com (GDPR 13.1.a, GDPR 13.1.b).
  2. Right of access to their UserReport data (GDPR 15).
-    The UserID can be found in the user.cfg file of the configuration folder of the 0 A.D. user. See also https://trac.wildfiregames.com/wiki/GameDataPaths
+    The UserID can be found in the user.cfg file of the configuration folder of the 0 A.D. user.
     A machine-readable (GDPR 20) and human-readable copy of the most recent UserReport data can be found in the logs folder of 0 A.D.
+    The current logfolder is [font="sans-bold-12"]%(logPath)s[/font]. The current configuration folder is [font="sans-bold-12"]%(configPath)s[/font].
     If you wish to further access your data, contact Wildfire Games and provide your UserID pseudonym (GDPR 11.2), only with that we may identify your data and process requests (GDPR 13.2.e).
     Data may be obtained in a portable, machine-readable format (GDPR 20).
     The right to obtain a copy of UserReport data does not affect the rights and freedoms of others (GDPR 15.4).

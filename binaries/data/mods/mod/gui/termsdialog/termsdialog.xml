@@ -19,20 +19,14 @@
 			</object>
 		</object>
 
-		<object size="20 60 100%-20 100%-85">
+		<object size="20 60 100%-20 100%-55">
 			<object name="mainTextPanel" type="image" sprite="ModernFade">
 				<object name="mainText" type="text" style="ModernTextPanel"/>
 			</object>
 		</object>
 
-		<object size="20 100%-80 100%-20 100%-55">
-			<repeat count="3">
-				<object type="text" name="label[n]" style="ModernLabelText" hidden="true"/>
-				<object type="input" name="input[n]" style="ModernInput" readonly="true" font="sans-14" hidden="true"/>
-			</repeat>
-		</object>
-
 		<object size="25 100%-45 100% 100%-16">
+
 			<object size="0 0 160 100%" type="button" name="button[0]" style="ModernButtonRed" hidden="true"/>
 			<object size="175 0 335 100%" type="button" name="button[1]" style="ModernButtonRed" hidden="true"/>
 

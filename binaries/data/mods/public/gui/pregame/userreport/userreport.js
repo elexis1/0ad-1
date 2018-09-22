@@ -1,23 +1,17 @@
 var g_TermsUserReport = {
 	"TermsAndConditions": {
-		"file": "gui/userreport/Terms_and_Conditions.txt",
-		"title": translate("Terms"),
-		"instruction": translate("Please read and accept the UserReporter Terms and Conditions"),
 		"config": "userreport.terms",
 		"callback": data => {
 			setUserReportEnabled(data.accepted);
 		},
 		"accepted": false,
-		"selectableTexts": [
-			{
-				"caption": translate("Logfiles:"),
-				"text": Engine.GetUserReportLogPath()
-			},
-			{
-				"caption": translate("UserReporter ID:"),
-				"text": Engine.GetUserReportConfigPath()
-			}
-		],
+		"title": translate("Terms"),
+		"instruction": translate("Please read and accept the UserReporter Terms and Conditions"),
+		"file": "gui/userreport/Terms_and_Conditions.txt",
+		"sprintf": {
+			"logPath": Engine.GetUserReportLogPath(),
+			"configPath": Engine.GetUserReportConfigPath()
+		},
 		"urlButtons": [
 			{
 				"caption": translate("Publications"),

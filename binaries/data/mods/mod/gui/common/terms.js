@@ -8,10 +8,10 @@ function initTerms(terms)
 function openTerms(page)
 {
 	Engine.PushGuiPage("page_termsdialog.xml", {
-		"file": g_Terms[page].file,
 		"title": g_Terms[page].title,
+		"file": g_Terms[page].file,
+		"sprintf": g_Terms[page].sprintf || {},
 		"urlButtons": g_Terms[page].urlButtons || [],
-		"selectableTexts": g_Terms[page].selectableTexts || [],
 		"page": page,
 		"callback": "acceptTerms"
 	});

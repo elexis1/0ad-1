@@ -7,7 +7,7 @@ function downloadModsButton()
 			"config": "modio.disclaimer",
 			"accepted": false,
 			"callback": openModIo,
-			"buttons": [
+			"urlButtons": [
 				{
 					"caption": translate("mod.io Terms"),
 					"url": "https://mod.io/terms"
@@ -15,10 +15,6 @@ function downloadModsButton()
 				{
 					"caption": translate("mod.io Privacy Policy"),
 					"url": "https://mod.io/privacy"
-				},
-				{
-					"caption": translate("mod.io Copyright"),
-					"url": "https://mod.io/report"
 				}
 			]
 		}
