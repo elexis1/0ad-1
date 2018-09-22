@@ -13,11 +13,6 @@ function init(data)
 
 function initCustomButtons(buttonsData)
 {
-	let buttonHeight = 30;
-	let buttonWidth = 100 + buttonsData.reduce((maxWidth, buttonData, i) =>
-		Math.max(maxWidth, Engine.GetTextWidth(Engine.GetGUIObjectByName("button[" + i + "]").font, buttonData.caption)),
-		0);
-
 	buttonsData.forEach((buttonData, i) => {
 
 		let button = Engine.GetGUIObjectByName("button[" + i + "]");
@@ -43,19 +38,14 @@ function initCustomButtons(buttonsData)
 					undefined,
 					buttonData.messageBox.selectable);
 			};
+			button.hidden = false;
 
 		let size = button.size;
-		size.top = -buttonHeight * (buttonsData.length - i);
-		size.bottom = -buttonHeight * (buttonsData.length - i - 1);
-		size.right = buttonWidth;
+		size.left = 10;
+		size.rleft = Math.round(100 * i / buttonsData.length);
+		size.rright = Math.round(100 * (i + 1) / buttonsData.length);
 		button.size = size;
-		button.hidden = false;
 	});
-
-	let mainTextPanel = Engine.GetGUIObjectByName("mainTextPanel");
-	let size = mainTextPanel.size;
-	size.bottom = -Math.max(buttonsData.length, 1) * buttonHeight;
-	mainTextPanel.size = size;
 }
 
 function initLanguageDropdown()
