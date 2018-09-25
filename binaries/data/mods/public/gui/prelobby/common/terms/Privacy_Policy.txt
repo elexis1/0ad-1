@@ -1,6 +1,6 @@
 [font="sans-bold-18"]0 A.D. Empires Ascendant Multiplayer Lobby Privacy Policy[/font]
 
-[font="sans-bold-14"]Document Date:[/font] 2018-08-21
+[font="sans-bold-14"]Document Date:[/font] 2018-09-25
 
 [font="sans-bold-14"]Definitions:[/font]
 The "service" is the 0 A.D. Empires Ascendant Multiplayer Lobby provided by Wildfire Games.
@@ -11,27 +11,28 @@ The "service" is the 0 A.D. Empires Ascendant Multiplayer Lobby provided by Wild
 "Rating" refers to the service of analyzing player match statistics for the purpose of generating a single comprehensive score.
 "Ranked games" refers to games in which rating changing statistics are tracked.
 "Moderation" refers to the process of enforcing usage policies.
-"Feedback" are messages that refer to 0 A.D. Empires Ascendant or other Wildfire Games projects, that Wildfire Games might apply to improve these projects, for example bug reports, gameplay balancing suggestions or proposed features.
+"Feedback" are Lobby Chat messages that refer to 0 A.D. Empires Ascendant or other Wildfire Games projects, that Wildfire Games might apply to improve these projects, for example bug reports, gameplay balancing suggestions or proposed features.
 
 [font="sans-bold-14"]Multiplayer Lobby data:[/font]
  1. To provide the service, a username and password specific to the service is required.
-   Wildfire Games only processes an encrypted password, so that your actual password is not disclosed to us or anyone else in case of a data breach.
+   Wildfire Games only receives and processes an encrypted password, so that your actual password is not disclosed to us, or to anyone else in case of a data breach.
  2. To provide the Playerlist service, your online presence state is published to online users.
  3. To provide the Lobby Chat service, your text messages are published to online users.
  4. To provide the Gamelist service, the IP address of the hosting player and some Match statistics are published to online users.
  5. To provide the Rating service, the names of the players of Ranked games and Match statistics of Ranked games are transmitted, stored and processed.
- TODO 6. To comply with possible legal obligations in case of Abuse, Wildfire Games stores a log of connections to the server that includes the IP address and port number, time of connection and presence changes for up to one month., ....performance of a legal claim
+ 6. To provide the Moderation service, and enforce the Terms of Use of the Lobby service, Wildfire Games stores a log of connections to the server that includes the IP address and port number, time of connection and presence changes for up to one month. This log is kept separate from the remainder of your personal data (GDPR 4.5). In case of Abuse, out of this data, Wildfire Games will store the IP address for up to two years. This data can be kept for a longer period of time in case a user has objected to the erasure of their data to perform a legal claim.
 
-[font="sans-bold-14"]Wildfire Games rights:[/font]
- 1. Store IP addresses for up to two years for the purpose of Moderation.
- 2. Store public Lobby Chat messages for the purpose of Moderation and Feedback consideration.
- 3. Publish anonymized Match statistics and anonymized Lobby Chat messages or statistics.
+[font="sans-bold-14"]Wildfire Games reserves the right to:[/font]
+ 1. Store port number, time of connection and presence changes for up to one month for the purpose of Moderation.
+ 2. Store IP addresses for up to two years for the purpose of Moderation.
+ 3. Store public Lobby Chat messages for the purpose of Moderation and Feedback consideration.
+ 4. Publish pseudonymized Match statistics and pseudonymized Lobby Chat messages or statistics.
 
 [font="sans-bold-14"]Wildfire Games obligations (GDPR 5, GDPR 13):[/font]
  1. Wildfire Games demonstrates compliance with GDPR (GDPR 5.2 'accountability').
  2. Wildfire Games documents their processing activities appropriately, in particular the categories of processed personal data and security measures to protect it (GDPR 30).
  3. Wildfire Games processes personal data lawfully, fairly and transparently (GDPR 5.1.a, GDPR 12.1).
- 4. Wildfire Games informs users of the purposes, legal grounds, legitimate interests and retention periods of personal data processing at the time it is processed, recipients of personal data and where applicable, transfer of personal data to third countries and automated decision-making (GDPR 13.1.c, GDPR 13.1.d, GDPR 13.1.e, GDPR 13.1.f, GDPR 13.2.a, GDPR 13.2.e, GDPR 13.2.f, GDPR 15.1, GDPR 15.4).
+ 4. Wildfire Games informs users of the purposes, legal grounds, legitimate interests and retention periods of personal data processing at the time it is processed, recipients of personal data and where applicable, transfer of personal data to third parties and automated decision-making (GDPR 13.1.c, GDPR 13.1.d, GDPR 13.1.e, GDPR 13.1.f, GDPR 13.2.a, GDPR 13.2.e, GDPR 13.2.f, GDPR 15.1, GDPR 15.4).
  5. Wildfire Games does not processes personal data for purposes other than the specified ones (GDPR 5.1.b, 'purpose limitation', GDPR 13.3).
  6. Wildfire Games does not process personal data that is not neeeded for the specified purposes (GDPR 5.1.c, 'data minimisation').
  7. Wildfire Games uses a storage form that does not allow identification of natural persons for longer than necessary (GDPR 5.1.e 'storage limitation').
@@ -41,13 +42,37 @@ The "service" is the 0 A.D. Empires Ascendant Multiplayer Lobby provided by Wild
 11. Wildfire Games informs the users that manifestly unfounded or excessive requests are not responded to or charged (GDPR 12.4, GDPR 12.5).
 12. Wildfire Games informs the users that to exercise their rights, users might need to provide additional information to identify the natural person or the data (GDPR 12.6, GDPR 13.2.e).
 
-[font="sans-bold-14"]You understand that:[/font]
-The IP address is the only information processed that could reliably identify your natural person.
-Usernames are chosen freely on this service, can differ from or collide with names of other users on other services by Wildfire Games such as the Forums.
-Wildfire Games ask you to not publish personal data on this service, especially if you are below 16 years of age.
-User submitted content on the service is public, not verifiable to us and does not enable us to identify your natural person.
-Unless your data is stored for a legal obligation such as Abuse, your userdata will become anonymous if you stop using this service.
+[font="sans-bold-14"]User rights (GDPR 13):[/font]
+ 1. Contact Wildfire Games, by sending an email to webmaster at wildfiregames dot com (GDPR 13.1.a, GDPR 13.1.b).
+ 2. Right of access to their data (GDPR 15).
+    If you wish to access your data, contact Wildfire Games and provide your pseudonym (GDPR 11.2). We will then need to confirm your identity by asking to log in the service (GDPR 12.6, GDPR 13.2.e).
+    Data may be obtained in a portable, machine-readable format (GDPR 20).
+    The right to obtain a copy of your data does not affect the rights and freedoms of others (GDPR 15.4).
+ 3. Right to rectification of inaccurate data (GDPR 16).
+ 4. Right to erasure of your data if they are not relevant to the development of 0 A.D., if the data was processed unlawfully or illegaly or if the user objects to the processing and has overriding legitimate grounds (GDPR 17).
+ 5. Right to restriction of processing of your data if its accuracy is contested by the user or if the user needs the data in relation to legal claims (GDPR 18).
+ 6. Right to object to the processing of your data concerning them on grounds relating to their particular situation (GDPR 21).
+ 7. Right to lodge a complaint with a supervisory authority (GDPR 13.2.d, GDPR 77).
 
-[font="sans-bold-14"]If you wish to file personal data request in accordance with the General Data Protection Regulation:[/font]
-Please write an email to user-data@wildfiregames.com.
-You will have to authenticate yourself with the service to prevent abuse of personal data requests.
+[font="sans-bold-14"]You understand that:[/font]
+The IP address is the only information processed that could reliably identify your natural person. (GDPR 4.5)
+Usernames are chosen freely on this service, can differ from or collide with names of same or other users on other services run by Wildfire Games such as the Forums.
+User submitted content on the service is public, not verifiable to us and, according to the Terms of Use, must not enable us to identify your natural person.
+You will have to authenticate yourself with the service to enforce your rights (GDPR 12.6).
+
+[font="sans-bold-14"]Personal information disclosure:[/font]
+As a rule of thumb, Wildfire Games asks you to not publish personal data (real names, identification number, location data, discriminating factors, etc.) other than usernames on this service, especially if you are below 16 years of age.
+In case personal information about your own natural person was disclosed in the Lobby Chat, Wildfire Games will comply with your right to erasure and will edit out the data from the logs upon request. However, all users who were logged in the Chat at the time of disclosure will receive the information and you will have to enforce your rights to them if they wish to process it. Additionally:
+ 1. If another user disclosed the information, they will be banned for the service for violating the Terms of Use.
+ 2. If you disclosed the information yourself, Wildfire Games will comply with your request, but you will face a ban if you abusingly and repetitively disclose information that you wanted erased.
+
+[font="sans-bold-14"]Legal grounds of processing (GDPR 13.1.c):[/font]
+1. The processing is necessary for the performance of the service defined in this document (GDPR 6.1.b).
+2. Wildfire Games has legitimate interests in providing the service, including Playerlist, Lobby Chat, Gamelist, Statistics, Rating and Ranking, as part as its entertainment reason for being. Wildfire Games has legitimate interests in processing Feedback messages in order to further the development of 0 A.D. Wildfire Games has legitimate interests in providing the Moderation service to defend itself and its users against cyberattacks (GDPR 6.1.f).
+3. Wildfire Games does not process any further data for the service and does not ask for consent to further data processing (GDPR 6.1.a, GDPR 7, GDPR 8, GDPR 13.2.c).
+
+Wildfire Games obtains all player data from the user, or from a group of users in the case of match statistics (GDPR 14).
+Wildfire Games does not perform any automated decision making affecting natural persons (GDPR 22).
+Third-parties can receive Lobby Chat messages when they use the service. Wildfire Games does not share the rest of personal data with third-parties (GDPR 13.1.f).
+
+For further information on Wildfire Games Privacy Policies, visit https://trac.wildfiregames.com/wiki/UserDataProtection
