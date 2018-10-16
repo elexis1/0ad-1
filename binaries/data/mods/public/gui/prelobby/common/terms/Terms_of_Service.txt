@@ -1,6 +1,6 @@
 [font="sans-bold-18"]0 A.D. Empires Ascendant Multiplayer Lobby Terms of Service[/font]
 
-[font="sans-bold-14"]Document Date:[/font] 2018-08-20
+[font="sans-bold-14"]Document Date:[/font] 2018-09-25
 
 [font="sans-bold-14"]By using the 0 A.D. Multiplayer Lobby, you agree to:[/font]
 1. Only use the 0 A.D. Multiplayer Lobby with a software that does not modify the Terms and Conditions, their presentation or the agreement mechanism, unless authorized by a Wildfire Games team member.
@@ -11,5 +11,5 @@
 1. Moderate the 0 A.D. Multiplayer Lobby and enforce the Terms of Use.
 2. Appoint others to moderate the 0 A.D. Multiplayer Lobby.
 3. Discontinue or interrupt any part of the 0 A.D. Multiplayer Lobby at any time with or without prior announcement.
-4. Change or extend the 0 A.D. Multiplayer Lobby. When it affects personal data, users are provided with the new Terms and Conditions prior.
-5. Delete any 0 A.D. Multiplayer Lobby user accounts or data at any time with or without announcement except where a user has objected to the erasure of his or her personal data for performance of a legal claim.
+4. Change or extend the 0 A.D. Multiplayer Lobby. When it affects personal data, users are provided with the new Privacy Policy prior.
+5. Delete any 0 A.D. Multiplayer Lobby user accounts or data at any time with or without announcement except where a user has objected to the erasure of their personal data for performance of a legal claim.
