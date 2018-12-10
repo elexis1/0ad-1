@@ -2,7 +2,7 @@
 var MARGIN = 4;
 
 // Includes the main menu button
-const NUM_BUTTONS = 10;
+const NUM_BUTTONS = 11;
 
 // Regular menu buttons
 var BUTTON_HEIGHT = 32;
@@ -300,6 +300,17 @@ function resizeDiplomacyDialog()
 	size.bottom += heightOffset;
 
 	dialog.size = size;
+}
+
+function openNetworkDialog()
+{
+	closeOpenDialogs();
+	pauseGame();
+
+	Engine.PushGuiPage("page_networkreport.xml", {
+		"isController": g_IsController,
+		"playerAssignments": g_PlayerAssignments
+	});
 }
 
 function initChatWindow()
