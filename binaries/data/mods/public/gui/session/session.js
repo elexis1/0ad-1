@@ -1240,7 +1240,7 @@ function updatePlayerDisplay()
 
 	let orderHotkeyTooltip = Object.keys(viewablePlayerStates).length <= 1 ? "" :
 		"\n" + sprintf(translate("%(order)s: %(hotkey)s to change order."), {
-		"hotkey": setStringTags("\\[Click]", g_HotkeyTags),
+		"hotkey": setStringTags("\\[Click]", g_TooltipTextFormats.hotkey),
 		"order": tooltipSort == 0 ? translate("Unordered") : tooltipSort == 1 ? translate("Descending") : translate("Ascending")
 	});
 
