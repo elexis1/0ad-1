@@ -566,13 +566,10 @@ void CNetServerWorker::BroadcastClientPerformance()
 
 	for (CNetServerSession* addresseeSession : m_Sessions)
 	{
-		// Send to all clients except ones experiencing a timeout.
-		// Send the performance stanza to clients that finished the loading screen while
-		// the game is still waiting for other clients to finish the loading screen.
-		// TODO: const
+		// Skip disconnecting clients and clients in the loading screen.
 		if (addresseeSession->GetLastReceivedTime() >= 3000 ||
-		    ((addresseeSession->GetCurrState() != NSS_PREGAME || m_State != SERVER_STATE_PREGAME) &&
-		      addresseeSession->GetCurrState() != NSS_INGAME))
+		    addresseeSession->GetCurrState() < NSS_PREGAME ||
+			(addresseeSession->GetCurrState() == NSS_PREGAME && m_State == SERVER_STATE_LOADING))
 			continue;
 
 		CClientPerformanceMessage msg;

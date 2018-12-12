@@ -638,14 +638,14 @@ bool CNetClient::OnPlayerAssignment(void* context, CFsmEvent* event)
 		assignment.m_Status = message->m_Hosts[i].m_Status;
 		newPlayerAssignments[message->m_Hosts[i].m_GUID] = assignment;
 
-		if (client->m_ClientPerformance.find(message->m_Hosts[i].m_GUID) != client->m_ClientPerformance.end())
+		if (client->m_ClientPerformance.find(message->m_Hosts[i].m_GUID) == client->m_ClientPerformance.end())
 			client->m_ClientPerformance[message->m_Hosts[i].m_GUID] = std::make_tuple(0, 0, 0.d);
 	}
 
 	client->m_PlayerAssignments.swap(newPlayerAssignments);
 
 	for (std::map<std::string, std::tuple<u32, u32, double>>::iterator iter = client->m_ClientPerformance.begin(); iter != client->m_ClientPerformance.end(); ++iter)
-		if (client->m_PlayerAssignments.find(iter->first) != client->m_PlayerAssignments.end())
+		if (client->m_PlayerAssignments.find(iter->first) == client->m_PlayerAssignments.end())
 			client->m_ClientPerformance.erase(iter);
 
 	client->PostPlayerAssignmentsToScript();
