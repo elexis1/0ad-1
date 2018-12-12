@@ -12,6 +12,8 @@ const g_VictoryConditions = g_Settings && g_Settings.VictoryConditions;
 
 var g_GameSpeeds = getGameSpeedChoices(false);
 
+var g_NetworkDialogManager = new NetworkDialogManager();
+
 /**
  * Offer users to select playable civs only.
  * Load unselectable civs as they could appear in scenario maps.
@@ -1065,10 +1067,7 @@ var g_MiscControls = {
 	"networkButton": {
 		"onPress": () => function() {
 			if (g_IsNetworked)
-				Engine.PushGuiPage("page_networkreport.xml", {
-					"isController": g_IsController,
-					"playerAssignments": g_PlayerAssignments
-				});
+				g_NetworkDialogManager.open();
 		},
 		"hidden": () => !g_IsNetworked
 	},
@@ -1581,6 +1580,8 @@ function handleGamesetupMessage(message)
 
 	updateGUIObjects();
 
+	g_NetworkDialogManager.refresh();
+
 	hideLoadingWindow();
 }
 
@@ -1614,6 +1615,8 @@ function handlePlayerAssignmentMessage(message)
 		sendRegisterGameStanzaImmediate();
 	else
 		sendRegisterGameStanza();
+	
+	g_NetworkDialogManager.refresh();
 }
 
 function onClientJoin(newGUID, newAssignments)

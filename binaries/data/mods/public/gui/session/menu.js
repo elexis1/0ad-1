@@ -74,6 +74,8 @@ var g_SummarySelectedData;
 // Redefined every time someone makes a tribute (so we can save some data in a closure). Called in input.js handleInputBeforeGui.
 var g_FlushTributing = function() {};
 
+var g_NetworkDialogManager = new NetworkDialogManager();
+
 function initMenu()
 {
 	Engine.GetGUIObjectByName("menu").size = "100%-164 " + MENU_TOP + " 100% " + MENU_BOTTOM;
@@ -300,17 +302,6 @@ function resizeDiplomacyDialog()
 	size.bottom += heightOffset;
 
 	dialog.size = size;
-}
-
-function openNetworkDialog()
-{
-	closeOpenDialogs();
-	pauseGame();
-
-	Engine.PushGuiPage("page_networkreport.xml", {
-		"isController": g_IsController,
-		"playerAssignments": g_PlayerAssignments
-	});
 }
 
 function initChatWindow()

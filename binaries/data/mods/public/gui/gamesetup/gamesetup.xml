@@ -208,7 +208,7 @@
 				style="IconButton"
 				sprite="iconInfoGold"
 				sprite_over="iconInfoWhite"
-				size="100%-41 346 100%-25 362"
+				size="100%-41 378 100%-25 394"
 				hotkey="network"
 				z="100"
 			>

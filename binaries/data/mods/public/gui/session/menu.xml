@@ -106,7 +106,7 @@
 			tooltip_style="sessionToolTip"
 		>
 			<translatableAttribute id="caption">Network</translatableAttribute>
-			<action on="Press">openNetworkDialog();</action>
+			<action on="Press">g_NetworkDialogManager.open();</action>
 		</object>
 
 		<!-- Exit button -->

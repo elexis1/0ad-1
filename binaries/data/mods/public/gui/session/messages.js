@@ -754,6 +754,8 @@ function handlePlayerAssignmentsMessage(message)
 	updateGUIObjects();
 	updateChatAddressees();
 	sendLobbyPlayerlistUpdate();
+
+	g_NetworkDialogManager.refresh();
 }
 
 function onClientJoin(guid)

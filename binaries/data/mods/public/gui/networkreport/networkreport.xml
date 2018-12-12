@@ -7,7 +7,7 @@
 
 	<object type="image" sprite="ModernFade"/>
 
-	<object type="image" style="ModernWindow" size="50%-400 50%-250 50%+400 50%+250">
+	<object type="image" style="ModernDialog" size="50%-400 50%-250 50%+400 50%+250">
 
 		<action on="Tick">
 			onTick();
@@ -75,7 +75,7 @@
 		<object type="button" style="ModernButtonRed" size="100%-170 100%-48 100%-20 100%-20" hotkey="cancel">
 			<translatableAttribute id="caption">Close</translatableAttribute>
 			<action on="Press">
-				Engine.PopGuiPage();
+				Engine.PopGuiPageCB();
 			</action>
 			<!-- TODO: skip confirmation hotkey -->
 		</object>
