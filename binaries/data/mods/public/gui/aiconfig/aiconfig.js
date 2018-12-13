@@ -81,3 +81,8 @@ function returnAI(save = true)
 		"playerSlot": g_PlayerSlot
 	});
 }
+
+function hellworld()
+{
+	warn("CALLED")
+}

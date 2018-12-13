@@ -29,6 +29,7 @@ class CGUI;
 class IGUIPage
 {
 	friend class CGUI;
+	friend bool JSI_IGUIPage::CallFunction(JSContext* cx, uint UNUSED(argc), JS::Value* vp);
 
 public:
 	IGUIPage();
@@ -40,12 +41,12 @@ public:
 
 	JSObject* GetJSObject();
 
-	CStr HellWorld();
-
 protected:
 	CStr m_Name;
 
 	void SetGUI(CGUI* const& pGUI);
+
+	void CallFunction();
 
 private:
 	CGUI *m_pGUI;

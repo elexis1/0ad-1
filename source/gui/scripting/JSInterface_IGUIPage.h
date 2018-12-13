@@ -30,6 +30,7 @@ namespace JSI_IGUIPage
 	bool setProperty(JSContext* cx, JS::HandleObject obj, JS::HandleId id, bool UNUSED(strict), JS::MutableHandleValue vp);
 	bool construct(JSContext* cx, uint argc, JS::Value* vp);
 	void init(ScriptInterface& scriptInterface);
+	bool CallFunction(JSContext* cx, uint UNUSED(argc), JS::Value* vp);
 }
 
 #endif // INCLUDED_JSI_IGUIPAGE

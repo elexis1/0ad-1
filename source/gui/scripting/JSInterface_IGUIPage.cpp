@@ -21,6 +21,7 @@
 #include "JSInterface_GUITypes.h"
 
 #include "gui/IGUIObject.h"
+#include "gui/IGUIPage.h"
 #include "gui/CGUI.h"
 #include "gui/IGUIScrollBar.h"
 #include "gui/CList.h"
@@ -46,6 +47,7 @@ JSPropertySpec JSI_IGUIPage::JSI_props[] =
 
 JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 {
+	JS_FS("CallFunction", JSI_IGUIPage::CallFunction, 0, 0),
 	JS_FS_END
 };
 
@@ -83,5 +85,19 @@ bool JSI_IGUIPage::getProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(ob
 
 bool JSI_IGUIPage::setProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(obj), JS::HandleId UNUSED(id), bool UNUSED(strict), JS::MutableHandleValue UNUSED(vp))
 {
+	return true;
+}
+
+bool JSI_IGUIPage::CallFunction(JSContext* cx, uint UNUSED(argc), JS::Value* vp)
+{
+	JSAutoRequest rq(cx);
+	//JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
+
+	JS::RootedObject thisObj(cx, JS_THIS_OBJECT(cx, vp));
+
+	IGUIPage* e = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
+	if (!e)
+		return false;
+	e->CallFunction();
 	return true;
 }

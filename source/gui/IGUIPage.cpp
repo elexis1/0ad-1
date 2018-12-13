@@ -59,12 +59,18 @@ JSObject* IGUIPage::GetJSObject()
 	return m_JSPage.get();
 }
 
-CStr IGUIPage::HellWorld()
+void IGUIPage::CallFunction()
 {
-	return "hell world";
+	shared_ptr<ScriptInterface> scriptInterface = m_pGUI->GetScriptInterface();
+	JSContext* cx = scriptInterface->GetContext();
+	JSAutoRequest rq(cx);
+
+	JS::RootedValue data(cx);
+	JS::RootedValue global(cx, m_pGUI->GetGlobalObject());
+	scriptInterface->CallFunction(global, "hellworld", &data);
+	//return scriptInterface->StringifyJSON(&data, false);
 }
 
-void IGUIPage::TraceMember(JSTracer* trc)
+void IGUIPage::TraceMember(JSTracer* UNUSED(trc))
 {
 }
-
