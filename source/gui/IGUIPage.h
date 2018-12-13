@@ -46,7 +46,7 @@ protected:
 
 	void SetGUI(CGUI* const& pGUI);
 
-	void CallFunction();
+	bool CallFunction(uint argc, JS::Value* vp);
 
 private:
 	CGUI *m_pGUI;

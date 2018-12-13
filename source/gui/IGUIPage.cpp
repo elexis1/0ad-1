@@ -59,16 +59,29 @@ JSObject* IGUIPage::GetJSObject()
 	return m_JSPage.get();
 }
 
-void IGUIPage::CallFunction()
+bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 {
-	shared_ptr<ScriptInterface> scriptInterface = m_pGUI->GetScriptInterface();
-	JSContext* cx = scriptInterface->GetContext();
+	JSContext* cx = m_pGUI->GetScriptInterface()->GetContext();
 	JSAutoRequest rq(cx);
+
+	if (argc == 0)
+	{
+		JS_ReportError(cx, "GUIObject has no default constructor");
+		return false;
+	}
+
+	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+
+	std::wstring functionName;
+	if (!m_pGUI->GetScriptInterface()->FromJSVal(cx, args[0], functionName))
+		return false;
 
 	JS::RootedValue data(cx);
 	JS::RootedValue global(cx, m_pGUI->GetGlobalObject());
-	scriptInterface->CallFunction(global, "hellworld", &data);
-	//return scriptInterface->StringifyJSON(&data, false);
+	m_pGUI->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &data);
+
+	//return m_pGUI->GetScriptInterface()->StringifyJSON(&data, false);
+	return true;
 }
 
 void IGUIPage::TraceMember(JSTracer* UNUSED(trc))

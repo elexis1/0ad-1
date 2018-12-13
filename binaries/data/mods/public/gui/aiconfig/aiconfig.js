@@ -82,7 +82,7 @@ function returnAI(save = true)
 	});
 }
 
-function hellworld()
+function functionToCall(argument1)
 {
-	warn("CALLED")
+	warn("CALLED " + uneval(argument1))
 }

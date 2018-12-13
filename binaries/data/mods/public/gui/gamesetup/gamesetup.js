@@ -2436,7 +2436,7 @@ function openAIConfig(playerSlot)
 		"difficulty": g_GameAttributes.settings.PlayerData[playerSlot].AIDiff,
 		"behavior": g_GameAttributes.settings.PlayerData[playerSlot].AIBehavior
 	});
-	g_PageAIConfig.CallFunction();
+	g_PageAIConfig.CallFunction("functionToCall", { "myData": 3 });
 }
 
 /**

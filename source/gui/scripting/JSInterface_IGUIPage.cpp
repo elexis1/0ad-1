@@ -88,16 +88,20 @@ bool JSI_IGUIPage::setProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(ob
 	return true;
 }
 
-bool JSI_IGUIPage::CallFunction(JSContext* cx, uint UNUSED(argc), JS::Value* vp)
+bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
 	//JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
 
 	JS::RootedObject thisObj(cx, JS_THIS_OBJECT(cx, vp));
 
-	IGUIPage* e = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
-	if (!e)
+	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
+
+	if (!guiPage)
+	{
+		JS_ReportError(cx, "GUIPage is not defined!");
 		return false;
-	e->CallFunction();
-	return true;
+	}
+
+	return guiPage->CallFunction(argc, vp);
 }
