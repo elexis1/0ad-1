@@ -32,6 +32,7 @@
 class CGUI;
 class JSObject;
 class IGUIObject;
+class IGUIPage;
 struct CColor;
 struct SGUIIcon;
 
@@ -73,7 +74,7 @@ public:
 	 * and will still be drawn and receive tick events, but will not receive
 	 * user inputs.
 	 */
-	void PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
+	IGUIPage* PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
 
 	/**
 	 * Unload the currently active GUI page, and make the previous page active.

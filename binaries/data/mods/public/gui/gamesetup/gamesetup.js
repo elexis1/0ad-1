@@ -2423,17 +2423,20 @@ function updateGameAttributes()
 		updateGUIObjects();
 }
 
+var g_PageAIConfig;
+
 function openAIConfig(playerSlot)
 {
 	g_LastViewedAIPlayer = playerSlot;
 
-	Engine.PushGuiPage("page_aiconfig.xml", {
+	g_PageAIConfig = Engine.PushGuiPage("page_aiconfig.xml", {
 		"callback": "AIConfigCallback",
 		"playerSlot": playerSlot,
 		"id": g_GameAttributes.settings.PlayerData[playerSlot].AI,
 		"difficulty": g_GameAttributes.settings.PlayerData[playerSlot].AIDiff,
 		"behavior": g_GameAttributes.settings.PlayerData[playerSlot].AIBehavior
 	});
+	warn(uneval(Object.keys(g_PageAIConfig)));
 }
 
 /**
@@ -2441,6 +2444,7 @@ function openAIConfig(playerSlot)
  */
 function AIConfigCallback(ai)
 {
+	g_PageAIConfig = undefined;
 	g_LastViewedAIPlayer = -1;
 
 	if (!ai.save || !g_IsController)

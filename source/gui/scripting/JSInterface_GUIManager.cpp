@@ -21,14 +21,20 @@
 
 #include "gui/GUIManager.h"
 #include "gui/IGUIObject.h"
+#include "gui/IGUIPage.h"
 #include "ps/GameSetup/Config.h"
 #include "scriptinterface/ScriptInterface.h"
 
 // Note that the initData argument may only contain clonable data.
 // Functions aren't supported for example!
-void JSI_GUIManager::PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)
+JS::Value JSI_GUIManager::PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)
 {
-	g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
+	IGUIPage* guiPage = g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
+
+	if (!guiPage)
+		return JS::UndefinedValue();
+
+	return JS::ObjectValue(*guiPage->GetJSObject());
 }
 
 void JSI_GUIManager::SwitchGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)
@@ -79,7 +85,7 @@ CParamNode JSI_GUIManager::GetTemplate(ScriptInterface::CxPrivate* UNUSED(pCxPri
 
 void JSI_GUIManager::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
 {
-	scriptInterface.RegisterFunction<void, std::wstring, JS::HandleValue, &PushGuiPage>("PushGuiPage");
+	scriptInterface.RegisterFunction<JS::Value, std::wstring, JS::HandleValue, &PushGuiPage>("PushGuiPage");
 	scriptInterface.RegisterFunction<void, std::wstring, JS::HandleValue, &SwitchGuiPage>("SwitchGuiPage");
 	scriptInterface.RegisterFunction<void, &PopGuiPage>("PopGuiPage");
 	scriptInterface.RegisterFunction<void, JS::HandleValue, &PopGuiPageCB>("PopGuiPageCB");

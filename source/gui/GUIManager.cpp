@@ -19,8 +19,8 @@
 
 #include "GUIManager.h"
 
-#include "CGUI.h"
-
+#include "gui/CGUI.h"
+#include "gui/IGUIPage.h"
 #include "lib/timer.h"
 #include "ps/Filesystem.h"
 #include "ps/CLogger.h"
@@ -92,14 +92,14 @@ void CGUIManager::SwitchPage(const CStrW& pageName, ScriptInterface* srcScriptIn
 	PushPage(pageName, initDataClone);
 }
 
-void CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
+IGUIPage* CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
 {
 	m_PageStack.push_back(SGUIPage());
 	m_PageStack.back().name = pageName;
 	m_PageStack.back().initData = initData;
 	LoadPage(m_PageStack.back());
-
 	ResetCursor();
+	return m_PageStack.back().gui->GetIGUIPage();
 }
 
 void CGUIManager::PopPage()
