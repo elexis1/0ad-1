@@ -31,7 +31,6 @@ var g_AIControls = {
 
 function init(settings)
 {
-	warn(this.name);
 	g_PlayerSlot = settings.playerSlot;
 	g_GameAttributes = settings.gameAttributes;
 	updateGUIObjects();

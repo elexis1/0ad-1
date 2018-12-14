@@ -35,14 +35,11 @@ public:
 	IGUIPage();
 	virtual ~IGUIPage();
 
-	const CStr& GetName() const { return m_Name; }
-
-	void SetName(const CStr& Name) { m_Name = Name; }
+	CStrW GetName();
 
 	JSObject* GetJSObject();
 
 protected:
-	CStr m_Name;
 
 	void SetGUI(CGUI* const& pGUI);
 

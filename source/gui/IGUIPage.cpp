@@ -59,6 +59,14 @@ JSObject* IGUIPage::GetJSObject()
 	return m_JSPage.get();
 }
 
+CStrW IGUIPage::GetName()
+{
+	if (!m_pGUI)
+		return CStrW();
+
+	return m_pGUI->GetName();
+}
+
 bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 {
 	JSContext* cx = m_pGUI->GetScriptInterface()->GetContext();

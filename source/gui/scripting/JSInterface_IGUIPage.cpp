@@ -42,6 +42,7 @@ JSClass JSI_IGUIPage::JSI_class = {
 
 JSPropertySpec JSI_IGUIPage::JSI_props[] =
 {
+	{ "name", JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT, JSI_IGUIPage::GetName },
 	{ 0 }
 };
 
@@ -50,6 +51,24 @@ JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 	JS_FS("CallFunction", JSI_IGUIPage::CallFunction, 0, 0),
 	JS_FS_END
 };
+
+bool JSI_IGUIPage::GetName(JSContext* cx, uint UNUSED(argc), JS::Value* vp)
+{
+	JSAutoRequest rq(cx);
+	JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
+
+	JS::RootedObject thisObj(cx, JS_THIS_OBJECT(cx, vp));
+
+	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
+	if (!guiPage)
+		return false;
+
+	JS::RootedValue nameValue(cx);
+	ScriptInterface::ToJSVal(cx, &nameValue, guiPage->GetName());
+
+	rec.rval().set(nameValue);
+	return true;
+}
 
 bool JSI_IGUIPage::construct(JSContext* cx, uint argc, JS::Value* vp)
 {
@@ -91,11 +110,15 @@ bool JSI_IGUIPage::setProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(ob
 bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
+	//ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
 	//JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
 
+	// "this" is the parent GUI page, but it should be the child gui page!?
 	JS::RootedObject thisObj(cx, JS_THIS_OBJECT(cx, vp));
 
 	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
+
+	debug_printf("%s->CallFunction\n", utf8_from_wstring(guiPage->GetName()).c_str());
 
 	if (!guiPage)
 	{

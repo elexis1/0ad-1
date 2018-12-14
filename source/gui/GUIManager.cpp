@@ -181,6 +181,7 @@ void CGUIManager::LoadPage(SGUIPage& page)
 	page.gui.reset(new CGUI(m_ScriptRuntime));
 
 	page.gui->Initialize();
+	page.gui->SetName(page.name);
 
 	VfsPath path = VfsPath("gui") / page.name;
 	page.inputs.insert(path);
