@@ -1110,7 +1110,11 @@ var g_PlayerMiscElements = {
 	"playerConfig": {
 		"hidden": (playerIdx) => !g_GameAttributes.settings.PlayerData[playerIdx].AI,
 		"onPress": (playerIdx) => function() {
-			openAIConfig(playerIdx);
+			g_PageAIConfig = Engine.PushGuiPage("page_aiconfig.xml", {
+				"callback": "AIConfigCallback",
+				"playerSlot": playerIdx,
+				"gameAttributes": g_GameAttributes
+			});
 		},
 		"tooltip": (playerIdx) => sprintf(translate("Configure AI: %(description)s."), {
 			"description": translateAISettings(g_GameAttributes.settings.PlayerData[playerIdx])
@@ -2360,9 +2364,12 @@ function updateGUIObjects()
 	rightAlignCancelButton();
 	updateAutocompleteEntries();
 
-	g_IsInGuiUpdate = false;
+	if (g_PageAIConfig)
+		g_PageAIConfig.CallFunction("updatePage", {
+			"gameAttributes": g_GameAttributes
+		});
 
-	updateAIConfig();
+	g_IsInGuiUpdate = false;
 }
 
 function rightAlignCancelButton()
@@ -2416,22 +2423,6 @@ function updateGameAttributes()
 	}
 	else
 		updateGUIObjects();
-}
-
-function openAIConfig(playerSlot)
-{
-	g_PageAIConfig = Engine.PushGuiPage("page_aiconfig.xml", {
-		"callback": "AIConfigCallback",
-		"playerSlot": playerSlot,
-		"gameAttributes": g_GameAttributes
-	});
-}
-
-function updateAIConfig()
-{
-	g_PageAIConfig.CallFunction("updatePage", {
-		"gameAttributes": g_GameAttributes
-	});
 }
 
 /**

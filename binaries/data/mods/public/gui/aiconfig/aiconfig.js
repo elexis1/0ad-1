@@ -4,6 +4,7 @@
 const g_IsController = !Engine.HasNetClient() || Engine.HasNetServer();
 
 var g_PlayerSlot;
+var g_GameAttributes;
 
 var g_AIDescriptions = [{
 	"id": "",
@@ -16,28 +17,41 @@ var g_AIDescriptions = [{
 var g_AIControls = {
 	"aiSelection": {
 		"labels": g_AIDescriptions.map(ai => ai.data.name),
-		"selected": settings => g_AIDescriptions.findIndex(ai => ai.id == settings.id)
+		"selected": playerData => g_AIDescriptions.findIndex(ai => ai.id == playerData.AI)
 	},
 	"aiDifficulty": {
 		"labels": prepareForDropdown(g_Settings.AIDifficulties).Title,
-		"selected": settings => settings.difficulty
+		"selected": playerData => playerData.AIDiff
 	},
 	"aiBehavior": {
 		"labels": prepareForDropdown(g_Settings.AIBehaviors).Title,
-		"selected": settings => g_Settings.AIBehaviors.findIndex(b => b.Name == settings.behavior)
+		"selected": playerData => g_Settings.AIBehaviors.findIndex(b => b.Name == playerData.AIBehavior)
 	}
 };
 
 function init(settings)
 {
-	// Remember the player ID that we change the AI settings for
+	warn(this.name);
 	g_PlayerSlot = settings.playerSlot;
+	g_GameAttributes = settings.gameAttributes;
+	updateGUIObjects();
+}
 
+function updatePage(settings)
+{
+	warn(uneval(Object.keys(global)))
+	g_GameAttributes = settings.gameAttributes;
+	warn("Updated page");
+	updateGUIObjects()
+}
+
+function updateGUIObjects()
+{
 	for (let name in g_AIControls)
 	{
 		let control = Engine.GetGUIObjectByName(name);
 		control.list = g_AIControls[name].labels;
-		control.selected = g_AIControls[name].selected(settings);
+		control.selected = g_AIControls[name].selected(g_GameAttributes.settings.PlayerData[g_PlayerSlot]);
 		control.hidden = !g_IsController;
 
 		let label = Engine.GetGUIObjectByName(name + "Text");
@@ -80,10 +94,4 @@ function returnAI(save = true)
 		"behavior": g_Settings.AIBehaviors[Engine.GetGUIObjectByName("aiBehavior").selected].Name,
 		"playerSlot": g_PlayerSlot
 	});
-}
-
-function updatePage(argument1, argument2)
-{
-	warn("CALLED " + uneval(argument1) + ":" + uneval(argument2))
-	//init(settings);
 }
