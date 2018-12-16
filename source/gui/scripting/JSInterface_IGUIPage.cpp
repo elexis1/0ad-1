@@ -47,7 +47,6 @@ JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
-	JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
 
 	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 	if (!args.thisv().isObject())
@@ -58,11 +57,15 @@ bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
 	JS::RootedObject thisObj(cx, &args.thisv().toObject());
 	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
 	if (!guiPage)
+	{
+		JS_ReportError(cx, "JSI_IGUIPage::GetName: GUIPage is not defined!");
 		return false;
+	}
 
 	JS::RootedValue nameValue(cx);
 	ScriptInterface::ToJSVal(cx, &nameValue, guiPage->GetName());
 
+	JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
 	rec.rval().set(nameValue);
 	return true;
 }
@@ -71,7 +74,6 @@ bool JSI_IGUIPage::construct(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
 	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-	ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
 
 	if (args.length() == 0)
 	{
@@ -79,6 +81,7 @@ bool JSI_IGUIPage::construct(JSContext* cx, uint argc, JS::Value* vp)
 		return false;
 	}
 
+	ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
 	JS::RootedObject obj(cx, pScriptInterface->CreateCustomObject("GUIPage"));
 
 	// Store the IGUIPage in the JS object's 'private' area
@@ -124,7 +127,7 @@ bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
 
 	if (!guiPage)
 	{
-		JS_ReportError(cx, "GUIPage is not defined!");
+		JS_ReportError(cx, "JSI_IGUIPage::CallFunction: GUIPage is not defined!");
 		return false;
 	}
 
