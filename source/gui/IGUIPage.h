@@ -32,24 +32,20 @@ class IGUIPage
 	friend bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp);
 
 public:
-	IGUIPage();
-	virtual ~IGUIPage();
+       IGUIPage(CGUI* const& pGUI);
+       ~IGUIPage();
 
 	CStrW GetName();
 
 	JSObject* GetJSObject();
 
-protected:
 
-	void SetGUI(CGUI* const& pGUI);
 
 	bool CallFunction(uint argc, JS::Value* vp);
 
 private:
 	shared_ptr<CGUI> m_GUIPage;
 
-	// Internal storage for registered script handlers.
-	std::map<CStr, JS::Heap<JSObject*>> m_ScriptHandlers;
 
 	// Cached JSObject representing this GUI page
 	JS::PersistentRootedObject m_JSPage;

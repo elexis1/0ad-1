@@ -287,9 +287,7 @@ CGUI::CGUI(const shared_ptr<ScriptRuntime>& runtime)
 	m_ScriptInterface->LoadGlobalScripts();
 	m_BaseObject = new CGUIDummyObject;
 	m_BaseObject->SetGUI(this);
-
-	m_IGUIPage = new IGUIPage();
-	m_IGUIPage->SetGUI(this);
+	m_IGUIPage = new IGUIPage(this);
 }
 
 CGUI::~CGUI()

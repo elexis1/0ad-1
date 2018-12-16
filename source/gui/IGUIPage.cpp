@@ -28,21 +28,17 @@
 #include "ps/Profile.h"
 #include "scriptinterface/ScriptInterface.h"
 
-IGUIPage::IGUIPage()
+IGUIPage::IGUIPage(CGUI* const& pGUI)
 {
+	if (!m_GUIPage)
+		JS_AddExtraGCRootsTracer(pGUI->GetScriptInterface()->GetJSRuntime(), Trace, this);
+	m_GUIPage.reset(pGUI);
 }
 
 IGUIPage::~IGUIPage()
 {
 	if (m_GUIPage)
 		JS_RemoveExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
-}
-
-void IGUIPage::SetGUI(CGUI* const& pGUI)
-{
-	if (!m_GUIPage)
-		JS_AddExtraGCRootsTracer(pGUI->GetScriptInterface()->GetJSRuntime(), Trace, this);
-	m_GUIPage.reset(pGUI);
 }
 
 JSObject* IGUIPage::GetJSObject()
