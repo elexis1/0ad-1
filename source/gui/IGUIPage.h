@@ -46,7 +46,7 @@ protected:
 	bool CallFunction(uint argc, JS::Value* vp);
 
 private:
-	CGUI *m_pGUI;
+	shared_ptr<CGUI> m_GUIPage;
 
 	// Internal storage for registered script handlers.
 	std::map<CStr, JS::Heap<JSObject*>> m_ScriptHandlers;

@@ -20,6 +20,7 @@
 #include "IGUIPage.h"
 
 #include "gui/GUI.h"
+#include "gui/GUIManager.h"
 #include "gui/scripting/JSInterface_GUITypes.h"
 #include "gui/scripting/JSInterface_IGUIPage.h"
 #include "ps/GameSetup/Config.h"
@@ -28,32 +29,31 @@
 #include "scriptinterface/ScriptInterface.h"
 
 IGUIPage::IGUIPage()
- : m_pGUI(NULL)
 {
 }
 
 IGUIPage::~IGUIPage()
 {
-	if (m_pGUI)
-		JS_RemoveExtraGCRootsTracer(m_pGUI->GetScriptInterface()->GetJSRuntime(), Trace, this);
+	if (m_GUIPage)
+		JS_RemoveExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
 }
 
 void IGUIPage::SetGUI(CGUI* const& pGUI)
 {
-	if (!m_pGUI)
+	if (!m_GUIPage)
 		JS_AddExtraGCRootsTracer(pGUI->GetScriptInterface()->GetJSRuntime(), Trace, this);
-	m_pGUI = pGUI;
+	m_GUIPage.reset(pGUI);
 }
 
 JSObject* IGUIPage::GetJSObject()
 {
-	JSContext* cx = m_pGUI->GetScriptInterface()->GetContext();
+	JSContext* cx = m_GUIPage->GetScriptInterface()->GetContext();
 	JSAutoRequest rq(cx);
 	// TODO: Would be nice to
 	// not have these objects hang around forever using up memory, though.
 	if (!m_JSPage.initialized())
 	{
-		m_JSPage.init(cx, m_pGUI->GetScriptInterface()->CreateCustomObject("GUIPage"));
+		m_JSPage.init(cx, m_GUIPage->GetScriptInterface()->CreateCustomObject("GUIPage"));
 		JS_SetPrivate(m_JSPage.get(), this);
 	}
 	return m_JSPage.get();
@@ -61,15 +61,15 @@ JSObject* IGUIPage::GetJSObject()
 
 CStrW IGUIPage::GetName()
 {
-	if (!m_pGUI)
+	if (!m_GUIPage)
 		return CStrW();
 
-	return m_pGUI->GetName();
+	return m_GUIPage->GetName();
 }
 
 bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 {
-	JSContext* cx = m_pGUI->GetScriptInterface()->GetContext();
+	JSContext* cx = m_GUIPage->GetScriptInterface()->GetContext();
 	JSAutoRequest rq(cx);
 
 	if (argc == 0)
@@ -81,13 +81,21 @@ bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
 	std::wstring functionName;
-	if (!m_pGUI->GetScriptInterface()->FromJSVal(cx, args[0], functionName))
+	if (!ScriptInterface::FromJSVal(cx, args[0], functionName))
 		return false;
 
-	JS::RootedValue global(cx, m_pGUI->GetGlobalObject());
+
+	// Perpetuate silly workaround
+	shared_ptr<CGUI> oldGUI = g_GUI->m_CurrentGUI;
+	g_GUI->m_CurrentGUI = m_GUIPage;
+
+	JS::RootedValue global(cx, m_GUIPage->GetGlobalObject());
 	JS::RootedValue arg(cx, argc > 1 ? args[1] : JS::UndefinedValue());
 	JS::RootedValue returnValue(cx);
-	m_pGUI->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
+	m_GUIPage->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
+
+	g_GUI->m_CurrentGUI = oldGUI;
+
 	return true;
 }
 

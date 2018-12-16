@@ -47,6 +47,8 @@ struct SGUIIcon;
  */
 class CGUIManager
 {
+	friend class IGUIPage; // used by CallFunction
+
 	NONCOPYABLE(CGUIManager);
 public:
 	CGUIManager();
@@ -150,6 +152,9 @@ public:
 	 */
 	const CParamNode& GetTemplate(const std::string& templateName);
 
+protected:
+	shared_ptr<CGUI> m_CurrentGUI; // used to latch state during TickObjects/LoadPage (this is entirely ugly)
+
 private:
 	struct SGUIPage
 	{
@@ -167,7 +172,6 @@ private:
 
 	shared_ptr<CGUI> top() const;
 
-	shared_ptr<CGUI> m_CurrentGUI; // used to latch state during TickObjects/LoadPage (this is kind of ugly)
 	shared_ptr<ScriptRuntime> m_ScriptRuntime;
 	shared_ptr<ScriptInterface> m_ScriptInterface;
 
