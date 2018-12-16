@@ -107,8 +107,8 @@ bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
 
 	// "this" is the parent GUI page, but it should be the child gui page!?
 	JS::RootedObject thisObj(cx, JS_THIS_OBJECT(cx, vp));
+	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL); // This thing segfaults
 
-	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
 
 	debug_printf("%s->CallFunction\n", utf8_from_wstring(guiPage->GetName()).c_str());
 
