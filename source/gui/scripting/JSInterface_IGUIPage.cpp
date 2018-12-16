@@ -18,19 +18,11 @@
 #include "precompiled.h"
 
 #include "JSInterface_IGUIPage.h"
-#include "JSInterface_GUITypes.h"
 
-#include "gui/IGUIObject.h"
-#include "gui/IGUIPage.h"
 #include "gui/CGUI.h"
-#include "gui/IGUIScrollBar.h"
-#include "gui/CList.h"
+#include "gui/IGUIPage.h"
 #include "gui/GUIManager.h"
-
-#include "ps/CLogger.h"
-
 #include "scriptinterface/ScriptInterface.h"
-#include "scriptinterface/ScriptExtraHeaders.h"
 
 JSClass JSI_IGUIPage::JSI_class = {
 	"GUIPage", JSCLASS_HAS_PRIVATE,
