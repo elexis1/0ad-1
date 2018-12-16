@@ -44,13 +44,18 @@ JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 	JS_FS_END
 };
 
-bool JSI_IGUIPage::GetName(JSContext* cx, uint UNUSED(argc), JS::Value* vp)
+bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
 	JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
 
-	JS::RootedObject thisObj(cx, JS_THIS_OBJECT(cx, vp));
-
+	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+	if (!args.thisv().isObject())
+	{
+		JS_ReportError(cx, "Called on incompatible object!");
+		return false;
+	}
+	JS::RootedObject thisObj(cx, &args.thisv().toObject());
 	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
 	if (!guiPage)
 		return false;
@@ -105,8 +110,13 @@ bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
 	//ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
 	//JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
 
-	// "this" is the parent GUI page, but it should be the child gui page!?
-	JS::RootedObject thisObj(cx, JS_THIS_OBJECT(cx, vp));
+	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+	if (!args.thisv().isObject())
+	{
+		JS_ReportError(cx, "Called on incompatible object!");
+		return false;
+	}
+	JS::RootedObject thisObj(cx, &args.thisv().toObject());
 	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL); // This thing segfaults
 
 
