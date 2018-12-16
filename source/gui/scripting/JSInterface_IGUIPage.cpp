@@ -34,17 +34,17 @@ JSClass JSI_IGUIPage::JSI_class = {
 
 JSPropertySpec JSI_IGUIPage::JSI_props[] =
 {
-	{ "name", JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT, JSI_IGUIPage::GetName },
+	{ "name", JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT, JSI_IGUIPage::getName },
 	{ 0 }
 };
 
 JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 {
-	JS_FS("CallFunction", JSI_IGUIPage::CallFunction, 0, 0),
+	JS_FS("CallFunction", JSI_IGUIPage::callFunction, 0, 0),
 	JS_FS_END
 };
 
-bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
+bool JSI_IGUIPage::getName(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
 
@@ -58,7 +58,7 @@ bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
 	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
 	if (!guiPage)
 	{
-		JS_ReportError(cx, "JSI_IGUIPage::GetName: GUIPage is not defined!");
+		JS_ReportError(cx, "JSI_IGUIPage::getName: GUIPage is not defined!");
 		return false;
 	}
 
@@ -107,7 +107,7 @@ bool JSI_IGUIPage::setProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(ob
 	return true;
 }
 
-bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
+bool JSI_IGUIPage::callFunction(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
 	//ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;

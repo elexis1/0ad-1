@@ -26,12 +26,13 @@ namespace JSI_IGUIPage
 	extern JSClass JSI_class;
 	extern JSPropertySpec JSI_props[];
 	extern JSFunctionSpec JSI_methods[];
-	bool GetName(JSContext* cx, uint argc, JS::Value*);
+
+	bool getName(JSContext* cx, uint argc, JS::Value*);
 	bool getProperty(JSContext* cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
 	bool setProperty(JSContext* cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 	bool construct(JSContext* cx, uint argc, JS::Value* vp);
 	void init(ScriptInterface& scriptInterface);
-	bool CallFunction(JSContext* cx, uint argc, JS::Value* vp);
+	bool callFunction(JSContext* cx, uint argc, JS::Value* vp);
 }
 
 #endif // INCLUDED_JSI_IGUIPAGE

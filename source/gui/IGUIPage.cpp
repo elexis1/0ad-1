@@ -55,7 +55,7 @@ JSObject* IGUIPage::GetJSObject()
 	return m_JSPage.get();
 }
 
-CStrW IGUIPage::GetName()
+const CStrW IGUIPage::GetName()
 {
 	if (!m_GUIPage)
 		return CStrW();

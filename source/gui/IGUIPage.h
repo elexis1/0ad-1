@@ -26,28 +26,42 @@
 #include <vector>
 
 class CGUI;
+
 class IGUIPage
 {
 	friend class CGUI;
-	friend bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp);
+	friend bool JSI_IGUIPage::callFunction(JSContext* cx, uint argc, JS::Value* vp);
 
 public:
        IGUIPage(CGUI* const& pGUI);
        ~IGUIPage();
 
-	CStrW GetName();
 
+	/**
+	 * Exposes the properties and functions of the GUI page to JS.
+	 */
 	JSObject* GetJSObject();
 
+	/**
+	 * Get name passed to PushPage, allows JS to identify pages without keeping global references.
+	 */
+	const CStrW GetName();
 
-
+	/**
+	 * Call a JS function given in the first argument and pass the optional second argument.
+	 */
 	bool CallFunction(uint argc, JS::Value* vp);
 
 private:
+
+	/**
+	 * JS functions of the GUI page operate on this instance.
+	 */
 	shared_ptr<CGUI> m_GUIPage;
 
-
-	// Cached JSObject representing this GUI page
+	/**
+	 * Cached JSObject representing this GUI page.
+	 */
 	JS::PersistentRootedObject m_JSPage;
 
 	static void Trace(JSTracer* trc, void* data)
