@@ -57,7 +57,7 @@ private:
 	/**
 	 * JS functions of the GUI page operate on this instance.
 	 */
-	shared_ptr<CGUI> m_GUIPage;
+	CGUI* m_GUIPage;
 
 	/**
 	 * Cached JSObject representing this GUI page.

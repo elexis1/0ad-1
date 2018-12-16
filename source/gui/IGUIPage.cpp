@@ -30,15 +30,14 @@
 
 IGUIPage::IGUIPage(CGUI* const& pGUI)
 {
-	if (!m_GUIPage)
-		JS_AddExtraGCRootsTracer(pGUI->GetScriptInterface()->GetJSRuntime(), Trace, this);
-	m_GUIPage.reset(pGUI);
+	m_GUIPage = pGUI;
+	JS_AddExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
 }
 
 IGUIPage::~IGUIPage()
 {
-	if (m_GUIPage)
-		JS_RemoveExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
+	JS_RemoveExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
+	m_GUIPage = nullptr;
 }
 
 JSObject* IGUIPage::GetJSObject()
@@ -80,10 +79,9 @@ bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 	if (!ScriptInterface::FromJSVal(cx, args[0], functionName))
 		return false;
 
-
 	// Perpetuate silly workaround
 	shared_ptr<CGUI> oldGUI = g_GUI->m_CurrentGUI;
-	g_GUI->m_CurrentGUI = m_GUIPage;
+	g_GUI->m_CurrentGUI.reset(m_GUIPage);
 
 	JS::RootedValue global(cx, m_GUIPage->GetGlobalObject());
 	JS::RootedValue arg(cx, argc > 1 ? args[1] : JS::UndefinedValue());
