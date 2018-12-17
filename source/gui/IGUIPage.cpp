@@ -32,6 +32,13 @@ IGUIPage::IGUIPage(CGUI* const& pGUI)
 {
 	m_GUIPage = pGUI;
 	JS_AddExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
+
+	// TODO: Would be nice to
+	// not have these objects hang around forever using up memory, though.
+	JSContext* cx = m_GUIPage->GetScriptInterface()->GetContext();
+	JSAutoRequest rq(cx);
+	m_JSPage.init(cx, m_GUIPage->GetScriptInterface()->CreateCustomObject("GUIPage"));
+	JS_SetPrivate(m_JSPage.get(), this);
 }
 
 IGUIPage::~IGUIPage()
@@ -42,15 +49,6 @@ IGUIPage::~IGUIPage()
 
 JSObject* IGUIPage::GetJSObject()
 {
-	JSContext* cx = m_GUIPage->GetScriptInterface()->GetContext();
-	JSAutoRequest rq(cx);
-	// TODO: Would be nice to
-	// not have these objects hang around forever using up memory, though.
-	if (!m_JSPage.initialized())
-	{
-		m_JSPage.init(cx, m_GUIPage->GetScriptInterface()->CreateCustomObject("GUIPage"));
-		JS_SetPrivate(m_JSPage.get(), this);
-	}
 	return m_JSPage.get();
 }
 

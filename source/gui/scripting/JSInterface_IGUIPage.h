@@ -19,7 +19,6 @@
 #define INCLUDED_JSI_IGUIPAGE
 
 #include "scriptinterface/ScriptInterface.h"
-#include "ps/CStr.h"
 
 namespace JSI_IGUIPage
 {

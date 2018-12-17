@@ -38,9 +38,7 @@ function init(settings)
 
 function updatePage(settings)
 {
-	warn(uneval(Object.keys(global)))
 	g_GameAttributes = settings.gameAttributes;
-	warn("Updated page");
 	updateGUIObjects()
 }
 
