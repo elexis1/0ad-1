@@ -252,6 +252,13 @@ void CGUIManager::LoadPage(SGUIPage& page)
 	if (hotloadData)
 		scriptInterface->ReadStructuredClone(hotloadData, &hotloadDataVal);
 
+	/**
+	 * This allows calling the CallFunction function from the same page, and it doesn't segfault.
+	 * If CallFunction is called from the parent page, it does segfault.
+	 */
+	JS::RootedValue meh(cx, JS::ObjectValue(*page.gui->GetIGUIPage()->GetJSObject()));
+	scriptInterface->SetProperty(initDataVal, "page", meh);
+
 	if (scriptInterface->HasProperty(global, "init") &&
 	    !scriptInterface->CallFunctionVoid(global, "init", initDataVal, hotloadDataVal))
 		LOGERROR("GUI page '%s': Failed to call init() function", utf8_from_wstring(page.name));
