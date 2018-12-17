@@ -76,7 +76,7 @@ public:
 	 * and will still be drawn and receive tick events, but will not receive
 	 * user inputs.
 	 */
-	IGUIPage* PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
+	shared_ptr<IGUIPage> PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
 
 	/**
 	 * Unload the currently active GUI page, and make the previous page active.
@@ -166,6 +166,7 @@ private:
 		CStrW callbackPageName;
 
 		shared_ptr<CGUI> gui; // the actual GUI page
+		shared_ptr<IGUIPage> igui; // JS interface
 	};
 
 	void LoadPage(SGUIPage& page);

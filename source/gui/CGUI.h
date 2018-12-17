@@ -47,7 +47,6 @@ struct SGUIStyle
 
 class JSObject; // The GUI stores a JSObject*, so needs to know that JSObject exists
 class IGUIObject;
-class IGUIPage;
 class CGUISpriteInstance;
 struct SGUIText;
 struct CColor;
@@ -168,11 +167,6 @@ public:
 	 * @return Matching object, or NULL
 	 */
 	IGUIObject* FindObjectByName(const CStr& Name) const;
-
-	/**
-	 * Returns the GUI page, allowing the parent GUI page to communicate with the child GUI page.
-	 */
-	IGUIPage* GetIGUIPage() const { return m_IGUIPage; }
 
 	void SetName(CStrW name) { m_Name = name; }
 	const CStrW& GetName() const { return m_Name; }
@@ -604,8 +598,6 @@ private:
 	map_pObjects m_pAllObjects;
 
 	CStrW m_Name;
-
-	IGUIPage* m_IGUIPage;
 
 	/**
 	 * Number of object that has been given name automatically.

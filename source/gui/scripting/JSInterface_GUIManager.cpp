@@ -29,7 +29,7 @@
 // Functions aren't supported for example!
 JS::Value JSI_GUIManager::PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)
 {
-	IGUIPage* guiPage = g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
+	shared_ptr<IGUIPage> guiPage = g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
 
 	if (!guiPage)
 		return JS::UndefinedValue();

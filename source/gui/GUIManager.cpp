@@ -92,14 +92,14 @@ void CGUIManager::SwitchPage(const CStrW& pageName, ScriptInterface* srcScriptIn
 	PushPage(pageName, initDataClone);
 }
 
-IGUIPage* CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
+shared_ptr<IGUIPage> CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
 {
 	m_PageStack.push_back(SGUIPage());
 	m_PageStack.back().name = pageName;
 	m_PageStack.back().initData = initData;
 	LoadPage(m_PageStack.back());
 	ResetCursor();
-	return m_PageStack.back().gui->GetIGUIPage();
+	return m_PageStack.back().igui;
 }
 
 void CGUIManager::PopPage()
@@ -179,6 +179,7 @@ void CGUIManager::LoadPage(SGUIPage& page)
 
 	page.inputs.clear();
 	page.gui.reset(new CGUI(m_ScriptRuntime));
+	page.igui.reset(new IGUIPage(page.gui));
 
 	page.gui->Initialize();
 	page.gui->SetName(page.name);
@@ -256,7 +257,7 @@ void CGUIManager::LoadPage(SGUIPage& page)
 	 * This allows calling the CallFunction function from the same page, and it doesn't segfault.
 	 * If CallFunction is called from the parent page, it does segfault.
 	 */
-	JS::RootedValue meh(cx, JS::ObjectValue(*page.gui->GetIGUIPage()->GetJSObject()));
+	JS::RootedValue meh(cx, JS::ObjectValue(*page.igui->GetJSObject()));
 	scriptInterface->SetProperty(initDataVal, "page", meh);
 
 	if (scriptInterface->HasProperty(global, "init") &&

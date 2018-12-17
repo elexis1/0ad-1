@@ -25,7 +25,7 @@
 #include "gui/scripting/JSInterface_IGUIPage.h"
 #include "scriptinterface/ScriptInterface.h"
 
-IGUIPage::IGUIPage(CGUI* const& pGUI)
+IGUIPage::IGUIPage(shared_ptr<CGUI> pGUI)
 {
 	m_GUIPage = pGUI;
 	JS_AddExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
@@ -41,7 +41,7 @@ IGUIPage::IGUIPage(CGUI* const& pGUI)
 IGUIPage::~IGUIPage()
 {
 	JS_RemoveExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
-	m_GUIPage = nullptr;
+	m_JSPage.reset();
 }
 
 JSObject* IGUIPage::GetJSObject()
@@ -76,11 +76,12 @@ bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 
 	// Perpetuate silly workaround
 	shared_ptr<CGUI> oldGUI = g_GUI->m_CurrentGUI;
-	g_GUI->m_CurrentGUI.reset(m_GUIPage);
+	 g_GUI->m_CurrentGUI = m_GUIPage;
 
 	JS::RootedValue global(cx, m_GUIPage->GetGlobalObject());
 	JS::RootedValue arg(cx, argc > 1 ? args[1] : JS::UndefinedValue());
 	JS::RootedValue returnValue(cx);
+
 	m_GUIPage->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
 
 	g_GUI->m_CurrentGUI = oldGUI;

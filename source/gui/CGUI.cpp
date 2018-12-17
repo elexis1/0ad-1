@@ -36,7 +36,6 @@
 #include "CSlider.h"
 #include "CText.h"
 #include "CTooltip.h"
-#include "IGUIPage.h"
 #include "MiniMap.h"
 
 #include "graphics/FontMetrics.h"
@@ -287,7 +286,6 @@ CGUI::CGUI(const shared_ptr<ScriptRuntime>& runtime)
 	m_ScriptInterface->LoadGlobalScripts();
 	m_BaseObject = new CGUIDummyObject;
 	m_BaseObject->SetGUI(this);
-	m_IGUIPage = new IGUIPage(this);
 }
 
 CGUI::~CGUI()
@@ -296,8 +294,6 @@ CGUI::~CGUI()
 
 	if (m_BaseObject)
 		delete m_BaseObject;
-
-	delete m_IGUIPage;
 }
 
 IGUIObject* CGUI::ConstructObject(const CStr& str)

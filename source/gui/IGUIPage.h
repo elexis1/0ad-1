@@ -39,7 +39,7 @@ class IGUIPage
 	friend bool JSI_IGUIPage::callFunction(JSContext* cx, uint argc, JS::Value* vp);
 
 public:
-       IGUIPage(CGUI* const& pGUI);
+       IGUIPage(shared_ptr<CGUI> pGUI);
        ~IGUIPage();
 
 	/**
@@ -62,7 +62,7 @@ private:
 	/**
 	 * JS functions of the GUI page operate on this instance.
 	 */
-	CGUI* m_GUIPage;
+	shared_ptr<CGUI> m_GUIPage;
 
 	/**
 	 * Cached JSObject representing this GUI page.
