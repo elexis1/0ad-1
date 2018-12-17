@@ -41,6 +41,7 @@ JSPropertySpec JSI_IGUIPage::JSI_props[] =
 JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 {
 	JS_FS("CallFunction", JSI_IGUIPage::callFunction, 0, 0),
+	JS_FS("getName", JSI_IGUIPage::getName, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
 	JS_FS_END
 };
 
@@ -54,6 +55,7 @@ bool JSI_IGUIPage::getName(JSContext* cx, uint argc, JS::Value* vp)
 		JS_ReportError(cx, "Called on incompatible object!");
 		return false;
 	}
+
 	JS::RootedObject thisObj(cx, &args.thisv().toObject());
 	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
 	if (!guiPage)
@@ -109,6 +111,7 @@ bool JSI_IGUIPage::setProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(ob
 
 bool JSI_IGUIPage::callFunction(JSContext* cx, uint argc, JS::Value* vp)
 {
+       return true;
 	JSAutoRequest rq(cx);
 	//ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
 	//JS::CallReceiver rec = JS::CallReceiverFromVp(vp);

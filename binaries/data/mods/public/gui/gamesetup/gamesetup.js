@@ -1115,6 +1115,8 @@ var g_PlayerMiscElements = {
 				"playerSlot": playerIdx,
 				"gameAttributes": g_GameAttributes
 			});
+			for (let i = 0; i < 20000; ++i)
+				g_PageAIConfig.getName();
 		},
 		"tooltip": (playerIdx) => sprintf(translate("Configure AI: %(description)s."), {
 			"description": translateAISettings(g_GameAttributes.settings.PlayerData[playerIdx])
@@ -2365,9 +2367,14 @@ function updateGUIObjects()
 	updateAutocompleteEntries();
 
 	if (g_PageAIConfig)
+	{
+		//warn(g_PageAIConfig.getName());
+		//warn(g_PageAIConfig.name);
+		if (false)
 		g_PageAIConfig.CallFunction("updatePage", {
 			"gameAttributes": g_GameAttributes
 		});
+	}
 
 	g_IsInGuiUpdate = false;
 }
