@@ -23,9 +23,6 @@
 #include "gui/GUIManager.h"
 #include "gui/scripting/JSInterface_GUITypes.h"
 #include "gui/scripting/JSInterface_IGUIPage.h"
-#include "ps/GameSetup/Config.h"
-#include "ps/CLogger.h"
-#include "ps/Profile.h"
 #include "scriptinterface/ScriptInterface.h"
 
 IGUIPage::IGUIPage(CGUI* const& pGUI)

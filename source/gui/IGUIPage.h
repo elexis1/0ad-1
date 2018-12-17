@@ -27,6 +27,12 @@
 
 class CGUI;
 
+/**
+ * This class implements the JS object whose functions call into the CGUI functions of that page.
+ *
+ * The JS object is accessible from the parent GUI (and only from the parent GUI) and
+ * allows it call functions in the given page.
+ */
 class IGUIPage
 {
 	friend class CGUI;
@@ -35,7 +41,6 @@ class IGUIPage
 public:
        IGUIPage(CGUI* const& pGUI);
        ~IGUIPage();
-
 
 	/**
 	 * Exposes the properties and functions of the GUI page to JS.
