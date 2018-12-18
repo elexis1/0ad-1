@@ -2368,14 +2368,9 @@ function updateGUIObjects()
 	updateAutocompleteEntries();
 
 	if (g_PageAIConfig)
-	{
-		//warn(g_PageAIConfig.getName());
-		//warn(g_PageAIConfig.name);
-		if (false)
 		g_PageAIConfig.CallFunction("updatePage", {
 			"gameAttributes": g_GameAttributes
 		});
-	}
 
 	g_IsInGuiUpdate = false;
 }

@@ -102,7 +102,7 @@ bool JSI_IGUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
 
 	JSContext* cxDestination = gui->GetScriptInterface()->GetContext();
 	JS::RootedValue global(cxDestination, gui->GetGlobalObject());
-	JS::RootedValue arg(cxDestination, /*argc > 1 ? gui->GetScriptInterface()->CloneValueFromOtherContext(*ScriptInterface::GetScriptInterfaceAndCBData(cxSource)->pScriptInterface, args[1]) : */JS::UndefinedValue());
+	JS::RootedValue arg(cxDestination, argc > 1 ? gui->GetScriptInterface()->CloneValueFromOtherContext(*ScriptInterface::GetScriptInterfaceAndCBData(cxSource)->pScriptInterface, args[1]) : JS::UndefinedValue());
 	JS::RootedValue returnValue(cxDestination);
 
 	gui->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
