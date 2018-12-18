@@ -257,8 +257,8 @@ void CGUIManager::LoadPage(SGUIPage& page)
 	 * This allows calling the CallFunction function from the same page, and it doesn't segfault.
 	 * If CallFunction is called from the parent page, it does segfault.
 	 */
-	JS::RootedValue meh(cx, JS::ObjectValue(*page.igui->GetJSObject()));
-	scriptInterface->SetProperty(initDataVal, "page", meh);
+	JS::RootedValue pageValue(cx, page.igui->GetJSPage());
+	scriptInterface->SetProperty(initDataVal, "page", pageValue);
 
 	if (scriptInterface->HasProperty(global, "init") &&
 	    !scriptInterface->CallFunctionVoid(global, "init", initDataVal, hotloadDataVal))

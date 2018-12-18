@@ -36,11 +36,11 @@ class CGUI;
 class IGUIPage
 {
 	friend class CGUI;
-	friend bool JSI_IGUIPage::callFunction(JSContext* cx, uint argc, JS::Value* vp);
+	friend bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp);
 
 public:
-       IGUIPage(shared_ptr<CGUI> pGUI);
-       ~IGUIPage();
+	IGUIPage(shared_ptr<CGUI> pGUI);
+	~IGUIPage();
 
 	/**
 	 * Exposes the properties and functions of the GUI page to JS.

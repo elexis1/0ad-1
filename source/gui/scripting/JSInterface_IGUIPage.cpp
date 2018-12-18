@@ -26,26 +26,30 @@
 
 JSClass JSI_IGUIPage::JSI_class = {
 	"GUIPage", JSCLASS_HAS_PRIVATE,
-	nullptr, nullptr,
-	JSI_IGUIPage::getProperty, JSI_IGUIPage::setProperty,
 	nullptr, nullptr, nullptr, nullptr,
-	nullptr, nullptr, JSI_IGUIPage::construct, nullptr
+	nullptr, nullptr, nullptr, nullptr,
+	nullptr, nullptr, JSI_IGUIPage::ConstructInstance, nullptr
 };
 
 JSPropertySpec JSI_IGUIPage::JSI_props[] =
 {
-	{ "name", JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT, JSI_IGUIPage::getName },
+	{ "name", JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT, JSI_IGUIPage::GetName },
 	{ 0 }
 };
 
 JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 {
-	JS_FS("CallFunction", JSI_IGUIPage::callFunction, 0, 0),
-	JS_FS("getName", JSI_IGUIPage::getName, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
+	JS_FS("GetName", JSI_IGUIPage::GetName, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
+	JS_FS("CallFunction", JSI_IGUIPage::CallFunction, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
 	JS_FS_END
 };
 
-bool JSI_IGUIPage::getName(JSContext* cx, uint argc, JS::Value* vp)
+void JSI_IGUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
+{
+	scriptInterface.DefineCustomObjectType(&JSI_class, ConstructInstance, 1, JSI_props, JSI_methods, NULL, NULL);
+}
+
+bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
 
@@ -72,7 +76,7 @@ bool JSI_IGUIPage::getName(JSContext* cx, uint argc, JS::Value* vp)
 	return true;
 }
 
-bool JSI_IGUIPage::construct(JSContext* cx, uint argc, JS::Value* vp)
+bool JSI_IGUIPage::ConstructInstance(JSContext* cx, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cx);
 	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -94,22 +98,7 @@ bool JSI_IGUIPage::construct(JSContext* cx, uint argc, JS::Value* vp)
 	return true;
 }
 
-void JSI_IGUIPage::init(ScriptInterface& scriptInterface)
-{
-	scriptInterface.DefineCustomObjectType(&JSI_class, construct, 1, JSI_props, JSI_methods, NULL, NULL);
-}
-
-bool JSI_IGUIPage::getProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(obj), JS::HandleId UNUSED(id), JS::MutableHandleValue UNUSED(vp))
-{
-	return true;
-}
-
-bool JSI_IGUIPage::setProperty(JSContext* UNUSED(cx), JS::HandleObject UNUSED(obj), JS::HandleId UNUSED(id), bool UNUSED(strict), JS::MutableHandleValue UNUSED(vp))
-{
-	return true;
-}
-
-bool JSI_IGUIPage::callFunction(JSContext* cx, uint argc, JS::Value* vp)
+bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
 {
        return true;
 	JSAutoRequest rq(cx);

@@ -50,7 +50,7 @@
  */
 void GuiScriptingInit(ScriptInterface& scriptInterface)
 {
-	JSI_IGUIPage::init(scriptInterface);
+	JSI_IGUIPage::RegisterScriptClass(scriptInterface);
 	JSI_IGUIObject::init(scriptInterface);
 	JSI_GUITypes::init(scriptInterface);
 
