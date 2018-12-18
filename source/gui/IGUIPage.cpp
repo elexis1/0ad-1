@@ -34,19 +34,18 @@ IGUIPage::IGUIPage(shared_ptr<CGUI> pGUI)
 	// not have these objects hang around forever using up memory, though.
 	JSContext* cx = m_GUIPage->GetScriptInterface()->GetContext();
 	JSAutoRequest rq(cx);
-	m_JSPage.init(cx, m_GUIPage->GetScriptInterface()->CreateCustomObject("GUIPage"));
-	JS_SetPrivate(m_JSPage.get(), this);
+	m_JSPage = JS::Heap<JS::Value>(JS::ObjectValue(*m_GUIPage->GetScriptInterface()->CreateCustomObject("GUIPage")));
+	JS_SetPrivate(&m_JSPage.toObject(), this);
 }
 
 IGUIPage::~IGUIPage()
 {
 	JS_RemoveExtraGCRootsTracer(m_GUIPage->GetScriptInterface()->GetJSRuntime(), Trace, this);
-	m_JSPage.reset();
 }
 
-JSObject* IGUIPage::GetJSObject()
+JS::Value IGUIPage::GetJSPage()
 {
-	return m_JSPage.get();
+	return m_JSPage;
 }
 
 const CStrW IGUIPage::GetName()
@@ -89,6 +88,7 @@ bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 	return true;
 }
 
-void IGUIPage::TraceMember(JSTracer* UNUSED(trc))
+void IGUIPage::TraceMember(JSTracer* trc)
 {
+	JS_CallValueTracer(trc, &m_JSPage, "IGUIPage::m_JSPage");
 }

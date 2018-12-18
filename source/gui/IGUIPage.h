@@ -45,7 +45,7 @@ public:
 	/**
 	 * Exposes the properties and functions of the GUI page to JS.
 	 */
-	JSObject* GetJSObject();
+	JS::Value GetJSPage();
 
 	/**
 	 * Get name passed to PushPage, allows JS to identify pages without keeping global references.
@@ -67,7 +67,7 @@ private:
 	/**
 	 * Cached JSObject representing this GUI page.
 	 */
-	JS::PersistentRootedObject m_JSPage;
+	JS::Heap<JS::Value> m_JSPage;
 
 	static void Trace(JSTracer* trc, void* data)
 	{

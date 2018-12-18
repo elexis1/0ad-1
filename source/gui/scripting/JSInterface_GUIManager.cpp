@@ -34,7 +34,7 @@ JS::Value JSI_GUIManager::PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, co
 	if (!guiPage)
 		return JS::UndefinedValue();
 
-	return JS::ObjectValue(*guiPage->GetJSObject());
+	return guiPage->GetJSPage();
 }
 
 void JSI_GUIManager::SwitchGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)
