@@ -46,7 +46,29 @@ JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 
 void JSI_IGUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
 {
-	scriptInterface.DefineCustomObjectType(&JSI_class, ConstructInstance, 1, JSI_props, JSI_methods, NULL, NULL);
+	scriptInterface.DefineCustomObjectType(&JSI_class, ConstructInstance, 1, JSI_props, JSI_methods, nullptr, nullptr);
+}
+
+bool JSI_IGUIPage::ConstructInstance(JSContext* cx, uint argc, JS::Value* vp)
+{
+	JSAutoRequest rq(cx);
+	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+
+	if (args.length() == 0)
+	{
+		JS_ReportError(cx, "GUIPage has no default constructor");
+		return false;
+	}
+
+	ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
+	JS::RootedObject obj(cx, pScriptInterface->CreateCustomObject("GUIPage"));
+
+	// Store the IGUIPage in the JS object's 'private' area
+	IGUIPage* guiPage = (IGUIPage*)args[0].get().toPrivate();
+	JS_SetPrivate(obj, guiPage);
+
+	args.rval().setObject(*obj);
+	return true;
 }
 
 bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
@@ -76,27 +98,6 @@ bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
 	return true;
 }
 
-bool JSI_IGUIPage::ConstructInstance(JSContext* cx, uint argc, JS::Value* vp)
-{
-	JSAutoRequest rq(cx);
-	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-
-	if (args.length() == 0)
-	{
-		JS_ReportError(cx, "GUIPage has no default constructor");
-		return false;
-	}
-
-	ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
-	JS::RootedObject obj(cx, pScriptInterface->CreateCustomObject("GUIPage"));
-
-	// Store the IGUIPage in the JS object's 'private' area
-	IGUIPage* guiPage = (IGUIPage*)args[0].get().toPrivate();
-	JS_SetPrivate(obj, guiPage);
-
-	args.rval().setObject(*obj);
-	return true;
-}
 
 bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
 {
