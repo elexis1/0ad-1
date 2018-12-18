@@ -231,10 +231,6 @@ void CGUIManager::LoadPage(SGUIPage& page)
 		}
 	}
 
-	// Remember this GUI page, in case the scripts call FindObjectByName
-	shared_ptr<CGUI> oldGUI = m_CurrentGUI;
-	m_CurrentGUI = page.gui;
-
 	page.gui->SendEventToAll("load");
 
 	shared_ptr<ScriptInterface> scriptInterface = page.gui->GetScriptInterface();
@@ -261,8 +257,6 @@ void CGUIManager::LoadPage(SGUIPage& page)
 	if (scriptInterface->HasProperty(global, "init") &&
 	    !scriptInterface->CallFunctionVoid(global, "init", initDataVal, hotloadDataVal))
 		LOGERROR("GUI page '%s': Failed to call init() function", utf8_from_wstring(page.name));
-
-	m_CurrentGUI = oldGUI;
 }
 
 Status CGUIManager::ReloadChangedFile(const VfsPath& path)
@@ -365,14 +359,15 @@ bool CGUIManager::GetPreDefinedColor(const CStr& name, CColor& output) const
 	return top()->GetPreDefinedColor(name, output);
 }
 
-IGUIObject* CGUIManager::FindObjectByName(const CStr& name) const
+IGUIObject* CGUIManager::FindObjectByName(const ScriptInterface* scriptInterface, const CStr& name) const
 {
-	// This can be called from scripts run by TickObjects,
-	// and we want to return it the same GUI page as is being ticked
-	if (m_CurrentGUI)
-		return m_CurrentGUI->FindObjectByName(name);
-	else
-		return top()->FindObjectByName(name);
+	// Figure out the relevant GUI page from the caller
+	for (const SGUIPage& page : m_PageStack)
+		if (scriptInterface == page.gui->GetScriptInterface().get())
+			return page.gui->FindObjectByName(name);
+
+	JS_ReportError(scriptInterface->GetContext(), "FindObjectByName could not find GUI page!");
+	return nullptr;
 }
 
 void CGUIManager::SendEventToAll(const CStr& eventName) const
@@ -392,11 +387,7 @@ void CGUIManager::TickObjects()
 	PageStackType pageStack = m_PageStack;
 
 	for (const SGUIPage& p : pageStack)
-	{
-		m_CurrentGUI = p.gui;
 		p.gui->TickObjects();
-	}
-	m_CurrentGUI.reset();
 }
 
 void CGUIManager::Draw()
@@ -414,11 +405,9 @@ void CGUIManager::UpdateResolution()
 
 	for (const SGUIPage& p : pageStack)
 	{
-		m_CurrentGUI = p.gui;
 		p.gui->UpdateResolution();
 		p.gui->SendEventToAll("WindowResized");
 	}
-	m_CurrentGUI.reset();
 }
 
 bool CGUIManager::TemplateExists(const std::string& templateName) const

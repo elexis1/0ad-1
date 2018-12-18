@@ -57,9 +57,9 @@ void JSI_GUIManager::PopGuiPageCB(ScriptInterface::CxPrivate* pCxPrivate, JS::Ha
 	g_GUI->PopPageCB(pCxPrivate->pScriptInterface->WriteStructuredClone(args));
 }
 
-JS::Value JSI_GUIManager::GetGUIObjectByName(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& name)
+JS::Value JSI_GUIManager::GetGUIObjectByName(ScriptInterface::CxPrivate* pCxPrivate, const std::string& name)
 {
-	IGUIObject* guiObj = g_GUI->FindObjectByName(name);
+	IGUIObject* guiObj = g_GUI->FindObjectByName(pCxPrivate->pScriptInterface, name);
 	if (!guiObj)
 		return JS::UndefinedValue();
 

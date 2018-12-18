@@ -110,7 +110,7 @@ public:
 	/**
 	 * See CGUI::FindObjectByName; applies to the currently active page.
 	 */
-	IGUIObject* FindObjectByName(const CStr& name) const;
+	IGUIObject* FindObjectByName(const ScriptInterface* scriptInterface, const CStr& name) const;
 
 	/**
 	 * See CGUI::SendEventToAll; applies to the currently active page.
@@ -148,9 +148,6 @@ public:
 	 * Retrieve the requested template, used for displaying faction specificities.
 	 */
 	const CParamNode& GetTemplate(const std::string& templateName);
-
-public:
-	shared_ptr<CGUI> m_CurrentGUI; // used to latch state during TickObjects/LoadPage (this is entirely ugly)
 
 private:
 	struct SGUIPage
