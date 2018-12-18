@@ -27,8 +27,6 @@ namespace JSI_IGUIPage
 	extern JSFunctionSpec JSI_methods[];
 
 	void RegisterScriptClass(ScriptInterface& scriptInterface);
-
-	bool GetName(JSContext* cx, uint argc, JS::Value*);
 	bool CallFunction(JSContext* cx, uint argc, JS::Value* vp);
 }
 

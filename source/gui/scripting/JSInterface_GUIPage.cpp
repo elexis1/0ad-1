@@ -32,13 +32,11 @@ JSClass JSI_IGUIPage::JSI_class = {
 
 JSPropertySpec JSI_IGUIPage::JSI_props[] =
 {
-	{ "name", JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT, JSI_IGUIPage::GetName },
 	{ 0 }
 };
 
 JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 {
-	JS_FS("GetName", JSI_IGUIPage::GetName, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
 	JS_FS("CallFunction", JSI_IGUIPage::CallFunction, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
 	JS_FS_END
 };
@@ -46,34 +44,6 @@ JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 void JSI_IGUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
 {
 	scriptInterface.DefineCustomObjectType(&JSI_class, nullptr, 1, JSI_props, JSI_methods, nullptr, nullptr);
-}
-
-bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
-{
-	JSAutoRequest rq(cx);
-
-	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-	if (!args.thisv().isObject())
-	{
-		JS_ReportError(cx, "Called on incompatible object!");
-		return false;
-	}
-
-	JS::RootedObject thisObj(cx, &args.thisv().toObject());
-	CGUI* gui = (CGUI*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, nullptr);
-
-	if (!gui)
-	{
-		JS_ReportError(cx, "JSI_IGUIPage::getName: GUIPage is not defined!");
-		return false;
-	}
-
-	JS::RootedValue nameValue(cx);
-	ScriptInterface::ToJSVal(cx, &nameValue, gui->GetName());
-
-	JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
-	rec.rval().set(nameValue);
-	return true;
 }
 
 bool JSI_IGUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)

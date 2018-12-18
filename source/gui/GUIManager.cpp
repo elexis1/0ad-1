@@ -180,7 +180,6 @@ void CGUIManager::LoadPage(SGUIPage& page)
 	page.gui.reset(new CGUI(m_ScriptRuntime));
 
 	page.gui->Initialize();
-	page.gui->SetName(page.name);
 
 	VfsPath path = VfsPath("gui") / page.name;
 	page.inputs.insert(path);
@@ -246,13 +245,6 @@ void CGUIManager::LoadPage(SGUIPage& page)
 
 	if (hotloadData)
 		scriptInterface->ReadStructuredClone(hotloadData, &hotloadDataVal);
-
-	/**
-	 * This allows calling the CallFunction function from the same page, and it doesn't segfault.
-	 * If CallFunction is called from the parent page, it does segfault.
-	 */
-	//JS::RootedValue pageValue(cx, page.igui->GetJSPage());
-	//scriptInterface->SetProperty(initDataVal, "page", pageValue);
 
 	if (scriptInterface->HasProperty(global, "init") &&
 	    !scriptInterface->CallFunctionVoid(global, "init", initDataVal, hotloadDataVal))

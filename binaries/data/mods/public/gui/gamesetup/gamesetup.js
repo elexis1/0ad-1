@@ -1115,9 +1115,6 @@ var g_PlayerMiscElements = {
 				"playerSlot": playerIdx,
 				"gameAttributes": g_GameAttributes
 			});
-			
-			for (let i = 0; i < 20000; ++i)
-				g_PageAIConfig.GetName();
 		},
 		"tooltip": (playerIdx) => sprintf(translate("Configure AI: %(description)s."), {
 			"description": translateAISettings(g_GameAttributes.settings.PlayerData[playerIdx])

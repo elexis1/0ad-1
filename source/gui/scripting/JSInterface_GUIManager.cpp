@@ -36,8 +36,6 @@ JS::Value JSI_GUIManager::PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, co
 	JS::RootedObject page(cx, pCxPrivate->pScriptInterface->CreateCustomObject("GUIPage"));
 	JS_SetPrivate(page, guiPage.get());
 
-	if (!guiPage)
-		return JS::UndefinedValue();
 
 	return JS::ObjectValue(*page);
 }

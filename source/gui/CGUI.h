@@ -168,9 +168,6 @@ public:
 	 */
 	IGUIObject* FindObjectByName(const CStr& Name) const;
 
-	void SetName(CStrW name) { m_Name = name; }
-	const CStrW& GetName() const { return m_Name; }
-
 	/**
 	 * Returns the GUI object under the mouse, or NULL if none.
 	 */
@@ -596,8 +593,6 @@ private:
 	 * not considered a real object.
 	 */
 	map_pObjects m_pAllObjects;
-
-	CStrW m_Name;
 
 	/**
 	 * Number of object that has been given name automatically.
