@@ -15,12 +15,12 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_JSI_IGUIPAGE
-#define INCLUDED_JSI_IGUIPAGE
+#ifndef INCLUDED_JSI_GUIPAGE
+#define INCLUDED_JSI_GUIPAGE
 
 #include "scriptinterface/ScriptInterface.h"
 
-namespace JSI_IGUIPage
+namespace JSI_GUIPage
 {
 	extern JSClass JSI_class;
 	extern JSPropertySpec JSI_props[];
@@ -30,4 +30,4 @@ namespace JSI_IGUIPage
 	bool CallFunction(JSContext* cx, uint argc, JS::Value* vp);
 }
 
-#endif // INCLUDED_JSI_IGUIPAGE
+#endif // INCLUDED_JSI_GUIPAGE

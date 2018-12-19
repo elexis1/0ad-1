@@ -28,14 +28,13 @@
 // Functions aren't supported for example!
 JS::Value JSI_GUIManager::PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)
 {
-	shared_ptr<CGUI> guiPage = g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
+	CGUI* guiPage = g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
 
 	JSContext* cx = pCxPrivate->pScriptInterface->GetContext();
 	JSAutoRequest rq(cx);
-
 	JS::RootedObject page(cx, pCxPrivate->pScriptInterface->CreateCustomObject("GUIPage"));
-	JS_SetPrivate(page, guiPage.get());
 
+	JS_SetPrivate(page, guiPage);
 
 	return JS::ObjectValue(*page);
 }

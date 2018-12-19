@@ -21,7 +21,7 @@
 
 #include "graphics/scripting/JSInterface_GameView.h"
 #include "gui/scripting/JSInterface_IGUIObject.h"
-#include "gui/scripting/JSInterface_IGUIPage.h"
+#include "gui/scripting/JSInterface_GUIPage.h"
 #include "gui/scripting/JSInterface_GUIManager.h"
 #include "gui/scripting/JSInterface_GUITypes.h"
 #include "i18n/scripting/JSInterface_L10n.h"
@@ -50,7 +50,7 @@
  */
 void GuiScriptingInit(ScriptInterface& scriptInterface)
 {
-	JSI_IGUIPage::RegisterScriptClass(scriptInterface);
+	JSI_GUIPage::RegisterScriptClass(scriptInterface);
 	JSI_IGUIObject::init(scriptInterface);
 	JSI_GUITypes::init(scriptInterface);
 

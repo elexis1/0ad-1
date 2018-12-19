@@ -17,36 +17,36 @@
 
 #include "precompiled.h"
 
-#include "JSInterface_IGUIPage.h"
+#include "JSInterface_GUIPage.h"
 
 #include "gui/CGUI.h"
 #include "gui/GUIManager.h"
 #include "scriptinterface/ScriptInterface.h"
 
-JSClass JSI_IGUIPage::JSI_class = {
+JSClass JSI_GUIPage::JSI_class = {
 	"GUIPage", JSCLASS_HAS_PRIVATE,
 	nullptr, nullptr, nullptr, nullptr,
 	nullptr, nullptr, nullptr, nullptr,
 	nullptr, nullptr, nullptr, nullptr
 };
 
-JSPropertySpec JSI_IGUIPage::JSI_props[] =
+JSPropertySpec JSI_GUIPage::JSI_props[] =
 {
 	{ 0 }
 };
 
-JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
+JSFunctionSpec JSI_GUIPage::JSI_methods[] =
 {
-	JS_FS("CallFunction", JSI_IGUIPage::CallFunction, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
+	JS_FS("CallFunction", JSI_GUIPage::CallFunction, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
 	JS_FS_END
 };
 
-void JSI_IGUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
+void JSI_GUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
 {
 	scriptInterface.DefineCustomObjectType(&JSI_class, nullptr, 1, JSI_props, JSI_methods, nullptr, nullptr);
 }
 
-bool JSI_IGUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
+bool JSI_GUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
 {
 	JSAutoRequest rq(cxSource);
 
@@ -58,11 +58,11 @@ bool JSI_IGUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
 	}
 
 	JS::RootedObject thisObj(cxSource, &args.thisv().toObject());
-	CGUI* gui = (CGUI*)JS_GetInstancePrivate(cxSource, thisObj, &JSI_IGUIPage::JSI_class, nullptr);
+	CGUI* gui = static_cast<CGUI*>(JS_GetInstancePrivate(cxSource, thisObj, &JSI_GUIPage::JSI_class, nullptr));
 
 	if (!gui)
 	{
-		JS_ReportError(cxSource, "JSI_IGUIPage::CallFunction: GUIPage is not defined!");
+		JS_ReportError(cxSource, "JSI_GUIPage::CallFunction: GUIPage is not defined!");
 		return false;
 	}
 
@@ -71,13 +71,14 @@ bool JSI_IGUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
 		   return false;
 
 	JSContext* cxDestination = gui->GetScriptInterface()->GetContext();
+	JSAutoRequest rq(cxDestination);
 	JS::RootedValue global(cxDestination, gui->GetGlobalObject());
 	JS::RootedValue arg(cxDestination, argc > 1 ? gui->GetScriptInterface()->CloneValueFromOtherContext(*ScriptInterface::GetScriptInterfaceAndCBData(cxSource)->pScriptInterface, args[1]) : JS::UndefinedValue());
 	JS::RootedValue returnValue(cxDestination);
 
 	gui->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
 
-	args.rval().setUndefined();
+	args.rval().setUndefined(); // TODO
 
 	return true;
 }

@@ -91,14 +91,14 @@ void CGUIManager::SwitchPage(const CStrW& pageName, ScriptInterface* srcScriptIn
 	PushPage(pageName, initDataClone);
 }
 
-shared_ptr<CGUI> CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
+CGUI* CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
 {
 	m_PageStack.push_back(SGUIPage());
 	m_PageStack.back().name = pageName;
 	m_PageStack.back().initData = initData;
 	LoadPage(m_PageStack.back());
 	ResetCursor();
-	return m_PageStack.back().gui;
+	return m_PageStack.back().gui.get();
 }
 
 void CGUIManager::PopPage()
