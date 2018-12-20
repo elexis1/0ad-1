@@ -2428,7 +2428,7 @@ function updateGameAttributes()
  */
 function AIConfigCallback(ai)
 {
-	//g_PageAIConfig = undefined; OOM
+	g_PageAIConfig = undefined;
 
 	if (!ai.save || !g_IsController)
 		return;

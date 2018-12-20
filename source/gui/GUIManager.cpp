@@ -264,6 +264,15 @@ Status CGUIManager::ReloadChangedFile(const VfsPath& path)
 	return INFO::OK;
 }
 
+bool CGUIManager::IsPageOpen(const CGUI* guiPage) const
+{
+	for (const SGUIPage& page : m_PageStack)
+		if (page.gui.get() == guiPage)
+			return true;
+
+	return false;
+}
+
 Status CGUIManager::ReloadAllPages()
 {
 	// TODO: this can crash if LoadPage runs an init script which modifies the page stack and breaks our iterators

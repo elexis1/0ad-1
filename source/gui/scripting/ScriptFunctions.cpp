@@ -51,8 +51,8 @@
 void GuiScriptingInit(ScriptInterface& scriptInterface)
 {
 	JSI_GUIPage::RegisterScriptClass(scriptInterface);
-	JSI_IGUIObject::init(scriptInterface);
 	JSI_GUITypes::init(scriptInterface);
+	JSI_IGUIObject::init(scriptInterface);
 
 	JSI_ConfigDB::RegisterScriptFunctions(scriptInterface);
 	JSI_Console::RegisterScriptFunctions(scriptInterface);
