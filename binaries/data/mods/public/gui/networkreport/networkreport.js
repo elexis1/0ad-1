@@ -60,6 +60,8 @@ function onClientSelection()
 function updateClientList()
 {
 	let clientPerformance = Engine.GetNetworkClientPerformance();
+	if (!clientPerformance)
+		return;
 
 	let clientList = Engine.GetGUIObjectByName("clientList");
 	let guids = Object.keys(clientPerformance).filter(guid => !!g_PlayerAssignments[guid]).sort((guid1, guid2) =>
