@@ -20,8 +20,8 @@
 #include "scriptinterface/ScriptInterface.h"
 
 #include "graphics/scripting/JSInterface_GameView.h"
-#include "gui/IGUIObject.h"
-#include "gui/IGUIPage.h"
+#include "gui/scripting/JSInterface_IGUIObject.h"
+#include "gui/scripting/JSInterface_IGUIPage.h"
 #include "gui/scripting/JSInterface_GUIManager.h"
 #include "gui/scripting/JSInterface_GUITypes.h"
 #include "i18n/scripting/JSInterface_L10n.h"

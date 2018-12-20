@@ -21,7 +21,6 @@
 
 #include "gui/GUIManager.h"
 #include "gui/IGUIObject.h"
-#include "gui/IGUIPage.h"
 #include "ps/GameSetup/Config.h"
 #include "scriptinterface/ScriptInterface.h"
 
@@ -29,12 +28,18 @@
 // Functions aren't supported for example!
 JS::Value JSI_GUIManager::PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)
 {
-	shared_ptr<IGUIPage> guiPage = g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
+	shared_ptr<CGUI> guiPage = g_GUI->PushPage(name, pCxPrivate->pScriptInterface->WriteStructuredClone(initData));
+
+	JSContext* cx = pCxPrivate->pScriptInterface->GetContext();
+	JSAutoRequest rq(cx);
+
+	JS::RootedObject page(cx, pCxPrivate->pScriptInterface->CreateCustomObject("GUIPage"));
+	JS_SetPrivate(page, guiPage.get());
 
 	if (!guiPage)
 		return JS::UndefinedValue();
 
-	return guiPage->GetJSPage();
+	return JS::ObjectValue(*page);
 }
 
 void JSI_GUIManager::SwitchGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData)

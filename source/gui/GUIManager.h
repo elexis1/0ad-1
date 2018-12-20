@@ -32,7 +32,6 @@
 class CGUI;
 class JSObject;
 class IGUIObject;
-class IGUIPage;
 struct CColor;
 struct SGUIIcon;
 
@@ -47,8 +46,6 @@ struct SGUIIcon;
  */
 class CGUIManager
 {
-	friend class IGUIPage; // used by CallFunction
-
 	NONCOPYABLE(CGUIManager);
 public:
 	CGUIManager();
@@ -76,7 +73,7 @@ public:
 	 * and will still be drawn and receive tick events, but will not receive
 	 * user inputs.
 	 */
-	shared_ptr<IGUIPage> PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
+	shared_ptr<CGUI> PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
 
 	/**
 	 * Unload the currently active GUI page, and make the previous page active.
@@ -152,7 +149,7 @@ public:
 	 */
 	const CParamNode& GetTemplate(const std::string& templateName);
 
-protected:
+public:
 	shared_ptr<CGUI> m_CurrentGUI; // used to latch state during TickObjects/LoadPage (this is entirely ugly)
 
 private:
@@ -166,7 +163,6 @@ private:
 		CStrW callbackPageName;
 
 		shared_ptr<CGUI> gui; // the actual GUI page
-		shared_ptr<IGUIPage> igui; // JS interface
 	};
 
 	void LoadPage(SGUIPage& page);

@@ -20,7 +20,6 @@
 #include "JSInterface_IGUIPage.h"
 
 #include "gui/CGUI.h"
-#include "gui/IGUIPage.h"
 #include "gui/GUIManager.h"
 #include "scriptinterface/ScriptInterface.h"
 
@@ -28,7 +27,7 @@ JSClass JSI_IGUIPage::JSI_class = {
 	"GUIPage", JSCLASS_HAS_PRIVATE,
 	nullptr, nullptr, nullptr, nullptr,
 	nullptr, nullptr, nullptr, nullptr,
-	nullptr, nullptr, JSI_IGUIPage::ConstructInstance, nullptr
+	nullptr, nullptr, nullptr, nullptr
 };
 
 JSPropertySpec JSI_IGUIPage::JSI_props[] =
@@ -46,29 +45,7 @@ JSFunctionSpec JSI_IGUIPage::JSI_methods[] =
 
 void JSI_IGUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
 {
-	scriptInterface.DefineCustomObjectType(&JSI_class, ConstructInstance, 1, JSI_props, JSI_methods, nullptr, nullptr);
-}
-
-bool JSI_IGUIPage::ConstructInstance(JSContext* cx, uint argc, JS::Value* vp)
-{
-	JSAutoRequest rq(cx);
-	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-
-	if (args.length() == 0)
-	{
-		JS_ReportError(cx, "GUIPage has no default constructor");
-		return false;
-	}
-
-	ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
-	JS::RootedObject obj(cx, pScriptInterface->CreateCustomObject("GUIPage"));
-
-	// Store the IGUIPage in the JS object's 'private' area
-	IGUIPage* guiPage = (IGUIPage*)args[0].get().toPrivate();
-	JS_SetPrivate(obj, guiPage);
-
-	args.rval().setObject(*obj);
-	return true;
+	scriptInterface.DefineCustomObjectType(&JSI_class, nullptr, 1, JSI_props, JSI_methods, nullptr, nullptr);
 }
 
 bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
@@ -83,46 +60,62 @@ bool JSI_IGUIPage::GetName(JSContext* cx, uint argc, JS::Value* vp)
 	}
 
 	JS::RootedObject thisObj(cx, &args.thisv().toObject());
-	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
-	if (!guiPage)
+	CGUI* gui = (CGUI*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, nullptr);
+
+	if (!gui)
 	{
 		JS_ReportError(cx, "JSI_IGUIPage::getName: GUIPage is not defined!");
 		return false;
 	}
 
 	JS::RootedValue nameValue(cx);
-	ScriptInterface::ToJSVal(cx, &nameValue, guiPage->GetName());
+	ScriptInterface::ToJSVal(cx, &nameValue, gui->GetName());
 
 	JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
 	rec.rval().set(nameValue);
 	return true;
 }
 
-
-bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp)
+bool JSI_IGUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
 {
-       return true;
-	JSAutoRequest rq(cx);
-	//ScriptInterface* pScriptInterface = ScriptInterface::GetScriptInterfaceAndCBData(cx)->pScriptInterface;
-	//JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
+	JSAutoRequest rq(cxSource);
 
 	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 	if (!args.thisv().isObject())
 	{
-		JS_ReportError(cx, "Called on incompatible object!");
+		JS_ReportError(cxSource, "Called on incompatible object!");
 		return false;
 	}
 
-	JS::RootedObject thisObj(cx, &args.thisv().toObject());
-	IGUIPage* guiPage = (IGUIPage*)JS_GetInstancePrivate(cx, thisObj, &JSI_IGUIPage::JSI_class, NULL);
+	JS::RootedObject thisObj(cxSource, &args.thisv().toObject());
+	CGUI* gui = (CGUI*)JS_GetInstancePrivate(cxSource, thisObj, &JSI_IGUIPage::JSI_class, nullptr);
 
-	if (!guiPage)
+	if (!gui)
 	{
-		JS_ReportError(cx, "JSI_IGUIPage::CallFunction: GUIPage is not defined!");
+		JS_ReportError(cxSource, "JSI_IGUIPage::CallFunction: GUIPage is not defined!");
 		return false;
 	}
+
+	std::wstring functionName;
+	if (!ScriptInterface::FromJSVal(cxSource, args[0], functionName))
+		   return false;
+
+	// Perpetuate silly workaround
+	shared_ptr<CGUI> oldGUI = g_GUI->m_CurrentGUI;
+
+	// Don't even ask
+	g_GUI->m_CurrentGUI.reset(gui);
+
+	JSContext* cxDestination = gui->GetScriptInterface()->GetContext();
+	JS::RootedValue global(cxDestination, gui->GetGlobalObject());
+	JS::RootedValue arg(cxDestination, /*argc > 1 ? gui->GetScriptInterface()->CloneValueFromOtherContext(*ScriptInterface::GetScriptInterfaceAndCBData(cxSource)->pScriptInterface, args[1]) : */JS::UndefinedValue());
+	JS::RootedValue returnValue(cxDestination);
+
+	gui->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
+
+	g_GUI->m_CurrentGUI = oldGUI;
 
 	args.rval().setUndefined();
 
-	return guiPage->CallFunction(argc, vp);
+	return true;
 }

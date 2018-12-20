@@ -28,7 +28,6 @@ namespace JSI_IGUIPage
 
 	void RegisterScriptClass(ScriptInterface& scriptInterface);
 
-	bool ConstructInstance(JSContext* cx, uint argc, JS::Value* vp);
 	bool GetName(JSContext* cx, uint argc, JS::Value*);
 	bool CallFunction(JSContext* cx, uint argc, JS::Value* vp);
 }
