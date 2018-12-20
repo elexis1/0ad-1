@@ -76,11 +76,10 @@ bool IGUIPage::CallFunction(uint argc, JS::Value* vp)
 	if (!m_pGUI->GetScriptInterface()->FromJSVal(cx, args[0], functionName))
 		return false;
 
-	JS::RootedValue data(cx);
 	JS::RootedValue global(cx, m_pGUI->GetGlobalObject());
-	m_pGUI->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &data);
-
-	//return m_pGUI->GetScriptInterface()->StringifyJSON(&data, false);
+	JS::RootedValue arg(cx, argc > 1 ? args[1] : JS::UndefinedValue());
+	JS::RootedValue returnValue(cx);
+	m_pGUI->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
 	return true;
 }
 

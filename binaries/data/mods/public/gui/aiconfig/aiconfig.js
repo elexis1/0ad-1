@@ -82,7 +82,8 @@ function returnAI(save = true)
 	});
 }
 
-function functionToCall(argument1)
+function updatePage(argument1, argument2)
 {
-	warn("CALLED " + uneval(argument1))
+	warn("CALLED " + uneval(argument1) + ":" + uneval(argument2))
+	//init(settings);
 }

@@ -29,7 +29,7 @@ class CGUI;
 class IGUIPage
 {
 	friend class CGUI;
-	friend bool JSI_IGUIPage::CallFunction(JSContext* cx, uint UNUSED(argc), JS::Value* vp);
+	friend bool JSI_IGUIPage::CallFunction(JSContext* cx, uint argc, JS::Value* vp);
 
 public:
 	IGUIPage();

@@ -352,9 +352,9 @@ var g_GameStanzaTimer;
 var g_LastGameStanza;
 
 /**
- * Remembers if the current player viewed the AI settings of some playerslot.
+ * Access to the currently opened AI config page.
  */
-var g_LastViewedAIPlayer = -1;
+var g_PageAIConfig;
 
 /**
  * Total number of units that the engine can run with smoothly.
@@ -2362,12 +2362,7 @@ function updateGUIObjects()
 
 	g_IsInGuiUpdate = false;
 
-	// Refresh AI config page
-	if (g_LastViewedAIPlayer != -1)
-	{
-		Engine.PopGuiPage();
-		openAIConfig(g_LastViewedAIPlayer);
-	}
+	updateAIConfig();
 }
 
 function rightAlignCancelButton()
@@ -2423,20 +2418,20 @@ function updateGameAttributes()
 		updateGUIObjects();
 }
 
-var g_PageAIConfig;
-
 function openAIConfig(playerSlot)
 {
-	g_LastViewedAIPlayer = playerSlot;
-
 	g_PageAIConfig = Engine.PushGuiPage("page_aiconfig.xml", {
 		"callback": "AIConfigCallback",
 		"playerSlot": playerSlot,
-		"id": g_GameAttributes.settings.PlayerData[playerSlot].AI,
-		"difficulty": g_GameAttributes.settings.PlayerData[playerSlot].AIDiff,
-		"behavior": g_GameAttributes.settings.PlayerData[playerSlot].AIBehavior
+		"gameAttributes": g_GameAttributes
 	});
-	g_PageAIConfig.CallFunction("functionToCall", { "myData": 3 });
+}
+
+function updateAIConfig()
+{
+	g_PageAIConfig.CallFunction("updatePage", {
+		"gameAttributes": g_GameAttributes
+	});
 }
 
 /**
@@ -2445,7 +2440,6 @@ function openAIConfig(playerSlot)
 function AIConfigCallback(ai)
 {
 	g_PageAIConfig = undefined;
-	g_LastViewedAIPlayer = -1;
 
 	if (!ai.save || !g_IsController)
 		return;
