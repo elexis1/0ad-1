@@ -17,15 +17,15 @@ var g_AIDescriptions = [{
 var g_AIControls = {
 	"aiSelection": {
 		"labels": g_AIDescriptions.map(ai => ai.data.name),
-		"selected": playerData => g_AIDescriptions.findIndex(ai => ai.id == playerData.AI)
+		"selected": playerData => playerData ? g_AIDescriptions.findIndex(ai => ai.id == playerData.AI) : 0
 	},
 	"aiDifficulty": {
 		"labels": prepareForDropdown(g_Settings.AIDifficulties).Title,
-		"selected": playerData => playerData.AIDiff
+		"selected": playerData => playerData ? playerData.AIDiff : -1
 	},
 	"aiBehavior": {
 		"labels": prepareForDropdown(g_Settings.AIBehaviors).Title,
-		"selected": playerData => g_Settings.AIBehaviors.findIndex(b => b.Name == playerData.AIBehavior)
+		"selected": playerData => playerData ? g_Settings.AIBehaviors.findIndex(b => b.Name == playerData.AIBehavior) : -1
 	}
 };
 
@@ -44,15 +44,16 @@ function updatePage(settings)
 
 function updateGUIObjects()
 {
+	let playerData = g_GameAttributes.settings.PlayerData[g_PlayerSlot];
 	for (let name in g_AIControls)
 	{
 		let control = Engine.GetGUIObjectByName(name);
 		control.list = g_AIControls[name].labels;
-		control.selected = g_AIControls[name].selected(g_GameAttributes.settings.PlayerData[g_PlayerSlot]);
+		control.selected = g_AIControls[name].selected(playerData);
 		control.hidden = !g_IsController;
 
 		let label = Engine.GetGUIObjectByName(name + "Text");
-		label.caption = control.list[control.selected];
+		label.caption = control.list[control.selected] || "";
 		label.hidden = g_IsController;
 	}
 
@@ -67,7 +68,8 @@ function selectAI(idx)
 /** Behavior choice does not apply for Sandbox level */
 function checkBehavior()
 {
-	if (g_Settings.AIDifficulties[Engine.GetGUIObjectByName("aiDifficulty").selected].Name != "sandbox")
+	let selectedDifficulty = g_Settings.AIDifficulties[Engine.GetGUIObjectByName("aiDifficulty").selected];
+	if (selectedDifficulty && selectedDifficulty.Name != "sandbox")
 	{
 		Engine.GetGUIObjectByName("aiBehavior").enabled = true;
 		return;
