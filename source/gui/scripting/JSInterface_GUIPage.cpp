@@ -32,7 +32,7 @@ JSClass JSI_GUIPage::JSI_class = {
 
 JSPropertySpec JSI_GUIPage::JSI_props[] =
 {
-	{ 0 }
+	JS_PS_END
 };
 
 JSFunctionSpec JSI_GUIPage::JSI_methods[] =
@@ -48,8 +48,7 @@ void JSI_GUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
 
 bool JSI_GUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
 {
-	JSAutoRequest rq(cxSource);
-
+	JSAutoRequest rqSource(cxSource);
 	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 	if (!args.thisv().isObject())
 	{
@@ -71,7 +70,7 @@ bool JSI_GUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
 		   return false;
 
 	JSContext* cxDestination = gui->GetScriptInterface()->GetContext();
-	JSAutoRequest rq(cxDestination);
+	JSAutoRequest rqDestination(cxDestination);
 	JS::RootedValue global(cxDestination, gui->GetGlobalObject());
 	JS::RootedValue arg(cxDestination, argc > 1 ? gui->GetScriptInterface()->CloneValueFromOtherContext(*ScriptInterface::GetScriptInterfaceAndCBData(cxSource)->pScriptInterface, args[1]) : JS::UndefinedValue());
 	JS::RootedValue returnValue(cxDestination);
