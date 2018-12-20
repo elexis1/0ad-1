@@ -1,6 +1,6 @@
 // TODO: this should show whether the client is rejoining at the moment
 
-var g_IsController;
+const g_IsController = Engine.HasNetServer();
 
 // TODO: page needs to be reloaded in case of updates
 var g_PlayerAssignments;
@@ -19,14 +19,12 @@ function init(data, hotloadData)
 {
 	g_PlayerAssignments = hotloadData ? hotloadData.playerAssignments : data.playerAssignments;
 	g_GameAttributes = hotloadData ? hotloadData.gameAttributes : data.gameAttributes;
-	g_IsController = hotloadData ? hotloadData.isController : data.isController;
 	updateClientList();
 }
 
 function getHotloadData()
 {
 	return {
-		"isController": g_IsController,
 		"gameAttributes": g_GameAttributes,
 		"playerAssignments": g_PlayerAssignments
 	};
