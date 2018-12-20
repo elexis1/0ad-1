@@ -30,6 +30,13 @@ function getHotloadData()
 	};
 }
 
+function updatePage(data)
+{
+	g_PlayerAssignments = data.playerAssignments;
+	g_GameAttributes = data.gameAttributes;
+	updateClientList();
+}
+
 function onTick()
 {
 	let now = Date.now();

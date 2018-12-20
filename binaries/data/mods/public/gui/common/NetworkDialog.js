@@ -1,29 +1,26 @@
 function NetworkDialogManager()
 {
-	this.isOpened = false;
+	this.guiPage = undefined;
 }
 
 NetworkDialogManager.prototype.open = function()
 {
-	this.isOpened = true;
-	Engine.PushGuiPage("page_networkreport.xml", {
-		"isController": g_IsController,
+	this.guiPage = Engine.PushGuiPage("page_networkreport.xml", {
 		"gameAttributes": g_GameAttributes,
-		"playerAssignments": g_PlayerAssignments,
-		"callback": "networkDialogClosed"
+		"playerAssignments": g_PlayerAssignments
 	});
 };
 
-function /*NetworkDialogManager.prototype.*/networkDialogClosed()
-{
-	g_NetworkDialogManager.isOpened = false;
-}
-
 NetworkDialogManager.prototype.refresh = function()
 {
-	if (this.isOpened)
-	{
-		Engine.PopGuiPage();
-		this.open();
-	}
+	if (this.guiPage)
+		try
+		{
+			this.guiPage.updatePage({
+				"gameAttributes": g_GameAttributes,
+				"playerAssignments": g_PlayerAssignments,
+			});
+		} catch (e)
+		{
+		}
 };
