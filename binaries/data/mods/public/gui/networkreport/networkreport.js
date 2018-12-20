@@ -74,8 +74,8 @@ function updateClientList()
 			clientPerformance[guid1][clientList.selected_column] - clientPerformance[guid2][clientList.selected_column]));
 
 	clientList.list_name = guids.map(guid => setStringTags(g_PlayerAssignments[guid].name, {
-		"color": g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player] ?
-				rgbToGuiColor(g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player].Color) :
+		"color": g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player - 1] ?
+				rgbToGuiColor(g_GameAttributes.settings.PlayerData[g_PlayerAssignments[guid].player - 1].Color) :
 		        "white"
 	}));
 
