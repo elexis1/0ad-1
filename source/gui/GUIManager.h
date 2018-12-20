@@ -35,6 +35,18 @@ class IGUIObject;
 struct CColor;
 struct SGUIIcon;
 
+struct SGUIPage
+{
+	CStrW name;
+	boost::unordered_set<VfsPath> inputs; // for hotloading
+
+	JSContext* cx;
+	shared_ptr<ScriptInterface::StructuredClone> initData; // data to be passed to the init() function
+	CStrW callbackPageName;
+
+	shared_ptr<CGUI> gui; // the actual GUI page
+};
+
 /**
  * External interface to the GUI system.
  *
@@ -149,28 +161,17 @@ public:
 	 */
 	const CParamNode& GetTemplate(const std::string& templateName);
 
+public:
+	typedef std::vector<SGUIPage> PageStackType;
+	PageStackType m_PageStack;
+
 private:
-	struct SGUIPage
-	{
-		CStrW name;
-		boost::unordered_set<VfsPath> inputs; // for hotloading
-
-		JSContext* cx;
-		shared_ptr<ScriptInterface::StructuredClone> initData; // data to be passed to the init() function
-		CStrW callbackPageName;
-
-		shared_ptr<CGUI> gui; // the actual GUI page
-	};
-
 	void LoadPage(SGUIPage& page);
 
 	shared_ptr<CGUI> top() const;
 
 	shared_ptr<ScriptRuntime> m_ScriptRuntime;
 	shared_ptr<ScriptInterface> m_ScriptInterface;
-
-	typedef std::vector<SGUIPage> PageStackType;
-	PageStackType m_PageStack;
 
 	CTemplateLoader m_TemplateLoader;
 };

@@ -25,59 +25,81 @@
 
 JSClass JSI_GUIPage::JSI_class = {
 	"GUIPage", JSCLASS_HAS_PRIVATE,
-	nullptr, nullptr, nullptr, nullptr,
+	nullptr, nullptr,
+	JSI_GUIPage::GetProperty, JSI_GUIPage::SetProperty,
 	nullptr, nullptr, nullptr, nullptr,
 	nullptr, nullptr, nullptr, nullptr
 };
 
-JSPropertySpec JSI_GUIPage::JSI_props[] =
-{
-	JS_PS_END
-};
-
-JSFunctionSpec JSI_GUIPage::JSI_methods[] =
-{
-	JS_FS("CallFunction", JSI_GUIPage::CallFunction, 0, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT),
-	JS_FS_END
-};
-
 void JSI_GUIPage::RegisterScriptClass(ScriptInterface& scriptInterface)
 {
-	scriptInterface.DefineCustomObjectType(&JSI_class, nullptr, 1, JSI_props, JSI_methods, nullptr, nullptr);
+	scriptInterface.DefineCustomObjectType(&JSI_class, nullptr, 1, nullptr, nullptr, nullptr, nullptr);
 }
 
-bool JSI_GUIPage::CallFunction(JSContext* cxSource, uint argc, JS::Value* vp)
+// TODO: could test that the pointer is still on the stack...
+
+//bool CallFunction(JSContext* cx, uint argc, JS::Value* vp);
+bool JSI_GUIPage::GetProperty(JSContext* cxSource, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp)
 {
 	JSAutoRequest rqSource(cxSource);
-	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-	if (!args.thisv().isObject())
-	{
-		JS_ReportError(cxSource, "Called on incompatible object!");
+
+	JS::RootedValue idval(cxSource);
+	if (!JS_IdToValue(cxSource, id, &idval))
 		return false;
-	}
 
-	JS::RootedObject thisObj(cxSource, &args.thisv().toObject());
-	CGUI* gui = static_cast<CGUI*>(JS_GetInstancePrivate(cxSource, thisObj, &JSI_GUIPage::JSI_class, nullptr));
-
-	if (!gui)
-	{
-		JS_ReportError(cxSource, "JSI_GUIPage::CallFunction: GUIPage is not defined!");
+	std::string functionName;
+	if (!ScriptInterface::FromJSVal(cxSource, idval, functionName))
 		return false;
-	}
 
-	std::wstring functionName;
-	if (!ScriptInterface::FromJSVal(cxSource, args[0], functionName))
-		   return false;
+	debug_printf("meh %s\n", (functionName).c_str());
 
-	JSContext* cxDestination = gui->GetScriptInterface()->GetContext();
-	JSAutoRequest rqDestination(cxDestination);
-	JS::RootedValue global(cxDestination, gui->GetGlobalObject());
-	JS::RootedValue arg(cxDestination, argc > 1 ? gui->GetScriptInterface()->CloneValueFromOtherContext(*ScriptInterface::GetScriptInterfaceAndCBData(cxSource)->pScriptInterface, args[1]) : JS::UndefinedValue());
-	JS::RootedValue returnValue(cxDestination);
-
-	gui->GetScriptInterface()->CallFunction(global, utf8_from_wstring(functionName).c_str(), &returnValue, arg);
-
-	args.rval().setUndefined(); // TODO
+	JS::RootedObject parent(cxSource);
+	JS::Rooted<JSFunction*> function(cxSource, JS_NewFunction(cxSource, JSI_GUIPage::CallFunction, 1, 0, obj, functionName.c_str()));
+	vp.setObject(*JS_GetFunctionObject(function));
 
 	return true;
+}
+
+bool JSI_GUIPage::CallFunction(JSContext *cxSource, unsigned argc, JS::Value *vp)
+{
+	JSAutoRequest rqSource(cxSource);
+
+	JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+	JS::RootedValue calleeValue(cxSource, JS::ObjectValue(args.callee()));
+	JS::RootedString functionName(cxSource, JS_GetFunctionId(JS_ValueToFunction(cxSource, calleeValue)));
+	JS::RootedValue functionNameValue(cxSource, JS::StringValue(functionName));
+	std::string functionNameString;
+	ScriptInterface::FromJSVal(cxSource, functionNameValue, functionNameString);
+
+	JS::RootedObject thisObj(cxSource, &JS::CallArgsFromVp(argc, vp).thisv().toObject());
+	CGUI* gui = static_cast<CGUI*>(JS_GetInstancePrivate(cxSource, thisObj, &JSI_GUIPage::JSI_class, nullptr));
+
+	SGUIPage* page;
+	for (SGUIPage& p : g_GUI->m_PageStack)
+		if (p.gui.get() == gui)
+			page = &p;
+
+	if (!page)
+	{
+		JS_ReportError(cxSource, "GUIPage is not opened.");
+		return false;
+	}
+
+	{
+		JSContext* cxDestination = gui->GetScriptInterface()->GetContext();
+		JSAutoRequest rqDestination(cxDestination);
+		JS::RootedValue global(cxDestination, gui->GetGlobalObject());
+		JS::RootedValue arg(cxDestination, argc > 0 ? gui->GetScriptInterface()->CloneValueFromOtherContext(*ScriptInterface::GetScriptInterfaceAndCBData(cxSource)->pScriptInterface, args[0]) : JS::UndefinedValue());
+		JS::RootedValue returnValue(cxDestination);
+		gui->GetScriptInterface()->CallFunction(global, functionNameString.c_str(), &returnValue, arg);
+	}
+
+	// TODO: set VP
+	return true;
+}
+
+bool JSI_GUIPage::SetProperty(JSContext* cx, JS::HandleObject UNUSED(obj), JS::HandleId UNUSED(id), bool UNUSED(strict), JS::MutableHandleValue UNUSED(vp))
+{
+	JS_ReportError(cx, "Page settings are immutable.");
+	return false;
 }

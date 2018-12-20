@@ -2365,9 +2365,7 @@ function updateGUIObjects()
 	updateAutocompleteEntries();
 
 	if (g_PageAIConfig)
-		g_PageAIConfig.CallFunction("updatePage", {
-			"gameAttributes": g_GameAttributes
-		});
+		g_PageAIConfig.updatePage({ "gameAttributes": g_GameAttributes });
 
 	g_IsInGuiUpdate = false;
 }
@@ -2430,7 +2428,7 @@ function updateGameAttributes()
  */
 function AIConfigCallback(ai)
 {
-	g_PageAIConfig = undefined;
+	//g_PageAIConfig = undefined; OOM
 
 	if (!ai.save || !g_IsController)
 		return;

@@ -23,11 +23,11 @@
 namespace JSI_GUIPage
 {
 	extern JSClass JSI_class;
-	extern JSPropertySpec JSI_props[];
-	extern JSFunctionSpec JSI_methods[];
 
 	void RegisterScriptClass(ScriptInterface& scriptInterface);
-	bool CallFunction(JSContext* cx, uint argc, JS::Value* vp);
+	bool GetProperty(JSContext* cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+	bool SetProperty(JSContext* cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
+	bool CallFunction(JSContext *cx, unsigned argc, JS::Value *vp);
 }
 
 #endif // INCLUDED_JSI_GUIPAGE
