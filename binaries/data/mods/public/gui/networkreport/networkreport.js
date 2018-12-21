@@ -15,11 +15,53 @@ var g_ClientListLastUpdate = 0;
 
 var g_SelectedClientGUID;
 
+var g_GUIProperties = {
+	"clientList": {
+		"onSelectionColumnChange": () => function() {
+			updateGUIObjects();
+		},
+		"onSelectionChange": () => function() {
+			// onSelectionChange may not call updateClientList, otherwise infinite loop
+			let clientList = Engine.GetGUIObjectByName("clientList");
+			g_SelectedClientGUID = clientList.list[clientList.selected] || undefined;
+			updateGUIProperties();
+		},
+		"onMouseLeftDoubleClickItem": () => function() {
+			Engine.GetGUIObjectByName("kickButton").onPress();
+			// TODO: Support skip confirmation hotkey
+		}
+	},
+	"kickButton": {
+		"caption": () => translate("Kick"),
+		"tooltip": () => translate("Disconnect this player immediately."),
+		"hidden": () => !g_IsController,
+		"enabled": () =>  g_SelectedClientGUID && g_SelectedClientGUID != Engine.GetPlayerGUID(),
+		"onPress": () => function() {
+			kickPlayer(g_PlayerAssignments[g_SelectedClientGUID].name, false);
+		}
+	},
+	"banButton": {
+		"caption": () => translate("Ban"),
+		"tooltip": () => translate("Disconnect this player immediately and deny any request to rejoin."),
+		"hidden": () => !g_IsController,
+		"enabled": () => g_SelectedClientGUID && g_SelectedClientGUID != Engine.GetPlayerGUID(),
+		"onPress": () => function() {
+			kickPlayer(g_PlayerAssignments[g_SelectedClientGUID].name, true);
+		}
+	},
+	"closeButton": {
+		"caption": () => translate("Close"),
+		"onPress": () => function() {
+			Engine.PopGuiPageCB();
+		}
+	}
+};
+
 function init(data, hotloadData)
 {
 	g_PlayerAssignments = hotloadData ? hotloadData.playerAssignments : data.playerAssignments;
 	g_GameAttributes = hotloadData ? hotloadData.gameAttributes : data.gameAttributes;
-	updateClientList();
+	updateGUIObjects();
 }
 
 function getHotloadData()
@@ -34,7 +76,7 @@ function updatePage(data)
 {
 	g_PlayerAssignments = data.playerAssignments;
 	g_GameAttributes = data.gameAttributes;
-	updateClientList();
+	updateGUIObjects();
 }
 
 function onTick()
@@ -46,20 +88,20 @@ function onTick()
 
 	pollNetworkWarnings();
 	g_ClientListLastUpdate = now;
-	updateClientList();
+	updateGUIObjects();
 }
 
-function onClientSelection()
+function updateGUIObjects()
 {
-	let clientList = Engine.GetGUIObjectByName("clientList");
-	g_SelectedClientGUID = clientList.list[clientList.selected] || undefined;
+	updateClientList();
+	updateGUIProperties();
+}
 
-	for (let name of ["kickButton", "banButton"])
-	{
-		let button = Engine.GetGUIObjectByName(name);
-		button.hidden = !g_IsController;
-		button.enabled = g_SelectedClientGUID && g_SelectedClientGUID != Engine.GetPlayerGUID();
-	}
+function updateGUIProperties()
+{
+	for (let objectName in g_GUIProperties)
+		for (let propertyName in g_GUIProperties[objectName])
+			Engine.GetGUIObjectByName(objectName)[propertyName] = g_GUIProperties[objectName][propertyName]();
 }
 
 function updateClientList()
@@ -115,13 +157,4 @@ function updateClientList()
 	clientList.list = guids;
 
 	clientList.selected = clientList.list.indexOf(g_SelectedClientGUID);
-}
-
-function askToKickSelectedClient()
-{
-}
-
-function kickSelectedClient(ban)
-{
-	kickPlayer(g_PlayerAssignments[g_SelectedClientGUID].name, ban);
 }

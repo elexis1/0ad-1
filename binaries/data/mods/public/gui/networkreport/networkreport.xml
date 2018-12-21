@@ -18,10 +18,10 @@
 		</object>
 
 		<object name="clientList"
+			type="olist"
 			style="ModernSortedList"
 			selected_column="name"
 			selected_column_order="1"
-			type="olist"
 			sortable="true"
 			size="25 50 100%-25 100%-60"
 			font="sans-bold-stroke-13"
@@ -41,45 +41,12 @@
 			<column id="packetLoss" color="0 128 128" width="15%">
 				<translatableAttribute id="heading">Packet Loss</translatableAttribute>
 			</column>
-
-			<action on="SelectionChange">
-				onClientSelection();
-			</action>
-
-			<action on="SelectionColumnChange">
-				updateClientList();
-			</action>
-
-			<action on="MouseLeftDoubleClickItem">
-				askToKickSelectedClient();
-			</action>
 		</object>
 
-		<object name="kickButton" type="button" style="ModernButtonRed" size="20 100%-48 170 100%-20">
-			<translatableAttribute id="caption">Kick</translatableAttribute>
-			<translatableAttribute id="tooltip">Disconnect this player immediately.</translatableAttribute>
-			<action on="Press">
-				kickSelectedClient(false);
-			</action>
-		</object>
-
-		<object name="banButton" type="button" style="ModernButtonRed" size="180 100%-48 330 100%-20">
-			<translatableAttribute id="caption">Ban</translatableAttribute>
-			<translatableAttribute id="tooltip">Disconnect this player immediately and deny any request to rejoin.</translatableAttribute>
-			<action on="Press">
-				kickSelectedClient(true);
-			</action>
+		<object name="kickButton" type="button" style="ModernButtonRed" size="20 100%-48 170 100%-20"/>
+		<object name="banButton" type="button" style="ModernButtonRed" size="180 100%-48 330 100%-20"/>
 			<!-- TODO: skip confirmation hotkey -->
-		</object>
-
-		<object type="button" style="ModernButtonRed" size="100%-170 100%-48 100%-20 100%-20" hotkey="cancel">
-			<translatableAttribute id="caption">Close</translatableAttribute>
-			<action on="Press">
-				Engine.PopGuiPageCB();
-			</action>
-			<!-- TODO: skip confirmation hotkey -->
-		</object>
-
+		<object name="closeButton" type="button" style="ModernButtonRed" size="100%-170 100%-48 100%-20 100%-20" hotkey="cancel"/>
 	</object>
 
 </objects>
