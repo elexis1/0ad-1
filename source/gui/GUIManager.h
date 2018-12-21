@@ -113,11 +113,6 @@ public:
 	bool GetPreDefinedColor(const CStr& name, CColor& output) const;
 
 	/**
-	 * See CGUI::FindObjectByName; applies to the currently active page.
-	 */
-	IGUIObject* FindObjectByName(const ScriptInterface* scriptInterface, const CStr& name) const;
-
-	/**
 	 * See CGUI::SendEventToAll; applies to the currently active page.
 	 */
 	void SendEventToAll(const CStr& eventName) const;

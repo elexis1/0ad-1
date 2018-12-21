@@ -360,17 +360,6 @@ bool CGUIManager::GetPreDefinedColor(const CStr& name, CColor& output) const
 	return top()->GetPreDefinedColor(name, output);
 }
 
-IGUIObject* CGUIManager::FindObjectByName(const ScriptInterface* scriptInterface, const CStr& name) const
-{
-	// Figure out the relevant GUI page from the caller
-	for (const SGUIPage& page : m_PageStack)
-		if (scriptInterface == page.gui->GetScriptInterface().get())
-			return page.gui->FindObjectByName(name);
-
-	JS_ReportError(scriptInterface->GetContext(), "FindObjectByName could not find GUI page!");
-	return nullptr;
-}
-
 void CGUIManager::SendEventToAll(const CStr& eventName) const
 {
 	top()->SendEventToAll(eventName);
