@@ -77,7 +77,8 @@ var g_GUIProperties = {
 			updateGUIProperties();
 		},
 		"onMouseLeftDoubleClickItem": () => function() {
-			Engine.GetGUIObjectByName("kickButton").onPress();
+			if (g_IsController)
+				Engine.GetGUIObjectByName("kickButton").onPress();
 			// TODO: Support skip confirmation hotkey
 		}
 	},
