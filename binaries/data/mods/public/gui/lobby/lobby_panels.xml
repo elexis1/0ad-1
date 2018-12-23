@@ -153,13 +153,13 @@
 				<object name="sgPlayersNames" size="0 0 100% 100%" type="text" style="MapPlayerList"/>
 			</object>
 		</object>
-		<object name="joinGameButton" type="button" style="ModernButtonRed" size="0 100%-79 100% 100%-54" hidden="true">
+		<object name="joinGameButton" type="button" style="ModernButtonRed" size="0 100%-79 100% 100%-54" hotkey="joingame" hidden="true">
 			<translatableAttribute id="caption" comment="Join the game currently selected in the list.">Join Game</translatableAttribute>
 			<action on="Press">
 				joinButton();
 			</action>
 		</object>
-		<object name="hostButton" type="button" style="ModernButtonRed" size="0 100%-52 100% 100%-27">
+		<object name="hostButton" type="button" style="ModernButtonRed" size="0 100%-52 100% 100%-27" hotkey="hostgame">
 			<translatableAttribute id="caption">Host Game</translatableAttribute>
 			<action on="Press">
 				hostGame();

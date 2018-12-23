@@ -209,7 +209,7 @@
 				sprite="iconInfoGold"
 				sprite_over="iconInfoWhite"
 				size="100%-41 378 100%-25 394"
-				hotkey="network"
+				hotkey="networkstats"
 				z="100"
 			>
 				<translatableAttribute id="tooltip">Show the network dialog.</translatableAttribute>
@@ -269,6 +269,7 @@
 				size="100%-308 100%-52 100%-168 100%-24"
 				tooltip_style="onscreenToolTip"
 				z="21"
+				hotkey="previousPage"
 			>
 				<translatableAttribute id="caption">Back</translatableAttribute>
 				<action on="Press">cancelSetup();</action>

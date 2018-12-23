@@ -104,6 +104,7 @@
 			style="StoneButtonFancy"
 			size="0 256 100% 284"
 			tooltip_style="sessionToolTip"
+			hotkey="networkstats"
 		>
 			<translatableAttribute id="caption">Network</translatableAttribute>
 			<action on="Press">g_NetworkDialogManager.open();</action>
