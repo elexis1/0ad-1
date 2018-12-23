@@ -128,7 +128,7 @@ function kickError()
 
 function kickPlayer(username, ban)
 {
-	if (g_IsController)
+	if (Engine.HasNetServer())
 		Engine.KickPlayer(username, ban);
 	else
 		kickError();
@@ -136,7 +136,7 @@ function kickPlayer(username, ban)
 
 function kickObservers(ban)
 {
-	if (!g_IsController)
+	if (!Engine.HasNetServer())
 	{
 		kickError();
 		return;
