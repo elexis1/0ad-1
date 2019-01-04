@@ -56,8 +56,8 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 		"name":
 			setStringTags(this.playerAssignments[guid].name, {
 				"color": (() => {
-					let pData = this.gameAttributes.settings.PlayerData[this.playerAssignments[guid].player - 1];
-					return pData !== undefined ? rgbToGuiColor(pData.Color) : "white";
+					let playerID = this.playerAssignments[guid].player - 1;
+					return playerID > 0 ? rgbToGuiColor(this.gameAttributes.settings.PlayerData[playerID].Color) : "white";
 				})()
 			}),
 		"status":
