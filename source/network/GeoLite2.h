@@ -15,21 +15,21 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_JSI_GEOIP
-#define INCLUDED_JSI_GEOIP
-
-#include "scriptinterface/ScriptInterface.h"
+#ifndef GEOLITE2_H
+#define GEOLITE2_H
 
 #include "lib/file/vfs/vfs_path.h"
 
 #include <string>
 
-namespace JSI_GeoIP
+namespace GeoLite2
 {
-	bool LoadGeoIP(ScriptInterface::CxPrivate* pCxPrivate, const VfsPath& filePath);
-	std::string GeoIPLookup(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
+	bool LoadCSVFile(const VfsPath& pathname, std::map<std::string, std::vector<std::string>>& csv);
 
-	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
+	bool LoadCountryBlocksIPv4(const VfsPath& pathname);
+	bool LoadCountryLocations(const VfsPath& pathname);
+
+	std::string GetCountry(const std::string& ipv4);
 }
 
-#endif // INCLUDED_JSI_GEOIP
+#endif // GEOLITE2_H

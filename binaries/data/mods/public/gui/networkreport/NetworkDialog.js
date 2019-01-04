@@ -17,7 +17,8 @@ function NetworkDialog(gameAttributes, playerAssignments)
 	this.clientListLastUpdate = 0;
 	this.selectedGUID = undefined;
 
-	Engine.LoadGeoIP("geolite2/GeoLite2-Country-Blocks-IPv4.csv");
+	Engine.GeoLite2_LoadCountryBlocksIPv4("geolite2/GeoLite2-Country-Blocks-IPv4.csv");
+	Engine.GeoLite2_LoadCountryLocations("geolite2/GeoLite2-Country-Locations-en.csv");
 
 	this.UpdateGUIObjects();
 }
@@ -45,7 +46,7 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 {
 	// TODO: this scope should not exist, but "this" references are difficult
 	return {
-		"country": Engine.GeoIPLookup(Engine.GetClientIPAddress(guid)),
+		"country": Engine.GeoLite2_LookupIPv4(Engine.GetClientIPAddress(guid)),
 		"name":
 			setStringTags(this.playerAssignments[guid].name, {
 				"color": (() => {
@@ -85,8 +86,9 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 
 NetworkDialog.prototype.GetClientListOrder = function()
 {
+	// country sorting not implemented
 	return {
-		"country": (guid1, guid2, clientPerformance) => 1,
+		"country": (guid1, guid2, clientPerformance) => guid1.localeCompare(guid2),
 		"name": (guid1, guid2, clientPerformance) =>
 			this.playerAssignments[guid1].name.localeCompare(
 			this.playerAssignments[guid2].name),

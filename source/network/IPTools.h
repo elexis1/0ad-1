@@ -15,19 +15,15 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GEOIP_H
-#define GEOIP_H
-
-#include "lib/file/vfs/vfs_path.h"
+#ifndef IPTOOLS_H
+#define IPTOOLS_H
 
 #include <string>
-#include <vector>
 
-namespace GeoIP
+namespace IPTools
 {
-	bool LoadGeolite2(const VfsPath& pathname);
-	std::string GetCountry(const std::string& ipv4);
-	bool IsIPPartOfSubnet(const std::string& ipAddress, const std::string& subnet);
+	bool IPv4StringToNumber(const std::string& ipAddress, u32& ipAddressNum);
+	bool IsIPv4PartOfSubnet(const std::string& ipAddress2, const std::string& subnet);
 }
 
-#endif // GEOIP_H
+#endif // IPTOOLS_H

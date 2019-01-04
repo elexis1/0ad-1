@@ -15,28 +15,23 @@
  * along with 0 A.D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "precompiled.h"
+#ifndef INCLUDED_JSI_GEOLITE2
+#define INCLUDED_JSI_GEOLITE2
 
-#include "JSInterface_GeoIP.h"
+#include "scriptinterface/ScriptInterface.h"
 
-#include "network/GeoIP.h"
-#include "network/NetServer.h"
+#include "lib/file/vfs/vfs_path.h"
 
 #include <string>
 
-bool JSI_GeoIP::LoadGeoIP(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const VfsPath& filepath)
+namespace JSI_GeoLite2
 {
-	return GeoIP::LoadGeolite2(filepath);
+	bool LoadCSVFile(ScriptInterface::CxPrivate* pCxPrivate, const VfsPath& filePath);
+	bool LoadCountryBlocksIPv4(ScriptInterface::CxPrivate* pCxPrivate, const VfsPath& filePath);
+	bool LoadCountryLocations(ScriptInterface::CxPrivate* pCxPrivate, const VfsPath& filePath);
+	std::string GeoIPLookup(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
+
+	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
 }
 
-std::string JSI_GeoIP::GeoIPLookup(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)
-{
-	return GeoIP::GetCountry(ipAddress);
-}
-
-void JSI_GeoIP::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
-{
-	// TODO: Use Path <-> JS::Value for other JSInterfaces such as Replay
-	scriptInterface.RegisterFunction<bool, VfsPath, &LoadGeoIP>("LoadGeoIP");
-	scriptInterface.RegisterFunction<std::string, std::string, &GeoIPLookup>("GeoIPLookup");
-}
+#endif // INCLUDED_JSI_GEOLITE2
