@@ -17,6 +17,8 @@ function NetworkDialog(gameAttributes, playerAssignments)
 	this.clientListLastUpdate = 0;
 	this.selectedGUID = undefined;
 
+	Engine.LoadGeoIP("geolite2/GeoLite2-Country-Blocks-IPv4.csv");
+
 	this.UpdateGUIObjects();
 }
 
@@ -43,6 +45,7 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 {
 	// TODO: this scope should not exist, but "this" references are difficult
 	return {
+		"country": Engine.GeoIPLookup(Engine.GetClientIPAddress(guid)),
 		"name":
 			setStringTags(this.playerAssignments[guid].name, {
 				"color": (() => {
@@ -55,6 +58,8 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 				getNetworkWarningString(guid == Engine.GetPlayerGUID(), clientPerformance),
 				clientPerformance,
 				this.playerAssignments[guid].name) || translate("Ok"),
+		"ipAddress": Engine.GetClientIPAddress(guid),
+		"hostname": Engine.LookupClientHostname(guid),
 		"meanRTT": (() => {
 			let lastReceivedTime = clientPerformance.lastReceivedTime > 3000 ? clientPerformance.lastReceivedTime : 0;
 			let meanRTT = Math.max(clientPerformance.meanRTT, lastReceivedTime);
@@ -81,12 +86,15 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 NetworkDialog.prototype.GetClientListOrder = function()
 {
 	return {
+		"country": (guid1, guid2, clientPerformance) => 1,
 		"name": (guid1, guid2, clientPerformance) =>
 			this.playerAssignments[guid1].name.localeCompare(
 			this.playerAssignments[guid2].name),
 		"status": (guid1, guid2, clientPerformance) =>
 			getNetworkWarningString(guid1 == Engine.GetPlayerGUID(), clientPerformance[guid1]).localeCompare(
 			getNetworkWarningString(guid2 == Engine.GetPlayerGUID(), clientPerformance[guid2])),
+		"ipAddress": Engine.GetClientIPAddressNum(guid1) - Engine.GetClientIPAddressNum(guid2),
+		"hostname": Engine.LookupClientHostname(guid1).localeCompare(Engine.LookupClientHostname(guid2)),
 		"meanRTT": (guid1, guid2, clientPerformance) =>
 			clientPerformance[guid1].meanRTT -
 			clientPerformance[guid2].meanRTT,

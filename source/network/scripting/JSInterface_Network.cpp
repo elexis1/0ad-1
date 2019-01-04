@@ -242,6 +242,28 @@ void JSI_Network::SetTurnLength(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), 
 		LOGERROR("Only network host can change turn length");
 }
 
+std::string JSI_Network::GetClientIPAddress(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& guid)
+{
+	if (!g_NetServer)
+	{
+		LOGERROR("Not hosting");
+		return std::string();
+	}
+
+	return g_NetServer->GetClientIPAddress(guid);
+}
+
+std::string JSI_Network::LookupClientHostname(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& guid)
+{
+	if (!g_NetServer)
+	{
+		LOGERROR("Not hosting");
+		return std::string();
+	}
+
+	return g_NetServer->LookupHostname(guid);
+}
+
 void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
 {
 	scriptInterface.RegisterFunction<u16, &GetDefaultPort>("GetDefaultPort");
@@ -263,4 +285,6 @@ void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface
 	scriptInterface.RegisterFunction<void, &StartNetworkGame>("StartNetworkGame");
 	scriptInterface.RegisterFunction<u32, &GetTurnLength>("GetTurnLength");
 	scriptInterface.RegisterFunction<void, int, &SetTurnLength>("SetTurnLength");
+	scriptInterface.RegisterFunction<std::string, std::string, &GetClientIPAddress>("GetClientIPAddress");
+	scriptInterface.RegisterFunction<std::string, std::string, &LookupClientHostname>("LookupClientHostname");
 }

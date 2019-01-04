@@ -141,6 +141,9 @@ public:
 
 	bool UseLobbyAuth() const;
 
+	std::string GetClientIPAddress(const std::string& guid);
+	std::string LookupHostname(const std::string& guid);
+
 	void OnLobbyAuth(const CStr& name, const CStr& token);
 
 	void SendHolePunchingMessage(const CStr& ip, u16 port);
@@ -183,6 +186,9 @@ public:
 	 * Send a message to all clients who match one of the given states.
 	 */
 	bool Broadcast(const CNetMessage* message, const std::vector<NetServerSessionState>& targetStates);
+
+	std::string GetClientIPAddress(const std::string& guid);
+	std::string LookupHostname(const std::string& guid);
 
 private:
 	friend class CNetServer;

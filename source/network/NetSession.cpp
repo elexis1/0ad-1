@@ -245,6 +245,28 @@ u32 CNetServerSession::GetIPAddress() const
 	return m_Peer->address.host;
 }
 
+std::string CNetServerSession::GetIPAddressString() const
+{
+	char ipAddress[256];
+	ipAddress[255] = '\0';
+
+	if (enet_address_get_host_ip(&m_Peer->address, ipAddress, sizeof ipAddress) != 0)
+		return std::string();
+
+	return ipAddress;
+}
+
+std::string CNetServerSession::LookupHostname() const
+{
+	char hostname[256];
+	hostname[255] = '\0';
+
+	if (enet_address_get_host(&m_Peer->address, hostname, sizeof hostname) != 0)
+		return std::string();
+
+	return hostname;
+}
+
 u32 CNetServerSession::GetLastReceivedTime() const
 {
 	if (!m_Peer)

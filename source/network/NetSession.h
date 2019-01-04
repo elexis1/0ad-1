@@ -158,6 +158,8 @@ public:
 	void SetHostID(u32 id) { m_HostID = id; }
 
 	u32 GetIPAddress() const;
+	std::string GetIPAddressString() const;
+	std::string LookupHostname() const;
 
 	/**
 	 * Whether this client is running in the same process as the server.

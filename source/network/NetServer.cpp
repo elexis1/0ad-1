@@ -361,6 +361,24 @@ bool CNetServerWorker::Broadcast(const CNetMessage* message, const std::vector<N
 	return ok;
 }
 
+std::string CNetServerWorker::GetClientIPAddress(const std::string& guid)
+{
+	for (CNetServerSession* session : m_Sessions)
+		if (session->GetGUID() == guid)
+			return session->GetIPAddressString();
+
+	return "";
+}
+
+std::string CNetServerWorker::LookupHostname(const std::string& guid)
+{
+	for (CNetServerSession* session : m_Sessions)
+		if (session->GetGUID() == guid)
+			return session->LookupHostname();
+
+	return "";
+}
+
 void* CNetServerWorker::RunThread(void* data)
 {
 	debug_SetThreadName("NetServer");
@@ -1575,6 +1593,19 @@ bool CNetServer::UseLobbyAuth() const
 bool CNetServer::SetupConnection(const u16 port)
 {
 	return m_Worker->SetupConnection(port);
+}
+
+std::string CNetServer::GetClientIPAddress(const std::string& guid)
+{
+	// The server should broadcast the countries, IPs and hostnames in an admin packet each time a player joins/disconnects
+	CScopeLock lock(m_Worker->m_WorkerMutex);
+	return m_Worker->GetClientIPAddress(guid);
+}
+
+std::string CNetServer::LookupHostname(const std::string& guid)
+{
+	CScopeLock lock(m_Worker->m_WorkerMutex);
+	return m_Worker->LookupHostname(guid);
 }
 
 void CNetServer::StartGame()

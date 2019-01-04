@@ -43,6 +43,8 @@ namespace JSI_Network
 	void SendNetworkReady(ScriptInterface::CxPrivate* pCxPrivate, int message);
 	u32 GetTurnLength(ScriptInterface::CxPrivate* pCxPrivate);
 	void SetTurnLength(ScriptInterface::CxPrivate* pCxPrivate, int length);
+	std::string GetClientIPAddress(ScriptInterface::CxPrivate* pCxPrivate, const std::string& guid);
+	std::string LookupClientHostname(ScriptInterface::CxPrivate* pCxPrivate, const std::string& guid);
 
 	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
 }

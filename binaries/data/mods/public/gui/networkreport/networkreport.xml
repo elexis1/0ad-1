@@ -21,19 +21,30 @@
 			size="25 50 100%-25 100%-60"
 			font="sans-bold-stroke-13"
 		>
-			<column id="name" color="0 128 128" width="25%">
+			<column id="country" color="0 128 128" width="10%">
+				<translatableAttribute id="heading">Country</translatableAttribute>
+			</column>
+
+			<column id="name" color="0 128 128" width="20%">
 				<translatableAttribute id="heading">Name</translatableAttribute>
 			</column>
 
-			<column id="status" color="0 128 128" width="45%">
+			<column id="status" color="0 128 128" width="20%">
 				<translatableAttribute id="heading">Status</translatableAttribute>
 			</column>
+			<column id="ipAddress" color="0 128 128" width="15%">
+				<translatableAttribute id="heading">IP Address</translatableAttribute>
+			</column>
 
-			<column id="meanRTT" color="0 128 128" width="15%">
+			<column id="hostname" color="0 128 128" width="15%">
+				<translatableAttribute id="heading">Hostname</translatableAttribute>
+			</column>
+
+			<column id="meanRTT" color="0 128 128" width="10%">
 				<translatableAttribute id="heading">Ping</translatableAttribute>
 			</column>
 
-			<column id="packetLoss" color="0 128 128" width="15%">
+			<column id="packetLoss" color="0 128 128" width="10%">
 				<translatableAttribute id="heading">Packet Loss</translatableAttribute>
 			</column>
 		</object>
