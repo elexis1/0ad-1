@@ -40,6 +40,7 @@
 #include "gui/scripting/ScriptFunctions.h"
 #include "i18n/L10n.h"
 #include "maths/MathUtil.h"
+#include "network/GeoLite2.h"
 #include "network/NetServer.h"
 #include "network/NetClient.h"
 #include "network/NetMessage.h"
@@ -967,6 +968,7 @@ bool Init(const CmdLineArgs& args, int flags)
 	}
 
 	new L10n;
+	GeoLite2::LoadData(g_L10n.GetCurrentLocale().getCountry());
 
 	// Optionally start profiler HTTP output automatically
 	// (By default it's only enabled by a hotkey, for security/performance)

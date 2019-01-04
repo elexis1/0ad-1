@@ -6,7 +6,7 @@
 	<script directory="gui/networkreport/"/>
 
 	<object type="image" sprite="ModernFade"/>
-	<object type="image" style="ModernDialog" size="50%-400 50%-250 50%+400 50%+250">
+	<object type="image" style="ModernDialog" size="50%-470 50%-250 50%+470 50%+250">
 
 		<object style="TitleText" type="text" size="50%-128 4 50%+128 36">
 			<translatableAttribute id="caption">Network</translatableAttribute>
@@ -21,23 +21,24 @@
 			size="15 40 100%-15 100%-60"
 			font="sans-bold-stroke-13"
 		>
-			<column id="country" color="0 128 128" width="15%">
-				<translatableAttribute id="heading">Country</translatableAttribute>
-			</column>
-
-			<column id="name" color="0 128 128" width="20%">
+			<column id="name" color="0 128 128" width="15%">
 				<translatableAttribute id="heading">Name</translatableAttribute>
 			</column>
 
 			<column id="status" color="0 128 128" width="15%">
 				<translatableAttribute id="heading">Status</translatableAttribute>
 			</column>
-			<column id="ipAddress" color="0 128 128" width="15%">
+
+			<column id="ipAddress" color="0 128 128" width="12%">
 				<translatableAttribute id="heading">IP Address</translatableAttribute>
 			</column>
 
-			<column id="hostname" color="0 128 128" width="15%">
+			<column id="hostname" color="0 128 128" width="23%">
 				<translatableAttribute id="heading">Hostname</translatableAttribute>
+			</column>
+
+			<column id="country" color="0 128 128" width="15%">
+				<translatableAttribute id="heading">Country</translatableAttribute>
 			</column>
 
 			<column id="meanRTT" color="0 128 128" width="10%">

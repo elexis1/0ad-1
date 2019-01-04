@@ -17,9 +17,6 @@ function NetworkDialog(gameAttributes, playerAssignments)
 	this.clientListLastUpdate = 0;
 	this.selectedGUID = undefined;
 
-	Engine.GeoLite2_LoadCountryBlocksIPv4("geolite2/GeoLite2-Country-Blocks-IPv4.csv");
-	Engine.GeoLite2_LoadCountryLocations("geolite2/GeoLite2-Country-Locations-en.csv");
-
 	this.UpdateGUIObjects();
 }
 
@@ -48,6 +45,9 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 	return {
 		"country": (() => {
 			let geoLite2 = Engine.GeoLite2_LookupIPv4(Engine.GetClientIPAddress(guid));
+			if (!geoLite2.length)
+				return translateWithContext("unknown country", "?");
+
 			return sprintf(translate("%(continent)s/%(country)s"), {
 				"continent": geoLite2[2],
 				"country": geoLite2[4]
@@ -101,8 +101,8 @@ NetworkDialog.prototype.GetClientListOrder = function()
 		"status": (guid1, guid2, clientPerformance) =>
 			getNetworkWarningString(guid1 == Engine.GetPlayerGUID(), clientPerformance[guid1]).localeCompare(
 			getNetworkWarningString(guid2 == Engine.GetPlayerGUID(), clientPerformance[guid2])),
-		"ipAddress": Engine.GetClientIPAddressNum(guid1) - Engine.GetClientIPAddressNum(guid2),
-		"hostname": Engine.LookupClientHostname(guid1).localeCompare(Engine.LookupClientHostname(guid2)),
+		"ipAddress": (guid1, guid2) => Engine.IPv4ToNumber(Engine.GetClientIPAddress(guid1)) - Engine.IPv4ToNumber(Engine.GetClientIPAddress(guid2)),
+		"hostname": (guid1, guid2) => Engine.LookupClientHostname(guid1).localeCompare(Engine.LookupClientHostname(guid2)),
 		"meanRTT": (guid1, guid2, clientPerformance) =>
 			clientPerformance[guid1].meanRTT -
 			clientPerformance[guid2].meanRTT,

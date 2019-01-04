@@ -23,6 +23,7 @@
 #include "lib/external_libraries/libsdl.h"
 #include "lib/types.h"
 #include "lobby/IXmppClient.h"
+#include "network/IPTools.h"
 #include "network/NetClient.h"
 #include "network/NetMessage.h"
 #include "network/NetServer.h"
@@ -245,10 +246,7 @@ void JSI_Network::SetTurnLength(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), 
 std::string JSI_Network::GetClientIPAddress(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& guid)
 {
 	if (!g_NetServer)
-	{
-		LOGERROR("Not hosting");
 		return std::string();
-	}
 
 	return g_NetServer->GetClientIPAddress(guid);
 }
@@ -256,12 +254,19 @@ std::string JSI_Network::GetClientIPAddress(ScriptInterface::CxPrivate* UNUSED(p
 std::string JSI_Network::LookupClientHostname(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& guid)
 {
 	if (!g_NetServer)
-	{
-		LOGERROR("Not hosting");
 		return std::string();
-	}
 
 	return g_NetServer->LookupHostname(guid);
+}
+
+u32 JSI_Network::IPv4ToNumber(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)
+{
+	u32 ipAddressNum = 0;
+
+	if (!IPTools::ParseIPv4Address(ipAddress, ipAddressNum))
+		return 0;
+
+	return ipAddressNum;
 }
 
 void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
@@ -286,5 +291,6 @@ void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface
 	scriptInterface.RegisterFunction<u32, &GetTurnLength>("GetTurnLength");
 	scriptInterface.RegisterFunction<void, int, &SetTurnLength>("SetTurnLength");
 	scriptInterface.RegisterFunction<std::string, std::string, &GetClientIPAddress>("GetClientIPAddress");
+	scriptInterface.RegisterFunction<u32, std::string, &IPv4ToNumber>("IPv4ToNumber");
 	scriptInterface.RegisterFunction<std::string, std::string, &LookupClientHostname>("LookupClientHostname");
 }

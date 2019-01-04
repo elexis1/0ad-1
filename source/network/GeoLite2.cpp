@@ -20,8 +20,9 @@
 #include "GeoLite2.h"
 
 #include "lib/file/vfs/vfs_path.h"
-#include "ps/Filesystem.h"
 #include "network/IPTools.h"
+#include "ps/Filesystem.h"
+#include "ps/CLogger.h"
 
 #include <string>
 #include <vector>
@@ -43,6 +44,35 @@ std::map<std::string, std::vector<std::string>> g_CountryLocations;
  */
 // TODO: Use shared_ptr or some kind of ref to avoid copies?
 std::map<u32, std::vector<std::string>> g_IPv4ToGeoRegion;
+
+bool GeoLite2::LoadData(const std::string& countryCode)
+{
+	std::vector<std::string> countryCodes = { countryCode, "en" };
+	for (std::string& countryCode : countryCodes)
+	{
+			VfsPath filePath("geolite2/GeoLite2-Country-Locations-" + countryCode + ".csv");
+			if (VfsFileExists(filePath))
+			{
+				if (!GeoLite2::LoadCSVFile(filePath, g_CountryLocations))
+				{
+					LOGERROR("Invalid GeoLite2 database format!");
+					return false;
+				}
+				break;
+			}
+	}
+
+	// Columns: "geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,is_in_european_union"
+	// For example: "2921044,en,EU,Europe,DE,Germany,1"
+	if (!GeoLite2::LoadCountryBlocksIPv4("geolite2/GeoLite2-Country-Blocks-IPv4.csv"))
+	{
+		LOGMESSAGE("No GeoLite2 database found.");
+		return false;
+	}
+
+	LOGMESSAGE("GeoLite2 database loaded.");
+	return true;
+}
 
 bool GeoLite2::LoadCSVFile(const VfsPath& pathname, std::map<std::string, std::vector<std::string>>& csv)
 {
@@ -94,18 +124,7 @@ bool GeoLite2::LoadCountryBlocksIPv4(const VfsPath& pathname)
 		if (IPTools::ParseSubnet(countryBlock.first, subnetAddress, subnetMaskBits))
 			g_CountryBlocks[std::make_pair(subnetAddress, subnetMaskBits)] = countryBlock.second;
 	}
-
 	return true;
-}
-
-/**
- * Loads GeoLite2-Country-Locations-en.csv.
- * "geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,is_in_european_union"
- * For example "2921044,en,EU,Europe,DE,Germany,1"
- */
-bool GeoLite2::LoadCountryLocations(const VfsPath& pathname)
-{
-	return LoadCSVFile(pathname, g_CountryLocations);
 }
 
 std::vector<std::string> GeoLite2::GetIPv4CountryData(u32 ipAddress)

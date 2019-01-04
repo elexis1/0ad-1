@@ -24,13 +24,11 @@
 
 namespace GeoLite2
 {
+	bool LoadData(const std::string& countryCode);
+	bool LoadCountryBlocksIPv4(const VfsPath& pathname);
 	bool LoadCSVFile(const VfsPath& pathname, std::map<std::string, std::vector<std::string>>& csv);
 
-	bool LoadCountryBlocksIPv4(const VfsPath& pathname);
-	bool LoadCountryLocations(const VfsPath& pathname);
-
 	std::vector<std::string> GetIPv4CountryData(u32 ipAddress);
-
 }
 
 #endif // GEOLITE2_H
