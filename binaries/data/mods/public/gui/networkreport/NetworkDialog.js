@@ -46,7 +46,13 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 {
 	// TODO: this scope should not exist, but "this" references are difficult
 	return {
-		"country": Engine.GeoLite2_LookupIPv4(Engine.GetClientIPAddress(guid)),
+		"country": (() => {
+			let geoLite2 = Engine.GeoLite2_LookupIPv4(Engine.GetClientIPAddress(guid));
+			return sprintf(translate("%(continent)s/%(country)s"), {
+				"continent": geoLite2[2],
+				"country": geoLite2[4]
+			});
+		})(),
 		"name":
 			setStringTags(this.playerAssignments[guid].name, {
 				"color": (() => {

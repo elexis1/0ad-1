@@ -29,7 +29,8 @@ namespace JSI_GeoLite2
 	bool LoadCSVFile(ScriptInterface::CxPrivate* pCxPrivate, const VfsPath& filePath);
 	bool LoadCountryBlocksIPv4(ScriptInterface::CxPrivate* pCxPrivate, const VfsPath& filePath);
 	bool LoadCountryLocations(ScriptInterface::CxPrivate* pCxPrivate, const VfsPath& filePath);
-	std::string GeoIPLookup(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
+
+	std::vector<std::string> GeoLite2_LookupIPv4(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
 
 	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
 }

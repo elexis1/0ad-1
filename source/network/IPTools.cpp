@@ -25,9 +25,9 @@
 // TODO: implement banmasks
 
 /**
- * Parses an IPv4 address, such as "223.252.161.128" to an u32 representation (useful for bitmask matching).
+ * Parses an IPv4 address, such as "223.252.161.128" to an u32 representation in hostbyte order (useful for bitmask matching).
  */
-bool IPTools::IPv4StringToNumber(const std::string& ipAddress, u32& ipAddressNum)
+bool IPTools::ParseIPv4Address(const std::string& ipAddress, u32& ipAddressNum)
 {
 	// Returns in network byte order, big endianness
 	// TODO: This doesn't exist on all platforms
@@ -40,31 +40,28 @@ bool IPTools::IPv4StringToNumber(const std::string& ipAddress, u32& ipAddressNum
 }
 
 /**
- * The subnet is specified in CIDR notation, for example "223.252.161.128/25"
+ * Parses CIDR notation, for example "223.252.161.128/25".
  */
-bool IPTools::IsIPv4PartOfSubnet(const std::string& ipAddress2, const std::string& subnet)
+bool IPTools::ParseSubnet(const std::string& subnet, u32& subnetAddress, int& subnetMaskBits)
 {
-	std::string ipAddress = "91.39.173.44";
+	std::istringstream subnetStream(subnet);
+	std::string subnetAddressString;
+	std::getline(subnetStream, subnetAddressString, '/');
 
-	u32 ipAddressNum = 0;
-	if (!IPv4StringToNumber(ipAddress, ipAddressNum))
+	if (!ParseIPv4Address(subnetAddressString, subnetAddress))
 		return false;
 
-	// Parse subnet string
-	u32 subnetAddressNum = 0;
-	int subnetMaskBits;
-	{
-		std::istringstream subnetStream(subnet);
-		std::string subnetAddress;
-		std::getline(subnetStream, subnetAddress, '/');
+	std::string subnetMaskBitsString;
+	std::getline(subnetStream, subnetMaskBitsString);
+	subnetMaskBits = std::stoi(subnetMaskBitsString);
 
-		if (!IPv4StringToNumber(subnetAddress, subnetAddressNum))
-			return false;
+	return true;
+}
 
-		std::string subnetMaskBitsString;
-		std::getline(subnetStream, subnetMaskBitsString);
-		subnetMaskBits = std::stoi(subnetMaskBitsString);
-	}
-
-	return ((0xFFFFFFFF << (32 - subnetMaskBits)) & ipAddressNum) == subnetAddressNum;
+/**
+ * All values in hostbyte order (little endianness)
+ */
+bool IPTools::IsIpV4PartOfSubnet(u32 ipAddress, u32 subnetAddress, int subnetMaskBits)
+{
+	return ((0xFFFFFFFF << (32 - subnetMaskBits)) & ipAddress) == subnetAddress;
 }

@@ -20,8 +20,10 @@
 #include "JSInterface_GeoLite2.h"
 
 #include "network/GeoLite2.h"
+#include "network/IPTools.h"
 
 #include <string>
+#include <vector>
 
 // Notice that the GeoLite2 files could be used entirely without the JSInterface GeoLite2 namespace; by using JSI_VFS::ReadFileLines.
 // However the below functions are introduced to provide (1) caching of the 10mb database and (2) using inet.h instead of reinventing these methods in JS.
@@ -36,9 +38,14 @@ bool JSI_GeoLite2::LoadCountryLocations(ScriptInterface::CxPrivate* UNUSED(pCxPr
 	return GeoLite2::LoadCountryLocations(filepath);
 }
 
-std::string JSI_GeoLite2::GeoIPLookup(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)
+std::vector<std::string> JSI_GeoLite2::GeoLite2_LookupIPv4(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)
 {
-	return GeoLite2::GetCountry(ipAddress);
+	u32 ipAddressNum;
+
+	if (!IPTools::ParseIPv4Address("91.39.173.44", ipAddressNum))
+		return std::vector<std::string>();
+
+	return GeoLite2::GetIPv4CountryData(ipAddressNum);
 }
 
 void JSI_GeoLite2::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
@@ -46,5 +53,5 @@ void JSI_GeoLite2::RegisterScriptFunctions(const ScriptInterface& scriptInterfac
 	// TODO: Use Path <-> JS::Value for other JSInterfaces such as Replay
 	scriptInterface.RegisterFunction<bool, VfsPath, &LoadCountryBlocksIPv4>("GeoLite2_LoadCountryBlocksIPv4");
 	scriptInterface.RegisterFunction<bool, VfsPath, &LoadCountryLocations>("GeoLite2_LoadCountryLocations");
-	scriptInterface.RegisterFunction<std::string, std::string, &GeoIPLookup>("GeoLite2_LookupIPv4");
+	scriptInterface.RegisterFunction<std::vector<std::string>, std::string, &GeoLite2_LookupIPv4>("GeoLite2_LookupIPv4");
 }

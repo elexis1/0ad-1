@@ -29,7 +29,8 @@ namespace GeoLite2
 	bool LoadCountryBlocksIPv4(const VfsPath& pathname);
 	bool LoadCountryLocations(const VfsPath& pathname);
 
-	std::string GetCountry(const std::string& ipv4);
+	std::vector<std::string> GetIPv4CountryData(u32 ipAddress);
+
 }
 
 #endif // GEOLITE2_H
