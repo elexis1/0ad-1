@@ -47,11 +47,6 @@ function getCostTypes()
  */
 var g_AlwaysDisplayFriendlyFire = false;
 
-function resourceIcon(resource)
-{
-	return '[icon="icon_' + resource + '"]';
-}
-
 function resourceNameFirstWord(type)
 {
 	return translateWithContext("firstWord", g_ResourceData.GetNames()[type]);

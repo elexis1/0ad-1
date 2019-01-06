@@ -17,6 +17,7 @@ function NetworkDialog(gameAttributes, playerAssignments)
 	this.clientListLastUpdate = 0;
 	this.selectedGUID = undefined;
 
+	this.LoadCountryFlags();
 	this.UpdateGUIObjects();
 }
 
@@ -26,6 +27,13 @@ NetworkDialog.prototype.GetHotloadData = function()
 		"gameAttributes": this.gameAttributes,
 		"playerAssignments": this.playerAssignments
 	}
+};
+
+NetworkDialog.prototype.LoadCountryFlags = function()
+{
+	let directory = "global/icon/flags/";
+	for (let countryID of listFiles("art/textures/ui/" + directory, ".png", false))
+		Engine.AddIcon("icon_country_" + countryID, "stretched:" + directory + countryID + ".png", "14 14", false);
 };
 
 NetworkDialog.prototype.UpdateGameData = function(data)
@@ -48,9 +56,10 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 			if (!geoLite2.length)
 				return translateWithContext("unknown country", "?");
 
-			return sprintf(translate("%(continent)s/%(country)s"), {
-				"continent": geoLite2[2],
-				"country": geoLite2[4]
+			return sprintf(translate("%(icon)s %(continent)s/%(country)s"), {
+				"icon": iconTag("icon_country_" + geoLite2[3].toLowerCase()),
+				"continent": geoLite2[2].replace("\"", ""),
+				"country": geoLite2[4].replace("\"", "")
 			});
 		})(),
 		"name":

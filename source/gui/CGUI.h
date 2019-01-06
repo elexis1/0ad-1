@@ -232,6 +232,11 @@ public:
 	SGUIIcon GetIcon(const CStr& str) const { return m_Icons.find(str)->second; }
 
 	/**
+	 * Loads a new icon at runtime.
+	 */
+	bool AddIcon(const CStr& name, const CStr& sprite, const CStr& size, bool replaceExisting);
+
+	/**
 	 * Get pre-defined color (if it exists)
 	 * Returns false if it fails.
 	 */

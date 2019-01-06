@@ -1,3 +1,13 @@
+function resourceIcon(resource)
+{
+	return '[icon="icon_' + resource + '"]';
+}
+
+function iconTag(iconName)
+{
+	return '[icon="' + iconName + '"]';
+}
+
 /**
  * Add color to text string.
  */
