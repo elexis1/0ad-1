@@ -370,11 +370,11 @@ std::string CNetServerWorker::GetClientIPAddress(const std::string& guid)
 	return "";
 }
 
-std::string CNetServerWorker::LookupHostname(const std::string& guid)
+std::string CNetServerWorker::GetHostname(const std::string& guid)
 {
 	for (CNetServerSession* session : m_Sessions)
 		if (session->GetGUID() == guid)
-			return session->LookupHostname();
+			return session->GetHostname();
 
 	return "";
 }
@@ -690,6 +690,8 @@ bool CNetServerWorker::HandleConnect(CNetServerSession* session)
 		session->Disconnect(NDR_BANNED);
 		return false;
 	}
+
+	// TODO: check for banned hostnames
 
 	CSrvHandshakeMessage handshake;
 	handshake.m_Magic = PS_PROTOCOL_MAGIC;
@@ -1602,10 +1604,10 @@ std::string CNetServer::GetClientIPAddress(const std::string& guid)
 	return m_Worker->GetClientIPAddress(guid);
 }
 
-std::string CNetServer::LookupHostname(const std::string& guid)
+std::string CNetServer::GetHostname(const std::string& guid)
 {
 	CScopeLock lock(m_Worker->m_WorkerMutex);
-	return m_Worker->LookupHostname(guid);
+	return m_Worker->GetHostname(guid);
 }
 
 void CNetServer::StartGame()

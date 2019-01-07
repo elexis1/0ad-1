@@ -150,6 +150,7 @@ void CNetClientSession::Poll()
 			// Report the server address
 			char hostname[256] = "(error)";
 			enet_address_get_host_ip(&event.peer->address, hostname, ARRAY_SIZE(hostname));
+
 			LOGMESSAGE("Net client: Connected to %s:%u", hostname, (unsigned int)event.peer->address.port);
 
 			m_Client.HandleConnect();
@@ -238,6 +239,9 @@ void CNetClientSession::SetLongTimeout(bool enabled)
 CNetServerSession::CNetServerSession(CNetServerWorker& server, ENetPeer* peer) :
 	m_Server(server), m_FileTransferer(this), m_Peer(peer), m_IsLocalClient(false), m_HostID(0), m_GUID(), m_UserName()
 {
+	char hostname[256] = "(error)";
+	if (enet_address_get_host(&peer->address, hostname, ARRAY_SIZE(hostname)) != 0)
+		m_Hostname = hostname;
 }
 
 u32 CNetServerSession::GetIPAddress() const
@@ -256,15 +260,9 @@ std::string CNetServerSession::GetIPAddressString() const
 	return ipAddress;
 }
 
-std::string CNetServerSession::LookupHostname() const
+std::string CNetServerSession::GetHostname() const
 {
-	char hostname[256];
-	hostname[255] = '\0';
-
-	if (enet_address_get_host(&m_Peer->address, hostname, sizeof hostname) != 0)
-		return std::string();
-
-	return hostname;
+	return m_Hostname;
 }
 
 u32 CNetServerSession::GetLastReceivedTime() const

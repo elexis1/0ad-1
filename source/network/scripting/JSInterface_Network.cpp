@@ -256,7 +256,7 @@ std::string JSI_Network::LookupClientHostname(ScriptInterface::CxPrivate* UNUSED
 	if (!g_NetServer)
 		return std::string();
 
-	return g_NetServer->LookupHostname(guid);
+	return g_NetServer->GetHostname(guid);
 }
 
 u32 JSI_Network::IPv4ToNumber(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)

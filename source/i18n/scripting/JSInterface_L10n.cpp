@@ -24,6 +24,8 @@
 #include "ps/Profile.h"
 #include "scriptinterface/ScriptInterface.h"
 
+// TODO: country-code to language name
+
 // Returns a translation of the specified English string into the current language.
 std::wstring JSI_L10n::Translate(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::wstring& sourceString)
 {

@@ -159,7 +159,7 @@ public:
 
 	u32 GetIPAddress() const;
 	std::string GetIPAddressString() const;
-	std::string LookupHostname() const;
+	std::string GetHostname() const;
 
 	/**
 	 * Whether this client is running in the same process as the server.
@@ -224,6 +224,9 @@ private:
 	CStr m_GUID;
 	CStrW m_UserName;
 	u32 m_HostID;
+
+	// Cache
+	CStr m_Hostname;
 
 	bool m_IsLocalClient;
 };
