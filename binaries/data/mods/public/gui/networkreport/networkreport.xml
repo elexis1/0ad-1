@@ -6,7 +6,7 @@
 	<script directory="gui/networkreport/"/>
 
 	<object type="image" sprite="ModernFade"/>
-	<object type="image" style="ModernDialog" size="10% 15% 90% 85%">
+	<object name="networkreport" type="image" style="ModernDialog" size="10% 15% 90% 85%">
 
 		<object style="TitleText" type="text" size="50%-128 4 50%+128 36">
 			<translatableAttribute id="caption">Network</translatableAttribute>
