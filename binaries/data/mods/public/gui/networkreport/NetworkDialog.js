@@ -17,7 +17,8 @@ function NetworkDialog(gameAttributes, playerAssignments)
 	this.clientListLastUpdate = 0;
 	this.selectedGUID = undefined;
 
-	this.LoadCountryFlags();
+	this.countryFlags = new CountryFlags(14, 14, true);
+
 	this.UpdateGUIObjects();
 }
 
@@ -27,13 +28,6 @@ NetworkDialog.prototype.GetHotloadData = function()
 		"gameAttributes": this.gameAttributes,
 		"playerAssignments": this.playerAssignments
 	}
-};
-
-NetworkDialog.prototype.LoadCountryFlags = function()
-{
-	let directory = "global/icon/flags/";
-	for (let countryID of listFiles("art/textures/ui/" + directory, ".png", false))
-		Engine.AddIcon("icon_country_" + countryID, "stretched:" + directory + countryID + ".png", "14 14", false);
 };
 
 NetworkDialog.prototype.UpdateGameData = function(data)
@@ -52,15 +46,14 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 	// TODO: this scope should not exist, but "this" references are difficult
 	return {
 		"country": (() => {
-			let geoLite2 = Engine.GeoLite2_LookupIPv4(Engine.GetClientIPAddress(guid));
-			if (!geoLite2.length)
-				return translateWithContext("unknown country", "?");
-
-			return sprintf(translate("%(icon)s %(continent)s/%(country)s"), {
-				"icon": iconTag("icon_country_" + geoLite2[3].toLowerCase()),
-				"continent": geoLite2[2].replace("\"", ""),
-				"country": geoLite2[4].replace("\"", "")
-			});
+			let geoLite2 = GeoLite2(guid);
+			return geoLite2 ?
+				sprintf(translate("%(icon)s %(continent)s/%(country)s"), {
+					"icon": iconTag(this.countryFlags.GetIconName(geoLite2.countryCode)),
+					"continent": geoLite2.continent,
+					"country": geoLite2.country
+				}) :
+				translateWithContext("unknown country", "?");
 		})(),
 		"name":
 			setStringTags(this.playerAssignments[guid].name, {
@@ -101,20 +94,32 @@ NetworkDialog.prototype.GetClientListEntry = function(guid, clientPerformance)
 
 NetworkDialog.prototype.GetClientListOrder = function()
 {
-	// country sorting not implemented
 	return {
-		"country": (guid1, guid2, clientPerformance) => guid1.localeCompare(guid2),
-		"name": (guid1, guid2, clientPerformance) =>
+		"country": (guid1, guid2) => {
+			let getCountryID = guid => {
+				let geoLite2 = GeoLite2(guid);
+				return geoLite2 ? geoLite2.continentCode + "/" + geoLite2.countryCode : "";
+			};
+			return getCountryID(guid1).localeCompare(getCountryID(guid2));
+		},
+		"name": (guid1, guid2) =>
 			this.playerAssignments[guid1].name.localeCompare(
 			this.playerAssignments[guid2].name),
+
 		"status": (guid1, guid2, clientPerformance) =>
 			getNetworkWarningString(guid1 == Engine.GetPlayerGUID(), clientPerformance[guid1]).localeCompare(
 			getNetworkWarningString(guid2 == Engine.GetPlayerGUID(), clientPerformance[guid2])),
-		"ipAddress": (guid1, guid2) => Engine.IPv4ToNumber(Engine.GetClientIPAddress(guid1)) - Engine.IPv4ToNumber(Engine.GetClientIPAddress(guid2)),
-		"hostname": (guid1, guid2) => Engine.LookupClientHostname(guid1).localeCompare(Engine.LookupClientHostname(guid2)),
+
+		"ipAddress": (guid1, guid2) =>
+			Engine.IPv4ToNumber(Engine.GetClientIPAddress(guid1)) - Engine.IPv4ToNumber(Engine.GetClientIPAddress(guid2)),
+
+		"hostname": (guid1, guid2) =>
+			Engine.LookupClientHostname(guid1).localeCompare(Engine.LookupClientHostname(guid2)),
+
 		"meanRTT": (guid1, guid2, clientPerformance) =>
 			clientPerformance[guid1].meanRTT -
 			clientPerformance[guid2].meanRTT,
+
 		"packetLoss": (guid1, guid2, clientPerformance) =>
 			clientPerformance[guid1].packetLoss -
 			clientPerformance[guid2].packetLoss
