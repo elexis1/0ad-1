@@ -169,7 +169,7 @@ JS::Value JSI_Network::GetNetworkClientPerformance(ScriptInterface::CxPrivate* p
 {
 	if (!g_NetClient)
 		return JS::UndefinedValue();
-
+// TODO: Too many questionmarks in the dialog
 	// Convert from net client context to GUI script context
 	JSContext* cxNet = g_NetClient->GetScriptInterface().GetContext();
 	JSAutoRequest rqNet(cxNet);

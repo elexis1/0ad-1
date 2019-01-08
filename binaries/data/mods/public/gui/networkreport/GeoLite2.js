@@ -1,5 +1,4 @@
 // TODO: cache?
-
 function GeoLite2(guid)
 {
 	// geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,is_in_european_union
@@ -10,4 +9,4 @@ function GeoLite2(guid)
 		"countryCode": geoLite2[3],
 		"country": geoLite2[4].replace(/"/g, "")
 	};
-};
+}

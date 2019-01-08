@@ -240,7 +240,7 @@ CNetServerSession::CNetServerSession(CNetServerWorker& server, ENetPeer* peer) :
 	m_Server(server), m_FileTransferer(this), m_Peer(peer), m_IsLocalClient(false), m_HostID(0), m_GUID(), m_UserName()
 {
 	char hostname[256] = "(error)";
-	if (enet_address_get_host(&peer->address, hostname, ARRAY_SIZE(hostname)) != 0)
+	if (enet_address_get_host(&peer->address, hostname, ARRAY_SIZE(hostname)) == 0)
 		m_Hostname = hostname;
 }
 

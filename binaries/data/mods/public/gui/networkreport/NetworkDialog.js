@@ -2,7 +2,6 @@
 // TODO: remember selected columns
 // TODO: sort players first
 // TODO: this should show whether the client is rejoining at the moment
-// TODO: page needs to be reloaded in case of updates
 // TODO: display host
 // TODO: allow giving host controls to clients
 // TODO: allow muting clients
@@ -23,7 +22,7 @@ NetworkDialog.prototype.GetHotloadData = function()
 	return {
 		"gameAttributes": this.gameAttributes,
 		"playerAssignments": this.playerAssignments
-	}
+	};
 };
 
 NetworkDialog.prototype.UpdateGameData = function(data)
@@ -32,6 +31,20 @@ NetworkDialog.prototype.UpdateGameData = function(data)
 	this.playerAssignments = data.playerAssignments;
 
 	this.UpdateGUIObjects();
+};
+
+NetworkDialog.prototype.UpdateGUIObjects = function()
+{
+	this.clientList.UpdateList(this.gameAttributes, this.playerAssignments);
+	this.UpdateGUIProperties();
+};
+
+NetworkDialog.prototype.UpdateGUIProperties = function()
+{
+	let guiProperties = this.GetGUIProperties();
+	for (let objectName in guiProperties)
+		for (let propertyName in guiProperties[objectName])
+			Engine.GetGUIObjectByName(objectName)[propertyName] = guiProperties[objectName][propertyName];
 };
 
 NetworkDialog.prototype.GetGUIProperties = function()
@@ -85,18 +98,4 @@ NetworkDialog.prototype.GetGUIProperties = function()
 			}
 		}
 	};
-};
-
-NetworkDialog.prototype.UpdateGUIObjects = function()
-{
-	this.clientList.UpdateList(this.gameAttributes, this.playerAssignments);
-	this.UpdateGUIProperties();
-};
-
-NetworkDialog.prototype.UpdateGUIProperties = function()
-{
-	let guiProperties = this.GetGUIProperties();
-	for (let objectName in guiProperties)
-		for (let propertyName in guiProperties[objectName])
-			Engine.GetGUIObjectByName(objectName)[propertyName] = guiProperties[objectName][propertyName];
 };
