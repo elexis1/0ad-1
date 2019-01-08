@@ -585,12 +585,9 @@ void CNetServerWorker::BroadcastClientPerformance()
 	for (CNetServerSession* addresseeSession : m_Sessions)
 	{
 		// Skip disconnecting clients and clients in the loading screen
-		// TODO: ERROR: Net client: Error running FSM update (type=19 state=2 client in handshake state)
-		// ERROR: Net client: Error running FSM update (type=20 state=2)
-		// Seems not solveable, because the Server transitions to pregame prior to the client.
-		// However the message order should still mean that the client transitions prior to processing the messages..!?
 		if (addresseeSession->GetLastReceivedTime() >= 3000 ||
 		    addresseeSession->GetCurrState() < NSS_PREGAME ||
+		    addresseeSession->GetCurrState() == FSM_INVALID_STATE ||
 			(addresseeSession->GetCurrState() == NSS_PREGAME && m_State == SERVER_STATE_LOADING))
 			continue;
 

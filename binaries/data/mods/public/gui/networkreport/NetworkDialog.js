@@ -1,4 +1,3 @@
-// TODO: ERROR: Net client: Error running FSM update (type=19 state=2)
 // TODO: remember selected columns
 // TODO: sort players first
 // TODO: this should show whether the client is rejoining at the moment
