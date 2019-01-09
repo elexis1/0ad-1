@@ -18,6 +18,7 @@
 #ifndef INCLUDED_JSI_GEOLITE2
 #define INCLUDED_JSI_GEOLITE2
 
+#include "network/GeoLite2.h"
 #include "scriptinterface/ScriptInterface.h"
 
 #include <string>
@@ -25,7 +26,7 @@
 
 namespace JSI_GeoLite2
 {
-	std::vector<std::vector<std::string>> GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
+	std::vector<GeoLite2Data> GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
 
 	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
 }

@@ -28,7 +28,7 @@
 // Notice that the GeoLite2 files could be used entirely without the JSInterface GeoLite2 namespace; by using JSI_VFS::ReadFileLines.
 // However the below functions are introduced to provide (1) caching of the 10mb database and (2) using inet.h instead of reinventing these methods in JS.
 
-std::vector<std::vector<std::string>> JSI_GeoLite2::GetGeoLite2(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)
+std::vector<GeoLite2Data> JSI_GeoLite2::GetGeoLite2(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)
 {
 	if (g_GeoLite2)
 	{
@@ -38,11 +38,11 @@ std::vector<std::vector<std::string>> JSI_GeoLite2::GetGeoLite2(ScriptInterface:
 
 		// TODO: Support IPv6
 	}
-	return std::vector<std::vector<std::string>>();
+	return std::vector<GeoLite2Data>();
 }
 
 void JSI_GeoLite2::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
 {
 	// TODO: Use Path <-> JS::Value for other JSInterfaces such as Replay
-	scriptInterface.RegisterFunction<std::vector<std::vector<std::string>>, std::string, &GetGeoLite2>("GetGeoLite2");
+	scriptInterface.RegisterFunction<std::vector<GeoLite2Data>, std::string, &GetGeoLite2>("GetGeoLite2");
 }
