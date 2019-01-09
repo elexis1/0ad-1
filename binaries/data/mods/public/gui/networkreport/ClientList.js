@@ -53,16 +53,6 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 {
 	// TODO: this scope should not exist, but "this" references are difficult
 	return {
-		"country": (() => {
-			let geoLite2 = GeoLite2(guid);
-			return geoLite2 ?
-				sprintf(translate("%(icon)s %(continent)s/%(country)s"), {
-					"icon": iconTag(this.countryFlags.GetIconName(geoLite2.countryCode)),
-					"continent": geoLite2.continent,
-					"country": geoLite2.country
-				}) :
-				translateWithContext("unknown country", "?");
-		})(),
 		"name":
 			setStringTags(playerAssignments[guid].name, {
 				"color": (() => {
@@ -77,6 +67,29 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 				playerAssignments[guid].name) || translate("Ok"),
 		"ipAddress": Engine.GetClientIPAddress(guid),
 		"hostname": Engine.LookupClientHostname(guid),
+		"location": (() => {
+			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
+
+			if (!geoLite2)
+				return translateWithContext("unknown country", "?");
+
+			// TODO: Test for icon existence and use different string if it doesn't exist
+
+			return sprintf(
+				geoLite2.cityName ?
+					translate("%(icon)s %(continent)s/%(country)s/%(city)s") :
+					translate("%(icon)s %(continent)s/%(country)s"),
+				{
+					"icon": iconTag(this.countryFlags.GetIconName(geoLite2.countryCode)),
+					"continent": geoLite2.continentName,
+					"country": geoLite2.countryName,
+					"city": geoLite2.cityName || ""
+				});
+		})(),
+		"time": (() => {
+			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
+			return geoLite2 ? geoLite2.timezone : "";
+		})(),
 		"meanRTT": (() => {
 			let lastReceivedTime = clientPerformance.lastReceivedTime > 3000 ? clientPerformance.lastReceivedTime : 0;
 			let meanRTT = Math.max(clientPerformance.meanRTT, lastReceivedTime);
@@ -103,13 +116,6 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 ClientList.prototype.GetListEntryOrder = function(playerAssignments)
 {
 	return {
-		"country": (guid1, guid2) => {
-			let getCountryID = guid => {
-				let geoLite2 = GeoLite2(guid);
-				return geoLite2 ? geoLite2.continentCode + "/" + geoLite2.countryCode : "";
-			};
-			return getCountryID(guid1).localeCompare(getCountryID(guid2));
-		},
 		"name": (guid1, guid2) =>
 			playerAssignments[guid1].name.localeCompare(
 			playerAssignments[guid2].name),
@@ -123,6 +129,12 @@ ClientList.prototype.GetListEntryOrder = function(playerAssignments)
 
 		"hostname": (guid1, guid2) =>
 			Engine.LookupClientHostname(guid1).localeCompare(Engine.LookupClientHostname(guid2)),
+
+		"location": (guid1, guid2) =>
+			GeoLite2.fromGUID(guid1).GetSortKey().localeCompare(GeoLite2.fromGUID(guid2).GetSortKey()),
+
+		"time": (guid1, guid2) =>
+			0,
 
 		"meanRTT": (guid1, guid2, clientPerformance) =>
 			clientPerformance[guid1].meanRTT -

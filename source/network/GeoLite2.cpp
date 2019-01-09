@@ -21,73 +21,133 @@
 
 #include "lib/file/vfs/vfs_path.h"
 #include "network/IPTools.h"
+#include "ps/ConfigDB.h"
 #include "ps/Filesystem.h"
 #include "ps/CLogger.h"
 
 #include <string>
 #include <vector>
 
-// This namespace provides caching of the GeoLite2 database and query results using the systems inet.h.
+// TODO: Support IPv6
 
-/**
- * Maps from subnet (parsed CIDR notation) to GeoLite2 subnet properties (most importantly geoname ID).
- */
-std::map<std::pair<u32, int>, std::vector<std::string>> g_CountryBlocks;
+GeoLite2* g_GeoLite2 = nullptr;
 
-/**
- * Maps from geoname ID to location properties.
- */
-std::map<std::string, std::vector<std::string>> g_CountryLocations;
-
-/**
- * A cache that stores location properties for previously looked up IP addresses.
- */
-// TODO: Use shared_ptr or some kind of ref to avoid copies?
-std::map<u32, std::vector<std::string>> g_IPv4ToGeoRegion;
-
-bool GeoLite2::LoadData(const std::string& countryCode)
+GeoLite2::GeoLite2(const std::string& IETFLanguageTag)
+: m_IETFLanguageTag(IETFLanguageTag)
 {
-	std::vector<std::string> countryCodes = { countryCode, "en" };
-	for (std::string& countryCode : countryCodes)
-	{
-			VfsPath filePath("geolite2/GeoLite2-Country-Locations-" + countryCode + ".csv");
-			if (VfsFileExists(filePath))
-			{
-				if (!GeoLite2::LoadCSVFile(filePath, g_CountryLocations))
-				{
-					LOGERROR("Invalid GeoLite2 database format!");
-					return false;
-				}
-				break;
-			}
-	}
+	std::string path;
+	CFG_GET_VAL("network.geolite2.directory", path);
+	m_Path = path;
 
-	// Columns: "geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,is_in_european_union"
-	// For example: "2921044,en,EU,Europe,DE,Germany,1"
-	if (!GeoLite2::LoadCountryBlocksIPv4("geolite2/GeoLite2-Country-Blocks-IPv4.csv"))
-	{
-		LOGMESSAGE("No GeoLite2 database found.");
+	std::vector<std::string> vecCityOrCountry = { "City", "Country" };
+
+	for (const std::string& cityOrCountry : vecCityOrCountry)
+		if (LoadBlocksIPv4(cityOrCountry) && LoadLocations(cityOrCountry))
+			return;
+
+	LOGERROR("Could not load GeoLite2 data!");
+}
+
+GeoLite2::~GeoLite2()
+{
+}
+
+bool GeoLite2::IsEnabled()
+{
+	bool enabled = true;
+	CFG_GET_VAL("network.geolite2.enabled", enabled);
+	return enabled;
+}
+
+/**
+ * Load
+ *   GeoLite2-City-Blocks-IPv4.csv or
+ *   GeoLite2-Country-Blocks-IPv4.csv.
+ *
+ * Example Country:
+ *   network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider
+ *   92.222.251.176/28,3017382,3017382,,0,0
+ *
+ * Example City:
+ *   network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider,postal_code,latitude,longitude,accuracy_radius
+ *   38.88.98.0/23,6075357,6252001,,0,0,L5J,43.5102,-79.6296,500
+ */
+bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
+{
+	VfsPath filePath(m_Path / ("GeoLite2-" + cityOrCountry + "-Blocks-IPv4.csv"));
+
+	std::map<std::string, std::vector<std::string>> countryBlocks;
+	m_BlocksIPv4.clear();
+
+	if (!LoadCSVFile(filePath, countryBlocks))
 		return false;
+
+	// Store subnets as numbers
+	for (const std::pair<std::string, std::vector<std::string>>& countryBlock : countryBlocks)
+	{
+		u32 subnetAddress;
+		int subnetMaskBits;
+
+		if (IPTools::ParseSubnet(countryBlock.first, subnetAddress, subnetMaskBits))
+			m_BlocksIPv4[std::make_pair(subnetAddress, subnetMaskBits)] = countryBlock.second;
 	}
 
-	LOGMESSAGE("GeoLite2 database loaded.");
+	LOGMESSAGE("Loaded %s", filePath.string8().c_str());
+
 	return true;
 }
 
-bool GeoLite2::LoadCSVFile(const VfsPath& pathname, std::map<std::string, std::vector<std::string>>& csv)
+/**
+ * Load
+ *   GeoLite2-City-Locations-en.csv or
+ *   GeoLite2-Country-Locations-en.csv or...
+ *
+ * Example Country:
+ *   geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,is_in_european_union
+ *   2264397,en,EU,Europe,PT,Portugal,1
+ *
+ *  Example City:
+ *   geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,subdivision_1_iso_code,subdivision_1_name,subdivision_2_iso_code,subdivision_2_name,city_name,metro_code,time_zone,is_in_european_union
+ *   11696023,en,NA,"North America",CA,Canada,QC,Quebec,,,Sainte-Claire,,America/Toronto,0
+ */
+bool GeoLite2::LoadLocations(const std::string& cityOrCountry)
+{
+	std::vector<std::string> IETFLanguageTags = { m_IETFLanguageTag, "en" };
+
+	for (const std::string& IETFLanguageTag : IETFLanguageTags)
+	{
+			VfsPath filePath(m_Path / ("GeoLite2-" + cityOrCountry + "-Locations-" + IETFLanguageTag + ".csv"));
+			m_Locations.clear();
+
+			if (LoadCSVFile(filePath, m_Locations))
+			{
+				LOGMESSAGE("Loaded %s", filePath.string8().c_str());
+				return true;
+			}
+	}
+
+	return false;
+}
+
+/**
+ * Loads the given GeoLite2 csv file as a map from the first value to the rest of the values.
+ */
+bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::map<std::string, std::vector<std::string>>& csv)
 {
 	CVFSFile file;
-	if (file.Load(g_VFS, pathname) != PSRETURN_OK)
+	// TODO: needed?
+	if (!VfsFileExists(filePath) || file.Load(g_VFS, filePath) != PSRETURN_OK)
 		return false;
-
-	std::stringstream sstream(file.DecodeUTF8());
-
-	// Skip first line, which is the header
-	std::string line;
-	std::getline(sstream, line);
 
 	csv.clear();
 
+	std::stringstream sstream(file.GetAsString());
+
+	// Read header
+	std::string header;
+	std::getline(sstream, header);
+
+	std::string line;
 	while (std::getline(sstream, line))
 	{
 		std::vector<std::string> values;
@@ -103,39 +163,25 @@ bool GeoLite2::LoadCSVFile(const VfsPath& pathname, std::map<std::string, std::v
 		// TODO shared_ptr?
 		csv[key] = values;
 	}
+
 	return true;
 }
 
-// "network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider"
-// For example "46.255.40.0/24,2921044,2635167,,0,0"
-bool GeoLite2::LoadCountryBlocksIPv4(const VfsPath& pathname)
+/**
+ * Returns the data of the given IP address from both Blocks and Location file.
+ */
+std::vector<std::vector<std::string>> GeoLite2::GetIPv4Data(u32 ipAddress)
 {
-	std::map<std::string, std::vector<std::string>> countryBlocks;
-
-	if (!LoadCSVFile(pathname, countryBlocks))
-		return false;
-
-	// Store subnets as numbers
-	for (const std::pair<std::string, std::vector<std::string>>& countryBlock : countryBlocks)
-	{
-		u32 subnetAddress;
-		int subnetMaskBits;
-
-		if (IPTools::ParseSubnet(countryBlock.first, subnetAddress, subnetMaskBits))
-			g_CountryBlocks[std::make_pair(subnetAddress, subnetMaskBits)] = countryBlock.second;
-	}
-	return true;
-}
-
-std::vector<std::string> GeoLite2::GetIPv4CountryData(u32 ipAddress)
-{
-	if (!g_IPv4ToGeoRegion.count(ipAddress))
-		for (const std::pair<std::pair<u32, int>, std::vector<std::string>>& countryBlock : g_CountryBlocks)
+	if (!m_IPv4Cache.count(ipAddress))
+		for (const std::pair<std::pair<u32, int>, std::vector<std::string>>& countryBlock : m_BlocksIPv4)
 			if (IPTools::IsIpV4PartOfSubnet(ipAddress, countryBlock.first.first, countryBlock.first.second))
 			{
-				g_IPv4ToGeoRegion[ipAddress] = g_CountryLocations[countryBlock.second[0]];
+				m_IPv4Cache[ipAddress] = {
+					countryBlock.second,
+					m_Locations[countryBlock.second[0]]
+				};
 				break;
 			}
 
-	return g_IPv4ToGeoRegion[ipAddress];
+	return m_IPv4Cache[ipAddress];
 }

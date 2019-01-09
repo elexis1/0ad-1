@@ -705,8 +705,8 @@ void Shutdown(int flags)
 
 	EndGame();
 
+	SAFE_DELETE(g_GeoLite2);
 	SAFE_DELETE(g_XmppClient);
-
 	SAFE_DELETE(g_ModIo);
 
 	ShutdownPs();
@@ -968,7 +968,13 @@ bool Init(const CmdLineArgs& args, int flags)
 	}
 
 	new L10n;
-	GeoLite2::LoadData(g_L10n.GetCurrentLocale().getCountry());
+
+	if (GeoLite2::IsEnabled())
+	{
+		// TODO: this ain't proper format
+		std::string language = g_L10n.GetCurrentLocale().getCountry();
+		g_GeoLite2 = new GeoLite2(language);
+	}
 
 	// Optionally start profiler HTTP output automatically
 	// (By default it's only enabled by a hotkey, for security/performance)
