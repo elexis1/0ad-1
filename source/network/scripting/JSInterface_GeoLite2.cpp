@@ -30,16 +30,44 @@
 
 JS::Value JSI_GeoLite2::GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress)
 {
+	JSContext* cx = pCxPrivate->pScriptInterface->GetContext();
+	JSAutoRequest rq(cx);
+
 	if (!g_GeoLite2)
 		return JS::UndefinedValue();
 
-	u32 ipAddressNum;
-	if (IPTools::ParseIPv4Address(ipAddress, ipAddressNum))
-		return g_GeoLite2->GetIPv4Data(*pCxPrivate->pScriptInterface, ipAddressNum);
+	// TODO shared_ptr I suppose
+	std::map<std::string, GeoLite2Data> data;
+	{
+		u32 ipAddressNum;
+		if (IPTools::ParseIPv4Address(ipAddress, ipAddressNum))
+			data = g_GeoLite2->GetIPv4Data(ipAddressNum);
 
-	// TODO: Support IPv6
+		// TODO: Support IPv6
+	}
 
-	return JS::UndefinedValue();
+	if (data.empty())
+		return JS::UndefinedValue();
+
+	// The UTF8 conversion is done here (late), because
+	// the cache can be hundreds of MB and we want to use 8bit characters to save space
+	JS::RootedValue returnValue(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
+
+	for (const std::pair<std::string, GeoLite2Data>& dataSet : data)
+	{
+		JS::RootedObject dataSetUTF8(cx, JS_NewArrayObject(cx, 0));
+
+		for (std::size_t i = 0; i < dataSet.second->size(); ++i)
+		{
+			JS::RootedValue valueJS(cx);
+			ScriptInterface::ToJSVal<std::wstring>(cx, &valueJS, wstring_from_utf8((*dataSet.second)[i]));
+			JS_SetElement(cx, dataSetUTF8, i, valueJS);
+		}
+		JS::RootedValue dataSetJS(cx, JS::ObjectValue(*dataSetUTF8));
+		pCxPrivate->pScriptInterface->SetProperty(returnValue, dataSet.first.c_str(), dataSetJS);
+	}
+
+	return returnValue;
 }
 
 void JSI_GeoLite2::RegisterScriptFunctions(const ScriptInterface& scriptInterface)

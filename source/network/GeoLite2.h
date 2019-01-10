@@ -19,7 +19,6 @@
 #define GEOLITE2_H
 
 #include "lib/file/vfs/vfs_path.h"
-#include "scriptinterface/ScriptInterface.h"
 
 #include <string>
 
@@ -52,7 +51,7 @@ public:
 	/**
 	 * Loads both the Blocks and the Locations file of the given IPv4.
 	 */
-	JS::Value GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAddress);
+	std::map<std::string, GeoLite2Data> GetIPv4Data(u32 ipAddress);
 
 private:
 
@@ -88,7 +87,8 @@ private:
 	/**
 	 * A cache that stores Location.csv properties for previously looked up IP addresses.
 	 */
-	std::map<u32, JS::PersistentRootedValue> m_IPv4Cache;
+	// TODO: Use shared_ptr or some kind of ref to avoid copies?
+	std::map<u32, std::map<std::string, GeoLite2Data>> m_IPv4Cache;
 };
 
 /**
