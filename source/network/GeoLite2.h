@@ -25,7 +25,7 @@
 /**
  * The comma separated values of one line, excluding the first value.
  */
-using GeoLite2Data = std::vector<std::string>;
+using GeoLite2Data = shared_ptr<std::vector<std::string>>;
 
 /**
  * This class provides caching of the GeoLite2 database and query results using the systems inet.h.

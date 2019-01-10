@@ -64,6 +64,8 @@ bool GeoLite2::IsEnabled()
  *   GeoLite2-City-Blocks-IPv4.csv or
  *   GeoLite2-Country-Blocks-IPv4.csv.
  *
+ * The filesize can exceede 150MB! Therefore the data must be stored as numbers and bools where possible.
+ *
  * Example Country:
  *   network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider
  *   92.222.251.176/28,3017382,3017382,,0,0
@@ -104,6 +106,8 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
  *   GeoLite2-City-Locations-en.csv or
  *   GeoLite2-Country-Locations-en.csv or...
  *
+ * The filesize can exceed 10MB.
+ *
  * Example Country:
  *   geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,is_in_european_union
  *   2264397,en,EU,Europe,PT,Portugal,1
@@ -134,10 +138,11 @@ bool GeoLite2::LoadLocations(const std::string& cityOrCountry)
 /**
  * Loads the given GeoLite2 csv file as a map from the first value to the rest of the values.
  */
+// TODO: callback function?
 bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::map<std::string, GeoLite2Data>& csv)
 {
 	CVFSFile file;
-	// TODO: needed?
+	// TODO: VfsFileExists needed?
 	if (!VfsFileExists(filePath) || file.Load(g_VFS, filePath) != PSRETURN_OK)
 		return false;
 
@@ -153,17 +158,16 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::map<std::string, GeoLit
 	std::string line;
 	while (std::getline(sstream, line))
 	{
-		GeoLite2Data values;
+		GeoLite2Data values(new std::vector<std::string>());
 		{
 			std::string value;
 			std::stringstream valuesStream(line);
 			while (std::getline(valuesStream, value, ','))
-				values.push_back(value);
+				values->push_back(value);
 		}
 
-		std::string key = values[0];
-		values.erase(values.begin());
-		// TODO shared_ptr?
+		std::string key = (*values)[0];
+		values->erase(values->begin());
 		csv[key] = values;
 	}
 
@@ -181,7 +185,7 @@ std::map<std::string, GeoLite2Data> GeoLite2::GetIPv4Data(u32 ipAddress)
 			{
 				m_IPv4Cache[ipAddress] = {
 					{ "block", countryBlock.second },
-					{ "location", m_Locations[countryBlock.second[0]] }
+					{ "location", m_Locations[(*countryBlock.second)[0]] }
 				};
 				break;
 			}

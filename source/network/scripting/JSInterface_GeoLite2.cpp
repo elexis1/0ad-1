@@ -57,10 +57,10 @@ JS::Value JSI_GeoLite2::GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, cons
 	{
 		JS::RootedObject dataSetUTF8(cx, JS_NewArrayObject(cx, 0));
 
-		for (std::size_t i = 0; i < dataSet.second.size(); ++i)
+		for (std::size_t i = 0; i < dataSet.second->size(); ++i)
 		{
 			JS::RootedValue valueJS(cx);
-			ScriptInterface::ToJSVal<std::wstring>(cx, &valueJS, wstring_from_utf8(dataSet.second[i]));
+			ScriptInterface::ToJSVal<std::wstring>(cx, &valueJS, wstring_from_utf8((*dataSet.second)[i]));
 			JS_SetElement(cx, dataSetUTF8, i, valueJS);
 		}
 		JS::RootedValue dataSetJS(cx, JS::ObjectValue(*dataSetUTF8));
