@@ -26,7 +26,7 @@
 
 namespace JSI_GeoLite2
 {
-	std::vector<GeoLite2Data> GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
+	JS::Value GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
 
 	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
 }

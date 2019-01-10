@@ -51,7 +51,7 @@ public:
 	/**
 	 * Loads both the Blocks and the Locations file of the given IPv4.
 	 */
-	std::vector<GeoLite2Data> GetIPv4Data(u32 ipAddress);
+	std::map<std::string, GeoLite2Data> GetIPv4Data(u32 ipAddress);
 
 private:
 
@@ -88,7 +88,7 @@ private:
 	 * A cache that stores Location.csv properties for previously looked up IP addresses.
 	 */
 	// TODO: Use shared_ptr or some kind of ref to avoid copies?
-	std::map<u32, std::vector<GeoLite2Data>> m_IPv4Cache;
+	std::map<u32, std::map<std::string, GeoLite2Data>> m_IPv4Cache;
 };
 
 /**

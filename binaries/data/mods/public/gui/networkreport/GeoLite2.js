@@ -1,7 +1,7 @@
 function GeoLite2(ipAddress)
 {
 	let data = Engine.GetGeoLite2(ipAddress);
-	this.data = data.length && this.ParseData(data[0], data[1]);
+	this.data = data && this.ParseData(data.block, data.location);
 }
 
 GeoLite2.FromGUID = function(guid)
@@ -91,7 +91,7 @@ GeoLite2.prototype.ParseData = function(block, location)
 			{},
 		{
 			// For example: 0
-			"is_in_european_union": hasCity ? location[5] : location[12]
+			"is_in_european_union": hasCity ? location[12] : location[5]
 		});
 };
 

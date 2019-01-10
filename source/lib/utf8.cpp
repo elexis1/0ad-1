@@ -225,7 +225,6 @@ std::string utf8_from_wstring(const std::wstring& src, Status* err)
 	return dst;
 }
 
-
 std::wstring wstring_from_utf8(const std::string& src, Status* err)
 {
 	if(err)

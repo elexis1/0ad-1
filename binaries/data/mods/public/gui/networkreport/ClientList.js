@@ -88,7 +88,7 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 		})(),
 		"time": (() => {
 			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
-			return geoLite2 ? geoLite2.timezone : "";
+			return geoLite2 && geoLite2.timezone || "";
 		})(),
 		"meanRTT": (() => {
 			let lastReceivedTime = clientPerformance.lastReceivedTime > 3000 ? clientPerformance.lastReceivedTime : 0;

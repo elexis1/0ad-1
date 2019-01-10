@@ -35,6 +35,8 @@
 #include "ps/Util.h"
 #include "scriptinterface/ScriptInterface.h"
 
+// TODO: Use Path <-> JS::Value for other JSInterfaces such as Replay
+
 /**
  * Filter too short replays (value in seconds).
  */

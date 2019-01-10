@@ -144,7 +144,6 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::map<std::string, GeoLit
 	debug_printf("Loading %s\n", filePath.string8().c_str());
 
 	csv.clear();
-
 	std::stringstream sstream(file.DecodeUTF8());
 
 	// Read header
@@ -174,15 +173,15 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::map<std::string, GeoLit
 /**
  * Returns the data of the given IP address from both Blocks and Location file.
  */
-std::vector<GeoLite2Data> GeoLite2::GetIPv4Data(u32 ipAddress)
+std::map<std::string, GeoLite2Data> GeoLite2::GetIPv4Data(u32 ipAddress)
 {
 	if (!m_IPv4Cache.count(ipAddress))
 		for (const std::pair<std::pair<u32, int>, GeoLite2Data>& countryBlock : m_BlocksIPv4)
 			if (IPTools::IsIpV4PartOfSubnet(ipAddress, countryBlock.first.first, countryBlock.first.second))
 			{
 				m_IPv4Cache[ipAddress] = {
-					countryBlock.second,
-					m_Locations[countryBlock.second[0]]
+					{ "block", countryBlock.second },
+					{ "location", m_Locations[countryBlock.second[0]] }
 				};
 				break;
 			}
