@@ -25,7 +25,7 @@
 /**
  * The comma separated values of one line, excluding the first value.
  */
-using GeoLite2Data = shared_ptr<std::vector<std::string>>;
+using GeoLite2Data = std::vector<std::string>;
 
 /**
  * This class provides caching of the GeoLite2 database and query results using the systems inet.h.
@@ -62,7 +62,7 @@ private:
 	bool LoadLocations(const std::string& cityOrCountry);
 
 	// Loads a csv file and parses it as a vector of strings excluding the first line.
-	bool LoadCSVFile(const VfsPath& pathname, std::map<std::string, GeoLite2Data>& csv);
+	bool LoadCSVFile(const VfsPath& filePath, std::function<void(std::vector<std::string>&)>& lineRead);
 
 	/**
 	 * The directory that the user configured to load.
@@ -75,14 +75,15 @@ private:
 	std::string m_IETFLanguageTag;
 
 	/**
-	 * Maps from subnet (parsed CIDR notation) to GeoLite2 subnet properties (most importantly location ID).
+	 * Maps from subnet (parsed CIDR notation) to GeoLite2 geoname ID.
+	 * This discards a lot of less relevant data, because storing all strings of a City file would consume about 2GB.
 	 */
-	std::map<std::pair<u32, u8>, GeoLite2Data> m_BlocksIPv4;
+	std::map<std::pair<u32, u8>, u32> m_Blocks_IPv4_GeoID;
 
 	/**
 	 * Maps from geoname ID to location properties.
 	 */
-	std::map<std::string, GeoLite2Data> m_Locations;
+	std::map<u32, GeoLite2Data> m_Locations;
 
 	/**
 	 * A cache that stores Location.csv properties for previously looked up IP addresses.

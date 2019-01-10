@@ -50,16 +50,17 @@ JS::Value JSI_GeoLite2::GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, cons
 
 	// The UTF8 conversion is done here (late), because
 	// the cache can be hundreds of MB and we want to use 8bit characters to save space
+	// TODO: But the cache can still be pre-converted to UTF8
 	JS::RootedValue returnValue(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
 
 	for (const std::pair<std::string, GeoLite2Data>& dataSet : data)
 	{
 		JS::RootedObject dataSetUTF8(cx, JS_NewArrayObject(cx, 0));
 
-		for (std::size_t i = 0; i < dataSet.second->size(); ++i)
+		for (std::size_t i = 0; i < dataSet.second.size(); ++i)
 		{
 			JS::RootedValue valueJS(cx);
-			ScriptInterface::ToJSVal<std::wstring>(cx, &valueJS, wstring_from_utf8((*dataSet.second)[i]));
+			ScriptInterface::ToJSVal<std::wstring>(cx, &valueJS, wstring_from_utf8(dataSet.second[i]));
 			JS_SetElement(cx, dataSetUTF8, i, valueJS);
 		}
 		JS::RootedValue dataSetJS(cx, JS::ObjectValue(*dataSetUTF8));
