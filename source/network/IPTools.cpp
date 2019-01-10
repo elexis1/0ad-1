@@ -42,7 +42,7 @@ bool IPTools::ParseIPv4Address(const std::string& ipAddress, u32& ipAddressNum)
 /**
  * Parses CIDR notation, for example "223.252.161.128/25".
  */
-bool IPTools::ParseSubnet(const std::string& subnet, u32& subnetAddress, int& subnetMaskBits)
+bool IPTools::ParseSubnet(const std::string& subnet, u32& subnetAddress, u8& subnetMaskBits)
 {
 	std::istringstream subnetStream(subnet);
 	std::string subnetAddressString;
@@ -53,7 +53,7 @@ bool IPTools::ParseSubnet(const std::string& subnet, u32& subnetAddress, int& su
 
 	std::string subnetMaskBitsString;
 	std::getline(subnetStream, subnetMaskBitsString);
-	subnetMaskBits = std::stoi(subnetMaskBitsString);
+	subnetMaskBits = static_cast<u8>(std::stoi(subnetMaskBitsString));
 
 	return true;
 }

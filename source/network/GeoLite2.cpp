@@ -82,7 +82,7 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
 	std::map<std::string, GeoLite2Data> countryBlocks;
 	m_BlocksIPv4.clear();
 
-	if (!LoadCSVFile(filePath, countryBlocks))
+	if (!LoadCSVFile(filePath, countryBlocks)) // TODO: this statement causes 2GB memory allocation, even if countryBlocks is not saved anywhere
 		return false;
 
 	// Store subnets as numbers
@@ -91,7 +91,7 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
 	for (const std::pair<std::string, GeoLite2Data>& countryBlock : countryBlocks)
 	{
 		u32 subnetAddress;
-		int subnetMaskBits;
+		u8 subnetMaskBits;
 
 		if (IPTools::ParseSubnet(countryBlock.first, subnetAddress, subnetMaskBits))
 			// TODO: Need to parse the strings into numbers and booleans, it costs too much space
@@ -172,7 +172,8 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::map<std::string, GeoLit
 
 		std::string key = (*values)[0];
 		values->erase(values->begin());
-		csv[key] = values;
+		values->shrink_to_fit();
+		csv[key].swap(values);
 	}
 
 	return true;

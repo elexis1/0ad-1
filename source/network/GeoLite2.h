@@ -77,7 +77,7 @@ private:
 	/**
 	 * Maps from subnet (parsed CIDR notation) to GeoLite2 subnet properties (most importantly location ID).
 	 */
-	std::map<std::pair<u32, int>, GeoLite2Data> m_BlocksIPv4;
+	std::map<std::pair<u32, u8>, GeoLite2Data> m_BlocksIPv4;
 
 	/**
 	 * Maps from geoname ID to location properties.
@@ -87,7 +87,6 @@ private:
 	/**
 	 * A cache that stores Location.csv properties for previously looked up IP addresses.
 	 */
-	// TODO: Use shared_ptr or some kind of ref to avoid copies?
 	std::map<u32, std::map<std::string, GeoLite2Data>> m_IPv4Cache;
 };
 

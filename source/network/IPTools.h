@@ -23,7 +23,7 @@
 namespace IPTools
 {
 	bool ParseIPv4Address(const std::string& ipAddress, u32& ipAddressNum);
-	bool ParseSubnet(const std::string& subnetString, u32& subnetAddress, int& subnetMaskBits);
+	bool ParseSubnet(const std::string& subnetString, u32& subnetAddress, u8& subnetMaskBits);
 
 	bool IsIpV4PartOfSubnet(u32 ipAddress, u32 subnetAddress, int subnetMaskBits);
 }

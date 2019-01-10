@@ -36,7 +36,6 @@ JS::Value JSI_GeoLite2::GetGeoLite2(ScriptInterface::CxPrivate* pCxPrivate, cons
 	if (!g_GeoLite2)
 		return JS::UndefinedValue();
 
-	// TODO shared_ptr I suppose
 	std::map<std::string, GeoLite2Data> data;
 	{
 		u32 ipAddressNum;
