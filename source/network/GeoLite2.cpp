@@ -64,7 +64,8 @@ bool GeoLite2::IsEnabled()
  *   GeoLite2-City-Blocks-IPv4.csv or
  *   GeoLite2-Country-Blocks-IPv4.csv.
  *
- * The filesize can exceede 150MB! Therefore the data must be stored as numbers and bools where possible.
+ * The City filesize can exceed 150MB. Storing it as a string vector can consume 2GB+!
+ * Therefore the data must be stored as numbers and bools where possible.
  *
  * Example Country:
  *   network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider
@@ -93,7 +94,10 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
 		int subnetMaskBits;
 
 		if (IPTools::ParseSubnet(countryBlock.first, subnetAddress, subnetMaskBits))
+			// TODO: Need to parse the strings into numbers and booleans, it costs too much space
 			m_BlocksIPv4[std::make_pair(subnetAddress, subnetMaskBits)] = countryBlock.second;
+		else
+			LOGERROR("GeoLite2: Could not parse Subnet %s\n", countryBlock.first.c_str());
 	}
 
 	debug_printf("Loaded %s\n", filePath.string8().c_str());
