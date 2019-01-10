@@ -79,6 +79,8 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
 {
 	VfsPath filePath(m_Path / ("GeoLite2-" + cityOrCountry + "-Blocks-IPv4.csv"));
 
+	//std::map<std::string, <float latitude, float longitude, u16 accuracy_radius>>
+
 	std::map<std::string, GeoLite2Data> countryBlocks;
 	m_BlocksIPv4.clear();
 
@@ -178,21 +180,53 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::map<std::string, GeoLit
 	return true;
 }
 
+// TODO: nuke or ToJSVal template function
+JS::Value ToJSValGeoLite2Data(const ScriptInterface& scriptInterface, GeoLite2Data data)
+{
+	JSContext* cx = scriptInterface.GetContext();
+	JSAutoRequest rq(cx);
+
+	// The UTF8 conversion is done here (late), because
+	// the cache can be hundreds of MB and we want to use 8bit characters to save space
+	JS::RootedObject dataUTF8(cx, JS_NewArrayObject(cx, 0));
+
+	for (std::size_t i = 0; i < data->size(); ++i)
+	{
+		JS::RootedValue valueJS(cx);
+		ScriptInterface::ToJSVal<std::wstring>(cx, &valueJS, wstring_from_utf8((*data)[i]));
+		JS_SetElement(cx, dataUTF8, i, valueJS);
+	}
+	return JS::ObjectValue(*dataUTF8);
+}
+
 /**
  * Returns the data of the given IP address from both Blocks and Location file.
  */
-std::map<std::string, GeoLite2Data> GeoLite2::GetIPv4Data(u32 ipAddress)
+JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAddress)
 {
-	if (!m_IPv4Cache.count(ipAddress))
-		for (const std::pair<std::pair<u32, int>, GeoLite2Data>& countryBlock : m_BlocksIPv4)
-			if (IPTools::IsIpV4PartOfSubnet(ipAddress, countryBlock.first.first, countryBlock.first.second))
-			{
-				m_IPv4Cache[ipAddress] = {
-					{ "block", countryBlock.second },
-					{ "location", m_Locations[(*countryBlock.second)[0]] }
-				};
-				break;
-			}
+	JSContext* cx = scriptInterface.GetContext();
+	JSAutoRequest rq(cx);
 
-	return m_IPv4Cache[ipAddress];
+	if (m_IPv4Cache.count(ipAddress))
+		return m_IPv4Cache[ipAddress];
+
+	for (const std::pair<std::pair<u32, int>, GeoLite2Data>& countryBlock : m_BlocksIPv4)
+	{
+		if (!IPTools::IsIpV4PartOfSubnet(ipAddress, countryBlock.first.first, countryBlock.first.second))
+			continue;
+
+		JS::RootedValue returnValue(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
+
+		JS::RootedValue block(cx, ToJSValGeoLite2Data(scriptInterface, countryBlock.second));
+		scriptInterface.SetProperty(returnValue, "block", block);
+
+		JS::RootedValue location(cx, ToJSValGeoLite2Data(scriptInterface, m_Locations[(*countryBlock.second)[0]]));
+		scriptInterface.SetProperty(returnValue, "location", location);
+
+		m_IPv4Cache[ipAddress].init(cx, returnValue);
+
+		return m_IPv4Cache[ipAddress];
+	}
+
+	return JS::UndefinedValue();
 }
