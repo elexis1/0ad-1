@@ -57,7 +57,7 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 			setStringTags(playerAssignments[guid].name, {
 				"color": (() => {
 					let playerID = playerAssignments[guid].player - 1;
-					return playerID > 0 ? rgbToGuiColor(gameAttributes.settings.PlayerData[playerID].Color) : "white";
+					return playerID != -1 ? rgbToGuiColor(gameAttributes.settings.PlayerData[playerID].Color) : "white";
 				})()
 			}),
 		"status":
@@ -88,7 +88,7 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 		})(),
 		"time": (() => {
 			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
-			return geoLite2 && geoLite2.timezone || "";
+			return geoLite2 && geoLite2.timeZone || "";
 		})(),
 		"meanRTT": (() => {
 			let lastReceivedTime = clientPerformance.lastReceivedTime > 3000 ? clientPerformance.lastReceivedTime : 0;

@@ -19,17 +19,14 @@
 #define GEOLITE2_H
 
 #include "lib/file/vfs/vfs_path.h"
+#include "scriptinterface/ScriptInterface.h"
 
 #include <string>
 
 /**
- * The comma separated values of one line, excluding the first value.
- */
-using GeoLite2Data = std::vector<std::string>;
-
-/**
  * Identifies an IPv4 range as a parsed CIDR, i.e. an IPv4 in hostbyte order + Number of bits of the subnet mask.
  */
+// TODO: Consider using u64 conversion to save space :/
 using IPv4SubnetKeyType = std::pair<u32, u8>;
 
 /**
@@ -56,7 +53,7 @@ public:
 	/**
 	 * Loads both the Blocks and the Locations file of the given IPv4.
 	 */
-	std::map<std::string, GeoLite2Data> GetIPv4Data(u32 ipAddress);
+	JS::Value GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAddress);
 
 private:
 
@@ -81,6 +78,8 @@ private:
 	bool LoadCSVFile(const VfsPath& filePath, const std::string& expectedHeader, std::function<void(std::vector<std::string>&)>& lineRead);
 
 	bool ParseGeonameID(const std::string& geoNameID, u32& geonameIDNum);
+	void ParseCityLocationsLine(const std::string& geonameID, const u32& geonameIDNum, const std::vector<std::string>& values);
+	void ParseCountryLocationsLine(const std::string& geonameID, const u32& geonameIDNum, const std::vector<std::string>& values);
 
 	/**
 	 * The directory that the user configured to load.
@@ -109,17 +108,14 @@ private:
 	std::map<IPv4SubnetKeyType, std::tuple<float, float, u16>> m_Blocks_IPv4_GeoCoordinates;
 
 	// ASN Blocks data
-	std::map<IPv4SubnetKeyType, std::string> m_Blocks_IPv4_AutonomousSystemOrganization;
+	std::map<IPv4SubnetKeyType, u32> m_Blocks_IPv4_AutonomousSystemNumber;
+	std::map<u32, std::string> m_Blocks_IPv4_AutonomousSystemOrganization;
 
 	/**
 	 * Maps from geoname ID to Locations data.
 	 */
-	std::map<u32, GeoLite2Data> m_Locations;
-
-	/**
-	 * A cache that stores Location.csv properties for previously looked up IP addresses.
-	 */
-	std::map<u32, std::map<std::string, GeoLite2Data>> m_IPv4Cache; // TODO: wstring
+	std::map<u32, std::vector<std::string>> m_CountryLocations;
+	std::map<u32, std::vector<std::string>> m_CityLocations;
 };
 
 /**

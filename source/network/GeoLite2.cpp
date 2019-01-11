@@ -24,7 +24,9 @@
 #include "ps/ConfigDB.h"
 #include "ps/Filesystem.h"
 #include "ps/CLogger.h"
+#include "scriptinterface/ScriptInterface.h"
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -135,7 +137,7 @@ bool GeoLite2::LoadBlocks(const std::string& content)
 /**
  * This function is also used to parse the first columns of the City Blocks file.
  */
-void GeoLite2::ParseCountryBlocksLine(const std::string& subnet, const IPv4SubnetKeyType& subnetKey, const std::vector<std::string>& values)
+void GeoLite2::ParseCountryBlocksLine(const std::string& UNUSED(subnet), const IPv4SubnetKeyType& subnetKey, const std::vector<std::string>& values)
 {
 	if (values.size() < 6)
 		return;
@@ -149,16 +151,11 @@ void GeoLite2::ParseCountryBlocksLine(const std::string& subnet, const IPv4Subne
 	if (geonameID.empty())
 		return;
 
-	// Parse geoname ID
-	u32 geonameIDNum = 0;
-	if (!ParseGeonameID(
+	// Parse geonameID
+	const u32 geonameIDNum = static_cast<u32>(std::stoul(
 		geonameID.length() ? geonameID :
 		representedGeonameID.length() ? representedGeonameID :
-		registeredGeonameID, geonameIDNum))
-	{
-		LOGERROR("Could not parse geoname ID for subnet %s", subnet.c_str());
-		return;
-	}
+		registeredGeonameID));
 
 	// Store the data
 	m_Blocks_IPv4_GeoID[subnetKey] = geonameIDNum;
@@ -174,6 +171,7 @@ void GeoLite2::ParseCityBlocksLine(const std::string& subnet, const IPv4SubnetKe
 {
 	ParseCountryBlocksLine(subnet, subnetKey, values);
 
+	// This can happen if the accuracy radius is empty
 	if (values.size() < 10)
 		return;
 
@@ -201,8 +199,13 @@ void GeoLite2::ParseASNBlocksLine(const std::string& UNUSED(subnet), const IPv4S
 	if (values.size() < 3)
 		return;
 
-	// autonomous_system_number = values.at(1);
-	m_Blocks_IPv4_AutonomousSystemOrganization[subnetKey] = values.at(2);
+	const std::string& autonomousSystemNumber = values.at(1);
+	const std::string& autonomousSystemOrganization = values.at(2);
+
+	const u32 autonomousSystemNumberNum = static_cast<u32>(std::stoul(autonomousSystemNumber));
+
+	m_Blocks_IPv4_AutonomousSystemNumber[subnetKey] = autonomousSystemNumberNum;
+	m_Blocks_IPv4_AutonomousSystemOrganization[autonomousSystemNumberNum] = autonomousSystemOrganization;
 }
 
 /**
@@ -229,21 +232,18 @@ bool GeoLite2::LoadLocations(const std::string& content)
 	{
 		VfsPath filePath(m_Path / ("GeoLite2-" + content + "-Locations-" + IETFLanguageTag + ".csv"));
 
-		std::function<void(std::vector<std::string>& values)> readLine = [this](std::vector<std::string>& values)
+		std::function<void(std::vector<std::string>& values)> readLine = [this, content](std::vector<std::string>& values)
 		{
-			const std::string& geonameID = values.at(0);
-			u32 geonameIDNum = 0;
-
-			if (!ParseGeonameID(geonameID, geonameIDNum))
-			{
-				LOGERROR("Could not parse geoname ID for subnet %s", geonameID.c_str());
+			if (values.size() < 1)
 				return;
-			}
 
-			values.erase(values.begin());
-			values.shrink_to_fit();
+			const std::string& geonameID = values.at(0);
+			const u32 geonameIDNum = static_cast<u32>(std::stoul(geonameID));
 
-			m_Locations[geonameIDNum] = values;
+			if (content == "City")
+				ParseCityLocationsLine(geonameID, geonameIDNum, values);
+			else if (content == "Country")
+				ParseCountryLocationsLine(geonameID, geonameIDNum, values);
 		};
 
 		if (LoadCSVFile(filePath, m_LocationsHeader[content], readLine))
@@ -251,6 +251,45 @@ bool GeoLite2::LoadLocations(const std::string& content)
 	}
 
 	return false;
+}
+
+void GeoLite2::ParseCountryLocationsLine(const std::string& UNUSED(geonameID), const u32& geonameIDNum, const std::vector<std::string>& values)
+{
+	if (values.size() < 7)
+		return;
+
+	// Notice ICU could be used for country and continent names, but not for city names, so it would be inconsistent to do so.
+
+	// const std::string& localeCode = values.at(1);
+	// const std::string& continentCode = values.at(2);
+	const std::string& continentName = values.at(3);
+	const std::string& countryCode = values.at(4);
+	const std::string& countryName = values.at(5);
+	//const bool isInEuropeanUnion = values.at(6) == "1";
+
+	// TODO: this is duplicating country data per city entry!
+
+	m_CountryLocations[geonameIDNum] = { continentName, countryCode, countryName };
+}
+
+void GeoLite2::ParseCityLocationsLine(const std::string& geonameID, const u32& geonameIDNum, const std::vector<std::string>& values)
+{
+	if (values.size() < 14)
+		return;
+
+	ParseCountryLocationsLine(geonameID, geonameIDNum, values);
+
+	//const std::string& subdivision1Code = values.at(6);
+	//const std::string& subdivision1Name = values.at(7);
+	//const std::string& subdivision2Code = values.at(8);
+	//const std::string& subdivision2Name = values.at(9);
+	const std::string& cityName = values.at(10);
+	//const std::string& metroCode = values.at(11);
+	const std::string& timeZone = values.at(12);
+	//const bool isInEuropeanUnion = values.at(13) == "1";
+
+	// TODO: This duplicates a bit per city entry!
+	m_CityLocations[geonameIDNum] = { cityName, timeZone };
 }
 
 /**
@@ -295,34 +334,66 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, const std::string& expectedH
 	return true;
 }
 
-bool GeoLite2::ParseGeonameID(const std::string& geoNameID, u32& geonameIDNum)
-{
-	try
-	{
-		geonameIDNum = static_cast<u32>(std::stoul(geoNameID));
-		return true;
-	}
-	catch (...)
-	{
-		return false;
-	}
-}
-
 /**
- * Returns the data of the given IP address from both Blocks and Location file.
+ * Returns the data of the given IP address from both Blocks and Location files.
  */
-std::map<std::string, GeoLite2Data> GeoLite2::GetIPv4Data(u32 ipAddress)
+JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAddress)
 {
-	if (!m_IPv4Cache.count(ipAddress))
-		for (const std::pair<std::pair<u32, int>, u32>& countryBlock : m_Blocks_IPv4_GeoID)
-			if (IPTools::IsIpV4PartOfSubnet(ipAddress, countryBlock.first.first, countryBlock.first.second))
-			{
-				m_IPv4Cache[ipAddress] = {
-					{ "block", std::vector<std::string>() },
-					{ "location", m_Locations[countryBlock.second] }
-				};
-				break;
-			}
+	JSContext* cx = scriptInterface.GetContext();
+	JSAutoRequest rq(cx);
 
-	return m_IPv4Cache[ipAddress];
+	std::function<std::wstring(std::string&)> convertString = [](std::string& str)
+	{
+		// Remove unwanted quotes in names
+		str.erase(std::remove(str.begin(), str.end(), '"'), str.end());
+
+		// The UTF8 conversion is done here (late) to minimize memory use of the class
+		return wstring_from_utf8(str);
+	};
+
+	for (const std::pair<std::pair<u32, int>, u32>& block : m_Blocks_IPv4_GeoID)
+	{
+		const IPv4SubnetKeyType& subnetKey = block.first;
+		const u32& geonameIDNum = block.second;
+
+		if (!IPTools::IsIpV4PartOfSubnet(ipAddress, subnetKey.first, subnetKey.second))
+			continue;
+
+		JS::RootedValue returnValue(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
+
+		// Blocks data
+		scriptInterface.SetProperty(returnValue, "isAnonymous", m_Blocks_IPv4_Anonymous.count(subnetKey) != 0);
+		scriptInterface.SetProperty(returnValue, "isSatellite", m_Blocks_IPv4_Satellite.count(subnetKey) != 0);
+
+		if (m_Blocks_IPv4_GeoCoordinates.count(subnetKey) != 0)
+		{
+			scriptInterface.SetProperty(returnValue, "longitude", std::get<0>(m_Blocks_IPv4_GeoCoordinates.at(subnetKey)));
+			scriptInterface.SetProperty(returnValue, "latitude", std::get<1>(m_Blocks_IPv4_GeoCoordinates.at(subnetKey)));
+			scriptInterface.SetProperty(returnValue, "accuracyRadius", std::get<2>(m_Blocks_IPv4_GeoCoordinates.at(subnetKey)));
+		}
+
+		if (m_Blocks_IPv4_AutonomousSystemNumber.count(subnetKey) != 0)
+		{
+			const u32& asn = m_Blocks_IPv4_AutonomousSystemNumber.at(subnetKey);
+			scriptInterface.SetProperty(returnValue, "autonomousSystemOrganization", m_Blocks_IPv4_AutonomousSystemOrganization.at(asn));
+		}
+
+		// Locations data
+		if (m_CountryLocations.count(geonameIDNum) != 0)
+		{
+			scriptInterface.SetProperty(returnValue, "continentName", convertString(m_CountryLocations.at(geonameIDNum).at(0)));
+			scriptInterface.SetProperty(returnValue, "countryCode", convertString(m_CountryLocations.at(geonameIDNum).at(1)));
+			scriptInterface.SetProperty(returnValue, "countryName", convertString(m_CountryLocations.at(geonameIDNum).at(2)));
+		}
+
+		if (m_CityLocations.count(geonameIDNum) != 0)
+		{
+			scriptInterface.SetProperty(returnValue, "cityName", convertString(m_CityLocations.at(geonameIDNum).at(0)));
+			scriptInterface.SetProperty(returnValue, "timeZone", convertString(m_CityLocations.at(geonameIDNum).at(1)));
+		}
+
+		return returnValue;
+	}
+
+	return JS::UndefinedValue();
 }
