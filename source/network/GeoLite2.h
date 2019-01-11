@@ -64,6 +64,8 @@ private:
 	// Loads a csv file and parses it as a vector of strings excluding the first line.
 	bool LoadCSVFile(const VfsPath& filePath, std::function<void(std::vector<std::string>&)>& lineRead);
 
+	bool ParseGeonameID(const std::string& geoNameID, u32& geonameIDNum);
+
 	/**
 	 * The directory that the user configured to load.
 	 */

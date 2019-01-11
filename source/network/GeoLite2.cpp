@@ -100,14 +100,10 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
 		std::pair<u32, u8> subnetKey = { subnetAddress, subnetMaskBits };
 
 		u32 geonameIDNum = 0;
-		try
-		{
-			geonameIDNum = static_cast<u32>(std::stoll(
-				geonameID.length() ? geonameID :
-				representedGeonameID.length() ? representedGeonameID :
-				registeredGeonameID));
-		}
-		catch (...)
+		if (!ParseGeonameID(
+			geonameID.length() ? geonameID :
+			representedGeonameID.length() ? representedGeonameID :
+			registeredGeonameID, geonameIDNum))
 		{
 			LOGERROR("Could not parse geoname ID for subnet %s", subnet.c_str());
 			return;
@@ -156,16 +152,11 @@ bool GeoLite2::LoadLocations(const std::string& cityOrCountry)
 		std::function<void(std::vector<std::string>& values)> myFunc = [this](std::vector<std::string>& values)
 		{
 			u32 geonameIDNum = 0;
-			try
-			{
-				geonameIDNum = static_cast<u32>(std::stoll(values[0]));
-			}
-			catch (const std::invalid_argument&)
+			if (!ParseGeonameID(values[0], geonameIDNum))
 			{
 				LOGERROR("Could not parse geoname ID for subnet %s", values[0].c_str());
 				return;
 			}
-
 			values.erase(values.begin());
 			values.shrink_to_fit();
 
@@ -214,6 +205,19 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::function<void(std::vect
 	}
 
 	return true;
+}
+
+bool GeoLite2::ParseGeonameID(const std::string& geoNameID, u32& geonameIDNum)
+{
+	try
+	{
+		geonameIDNum = static_cast<u32>(std::stoll(geoNameID));
+		return true;
+	}
+	catch (...)
+	{
+		return false;
+	}
 }
 
 /**
