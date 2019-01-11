@@ -35,17 +35,12 @@ GeoLite2* g_GeoLite2 = nullptr;
 GeoLite2::GeoLite2(const std::string& IETFLanguageTag)
 : m_IETFLanguageTag(IETFLanguageTag)
 {
-	std::string path;
-	CFG_GET_VAL("network.geolite2.directory", path);
-	m_Path = path;
+	LoadPath();
 
-	std::vector<std::string> vecCityOrCountry = { "City", "Country" };
+	if (!LoadContent("City") && !LoadContent("Country"))
+		LOGERROR("Could not load GeoLite2 city nor country data!");
 
-	for (const std::string& cityOrCountry : vecCityOrCountry)
-		if (LoadBlocksIPv4(cityOrCountry) && LoadLocations(cityOrCountry))
-			return;
-
-	LOGERROR("Could not load GeoLite2 data!");
+	//LoadContent("ASN");
 }
 
 GeoLite2::~GeoLite2()
@@ -57,6 +52,18 @@ bool GeoLite2::IsEnabled()
 	bool enabled = true;
 	CFG_GET_VAL("network.geolite2.enabled", enabled);
 	return enabled;
+}
+
+void GeoLite2::LoadPath()
+{
+	std::string path;
+	CFG_GET_VAL("network.geolite2.directory", path);
+	m_Path = path;
+}
+
+bool GeoLite2::LoadContent(const std::string& content)
+{
+	return LoadBlocks(content) && LoadLocations(content);
 }
 
 /**
@@ -75,30 +82,40 @@ bool GeoLite2::IsEnabled()
  *   network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider,postal_code,latitude,longitude,accuracy_radius
  *   38.88.98.0/23,6075357,6252001,,0,0,L5J,43.5102,-79.6296,500
  */
-bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
+bool GeoLite2::LoadBlocks(const std::string& content)
 {
-	VfsPath filePath(m_Path / ("GeoLite2-" + cityOrCountry + "-Blocks-IPv4.csv"));
+	VfsPath filePath(m_Path / ("GeoLite2-" + content + "-Blocks-IPv4.csv"));
 
 	m_Blocks_IPv4_GeoID.clear();
+	m_Blocks_IPv4_Satellite.clear();
+	m_Blocks_IPv4_Anonymous.clear();
+	m_Blocks_IPv4_GeoCoordinates.clear();
+	m_Blocks_IPv4_AutonomousSystem.clear();
 
-	std::function<void(std::vector<std::string>& values)> myFunc = [this](std::vector<std::string>& values)
+	std::function<void(std::vector<std::string>& values)> myFunc = [this, content](std::vector<std::string>& values)
 	{
+		// Country values
 		const std::string& subnet = values[0];
 		const std::string& geonameID = values[1];
 		const std::string& registeredGeonameID = values[2];
 		const std::string& representedGeonameID = values[3];
+		const bool isAnonymous = values[4] == "1";
+		const bool isSatellite = values[5] == "1";
 
+		if (geonameID.empty())
+			return;
+
+		// Parse subnet
 		u32 subnetAddress;
 		u8 subnetMaskBits;
-
 		if (!IPTools::ParseSubnet(subnet, subnetAddress, subnetMaskBits))
 		{
 			LOGERROR("GeoLite2: Could not parse Subnet %s\n", subnet.c_str());
 			return;
 		}
+		IPv4SubnetKeyType subnetKey = { subnetAddress, subnetMaskBits };
 
-		std::pair<u32, u8> subnetKey = { subnetAddress, subnetMaskBits };
-
+		// Parse geoname ID
 		u32 geonameIDNum = 0;
 		if (!ParseGeonameID(
 			geonameID.length() ? geonameID :
@@ -109,21 +126,39 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
 			return;
 		}
 
+		// Store country data
 		m_Blocks_IPv4_GeoID[subnetKey] = geonameIDNum;
 
-		// if anonymous
-		//m_Blocks_IPv4_Anonymous.insert(subnetKey);
+		if (isSatellite)
+			m_Blocks_IPv4_Satellite.insert(subnetKey);
 
-		// if has city
-		//latitude,longitude,accuracy_radius
+		if (isAnonymous)
+			m_Blocks_IPv4_Anonymous.insert(subnetKey);
+
+		if (content == "City" && !isSatellite && !isAnonymous)
+		{
+			//const std::string& postal_code = values[6];
+			const std::string& latitude = values[7];
+			const std::string& longitude = values[8];
+			const std::string& accuracy_radius = values[9];
+
+			if (!latitude.empty() && !longitude.empty() && !accuracy_radius.empty())
+			try
+			{
+				m_Blocks_IPv4_GeoCoordinates[subnetKey] = {
+					std::stof(latitude),
+					std::stof(longitude),
+					static_cast<u16>(std::stoul(accuracy_radius))
+				};
+			}
+			catch (...)
+			{
+				LOGERROR("Could not parse City Block data of %s", subnet.c_str());
+			}
+		}
 	};
 
-	if (!LoadCSVFile(filePath, myFunc))
-		return false;
-
-	debug_printf("Loaded %s\n", filePath.string8().c_str());
-
-	return true;
+	return LoadCSVFile(filePath, myFunc);
 }
 
 /**
@@ -141,22 +176,26 @@ bool GeoLite2::LoadBlocksIPv4(const std::string& cityOrCountry)
  *   geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,subdivision_1_iso_code,subdivision_1_name,subdivision_2_iso_code,subdivision_2_name,city_name,metro_code,time_zone,is_in_european_union
  *   11696023,en,NA,"North America",CA,Canada,QC,Quebec,,,Sainte-Claire,,America/Toronto,0
  */
-bool GeoLite2::LoadLocations(const std::string& cityOrCountry)
+bool GeoLite2::LoadLocations(const std::string& content)
 {
+	// TODO: I suppose the language tag should be an argument provided elsewhere
 	std::vector<std::string> IETFLanguageTags = { m_IETFLanguageTag, "en" };
 
 	for (const std::string& IETFLanguageTag : IETFLanguageTags)
 	{
-		VfsPath filePath(m_Path / ("GeoLite2-" + cityOrCountry + "-Locations-" + IETFLanguageTag + ".csv"));
+		VfsPath filePath(m_Path / ("GeoLite2-" + content + "-Locations-" + IETFLanguageTag + ".csv"));
 
 		std::function<void(std::vector<std::string>& values)> myFunc = [this](std::vector<std::string>& values)
 		{
+			const std::string& geonameID = values[0];
 			u32 geonameIDNum = 0;
-			if (!ParseGeonameID(values[0], geonameIDNum))
+
+			if (!ParseGeonameID(geonameID, geonameIDNum))
 			{
-				LOGERROR("Could not parse geoname ID for subnet %s", values[0].c_str());
+				LOGERROR("Could not parse geoname ID for subnet %s", geonameID.c_str());
 				return;
 			}
+
 			values.erase(values.begin());
 			values.shrink_to_fit();
 
@@ -164,10 +203,7 @@ bool GeoLite2::LoadLocations(const std::string& cityOrCountry)
 		};
 
 		if (LoadCSVFile(filePath, myFunc))
-		{
-			debug_printf("Loaded %s\n", filePath.string8().c_str());
 			return true;
-		}
 	}
 
 	return false;
@@ -183,7 +219,8 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::function<void(std::vect
 	if (!VfsFileExists(filePath) || file.Load(g_VFS, filePath) != PSRETURN_OK)
 		return false;
 
-	debug_printf("Loading %s\n", filePath.string8().c_str());
+	debug_printf("Loading %s", filePath.string8().c_str());
+	std::time_t started = std::time(nullptr);
 
 	std::stringstream sstream(file.DecodeUTF8());
 
@@ -204,6 +241,7 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::function<void(std::vect
 		lineRead(values);
 	}
 
+	debug_printf(", took %lds.\n", std::time(nullptr) - started);
 	return true;
 }
 
@@ -211,7 +249,7 @@ bool GeoLite2::ParseGeonameID(const std::string& geoNameID, u32& geonameIDNum)
 {
 	try
 	{
-		geonameIDNum = static_cast<u32>(std::stoll(geoNameID));
+		geonameIDNum = static_cast<u32>(std::stoul(geoNameID));
 		return true;
 	}
 	catch (...)

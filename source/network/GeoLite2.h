@@ -55,11 +55,17 @@ public:
 
 private:
 
-	// Loads and parses the GeoLite2 Blocks csv file.
-	bool LoadBlocksIPv4(const std::string& cityOrCountry);
+	// Loads the user configured VFS directory from which the csv files will be loaded.
+	void LoadPath();
+
+	// Proxy calling LoadBlocksIPv4 and LoadLocations
+	bool LoadContent(const std::string& content);
 
 	// Loads and parses the GeoLite2 Blocks csv file.
-	bool LoadLocations(const std::string& cityOrCountry);
+	bool LoadBlocks(const std::string& content);
+
+	// Loads and parses the GeoLite2 Blocks csv file.
+	bool LoadLocations(const std::string& content);
 
 	// Loads a csv file and parses it as a vector of strings excluding the first line.
 	bool LoadCSVFile(const VfsPath& filePath, std::function<void(std::vector<std::string>&)>& lineRead);
@@ -80,7 +86,12 @@ private:
 	 * Maps from subnet (parsed CIDR notation) to GeoLite2 geoname ID.
 	 * This discards a lot of less relevant data, because storing all strings of a City file would consume about 2GB.
 	 */
-	std::map<std::pair<u32, u8>, u32> m_Blocks_IPv4_GeoID;
+	using IPv4SubnetKeyType = std::pair<u32, u8>;
+	std::map<IPv4SubnetKeyType, u32> m_Blocks_IPv4_GeoID;
+	std::map<IPv4SubnetKeyType, std::tuple<float, float, u16>> m_Blocks_IPv4_GeoCoordinates;
+	std::map<IPv4SubnetKeyType, std::string> m_Blocks_IPv4_AutonomousSystem;
+	std::set<IPv4SubnetKeyType> m_Blocks_IPv4_Anonymous;
+	std::set<IPv4SubnetKeyType> m_Blocks_IPv4_Satellite;
 
 	/**
 	 * Maps from geoname ID to location properties.
