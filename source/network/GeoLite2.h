@@ -68,7 +68,7 @@ private:
 	bool LoadLocations(const std::string& content);
 
 	// Loads a csv file and parses it as a vector of strings excluding the first line.
-	bool LoadCSVFile(const VfsPath& filePath, std::function<void(std::vector<std::string>&)>& lineRead);
+	bool LoadCSVFile(const VfsPath& filePath, const std::string& expectedHeader, std::function<void(std::vector<std::string>&)>& lineRead);
 
 	bool ParseGeonameID(const std::string& geoNameID, u32& geonameIDNum);
 
@@ -81,6 +81,12 @@ private:
 	 * This is the IETF code of language that should be loaded, for example "en", or "pt-BR" for brazilian portuguese.
 	 */
 	std::string m_IETFLanguageTag;
+
+	/**
+	 * Stores the header of the csv files of every content type. Used as an integrity test.
+	 */
+	static std::map<std::string, std::string> m_BlocksHeader;
+	static std::map<std::string, std::string> m_LocationsHeader;
 
 	/**
 	 * Maps from subnet (parsed CIDR notation) to GeoLite2 geoname ID.

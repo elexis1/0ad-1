@@ -66,6 +66,17 @@ bool GeoLite2::LoadContent(const std::string& content)
 	return LoadBlocks(content) && LoadLocations(content);
 }
 
+std::map<std::string, std::string> GeoLite2::m_BlocksHeader = {
+	{ "Country", "network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider" },
+	{ "City", "network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider,postal_code,latitude,longitude,accuracy_radius" },
+	{ "ASN", "network,autonomous_system_number,autonomous_system_organization" }
+};
+
+std::map<std::string, std::string> GeoLite2::m_LocationsHeader = {
+	{ "Country", "geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,is_in_european_union" },
+	{ "City", "geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,subdivision_1_iso_code,subdivision_1_name,subdivision_2_iso_code,subdivision_2_name,city_name,metro_code,time_zone,is_in_european_union" }
+};
+
 /**
  * Load
  *   GeoLite2-City-Blocks-IPv4.csv or
@@ -158,7 +169,7 @@ bool GeoLite2::LoadBlocks(const std::string& content)
 		}
 	};
 
-	return LoadCSVFile(filePath, myFunc);
+	return LoadCSVFile(filePath, m_BlocksHeader[content], myFunc);
 }
 
 /**
@@ -202,7 +213,7 @@ bool GeoLite2::LoadLocations(const std::string& content)
 			m_Locations[geonameIDNum] = values;
 		};
 
-		if (LoadCSVFile(filePath, myFunc))
+		if (LoadCSVFile(filePath, m_LocationsHeader[content], myFunc))
 			return true;
 	}
 
@@ -212,7 +223,7 @@ bool GeoLite2::LoadLocations(const std::string& content)
 /**
  * Loads the given GeoLite2 csv file as a map from the first value to the rest of the values.
  */
-bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::function<void(std::vector<std::string>&)>& lineRead)
+bool GeoLite2::LoadCSVFile(const VfsPath& filePath, const std::string& expectedHeader, std::function<void(std::vector<std::string>&)>& lineRead)
 {
 	CVFSFile file;
 	// TODO: VfsFileExists needed?
@@ -227,6 +238,12 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, std::function<void(std::vect
 	// Read header
 	std::string header;
 	std::getline(sstream, header);
+
+	if (header != expectedHeader)
+	{
+		debug_printf("\n");
+		LOGERROR("Unexpected GeoLite2 csv header!");
+	}
 
 	std::string line;
 	while (std::getline(sstream, line))
