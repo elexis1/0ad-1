@@ -74,7 +74,7 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 				return translateWithContext("unknown country", "?");
 
 			// TODO: Test for icon existence and use different string if it doesn't exist
-
+			// TODO: icon for satellite (no country / global) ISP and anonymous / VPN
 			return sprintf(
 				geoLite2.cityName ?
 					translate("%(icon)s %(continent)s/%(country)s/%(city)s") :

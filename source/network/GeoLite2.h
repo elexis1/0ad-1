@@ -28,6 +28,11 @@
 using GeoLite2Data = std::vector<std::string>;
 
 /**
+ * Identifies an IPv4 range as a parsed CIDR, i.e. an IPv4 in hostbyte order + Number of bits of the subnet mask.
+ */
+using IPv4SubnetKeyType = std::pair<u32, u8>;
+
+/**
  * This class provides caching of the GeoLite2 database and query results using the systems inet.h.
  * It uses caching to prevent reoccuring slow lookup times.
  *
@@ -58,11 +63,16 @@ private:
 	// Loads the user configured VFS directory from which the csv files will be loaded.
 	void LoadPath();
 
-	// Proxy calling LoadBlocksIPv4 and LoadLocations
+	// Proxy calling LoadBlocksIPv4 and LoadLocations.
 	bool LoadContent(const std::string& content);
 
 	// Loads and parses the GeoLite2 Blocks csv file.
 	bool LoadBlocks(const std::string& content);
+
+	// Parses Country data of a City or Country Blocks file.
+	void ParseCountryBlocksLine(const std::string& subnet, const IPv4SubnetKeyType& subnetKey, const std::vector<std::string>& values);
+	void ParseCityBlocksLine(const std::string& subnet, const IPv4SubnetKeyType& subnetKey, const std::vector<std::string>& values);
+	void ParseASNBlocksLine(const std::string& subnet, const IPv4SubnetKeyType& subnetKey, const std::vector<std::string>& values);
 
 	// Loads and parses the GeoLite2 Blocks csv file.
 	bool LoadLocations(const std::string& content);
@@ -88,26 +98,28 @@ private:
 	static std::map<std::string, std::string> m_BlocksHeader;
 	static std::map<std::string, std::string> m_LocationsHeader;
 
-	/**
-	 * Maps from subnet (parsed CIDR notation) to GeoLite2 geoname ID.
-	 * This discards a lot of less relevant data, because storing all strings of a City file would consume about 2GB.
-	 */
-	using IPv4SubnetKeyType = std::pair<u32, u8>;
+	// This discards a lot of less relevant data, because storing all strings of a City file would consume about 2GB.
+
+	// Country Blocks data
 	std::map<IPv4SubnetKeyType, u32> m_Blocks_IPv4_GeoID;
-	std::map<IPv4SubnetKeyType, std::tuple<float, float, u16>> m_Blocks_IPv4_GeoCoordinates;
-	std::map<IPv4SubnetKeyType, std::string> m_Blocks_IPv4_AutonomousSystem;
 	std::set<IPv4SubnetKeyType> m_Blocks_IPv4_Anonymous;
 	std::set<IPv4SubnetKeyType> m_Blocks_IPv4_Satellite;
 
+	// City Blocks data
+	std::map<IPv4SubnetKeyType, std::tuple<float, float, u16>> m_Blocks_IPv4_GeoCoordinates;
+
+	// ASN Blocks data
+	std::map<IPv4SubnetKeyType, std::string> m_Blocks_IPv4_AutonomousSystemOrganization;
+
 	/**
-	 * Maps from geoname ID to location properties.
+	 * Maps from geoname ID to Locations data.
 	 */
 	std::map<u32, GeoLite2Data> m_Locations;
 
 	/**
 	 * A cache that stores Location.csv properties for previously looked up IP addresses.
 	 */
-	std::map<u32, std::map<std::string, GeoLite2Data>> m_IPv4Cache;
+	std::map<u32, std::map<std::string, GeoLite2Data>> m_IPv4Cache; // TODO: wstring
 };
 
 /**
