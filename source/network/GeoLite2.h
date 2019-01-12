@@ -114,7 +114,8 @@ private:
 	/**
 	 * Maps from geoname ID to Locations data.
 	 */
-	std::map<u32, std::vector<std::string>> m_CountryLocations;
+	std::map<u32, std::string> m_CountryLocations_CountryCodes;
+	std::map<std::string, std::pair<std::string, std::string>> m_CountryLocations_CountryData;
 	std::map<u32, std::vector<std::string>> m_CityLocations;
 };
 

@@ -267,9 +267,11 @@ void GeoLite2::ParseCountryLocationsLine(const std::string& UNUSED(geonameID), c
 	const std::string& countryName = values.at(5);
 	//const bool isInEuropeanUnion = values.at(6) == "1";
 
-	// TODO: this is duplicating country data per city entry!
-
-	m_CountryLocations[geonameIDNum] = { continentName, countryCode, countryName };
+	if (m_CountryLocations_CountryCodes.count(geonameIDNum) == 0)
+	{
+		m_CountryLocations_CountryCodes[geonameIDNum] = countryCode;
+		m_CountryLocations_CountryData[countryCode] = { continentName, countryName };
+	}
 }
 
 void GeoLite2::ParseCityLocationsLine(const std::string& geonameID, const u32& geonameIDNum, const std::vector<std::string>& values)
@@ -373,11 +375,15 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 		}
 
 		// Locations data
-		if (m_CountryLocations.count(geonameIDNum) != 0)
+		if (m_CountryLocations_CountryCodes.count(geonameIDNum) != 0)
 		{
-			scriptInterface.SetProperty(returnValue, "continentName", convertString(m_CountryLocations.at(geonameIDNum).at(0)));
-			scriptInterface.SetProperty(returnValue, "countryCode", convertString(m_CountryLocations.at(geonameIDNum).at(1)));
-			scriptInterface.SetProperty(returnValue, "countryName", convertString(m_CountryLocations.at(geonameIDNum).at(2)));
+			// TODO: make this const after csv parsing is fixed
+			std::string& countryCode = m_CountryLocations_CountryCodes.at(geonameIDNum);
+			std::pair<std::string, std::string>& countryData = m_CountryLocations_CountryData.at(countryCode);
+
+			scriptInterface.SetProperty(returnValue, "countryCode", convertString(countryCode));
+			scriptInterface.SetProperty(returnValue, "continentName", convertString(countryData.first));
+			scriptInterface.SetProperty(returnValue, "countryName", convertString(countryData.second));
 		}
 
 		if (m_CityLocations.count(geonameIDNum) != 0)
