@@ -87,17 +87,19 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 			// TODO: icon for satellite (no country / global) ISP and anonymous / VPN
 			return sprintf(
 				geoLite2.cityName ?
-					translate("%(icon)s %(continent)s/%(country)s/%(city)s") :
+					translate("%(icon)s %(continent)s/%(country)s/%(city)s (±%(accuracyRadius)skm)") :
 					translate("%(icon)s %(continent)s/%(country)s"),
 				{
 					"icon": iconTag(this.countryFlags.GetIconName(geoLite2.countryCode)),
 					"continent": geoLite2.continentName,
 					"country": geoLite2.countryName,
-					"city": geoLite2.cityName || ""
+					"city": geoLite2.cityName || "",
+					"accuracyRadius": geoLite2.accuracyRadius || ""
 				});
 		})(),
 
 		"time": (() => {
+			// TODO: Get time in timezone
 			let geoLite2 = this.geoLite2.GetByGUID(guid);
 			return geoLite2 && geoLite2.timeZone || "";
 		})(),
