@@ -2,6 +2,8 @@ function CountryFlags(width = 16, height = 16, replaceExisting = true)
 {
 	let directory = "global/icon/flags/";
 
+	// TODO: displace tag?
+
 	for (let countryID of listFiles("art/textures/ui/" + directory, ".png", false))
 		Engine.AddIcon(
 			this.GetIconName(countryID),

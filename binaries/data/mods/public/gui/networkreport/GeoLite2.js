@@ -1,22 +1,23 @@
-// TODO: Add a JS cache
-function GeoLite2(ipAddress)
+function GeoLite2Cache()
 {
-	this.data = Engine.GetGeoLite2(ipAddress);
+	this.geoLite2 = {};
 }
 
-GeoLite2.FromGUID = function(guid)
+GeoLite2Cache.prototype.GetByIP = function(ipAddress)
 {
-	return new GeoLite2(Engine.GetClientIPAddress(guid));
+	// Also cache undefined return value
+	if (!(ipAddress in this.geoLite2))
+	{
+		this.geoLite2[ipAddress] = Engine.GetGeoLite2(ipAddress);
+
+		if (this.geoLite2[ipAddress])
+			deepfreeze(this.geoLite2[ipAddress]);
+	}
+
+	return this.geoLite2[ipAddress];
 };
 
-GeoLite2.prototype.GetData = function()
+GeoLite2Cache.prototype.GetByGUID = function(guid)
 {
-	return this.data;
-};
-
-GeoLite2.prototype.GetSortKey = function()
-{
-	return this.data ?
-		this.data.continentCode + "/" + this.data.countryCode + "/" + (this.data.cityCode || "") :
-		"";
+	return this.GetByIP(Engine.GetClientIPAddress(guid));
 };

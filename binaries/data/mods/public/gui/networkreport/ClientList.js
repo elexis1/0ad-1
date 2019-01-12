@@ -1,5 +1,6 @@
 function ClientList(guiObjectName)
 {
+	this.geoLite2 = new GeoLite2Cache();
 	this.clientList = Engine.GetGUIObjectByName(guiObjectName);
 	this.updateInterval = 1000;
 	this.lastUpdate = 0;
@@ -7,6 +8,7 @@ function ClientList(guiObjectName)
 	this.selectedGUID = undefined;
 }
 
+// TODO: missing hotload
 ClientList.prototype.OnTick = function(gameAttributes, playerAssignments)
 {
 	let now = Date.now();
@@ -57,22 +59,26 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 			setStringTags(playerAssignments[guid].name, {
 				"color": (() => {
 					let playerID = playerAssignments[guid].player - 1;
-					return playerID != -1 ? rgbToGuiColor(gameAttributes.settings.PlayerData[playerID].Color) : "white";
+					return gameAttributes.settings.PlayerData[playerID] ? rgbToGuiColor(gameAttributes.settings.PlayerData[playerID].Color) : "white";
 				})()
 			}),
+
 		"status":
 			getNetworkWarningText(
 				getNetworkWarningString(guid == Engine.GetPlayerGUID(), clientPerformance),
 				clientPerformance,
 				playerAssignments[guid].name) || translate("Ok"),
 		"ipAddress": Engine.GetClientIPAddress(guid),
+
 		"hostname": Engine.LookupClientHostname(guid),
+
 		"isp": (() => {
-			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
+			let geoLite2 = this.geoLite2.GetByGUID(guid);
 			return geoLite2 && geoLite2.autonomousSystemOrganization || translateWithContext("unknown internet service provider", "?");
 		})(),
+
 		"location": (() => {
-			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
+			let geoLite2 = this.geoLite2.GetByGUID(guid);
 
 			if (!geoLite2)
 				return translateWithContext("unknown country", "?");
@@ -90,10 +96,12 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 					"city": geoLite2.cityName || ""
 				});
 		})(),
+
 		"time": (() => {
-			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
+			let geoLite2 = this.geoLite2.GetByGUID(guid);
 			return geoLite2 && geoLite2.timeZone || "";
 		})(),
+
 		"meanRTT": (() => {
 			let lastReceivedTime = clientPerformance.lastReceivedTime > 3000 ? clientPerformance.lastReceivedTime : 0;
 			let meanRTT = Math.max(clientPerformance.meanRTT, lastReceivedTime);
@@ -105,6 +113,7 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 					}),
 					efficiencyToColor(1 - meanRTT / inefficientRTT));
 		})(),
+
 		"packetLoss":
 			// TODO: 0 can also mean perfect connection, for example localhost.
 			clientPerformance.packetLoss == 0 ?
@@ -134,14 +143,17 @@ ClientList.prototype.GetListEntryOrder = function(playerAssignments)
 		"hostname": (guid1, guid2) =>
 			Engine.LookupClientHostname(guid1).localeCompare(Engine.LookupClientHostname(guid2)),
 
-		"location": (guid1, guid2) =>
-			GeoLite2.fromGUID(guid1).GetSortKey().localeCompare(GeoLite2.fromGUID(guid2).GetSortKey()),
+		"location": (guid1, guid2) => {
+			let getSortKey = geolite2 => geolite2 ? geolite2.continentName + "/" + geolite2.countryCode + "/" + (geolite2.cityCode || "") : "";
+			return getSortKey(this.geoLite2.GetByGUID(guid1)).localeCompare(getSortKey(this.geoLite2.GetByGUID(guid2)));
+		},
 
 		"isp": (guid1, guid2) =>
-			(GeoLite2.fromGUID(guid1).autonomousSystemOrganization || "").localeCompare((GeoLite2.fromGUID(guid2).autonomousSystemOrganization || "")),
+			(this.geoLite2.GetByGUID(guid1) ? this.geoLite2.GetByGUID(guid1).autonomousSystemOrganization : "").localeCompare(
+			(this.geoLite2.GetByGUID(guid2) ? this.geoLite2.GetByGUID(guid2).autonomousSystemOrganization : "")),
 
 		"time": (guid1, guid2) =>
-			0,
+			0, // TODO
 
 		"meanRTT": (guid1, guid2, clientPerformance) =>
 			clientPerformance[guid1].meanRTT -

@@ -203,6 +203,7 @@
 			</object>
 
 			<!-- View Network Button -->
+			<!-- TODO: new icon -->
 			<object name="networkButton"
 				type="button"
 				style="IconButton"
