@@ -107,16 +107,22 @@ private:
 	// City Blocks data
 	std::map<IPv4SubnetKeyType, std::tuple<float, float, u16>> m_Blocks_IPv4_GeoCoordinates;
 
+	/////
+	// The following data are split to reduce memory footprint.
+	////
+
 	// ASN Blocks data
 	std::map<IPv4SubnetKeyType, u32> m_Blocks_IPv4_AutonomousSystemNumber;
 	std::map<u32, std::string> m_Blocks_IPv4_AutonomousSystemOrganization;
 
-	/**
-	 * Maps from geoname ID to Locations data.
-	 */
+	// Maps from geonameID to countryCode code, and from countryCode to countryData
 	std::map<u32, std::string> m_CountryLocations_CountryCodes;
 	std::map<std::string, std::pair<std::string, std::string>> m_CountryLocations_CountryData;
-	std::map<u32, std::vector<std::string>> m_CityLocations;
+
+	// Maps from geonameID to m_CityLocations_CityData index (and from that index to cityData)
+	std::map<u32, std::pair<u32, u16>> m_CityLocations_CityIDs;
+	std::vector<std::string> m_CityLocations_CityName;
+	std::vector<std::string> m_CityLocations_TimeZone;
 };
 
 /**
