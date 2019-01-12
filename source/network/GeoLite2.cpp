@@ -105,8 +105,7 @@ bool GeoLite2::LoadBlocks(const std::string& content)
 {
 	VfsPath filePath(m_Path / ("GeoLite2-" + content + "-Blocks-IPv4.csv"));
 
-	// TODO: values can be const
-	std::function<void(std::vector<std::string>& values)> readLine = [this, content](std::vector<std::string>& values)
+	std::function<void(const std::vector<std::string>& values)> readLine = [this, content](const std::vector<std::string>& values)
 	{
 		if (values.size() < 1)
 			return;
@@ -232,7 +231,7 @@ bool GeoLite2::LoadLocations(const std::string& content)
 	{
 		VfsPath filePath(m_Path / ("GeoLite2-" + content + "-Locations-" + IETFLanguageTag + ".csv"));
 
-		std::function<void(std::vector<std::string>& values)> readLine = [this, content](std::vector<std::string>& values)
+		std::function<void(const std::vector<std::string>& values)> readLine = [this, content](const std::vector<std::string>& values)
 		{
 			if (values.size() < 1)
 				return;
@@ -297,7 +296,7 @@ void GeoLite2::ParseCityLocationsLine(const std::string& geonameID, const u32& g
 /**
  * Loads the given GeoLite2 csv file as a map from the first value to the rest of the values.
  */
-bool GeoLite2::LoadCSVFile(const VfsPath& filePath, const std::string& expectedHeader, std::function<void(std::vector<std::string>&)>& lineRead)
+bool GeoLite2::LoadCSVFile(const VfsPath& filePath, const std::string& expectedHeader, std::function<void(const std::vector<std::string>&)>& lineRead)
 {
 	CVFSFile file;
 	// TODO: VfsFileExists needed?
@@ -319,15 +318,56 @@ bool GeoLite2::LoadCSVFile(const VfsPath& filePath, const std::string& expectedH
 		LOGERROR("Unexpected GeoLite2 csv header!");
 	}
 
+	// Notice that:
+	// 1. The comma separated values can be encapsulated in quotes if the word contains a comma
+	// 2. Quotes in comma separated values are escaped with a quote character, for example the city Kup""yans'k:
+	// 703656,en,EU,Europe,UA,Ukraine,63,"Kharkivs'ka Oblast'",,,"Kup""yans'k",,Europe/Kiev,0
 	std::string line;
 	while (std::getline(sstream, line))
 	{
 		std::vector<std::string> values;
 		{
-			std::string value;
 			std::stringstream valuesStream(line);
-			while (std::getline(valuesStream, value, ','))
-				values.push_back(value);
+			while (!valuesStream.eof())
+			{
+				const bool quoted = valuesStream.peek() == '"';
+				if (quoted)
+				{
+					valuesStream.ignore(1);
+
+					std::string value;
+					std::string word;
+					while(std::getline(valuesStream, word, '"'))
+					{
+						value += word;
+
+						if (valuesStream.peek() == '"')
+							// Remove quote escape character
+							valuesStream.ignore(1);
+						else
+							break;
+
+					}
+					values.push_back(value);
+				}
+				else
+				{
+					std::string value;
+					if (std::getline(valuesStream, value, ','))
+						values.push_back(value);
+				}
+
+				if (quoted)
+				{
+					char comma = 0;
+					valuesStream >> comma;
+					if (comma != ',' && comma != 0)
+					{
+						debug_printf("\n");
+						LOGERROR("CSV: Unterminated quoted comma-separated value in line %s!", line.c_str());
+					}
+				}
+			}
 		}
 		lineRead(values);
 	}
@@ -344,15 +384,6 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 	JSContext* cx = scriptInterface.GetContext();
 	JSAutoRequest rq(cx);
 	JS::RootedValue returnValue(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
-
-	std::function<std::wstring(std::string&)> convertString = [](std::string& str)
-	{
-		// Remove unwanted quotes in names
-		str.erase(std::remove(str.begin(), str.end(), '"'), str.end());
-
-		// The UTF8 conversion is done here (late) to minimize memory use of the class
-		return wstring_from_utf8(str);
-	};
 
 	bool foundBlock = false;
 	for (const std::pair<IPv4SubnetKeyType, u32>& block : m_Blocks_IPv4_GeoID)
@@ -377,19 +408,18 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 		// Locations data
 		if (m_CountryLocations_CountryCodes.count(geonameIDNum) != 0)
 		{
-			// TODO: make this const after csv parsing is fixed
-			std::string& countryCode = m_CountryLocations_CountryCodes.at(geonameIDNum);
-			std::pair<std::string, std::string>& countryData = m_CountryLocations_CountryData.at(countryCode);
+			const std::string& countryCode = m_CountryLocations_CountryCodes.at(geonameIDNum);
+			const std::pair<std::string, std::string>& countryData = m_CountryLocations_CountryData.at(countryCode);
 
-			scriptInterface.SetProperty(returnValue, "countryCode", convertString(countryCode));
-			scriptInterface.SetProperty(returnValue, "continentName", convertString(countryData.first));
-			scriptInterface.SetProperty(returnValue, "countryName", convertString(countryData.second));
+			scriptInterface.SetProperty(returnValue, "countryCode", wstring_from_utf8(countryCode));
+			scriptInterface.SetProperty(returnValue, "continentName", wstring_from_utf8(countryData.first));
+			scriptInterface.SetProperty(returnValue, "countryName", wstring_from_utf8(countryData.second));
 		}
 
 		if (m_CityLocations.count(geonameIDNum) != 0)
 		{
-			scriptInterface.SetProperty(returnValue, "cityName", convertString(m_CityLocations.at(geonameIDNum).at(0)));
-			scriptInterface.SetProperty(returnValue, "timeZone", convertString(m_CityLocations.at(geonameIDNum).at(1)));
+			scriptInterface.SetProperty(returnValue, "cityName", wstring_from_utf8(m_CityLocations.at(geonameIDNum).at(0)));
+			scriptInterface.SetProperty(returnValue, "timeZone", wstring_from_utf8(m_CityLocations.at(geonameIDNum).at(1)));
 		}
 
 		foundBlock = true;

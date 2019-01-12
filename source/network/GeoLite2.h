@@ -75,7 +75,7 @@ private:
 	bool LoadLocations(const std::string& content);
 
 	// Loads a csv file and parses it as a vector of strings excluding the first line.
-	bool LoadCSVFile(const VfsPath& filePath, const std::string& expectedHeader, std::function<void(std::vector<std::string>&)>& lineRead);
+	bool LoadCSVFile(const VfsPath& filePath, const std::string& expectedHeader, std::function<void(const std::vector<std::string>&)>& lineRead);
 
 	bool ParseGeonameID(const std::string& geoNameID, u32& geonameIDNum);
 	void ParseCityLocationsLine(const std::string& geonameID, const u32& geonameIDNum, const std::vector<std::string>& values);
