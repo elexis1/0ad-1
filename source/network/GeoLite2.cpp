@@ -27,7 +27,6 @@
 #include "scriptinterface/ScriptInterface.h"
 
 #include <algorithm>
-#include <iterator>
 #include <string>
 #include <vector>
 
@@ -281,7 +280,6 @@ void GeoLite2::ParseCityLocationsLine(const std::string& geonameID, const u32& g
 
 	ParseCountryLocationsLine(geonameID, geonameIDNum, values);
 
-	// Discard a number of less relevant data to save memory
 	//const std::string& subdivision1Code = values.at(6);
 	//const std::string& subdivision1Name = values.at(7);
 	//const std::string& subdivision2Code = values.at(8);
@@ -291,31 +289,8 @@ void GeoLite2::ParseCityLocationsLine(const std::string& geonameID, const u32& g
 	const std::string& timeZone = values.at(12);
 	//const bool isInEuropeanUnion = values.at(13) == "1";
 
-	u32 cityNameID = 0;
-	{
-		std::vector<std::string>::iterator cityNameIt = std::find(m_CityLocations_CityName.begin(), m_CityLocations_CityName.end(), cityName);
-		if (cityNameIt == m_CityLocations_CityName.end())
-		{
-			m_CityLocations_CityName.push_back(cityName);
-			cityNameID = m_CityLocations_CityName.size() - 1;
-		}
-		else
-			cityNameID = std::distance(m_CityLocations_CityName.begin(), cityNameIt);
-	}
-
-	u16 timezoneID = 0;
-	{
-		std::vector<std::string>::iterator timeZoneIt = std::find(m_CityLocations_TimeZone.begin(), m_CityLocations_TimeZone.end(), timeZone);
-		if (timeZoneIt == m_CityLocations_TimeZone.end())
-		{
-			m_CityLocations_TimeZone.push_back(timeZone);
-			timezoneID = m_CityLocations_TimeZone.size() - 1;
-		}
-		else
-			timezoneID = std::distance(m_CityLocations_TimeZone.begin(), timeZoneIt);
-	}
-
-	m_CityLocations_CityIDs[geonameIDNum] = { cityNameID, timezoneID };
+	// TODO: This duplicates a bit per city entry!
+	m_CityLocations[geonameIDNum] = { cityName, timeZone };
 }
 
 /**
@@ -441,11 +416,10 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 			scriptInterface.SetProperty(returnValue, "countryName", wstring_from_utf8(countryData.second));
 		}
 
-		if (m_CityLocations_CityIDs.count(geonameIDNum) != 0)
+		if (m_CityLocations.count(geonameIDNum) != 0)
 		{
-			const std::pair<u32, u16>& cityID = m_CityLocations_CityIDs.at(geonameIDNum);
-			scriptInterface.SetProperty(returnValue, "cityName", wstring_from_utf8(m_CityLocations_CityName.at(cityID.first)));
-			scriptInterface.SetProperty(returnValue, "timeZone", wstring_from_utf8(m_CityLocations_TimeZone.at(cityID.second)));
+			scriptInterface.SetProperty(returnValue, "cityName", wstring_from_utf8(m_CityLocations.at(geonameIDNum).at(0)));
+			scriptInterface.SetProperty(returnValue, "timeZone", wstring_from_utf8(m_CityLocations.at(geonameIDNum).at(1)));
 		}
 
 		foundBlock = true;
