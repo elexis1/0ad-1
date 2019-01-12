@@ -341,6 +341,7 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 {
 	JSContext* cx = scriptInterface.GetContext();
 	JSAutoRequest rq(cx);
+	JS::RootedValue returnValue(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
 
 	std::function<std::wstring(std::string&)> convertString = [](std::string& str)
 	{
@@ -351,15 +352,14 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 		return wstring_from_utf8(str);
 	};
 
-	for (const std::pair<std::pair<u32, int>, u32>& block : m_Blocks_IPv4_GeoID)
+	bool foundBlock = false;
+	for (const std::pair<IPv4SubnetKeyType, u32>& block : m_Blocks_IPv4_GeoID)
 	{
 		const IPv4SubnetKeyType& subnetKey = block.first;
 		const u32& geonameIDNum = block.second;
 
 		if (!IPTools::IsIpV4PartOfSubnet(ipAddress, subnetKey.first, subnetKey.second))
 			continue;
-
-		JS::RootedValue returnValue(cx, JS::ObjectValue(*JS_NewPlainObject(cx)));
 
 		// Blocks data
 		scriptInterface.SetProperty(returnValue, "isAnonymous", m_Blocks_IPv4_Anonymous.count(subnetKey) != 0);
@@ -370,12 +370,6 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 			scriptInterface.SetProperty(returnValue, "longitude", std::get<0>(m_Blocks_IPv4_GeoCoordinates.at(subnetKey)));
 			scriptInterface.SetProperty(returnValue, "latitude", std::get<1>(m_Blocks_IPv4_GeoCoordinates.at(subnetKey)));
 			scriptInterface.SetProperty(returnValue, "accuracyRadius", std::get<2>(m_Blocks_IPv4_GeoCoordinates.at(subnetKey)));
-		}
-
-		if (m_Blocks_IPv4_AutonomousSystemNumber.count(subnetKey) != 0)
-		{
-			const u32& asn = m_Blocks_IPv4_AutonomousSystemNumber.at(subnetKey);
-			scriptInterface.SetProperty(returnValue, "autonomousSystemOrganization", m_Blocks_IPv4_AutonomousSystemOrganization.at(asn));
 		}
 
 		// Locations data
@@ -392,8 +386,29 @@ JS::Value GeoLite2::GetIPv4Data(const ScriptInterface& scriptInterface, u32 ipAd
 			scriptInterface.SetProperty(returnValue, "timeZone", convertString(m_CityLocations.at(geonameIDNum).at(1)));
 		}
 
-		return returnValue;
+		foundBlock = true;
+		break;
 	}
 
-	return JS::UndefinedValue();
+	if (!foundBlock)
+	{
+		return JS::UndefinedValue();
+	}
+
+	// ASN data
+	// Notice the different csv files use different subnets
+	for (const std::pair<IPv4SubnetKeyType, u32>& autonomousSystem : m_Blocks_IPv4_AutonomousSystemNumber)
+	{
+		const IPv4SubnetKeyType& subnetKey = autonomousSystem.first;
+		const u32& autonomousSystemNumberNum = autonomousSystem.second;
+
+		if (IPTools::IsIpV4PartOfSubnet(ipAddress, subnetKey.first, subnetKey.second) ||
+		    m_Blocks_IPv4_AutonomousSystemNumber.count(subnetKey) == 0)
+		{
+			scriptInterface.SetProperty(returnValue, "autonomousSystemOrganization", m_Blocks_IPv4_AutonomousSystemOrganization.at(autonomousSystemNumberNum));
+			break;
+		}
+	}
+
+	return returnValue;
 }

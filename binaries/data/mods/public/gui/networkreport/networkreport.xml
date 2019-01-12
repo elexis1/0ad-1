@@ -29,12 +29,16 @@
 				<translatableAttribute id="heading">Status</translatableAttribute>
 			</column>
 
-			<column id="ipAddress" color="0 128 128" width="10%">
+			<column id="ipAddress" color="0 128 128" width="8%">
 				<translatableAttribute id="heading">IP Address</translatableAttribute>
 			</column>
 
-			<column id="hostname" color="0 128 128" width="20%">
+			<column id="hostname" color="0 128 128" width="12%">
 				<translatableAttribute id="heading">Hostname</translatableAttribute>
+			</column>
+
+			<column id="isp" color="0 128 128" width="10%">
+				<translatableAttribute id="heading">Internet Provider</translatableAttribute>
 			</column>
 
 			<column id="location" color="0 128 128" width="15%">
@@ -45,7 +49,7 @@
 				<translatableAttribute id="heading">Time</translatableAttribute>
 			</column>
 
-			<column id="meanRTT" color="0 128 128" width="10%">
+			<column id="meanRTT" color="0 128 128" width="5%">
 				<translatableAttribute id="heading">Ping</translatableAttribute>
 			</column>
 

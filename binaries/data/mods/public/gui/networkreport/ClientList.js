@@ -67,6 +67,10 @@ ClientList.prototype.GetListEntry = function(gameAttributes, playerAssignments, 
 				playerAssignments[guid].name) || translate("Ok"),
 		"ipAddress": Engine.GetClientIPAddress(guid),
 		"hostname": Engine.LookupClientHostname(guid),
+		"isp": (() => {
+			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
+			return geoLite2 && geoLite2.autonomousSystemOrganization || translateWithContext("unknown internet service provider", "?");
+		})(),
 		"location": (() => {
 			let geoLite2 = GeoLite2.FromGUID(guid).GetData();
 
@@ -132,6 +136,9 @@ ClientList.prototype.GetListEntryOrder = function(playerAssignments)
 
 		"location": (guid1, guid2) =>
 			GeoLite2.fromGUID(guid1).GetSortKey().localeCompare(GeoLite2.fromGUID(guid2).GetSortKey()),
+
+		"isp": (guid1, guid2) =>
+			(GeoLite2.fromGUID(guid1).autonomousSystemOrganization || "").localeCompare((GeoLite2.fromGUID(guid2).autonomousSystemOrganization || "")),
 
 		"time": (guid1, guid2) =>
 			0,
