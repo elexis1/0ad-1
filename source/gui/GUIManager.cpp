@@ -19,8 +19,7 @@
 
 #include "GUIManager.h"
 
-#include "CGUI.h"
-
+#include "gui/CGUI.h"
 #include "lib/timer.h"
 #include "ps/Filesystem.h"
 #include "ps/CLogger.h"
@@ -92,14 +91,14 @@ void CGUIManager::SwitchPage(const CStrW& pageName, ScriptInterface* srcScriptIn
 	PushPage(pageName, initDataClone);
 }
 
-void CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
+CGUI* CGUIManager::PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData)
 {
 	m_PageStack.push_back(SGUIPage());
 	m_PageStack.back().name = pageName;
 	m_PageStack.back().initData = initData;
 	LoadPage(m_PageStack.back());
-
 	ResetCursor();
+	return m_PageStack.back().gui.get();
 }
 
 void CGUIManager::PopPage()
@@ -231,10 +230,6 @@ void CGUIManager::LoadPage(SGUIPage& page)
 		}
 	}
 
-	// Remember this GUI page, in case the scripts call FindObjectByName
-	shared_ptr<CGUI> oldGUI = m_CurrentGUI;
-	m_CurrentGUI = page.gui;
-
 	page.gui->SendEventToAll("load");
 
 	shared_ptr<ScriptInterface> scriptInterface = page.gui->GetScriptInterface();
@@ -254,8 +249,6 @@ void CGUIManager::LoadPage(SGUIPage& page)
 	if (scriptInterface->HasProperty(global, "init") &&
 	    !scriptInterface->CallFunctionVoid(global, "init", initDataVal, hotloadDataVal))
 		LOGERROR("GUI page '%s': Failed to call init() function", utf8_from_wstring(page.name));
-
-	m_CurrentGUI = oldGUI;
 }
 
 Status CGUIManager::ReloadChangedFile(const VfsPath& path)
@@ -269,6 +262,15 @@ Status CGUIManager::ReloadChangedFile(const VfsPath& path)
 		}
 
 	return INFO::OK;
+}
+
+bool CGUIManager::IsPageOpen(const CGUI* guiPage) const
+{
+	for (const SGUIPage& page : m_PageStack)
+		if (page.gui.get() == guiPage)
+			return true;
+
+	return false;
 }
 
 Status CGUIManager::ReloadAllPages()
@@ -358,16 +360,6 @@ bool CGUIManager::GetPreDefinedColor(const CStr& name, CColor& output) const
 	return top()->GetPreDefinedColor(name, output);
 }
 
-IGUIObject* CGUIManager::FindObjectByName(const CStr& name) const
-{
-	// This can be called from scripts run by TickObjects,
-	// and we want to return it the same GUI page as is being ticked
-	if (m_CurrentGUI)
-		return m_CurrentGUI->FindObjectByName(name);
-	else
-		return top()->FindObjectByName(name);
-}
-
 void CGUIManager::SendEventToAll(const CStr& eventName) const
 {
 	top()->SendEventToAll(eventName);
@@ -385,11 +377,7 @@ void CGUIManager::TickObjects()
 	PageStackType pageStack = m_PageStack;
 
 	for (const SGUIPage& p : pageStack)
-	{
-		m_CurrentGUI = p.gui;
 		p.gui->TickObjects();
-	}
-	m_CurrentGUI.reset();
 }
 
 void CGUIManager::Draw()
@@ -407,11 +395,9 @@ void CGUIManager::UpdateResolution()
 
 	for (const SGUIPage& p : pageStack)
 	{
-		m_CurrentGUI = p.gui;
 		p.gui->UpdateResolution();
 		p.gui->SendEventToAll("WindowResized");
 	}
-	m_CurrentGUI.reset();
 }
 
 bool CGUIManager::TemplateExists(const std::string& templateName) const

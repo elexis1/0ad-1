@@ -23,7 +23,7 @@
 
 namespace JSI_GUIManager
 {
-	void PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData);
+	JS::Value PushGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData);
 	void SwitchGuiPage(ScriptInterface::CxPrivate* pCxPrivate, const std::wstring& name, JS::HandleValue initData);
 	void PopGuiPage(ScriptInterface::CxPrivate* pCxPrivate);
 	void PopGuiPageCB(ScriptInterface::CxPrivate* pCxPrivate, JS::HandleValue args);

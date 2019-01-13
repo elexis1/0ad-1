@@ -4,6 +4,7 @@
 const g_IsController = !Engine.HasNetClient() || Engine.HasNetServer();
 
 var g_PlayerSlot;
+var g_GameAttributes;
 
 var g_AIDescriptions = [{
 	"id": "",
@@ -16,32 +17,43 @@ var g_AIDescriptions = [{
 var g_AIControls = {
 	"aiSelection": {
 		"labels": g_AIDescriptions.map(ai => ai.data.name),
-		"selected": settings => g_AIDescriptions.findIndex(ai => ai.id == settings.id)
+		"selected": playerData => playerData ? g_AIDescriptions.findIndex(ai => ai.id == playerData.AI) : 0
 	},
 	"aiDifficulty": {
 		"labels": prepareForDropdown(g_Settings.AIDifficulties).Title,
-		"selected": settings => settings.difficulty
+		"selected": playerData => playerData ? playerData.AIDiff : -1
 	},
 	"aiBehavior": {
 		"labels": prepareForDropdown(g_Settings.AIBehaviors).Title,
-		"selected": settings => g_Settings.AIBehaviors.findIndex(b => b.Name == settings.behavior)
+		"selected": playerData => playerData ? g_Settings.AIBehaviors.findIndex(b => b.Name == playerData.AIBehavior) : -1
 	}
 };
 
 function init(settings)
 {
-	// Remember the player ID that we change the AI settings for
 	g_PlayerSlot = settings.playerSlot;
+	g_GameAttributes = settings.gameAttributes;
+	updateGUIObjects();
+}
 
+function updatePage(settings)
+{
+	g_GameAttributes = settings.gameAttributes;
+	updateGUIObjects()
+}
+
+function updateGUIObjects()
+{
+	let playerData = g_GameAttributes.settings.PlayerData[g_PlayerSlot];
 	for (let name in g_AIControls)
 	{
 		let control = Engine.GetGUIObjectByName(name);
 		control.list = g_AIControls[name].labels;
-		control.selected = g_AIControls[name].selected(settings);
+		control.selected = g_AIControls[name].selected(playerData);
 		control.hidden = !g_IsController;
 
 		let label = Engine.GetGUIObjectByName(name + "Text");
-		label.caption = control.list[control.selected];
+		label.caption = control.list[control.selected] || "";
 		label.hidden = g_IsController;
 	}
 
@@ -56,7 +68,8 @@ function selectAI(idx)
 /** Behavior choice does not apply for Sandbox level */
 function checkBehavior()
 {
-	if (g_Settings.AIDifficulties[Engine.GetGUIObjectByName("aiDifficulty").selected].Name != "sandbox")
+	let selectedDifficulty = g_Settings.AIDifficulties[Engine.GetGUIObjectByName("aiDifficulty").selected];
+	if (selectedDifficulty && selectedDifficulty.Name != "sandbox")
 	{
 		Engine.GetGUIObjectByName("aiBehavior").enabled = true;
 		return;

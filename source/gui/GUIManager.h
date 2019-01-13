@@ -73,7 +73,7 @@ public:
 	 * and will still be drawn and receive tick events, but will not receive
 	 * user inputs.
 	 */
-	void PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
+	CGUI* PushPage(const CStrW& pageName, shared_ptr<ScriptInterface::StructuredClone> initData);
 
 	/**
 	 * Unload the currently active GUI page, and make the previous page active.
@@ -81,6 +81,11 @@ public:
 	 */
 	void PopPage();
 	void PopPageCB(shared_ptr<ScriptInterface::StructuredClone> args);
+
+	/**
+	 * Tests pointer validity by checking whether the current stack of open GUI pages contains it.
+	 */
+	bool IsPageOpen(const CGUI* guiPage) const;
 
 	/**
 	 * Called when a file has been modified, to hotload changes.
@@ -106,11 +111,6 @@ public:
 	 * See CGUI::GetPreDefinedColor; applies to the currently active page.
 	 */
 	bool GetPreDefinedColor(const CStr& name, CColor& output) const;
-
-	/**
-	 * See CGUI::FindObjectByName; applies to the currently active page.
-	 */
-	IGUIObject* FindObjectByName(const CStr& name) const;
 
 	/**
 	 * See CGUI::SendEventToAll; applies to the currently active page.
@@ -150,6 +150,7 @@ public:
 	const CParamNode& GetTemplate(const std::string& templateName);
 
 private:
+
 	struct SGUIPage
 	{
 		CStrW name;
@@ -166,7 +167,6 @@ private:
 
 	shared_ptr<CGUI> top() const;
 
-	shared_ptr<CGUI> m_CurrentGUI; // used to latch state during TickObjects/LoadPage (this is kind of ugly)
 	shared_ptr<ScriptRuntime> m_ScriptRuntime;
 	shared_ptr<ScriptInterface> m_ScriptInterface;
 

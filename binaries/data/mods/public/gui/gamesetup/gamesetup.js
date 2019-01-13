@@ -351,9 +351,9 @@ var g_GameStanzaTimer;
 var g_LastGameStanza;
 
 /**
- * Remembers if the current player viewed the AI settings of some playerslot.
+ * Access to the currently opened AI config page.
  */
-var g_LastViewedAIPlayer = -1;
+var g_PageAIConfig;
 
 /**
  * Total number of units that the engine can run with smoothly.
@@ -1102,7 +1102,11 @@ var g_PlayerMiscElements = {
 	"playerConfig": {
 		"hidden": (playerIdx) => !g_GameAttributes.settings.PlayerData[playerIdx].AI,
 		"onPress": (playerIdx) => function() {
-			openAIConfig(playerIdx);
+			g_PageAIConfig = Engine.PushGuiPage("page_aiconfig.xml", {
+				"callback": "AIConfigCallback",
+				"playerSlot": playerIdx,
+				"gameAttributes": g_GameAttributes
+			});
 		},
 		"tooltip": (playerIdx) => sprintf(translate("Configure AI: %(description)s."), {
 			"description": translateAISettings(g_GameAttributes.settings.PlayerData[playerIdx])
@@ -2347,14 +2351,10 @@ function updateGUIObjects()
 	rightAlignCancelButton();
 	updateAutocompleteEntries();
 
-	g_IsInGuiUpdate = false;
+	if (g_PageAIConfig)
+		g_PageAIConfig.updatePage({ "gameAttributes": g_GameAttributes });
 
-	// Refresh AI config page
-	if (g_LastViewedAIPlayer != -1)
-	{
-		Engine.PopGuiPage();
-		openAIConfig(g_LastViewedAIPlayer);
-	}
+	g_IsInGuiUpdate = false;
 }
 
 function rightAlignCancelButton()
@@ -2410,25 +2410,12 @@ function updateGameAttributes()
 		updateGUIObjects();
 }
 
-function openAIConfig(playerSlot)
-{
-	g_LastViewedAIPlayer = playerSlot;
-
-	Engine.PushGuiPage("page_aiconfig.xml", {
-		"callback": "AIConfigCallback",
-		"playerSlot": playerSlot,
-		"id": g_GameAttributes.settings.PlayerData[playerSlot].AI,
-		"difficulty": g_GameAttributes.settings.PlayerData[playerSlot].AIDiff,
-		"behavior": g_GameAttributes.settings.PlayerData[playerSlot].AIBehavior
-	});
-}
-
 /**
  * Called after closing the dialog.
  */
 function AIConfigCallback(ai)
 {
-	g_LastViewedAIPlayer = -1;
+	g_PageAIConfig = undefined;
 
 	if (!ai.save || !g_IsController)
 		return;
