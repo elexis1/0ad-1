@@ -1,40 +1,22 @@
 /**
+ * Latency at which the game performance becomes impaired.
+ */
+const inefficientRTT = Engine.GetTurnLength();
+
+/**
+ * Ratio at which the game performance becomes impaired.
+ */
+const inefficientPacketLoss = 0.25;
+
+/**
  * Number of milliseconds to display network warnings.
  */
 var g_NetworkWarningTimeout = 3000;
 
 /**
- * Currently displayed network warnings. At most one message per user.
+ * Currently displayed network reports. At most one message per user.
  */
 var g_NetworkWarnings = {};
-
-/**
- * Message-types to be displayed.
- */
-var g_NetworkWarningTexts = {
-
-	"server-timeout": (msg, username) =>
-		sprintf(translate("Losing connection to server (%(seconds)ss)"), {
-			"seconds": Math.ceil(msg.lastReceivedTime / 1000)
-		}),
-
-	"client-timeout": (msg, username) =>
-		sprintf(translate("%(player)s losing connection (%(seconds)ss)"), {
-			"player": username,
-			"seconds": Math.ceil(msg.lastReceivedTime / 1000)
-		}),
-
-	"server-latency": (msg, username) =>
-		sprintf(translate("Bad connection to server (%(milliseconds)sms)"), {
-			"milliseconds": msg.meanRTT
-		}),
-
-	"client-latency": (msg, username) =>
-		sprintf(translate("Bad connection to %(player)s (%(milliseconds)sms)"), {
-			"player": username,
-			"milliseconds": msg.meanRTT
-		})
-};
 
 var g_NetworkCommands = {
 	"/kick": argument => kickPlayer(argument, false),
@@ -81,6 +63,42 @@ function getDisconnectReason(id, wasConnected)
 }
 
 /**
+ * @param {bool} isLocal - Whether this is a remote client or our connection.
+ * @param {Object} performance - The performance data of a remote client passed by the NetClient.
+ * @returns the String
+ */
+function getNetworkWarningString(isLocal, performance)
+{
+	if (performance.lastReceivedTime > 3000)
+		return isLocal ?
+			translate("Losing connection to server (%(seconds)ss)") :
+			translate("%(player)s losing connection (%(seconds)ss)");
+
+	if (performance.meanRTT > inefficientRTT)
+		return isLocal ?
+			translate("Bad connection to server (%(milliseconds)sms)") :
+			translate("Bad connection to %(player)s (%(milliseconds)sms)");
+
+	if (performance.packetLoss > inefficientPacketLoss)
+		return isLocal ?
+			translate("Bad connection to server (%(packetLossRatio)s%% packet loss)") :
+			translate("Bad connection to %(player)s (%(packetLossRatio)s%% packet loss)");
+
+	return "";
+}
+
+function getNetworkWarningText(string, performance, username)
+{
+	return sprintf(string, {
+		"player": username,
+		"seconds": Math.ceil(performance.lastReceivedTime / 1000),
+		"milliseconds": performance.meanRTT,
+		"packetLossRatio": (performance.packetLoss * 100).toFixed(1)
+	})
+}
+
+
+/**
  * Show the disconnect reason in a message box.
  *
  * @param {number} reason
@@ -110,7 +128,7 @@ function kickError()
 
 function kickPlayer(username, ban)
 {
-	if (g_IsController)
+	if (Engine.HasNetServer())
 		Engine.KickPlayer(username, ban);
 	else
 		kickError();
@@ -118,7 +136,7 @@ function kickPlayer(username, ban)
 
 function kickObservers(ban)
 {
-	if (!g_IsController)
+	if (!Engine.HasNetServer())
 	{
 		kickError();
 		return;
@@ -185,26 +203,28 @@ function executeNetworkCommand(input)
 }
 
 /**
- * Remember this warning for a few seconds.
- * Overwrite previous warnings for this user.
- *
- * @param msg - GUI message sent by NetServer or NetClient
+ * Creates a report for each network client with a critically bad network connection to be displayed for some duration.
  */
-function addNetworkWarning(msg)
+function pollNetworkWarnings()
 {
-	if (!g_NetworkWarningTexts[msg.warntype])
-	{
-		warn("Unknown network warning type received: " + uneval(msg));
-		return;
-	}
-
 	if (Engine.ConfigDB_GetValue("user", "overlay.netwarnings") != "true")
 		return;
 
-	g_NetworkWarnings[msg.guid || "server"] = {
-		"added": Date.now(),
-		"msg": msg
-	};
+	let clientPerformance = Engine.GetNetworkClientPerformance();
+	if (!clientPerformance)
+		return;
+
+	for (let guid in clientPerformance)
+	{
+		let string = getNetworkWarningString(guid == Engine.GetPlayerGUID(), clientPerformance[guid]);
+
+		if (string)
+			g_NetworkWarnings[guid] = {
+				"added": Date.now(),
+				"string": string,
+				"performance":  clientPerformance[guid]
+			};
+	}
 }
 
 /**
@@ -213,14 +233,19 @@ function addNetworkWarning(msg)
  */
 function getNetworkWarnings()
 {
+	if (Engine.ConfigDB_GetValue("user", "overlay.netwarnings") != "true")
+		return {
+			"messages": [],
+			"maxTextWidth": 0
+		};
+
 	// Remove outdated messages
 	for (let guid in g_NetworkWarnings)
-		if (Date.now() > g_NetworkWarnings[guid].added + g_NetworkWarningTimeout ||
-		    guid != "server" && !g_PlayerAssignments[guid])
+		if (Date.now() > g_NetworkWarnings[guid].added + g_NetworkWarningTimeout || !g_PlayerAssignments[guid])
 			delete g_NetworkWarnings[guid];
 
 	// Show local messages first
-	let guids = Object.keys(g_NetworkWarnings).sort(guid => guid != "server");
+	let guids = Object.keys(g_NetworkWarnings).sort(guid => guid != Engine.GetPlayerGUID());
 
 	let font = Engine.GetGUIObjectByName("gameStateNotifications").font;
 
@@ -229,14 +254,11 @@ function getNetworkWarnings()
 
 	for (let guid of guids)
 	{
-		let msg = g_NetworkWarnings[guid].msg;
-
 		// Add formatted text
-		messages.push(g_NetworkWarningTexts[msg.warntype](msg, colorizePlayernameByGUID(guid)));
+		messages.push(getNetworkWarningText(g_NetworkWarnings[guid].string, g_NetworkWarnings[guid].performance, colorizePlayernameByGUID(guid)));
 
 		// Add width of unformatted text
-		let username = guid != "server" && g_PlayerAssignments[guid].name;
-		let textWidth = Engine.GetTextWidth(font, g_NetworkWarningTexts[msg.warntype](msg, username));
+		let textWidth = Engine.GetTextWidth(font, getNetworkWarningText(g_NetworkWarnings[guid].string, g_NetworkWarnings[guid].performance, g_PlayerAssignments[guid].name));
 		maxTextWidth = Math.max(textWidth, maxTextWidth);
 	}
 

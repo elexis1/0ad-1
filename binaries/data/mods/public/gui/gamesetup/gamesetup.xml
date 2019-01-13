@@ -202,6 +202,20 @@
 				<translatableAttribute id="tooltip">Show the multiplayer lobby in a dialog window.</translatableAttribute>
 			</object>
 
+			<!-- View Network Button -->
+			<!-- TODO: new icon -->
+			<object name="networkButton"
+				type="button"
+				style="IconButton"
+				sprite="iconInfoGold"
+				sprite_over="iconInfoWhite"
+				size="100%-41 378 100%-25 394"
+				hotkey="networkstats"
+				z="100"
+			>
+				<translatableAttribute id="tooltip">Show the network dialog.</translatableAttribute>
+			</object>
+
 			<!-- Map Description -->
 			<object name="mapInfoDescriptionFrame" type="image" sprite="ModernDarkBoxGold" size="100%-315 550 100%-25 100%-60" z="21">
 				<object name="mapInfoDescription" type="text" style="ModernText" size="0 0 100% 100%"/>
@@ -256,6 +270,7 @@
 				size="100%-308 100%-52 100%-168 100%-24"
 				tooltip_style="onscreenToolTip"
 				z="21"
+				hotkey="previousPage"
 			>
 				<translatableAttribute id="caption">Back</translatableAttribute>
 				<action on="Press">cancelSetup();</action>

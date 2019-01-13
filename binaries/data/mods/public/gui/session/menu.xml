@@ -99,11 +99,22 @@
 			<action on="Press">resignMenuButton();</action>
 		</object>
 
+		<!-- Network button -->
+		<object type="button"
+			style="StoneButtonFancy"
+			size="0 256 100% 284"
+			tooltip_style="sessionToolTip"
+			hotkey="networkstats"
+		>
+			<translatableAttribute id="caption">Network</translatableAttribute>
+			<action on="Press">g_NetworkDialogManager.open();</action>
+		</object>
+
 		<!-- Exit button -->
 		<object type="button"
 			name="menuExitButton"
 			style="StoneButtonFancy"
-			size="0 256 100% 256+28"
+			size="0 288 100% 316"
 			tooltip_style="sessionToolTip"
 		>
 			<translatableAttribute id="caption">Exit</translatableAttribute>

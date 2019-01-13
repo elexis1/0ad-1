@@ -2,7 +2,7 @@
 var MARGIN = 4;
 
 // Includes the main menu button
-const NUM_BUTTONS = 10;
+const NUM_BUTTONS = 11;
 
 // Regular menu buttons
 var BUTTON_HEIGHT = 32;
@@ -73,6 +73,8 @@ var g_SummarySelectedData;
 
 // Redefined every time someone makes a tribute (so we can save some data in a closure). Called in input.js handleInputBeforeGui.
 var g_FlushTributing = function() {};
+
+var g_NetworkDialogManager = new NetworkDialogManager();
 
 function initMenu()
 {

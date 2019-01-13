@@ -141,6 +141,9 @@ public:
 
 	bool UseLobbyAuth() const;
 
+	std::string GetClientIPAddress(const std::string& guid);
+	std::string GetHostname(const std::string& guid);
+
 	void OnLobbyAuth(const CStr& name, const CStr& token);
 
 	void SendHolePunchingMessage(const CStr& ip, u16 port);
@@ -183,6 +186,9 @@ public:
 	 * Send a message to all clients who match one of the given states.
 	 */
 	bool Broadcast(const CNetMessage* message, const std::vector<NetServerSessionState>& targetStates);
+
+	std::string GetClientIPAddress(const std::string& guid);
+	std::string GetHostname(const std::string& guid);
 
 private:
 	friend class CNetServer;
@@ -283,9 +289,9 @@ private:
 	void HandleMessageReceive(const CNetMessage* message, CNetServerSession* session);
 
 	/**
-	 * Send a network warning if the connection to a client is being lost or has bad latency.
+	 * Inform clients if the connection to a client is being lost or has bad latency.
 	 */
-	void CheckClientConnections();
+	void BroadcastClientPerformance();
 
 	void SendHolePunchingMessage(const CStr& ip, u16 port);
 
@@ -322,6 +328,11 @@ private:
 
 	std::vector<u32> m_BannedIPs;
 	std::vector<CStrW> m_BannedPlayers;
+
+	/**
+	 * Caches hostname per GUID of connected players.
+	 */
+	//std::vector<std::string, std::string> g_HostNames;
 
 	/**
 	 * Holds the GUIDs of all currently paused players.

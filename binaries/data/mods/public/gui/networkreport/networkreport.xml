@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<objects>
+
+	<script directory="gui/common/"/>
+	<script directory="gui/networkreport/"/>
+
+	<object type="image" sprite="ModernFade"/>
+	<object name="networkreport" type="image" style="ModernDialog" size="10% 15% 90% 85%">
+
+		<object style="TitleText" type="text" size="50%-128 -16 50%+128 16">
+			<translatableAttribute id="caption">Network</translatableAttribute>
+		</object>
+
+		<object name="clientList"
+			type="olist"
+			style="ModernSortedList"
+			selected_column="name"
+			selected_column_order="1"
+			sortable="true"
+			size="15 40 100%-15 100%-60"
+			font="sans-bold-stroke-13"
+		>
+			<column id="name" color="0 128 128" width="10%">
+				<translatableAttribute id="heading">Name</translatableAttribute>
+			</column>
+
+			<column id="status" color="0 128 128" width="10%">
+				<translatableAttribute id="heading">Status</translatableAttribute>
+			</column>
+
+			<column id="ipAddress" color="0 128 128" width="6%">
+				<translatableAttribute id="heading">IP Address</translatableAttribute>
+			</column>
+
+			<column id="hostname" color="0 128 128" width="15%">
+				<translatableAttribute id="heading">Hostname</translatableAttribute>
+			</column>
+
+			<column id="isp" color="0 128 128" width="15%">
+				<translatableAttribute id="heading">Internet Provider</translatableAttribute>
+			</column>
+
+			<column id="location" color="0 128 128" width="20%">
+				<translatableAttribute id="heading">Location</translatableAttribute>
+			</column>
+
+			<column id="time" color="0 128 128" width="12%">
+				<translatableAttribute id="heading">Time</translatableAttribute>
+			</column>
+
+			<column id="meanRTT" color="0 128 128" width="6%">
+				<translatableAttribute id="heading">Ping</translatableAttribute>
+			</column>
+
+			<column id="packetLoss" color="0 128 128" width="6%">
+				<translatableAttribute id="heading">Packet Loss</translatableAttribute>
+			</column>
+		</object>
+
+		<object name="kickButton" type="button" style="ModernButtonRed" size="20 100%-48 170 100%-20"/>
+		<object name="banButton" type="button" style="ModernButtonRed" size="180 100%-48 330 100%-20"/>
+			<!-- TODO: skip confirmation hotkey -->
+		<object name="closeButton" type="button" style="ModernButtonRed" size="100%-170 100%-48 100%-20 100%-20" hotkey="cancel"/>
+	</object>
+
+</objects>

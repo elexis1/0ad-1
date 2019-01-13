@@ -25,14 +25,14 @@
 #include "scriptinterface/ScriptVal.h"
 
 /**
- * Report the peer if we didn't receive a packet after this time (milliseconds).
- */
-extern const u32 NETWORK_WARNING_TIMEOUT;
-
-/**
  *  Maximum timeout of the local client of the host (milliseconds).
  */
 extern const u32 MAXIMUM_HOST_TIMEOUT;
+
+/**
+ * Denominator of the packet loss ratio, whereas the numerator is sent as u32.
+ */
+extern const double PACKET_LOSS_SCALE;
 
 class CNetClient;
 class CNetServerWorker;
@@ -106,6 +106,11 @@ public:
 	u32 GetMeanRTT() const;
 
 	/**
+	 * Average ratio of packets lost.
+	 */
+	double GetPacketLossRatio() const;
+
+	/**
 	 * Allows increasing the timeout to prevent drops during an expensive operation,
 	 * and decreasing it back to normal afterwards.
 	 */
@@ -153,6 +158,8 @@ public:
 	void SetHostID(u32 id) { m_HostID = id; }
 
 	u32 GetIPAddress() const;
+	std::string GetIPAddressString() const;
+	std::string GetHostname() const;
 
 	/**
 	 * Whether this client is running in the same process as the server.
@@ -168,6 +175,11 @@ public:
 	 * Average round trip time to the client.
 	 */
 	u32 GetMeanRTT() const;
+
+	/**
+	 * Average ratio of packets lost with regards to ENET_PEER_PACKET_LOSS_SCALE. Indicates connection quality.
+	 */
+	u32 GetPacketLoss() const;
 
 	/**
 	 * Sends a disconnection notification to the client,
@@ -212,6 +224,9 @@ private:
 	CStr m_GUID;
 	CStrW m_UserName;
 	u32 m_HostID;
+
+	// Cache
+	CStr m_Hostname;
 
 	bool m_IsLocalClient;
 };

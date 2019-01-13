@@ -23,12 +23,14 @@
 #include "lib/external_libraries/libsdl.h"
 #include "lib/types.h"
 #include "lobby/IXmppClient.h"
+#include "network/IPTools.h"
 #include "network/NetClient.h"
 #include "network/NetMessage.h"
 #include "network/NetServer.h"
 #include "network/StunClient.h"
 #include "ps/CLogger.h"
 #include "ps/Game.h"
+#include "simulation2/system/TurnManager.h"
 #include "scriptinterface/ScriptInterface.h"
 
 u16 JSI_Network::GetDefaultPort(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
@@ -163,6 +165,18 @@ JS::Value JSI_Network::PollNetworkClient(ScriptInterface::CxPrivate* pCxPrivate)
 	return pCxPrivate->pScriptInterface->CloneValueFromOtherContext(g_NetClient->GetScriptInterface(), pollNet);
 }
 
+JS::Value JSI_Network::GetNetworkClientPerformance(ScriptInterface::CxPrivate* pCxPrivate)
+{
+	if (!g_NetClient)
+		return JS::UndefinedValue();
+// TODO: Too many questionmarks in the dialog
+	// Convert from net client context to GUI script context
+	JSContext* cxNet = g_NetClient->GetScriptInterface().GetContext();
+	JSAutoRequest rqNet(cxNet);
+	JS::RootedValue pollNet(cxNet, g_NetClient->GetClientPerformance());
+	return pCxPrivate->pScriptInterface->CloneValueFromOtherContext(g_NetClient->GetScriptInterface(), pollNet);
+}
+
 void JSI_Network::SetNetworkGameAttributes(ScriptInterface::CxPrivate* pCxPrivate, JS::HandleValue attribs1)
 {
 	ENSURE(g_NetClient);
@@ -216,12 +230,43 @@ void JSI_Network::StartNetworkGame(ScriptInterface::CxPrivate* UNUSED(pCxPrivate
 	g_NetClient->SendStartGameMessage();
 }
 
+u32 JSI_Network::GetTurnLength(ScriptInterface::CxPrivate* UNUSED(pCxPrivate))
+{
+	return DEFAULT_TURN_LENGTH_MP;
+}
+
 void JSI_Network::SetTurnLength(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), int length)
 {
 	if (g_NetServer)
 		g_NetServer->SetTurnLength(length);
 	else
 		LOGERROR("Only network host can change turn length");
+}
+
+std::string JSI_Network::GetClientIPAddress(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& guid)
+{
+	if (!g_NetServer)
+		return std::string();
+
+	return g_NetServer->GetClientIPAddress(guid);
+}
+
+std::string JSI_Network::LookupClientHostname(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& guid)
+{
+	if (!g_NetServer)
+		return std::string();
+
+	return g_NetServer->GetHostname(guid);
+}
+
+u32 JSI_Network::IPv4ToNumber(ScriptInterface::CxPrivate* UNUSED(pCxPrivate), const std::string& ipAddress)
+{
+	u32 ipAddressNum = 0;
+
+	if (!IPTools::ParseIPv4Address(ipAddress, ipAddressNum))
+		return 0;
+
+	return ipAddressNum;
 }
 
 void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
@@ -235,6 +280,7 @@ void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface
 	scriptInterface.RegisterFunction<void, &DisconnectNetworkGame>("DisconnectNetworkGame");
 	scriptInterface.RegisterFunction<CStr, &GetPlayerGUID>("GetPlayerGUID");
 	scriptInterface.RegisterFunction<JS::Value, &PollNetworkClient>("PollNetworkClient");
+	scriptInterface.RegisterFunction<JS::Value, &GetNetworkClientPerformance>("GetNetworkClientPerformance");
 	scriptInterface.RegisterFunction<void, JS::HandleValue, &SetNetworkGameAttributes>("SetNetworkGameAttributes");
 	scriptInterface.RegisterFunction<void, int, CStr, &AssignNetworkPlayer>("AssignNetworkPlayer");
 	scriptInterface.RegisterFunction<void, CStrW, bool, &KickPlayer>("KickPlayer");
@@ -242,5 +288,9 @@ void JSI_Network::RegisterScriptFunctions(const ScriptInterface& scriptInterface
 	scriptInterface.RegisterFunction<void, int, &SendNetworkReady>("SendNetworkReady");
 	scriptInterface.RegisterFunction<void, &ClearAllPlayerReady>("ClearAllPlayerReady");
 	scriptInterface.RegisterFunction<void, &StartNetworkGame>("StartNetworkGame");
+	scriptInterface.RegisterFunction<u32, &GetTurnLength>("GetTurnLength");
 	scriptInterface.RegisterFunction<void, int, &SetTurnLength>("SetTurnLength");
+	scriptInterface.RegisterFunction<std::string, std::string, &GetClientIPAddress>("GetClientIPAddress");
+	scriptInterface.RegisterFunction<u32, std::string, &IPv4ToNumber>("IPv4ToNumber");
+	scriptInterface.RegisterFunction<std::string, std::string, &LookupClientHostname>("LookupClientHostname");
 }

@@ -139,10 +139,6 @@ CNetMessage* CNetMessageFactory::CreateMessage(const void* pData,
 		pNewMessage = new CKickedMessage;
 		break;
 
-	case NMT_CLIENT_TIMEOUT:
-		pNewMessage = new CClientTimeoutMessage;
-		break;
-
 	case NMT_CLIENT_PERFORMANCE:
 		pNewMessage = new CClientPerformanceMessage;
 		break;

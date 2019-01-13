@@ -361,6 +361,24 @@ bool CNetServerWorker::Broadcast(const CNetMessage* message, const std::vector<N
 	return ok;
 }
 
+std::string CNetServerWorker::GetClientIPAddress(const std::string& guid)
+{
+	for (CNetServerSession* session : m_Sessions)
+		if (session->GetGUID() == guid)
+			return session->GetIPAddressString();
+
+	return "";
+}
+
+std::string CNetServerWorker::GetHostname(const std::string& guid)
+{
+	for (CNetServerSession* session : m_Sessions)
+		if (session->GetGUID() == guid)
+			return session->GetHostname();
+
+	return "";
+}
+
 void* CNetServerWorker::RunThread(void* data)
 {
 	debug_SetThreadName("NetServer");
@@ -452,7 +470,7 @@ bool CNetServerWorker::RunStep()
 	for (CNetServerSession* session : m_Sessions)
 		session->GetFileTransferer().Poll();
 
-	CheckClientConnections();
+	BroadcastClientPerformance();
 
 	// Process network events:
 
@@ -555,7 +573,7 @@ bool CNetServerWorker::RunStep()
 	return true;
 }
 
-void CNetServerWorker::CheckClientConnections()
+void CNetServerWorker::BroadcastClientPerformance()
 {
 	// Send messages at most once per second
 	std::time_t now = std::time(nullptr);
@@ -564,48 +582,32 @@ void CNetServerWorker::CheckClientConnections()
 
 	m_LastConnectionCheck = now;
 
-	for (size_t i = 0; i < m_Sessions.size(); ++i)
+	for (CNetServerSession* addresseeSession : m_Sessions)
 	{
-		u32 lastReceived = m_Sessions[i]->GetLastReceivedTime();
-		u32 meanRTT = m_Sessions[i]->GetMeanRTT();
+		// Skip disconnecting clients and clients in the loading screen
+		if (addresseeSession->GetLastReceivedTime() >= 3000 ||
+		    addresseeSession->GetCurrState() < NSS_PREGAME ||
+		    addresseeSession->GetCurrState() == FSM_INVALID_STATE ||
+			(addresseeSession->GetCurrState() == NSS_PREGAME && m_State == SERVER_STATE_LOADING))
+			continue;
 
-		CNetMessage* message = nullptr;
+		CClientPerformanceMessage msg;
 
-		// Report if we didn't hear from the client since few seconds
-		if (lastReceived > NETWORK_WARNING_TIMEOUT)
+		for (CNetServerSession* measuredSession : m_Sessions)
 		{
-			CClientTimeoutMessage* msg = new CClientTimeoutMessage();
-			msg->m_GUID = m_Sessions[i]->GetGUID();
-			msg->m_LastReceivedTime = lastReceived;
-			message = msg;
-		}
-		// Report if the client has bad ping
-		else if (meanRTT > DEFAULT_TURN_LENGTH_MP)
-		{
-			CClientPerformanceMessage* msg = new CClientPerformanceMessage();
+			// Inform clients about every connection except their own (since they measure that themself)
+			if (measuredSession->GetGUID() == addresseeSession->GetGUID())
+				continue;
+
 			CClientPerformanceMessage::S_m_Clients client;
-			client.m_GUID = m_Sessions[i]->GetGUID();
-			client.m_MeanRTT = meanRTT;
-			msg->m_Clients.push_back(client);
-			message = msg;
+			client.m_GUID = measuredSession->GetGUID();
+			client.m_MeanRTT = measuredSession->GetMeanRTT();
+			client.m_LastReceivedTime = measuredSession->GetLastReceivedTime();
+			client.m_PacketLoss = measuredSession->GetPacketLoss();
+			msg.m_Clients.push_back(client);
 		}
 
-		// Send to all clients except the affected one
-		// (since that will show the locally triggered warning instead).
-		// Also send it to clients that finished the loading screen while
-		// the game is still waiting for other clients to finish the loading screen.
-		if (message)
-			for (size_t j = 0; j < m_Sessions.size(); ++j)
-			{
-				if (i != j && (
-				    (m_Sessions[j]->GetCurrState() == NSS_PREGAME && m_State == SERVER_STATE_PREGAME) ||
-				    m_Sessions[j]->GetCurrState() == NSS_INGAME))
-				{
-					m_Sessions[j]->SendMessage(message);
-				}
-			}
-
-		SAFE_DELETE(message);
+		addresseeSession->SendMessage(&msg);
 	}
 }
 
@@ -685,6 +687,8 @@ bool CNetServerWorker::HandleConnect(CNetServerSession* session)
 		session->Disconnect(NDR_BANNED);
 		return false;
 	}
+
+	// TODO: check for banned hostnames
 
 	CSrvHandshakeMessage handshake;
 	handshake.m_Magic = PS_PROTOCOL_MAGIC;
@@ -1588,6 +1592,19 @@ bool CNetServer::UseLobbyAuth() const
 bool CNetServer::SetupConnection(const u16 port)
 {
 	return m_Worker->SetupConnection(port);
+}
+
+std::string CNetServer::GetClientIPAddress(const std::string& guid)
+{
+	// The server should broadcast the countries, IPs and hostnames in an admin packet each time a player joins/disconnects
+	CScopeLock lock(m_Worker->m_WorkerMutex);
+	return m_Worker->GetClientIPAddress(guid);
+}
+
+std::string CNetServer::GetHostname(const std::string& guid)
+{
+	CScopeLock lock(m_Worker->m_WorkerMutex);
+	return m_Worker->GetHostname(guid);
 }
 
 void CNetServer::StartGame()

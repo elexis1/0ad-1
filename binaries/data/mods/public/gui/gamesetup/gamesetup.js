@@ -12,6 +12,8 @@ const g_VictoryConditions = g_Settings && g_Settings.VictoryConditions;
 
 var g_GameSpeeds = getGameSpeedChoices(false);
 
+var g_NetworkDialogManager = new NetworkDialogManager();
+
 /**
  * Offer users to select playable civs only.
  * Load unselectable civs as they could appear in scenario maps.
@@ -140,7 +142,6 @@ var g_ReadyData = [
  */
 var g_NetMessageTypes = {
 	"netstatus": msg => handleNetStatusMessage(msg),
-	"netwarn": msg => addNetworkWarning(msg),
 	"gamesetup": msg => handleGamesetupMessage(msg),
 	"players": msg => handlePlayerAssignmentMessage(msg),
 	"ready": msg => handleReadyMessage(msg),
@@ -1063,6 +1064,13 @@ var g_MiscControls = {
 		},
 		"hidden": () => !Engine.HasXmppClient()
 	},
+	"networkButton": {
+		"onPress": () => function() {
+			if (g_IsNetworked)
+				g_NetworkDialogManager.open();
+		},
+		"hidden": () => !g_IsNetworked
+	},
 	"spTips": {
 		"hidden": () => {
 			let settingsPanel = Engine.GetGUIObjectByName("settingsPanel");
@@ -1409,7 +1417,7 @@ function initSettingsTabButtons()
 	let settingTabButtons = Engine.GetGUIObjectByName("settingTabButtons");
 	let settingTabButtonsSize = settingTabButtons.size;
 	settingTabButtonsSize.bottom = settingTabButtonsSize.top + g_SettingsTabsGUI.length * (g_TabButtonHeight + g_TabButtonDist);
-	settingTabButtonsSize.right = g_MiscControls.lobbyButton.hidden() ?
+	settingTabButtonsSize.right = (g_MiscControls.lobbyButton.hidden() && g_MiscControls.networkButton.hidden()) ?
 		settingTabButtonsSize.right :
 		Engine.GetGUIObjectByName("lobbyButton").size.left - g_LobbyButtonSpacing;
 	settingTabButtons.size = settingTabButtonsSize;
@@ -1576,6 +1584,8 @@ function handleGamesetupMessage(message)
 
 	updateGUIObjects();
 
+	g_NetworkDialogManager.refresh();
+
 	hideLoadingWindow();
 }
 
@@ -1609,6 +1619,8 @@ function handlePlayerAssignmentMessage(message)
 		sendRegisterGameStanzaImmediate();
 	else
 		sendRegisterGameStanza();
+	
+	g_NetworkDialogManager.refresh();
 }
 
 function onClientJoin(newGUID, newAssignments)
@@ -2000,6 +2012,7 @@ function onTick()
 		handleNetMessages();
 
 	updateTimers();
+	pollNetworkWarnings();
 
 	let now = Date.now();
 	let tickLength = now - g_LastTickTime;

@@ -27,9 +27,10 @@
 #include "ps/Profile.h"
 #include "scriptinterface/ScriptInterface.h"
 
-const u32 NETWORK_WARNING_TIMEOUT = 2000;
-
 const u32 MAXIMUM_HOST_TIMEOUT = std::numeric_limits<u32>::max();
+
+const double PACKET_LOSS_SCALE = (1 << 16);
+const double PACKET_LOSS_SCALE_FACTOR = PACKET_LOSS_SCALE / ENET_PEER_PACKET_LOSS_SCALE;
 
 static const int CHANNEL_COUNT = 1;
 
@@ -149,6 +150,7 @@ void CNetClientSession::Poll()
 			// Report the server address
 			char hostname[256] = "(error)";
 			enet_address_get_host_ip(&event.peer->address, hostname, ARRAY_SIZE(hostname));
+
 			LOGMESSAGE("Net client: Connected to %s:%u", hostname, (unsigned int)event.peer->address.port);
 
 			m_Client.HandleConnect();
@@ -221,6 +223,14 @@ u32 CNetClientSession::GetMeanRTT() const
 	return m_Server->roundTripTime;
 }
 
+double CNetClientSession::GetPacketLossRatio() const
+{
+	if (!m_Server)
+		return 0;
+
+	return (double) m_Server->packetLoss / (double) ENET_PEER_PACKET_LOSS_SCALE;
+}
+
 void CNetClientSession::SetLongTimeout(bool enabled)
 {
 	SetEnetLongTimeout(m_Server, m_IsLocalClient, enabled);
@@ -229,11 +239,30 @@ void CNetClientSession::SetLongTimeout(bool enabled)
 CNetServerSession::CNetServerSession(CNetServerWorker& server, ENetPeer* peer) :
 	m_Server(server), m_FileTransferer(this), m_Peer(peer), m_IsLocalClient(false), m_HostID(0), m_GUID(), m_UserName()
 {
+	char hostname[256] = "(error)";
+	if (enet_address_get_host(&peer->address, hostname, ARRAY_SIZE(hostname)) == 0)
+		m_Hostname = hostname;
 }
 
 u32 CNetServerSession::GetIPAddress() const
 {
 	return m_Peer->address.host;
+}
+
+std::string CNetServerSession::GetIPAddressString() const
+{
+	char ipAddress[256];
+	ipAddress[255] = '\0';
+
+	if (enet_address_get_host_ip(&m_Peer->address, ipAddress, sizeof ipAddress) != 0)
+		return std::string();
+
+	return ipAddress;
+}
+
+std::string CNetServerSession::GetHostname() const
+{
+	return m_Hostname;
 }
 
 u32 CNetServerSession::GetLastReceivedTime() const
@@ -250,6 +279,14 @@ u32 CNetServerSession::GetMeanRTT() const
 		return 0;
 
 	return m_Peer->roundTripTime;
+}
+
+u32 CNetServerSession::GetPacketLoss() const
+{
+	if (!m_Peer)
+		return 0;
+
+	return (double) m_Peer->packetLoss * PACKET_LOSS_SCALE_FACTOR;
 }
 
 void CNetServerSession::Disconnect(u32 reason)

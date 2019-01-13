@@ -373,6 +373,19 @@
 		]
 	},
 	{
+		"label": "Network",
+		"tooltip": "Set options for multiplayer matches.",
+		"options":
+		[
+			{
+				"type": "boolean",
+				"label": "GeoLite2",
+				"tooltip": "Enable geolocation lookup of connected clients.",
+				"config": "network.geolite2.enabled"
+			}
+		]
+	},
+	{
 		"label": "Lobby",
 		"tooltip": "These settings only affect the multiplayer.",
 		"options":

@@ -26,6 +26,7 @@
 #include "gui/scripting/JSInterface_GUITypes.h"
 #include "i18n/scripting/JSInterface_L10n.h"
 #include "lobby/scripting/JSInterface_Lobby.h"
+#include "network/scripting/JSInterface_GeoLite2.h"
 #include "network/scripting/JSInterface_Network.h"
 #include "ps/scripting/JSInterface_ConfigDB.h"
 #include "ps/scripting/JSInterface_Console.h"
@@ -60,6 +61,7 @@ void GuiScriptingInit(ScriptInterface& scriptInterface)
 	JSI_GUIManager::RegisterScriptFunctions(scriptInterface);
 	JSI_Game::RegisterScriptFunctions(scriptInterface);
 	JSI_GameView::RegisterScriptFunctions(scriptInterface);
+	JSI_GeoLite2::RegisterScriptFunctions(scriptInterface);
 	JSI_L10n::RegisterScriptFunctions(scriptInterface);
 	JSI_Lobby::RegisterScriptFunctions(scriptInterface);
 	JSI_Main::RegisterScriptFunctions(scriptInterface);

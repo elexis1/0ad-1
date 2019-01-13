@@ -149,6 +149,8 @@ public:
 	 */
 	void GuiPoll(JS::MutableHandleValue);
 
+	JS::Value GetClientPerformance();
+
 	/**
 	 * Add a message to the queue, to be read by GuiPoll.
 	 * The script value must be in the GetScriptInterface() JS context.
@@ -243,7 +245,6 @@ private:
 	static bool OnJoinSyncEndCommandBatch(void* context, CFsmEvent* event);
 	static bool OnRejoined(void* context, CFsmEvent* event);
 	static bool OnKicked(void* context, CFsmEvent* event);
-	static bool OnClientTimeout(void* context, CFsmEvent* event);
 	static bool OnClientPerformance(void* context, CFsmEvent* event);
 	static bool OnClientsLoading(void* context, CFsmEvent* event);
 	static bool OnClientPaused(void* context, CFsmEvent* event);
@@ -283,6 +284,9 @@ private:
 
 	/// Latest copy of player assignments heard from the server
 	PlayerAssignmentMap m_PlayerAssignments;
+
+	// Latest copy of roundtrip time and lost packets
+	std::map<std::string, std::tuple<u32, u32, double>> m_ClientPerformance;
 
 	/// Globally unique identifier to distinguish users beyond the lifetime of a single network session
 	CStr m_GUID;

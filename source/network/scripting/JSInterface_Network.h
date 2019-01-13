@@ -34,13 +34,18 @@ namespace JSI_Network
 	JS::Value FindStunEndpoint(ScriptInterface::CxPrivate* pCxPrivate, int port);
 	void DisconnectNetworkGame(ScriptInterface::CxPrivate* pCxPrivate);
 	JS::Value PollNetworkClient(ScriptInterface::CxPrivate* pCxPrivate);
+	JS::Value GetNetworkClientPerformance(ScriptInterface::CxPrivate* pCxPrivate);
 	CStr GetPlayerGUID(ScriptInterface::CxPrivate* pCxPrivate);
 	void KickPlayer(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& playerName, bool ban);
 	void AssignNetworkPlayer(ScriptInterface::CxPrivate* pCxPrivate, int playerID, const CStr& guid);
 	void ClearAllPlayerReady (ScriptInterface::CxPrivate* pCxPrivate);
 	void SendNetworkChat(ScriptInterface::CxPrivate* pCxPrivate, const CStrW& message);
 	void SendNetworkReady(ScriptInterface::CxPrivate* pCxPrivate, int message);
+	u32 GetTurnLength(ScriptInterface::CxPrivate* pCxPrivate);
 	void SetTurnLength(ScriptInterface::CxPrivate* pCxPrivate, int length);
+	std::string GetClientIPAddress(ScriptInterface::CxPrivate* pCxPrivate, const std::string& guid);
+	std::string LookupClientHostname(ScriptInterface::CxPrivate* pCxPrivate, const std::string& guid);
+	u32 IPv4ToNumber(ScriptInterface::CxPrivate* pCxPrivate, const std::string& ipAddress);
 
 	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
 }

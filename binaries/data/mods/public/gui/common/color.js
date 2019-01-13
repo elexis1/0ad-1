@@ -75,6 +75,15 @@ function clampColorValue(value)
 }
 
 /**
+ * @param {Number} efficiency - between 0 and 1
+ * @returns {String} GUI color representing efficiency, 1 yields green, 0.5 yellow and 0 red.
+ */
+function efficiencyToColor(efficiency)
+{
+	return hslToRgb(Math.min(1, Math.max(0, efficiency)) / 3, 1, 0.5).join(" ");
+}
+
+/**
  * Convert color value from RGB to HSL space.
  *
  * @see {@link https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion}
