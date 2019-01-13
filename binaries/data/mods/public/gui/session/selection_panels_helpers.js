@@ -161,16 +161,19 @@ function formatBatchTrainingString(buildingsCountToTrainFullBatch, fullBatchSize
 	else
 		batchString = translate("%(action)s to train %(number)s.");
 
-	return "[font=\"sans-13\"]" +
-		setStringTags(
-			sprintf(batchString, {
-				"action": "[font=\"sans-bold-13\"]" + translate("Shift-click") + "[/font]",
+	return setStringTags(
+		sprintf(
+			batchString,
+			{
+				"action": setStringTags(translate("Shift-click"), { "font": "sans-bold-13" }),
 				"number": totalBatchTrainingCount,
 				"fullBatch": fullBatchesString,
 				"remainderBatch": remainderBatch
 			}),
-			g_HotkeyTags) +
-		"[/font]";
+		{
+			"font": "sans-13",
+			"color": g_TooltipTextFormats.hotkey.color
+		});
 }
 
 /**
