@@ -1666,6 +1666,29 @@ void CGUI::Xeromyces_ReadScrollBarStyle(XMBElement Element, CXeromyces* pFile)
 	m_ScrollBarStyles[name] = scrollbar;
 }
 
+bool CGUI::AddIcon(const CStr& name, const CStr& sprite, const CStr& size, bool replaceExisting)
+{
+	if (IconExists(name))
+	{
+		if (!replaceExisting)
+			return false;
+
+		m_Icons.erase(name);
+	}
+
+	CSize cSize;
+	if (!GUI<CSize>::ParseString(size.FromUTF8(), cSize))
+	{
+		LOGERROR("Error parsing '%s' (\"%s\") inside <icon>.", name, size);
+		return false;
+	}
+
+	m_Icons[name].m_Size = cSize;
+	m_Icons[name].m_SpriteName = sprite;
+
+	return true;
+}
+
 void CGUI::Xeromyces_ReadIcon(XMBElement Element, CXeromyces* pFile)
 {
 	SGUIIcon icon;

@@ -32,6 +32,7 @@ namespace JSI_GUIManager
 	void ResetCursor(ScriptInterface::CxPrivate* pCxPrivate);
 	bool TemplateExists(ScriptInterface::CxPrivate* pCxPrivate, const std::string& templateName);
 	CParamNode GetTemplate(ScriptInterface::CxPrivate* pCxPrivate, const std::string& templateName);
+	bool AddIcon(ScriptInterface::CxPrivate* pCxPrivate, const std::string& name, const std::string& sprite, const std::string& size, bool replaceExisting);
 
 	void RegisterScriptFunctions(const ScriptInterface& scriptInterface);
 }

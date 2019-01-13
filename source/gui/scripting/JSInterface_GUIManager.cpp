@@ -88,6 +88,12 @@ CParamNode JSI_GUIManager::GetTemplate(ScriptInterface::CxPrivate* UNUSED(pCxPri
 	return g_GUI->GetTemplate(templateName);
 }
 
+bool JSI_GUIManager::AddIcon(ScriptInterface::CxPrivate* pCxPrivate, const std::string& name, const std::string& sprite, const std::string& size, bool replaceExisting)
+{
+	CGUI* guiPage = static_cast<CGUI*>(pCxPrivate->pCBData);
+	return guiPage->AddIcon(name, sprite, size, replaceExisting);
+}
+
 void JSI_GUIManager::RegisterScriptFunctions(const ScriptInterface& scriptInterface)
 {
 	scriptInterface.RegisterFunction<JS::Value, std::wstring, JS::HandleValue, &PushGuiPage>("PushGuiPage");
@@ -99,4 +105,5 @@ void JSI_GUIManager::RegisterScriptFunctions(const ScriptInterface& scriptInterf
 	scriptInterface.RegisterFunction<void, &ResetCursor>("ResetCursor");
 	scriptInterface.RegisterFunction<bool, std::string, &TemplateExists>("TemplateExists");
 	scriptInterface.RegisterFunction<CParamNode, std::string, &GetTemplate>("GetTemplate");
+	scriptInterface.RegisterFunction<bool, std::string, std::string, std::string, bool, &AddIcon>("AddIcon");
 }
